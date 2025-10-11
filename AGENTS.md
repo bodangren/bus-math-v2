@@ -9,8 +9,10 @@ Agent rules for the Supabase-backed rewrite. Read this before touching the codeb
 
 ## Workflow Guardrails
 1. Start from a clean, synced `main`. If the worktree is dirty (outside your edits), stop and clarify.
-2. Review the current sprint entry (`docs/sprint/S#.md`) plus root `TODO.md` before coding.
-3. Open a GitHub issue per slice, branch as `<type>/<issue>-<slug>` from `main`, and follow Conventional Commits.
+2. Review the `docs/` knowledge base before coding—start with `docs/project-brief.md`, `docs/backend-architecture.md`, `docs/frontend-architecture.md`, `docs/full-stack-architecture.md`, `docs/brownfield-architecture.md`, `docs/TDD.md`, and the current planning notes in `docs/sprints/epics.md`. If a root `TODO.md` is added, fold it into this review loop.
+3. Github-centric workflow:
+  - Use gh to check the current epic tracker and related issues. Propose three next issues to the user, numbered for ease of choice.
+  - Open a GitHub issue per slice, branch as `<type>/<issue>-<slug>` from `main`, and follow Conventional Commits.
 4. Practice TDD. Write/adjust tests first (unit/integration/E2E) and run `npm run lint` plus relevant test scripts before each commit.
 5. Keep documentation current. If work changes architecture, workflow, or schema, update `docs/` (and this file) in the same PR.
 6. Push the branch, open a PR with issue links, test evidence, and run checks. Squash merge after green CI and update sprint artifacts.
@@ -55,6 +57,17 @@ Agent rules for the Supabase-backed rewrite. Read this before touching the codeb
 - Stay within Supabase/Vercel free tier quotas (storage, bandwidth, invocation limits). Prefer static rendering and batched queries.
 - No new paid SaaS dependencies, background jobs, or edge functions without explicit approval.
 - Keep bundle sizes modest; avoid adding large libraries when a simpler alternative exists.
+
+## Documentation Map
+Canonical documentation lives under `docs/`; keep this section synced as new references are added.
+- `docs/project-brief.md` — Scope, constraints, roadmap, and working agreements.
+- `docs/backend-architecture.md` — Supabase schema design, RLS posture, and data access guidance.
+- `docs/frontend-architecture.md` — Next.js structure, component patterns, and rendering strategy.
+- `docs/full-stack-architecture.md` — End-to-end stack responsibilities, deployment model, and testing matrix.
+- `docs/brownfield-architecture.md` — Migration plan from v1, cutover phases, and operational checklists.
+- `docs/TDD.md` — Issue workflow, TDD loop, testing expectations, and PR discipline.
+- `docs/sprints/epics.md` — Active epics and milestone definitions for the current sprint cycle.
+- Additional additions belong in `docs/`; update this section whenever new canonical references ship.
 
 ## Non-Negotiables
 - No `npm install` or dependency upgrades without explicit approval.
