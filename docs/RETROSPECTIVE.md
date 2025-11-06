@@ -246,3 +246,12 @@ dotenv.config({ path: '.env.local' });
 - [ ] Add integration tests that exercise the unique constraint and JSONB validation.
 
 ---
+
+## PR #16 - feat/6-define-organization-schema
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
