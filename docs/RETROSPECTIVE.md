@@ -3,7 +3,7 @@ title: Project Retrospective
 type: retrospective
 status: active
 created: 2025-11-05
-updated: 2025-11-06
+updated: 2025-11-07
 ---
 
 # Project Retrospective
@@ -60,3 +60,15 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 ### Lessons
 - Capture Supabase result shapes defensively when using postgres-js.
 - Keep brownfield symlinks (e.g., `bus-math-nextjs`) out of TS programs or builds explode.
+
+## PR #25 - feat/25-task-2-layout--navigation-components-5-components
+
+### Highlights
+- Header/footer/navigation/unit sidebars now pull from `Lesson` + `StudentProgress` data, so v2 layouts stay in sync with Supabase payloads.
+- Added Vitest suites for all five components (including `ResourceBasePathFixer`) to lock in data-driven behavior before wiring into app routes.
+- Hardened tooling by ignoring `.next/` in ESLint and swapping Tailwind plugins to pure ESM so lint/build stay green post-migration.
+
+### Lessons
+- Progress UI needs both `Phase` metadata and `student_progress` rows; provide helper functions instead of ad-hoc context for easier testing.
+- Prefer lightweight primitives over porting every shadcn helper—custom sheet/sidebar knockoffs avoided extra dependencies while meeting UX goals.
+- Remember to append retrospective updates as part of change-integrator flow so specs/tests + learnings travel together.
