@@ -21,3 +21,6 @@ export * from './lessons';
 export * from './phases';
 export * from './activities';
 export * from './resources';
+export * from './profiles';
+export * from './student-progress';
+export * from './activity-submissions';
