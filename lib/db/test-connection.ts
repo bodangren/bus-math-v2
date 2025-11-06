@@ -15,16 +15,28 @@ export async function testDatabaseConnection() {
     // Execute a simple query to verify connection
     const result = await db.execute(sql`SELECT NOW() as current_time, version() as postgres_version`);
 
-    // postgres-js returns an array directly, not { rows: [] }
-    const row = (Array.isArray(result) ? result[0] : result.rows?.[0]) as { current_time: Date; postgres_version: string };
+    // postgres-js returns an array directly, but other drivers might wrap in { rows: [] }
+    const rows = Array.isArray(result)
+      ? (result as Array<Record<string, unknown>>)
+      : ((result as { rows?: Array<Record<string, unknown>> }).rows ?? []);
 
-    if (!row) {
+    const rowCandidate = rows[0];
+
+    if (
+      !rowCandidate ||
+      typeof rowCandidate !== 'object' ||
+      rowCandidate === null ||
+      !('current_time' in rowCandidate) ||
+      !('postgres_version' in rowCandidate)
+    ) {
       return {
         success: false,
         message: 'Query returned no results',
         error: 'No data returned from database',
       };
     }
+
+    const row = rowCandidate as { current_time: Date; postgres_version: string };
 
     return {
       success: true,
