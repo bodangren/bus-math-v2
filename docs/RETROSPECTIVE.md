@@ -264,3 +264,12 @@ dotenv.config({ path: '.env.local' });
 ### Lessons
 - Capture Supabase result shapes defensively when using postgres-js
 
+
+## PR #18 - feat/8-define-content-validation-schema
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
