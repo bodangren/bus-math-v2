@@ -24,3 +24,5 @@ export * from './resources';
 export * from './profiles';
 export * from './student-progress';
 export * from './activity-submissions';
+export * from './classes';
+export * from './class-enrollments';
