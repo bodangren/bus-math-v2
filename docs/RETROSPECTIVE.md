@@ -53,8 +53,10 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 ## PR #42 - feat/24-task-1-prerequisites--drizzle-zod-schemas--vitest-setup
 
 ### Highlights
-- Auto-merge completed after local validation
+- Vitest + RTL harness plus schema validators unblock component migration work.
+- Mock factories give us fast, DB-shaped fixtures for future unit tests.
+- Auto-merge completed after local validation and change-integrator pass.
 
 ### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
-
+- Capture Supabase result shapes defensively when using postgres-js.
+- Keep brownfield symlinks (e.g., `bus-math-nextjs`) out of TS programs or builds explode.
