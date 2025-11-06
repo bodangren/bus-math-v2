@@ -202,11 +202,47 @@ dotenv.config({ path: '.env.local' });
 - [ ] [Actionable item 2]
 ```
 
-## PR #15 - feat/5-define-user--progress-schema
+## Issue #5: Define Core User & Progress Schema
 
-### Highlights
-- Auto-merge completed after local validation
+**Completed:** 2025-11-06
+**Epic:** #2 - Database Schema and ORM Architecture
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+### Key Learnings
 
+#### 1. Profiles Need Explicit Role Mapping
+
+**Problem:** Supabase Auth roles were only implied inside JWT claims.
+
+**Root Cause:** We lacked an application-facing table to capture role metadata, making joins with content tables awkward.
+
+**Solution:** Introduced a `profiles` table keyed to auth user IDs plus a `profile_role` enum, along with JSONB metadata for per-school preferences.
+
+**For Future Issues:** Keep Supabase role mappings in sync when new roles are introduced and expose them through the profiles schema.
+
+#### 2. Progress Tracking Requires Composite Uniqueness
+
+**Problem:** Duplicate progress rows arose when mapping students to phases in early drafts.
+
+**Root Cause:** Without a composite unique constraint, retries could insert multiple records for the same user/phase pair.
+
+**Solution:** Added a unique index on `(user_id, phase_id)` at the schema layer so Drizzle and Supabase align on the invariant.
+
+**For Future Issues:** Enforce similar uniqueness patterns when modeling per-entity progress or analytics joins.
+
+### What Went Well
+
+- Shared enums between Drizzle and Supabase ensure consistent status transitions.
+- Zod validators shape JSONB columns before persistence, preventing malformed activity submissions.
+
+### What Could Be Improved
+
+- Need to wire the new role enum into auth trigger functions so Supabase JWT reflects profile role changes automatically.
+- Should add tests covering duplicate progress insertion to verify the unique index at runtime.
+
+### Action Items for Next Issues
+
+- [ ] Generate Supabase migrations for `profiles`, `student_progress`, and `activity_submissions`.
+- [ ] Create service helpers that map Supabase auth payloads into `profiles` rows during sign-up.
+- [ ] Add integration tests that exercise the unique constraint and JSONB validation.
+
+---
