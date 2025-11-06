@@ -201,3 +201,12 @@ dotenv.config({ path: '.env.local' });
 - [ ] [Actionable item 1]
 - [ ] [Actionable item 2]
 ```
+
+## PR #15 - feat/5-define-user--progress-schema
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
