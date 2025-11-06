@@ -72,3 +72,12 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Progress UI needs both `Phase` metadata and `student_progress` rows; provide helper functions instead of ad-hoc context for easier testing.
 - Prefer lightweight primitives over porting every shadcn helper—custom sheet/sidebar knockoffs avoided extra dependencies while meeting UX goals.
 - Remember to append retrospective updates as part of change-integrator flow so specs/tests + learnings travel together.
+
+## PR #43 - feat/25-task-2-layout--navigation-components-5-components
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
