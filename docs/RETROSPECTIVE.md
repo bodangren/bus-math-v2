@@ -273,3 +273,12 @@ dotenv.config({ path: '.env.local' });
 ### Lessons
 - Capture Supabase result shapes defensively when using postgres-js
 
+
+## PR #19 - feat/9-generate-and-apply-initial-migration
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
