@@ -49,3 +49,12 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 ## Indexing (Issue #12)
 - Added b-tree and GIN indexes to protect analytics performance.
 - Action: Monitor Supabase query plans with production data and refine as needed.
+
+## PR #42 - feat/24-task-1-prerequisites--drizzle-zod-schemas--vitest-setup
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
