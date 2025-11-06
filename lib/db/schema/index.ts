@@ -26,3 +26,6 @@ export * from './student-progress';
 export * from './activity-submissions';
 export * from './classes';
 export * from './class-enrollments';
+export * from './live-sessions';
+export * from './live-responses';
+export * from './session-leaderboard';
