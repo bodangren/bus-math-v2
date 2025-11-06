@@ -282,3 +282,12 @@ dotenv.config({ path: '.env.local' });
 ### Lessons
 - Capture Supabase result shapes defensively when using postgres-js
 
+
+## PR #20 - feat/10-implement-row-level-security-policies
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
