@@ -247,65 +247,192 @@ dotenv.config({ path: '.env.local' });
 
 ---
 
-## PR #16 - feat/6-define-organization-schema
+## Issue #6: Define Organization Schema
 
-### Highlights
-- Auto-merge completed after local validation
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+### Key Learnings
 
+#### 1. Teacher Ownership Drives Cascades
 
-## PR #17 - feat/7-define-real-time-schema
+**Problem:** Early drafts left `teacher_id` without cascade rules, risking orphaned classes when profiles were removed.
 
-### Highlights
-- Auto-merge completed after local validation
+**Solution:** Added `onDelete: 'cascade'` references and mirrored them in migrations so Supabase cleans up dependent rows automatically.
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+#### 2. Enrollment Status Needs Enumerated Guardrails
 
+**Problem:** Text status fields allowed invalid values (e.g., "inactive"), complicating analytics.
 
-## PR #18 - feat/8-define-content-validation-schema
+**Solution:** Introduced an `enrollment_status` enum shared between Drizzle and Supabase, keeping progress dashboards consistent.
 
-### Highlights
-- Auto-merge completed after local validation
+### What Went Well
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+- Single source of truth for teacher-owned classes.  
+- Composite uniqueness prevented duplicate enrollments.
 
+### What Could Be Improved
 
-## PR #19 - feat/9-generate-and-apply-initial-migration
+- Need seeding utilities to populate demo classes for local QA.
 
-### Highlights
-- Auto-merge completed after local validation
+### Action Items
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+- [ ] Write Supabase seed script that creates sample classes/enrollments.
 
+---
 
-## PR #20 - feat/10-implement-row-level-security-policies
+## Issue #7: Define Real-Time Schema
 
-### Highlights
-- Auto-merge completed after local validation
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+### Key Learnings
 
+#### 1. JSONB Response Shapes Benefit From Zod Maps
 
-## PR #21 - feat/11-create-validation-utilities
+**Problem:** Live responses needed flexible answer payloads but TypeScript complained about loose `any` usage.
 
-### Highlights
-- Auto-merge completed after local validation
+**Solution:** Modeled answers with `z.record(z.string(), z.unknown())`, preserving flexibility while keeping runtime validation.
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+#### 2. Session Lifecycle Tracking Requires Explicit Status Enum
 
+**Problem:** Without a status enum, downstream code could not distinguish lobby vs. live vs. finished sessions.
 
-## PR #22 - feat/12-create-database-indexes
+**Solution:** Added `live_session_status` enum impacting both Drizzle and migrations.
 
-### Highlights
-- Auto-merge completed after local validation
+### What Went Well
 
-### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
+- Clear separation between session settings and leaderboard aggregates.
 
+### What Could Be Improved
+
+- Still need worker or triggers to keep leaderboard totals in sync.
+
+### Action Items
+
+- [ ] Design refresh workflow for `session_leaderboard` (trigger or materialized view).
+
+---
+
+## Issue #8: Define Content Validation Schema
+
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
+
+### Key Learnings
+
+#### 1. Revision Workflow Needs Typed Error Payloads
+
+**Problem:** Prior drafts stored validation errors as loose JSON, making UI rendering brittle.
+
+**Solution:** Created shared `validationErrorSchema` and reused it in Drizzle + Supabase migrations.
+
+#### 2. Reviewer Audits Require Nullable References
+
+**Problem:** `reviewed_by` initially enforced cascade deletes which would wipe audit history when teachers left.
+
+**Solution:** Switched to `onDelete: 'set null'` so history persists.
+
+### Action Items
+
+- [ ] Define role-based policies specific to revision triage workflows.
+
+---
+
+## Issue #9: Generate and Apply Initial Migration
+
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
+
+### Key Learnings
+
+#### 1. Manual SQL Needed To Mirror Drizzle Schema
+
+**Problem:** Lacked automated migration generation; risked drift between ORM and database.
+
+**Solution:** Authored canonical `initial_schema.sql` covering enums, tables, and constraints.
+
+#### 2. Auth References Must Target `auth.users`
+
+**Problem:** Forgetting to reference Supabase auth users would break foreign key constraints.
+
+**Solution:** Explicitly tied `profiles.id` to `auth.users`, matching RLS expectations.
+
+### Action Items
+
+- [ ] Automate `drizzle-kit generate` to keep future migrations code-driven.
+
+---
+
+## Issue #10: Implement Row-Level Security Policies
+
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
+
+### Key Learnings
+
+#### 1. Enable RLS Before Policies
+
+**Problem:** Policies were added without enabling RLS, causing Supabase to ignore restrictions.
+
+**Solution:** Migration now enables RLS on each table prior to policy creation.
+
+#### 2. Teacher Access Requires Cross-Table Checks
+
+**Problem:** Teachers needed to manage enrollments only for their classes.
+
+**Solution:** Added `EXISTS` subqueries linking back to `classes.teacher_id`.
+
+### Action Items
+
+- [ ] Write integration tests that exercise each policy using Supabase clients.
+
+---
+
+## Issue #11: Create Validation Utilities
+
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
+
+### Key Learnings
+
+#### 1. Normalizing Zod Errors Improves DX
+
+**Problem:** Raw Zod issues lacked field context for UI consumers.
+
+**Solution:** Built `formatZodIssues` helper mapping to path/message pairs and tailored indexes for content blocks.
+
+#### 2. Unknown Activity Keys Must Fail Fast
+
+**Problem:** Silent acceptance of unknown activity components created runtime errors later.
+
+**Solution:** Validator now returns explicit unknown component errors before saving.
+
+### Action Items
+
+- [ ] Wire validation utilities into seed and editorial workflows.
+
+---
+
+## Issue #12: Create Database Indexes
+
+**Completed:** 2025-11-06  
+**Epic:** #2 - Database Schema and ORM Architecture
+
+### Key Learnings
+
+#### 1. Early Indexes Avoid Query Planning Surprises
+
+**Problem:** Without indexes, analytics queries (e.g., progress per user) scanned entire tables.
+
+**Solution:** Added b-tree indexes for common joins plus GIN indexes for JSONB fields.
+
+#### 2. Naming Conventions Matter
+
+**Problem:** Drizzle and Supabase generate different index names by default.
+
+**Solution:** Established explicit `idx_*` names so migrations remain idempotent.
+
+### Action Items
+
+- [ ] Monitor Supabase query plans once real data lands and adjust indexes as needed.
