@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 6 (Inventory & Project Costing Intelligence)
+---
+title: Unit 6 Lesson Planning Matrix - Inventory & Project Costing Intelligence
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-6, inventory, fifo, lifo, project-costing]
+---
 
 # Unit 6 – Lesson Planning Matrix (Inventory & Project Costing Intelligence)
 

@@ -1,3 +1,12 @@
+---
+title: Unit 1 Lesson Planning Matrix - Balance by Design
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-1, balance-sheet, accounting-equation]
+---
+
 # Unit 1 – Lesson Planning Matrix (Balance by Design)
 
 > Columns = **Lesson 1 → 11**. Rows = top-level focuses (objective, accounting, Excel, formative product) followed by instructional **phases**. Project days (L8–L10) collapse to Group Work + Checkpoint; Test day (L11) collapses to Individual Work only.

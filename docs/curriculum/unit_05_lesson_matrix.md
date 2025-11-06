@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 5 (Assets That Age)
+---
+title: Unit 5 Lesson Planning Matrix - Assets That Age
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-5, depreciation, fixed-assets]
+---
 
 # Unit 5 – Lesson Planning Matrix (Assets That Age)
 

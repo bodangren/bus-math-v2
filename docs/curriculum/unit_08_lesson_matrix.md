@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 8 (Integrated Model Sprint)
+---
+title: Unit 8 Lesson Planning Matrix - Integrated Model Sprint
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-8, integrated-model, cash-flow, dashboard]
+---
 
 # Unit 8 – Lesson Planning Matrix (Integrated Model Sprint)
 

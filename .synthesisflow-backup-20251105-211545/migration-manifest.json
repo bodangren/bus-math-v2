@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-11-05T21:15:44+08:00",
+  "total_files": 14,
+  "conflict_count": 0,
+  "in_place_count": 1,
+  "migrations": [
+    {"source": "./AGENTS.md", "target": "docs/AGENTS.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/accounting_excel_curriculum.md", "target": "docs/accounting_excel_curriculum.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_01_lesson_matrix.md", "target": "docs/unit_01_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_02_lesson_matrix.md", "target": "docs/unit_02_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_03_lesson_matrix.md", "target": "docs/unit_03_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_04_lesson_matrix.md", "target": "docs/unit_04_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_05_lesson_matrix.md", "target": "docs/unit_05_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_06_lesson_matrix.md", "target": "docs/unit_06_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_07_lesson_matrix.md", "target": "docs/unit_07_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/curriculum/unit_08_lesson_matrix.md", "target": "docs/unit_08_lesson_matrix.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/prds/math-for-business-operations-platform/prd.md", "target": "docs/prd.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/prds/math-for-business-operations-platform/product-brief.md", "target": "docs/product-brief.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "docs/prds/math-for-business-operations-platform/research.md", "target": "docs/research.md", "type": "doc", "category": "doc", "rationale": "General documentation → docs/", "conflict": "false"},
+    {"source": "./README.md", "target": "./README.md", "type": "readme", "category": "preserve", "rationale": "Already in correct location (no move needed)", "conflict": "in_place"}
+  ]
+}

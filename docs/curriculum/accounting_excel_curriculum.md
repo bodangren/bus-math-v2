@@ -1,4 +1,11 @@
-% Update: corrected internal inconsistencies, expanded Unit 6 to include inventory and project costing, refined terminology and Excel strands
+---
+title: Accounting + Excel Curriculum Overview
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, overview, accounting, excel]
+---
 
 # Accounting + Excel Curriculum Overview (High-Level)
 

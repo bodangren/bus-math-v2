@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 7 (Financing the Future)
+---
+title: Unit 7 Lesson Planning Matrix - Financing the Future
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-7, financing, loans, amortization]
+---
 
 # Unit 7 – Lesson Planning Matrix (Financing the Future)
 

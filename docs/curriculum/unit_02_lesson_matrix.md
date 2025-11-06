@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 2 (Flow of Transactions)
+---
+title: Unit 2 Lesson Planning Matrix - Flow of Transactions
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-2, debits-credits, t-accounts, income-statement]
+---
 
 # Unit 2 – Lesson Planning Matrix (Flow of Transactions)
 

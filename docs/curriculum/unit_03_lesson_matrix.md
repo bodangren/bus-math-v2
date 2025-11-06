@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 3 (Statements in Balance)
+---
+title: Unit 3 Lesson Planning Matrix - Statements in Balance
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-3, income-statement, balance-sheet, closing-entries]
+---
 
 # Unit 3 – Lesson Planning Matrix (Statements in Balance)
 

@@ -1,4 +1,11 @@
-% Update: created full lesson planning matrix for Unit 4 (Payroll in Motion)
+---
+title: Unit 4 Lesson Planning Matrix - Payroll in Motion
+type: curriculum
+status: active
+created: 2025-11-05
+updated: 2025-11-05
+tags: [curriculum, unit-4, payroll, taxes, compliance]
+---
 
 # Unit 4 – Lesson Planning Matrix (Payroll in Motion)
 
