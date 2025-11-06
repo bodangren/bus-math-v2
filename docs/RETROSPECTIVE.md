@@ -121,6 +121,51 @@ dotenv.config({ path: '.env.local' });
 
 ---
 
+## Issue #4: Define Core Content Schema
+
+**Completed:** 2025-11-06
+**Epic:** #2 - Database Schema and ORM Architecture
+
+### Key Learnings
+
+#### 1. JSONB Shapes Need Companion Validators
+
+**Problem:** Schema inserts lacked runtime guards for nested content structures.
+
+**Root Cause:** Initial Drizzle table definitions did not include Zod schemas for JSONB columns, leaving activity props and content blocks weakly typed.
+
+**Solution:** Paired each JSONB column with explicit Zod discriminated unions and component-specific prop schemas so validation can run before persistence.
+
+**For Future Issues:** Introduce validator updates alongside any schema that stores structured JSON and keep them exported from the schema index for reuse.
+
+#### 2. postgres-js Results Require Defensive Narrowing
+
+**Problem:** TypeScript flagged access to `result.rows` after running connection smoke tests.
+
+**Root Cause:** `postgres-js` returns bare arrays, but other drivers may wrap results in `{ rows: [] }`, leading to unsafe property access.
+
+**Solution:** Normalize results to an array of records before selecting the first row and guard against missing fields.
+
+**For Future Issues:** Normalize driver outputs with lightweight helpers and prefer explicit runtime checks when consuming raw query results.
+
+### What Went Well
+
+- Layered schemas kept lesson/phase/activity relationships coherent.
+- `npm run build` provided confidence that TypeScript and Next.js compile cleanly post-change.
+
+### What Could Be Improved
+
+- Change-integrator script still needs richer context prompts for retrospective entries.
+- Need Supabase migrations to stay in lockstep with Drizzle models to avoid drift.
+
+### Action Items for Next Issues
+
+- [ ] Generate Supabase SQL migrations and seeds for the new tables.
+- [ ] Add integration tests validating JSONB schema parsing before writes.
+- [ ] Upgrade change-integrator skill to detect existing retrospective format.
+
+---
+
 ## Template for Future Issue Retrospectives
 
 ```markdown

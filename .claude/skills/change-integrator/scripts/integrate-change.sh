@@ -50,7 +50,11 @@ git pull
 # 3. Delete merged branch
 echo "Deleting merged branch: $BRANCH_NAME..."
 git push origin --delete "$BRANCH_NAME" || echo "Remote branch $BRANCH_NAME may have already been deleted."
-git branch -D "$BRANCH_NAME"
+if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1; then
+    git branch -D "$BRANCH_NAME"
+else
+    echo "Local branch $BRANCH_NAME already deleted."
+fi
 
 # 4. Integrate Spec (if a change directory was provided)
 if [ -n "$CHANGE_DIR" ] && [ -d "$CHANGE_DIR" ]; then
@@ -66,16 +70,25 @@ else
 fi
 
 # 5. Update Project Board
-echo "Updating project board for item $ITEM_ID..."
-gh project item-edit --project-id "$PROJECT_ID" --id "$ITEM_ID" --field-id "$FIELD_ID" --single-select-option-id "$DONE_OPTION_ID"
+if [ "$ITEM_ID" = "skip" ]; then
+    echo "Skipping project board update (ITEM_ID=skip)."
+else
+    echo "Updating project board for item $ITEM_ID..."
+    gh project item-edit --project-id "$PROJECT_ID" --id "$ITEM_ID" --field-id "$FIELD_ID" --single-select-option-id "$DONE_OPTION_ID"
+fi
 
 # 6. Update Retrospective
 echo "Updating retrospective..."
 # In a real implementation, this would be a more interactive process.
-RETRO_ENTRY="### #$PR_NUMBER - $BRANCH_NAME\n\n- **Went well:** The auto-merge workflow completed successfully.\n- **Lesson:** N/A\n"
-echo -e "\n$RETRO_ENTRY" >> RETROSPECTIVE.md
-git add RETROSPECTIVE.md
-git commit -m "docs: Add retrospective for PR #$PR_NUMBER"
+RETRO_FILE="docs/RETROSPECTIVE.md"
+RETRO_ENTRY="## PR #$PR_NUMBER - $BRANCH_NAME\n\n### Highlights\n- Auto-merge completed after local validation\n\n### Lessons\n- Capture Supabase result shapes defensively when using postgres-js\n"
+if [ -f "$RETRO_FILE" ]; then
+    echo -e "\n$RETRO_ENTRY" >> "$RETRO_FILE"
+else
+    echo "---\ntitle: Project Retrospective\ntype: retrospective\nstatus: active\ncreated: $(date +%Y-%m-%d)\nupdated: $(date +%Y-%m-%d)\n---\n\n# Project Retrospective\n$RETRO_ENTRY" > "$RETRO_FILE"
+fi
+git add "$RETRO_FILE"
+git commit -m "docs: update retrospective for PR #$PR_NUMBER"
 
 # 7. Push final changes
 echo "Pushing final integration commits..."
