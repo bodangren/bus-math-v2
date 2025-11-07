@@ -10,6 +10,111 @@ const matchingItemSchema = z.object({
   description: z.string().optional()
 });
 
+const accountCategorySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  emoji: z.string().optional(),
+  whyItMatters: z.string().optional()
+});
+
+const accountItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  categoryId: z.string(),
+  realWorldExample: z.string().optional(),
+  hint: z.string().optional()
+});
+
+const impactLevelSchema = z.enum(['low', 'medium', 'high']);
+
+const budgetCategorySchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  emoji: z.string().optional(),
+  color: z.string().optional(),
+  profitImpact: z.string().optional(),
+  strategyNote: z.string().optional()
+});
+
+const budgetExpenseSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string(),
+  categoryId: z.string(),
+  cafeContext: z.string().optional(),
+  amount: z.number().nonnegative(),
+  impact: impactLevelSchema.default('medium')
+});
+
+const percentageCategorySchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  emoji: z.string().optional(),
+  formula: z.string(),
+  applications: z.array(z.string()).optional()
+});
+
+const percentageScenarioSchema = z.object({
+  id: z.string(),
+  prompt: z.string(),
+  description: z.string(),
+  calculationTypeId: z.string(),
+  dataPoints: z.string(),
+  businessContext: z.string().optional(),
+  difficulty: z.enum(['easy', 'medium', 'hard']).default('medium'),
+  formula: z.string().optional()
+});
+
+const inventoryLotSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  purchaseDate: z.string(),
+  quantity: z.number().int().positive(),
+  unitCost: z.number().nonnegative(),
+  notes: z.string().optional()
+});
+
+const inventoryFlowModeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional(),
+  targetOrder: z.array(z.string()).min(1)
+});
+
+const inventoryScenarioSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  context: z.string().optional(),
+  salesQuantity: z.number().int().positive(),
+  lots: z.array(inventoryLotSchema).min(1),
+  flowModes: z.array(inventoryFlowModeSchema).min(1)
+});
+
+const ratioDefinitionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: z.string(),
+  description: z.string(),
+  businessMeaning: z.string().optional(),
+  goodRange: z.string().optional(),
+  whyItMatters: z.string().optional(),
+  formulaSummary: z.string()
+});
+
+const ratioFormulaZoneSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  formula: z.string(),
+  category: z.string(),
+  emoji: z.string().optional(),
+  expectedRatioId: z.string()
+});
+
 const blankSentenceSchema = z.object({
   id: z.string(),
   text: z.string(),
@@ -76,6 +181,43 @@ export const activityPropsSchemas = {
     showHints: z.boolean().default(false),
     shuffleItems: z.boolean().default(true)
   }),
+  'account-categorization': z.object({
+    title: z.string(),
+    description: z.string(),
+    categories: z.array(accountCategorySchema).min(1),
+    accounts: z.array(accountItemSchema).min(1),
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
+  'budget-category-sort': z.object({
+    title: z.string(),
+    description: z.string(),
+    categories: z.array(budgetCategorySchema).min(1),
+    expenses: z.array(budgetExpenseSchema).min(1),
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
+  'percentage-calculation-sorting': z.object({
+    title: z.string(),
+    description: z.string(),
+    calculationTypes: z.array(percentageCategorySchema).min(1),
+    scenarios: z.array(percentageScenarioSchema).min(1),
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
+  'inventory-flow-diagram': z.object({
+    title: z.string(),
+    description: z.string(),
+    scenarios: z.array(inventoryScenarioSchema).min(1)
+  }),
+  'ratio-matching': z.object({
+    title: z.string(),
+    description: z.string(),
+    ratios: z.array(ratioDefinitionSchema).min(1),
+    formulaZones: z.array(ratioFormulaZoneSchema).min(1),
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
   'fill-in-the-blank': z.object({
     title: z.string(),
     description: z.string(),
@@ -124,6 +266,11 @@ export type ActivityProps = {
 
 export type ComprehensionQuizActivityProps = z.infer<typeof activityPropsSchemas['comprehension-quiz']>;
 export type DragAndDropActivityProps = z.infer<typeof activityPropsSchemas['drag-and-drop']>;
+export type AccountCategorizationActivityProps = z.infer<typeof activityPropsSchemas['account-categorization']>;
+export type BudgetCategorySortActivityProps = z.infer<typeof activityPropsSchemas['budget-category-sort']>;
+export type PercentageCalculationSortingActivityProps = z.infer<typeof activityPropsSchemas['percentage-calculation-sorting']>;
+export type InventoryFlowDiagramActivityProps = z.infer<typeof activityPropsSchemas['inventory-flow-diagram']>;
+export type RatioMatchingActivityProps = z.infer<typeof activityPropsSchemas['ratio-matching']>;
 export type FillInTheBlankActivityProps = z.infer<typeof activityPropsSchemas['fill-in-the-blank']>;
 export type JournalEntryActivityProps = z.infer<typeof activityPropsSchemas['journal-entry-building']>;
 export type ReflectionJournalActivityProps = z.infer<typeof activityPropsSchemas['reflection-journal']>;
