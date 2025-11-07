@@ -54,6 +54,10 @@ import {
   type SessionLeaderboardEntry,
   type StudentProgress
 } from '@/lib/db/schema/validators';
+import {
+  unitContentSchema,
+  type UnitContent
+} from '@/lib/db/schema/lessons';
 
 const now = () => new Date();
 
@@ -121,6 +125,130 @@ export function createPhase(overrides: Partial<Phase> = {}): Phase {
     updatedAt: overrides.updatedAt ?? now()
   };
   return selectPhaseSchema.parse(payload);
+}
+
+export function buildUnitContent(overrides: Partial<UnitContent> = {}): UnitContent {
+  const hasOverride = <K extends keyof UnitContent>(key: K) =>
+    Object.prototype.hasOwnProperty.call(overrides, key);
+
+  const payload: UnitContent = {
+    drivingQuestion: {
+      question: 'How can we build a reliable financial model?',
+      context: 'Teams use TechStart data to design a classroom-ready playbook.',
+      scenario: "Serve as Sarah Chen's student analyst team.",
+      ...(overrides.drivingQuestion ?? {})
+    },
+    objectives: {
+      content: ['Explain the accounting equation'],
+      skills: ['Create SUMIF based ledgers'],
+      deliverables: ['Investor-ready ledger workbook'],
+      ...(overrides.objectives ?? {})
+    },
+    assessment: {
+      performanceTask: {
+        title: 'Investor Pitch',
+        description: 'Present the completed workbook to the TechStart board.',
+        requirements: ['4-minute presentation', 'Live Excel demonstration'],
+        context: 'Students mirror real diligence conversations',
+        ...(overrides.assessment?.performanceTask ?? {})
+      },
+      milestones: overrides.assessment?.milestones ?? [
+        {
+          id: 'milestone-1',
+          day: 3,
+          title: 'Prototype ledger',
+          description: 'Record first 10 transactions',
+          criteria: ['Debits equal credits', 'Transactions categorized']
+        }
+      ],
+      rubric: overrides.assessment?.rubric ?? [
+        {
+          name: 'Accuracy',
+          weight: '40%',
+          exemplary: 'Flawless records, zero balancing errors',
+          proficient: 'Minor calculation errors',
+          developing: 'Frequent calculation errors'
+        }
+      ]
+    },
+    learningSequence: overrides.learningSequence ?? {
+      weeks: [
+        {
+          weekNumber: 1,
+          title: 'Ledger Foundations',
+          description: 'Establish baseline knowledge',
+          days: [
+            {
+              day: 1,
+              focus: 'Launch + Story',
+              activities: ["Watch Sarah's story"],
+              resources: ['Unit overview PDF'],
+              milestone: 'Understand project scope'
+            }
+          ]
+        }
+      ]
+    },
+    studentChoices: hasOverride('studentChoices')
+      ? overrides.studentChoices
+      : {
+        ventures: ['TechStart'],
+        roles: ['CFO'],
+        presentationFormats: ['Live demo']
+      },
+    prerequisites: overrides.prerequisites ?? {
+      knowledge: ['Accounting equation basics'],
+      technology: ['Chromebook with Excel'],
+      resources: [
+        {
+          title: 'Ledger template',
+          url: 'https://example.com/template',
+          type: 'download'
+        }
+      ]
+    },
+    differentiation: hasOverride('differentiation')
+      ? overrides.differentiation
+      : {
+        struggling: ['Provide annotated exemplars'],
+        advanced: ['Add an automation macro'],
+        ell: ['Pair with bilingual teammate']
+      },
+    introduction: hasOverride('introduction')
+      ? overrides.introduction
+      : {
+        unitNumber: 'Unit 1',
+        unitTitle: 'Smart Ledger Launch',
+        drivingQuestion: 'How can we build trustworthy books?',
+      introVideo: {
+        youtubeId: 'dQw4w9WgXcQ',
+        title: 'Unit Kickoff',
+        duration: '05:00',
+        description: 'Overview of the capstone challenge',
+        transcript: 'Welcome to the challenge...'
+      },
+      entryEvent: {
+        title: 'Entry Event',
+        description: 'Scenario briefing and initial tasks',
+        activities: ['Pitch analysis', 'Team formation'],
+        resources: ['Briefing deck']
+      },
+      projectOverview: {
+        scenario: 'Angel investor diligence',
+        teamStructure: 'Teams of 3',
+        deliverable: 'Demo-ready workbook',
+        timeline: '2 weeks'
+      },
+      learningObjectives: {
+        content: ['Balance sheets basics'],
+        skills: ['Excel tables'],
+        deliverables: ['Pitch deck outline']
+      },
+      nextSectionHref: '#core-concepts'
+    }
+  };
+
+  return unitContentSchema.parse(payload);
 }
 
 export function buildActivityInput(overrides: Partial<NewActivity> = {}): NewActivity {
