@@ -17,6 +17,11 @@ import { studentProgress } from './student-progress';
 
 const activityPropsSchema = z.union([
   activityPropsSchemas['comprehension-quiz'],
+  activityPropsSchemas['drag-and-drop'],
+  activityPropsSchemas['fill-in-the-blank'],
+  activityPropsSchemas['journal-entry-building'],
+  activityPropsSchemas['reflection-journal'],
+  activityPropsSchemas['peer-critique-form'],
   activityPropsSchemas['profit-calculator'],
   activityPropsSchemas['budget-worksheet']
 ]);

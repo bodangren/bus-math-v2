@@ -266,19 +266,103 @@ export function buildActivityInput(overrides: Partial<NewActivity> = {}): NewAct
   const componentKey = overrides.componentKey ?? 'comprehension-quiz';
   const derivedProps =
     overrides.props ??
-    (componentKey === 'budget-worksheet'
-      ? {
-          categories: ['Rent', 'Utilities'],
-          totalBudget: 1000
-        }
-      : componentKey === 'profit-calculator'
-        ? {
+    (() => {
+      switch (componentKey) {
+        case 'budget-worksheet':
+          return {
+            categories: ['Rent', 'Utilities'],
+            totalBudget: 1000
+          };
+        case 'profit-calculator':
+          return {
             initialRevenue: 100,
             initialExpenses: 60,
             allowNegative: false,
             currency: 'USD'
-          }
-        : { questions: defaultQuestions });
+          };
+        case 'drag-and-drop':
+          return {
+            title: 'Match Terms',
+            description: 'Pair each accounting term with its definition.',
+            showHints: false,
+            shuffleItems: false,
+            leftColumnTitle: 'Terms',
+            rightColumnTitle: 'Definitions',
+            items: [
+              { id: 'term-assets', content: 'Assets', matchId: 'def-assets' },
+              { id: 'def-assets', content: 'Resources owned', matchId: 'term-assets' },
+              { id: 'term-liabilities', content: 'Liabilities', matchId: 'def-liabilities' },
+              { id: 'def-liabilities', content: 'Amounts owed', matchId: 'term-liabilities' }
+            ]
+          };
+        case 'fill-in-the-blank':
+          return {
+            title: 'Complete Each Equation',
+            description: 'Fill in the missing accounting phrases.',
+            showWordList: true,
+            randomizeWordOrder: false,
+            showHints: false,
+            sentences: [
+              { id: 's1', text: 'Assets = {blank} + Equity', answer: 'Liabilities' },
+              { id: 's2', text: 'Revenue - Expenses = {blank}', answer: 'Net Income' }
+            ]
+          };
+        case 'journal-entry-building':
+          return {
+            title: 'Journal Practice',
+            description: 'Record the transaction with balanced debits and credits.',
+            availableAccounts: ['Cash', 'Service Revenue'],
+            showInstructionsDefaultOpen: false,
+            scenarios: [
+              {
+                id: 'scenario-1',
+                description: 'Received $500 cash for services provided.',
+                correctEntry: [
+                  { account: 'Cash', debit: 500, credit: 0 },
+                  { account: 'Service Revenue', debit: 0, credit: 500 }
+                ],
+                explanation: 'Cash increases with a debit and revenue increases with a credit.'
+              }
+            ]
+          };
+        case 'reflection-journal':
+          return {
+            unitTitle: 'Reflection',
+            prompts: [
+              {
+                id: 'prompt-1',
+                category: 'courage',
+                prompt: 'When did you step outside your comfort zone?',
+                placeholder: 'Describe the moment...'
+              }
+            ]
+          };
+        case 'peer-critique-form':
+          return {
+            projectTitle: 'Pitch Review',
+            peerName: 'Jordan',
+            unitNumber: 3,
+            categories: [
+              {
+                id: 'strengths',
+                title: 'Highlights',
+                description: 'What stood out?',
+                prompt: 'Share the strongest parts of their work.',
+                placeholder: 'Describe the clearest win...'
+              }
+            ],
+            overallPrompt: 'Overall impression'
+          };
+        default:
+          return {
+            title: 'Quick Knowledge Check',
+            description: 'Confirm students understand the concept.',
+            showExplanations: true,
+            allowRetry: true,
+            questions: defaultQuestions
+          };
+      }
+    })();
 
   const payload = {
     id: overrides.id ?? randomUUID(),
