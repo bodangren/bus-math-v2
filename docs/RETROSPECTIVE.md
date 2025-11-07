@@ -103,8 +103,11 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 ## PR #46 - feat/28-task-5-interactive-exercises--part-1-6-components
 
 ### Highlights
-- Auto-merge completed after local validation
+- Ported the six reusable exercise components (drag/drop, quiz, fill-in, journal, reflection, peer critique) into `components/exercises/` with Supabase-shaped props plus `onSubmit` hooks for activity submissions.
+- Extended `activityPropsSchemas`, validators, and mock factories so every exercise type (including new drag-drop + journaling schemas) validates end-to-end and can be generated in future tests.
+- Added comprehensive Vitest + RTL suites that simulate student flows (mocked DnD context, typed answers, ratings, etc.), keeping lint/test/build all green before shipping.
 
 ### Lessons
-- Capture Supabase result shapes defensively when using postgres-js
-
+- Drag/drop UI needs accessible fallbacks—adding select inputs for journal rows keeps tests deterministic and students on keyboards unblocked.
+- When stubbing complex libs like `@hello-pangea/dnd`, define typed mock helpers so ESLint/TS don’t regress while we drive interactions via Vitest.
+- `activityPropsSchemas` now drive a lot of surface area, so mock factories must default every required field; otherwise Next build fails before PR review.
