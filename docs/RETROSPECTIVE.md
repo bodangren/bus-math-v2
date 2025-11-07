@@ -135,3 +135,12 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Reusing the shared `useCategorizationExercise` hook for category-style exercises keeps drag/drop correctness logic centralized; even timeline-style boards only needed derived metrics layered on top.
 - Schema additions must land before components/tests so the Supabase-to-UI contract stays single-sourced; it also prevents `Activity` type unions from falling back to `any`.
 - Financial UI that surfaces running totals (break-even, trial balance) benefits from dedicated formatting helpers—wrapping everything in `Intl.NumberFormat` early kept tests deterministic and UI consistent.
+
+## PR #48 - feat/30-task-7-interactive-exercises--part-2b-4-drag-drop-exercises
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
