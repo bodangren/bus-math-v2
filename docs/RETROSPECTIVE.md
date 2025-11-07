@@ -3,7 +3,7 @@ title: Project Retrospective
 type: retrospective
 status: active
 created: 2025-11-05
-updated: 2025-11-07
+updated: 2025-11-06
 ---
 
 # Project Retrospective
@@ -74,3 +74,16 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Prefer lightweight primitives over porting every shadcn helper—custom sheet/sidebar knockoffs avoided extra dependencies while meeting UX goals.
 - Remember to append retrospective updates as part of change-integrator flow so specs/tests + learnings travel together.
 - Capture Supabase result shapes defensively when using postgres-js (applies across layout + data work).
+
+## PR #26 (Issue #26) - feat/26-task-3-student-lesson-components-6-components
+
+### Highlights
+- Migrated PhaseHeader/PhaseFooter, lesson overviews, and the Lesson01Phase1 template onto Supabase-backed `Lesson`/`Phase` types with breadcrumb + progress navigation intact.
+- Added a generic content-block renderer so JSONB-driven phases can output markdown, callouts, media, and future activities without bespoke JSX rewrites.
+- Filled the gap between v1 assumptions and current schema by creating Lesson/Phase test builders plus comprehensive Vitest suites for all six student components.
+- Lint/test/build automation now covers the new student surface area, keeping migration work green before wiring into actual routes.
+
+### Lessons
+- Lesson records currently lack `unit` metadata beyond `unitNumber`, so UI helpers should accept optional unit context until the schema expands.
+- Test data factories need to stay strictly typed—allowing `PartialDeep` for nested overrides required explicitly stripping Date/content fields to keep TS + Next build happy.
+- Resource-heavy components (e.g., callout images) should standardize on `next/image` early to avoid lint churn as more legacy JSX lands in v2.
