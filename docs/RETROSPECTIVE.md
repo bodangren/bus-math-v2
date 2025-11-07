@@ -122,3 +122,16 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 ### Lessons
 - DnD mocks must be registered before component imports; pulling in the mock helper at the top of each test file prevents real library hydration and keeps handlers controllable.
 - Categorization utilities should expose droppable IDs so both components and tests stay in sync—removing string literals avoided brittle assertions while porting multiple exercises.
+
+## PR #48 (Issue #30) - feat/30-task-7-interactive-exercises--part-2b-4-drag-drop-exercises
+
+### Highlights
+- Completed Category 5 by migrating the remaining drag/drop exercises (`BreakEvenComponents`, `CashFlowTimeline`, `FinancialStatementMatching`, `TrialBalanceSorting`) into `components/drag-drop-exercises/` with fully Supabase-driven props and submission hooks.
+- Extended `activityPropsSchemas`, `ActivityComponentKey`, and the validator union with four new Zod schemas so Drizzle types, runtime validation, and TypeScript all agree on the new activity payloads.
+- Added Vitest coverage for each component (mocking the DnD context) to prove scoring, submission payloads, and the new financial metrics/timeline math before wiring them into pages.
+- Ran lint, the full Vitest suite, and `next build` to keep the migration streak green and verify the heavier break-even/timeline math doesn’t regress builds.
+
+### Lessons
+- Reusing the shared `useCategorizationExercise` hook for category-style exercises keeps drag/drop correctness logic centralized; even timeline-style boards only needed derived metrics layered on top.
+- Schema additions must land before components/tests so the Supabase-to-UI contract stays single-sourced; it also prevents `Activity` type unions from falling back to `any`.
+- Financial UI that surfaces running totals (break-even, trial balance) benefits from dedicated formatting helpers—wrapping everything in `Intl.NumberFormat` early kept tests deterministic and UI consistent.
