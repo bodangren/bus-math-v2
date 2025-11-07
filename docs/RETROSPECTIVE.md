@@ -99,3 +99,12 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Unit metadata fields are only partially populated today, so components must short-circuit gracefully when optional sections like student choices or differentiation are absent.
 - Favor anchor-backed buttons instead of `window.open` to keep components server-compatible and avoid unnecessary `use client` directives.
 - Embedding introduction videos with no-JS fallbacks (iframe + `<details>` transcript) preserves accessibility while eliminating extra UI dependencies like the v1 `VideoPlayer`.
+
+## PR #46 - feat/28-task-5-interactive-exercises--part-1-6-components
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
