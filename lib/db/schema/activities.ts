@@ -155,6 +155,89 @@ const peerCritiqueCategorySchema = z.object({
   ratingLabel: z.string().optional()
 });
 
+const breakEvenCategorySchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  emoji: z.string().optional(),
+  color: z.string().optional(),
+  behavior: z.enum(['fixed', 'variable']),
+  whyItMatters: z.string().optional()
+});
+
+const breakEvenCostItemSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  amount: z.number().nonnegative(),
+  unit: z.string().default('per unit'),
+  categoryId: z.string(),
+  description: z.string().optional(),
+  realWorldExample: z.string().optional()
+});
+
+const salesAssumptionSchema = z.object({
+  pricePerUnit: z.number().positive(),
+  minPrice: z.number().positive().optional(),
+  maxPrice: z.number().positive().optional(),
+  step: z.number().positive().optional(),
+  unitLabel: z.string().default('units'),
+  targetUnits: z.number().int().positive().optional()
+});
+
+const cashFlowPeriodSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  order: z.number().int(),
+  description: z.string().optional(),
+  highlightThreshold: z.number().optional()
+});
+
+const cashFlowItemSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  amount: z.number(),
+  direction: z.enum(['inflow', 'outflow']),
+  periodId: z.string(),
+  category: z.string().optional(),
+  description: z.string().optional(),
+  hint: z.string().optional()
+});
+
+const financialStatementSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  focus: z.string().optional(),
+  icon: z.string().optional(),
+  howItHelps: z.string().optional()
+});
+
+const financialStatementItemSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string(),
+  statementId: z.string(),
+  category: z.string(),
+  hint: z.string().optional()
+});
+
+const trialBalanceSideSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  description: z.string(),
+  type: z.enum(['debit', 'credit']),
+  badgeLabel: z.string().optional()
+});
+
+const trialBalanceAccountSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  amount: z.number().nonnegative(),
+  sideId: z.string(),
+  category: z.string(),
+  context: z.string().optional()
+});
+
 export const activityPropsSchemas = {
   'comprehension-quiz': z.object({
     title: z.string().default('Comprehension Check'),
@@ -218,6 +301,40 @@ export const activityPropsSchemas = {
     showHintsByDefault: z.boolean().default(false),
     shuffleItems: z.boolean().default(true)
   }),
+  'break-even-components': z.object({
+    title: z.string(),
+    description: z.string(),
+    categories: z.array(breakEvenCategorySchema).min(1),
+    costItems: z.array(breakEvenCostItemSchema).min(1),
+    salesAssumptions: salesAssumptionSchema,
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
+  'cash-flow-timeline': z.object({
+    title: z.string(),
+    description: z.string(),
+    periods: z.array(cashFlowPeriodSchema).min(1),
+    cashFlowItems: z.array(cashFlowItemSchema).min(1),
+    startingCash: z.number().default(0),
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
+  'financial-statement-matching': z.object({
+    title: z.string(),
+    description: z.string(),
+    statements: z.array(financialStatementSchema).min(1),
+    lineItems: z.array(financialStatementItemSchema).min(1),
+    showHintsByDefault: z.boolean().default(false),
+    shuffleItems: z.boolean().default(true)
+  }),
+  'trial-balance-sorting': z.object({
+    title: z.string(),
+    description: z.string(),
+    sides: z.array(trialBalanceSideSchema).min(2),
+    accounts: z.array(trialBalanceAccountSchema).min(1),
+    showCategoryBadges: z.boolean().default(true),
+    shuffleItems: z.boolean().default(true)
+  }),
   'fill-in-the-blank': z.object({
     title: z.string(),
     description: z.string(),
@@ -271,6 +388,10 @@ export type BudgetCategorySortActivityProps = z.infer<typeof activityPropsSchema
 export type PercentageCalculationSortingActivityProps = z.infer<typeof activityPropsSchemas['percentage-calculation-sorting']>;
 export type InventoryFlowDiagramActivityProps = z.infer<typeof activityPropsSchemas['inventory-flow-diagram']>;
 export type RatioMatchingActivityProps = z.infer<typeof activityPropsSchemas['ratio-matching']>;
+export type BreakEvenComponentsActivityProps = z.infer<typeof activityPropsSchemas['break-even-components']>;
+export type CashFlowTimelineActivityProps = z.infer<typeof activityPropsSchemas['cash-flow-timeline']>;
+export type FinancialStatementMatchingActivityProps = z.infer<typeof activityPropsSchemas['financial-statement-matching']>;
+export type TrialBalanceSortingActivityProps = z.infer<typeof activityPropsSchemas['trial-balance-sorting']>;
 export type FillInTheBlankActivityProps = z.infer<typeof activityPropsSchemas['fill-in-the-blank']>;
 export type JournalEntryActivityProps = z.infer<typeof activityPropsSchemas['journal-entry-building']>;
 export type ReflectionJournalActivityProps = z.infer<typeof activityPropsSchemas['reflection-journal']>;
