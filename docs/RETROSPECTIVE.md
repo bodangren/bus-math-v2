@@ -111,3 +111,14 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Drag/drop UI needs accessible fallbacks—adding select inputs for journal rows keeps tests deterministic and students on keyboards unblocked.
 - When stubbing complex libs like `@hello-pangea/dnd`, define typed mock helpers so ESLint/TS don’t regress while we drive interactions via Vitest.
 - `activityPropsSchemas` now drive a lot of surface area, so mock factories must default every required field; otherwise Next build fails before PR review.
+
+## PR #47 (Issue #29) - feat/29-task-6-interactive-exercises--part-2a-5-drag-drop-exercises
+
+### Highlights
+- Introduced the curriculum-specific drag/drop exercises (`AccountCategorization`, `BudgetCategorySort`, `PercentageCalculationSorting`, `InventoryFlowDiagram`, `RatioMatching`) under `components/drag-drop-exercises/` so Unit 4–7 lessons can load database-driven props instead of hardcoded JSX.
+- Expanded `activityPropsSchemas`/`validators` with five new Supabase activity types plus a shared categorization hook, keeping exercise props strongly typed across Drizzle + runtime Zod validation.
+- Added a reusable Vitest mock for `@hello-pangea/dnd` and authored focused suites for each exercise, alongside lint/test/build runs, to prove drag-drop behavior and submission wiring end-to-end.
+
+### Lessons
+- DnD mocks must be registered before component imports; pulling in the mock helper at the top of each test file prevents real library hydration and keeps handlers controllable.
+- Categorization utilities should expose droppable IDs so both components and tests stay in sync—removing string literals avoided brittle assertions while porting multiple exercises.

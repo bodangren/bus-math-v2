@@ -18,6 +18,11 @@ import { studentProgress } from './student-progress';
 const activityPropsSchema = z.union([
   activityPropsSchemas['comprehension-quiz'],
   activityPropsSchemas['drag-and-drop'],
+  activityPropsSchemas['account-categorization'],
+  activityPropsSchemas['budget-category-sort'],
+  activityPropsSchemas['percentage-calculation-sorting'],
+  activityPropsSchemas['inventory-flow-diagram'],
+  activityPropsSchemas['ratio-matching'],
   activityPropsSchemas['fill-in-the-blank'],
   activityPropsSchemas['journal-entry-building'],
   activityPropsSchemas['reflection-journal'],
