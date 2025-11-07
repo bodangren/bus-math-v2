@@ -87,3 +87,15 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Lesson records currently lack `unit` metadata beyond `unitNumber`, so UI helpers should accept optional unit context until the schema expands.
 - Test data factories need to stay strictly typed—allowing `PartialDeep` for nested overrides required explicitly stripping Date/content fields to keep TS + Next build happy.
 - Resource-heavy components (e.g., callout images) should standardize on `next/image` early to avoid lint churn as more legacy JSX lands in v2.
+
+## PR #27 (Issue #27) - feat/27-task-4-unit-structure-components-9-components
+
+### Highlights
+- Extended `lessonMetadataSchema` with typed unit content (objectives, assessments, prerequisites, introductions) so Supabase JSON feeds every migrated component.
+- Ported the nine legacy unit components into `components/unit/` and rewired them to accept database-shaped props with comprehensive Vitest suites.
+- Added a `buildUnitContent` factory to keep test fixtures aligned with the new Zod schema, making it easy to simulate optional metadata permutations.
+
+### Lessons
+- Unit metadata fields are only partially populated today, so components must short-circuit gracefully when optional sections like student choices or differentiation are absent.
+- Favor anchor-backed buttons instead of `window.open` to keep components server-compatible and avoid unnecessary `use client` directives.
+- Embedding introduction videos with no-JS fallbacks (iframe + `<details>` transcript) preserves accessibility while eliminating extra UI dependencies like the v1 `VideoPlayer`.
