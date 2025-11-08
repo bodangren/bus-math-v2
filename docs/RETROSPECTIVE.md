@@ -3,7 +3,7 @@ title: Project Retrospective
 type: retrospective
 status: active
 created: 2025-11-05
-updated: 2025-11-06
+updated: 2025-11-08
 ---
 
 # Project Retrospective
@@ -160,3 +160,15 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Percentage/ratio assertions need deterministic fixtures—building explicit statement objects up front kept the Vitest snapshots stable while exercising currency/percentage math.
 - Toggleable detail sections should expose unique markers (e.g., “Total Adjustments”) so tests can target UI states without depending on dozens of repeated line items.
 - Apostrophes in financial copy (like Stockholders’ Equity) trigger the react/no-unescaped-entities rule; escaping them early avoids lint churn as more complex financial prose lands.
+
+## PR #51 (Issue #33) - feat/33-task-10-charts--visualizations-6-components
+
+### Highlights
+- Introduced `components/ui/chart.tsx` plus shared chart-series utilities so every migrated visualization consumes a single ChartConfig + Tailwind styling pipeline.
+- Migrated the six recharts-backed components (line, bar, pie, doughnut, break-even, dashboard) with fully data-driven props, ARIA labels, and Supabase-friendly formatting helpers.
+- Added Vitest suites for all charts (including the interactive break-even and dashboard flows) and polyfilled `ResizeObserver` to keep `ResponsiveContainer` deterministic; lint/test/build gates stay green alongside the new `recharts` dependency.
+
+### Lessons
+- Rendering recharts components inside Vitest requires a stable `ResizeObserver` mock and explicit container sizing—without that, `ResponsiveContainer` reports zero width and charts silently fail.
+- Encoding chart contracts as `ChartSeries`/`ChartSegment` types keeps lessons + activities in sync with UI expectations, and makes it trivial to swap in Supabase JSON without bespoke adapters.
+- Composing `FinancialDashboard` out of the shared chart primitives guarantees palette/ARIA consistency; whenever we need new dashboards, build them as orchestrations instead of net-new components.
