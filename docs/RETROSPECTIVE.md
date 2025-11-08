@@ -147,3 +147,16 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Complex ledger UIs benefit from centralized formatting + type helpers; without them each component would drift on badge colors and currency rounding.
 - Transaction builders need deterministic test data (no `Date.now()` in components) to keep the 30+ minute Vitest suite stable—inject fixtures instead of generating inside the render tree.
 - Trial balance grouping logic exposed column-count edge cases; deriving grid classes up front avoids brittle conditionals scattered across JSX.
+
+## PR #50 (Issue #32) - feat/32-task-9-financial-reports-6-components
+
+### Highlights
+- Ported the six financial report components (income statements, balance sheets, and cash flow statements) into `components/financial-reports/` so Supabase-fed lessons can render statements without touching legacy JSX.
+- Reworked every component to accept typed props only, dropping the v1 defaults and exporting TypeScript contracts so pages/tests share a single data shape.
+- Added focused Vitest + RTL suites that exercise profitability badges, ratio calculations, disclosure panels, and detail toggles to lock in the new data-driven behavior before wiring into routes.
+- Verified the migration with the full lint/test/build stack to ensure the sizable JSX import doesn’t regress the existing migration surface.
+
+### Lessons
+- Percentage/ratio assertions need deterministic fixtures—building explicit statement objects up front kept the Vitest snapshots stable while exercising currency/percentage math.
+- Toggleable detail sections should expose unique markers (e.g., “Total Adjustments”) so tests can target UI states without depending on dozens of repeated line items.
+- Apostrophes in financial copy (like Stockholders’ Equity) trigger the react/no-unescaped-entities rule; escaping them early avoids lint churn as more complex financial prose lands.
