@@ -135,3 +135,15 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Reusing the shared `useCategorizationExercise` hook for category-style exercises keeps drag/drop correctness logic centralized; even timeline-style boards only needed derived metrics layered on top.
 - Schema additions must land before components/tests so the Supabase-to-UI contract stays single-sourced; it also prevents `Activity` type unions from falling back to `any`.
 - Financial UI that surfaces running totals (break-even, trial balance) benefits from dedicated formatting helpers—wrapping everything in `Intl.NumberFormat` early kept tests deterministic and UI consistent.
+
+## PR #49 (Issue #31) - feat/31-task-8-accounting-visualizations-6-components
+
+### Highlights
+- Migrated all six accounting visualization components (simple/detailed T-accounts, multi-ledger view, journal entry display, transaction journal, and trial balance) into `components/accounting/` with Supabase-friendly props.
+- Introduced shared accounting contracts (`accounting-types.ts`) plus reusable formatting helpers so every component renders consistent badges, balances, and normal-side math.
+- Added Vitest suites for each component covering balance calculations, analytics summaries, and the accounting-equation badge to prove the Supabase-shaped payloads behave identically to v1.
+
+### Lessons
+- Complex ledger UIs benefit from centralized formatting + type helpers; without them each component would drift on badge colors and currency rounding.
+- Transaction builders need deterministic test data (no `Date.now()` in components) to keep the 30+ minute Vitest suite stable—inject fixtures instead of generating inside the render tree.
+- Trial balance grouping logic exposed column-count edge cases; deriving grid classes up front avoids brittle conditionals scattered across JSX.
