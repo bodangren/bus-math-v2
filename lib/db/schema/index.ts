@@ -22,6 +22,7 @@ export * from './phases';
 export * from './activities';
 export * from './resources';
 export * from './profiles';
+export { accessibilityPreferencesSchema } from './profiles';
 export * from './student-progress';
 export * from './activity-submissions';
 export * from './classes';
