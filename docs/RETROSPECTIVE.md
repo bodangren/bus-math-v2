@@ -184,3 +184,17 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Notification queues inside long-running simulations need truly unique IDs; relying on `Date.now()` alone produced duplicate React keys once multiple alerts fired inside the same tick.
 - Deeply nested simulation state wants explicit merge helpers—rehydrating from persisted progress without them left stale inventory/decision objects in place.
 - Escaping apostrophes/quotes early saves a surprising amount of lint churn once educational copy (e.g., “Today’s Weather” / “End Month”) migrates over from v1.
+
+## PR #53 (Issue #35) - feat/35-task-12-business-simulations--part-b-3-components
+
+### Highlights
+- Completed the business simulation migration by porting CashFlowChallenge, InventoryManager, and PitchPresentationBuilder into `components/business-simulations/` with full Supabase data integration.
+- Extended the activity schema with three new complex activity types (`cash-flow-challenge`, `inventory-manager`, `pitch-presentation-builder`) featuring nested game state, market events, and multi-section pitch builders.
+- Added comprehensive Vitest suites (48 new tests) covering strategic decision-making, inventory optimization algorithms, and pitch presentation workflows with timer/export functionality.
+- Maintained 100% feature parity with v1 while transforming components from static JSX to fully database-driven, state-persistent simulations.
+
+### Lessons
+- Complex game mechanics (line of credit calculations, demand simulation, pitch scoring) need deterministic test fixtures to keep the 3k+ line test suite stable across runs.
+- Activity schemas with deeply nested state benefit from explicit helper schemas (e.g., `CashFlowAction`, `InventoryProduct`, `PitchSection`) to keep validation readable and maintainable.
+- When migrating timer-based components, ensure `useInterval` cleanup is properly tested to prevent memory leaks in long-running simulations.
+- Database-driven simulations should expose clear `onStateChange` and `onSubmit` boundaries to keep lesson integration clean and state persistence predictable.
