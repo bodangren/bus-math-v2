@@ -91,3 +91,29 @@ A condensed summary of key learnings from the project.
 - All 48 tests passing with proper element assertions
 - TypeScript compilation successful with no errors
 - Zero linting issues after removing unused prop destructuring
+
+## Recent Integration: Accessibility & Support Components (#38) - 2025-11-10
+
+### Component Migration Learnings
+- **Schema-First Accessibility Preferences**: Extended profiles schema with typed accessibility preferences before migrating components
+- **Minimal, Focused Components**: Successfully migrated 3 small, well-defined components with clear single responsibilities
+- **Bilingual Support Architecture**: Established pattern for English/Chinese content with proper lang attributes
+- **Test Coverage**: Achieved comprehensive test coverage (34 tests) with focus on ARIA attributes and accessibility
+
+### Technical Implementation Notes
+- AccessibilityToolbar provides centralized UI for all user preferences (language, fontSize, highContrast, readingLevel, showVocabulary)
+- MultilingualSupport enables simple bilingual text rendering with proper semantic HTML
+- ReadingLevelAdjuster adapts content complexity using predefined translations and regex-based simplification
+- All components accept preferences via props, delegating persistence to parent components
+
+### Database Schema Integration
+- Added `accessibilityPreferencesSchema` to profiles.metadata with Zod validation
+- Defined typed preferences: language (en/zh), fontSize (small/medium/large), highContrast (boolean), readingLevel (basic/intermediate/advanced), showVocabulary (boolean)
+- Exported schema from lib/db/schema for use in components via AccessibilityPreferences type
+
+### Testing & Quality Assurance
+- All 34 tests passing across three components
+- Proper ARIA attributes tested (role, aria-label, aria-pressed)
+- Language switching and content adaptation verified
+- Fixed case-sensitivity issue in reading level simplification regex
+- Zero linting errors
