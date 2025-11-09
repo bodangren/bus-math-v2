@@ -32,7 +32,10 @@ const activityPropsSchema = z.union([
   activityPropsSchemas['reflection-journal'],
   activityPropsSchemas['peer-critique-form'],
   activityPropsSchemas['profit-calculator'],
-  activityPropsSchemas['budget-worksheet']
+  activityPropsSchemas['budget-worksheet'],
+  activityPropsSchemas['lemonade-stand'],
+  activityPropsSchemas['startup-journey'],
+  activityPropsSchemas['budget-balancer']
 ]);
 
 const jsonRecordSchema = z.record(z.string(), z.unknown());

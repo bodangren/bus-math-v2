@@ -172,3 +172,15 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Rendering recharts components inside Vitest requires a stable `ResizeObserver` mock and explicit container sizing—without that, `ResponsiveContainer` reports zero width and charts silently fail.
 - Encoding chart contracts as `ChartSeries`/`ChartSegment` types keeps lessons + activities in sync with UI expectations, and makes it trivial to swap in Supabase JSON without bespoke adapters.
 - Composing `FinancialDashboard` out of the shared chart primitives guarantees palette/ARIA consistency; whenever we need new dashboards, build them as orchestrations instead of net-new components.
+
+## PR #52 (Issue #34) - feat/34-task-11-business-simulations--part-a-3-components
+
+### Highlights
+- Landed the first trio of business simulations (LemonadeStand, StartupJourney, BudgetBalancer) under `components/business-simulations/` with fully data-driven configs, Supabase-friendly activity props, and persistence callbacks so lesson pages can save/restore state through `activity_submissions`.
+- Extended the activity schema/validator layer with `lemonade-stand`, `startup-journey`, and `budget-balancer` Zod contracts, keeping Supabase editors honest about supply costs, decision flows, and savings heuristics.
+- Added Vitest + RTL suites for all three simulations to assert config overrides, initial-state hydration, and `onStateChange` wiring before wiring them into routes, keeping lint/test/build green for these 2k+ lines of JSX.
+
+### Lessons
+- Notification queues inside long-running simulations need truly unique IDs; relying on `Date.now()` alone produced duplicate React keys once multiple alerts fired inside the same tick.
+- Deeply nested simulation state wants explicit merge helpers—rehydrating from persisted progress without them left stale inventory/decision objects in place.
+- Escaping apostrophes/quotes early saves a surprising amount of lint churn once educational copy (e.g., “Today’s Weather” / “End Month”) migrates over from v1.
