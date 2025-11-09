@@ -184,3 +184,12 @@ Focused summary of learnings from Epic #2 (issues #3–#12).
 - Notification queues inside long-running simulations need truly unique IDs; relying on `Date.now()` alone produced duplicate React keys once multiple alerts fired inside the same tick.
 - Deeply nested simulation state wants explicit merge helpers—rehydrating from persisted progress without them left stale inventory/decision objects in place.
 - Escaping apostrophes/quotes early saves a surprising amount of lint churn once educational copy (e.g., “Today’s Weather” / “End Month”) migrates over from v1.
+
+## PR #52 - feat/34-task-11-business-simulations--part-a-3-components
+
+### Highlights
+- Auto-merge completed after local validation
+
+### Lessons
+- Capture Supabase result shapes defensively when using postgres-js
+
