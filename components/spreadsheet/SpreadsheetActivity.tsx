@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import { SpreadsheetWrapper, type SpreadsheetData, getTemplateByKey } from "./index";
 import type { SpreadsheetActivityProps } from "@/lib/db/schema/activities";
 
-interface SpreadsheetActivityComponentProps extends SpreadsheetActivityProps {
+type SpreadsheetActivityComponentProps = Omit<SpreadsheetActivityProps, "initialData"> & {
   onSubmit?: (data: { spreadsheetData: SpreadsheetData }) => void;
   initialData?: SpreadsheetData;
-}
+};
 
 export const SpreadsheetActivity = ({
   title,
@@ -55,6 +55,7 @@ export const SpreadsheetActivity = ({
       
       newData.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
+          if (!cell) return;
           if (typeof cell.value === "string" && cell.value.startsWith("=")) {
             // Basic formula validation - in a real implementation, 
             // you'd want more sophisticated formula parsing

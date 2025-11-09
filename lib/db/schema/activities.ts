@@ -1133,6 +1133,7 @@ export type BudgetBalancerActivityProps = z.infer<typeof activityPropsSchemas['b
 export type CashFlowChallengeActivityProps = z.infer<typeof activityPropsSchemas['cash-flow-challenge']>;
 export type InventoryManagerActivityProps = z.infer<typeof activityPropsSchemas['inventory-manager']>;
 export type PitchPresentationBuilderActivityProps = z.infer<typeof activityPropsSchemas['pitch-presentation-builder']>;
+export type SpreadsheetActivityProps = z.infer<typeof activityPropsSchemas['spreadsheet']>;
 
 export const gradingConfigSchema = z.object({
   autoGrade: z.boolean().default(false),

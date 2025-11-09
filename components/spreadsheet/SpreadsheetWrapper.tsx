@@ -20,6 +20,8 @@ export interface SpreadsheetWrapperProps {
   onChange?: (data: SpreadsheetData) => void;
   readOnly?: boolean;
   className?: string;
+  showColumnLabels?: boolean;
+  showRowLabels?: boolean;
 }
 
 export const SpreadsheetWrapper = ({
@@ -33,6 +35,8 @@ export const SpreadsheetWrapper = ({
   onChange,
   readOnly = false,
   className = "",
+  showColumnLabels = true,
+  showRowLabels = true,
 }: SpreadsheetWrapperProps) => {
   const [data, setData] = useState<SpreadsheetData>(initialData);
 
@@ -43,15 +47,17 @@ export const SpreadsheetWrapper = ({
 
   // Generate standard Excel-like labels if not provided
   const finalColumnLabels = useMemo(() => {
+    if (!showColumnLabels) return [];
     if (columnLabels) return columnLabels;
     const maxCols = Math.max(...data.map(row => row.length), 10);
     return generateColumnLabels(maxCols);
-  }, [columnLabels, data]);
+  }, [columnLabels, data, showColumnLabels]);
 
   const finalRowLabels = useMemo(() => {
+    if (!showRowLabels) return [];
     if (rowLabels) return rowLabels;
     return generateRowLabels(Math.max(data.length, 10));
-  }, [rowLabels, data.length]);
+  }, [rowLabels, data.length, showRowLabels]);
 
   const handleChange = (newData: SpreadsheetData) => {
     if (!readOnly) {
