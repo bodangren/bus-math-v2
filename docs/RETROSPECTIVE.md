@@ -3,7 +3,7 @@ title: Project Retrospective
 type: retrospective
 status: active
 created: 2025-11-05
-updated: 2025-11-08
+updated: 2025-11-09
 ---
 
 # Project Retrospective
@@ -42,3 +42,27 @@ A condensed summary of key learnings from the project.
 
 ### Process
 - Append retrospective updates as part of the standard change-integration workflow.
+
+## Recent Integration: Spreadsheet Components (#36) - 2025-11-09
+
+### Component Migration Learnings
+- **react-spreadsheet Integration**: Successfully integrated with Next.js 15 using proper SSR patterns
+- **Template Architecture**: Created 6 educational templates aligned with curriculum units, demonstrating scalable template system
+- **Schema Extension**: Extended activities table with JSONB fields for spreadsheet data while maintaining type safety
+- **Test Coverage**: Achieved comprehensive test coverage (74 tests) including unit tests for helpers and component integration tests
+
+### Technical Implementation Notes
+- Spreadsheet components accept data via props following existing activity system patterns
+- Templates include unit-specific educational content (budgeting, cash flow, inventory management, etc.)
+- Proper error handling for malformed spreadsheet data with user-friendly fallbacks
+- Performance optimized with lazy loading for large spreadsheet datasets
+
+### Database Schema Updates
+- Added `spreadsheet_data` JSONB column to activities table with Zod validation
+- Extended activity type enum to include 'spreadsheet' activities
+- Maintained backward compatibility with existing activity types
+
+### Quality Assurance
+- All linting checks pass with no new warnings
+- Test suite runs in under 10 seconds with stable, deterministic fixtures
+- Components gracefully handle partial metadata and edge cases
