@@ -327,6 +327,155 @@ const budgetSavingsConfigSchema = z.object({
   emergencyMultiplier: z.number()
 });
 
+// Cash Flow Challenge schemas
+const cashFlowSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  amount: z.number(),
+  daysLeft: z.number().int().nonnegative(),
+  type: z.enum(['incoming', 'outgoing']),
+  canModify: z.boolean()
+});
+
+const cashFlowActionsUsedSchema = z.object({
+  requestPayment: z.number().int().nonnegative().default(0),
+  negotiateTerms: z.number().int().nonnegative().default(0),
+  lineOfCredit: z.number().int().nonnegative().default(0),
+  delayExpense: z.number().int().nonnegative().default(0)
+});
+
+const cashFlowInitialStateSchema = z.object({
+  cashPosition: z.number().default(25000),
+  day: z.number().int().positive().default(1),
+  maxDays: z.number().int().positive().default(30),
+  incomingFlows: z.array(cashFlowSchema).default([]),
+  outgoingFlows: z.array(cashFlowSchema).default([]),
+  lineOfCredit: z.number().nonnegative().default(0),
+  creditUsed: z.number().nonnegative().default(0),
+  creditInterestRate: z.number().min(0).max(1).default(0.05),
+  actionsUsed: cashFlowActionsUsedSchema.default({
+    requestPayment: 0,
+    negotiateTerms: 0,
+    lineOfCredit: 0,
+    delayExpense: 0
+  }),
+  gameStatus: z.enum(['playing', 'won', 'lost']).default('playing')
+});
+
+// Inventory Manager schemas
+const inventoryProductSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  icon: z.string(),
+  quantity: z.number().int().nonnegative().default(0),
+  cost: z.number().positive(),
+  price: z.number().positive(),
+  demand: z.enum(['high', 'medium', 'low']).default('medium'),
+  demandHistory: z.array(z.number().int().nonnegative()).default([0, 0, 0, 0, 0]),
+  totalSold: z.number().int().nonnegative().default(0),
+  totalOrdered: z.number().int().nonnegative().default(0)
+});
+
+// Market event schema (currently unused but kept for future use)
+// const inventoryMarketEventSchema = z.object({
+//   id: z.string(),
+//   type: z.enum(['demand_spike', 'demand_drop', 'price_change', 'storage_discount']),
+//   message: z.string(),
+//   productId: z.string().optional(),
+//   effect: z.record(z.string(), z.unknown()),
+//   duration: z.number().int().positive()
+// });
+
+const inventoryFinancialsSchema = z.object({
+  totalRevenue: z.number().nonnegative().default(0),
+  totalExpenses: z.number().nonnegative().default(0),
+  storageCost: z.number().nonnegative().default(0),
+  dailyStorageCost: z.number().nonnegative().default(50)
+});
+
+const inventoryInitialStateSchema = z.object({
+  cash: z.number().default(1000),
+  day: z.number().int().positive().default(1),
+  maxDays: z.number().int().positive().default(30),
+  products: z.array(inventoryProductSchema).min(1),
+  financials: inventoryFinancialsSchema.default({
+    totalRevenue: 0,
+    totalExpenses: 0,
+    storageCost: 0,
+    dailyStorageCost: 50
+  }),
+  profitTarget: z.number().nonnegative().default(2000),
+  gameStatus: z.enum(['playing', 'won', 'lost']).default('playing')
+});
+
+// Pitch Presentation Builder schemas
+const pitchContentSchema = z.object({
+  title: z.string().default(''),
+  content: z.string().default(''),
+  speakingNotes: z.string().default(''),
+  timeAllocation: z.number().int().positive(),
+  completeness: z.number().min(0).max(100).default(0)
+});
+
+const pitchBusinessModelSchema = z.object({
+  type: z.enum(['saas', 'ecommerce', 'fintech', 'healthtech', 'marketplace', 'ai-ml']).default('saas'),
+  name: z.string().default(''),
+  industry: z.string().default(''),
+  targetMarket: z.string().default(''),
+  revenueModel: z.string().default('')
+});
+
+const pitchFinancialProjectionsSchema = z.object({
+  year1Revenue: z.number().nonnegative().default(0),
+  year2Revenue: z.number().nonnegative().default(0),
+  year3Revenue: z.number().nonnegative().default(0),
+  initialInvestment: z.number().nonnegative().default(0),
+  useOfFunds: z.array(z.string()).default([]),
+  keyMetrics: z.record(z.string(), z.number()).default({})
+});
+
+const pitchSectionDefinitionSchema = z.object({
+  name: z.string(),
+  icon: z.string(),
+  timeTarget: z.number().int().positive(),
+  description: z.string(),
+  keyPoints: z.array(z.string())
+});
+
+const pitchInitialStateSchema = z.object({
+  businessModel: pitchBusinessModelSchema.default({
+    type: 'saas',
+    name: '',
+    industry: '',
+    targetMarket: '',
+    revenueModel: ''
+  }),
+  sections: z.object({
+    problem: pitchContentSchema.default({ title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 }),
+    solution: pitchContentSchema.default({ title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 }),
+    market: pitchContentSchema.default({ title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 }),
+    'business-model': pitchContentSchema.default({ title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 }),
+    financials: pitchContentSchema.default({ title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 }),
+    ask: pitchContentSchema.default({ title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 })
+  }).default({
+    problem: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+    solution: { title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 },
+    market: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+    'business-model': { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+    financials: { title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 },
+    ask: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 }
+  }),
+  financials: pitchFinancialProjectionsSchema.default({
+    year1Revenue: 0,
+    year2Revenue: 0,
+    year3Revenue: 0,
+    initialInvestment: 0,
+    useOfFunds: [],
+    keyMetrics: {}
+  }),
+  sectionDefinitions: z.record(z.string(), pitchSectionDefinitionSchema).default({})
+});
+
 const financialStatementSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -804,6 +953,113 @@ export const activityPropsSchemas = {
       financialHealth: 100
     })
   }),
+  'cash-flow-challenge': z.object({
+    title: z.string().default('Cash Flow Challenge'),
+    description: z.string().default('Manage business cash flow for 30 days. Balance incoming and outgoing payments to stay solvent!'),
+    incomingFlows: z.array(cashFlowSchema).default([
+      { id: 'incoming-0', description: 'Customer Payment A', amount: 15000, daysLeft: 5, type: 'incoming', canModify: true },
+      { id: 'incoming-1', description: 'Customer Payment B', amount: 20000, daysLeft: 12, type: 'incoming', canModify: true },
+      { id: 'incoming-2', description: 'Invoice Collection', amount: 10000, daysLeft: 25, type: 'incoming', canModify: true }
+    ]),
+    outgoingFlows: z.array(cashFlowSchema).default([
+      { id: 'outgoing-0', description: 'Supplier Payment', amount: 12000, daysLeft: 3, type: 'outgoing', canModify: true },
+      { id: 'outgoing-1', description: 'Payroll', amount: 18000, daysLeft: 15, type: 'outgoing', canModify: false },
+      { id: 'outgoing-2', description: 'Rent Payment', amount: 8000, daysLeft: 30, type: 'outgoing', canModify: true }
+    ]),
+    initialState: cashFlowInitialStateSchema.default({
+      cashPosition: 25000,
+      day: 1,
+      maxDays: 30,
+      incomingFlows: [],
+      outgoingFlows: [],
+      lineOfCredit: 0,
+      creditUsed: 0,
+      creditInterestRate: 0.05,
+      actionsUsed: { requestPayment: 0, negotiateTerms: 0, lineOfCredit: 0, delayExpense: 0 },
+      gameStatus: 'playing'
+    })
+  }),
+  'inventory-manager': z.object({
+    title: z.string().default('Inventory Manager'),
+    description: z.string().default('Manage retail inventory for 30 days. Balance stock levels, demand, and profitability!'),
+    products: z.array(inventoryProductSchema).default([
+      {
+        id: 'product-0',
+        name: 'Laptops',
+        icon: 'laptop',
+        quantity: 0,
+        cost: 800,
+        price: 1200,
+        demand: 'medium',
+        demandHistory: [0, 0, 0, 0, 0],
+        totalSold: 0,
+        totalOrdered: 0
+      },
+      {
+        id: 'product-1',
+        name: 'Phones',
+        icon: 'smartphone',
+        quantity: 0,
+        cost: 400,
+        price: 600,
+        demand: 'high',
+        demandHistory: [0, 0, 0, 0, 0],
+        totalSold: 0,
+        totalOrdered: 0
+      },
+      {
+        id: 'product-2',
+        name: 'Tablets',
+        icon: 'tablet',
+        quantity: 0,
+        cost: 300,
+        price: 450,
+        demand: 'low',
+        demandHistory: [0, 0, 0, 0, 0],
+        totalSold: 0,
+        totalOrdered: 0
+      }
+    ]),
+    initialState: inventoryInitialStateSchema.default({
+      cash: 1000,
+      day: 1,
+      maxDays: 30,
+      products: [],
+      financials: {
+        totalRevenue: 0,
+        totalExpenses: 0,
+        storageCost: 0,
+        dailyStorageCost: 50
+      },
+      profitTarget: 2000,
+      gameStatus: 'playing'
+    })
+  }),
+  'pitch-presentation-builder': z.object({
+    title: z.string().default('Investor Pitch Builder'),
+    description: z.string().default('Build a compelling 4-minute investor pitch for your startup business model'),
+    sectionDefinitions: z.record(z.string(), pitchSectionDefinitionSchema).default({
+      problem: { name: 'Problem', icon: 'alert-circle', timeTarget: 45, description: 'Define the market pain point and opportunity', keyPoints: ['Pain point identification', 'Market size opportunity', 'Current solutions shortfall', 'Urgency and timing'] },
+      solution: { name: 'Solution', icon: 'lightbulb', timeTarget: 60, description: 'Present your unique value proposition', keyPoints: ['Product overview', 'Unique differentiation', 'Competitive advantage', 'Demo or prototype'] },
+      market: { name: 'Market', icon: 'bar-chart-3', timeTarget: 45, description: 'Analyze target audience and competition', keyPoints: ['Target customer profile', 'TAM/SAM/SOM analysis', 'Competitive landscape', 'Go-to-market strategy'] },
+      'business-model': { name: 'Business Model', icon: 'pie-chart', timeTarget: 45, description: 'Explain how you make money', keyPoints: ['Revenue streams', 'Pricing strategy', 'Unit economics', 'Scalability factors'] },
+      financials: { name: 'Financials', icon: 'chart-line', timeTarget: 60, description: 'Show growth projections and metrics', keyPoints: ['3-year revenue projections', 'Key performance metrics', 'Break-even analysis', 'Market traction'] },
+      ask: { name: 'The Ask', icon: 'dollar-sign', timeTarget: 45, description: 'Investment request and terms', keyPoints: ['Funding amount needed', 'Use of funds breakdown', 'Expected returns/timeline', 'Next milestones'] }
+    }),
+    initialState: pitchInitialStateSchema.default({
+      businessModel: { type: 'saas', name: '', industry: '', targetMarket: '', revenueModel: '' },
+      sections: {
+        problem: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+        solution: { title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 },
+        market: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+        'business-model': { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+        financials: { title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 },
+        ask: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 }
+      },
+      financials: { year1Revenue: 0, year2Revenue: 0, year3Revenue: 0, initialInvestment: 0, useOfFunds: [], keyMetrics: {} },
+      sectionDefinitions: {}
+    })
+  }),
 } as const;
 
 export type ActivityComponentKey = keyof typeof activityPropsSchemas;
@@ -830,6 +1086,9 @@ export type PeerCritiqueActivityProps = z.infer<typeof activityPropsSchemas['pee
 export type LemonadeStandActivityProps = z.infer<typeof activityPropsSchemas['lemonade-stand']>;
 export type StartupJourneyActivityProps = z.infer<typeof activityPropsSchemas['startup-journey']>;
 export type BudgetBalancerActivityProps = z.infer<typeof activityPropsSchemas['budget-balancer']>;
+export type CashFlowChallengeActivityProps = z.infer<typeof activityPropsSchemas['cash-flow-challenge']>;
+export type InventoryManagerActivityProps = z.infer<typeof activityPropsSchemas['inventory-manager']>;
+export type PitchPresentationBuilderActivityProps = z.infer<typeof activityPropsSchemas['pitch-presentation-builder']>;
 
 export const gradingConfigSchema = z.object({
   autoGrade: z.boolean().default(false),
