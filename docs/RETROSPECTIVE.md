@@ -3,7 +3,7 @@ title: Project Retrospective
 type: retrospective
 status: active
 created: 2025-11-05
-updated: 2025-11-09
+updated: 2025-11-10
 ---
 
 # Project Retrospective
@@ -66,3 +66,28 @@ A condensed summary of key learnings from the project.
 - All linting checks pass with no new warnings
 - Test suite runs in under 10 seconds with stable, deterministic fixtures
 - Components gracefully handle partial metadata and edge cases
+
+## Recent Integration: Teacher Components (#37) - 2025-11-10
+
+### Component Migration Learnings
+- **Database-Driven Teacher Resources**: Successfully migrated 3 teacher-specific components to use database-shaped props from drizzle-zod validators
+- **Complex Nested Data Structures**: Teacher components handle deeply nested unit content data (objectives, assessments, learning sequences) from `lessons.metadata.unitContent`
+- **Optional Props Pattern**: Components gracefully handle missing metadata by providing sensible defaults while maintaining type safety
+- **Test Coverage**: Achieved comprehensive test coverage (48 tests) with proper handling of multiple elements in DOM queries
+
+### Technical Implementation Notes
+- Teacher components extract pedagogical data from `lessons.metadata.unitContent` structure
+- UnitLessonPlan implements full UbD (Understanding by Design) framework with Stage 1-3 sections
+- TeacherLessonPlan provides 6-phase lesson structure with phase-specific teacher guidance
+- Components accept optional callback props (onNavigate, onLessonChange) for enhanced interactivity
+
+### Database Schema Integration
+- Leveraged existing `lessons.metadata.unitContent` schema for unit-level pedagogical data
+- Utilized `phases.contentBlocks` for phase-specific content and callouts
+- No schema changes required - components adapted to existing database structure
+
+### Testing & Quality Assurance
+- Fixed multiple DOM query issues by using `getAllByText` for repeated content
+- All 48 tests passing with proper element assertions
+- TypeScript compilation successful with no errors
+- Zero linting issues after removing unused prop destructuring
