@@ -476,6 +476,34 @@ const pitchInitialStateSchema = z.object({
   sectionDefinitions: z.record(z.string(), pitchSectionDefinitionSchema).default({})
 });
 
+// Spreadsheet schemas
+const spreadsheetCellSchema = z.object({
+  value: z.union([z.string(), z.number()]),
+  readOnly: z.boolean().default(false),
+  className: z.string().optional()
+});
+
+const spreadsheetDataSchema = z.array(z.array(spreadsheetCellSchema));
+
+const spreadsheetTemplateSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  data: spreadsheetDataSchema
+});
+
+const spreadsheetActivitySchema = z.object({
+  title: z.string().default('Spreadsheet Exercise'),
+  description: z.string().default('Complete the spreadsheet exercise using the provided template.'),
+  template: z.enum(['t-account', 'trial-balance', 'income-statement', 'statistical-analysis', 'payroll', 'break-even', 'custom']),
+  customTemplate: spreadsheetTemplateSchema.optional(),
+  initialData: spreadsheetDataSchema.optional(),
+  allowFormulaEntry: z.boolean().default(true),
+  showColumnLabels: z.boolean().default(true),
+  showRowLabels: z.boolean().default(true),
+  readOnly: z.boolean().default(false),
+  validateFormulas: z.boolean().default(true)
+});
+
 const financialStatementSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -1039,13 +1067,29 @@ export const activityPropsSchemas = {
     title: z.string().default('Investor Pitch Builder'),
     description: z.string().default('Build a compelling 4-minute investor pitch for your startup business model'),
     sectionDefinitions: z.record(z.string(), pitchSectionDefinitionSchema).default({
-      problem: { name: 'Problem', icon: 'alert-circle', timeTarget: 45, description: 'Define the market pain point and opportunity', keyPoints: ['Pain point identification', 'Market size opportunity', 'Current solutions shortfall', 'Urgency and timing'] },
+      problem: { name: 'Problem', icon: 'alert-circle', timeTarget: 45, description: 'Define market pain point and opportunity', keyPoints: ['Pain point identification', 'Market size opportunity', 'Current solutions shortfall', 'Urgency and timing'] },
       solution: { name: 'Solution', icon: 'lightbulb', timeTarget: 60, description: 'Present your unique value proposition', keyPoints: ['Product overview', 'Unique differentiation', 'Competitive advantage', 'Demo or prototype'] },
       market: { name: 'Market', icon: 'bar-chart-3', timeTarget: 45, description: 'Analyze target audience and competition', keyPoints: ['Target customer profile', 'TAM/SAM/SOM analysis', 'Competitive landscape', 'Go-to-market strategy'] },
       'business-model': { name: 'Business Model', icon: 'pie-chart', timeTarget: 45, description: 'Explain how you make money', keyPoints: ['Revenue streams', 'Pricing strategy', 'Unit economics', 'Scalability factors'] },
       financials: { name: 'Financials', icon: 'chart-line', timeTarget: 60, description: 'Show growth projections and metrics', keyPoints: ['3-year revenue projections', 'Key performance metrics', 'Break-even analysis', 'Market traction'] },
       ask: { name: 'The Ask', icon: 'dollar-sign', timeTarget: 45, description: 'Investment request and terms', keyPoints: ['Funding amount needed', 'Use of funds breakdown', 'Expected returns/timeline', 'Next milestones'] }
     }),
+    initialState: pitchInitialStateSchema.default({
+      businessModel: { type: 'saas', name: '', industry: '', targetMarket: '', revenueModel: '' },
+      sections: {
+        problem: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+        solution: { title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 },
+        market: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+        'business-model': { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 },
+        financials: { title: '', content: '', speakingNotes: '', timeAllocation: 60, completeness: 0 },
+        ask: { title: '', content: '', speakingNotes: '', timeAllocation: 45, completeness: 0 }
+      },
+      financials: { year1Revenue: 0, year2Revenue: 0, year3Revenue: 0, initialInvestment: 0, useOfFunds: [], keyMetrics: {} },
+      sectionDefinitions: {}
+    })
+  }),
+  'spreadsheet': spreadsheetActivitySchema,
+  'pitch': z.object({
     initialState: pitchInitialStateSchema.default({
       businessModel: { type: 'saas', name: '', industry: '', targetMarket: '', revenueModel: '' },
       sections: {
