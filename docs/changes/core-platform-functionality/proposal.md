@@ -59,6 +59,7 @@ Login page displays demo credentials for easy testing:
 ## Benefits
 
 1. **Achieves PRD Objective #1**: Content updates via database in <30 minutes vs 4-8 hours
+   - **Note**: This epic focuses on *rendering* database content. Content creator tooling (CMS UI) is intentionally out of scope for MVP. Updates will be made via direct database access or SQL scripts until a future epic.
 2. **Achieves PRD Objective #2**: Teacher can identify struggling students within 1-2 weeks
 3. **Enables student engagement**: Progress visibility motivates completion
 4. **Foundation for future features**: Analytics, real-time collaboration, adaptive learning
@@ -93,11 +94,22 @@ Login page displays demo credentials for easy testing:
 - [ ] Seeded lessons match v1 content exactly (validation script confirms)
 - [ ] All 89 migrated components work with database-driven props
 
+### Accessibility & Compliance
+- [ ] All UI components meet WCAG 2.1 AA standards (keyboard navigation, screen readers, color contrast)
+- [ ] Assessment scoring validated server-side (no client-side score tampering possible)
+- [ ] Student data access logged for FERPA compliance auditing
+- [ ] Platform adheres to data retention and privacy policies suitable for educational use
+
 ## Timeline
 
 **Estimated Duration**: 2-3 weeks (assuming single developer)
 
 **Sprint Goal**: MVP platform that demonstrates core value proposition - a teacher can create a student account, student can complete lessons with progress tracked, and teacher can view that progress.
+
+**Deployment Strategy**: To reduce "big bang" deployment risk, consider incremental rollout:
+1. **Week 1**: Public pages refactor + auth system (low-risk, no protected features yet)
+2. **Week 2**: Database-driven lesson rendering for 1 lesson (validate approach before scaling)
+3. **Week 3**: Progress tracking + teacher dashboard (complete MVP)
 
 ## Risks & Mitigations
 
@@ -110,11 +122,41 @@ Login page displays demo credentials for easy testing:
 
 ## Out of Scope (Future Epics)
 
-- Bulk student import via CSV
+**High Priority for Next Epic:**
+- **Bulk student import via CSV** (critical teacher pain point)
+- **Content Management UI** (enable teacher to update curriculum without DB access)
+- **Advanced analytics**: Time spent per phase, attempt counts, detailed answer analysis
+
+**Lower Priority:**
 - Student password reset flow
-- Teacher can edit curriculum content via UI
 - Real-time collaboration features
-- Advanced analytics and reporting
 - Email notifications
 - Mobile app
-- Organization management (multi-teacher support)
+- Multi-teacher organization management
+
+## Data Privacy & Compliance
+
+This platform is designed for educational use and must comply with relevant regulations:
+
+**FERPA Compliance** (Family Educational Rights and Privacy Act):
+- Student progress data restricted via RLS policies
+- Teachers can only access students in their organization
+- All data access logged for audit trails
+- No data shared with third parties without explicit consent
+
+**COPPA Considerations** (Children's Online Privacy Protection Act):
+- Username-only authentication (no email collection from students)
+- No behavioral tracking or advertising
+- Minimal data collection (only what's needed for educational purposes)
+- Teacher-managed accounts (not self-registration)
+
+**Data Retention**:
+- Student data retained only while actively enrolled
+- Anonymization/deletion processes for withdrawn students (future epic)
+- Export capabilities for data portability (CSV export included in MVP)
+
+**Security**:
+- RLS policies enforced at database level
+- Assessment scoring server-side (prevents tampering)
+- Service-role key isolation (not exposed to Next.js runtime)
+- Regular security audits of authentication flows

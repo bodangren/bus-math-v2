@@ -12,6 +12,66 @@ created: 2025-11-11
 
 This spec defines the implementation details for Epic #3, transforming the static v2 site into a dynamic, authenticated platform with database-driven content and progress tracking.
 
+## 0. Organizations Schema (BLOCKER FIX #1)
+
+### Problem
+The original spec referenced org-scoped dashboards and RLS but didn't define the organizations table or foreign key relationships.
+
+### Solution: Organizations Table
+
+**Schema** (add to `lib/db/schema.ts`):
+```typescript
+export const organizations = pgTable('organizations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+  settings: jsonb('settings').$type<OrganizationSettings>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const organizationSettingsSchema = z.object({
+  allowSelfEnrollment: z.boolean().default(false),
+  timezone: z.string().default('America/New_York'),
+});
+
+export type OrganizationSettings = z.infer<typeof organizationSettingsSchema>;
+```
+
+**Update profiles table** to add FK:
+```typescript
+export const profiles = pgTable('profiles', {
+  // ... existing fields ...
+  organizationId: uuid('organization_id').references(() => organizations.id).notNull(),
+});
+```
+
+**RLS Policies**:
+```sql
+-- Teachers can only see students in their org
+CREATE POLICY "teachers_view_own_org_students" ON profiles
+  FOR SELECT
+  USING (
+    organizationId = (
+      SELECT organizationId FROM profiles WHERE id = auth.uid()
+    )
+    AND role = 'student'
+  );
+```
+
+**Seed Demo Organization** (`supabase/seed/00-demo-org.sql`):
+```sql
+-- Create demo organization
+INSERT INTO organizations (id, name, slug)
+VALUES (
+  '00000000-0000-0000-0000-000000000001',
+  'Demo School',
+  'demo-school'
+);
+```
+
+Then reference this org ID when creating demo users.
+
 ## 1. Supabase Client Setup
 
 ### Environment Configuration
@@ -72,26 +132,75 @@ Supabase Auth uses email by default. Adapt for username-only login:
 - Sign in with `auth.signInWithPassword({ email: `${username}@internal.domain`, password })`
 - Display username in UI, never show email
 
-**Seed Script** (`supabase/seed/demo-users.sql`):
-```sql
--- Demo teacher account
-INSERT INTO auth.users (email, encrypted_password, email_confirmed_at, raw_user_meta_data)
-VALUES (
-  'demo_teacher@internal.domain',
-  crypt('demo123', gen_salt('bf')),
-  NOW(),
-  '{"username": "demo_teacher", "role": "teacher"}'
-);
+**Seed Script (BLOCKER FIX #5)** (`supabase/seed/01-demo-users.ts`):
 
--- Demo student account
-INSERT INTO auth.users (email, encrypted_password, email_confirmed_at, raw_user_meta_data)
-VALUES (
-  'demo_student@internal.domain',
-  crypt('demo123', gen_salt('bf')),
-  NOW(),
-  '{"username": "demo_student", "role": "student"}'
-);
+**Problem**: Direct inserts to `auth.users` fail on Supabase Cloud due to RLS protection.
+
+**Solution**: Use Supabase Auth Admin API via Node.js seed script:
+
+```typescript
+// supabase/seed/01-demo-users.ts
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: { autoRefreshToken: false, persistSession: false }
+});
+
+const DEMO_ORG_ID = '00000000-0000-0000-0000-000000000001';
+
+async function seedDemoUsers() {
+  // Create demo teacher
+  const { data: teacher, error: teacherError } = await supabase.auth.admin.createUser({
+    email: 'demo_teacher@internal.domain',
+    password: 'demo123',
+    email_confirm: true,
+    user_metadata: {
+      username: 'demo_teacher',
+      role: 'teacher',
+    },
+  });
+
+  if (teacherError) throw teacherError;
+
+  // Create teacher profile
+  await supabase.from('profiles').insert({
+    id: teacher.user.id,
+    username: 'demo_teacher',
+    role: 'teacher',
+    organizationId: DEMO_ORG_ID,
+  });
+
+  // Create demo student
+  const { data: student, error: studentError } = await supabase.auth.admin.createUser({
+    email: 'demo_student@internal.domain',
+    password: 'demo123',
+    email_confirm: true,
+    user_metadata: {
+      username: 'demo_student',
+      role: 'student',
+    },
+  });
+
+  if (studentError) throw studentError;
+
+  // Create student profile
+  await supabase.from('profiles').insert({
+    id: student.user.id,
+    username: 'demo_student',
+    role: 'student',
+    organizationId: DEMO_ORG_ID,
+  });
+
+  console.log('✅ Demo users created successfully');
+}
+
+seedDemoUsers().catch(console.error);
 ```
+
+**Run with**: `tsx supabase/seed/01-demo-users.ts`
 
 ### Middleware for Route Protection
 
@@ -335,25 +444,87 @@ export async function POST(request: Request) {
 }
 ```
 
-### Assessment Submission
+### Assessment Submission (BLOCKER FIX #3)
+
+**Problem**: Original spec had client-side score calculation, which students can tamper with in DevTools.
+
+**Solution**: Server-side scoring via API route or Supabase RPC.
 
 **Component**: Interactive components with `onSubmit` prop
 
 **Implementation**:
 ```typescript
-async function handleSubmit(answers: any, score: number) {
-  await fetch('/api/progress/assessment', {
+// Client component sends only answers, NOT score
+async function handleSubmit(answers: Record<string, any>) {
+  const response = await fetch('/api/progress/assessment', {
     method: 'POST',
-    body: JSON.stringify({ activityId, answers, score }),
+    body: JSON.stringify({ activityId, answers }),
   });
+
+  const { score, feedback } = await response.json();
+  // Display score returned from server
 }
 ```
 
-**API Route**: Similar to phase completion, inserts into `assessment_submissions`
+**API Route**: `app/api/progress/assessment/route.ts`
+
+```typescript
+export async function POST(request: Request) {
+  const supabase = createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { activityId, answers } = await request.json();
+
+  // Fetch activity with grading config
+  const { data: activity } = await supabase
+    .from('activities')
+    .select('gradingConfig, props')
+    .eq('id', activityId)
+    .single();
+
+  // SERVER-SIDE SCORING - cannot be tampered with
+  const score = calculateScore(answers, activity);
+
+  // Insert submission with server-calculated score
+  await supabase.from('assessment_submissions').insert({
+    userId: user.id,
+    activityId,
+    answers,
+    score,
+    submittedAt: new Date().toISOString(),
+  });
+
+  return Response.json({ score, feedback: generateFeedback(score) });
+}
+
+// Scoring logic runs on server
+function calculateScore(answers: any, activity: any): number {
+  // Implementation depends on activity type
+  // Example for multiple choice:
+  const questions = activity.props.questions;
+  let correct = 0;
+
+  questions.forEach((q, idx) => {
+    if (answers[`q${idx}`] === q.correctAnswer) {
+      correct++;
+    }
+  });
+
+  return Math.round((correct / questions.length) * 100);
+}
+```
 
 ## 6. Teacher Dashboard MVP
 
-### Dashboard Layout (`app/teacher/page.tsx`)
+### Dashboard Layout (`app/teacher/page.tsx`) (BLOCKER FIX #4)
+
+**Problem**: Original query used `user_progress(count)` without filtering completed rows, inflating completion %.
+
+**Solution**: Create SQL function or use proper aggregation query.
 
 **Features**:
 - Header: "Teacher Dashboard - [username]"
@@ -365,20 +536,75 @@ async function handleSubmit(answers: any, score: number) {
 - "Export CSV" button
 - "Create Student" button (opens dialog)
 
+**SQL Function** (`supabase/migrations/XXX_student_progress_view.sql`):
+```sql
+CREATE OR REPLACE FUNCTION get_student_progress(student_id UUID)
+RETURNS TABLE (
+  completed_phases BIGINT,
+  total_phases BIGINT,
+  progress_percentage NUMERIC
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    COUNT(*) FILTER (WHERE up.completed = true) AS completed_phases,
+    (SELECT COUNT(*) FROM phases) AS total_phases,
+    ROUND(
+      (COUNT(*) FILTER (WHERE up.completed = true)::NUMERIC /
+       NULLIF((SELECT COUNT(*) FROM phases), 0)::NUMERIC) * 100,
+      1
+    ) AS progress_percentage
+  FROM user_progress up
+  WHERE up.userId = student_id;
+END;
+$$ LANGUAGE plpgsql;
+```
+
 **Query**:
 ```typescript
 const { data: students } = await supabase
   .from('profiles')
-  .select(`
-    id,
-    username,
-    user_progress(count),
-    lastActiveAt
-  `)
+  .select('id, username, lastActiveAt')
   .eq('role', 'student')
   .eq('organizationId', teacher.organizationId);
 
-// Calculate progress percentage for each student
+// Fetch progress for each student using RPC
+const studentsWithProgress = await Promise.all(
+  students.map(async (student) => {
+    const { data: progress } = await supabase
+      .rpc('get_student_progress', { student_id: student.id });
+
+    return {
+      ...student,
+      completedPhases: progress[0].completed_phases,
+      totalPhases: progress[0].total_phases,
+      progressPercentage: progress[0].progress_percentage,
+    };
+  })
+);
+```
+
+**Alternative**: Materialized view for better performance with many students:
+```sql
+CREATE MATERIALIZED VIEW student_progress_summary AS
+SELECT
+  p.id AS student_id,
+  p.username,
+  COUNT(*) FILTER (WHERE up.completed = true) AS completed_phases,
+  (SELECT COUNT(*) FROM phases) AS total_phases,
+  ROUND(
+    (COUNT(*) FILTER (WHERE up.completed = true)::NUMERIC /
+     NULLIF((SELECT COUNT(*) FROM phases), 0)::NUMERIC) * 100,
+    1
+  ) AS progress_percentage,
+  MAX(up.completedAt) AS last_active
+FROM profiles p
+LEFT JOIN user_progress up ON p.id = up.userId
+WHERE p.role = 'student'
+GROUP BY p.id, p.username;
+
+-- Refresh periodically (e.g., every 5 minutes via cron job)
+REFRESH MATERIALIZED VIEW student_progress_summary;
 ```
 
 ### CSV Export
@@ -396,7 +622,11 @@ jane_doe,92%,221,240,2025-11-11
 
 ## 7. User Management
 
-### Create Student Account
+### Create Student Account (BLOCKER FIX #2)
+
+**Problem**: Original spec instantiated service-role client in Next.js API route, exposing it to every teacher request.
+
+**Solution**: Use Supabase Edge Function to isolate service-role usage, or implement safer pattern with separate deployment.
 
 **UI**: Dialog/modal on teacher dashboard
 
@@ -406,51 +636,110 @@ jane_doe,92%,221,240,2025-11-11
 - Generate username: `firstname_lastname` or `student_001`, `student_002` etc.
 - Generate password: Random 8-character alphanumeric
 
-**API Route**: `app/api/users/create-student/route.ts`
+**Option A: Supabase Edge Function** (Recommended):
 
-**Implementation**:
+**Edge Function** (`supabase/functions/create-student/index.ts`):
 ```typescript
-export async function POST(request: Request) {
-  const adminClient = createAdminClient(); // Service role
-  const { data: { user: teacher } } = await supabase.auth.getUser();
+import { createClient } from '@supabase/supabase-js';
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
-  if (teacher?.user_metadata?.role !== 'teacher') {
-    return Response.json({ error: 'Unauthorized' }, { status: 403 });
+serve(async (req) => {
+  const supabaseClient = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, // Service key isolated in edge function
+  );
+
+  // Verify teacher session from Authorization header
+  const authHeader = req.headers.get('Authorization')!;
+  const { data: { user: teacher } } = await supabaseClient.auth.getUser(authHeader.replace('Bearer ', ''));
+
+  if (!teacher || teacher.user_metadata?.role !== 'teacher') {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 403 });
   }
 
-  const { username, password, firstName, lastName } = await request.json();
+  const { username, password, firstName, lastName } = await req.json();
 
-  // Create user in auth.users
-  const { data: newUser, error } = await adminClient.auth.admin.createUser({
+  // Create user using service role (isolated from Next.js)
+  const { data: newUser, error } = await supabaseClient.auth.admin.createUser({
     email: `${username}@internal.domain`,
     password,
     email_confirm: true,
-    user_metadata: {
-      username,
-      role: 'student',
-      firstName,
-      lastName,
-    },
+    user_metadata: { username, role: 'student', firstName, lastName },
   });
 
   if (error) {
-    return Response.json({ error: error.message }, { status: 400 });
+    return new Response(JSON.stringify({ error: error.message }), { status: 400 });
   }
 
-  // Create profile record
-  await adminClient.from('profiles').insert({
+  // Create profile
+  await supabaseClient.from('profiles').insert({
     id: newUser.user.id,
     username,
     role: 'student',
     organizationId: teacher.user_metadata.organizationId,
   });
 
-  return Response.json({
-    success: true,
-    username,
-    password, // Return to teacher for printing/sharing
+  return new Response(JSON.stringify({ success: true, username, password }), {
+    headers: { 'Content-Type': 'application/json' },
   });
+});
+```
+
+**Next.js API Route** (`app/api/users/create-student/route.ts`):
+```typescript
+export async function POST(request: Request) {
+  const supabase = createServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const body = await request.json();
+
+  // Forward to edge function with session token
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/create-student`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${session.access_token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  return Response.json(await response.json());
 }
+```
+
+**Option B: Database Trigger** (Alternative for MVP):
+
+If edge functions unavailable, use PostgreSQL function with SECURITY DEFINER to create auth users:
+
+```sql
+CREATE OR REPLACE FUNCTION create_student_user(
+  teacher_id UUID,
+  student_username TEXT,
+  student_password TEXT,
+  student_org_id UUID
+) RETURNS JSON
+SECURITY DEFINER
+AS $$
+DECLARE
+  new_user_id UUID;
+BEGIN
+  -- Verify teacher role
+  IF NOT EXISTS (
+    SELECT 1 FROM profiles WHERE id = teacher_id AND role = 'teacher'
+  ) THEN
+    RAISE EXCEPTION 'Unauthorized';
+  END IF;
+
+  -- Call Supabase Auth API via http extension (requires setup)
+  -- Or implement via application logic in edge function
+
+  RETURN json_build_object('success', true, 'user_id', new_user_id);
+END;
+$$ LANGUAGE plpgsql;
 ```
 
 **Success UI**: Display created credentials to teacher for printing

@@ -8,6 +8,27 @@ created: 2025-11-11
 
 # Tasks: Core Platform Functionality
 
+## Phase 0: Schema Updates (Blocker Fixes)
+
+### Task 0: Organizations Schema & FK Relationships
+- [ ] Add `organizations` table to `lib/db/schema.ts`
+- [ ] Add `organizationId` FK to `profiles` table
+- [ ] Create RLS policy for org-scoped teacher access
+- [ ] Create migration file for schema changes
+- [ ] Run `npx drizzle-kit push` to apply changes
+- [ ] Create seed script `supabase/seed/00-demo-org.sql` for demo organization
+
+**Acceptance Criteria**:
+- Organizations table created with id, name, slug, settings fields
+- Profiles table has organizationId FK constraint
+- RLS policy prevents cross-org data access
+- Demo organization seeded with known UUID
+- Migration applies successfully
+
+**Addresses**: Blocker #1 from PR review
+
+---
+
 ## Phase 1: Foundation & Authentication
 
 ### Task 1: Supabase Client Infrastructure
@@ -61,11 +82,12 @@ created: 2025-11-11
 
 ### Task 4: Login Page
 - [ ] Create `app/login/page.tsx`
-- [ ] Add username and password input fields
+- [ ] Add username and password input fields (WCAG 2.1 AA compliant)
 - [ ] Implement sign-in form submission
 - [ ] Display demo credentials prominently (demo_student / demo123, demo_teacher / demo123)
 - [ ] Handle login errors with user-friendly messages
 - [ ] Redirect to appropriate dashboard or `redirect` query param after login
+- [ ] Ensure proper ARIA labels and keyboard navigation
 - [ ] Write E2E test for login flow
 
 **Acceptance Criteria**:
@@ -74,22 +96,27 @@ created: 2025-11-11
 - Successful login redirects to correct dashboard
 - Errors displayed without technical stack traces
 - Redirect query param honored after login
+- Form meets WCAG 2.1 AA accessibility standards
 
 ---
 
-### Task 5: Demo User Seeding
-- [ ] Create `supabase/seed/01-demo-users.sql`
-- [ ] Insert demo_teacher account in auth.users with role='teacher'
-- [ ] Insert demo_student account in auth.users with role='student'
-- [ ] Create corresponding profile records
+### Task 5: Demo User Seeding (Updated for Blocker Fix #5)
+- [ ] Create `supabase/seed/01-demo-users.ts` (TypeScript, not SQL)
+- [ ] Use Supabase Auth Admin API to create demo_teacher account
+- [ ] Use Supabase Auth Admin API to create demo_student account
+- [ ] Create corresponding profile records with organizationId FK
+- [ ] Add `tsx` dependency for running TypeScript seed scripts
 - [ ] Run seed script and verify accounts
 - [ ] Document demo credentials in project README
 
 **Acceptance Criteria**:
-- Both demo accounts created successfully
+- Both demo accounts created via Auth Admin API (not direct SQL)
 - Credentials match login page display (demo_student/demo123, demo_teacher/demo123)
 - Roles stored in user_metadata
-- Profile records linked to auth users
+- Profile records linked to auth users with demo org ID
+- Seed script runs successfully on Supabase Cloud
+
+**Addresses**: Blocker #5 from PR review
 
 ---
 
@@ -249,54 +276,68 @@ created: 2025-11-11
 
 ---
 
-### Task 15: Assessment Submission API
+### Task 15: Assessment Submission API (Updated for Blocker Fix #3)
 - [ ] Create `app/api/progress/assessment/route.ts`
 - [ ] Implement POST handler with auth check
-- [ ] Insert to `assessment_submissions` table
-- [ ] Store answers JSONB and calculated score
-- [ ] Return success response
+- [ ] Fetch activity from database to get grading config
+- [ ] **SERVER-SIDE SCORING**: Implement `calculateScore()` function
+- [ ] Insert to `assessment_submissions` table with server-calculated score
+- [ ] Return score and feedback to client
 - [ ] Write integration test with mock assessment
 
 **Acceptance Criteria**:
 - Endpoint requires authentication
-- Submission inserted with answers and score
+- Score calculated on server (NOT trusted from client)
+- Submission inserted with answers and server-calculated score
 - Returns 401 for unauthenticated requests
 - RLS policies enforced
+- Students cannot tamper with scores via DevTools
+
+**Addresses**: Blocker #3 from PR review
 
 ---
 
-### Task 16: Assessment Submission Integration
+### Task 16: Assessment Submission Integration (Updated for Blocker Fix #3)
 - [ ] Update interactive components to call assessment API on submit
 - [ ] Pass `onSubmit` handler to activity components
-- [ ] Implement score calculation in client component
-- [ ] Send answers + score to API endpoint
+- [ ] **Send ONLY answers to API** (no score from client)
+- [ ] Display score returned from server
 - [ ] Show success feedback to student
 - [ ] Write integration test for end-to-end submission
 
 **Acceptance Criteria**:
 - Activities with assessment call API on submit
-- Answers and scores persisted correctly
-- Student sees confirmation message
+- Client sends only answers, server calculates score
+- Answers and server-calculated scores persisted correctly
+- Student sees score returned from server
 - Submission visible in teacher dashboard
+
+**Addresses**: Blocker #3 from PR review
 
 ---
 
 ## Phase 5: Teacher Dashboard
 
-### Task 17: Teacher Dashboard Layout
+### Task 17: Teacher Dashboard Layout (Updated for Blocker Fix #4)
 - [ ] Create `app/teacher/page.tsx` as protected route
 - [ ] Fetch teacher profile and organization
+- [ ] Create SQL function `get_student_progress()` for accurate progress calculation
 - [ ] Fetch all students in teacher organization
-- [ ] Calculate progress percentage for each student
+- [ ] **Use RPC to calculate progress** (count only completed=true phases)
 - [ ] Display student list table (username, progress %, last active)
 - [ ] Add "Create Student" and "Export CSV" buttons
+- [ ] Ensure WCAG 2.1 AA compliance for dashboard
 - [ ] Write integration test for dashboard
 
 **Acceptance Criteria**:
 - Dashboard requires teacher authentication
+- Progress calculated accurately (only completed phases counted)
 - Student list displays with correct progress percentages
 - Last active timestamps shown
 - Dashboard loads in <2 seconds
+- Dashboard meets accessibility standards
+
+**Addresses**: Blocker #4 from PR review
 
 ---
 
@@ -315,31 +356,37 @@ created: 2025-11-11
 
 ---
 
-### Task 19: Create Student Account Feature
-- [ ] Create `app/api/users/create-student/route.ts` with admin client
-- [ ] Implement teacher-only POST handler
+### Task 19: Create Student Account Feature (Updated for Blocker Fix #2)
+- [ ] **Create Supabase Edge Function** `supabase/functions/create-student/index.ts`
+- [ ] Implement edge function with service-role client (isolated from Next.js)
+- [ ] Verify teacher session in edge function
 - [ ] Generate username from first/last name or sequential ID
 - [ ] Generate random 8-character password
-- [ ] Create auth user and profile record
-- [ ] Return username + password to teacher
-- [ ] Create UI dialog/modal for student creation
+- [ ] Use Auth Admin API to create user (within edge function)
+- [ ] Create profile record with organizationId
+- [ ] Create Next.js API route `app/api/users/create-student/route.ts` that forwards to edge function
+- [ ] Create UI dialog/modal for student creation (WCAG compliant)
 - [ ] Display created credentials prominently
 - [ ] Write integration test for account creation
 
 **Acceptance Criteria**:
+- Service-role key isolated in edge function (not in Next.js runtime)
 - Teacher can create student accounts from dashboard
 - Usernames generated correctly
 - Passwords are random and secure
 - Credentials displayed for teacher to print/share
 - New student can immediately log in with generated credentials
+- UI dialog meets accessibility standards
+
+**Addresses**: Blocker #2 from PR review
 
 ---
 
 ## Phase 6: Testing & Polish
 
 ### Task 20: End-to-End Testing
-- [ ] Write E2E test: Teacher login ’ Create student ’ View dashboard
-- [ ] Write E2E test: Student login ’ Complete lesson phase ’ Verify progress
+- [ ] Write E2E test: Teacher login ï¿½ Create student ï¿½ View dashboard
+- [ ] Write E2E test: Student login ï¿½ Complete lesson phase ï¿½ Verify progress
 - [ ] Write E2E test: Public pages accessible without auth
 - [ ] Write E2E test: Protected pages redirect to login
 - [ ] Document E2E test scenarios and results
@@ -403,13 +450,27 @@ created: 2025-11-11
 
 ## Summary
 
-**Total Tasks**: 23
+**Total Tasks**: 24 (including Task 0 for schema updates)
 **Estimated Timeline**: 2-3 weeks
 
+**Critical Blocker Fixes Addressed**:
+1. **Task 0**: Organizations schema and FK relationships (Blocker #1)
+2. **Task 5**: Auth seeding via Admin API (Blocker #5)
+3. **Tasks 15-16**: Server-side assessment scoring (Blocker #3)
+4. **Task 17**: Accurate progress calculation (Blocker #4)
+5. **Task 19**: Service-role isolation via Edge Function (Blocker #2)
+
 **Dependencies**:
+- Phase 0 must complete before Phase 1 (schema changes required first)
 - Phase 2 depends on Phase 1 (auth required for protected content)
 - Phase 4 depends on Phase 2 (progress tracking requires lesson rendering)
 - Phase 5 depends on Phase 4 (dashboard displays tracked progress)
 - Phase 6 can be done incrementally throughout
 
-**Sprint Goal**: Launch MVP platform where teachers can create student accounts, students can view database-driven lessons with progress tracking, and teachers can monitor progress via dashboard.
+**Compliance & Accessibility**:
+- WCAG 2.1 AA standards enforced in UI tasks
+- FERPA/COPPA considerations documented
+- Server-side scoring prevents tampering
+- RLS policies enforce data isolation
+
+**Sprint Goal**: Launch MVP platform where teachers can create student accounts, students can view database-driven lessons with progress tracking, and teachers can monitor progress via dashboard - all with production-grade security and compliance.
