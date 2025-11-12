@@ -376,3 +376,59 @@ A condensed summary of key learnings from the project.
 - **Successful Build**: Next.js build completed successfully, generating static login page
 - **Acceptance Criteria Met**: All 6 acceptance criteria from issue #65 verified through tests and manual review
 
+
+## Recent Integration: Demo User Seeding (#90) - 2025-11-12
+
+### Auth Admin API Implementation
+- **TypeScript Seed Scripts**: Successfully used tsx to run TypeScript seed scripts instead of SQL, enabling better error handling and logic
+- **Auth Admin API vs Direct SQL**: Direct SQL inserts to auth.users fail on Supabase Cloud; Auth Admin API is the only supported method for programmatic user creation
+- **Username-Based Auth Pattern**: Continued using username@internal.domain format to leverage email field as transport while maintaining username-only UX
+- **Idempotent Seeding**: Implemented proper error handling for "user already exists" errors, allowing script to be safely run multiple times
+- **Service Role Key Usage**: Used admin client with service role key for privileged Auth Admin API operations, following security best practices
+
+### Database Schema Alignment
+- **Snake Case vs Camel Case**: Critical bug where Profile TypeScript interface used camelCase but database returns snake_case, causing profile data to not map correctly
+- **Type Safety Matters**: TypeScript interfaces must exactly match database column names to avoid runtime failures
+- **Drizzle Schema as Source of Truth**: Database schema defined in Drizzle should inform TypeScript types, not assumptions about casing conventions
+
+### RLS Policy Debugging
+- **Infinite Recursion Detection**: Postgres error code `42P17` indicates infinite recursion in RLS policies when policy queries the same table it's protecting
+- **Policy Design Anti-Pattern**: Never query the protected table from within its own RLS policy - causes infinite loop
+- **Simple Policies First**: Start with "users view own records" policies before adding complex cross-table checks
+- **Security Definer Alternative**: For complex access patterns (e.g., teachers viewing student profiles), use security definer functions instead of recursive RLS policies
+
+### Login Flow Debugging
+- **Console Logging Strategy**: Strategic console.log placement in AuthProvider and LoginForm revealed exact failure point (profile fetch)
+- **useEffect Timing Issues**: Redirect logic must be in useEffect, not render body, to properly trigger on state changes
+- **useRef for Intent Tracking**: Used useRef to track "should redirect" intent across re-renders without causing unnecessary re-renders
+- **Component Lifecycle Understanding**: Profile loading happens asynchronously after sign-in completes, requiring careful orchestration
+
+### Route Configuration
+- **Missing Dashboard Pages**: Login redirects failed because target routes didn't exist, causing browser hang
+- **Placeholder Pages Value**: Simple placeholder dashboards allow testing full auth flow before implementing actual features
+- **Import Name Consistency**: Server-side Supabase client export named createClient, not createServerClient - must match exactly
+- **Proxy Redirect Paths**: proxy.ts redirect paths must include full route including /dashboard, not just role prefix
+
+### Development Workflow
+- **Issue Executor Skill Success**: SynthesisFlow skill properly loaded context, created branch, and set up development environment
+- **Iterative Bug Fixing**: Each bug fix was committed separately with clear description, enabling easy revert if needed
+- **Debug Logging Cleanup**: Added console.log for debugging, then removed in final commit to keep production code clean
+- **Multiple Small Commits**: 6 commits on feature branch documented evolution from initial implementation through bug fixes
+
+### Quality Assurance
+- **Linting as Safety Net**: Zero linting errors throughout, catching unused imports and type issues early
+- **Manual Testing Essential**: Automated tests couldn't catch RLS recursion or redirect flow issues - manual browser testing required
+- **Error Message Analysis**: Postgres error messages provided exact diagnosis (infinite recursion) rather than generic failures
+- **Browser DevTools Usage**: Console output from strategic logging pinpointed exact failure in profile fetch
+
+### Documentation Updates
+- **Comprehensive README**: Replaced placeholder Supabase CLI README with project-specific documentation
+- **Demo Credentials Prominent**: Placed demo credentials in highly visible table at top of README for easy access
+- **Seed Script Documentation**: Documented both SQL (organization) and TypeScript (users) seed approaches with usage examples
+- **Migration Strategy Documented**: Explained why Auth Admin API is required and how to run seed scripts
+
+### Production Readiness
+- **Seed Script Works on Cloud**: TypeScript + Auth Admin API approach confirmed working on Supabase Cloud (not just local)
+- **RLS Policy Fixed Permanently**: Migration file ensures recursive policy never gets re-created
+- **Login Flow Verified**: Both demo accounts successfully authenticate and redirect to appropriate dashboards
+- **Clean Branch History**: Squash merge kept main branch history readable despite 6 feature branch commits
