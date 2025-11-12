@@ -288,3 +288,47 @@ A condensed summary of key learnings from the project.
 - **Type Compilation Success**: TypeScript compilation passed without errors, validating type safety of auth implementation
 - **Mock Quality**: Proper mock types and return values prevented test brittleness and false positives
 
+## Recent Integration: Route Protection with proxy.ts (#88) - 2025-11-12
+
+### Next.js 16 Middleware Migration Learnings
+- **proxy.ts vs middleware.ts**: Next.js 16 uses `proxy.ts` instead of `middleware.ts`, requiring adaptation mid-implementation after initially creating middleware.ts
+- **Proxy Function Export**: Must export a `proxy` function (not default export or `middleware`) with proper Next.js 16 signature
+- **Architectural Shift**: Next.js 16 moves toward proxies for edge-side routing/redirects, discouraging complex business logic in middleware layer
+- **Documentation Gap**: Limited Next.js 16 proxy.ts examples available, required web search and pattern adaptation from Next.js 15 middleware patterns
+
+### Role-Based Authorization Implementation
+- **Database Profile Fetch**: Route protection requires fetching user profile from database to check role, not just Supabase Auth user object
+- **Multi-Role Support**: Implemented hierarchical access (admin > teacher > student) with proper redirect logic for each role combination
+- **Public Route Configuration**: Defined explicit list of public routes to avoid authentication checks on landing pages and login flows
+- **Redirect Preservation**: Using URL query params (`/login?redirect=<path>`) to preserve intended destination after authentication
+
+### Testing Strategy for Proxy Functions
+- **Mock Complexity**: Testing Next.js proxy functions requires sophisticated mocking of NextRequest, NextResponse, and Supabase clients
+- **URL Clone Method**: NextRequest.nextUrl.clone() must be properly mocked for redirect URL manipulation to work in tests
+- **Mock Hoisting Issues**: Vitest hoists vi.mock() calls, requiring careful ordering and use of factories to avoid "before initialization" errors
+- **20 Comprehensive Tests**: Created full test coverage for all authentication scenarios (public routes, unauthorized access, role-based access, edge cases)
+
+### Supabase Session Management
+- **Cookie-Based Sessions**: Proxy.ts properly handles Supabase session cookies using @supabase/ssr createServerClient pattern
+- **Session Refresh**: Must call getUser() to refresh session and ensure cookies are set correctly in response
+- **Response Mutation**: NextResponse must be mutated with updated cookies from Supabase client before returning
+- **Stateless Operations**: Each proxy invocation creates new Supabase client per request (no global state) for Vercel Edge runtime compatibility
+
+### Route Protection Patterns
+- **Hierarchical Checks**: Check authentication first (user exists), then profile exists, then role-based authorization
+- **Graceful Degradation**: Missing profile redirects to login (not error page) to handle edge cases in user onboarding
+- **Teacher Override**: Teachers can access student routes (for monitoring/support), but students cannot access teacher routes
+- **Pattern Matching**: Using startsWith() for route matching allows protecting entire route subtrees (e.g., /student/*)
+
+### Development Workflow Learnings
+- **Issue Executor Skill**: Successfully used SynthesisFlow issue-executor skill to load context and create feature branch
+- **Test-First Approach**: Wrote integration tests alongside implementation, catching issues early (clone() method, mock hoisting)
+- **Linting as Gate**: Running linting immediately after code changes prevents accumulation of style issues
+- **Auto-Merge Success**: GitHub auto-merge feature worked correctly for squash merge after PR approval
+
+### Quality Assurance
+- **All Tests Passing**: 20/20 proxy tests passed, demonstrating comprehensive coverage of authentication scenarios
+- **Zero Linting Errors**: Clean ESLint run with no warnings or errors after removing unused imports
+- **Type Safety**: Full TypeScript compilation success with strict mode enabled
+- **Acceptance Criteria Met**: All 4 acceptance criteria from issue #64 verified through tests
+
