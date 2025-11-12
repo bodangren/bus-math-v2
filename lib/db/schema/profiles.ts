@@ -32,6 +32,7 @@ export const profiles = pgTable('profiles', {
   organizationId: uuid('organization_id')
     .notNull()
     .references(() => organizations.id, { onDelete: 'cascade' }),
+  username: text('username').notNull().unique(),
   role: profileRoleEnum('role').notNull().default('student'),
   displayName: text('display_name'),
   avatarUrl: text('avatar_url'),
