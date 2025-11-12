@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,39 +12,76 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { InfoIcon } from "lucide-react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { signIn, profile } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      router.push("/protected");
+      await signIn(username, password);
+
+      // Get redirect parameter from URL, default based on role
+      const redirect = searchParams.get('redirect');
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        // Wait for profile to load to determine redirect
+        // This will be handled by the useEffect watching profile changes
+      }
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred");
+      // Display user-friendly error messages without technical details
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid username or password. Please try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please verify your email before logging in.');
+        } else {
+          setError('Unable to log in. Please try again later.');
+        }
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle redirect after profile loads
+  if (profile && !isLoading) {
+    const redirect = searchParams.get('redirect');
+    if (redirect) {
+      router.push(redirect);
+    } else {
+      // Default redirects based on role
+      if (profile.role === 'admin') {
+        router.push('/admin/dashboard');
+      } else if (profile.role === 'teacher') {
+        router.push('/teacher/dashboard');
+      } else {
+        router.push('/student/dashboard');
+      }
+    }
+  }
+
+  const handleDemoLogin = (demoUsername: string, demoPassword: string) => {
+    setUsername(demoUsername);
+    setPassword(demoPassword);
   };
 
   return (
@@ -53,56 +90,99 @@ export function LoginForm({
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your username and password to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="demo_student"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="username"
+                  aria-required="true"
+                  aria-invalid={error ? "true" : "false"}
+                  aria-describedby={error ? "login-error" : undefined}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
+                  placeholder="Enter your password"
                   required
+                  autoComplete="current-password"
+                  aria-required="true"
+                  aria-invalid={error ? "true" : "false"}
+                  aria-describedby={error ? "login-error" : undefined}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              {error && (
+                <div
+                  id="login-error"
+                  className="rounded-md border border-red-200 bg-red-50 p-3"
+                  role="alert"
+                  aria-live="polite"
+                >
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+              )}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+                aria-busy={isLoading}
+              >
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </Link>
-            </div>
           </form>
+
+          {/* Demo Credentials Below Login Button */}
+          <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <InfoIcon className="h-4 w-4 text-blue-600" aria-hidden="true" />
+              <h3 className="text-sm font-semibold text-blue-900">Demo Accounts</h3>
+            </div>
+            <p className="text-xs text-blue-700 mb-3">Click to populate the login form:</p>
+            <div className="flex flex-col gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-start text-left border-blue-300 hover:bg-blue-100"
+                onClick={() => handleDemoLogin('demo_student', 'demo123')}
+                aria-label="Use demo student credentials"
+              >
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-blue-900">Student Account</span>
+                  <span className="text-xs text-blue-600">demo_student / demo123</span>
+                </div>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-start text-left border-blue-300 hover:bg-blue-100"
+                onClick={() => handleDemoLogin('demo_teacher', 'demo123')}
+                aria-label="Use demo teacher credentials"
+              >
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold text-blue-900">Teacher Account</span>
+                  <span className="text-xs text-blue-600">demo_teacher / demo123</span>
+                </div>
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
