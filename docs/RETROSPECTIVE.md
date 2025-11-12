@@ -332,3 +332,47 @@ A condensed summary of key learnings from the project.
 - **Type Safety**: Full TypeScript compilation success with strict mode enabled
 - **Acceptance Criteria Met**: All 4 acceptance criteria from issue #64 verified through tests
 
+## Recent Integration: Login Page with Demo Credentials (#89) - 2025-11-12
+
+### UI/UX Pattern Learnings
+- **Demo Credential Buttons**: Implemented clickable demo account buttons below login form that populate credentials on click, significantly improving developer/QA experience
+- **User-Friendly Error Messages**: Transformed technical Supabase errors into friendly messages ("Invalid username or password") without exposing implementation details
+- **Progressive Enhancement**: Demo credentials provide quick access while maintaining standard login form for production usage
+- **Role-Based Redirects**: Implemented smart redirect logic that checks URL query params first, then falls back to role-based dashboard routing
+
+### Next.js SSR Patterns
+- **Suspense Boundary Required**: Next.js 15+ requires Suspense boundary around components using useSearchParams() for proper SSR/static generation
+- **Build-Time Error Detection**: Build command caught SSR issues that unit tests didn't, emphasizing importance of running full build before PR
+- **Client Component Hydration**: LoginForm must be client component due to useSearchParams(), but page wrapper can remain server component with Suspense
+- **Loading State Handling**: Suspense fallback provides smooth loading experience during client-side hydration
+
+### Accessibility Implementation
+- **Comprehensive ARIA Coverage**: Successfully implemented WCAG 2.1 AA standards with aria-required, aria-invalid, aria-describedby, and aria-live attributes
+- **Dynamic ARIA Updates**: aria-invalid and aria-describedby dynamically update when errors occur, providing real-time feedback to screen readers
+- **Role Alert Pattern**: Error messages use role="alert" with aria-live="polite" for non-intrusive screen reader announcements
+- **Keyboard Navigation**: Full keyboard support tested through automated tests, ensuring accessible interaction without mouse
+
+### Testing Strategy
+- **16 Comprehensive Tests**: Created full test coverage including form rendering, demo button clicks, sign-in flow, error handling, redirects, and accessibility
+- **Mock Quality Matters**: Proper mocking of useAuth, useRouter, and useSearchParams prevented test brittleness and false positives
+- **Test Multiple Elements Pattern**: Used getAllByText() for elements appearing multiple times (demo123 appears twice), avoiding "found multiple elements" errors
+- **Accessibility Testing**: Tests verify ARIA attributes, keyboard navigation, and screen reader compatibility, ensuring accessibility isn't just documentation
+
+### Component Architecture
+- **shadcn/ui Integration**: Added Alert component from shadcn/ui, maintaining consistent UI patterns across application
+- **Separation of Concerns**: LoginForm handles UI/UX, AuthProvider handles authentication logic, proxy.ts handles authorization
+- **Props vs Context**: Used AuthProvider context for auth state, avoided prop drilling for deeply nested auth information
+- **Controlled Inputs**: Maintained React controlled input pattern for form state, enabling programmatic population from demo buttons
+
+### Development Workflow
+- **Issue Executor Skill**: Successfully used SynthesisFlow issue-executor skill to load context from GitHub issue and create feature branch
+- **Build Before Merge**: Running npm run build caught SSR issue that would have broken production deployment
+- **Iterative Testing**: Fixed test failures one at a time with small, focused edits rather than rewriting large sections
+- **Git Hygiene**: Feature branch, PR, squash merge, branch cleanup workflow maintained clean main branch history
+
+### Quality Assurance
+- **All Tests Passing**: 16/16 login form tests passed, no regressions in existing test suite
+- **Zero Linting Errors**: Clean ESLint run throughout development and after final Suspense fix
+- **Successful Build**: Next.js build completed successfully, generating static login page
+- **Acceptance Criteria Met**: All 6 acceptance criteria from issue #65 verified through tests and manual review
+
