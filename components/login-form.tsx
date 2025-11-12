@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { InfoIcon } from "lucide-react";
 
 export function LoginForm({
@@ -26,16 +26,19 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, profile } = useAuth();
+  const { signIn, profile, user } = useAuth();
+  const shouldRedirectRef = useRef(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    shouldRedirectRef.current = false;
 
     try {
       await signIn(username, password);
-      // Profile will be loaded by AuthProvider, and useEffect will handle redirect
+      // Mark that we should redirect when profile loads
+      shouldRedirectRef.current = true;
     } catch (error: unknown) {
       // Display user-friendly error messages without technical details
       if (error instanceof Error) {
@@ -50,13 +53,24 @@ export function LoginForm({
         setError('An unexpected error occurred. Please try again.');
       }
       setIsLoading(false);
+      shouldRedirectRef.current = false;
     }
   };
 
   // Handle redirect after profile loads
   useEffect(() => {
-    if (profile && isLoading) {
+    console.log('[LoginForm] Redirect check:', {
+      shouldRedirect: shouldRedirectRef.current,
+      hasUser: !!user,
+      hasProfile: !!profile,
+      profileRole: profile?.role,
+    });
+
+    // Only redirect if we just logged in and have both user and profile
+    if (shouldRedirectRef.current && user && profile) {
       const redirect = searchParams.get('redirect');
+      console.log('[LoginForm] Redirecting to:', redirect || `/${profile.role}/dashboard`);
+
       if (redirect) {
         router.push(redirect);
       } else {
@@ -69,9 +83,11 @@ export function LoginForm({
           router.push('/student/dashboard');
         }
       }
+      // Reset state after redirect
+      shouldRedirectRef.current = false;
       setIsLoading(false);
     }
-  }, [profile, isLoading, router, searchParams]);
+  }, [profile, user, router, searchParams]);
 
   const handleDemoLogin = (demoUsername: string, demoPassword: string) => {
     setUsername(demoUsername);
