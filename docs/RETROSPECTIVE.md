@@ -504,3 +504,78 @@ A condensed summary of key learnings from the project.
 - **Phase Navigation**: Add prev/next buttons and phase selection UI
 - **Progress Tracking**: Integrate with student_progress table to track completion
 
+
+## Recent Integration: Phase Content Renderer (#92) - 2025-11-12
+
+### Component Reuse Strategy
+- **V1 Component Adaptation**: Successfully adapted VideoPlayer from v1 (bus-math-nextjs) rather than creating from scratch, maintaining UX consistency
+- **Import Pattern Discovery**: Found v1 components use mix of default exports (ReflectionJournal) and named exports (ComprehensionCheck), requiring careful import statements
+- **Build vs Test Divergence**: Components that pass tests may fail Next.js build due to stricter TypeScript checking - always run build before merging
+- **Type Compatibility Issue**: Activity registry needed `ComponentType<any>` because components have heterogeneous prop types - legitimate use of `any` with eslint-disable
+
+### Discriminated Union Implementation
+- **Zod Schema First**: Used existing contentBlockSchema from schema/phases.ts as source of truth for type definitions
+- **Type Narrowing Pattern**: Switch statement on `block.type` provides perfect TypeScript narrowing for discriminated unions
+- **Exhaustiveness Check**: Added `const _exhaustive: never = block` as compile-time guarantee all cases handled
+- **Runtime Validation**: Validated blocks with Zod before rendering, filtering out invalid blocks gracefully
+
+### Error Boundary Architecture
+- **Per-Block Wrapping**: Wrapped each content block in error boundary rather than entire phase, allowing partial rendering on errors
+- **Class Component Required**: Error boundaries must be class components, not function components in React
+- **Development vs Production**: Showed error details in dev mode but user-friendly messages in production
+- **Graceful Degradation**: Invalid blocks show error UI but don't crash entire page
+
+### Activity Registry Pattern
+- **Centralized Mapping**: Single registry file maps all activity componentKeys to React components for dynamic rendering
+- **Type Safety Challenge**: Registry contains components with different prop types, necessitating `ComponentType<any>` signature
+- **Placeholder Strategy**: Used `(() => null) as unknown as ComponentType<any>` for unimplemented activities to satisfy type checker
+- **Lazy Loading Future**: Registry structure supports future lazy loading with React.lazy() for code splitting
+
+### Testing Mock Strategy
+- **Mock Before Import**: Vitest mocks must be defined before component imports to intercept module resolution properly
+- **Component Mocking**: Mocked child components (VideoPlayer, Callout) as simple div elements with data-testid for isolation
+- **Next/Image Mock**: Mocked next/image with img element plus eslint-disable to avoid warnings in tests
+- **UUID Validation**: Activity blocks require valid UUIDs (not strings like 'activity-123') - use proper UUID format in tests
+
+### Build vs Lint vs Test
+- **Three-Stage Validation**: Linting passes ≠ tests pass ≠ build succeeds - must run all three before PR
+- **Import Statement Strictness**: Build catches import mismatches (default vs named) that linting and tests miss
+- **Type Checking Levels**: `next build` runs stricter TypeScript checking than `npm test` or local IDE
+- **Eslint-Disable Justification**: Used eslint-disable for legitimate `any` types in heterogeneous collections, not to bypass errors
+
+### Component Props Interface Design
+- **Database Schema Alignment**: VideoPlayer props match video block schema exactly (videoUrl, duration, transcript, thumbnailUrl)
+- **Optional Props Handling**: Made thumbnailUrl optional but unused since v1 pattern doesn't display thumbnails
+- **Variant Type Safety**: Callout uses literal union type for variants matching database enum exactly
+- **Activity Props Separation**: ActivityRenderer receives activityId separately from activity data (fetched inside component)
+
+### Markdown Rendering Approach
+- **No External Dependencies**: Implemented simple markdown processor without react-markdown to avoid adding dependencies
+- **Basic Formatting Only**: Supports bold, italic, code, links, and paragraphs - sufficient for v2 MVP
+- **Regex-Based Processing**: Used regex replacements for markdown patterns, keeping implementation lightweight
+- **Future Enhancement**: Can swap for react-markdown later if rich formatting needed
+
+### Test Coverage Strategy
+- **15 Comprehensive Tests**: Covered all 5 block types, edge cases, and type narrowing validation
+- **Block Type Tests**: Separate test suite for each block type (markdown, video, image, callout, activity)
+- **Multiple Blocks Test**: Verified rendering order when multiple blocks present
+- **Empty State Test**: Confirmed graceful handling of empty contentBlocks array
+- **Invalid Block Handling**: Tested Zod validation filters out malformed blocks
+
+### Development Workflow
+- **Issue Executor Skill**: Successfully used SynthesisFlow skill to load context and create feature branch
+- **Iterative Build Fixes**: Fixed ReflectionJournal import, then type compatibility, demonstrating build as final gate
+- **Commit Message Format**: Used conventional commits with detailed body including acceptance criteria checklist
+- **PR Description Detail**: Included test evidence, file tree, and acceptance criteria in PR for reviewer context
+
+### Quality Assurance
+- **Zero Linting Errors**: All ESLint checks passed after adding appropriate eslint-disable comments
+- **All Tests Passing**: 15/15 tests passed in under 10 seconds
+- **Build Success**: Production build completed successfully after import/type fixes
+- **Auto-Merge Ready**: PR met all quality gates for immediate auto-merge
+
+### Architecture Decisions
+- **Client Components Only**: All content renderers marked 'use client' for interactivity (video loading, transcript toggle)
+- **Error Isolation**: Error boundaries wrap individual blocks not entire renderer, allowing partial success
+- **API-Fetched Activities**: Activities fetch from /api/activities/[id] rather than being embedded in blocks
+- **Registry vs Dynamic Imports**: Used static registry over dynamic imports for simpler debugging and type safety
