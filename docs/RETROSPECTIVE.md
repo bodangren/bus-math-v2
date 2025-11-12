@@ -3,7 +3,7 @@ title: Project Retrospective
 type: retrospective
 status: active
 created: 2025-11-05
-updated: 2025-11-11
+updated: 2025-11-12
 ---
 
 # Project Retrospective
@@ -216,4 +216,36 @@ A condensed summary of key learnings from the project.
 - **TypeScript Compilation Success**: Schema compiled successfully proving type safety of new organizational structures
 - **Migration Validation**: Generated migration file reviewed and validated before inclusion in PR
 - **Documentation in PR**: Comprehensive PR description with testing evidence, next steps, and known issues improves team communication
+
+## Recent Integration: Supabase Client Infrastructure (#86) - 2025-11-12
+
+### Client Architecture Learnings
+- **Three-Client Pattern**: Successfully established three distinct Supabase client patterns (browser, server, admin) following Next.js 15 best practices with @supabase/ssr
+- **Admin Client Isolation**: Created dedicated admin client with service role key for privileged operations, with comprehensive security warnings to prevent misuse
+- **Environment Variable Naming**: Confirmed browser clients use NEXT_PUBLIC_ prefix while service role keys remain server-only, enforcing security boundary
+- **Client Configuration**: Admin client disables autoRefreshToken and persistSession for stateless operations, optimized for one-off privileged tasks
+
+### Testing Infrastructure Setup
+- **Unit Test Coverage**: Achieved 7 passing unit tests across browser and admin clients, validating environment variable usage and client configuration
+- **Connection Validation Script**: Created automated validation script that tests all three client patterns, verifies environment variables, and performs security checks
+- **Mock Strategy**: Used Vitest mocks for @supabase/ssr and @supabase/supabase-js to test client creation without actual database connections
+- **Test Organization**: Placed tests alongside implementation files (lib/supabase/*.test.ts) following established project patterns
+
+### Security Best Practices
+- **Service Role Key Protection**: Implemented validation to ensure service role key never uses NEXT_PUBLIC_ prefix, preventing accidental browser exposure
+- **Error Handling**: Added comprehensive error messages for missing environment variables with clear guidance on what went wrong
+- **Security Documentation**: Included prominent warnings in admin client about RLS bypass and proper usage contexts (API routes, server actions, edge functions only)
+- **Type Safety**: Avoided 'any' types in favor of explicit type definitions, maintaining TypeScript strictness for security-critical code
+
+### Development Workflow
+- **Connection Testing First**: Validated all client connections before writing production code, catching configuration issues early
+- **Local Supabase**: Successfully used local Supabase instance for testing, demonstrating offline development capability
+- **Linting Standards**: Fixed all ESLint errors by replacing 'any' with proper error type handling, maintaining code quality standards
+- **Test-Driven Approach**: Wrote unit tests immediately after implementation, ensuring coverage from the start rather than as an afterthought
+
+### Environment Management
+- **Dual Environment Support**: .env.local supports both local Supabase (127.0.0.1:54321) and production remote config with clear comments
+- **Variable Validation**: Test script validates all required environment variables are present before attempting connections
+- **Consistent Naming**: Used NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY instead of ANON_KEY for clarity, though both terms are used in Supabase docs
+- **Script Portability**: Test scripts use dotenv to load .env.local, enabling standalone execution outside Next.js runtime
 
