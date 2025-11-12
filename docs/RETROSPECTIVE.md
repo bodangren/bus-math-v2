@@ -179,3 +179,41 @@ A condensed summary of key learnings from the project.
 - **Squash Merge Strategy**: Squash merging keeps main branch history clean while preserving feature branch details in PR
 - **Post-Merge Integration**: Updating retrospective after merge (not before) ensures learnings capture full workflow including merge itself
 
+## Recent Integration: Organizations Schema & FK Relationships (#85) - 2025-11-12
+
+### Multi-Tenant Architecture Learnings
+- **Organizations Table Foundation**: Established core multi-tenant architecture with organizations table containing essential fields (id, name, slug, settings JSONB)
+- **Settings Schema Design**: Using JSONB for organization settings enables flexible storage of timezone, locale, branding, and feature flags without schema changes
+- **Foreign Key Cascade Strategy**: Adding organizationId FK to profiles with cascade delete ensures data integrity and prevents orphaned records when organizations are removed
+- **Known UUID Pattern**: Using predictable UUIDs for seed data (`00000000-0000-0000-0000-000000000001`) simplifies testing and development environment setup
+
+### RLS Policy Implementation
+- **Comprehensive Policy Coverage**: Created organization-scoped RLS policies across multiple tables (organizations, profiles, classes, progress, submissions)
+- **Role-Based Access Pattern**: Established clear permission boundaries - admins manage organizations, teachers view org-scoped profiles, all authenticated users view organizations
+- **Policy Migration Strategy**: Separated RLS policies into dedicated Supabase migration file (20251112000000_organizations_rls_policies.sql) for better organization and maintainability
+- **Existing Table Policy Updates**: Extended RLS policies on existing tables to respect organization boundaries, enabling proper multi-tenant data isolation
+
+### Schema Generation & Migration
+- **Drizzle Schema Organization**: Created dedicated schema file (lib/db/schema/organizations.ts) following established project patterns for maintainability
+- **Dual Migration System**: Using both Drizzle migrations (drizzle/migrations/) and Supabase migrations (supabase/migrations/) to handle different database concerns
+- **Migration File Generation**: Successfully generated Drizzle migration (0000_fluffy_prodigy.sql) demonstrating schema-to-SQL transformation workflow
+- **TypeScript Type Safety**: Drizzle schema provides type-safe database access patterns throughout the codebase
+
+### Development Environment Challenges
+- **DNS Resolution Issues**: Encountered DNS resolution problems with direct database connection preventing `drizzle-kit push` execution
+- **Workaround Documentation**: Documented manual migration application process via Supabase dashboard/CLI as fallback when direct connection fails
+- **Local Development Setup**: Established pattern for local Supabase configuration and connection troubleshooting
+- **Connection String Format**: Learned importance of proper connection string configuration for Drizzle-to-Supabase integration
+
+### Seed Data Strategy
+- **Structured Seed Scripts**: Created organized seed script (00-demo-org.sql) with clear purpose and predictable data for development
+- **Demo Organization Pattern**: Established "Demo School" as canonical test organization with known identifiers for consistent testing
+- **Seed Script Numbering**: Using numeric prefixes (00-, 01-, etc.) ensures seed scripts execute in proper dependency order
+- **Reproducible Development Data**: Seed scripts enable quick environment setup and consistent developer experience across team
+
+### Quality Assurance
+- **Linting Before Push**: All linting checks passed before PR creation, demonstrating value of pre-commit quality gates
+- **TypeScript Compilation Success**: Schema compiled successfully proving type safety of new organizational structures
+- **Migration Validation**: Generated migration file reviewed and validated before inclusion in PR
+- **Documentation in PR**: Comprehensive PR description with testing evidence, next steps, and known issues improves team communication
+
