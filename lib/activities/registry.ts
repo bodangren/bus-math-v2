@@ -20,6 +20,17 @@ import { CashFlowTimeline } from '@/components/drag-drop-exercises/CashFlowTimel
 import { FinancialStatementMatching } from '@/components/drag-drop-exercises/FinancialStatementMatching';
 import { TrialBalanceSorting } from '@/components/drag-drop-exercises/TrialBalanceSorting';
 
+// Import business simulations
+import { LemonadeStand } from '@/components/business-simulations/LemonadeStand';
+import { StartupJourney } from '@/components/business-simulations/StartupJourney';
+import { BudgetBalancer } from '@/components/business-simulations/BudgetBalancer';
+import { CashFlowChallenge } from '@/components/business-simulations/CashFlowChallenge';
+import { InventoryManager } from '@/components/business-simulations/InventoryManager';
+import { PitchPresentationBuilder } from '@/components/business-simulations/PitchPresentationBuilder';
+
+// Import spreadsheet component
+import { SpreadsheetActivity } from '@/components/spreadsheet/SpreadsheetActivity';
+
 /**
  * Centralized registry for activity components.
  * Maps componentKey from database to React component.
@@ -42,27 +53,21 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'reflection-journal': ReflectionJournal,
   'peer-critique-form': PeerCritiqueForm,
 
+  // Business simulations
+  'lemonade-stand': LemonadeStand,
+  'startup-journey': StartupJourney,
+  'budget-balancer': BudgetBalancer,
+  'cash-flow-challenge': CashFlowChallenge,
+  'inventory-manager': InventoryManager,
+  'pitch-presentation-builder': PitchPresentationBuilder,
+  'pitch': PitchPresentationBuilder, // Alias for pitch-presentation-builder
+  'spreadsheet': SpreadsheetActivity,
+
   // Placeholder for remaining activity types - to be implemented
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'profit-calculator': (() => null) as unknown as ComponentType<any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'budget-worksheet': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'lemonade-stand': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'startup-journey': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'budget-balancer': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'cash-flow-challenge': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'inventory-manager': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'pitch-presentation-builder': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'spreadsheet': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'pitch': (() => null) as unknown as ComponentType<any>,
 };
 
 /**
