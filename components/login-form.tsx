@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { InfoIcon } from "lucide-react";
 
 export function LoginForm({
@@ -26,24 +26,19 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signIn, profile } = useAuth();
+  const { signIn, profile, user } = useAuth();
+  const shouldRedirectRef = useRef(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    shouldRedirectRef.current = false;
 
     try {
       await signIn(username, password);
-
-      // Get redirect parameter from URL, default based on role
-      const redirect = searchParams.get('redirect');
-      if (redirect) {
-        router.push(redirect);
-      } else {
-        // Wait for profile to load to determine redirect
-        // This will be handled by the useEffect watching profile changes
-      }
+      // Mark that we should redirect when profile loads
+      shouldRedirectRef.current = true;
     } catch (error: unknown) {
       // Display user-friendly error messages without technical details
       if (error instanceof Error) {
@@ -57,27 +52,34 @@ export function LoginForm({
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
-    } finally {
       setIsLoading(false);
+      shouldRedirectRef.current = false;
     }
   };
 
   // Handle redirect after profile loads
-  if (profile && !isLoading) {
-    const redirect = searchParams.get('redirect');
-    if (redirect) {
-      router.push(redirect);
-    } else {
-      // Default redirects based on role
-      if (profile.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else if (profile.role === 'teacher') {
-        router.push('/teacher/dashboard');
+  useEffect(() => {
+    // Only redirect if we just logged in and have both user and profile
+    if (shouldRedirectRef.current && user && profile) {
+      const redirect = searchParams.get('redirect');
+
+      if (redirect) {
+        router.push(redirect);
       } else {
-        router.push('/student/dashboard');
+        // Default redirects based on role
+        if (profile.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else if (profile.role === 'teacher') {
+          router.push('/teacher/dashboard');
+        } else {
+          router.push('/student/dashboard');
+        }
       }
+      // Reset state after redirect
+      shouldRedirectRef.current = false;
+      setIsLoading(false);
     }
-  }
+  }, [profile, user, router, searchParams]);
 
   const handleDemoLogin = (demoUsername: string, demoPassword: string) => {
     setUsername(demoUsername);

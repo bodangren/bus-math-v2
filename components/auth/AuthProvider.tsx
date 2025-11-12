@@ -4,17 +4,17 @@ import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-// Profile type from database schema
+// Profile type from database schema (using snake_case to match DB)
 interface Profile {
   id: string;
-  organizationId: string;
+  organization_id: string;
   username: string;
   role: 'student' | 'teacher' | 'admin';
-  displayName: string | null;
-  avatarUrl: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
   metadata: Record<string, unknown> | null;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface AuthContext {

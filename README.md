@@ -1,183 +1,198 @@
-# Supabase CLI
+# Math for Business Operations v2
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+An interactive, Supabase-backed digital textbook for teaching business mathematics to high school students. This Next.js application provides a comprehensive curriculum covering accounting fundamentals, financial analysis, and practical business calculations.
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+## Features
 
-This repository contains all the functionality for Supabase CLI.
+- **Interactive Lessons**: Six-phase learning structure with hands-on activities
+- **Progress Tracking**: Student progress monitoring and analytics
+- **Multi-tenant Architecture**: Organization-based access control
+- **Role-Based Access**: Separate interfaces for students, teachers, and administrators
+- **Spreadsheet Activities**: Interactive Excel-like activities for financial modeling
+- **Business Simulations**: Cash flow challenges, inventory management, and pitch presentations
+- **Accessibility Support**: Multi-language support and customizable reading levels
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+## Demo Credentials
 
-## Getting started
+For testing and development, use these demo accounts:
 
-### Install the CLI
+| Role    | Username       | Password |
+|---------|----------------|----------|
+| Teacher | `demo_teacher` | `demo123` |
+| Student | `demo_student` | `demo123` |
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+Both accounts are automatically seeded with the demo organization.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- npm or yarn
+- Supabase CLI (installed as dev dependency)
+
+### Local Development
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd bus-math-v2
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start local Supabase:
+   ```bash
+   npx supabase start
+   ```
+
+4. Run database migrations:
+   ```bash
+   npx supabase db reset
+   ```
+
+5. Seed demo data:
+   ```bash
+   # Seed organization
+   npx supabase db execute -f supabase/seed/00-demo-org.sql
+
+   # Seed demo users
+   npx tsx supabase/seed/01-demo-users.ts
+   ```
+
+6. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+7. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Environment Variables
+
+Copy `.env.local` and configure the following variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+DATABASE_URL=<your-database-url>
+DIRECT_URL=<your-direct-database-url>
+```
+
+For local development, these are pre-configured in `.env.local` to use local Supabase.
+
+## Project Structure
+
+```
+bus-math-v2/
+├── app/              # Next.js 15 app directory (routes, pages)
+├── components/       # React components
+│   ├── accounting/   # T-accounts, journal entries
+│   ├── auth/         # Authentication components
+│   ├── business-simulations/
+│   ├── charts/       # Recharts financial visualizations
+│   ├── spreadsheet/  # Excel-like activities
+│   └── teacher/      # Teacher-specific components
+├── lib/
+│   ├── db/           # Drizzle ORM schema and types
+│   └── supabase/     # Supabase client configurations
+├── supabase/
+│   ├── migrations/   # Database schema migrations
+│   └── seed/         # Seed data scripts
+├── docs/             # Project documentation
+└── public/           # Static assets
+
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Database**: Supabase (PostgreSQL)
+- **ORM**: Drizzle ORM
+- **Authentication**: Supabase Auth (username-based)
+- **UI Components**: shadcn/ui + Radix UI
+- **Styling**: Tailwind CSS
+- **Charts**: Recharts
+- **Testing**: Vitest + Testing Library
+- **TypeScript**: Strict mode enabled
+
+## Scripts
+
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm test` - Run unit tests
+- `npm run test:watch` - Run tests in watch mode
+
+## Database Seeding
+
+### Organizations
+
+The demo organization is seeded via SQL:
 
 ```bash
-npm i supabase --save-dev
+npx supabase db execute -f supabase/seed/00-demo-org.sql
 ```
 
-To install the beta release channel:
+This creates a demo organization with ID `00000000-0000-0000-0000-000000000001`.
+
+### Demo Users
+
+Demo users are seeded via TypeScript using the Auth Admin API:
 
 ```bash
-npm i supabase@beta --save-dev
+npx tsx supabase/seed/01-demo-users.ts
 ```
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+This creates:
+- A teacher account with role `teacher`
+- A student account with role `student`
+- Corresponding profile records linked to the demo organization
 
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
+The TypeScript approach ensures compatibility with Supabase Cloud, where direct SQL inserts to `auth.users` are not supported.
 
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
+## Testing
 
-<details>
-  <summary><b>macOS</b></summary>
-
-  Available via [Homebrew](https://brew.sh). To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
+Run the full test suite:
 
 ```bash
-supabase bootstrap
+npm test
 ```
 
-Or using npx:
+Run tests in watch mode during development:
 
 ```bash
-npx supabase bootstrap
+npm run test:watch
 ```
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+## Deployment
 
-## Docs
+This project is configured for deployment on Vercel with Supabase Cloud.
 
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run migrations: `npx supabase db push`
+3. Run seed scripts to populate initial data
+4. Deploy to Vercel and configure environment variables
+5. Ensure Row Level Security (RLS) policies are enabled
 
-## Breaking changes
+## Documentation
 
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+Comprehensive documentation is available in the `docs/` directory:
 
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+- `docs/project-brief.md` - Project scope and constraints
+- `docs/backend-architecture.md` - Database schema and RLS policies
+- `docs/frontend-architecture.md` - Component patterns and conventions
+- `docs/full-stack-architecture.md` - End-to-end architecture
+- `docs/TDD.md` - Development workflow and testing practices
 
-## Developing
+## Contributing
 
-To run from source:
+This project follows the SynthesisFlow methodology for spec-driven development. See `CLAUDE.md` for AI agent guidelines and workflow instructions.
 
-```sh
-# Go >= 1.22
-go run . help
-```
+## License
+
+Proprietary - All rights reserved
