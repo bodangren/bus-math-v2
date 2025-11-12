@@ -17,6 +17,7 @@
  * export const selectLessonSchema = createSelectSchema(lessons);
  */
 
+export * from './organizations';
 export * from './lessons';
 export * from './phases';
 export * from './activities';

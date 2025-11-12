@@ -22,27 +22,25 @@ This project uses SynthesisFlow, a modular, spec-driven development methodology.
 
 ## Available Skillsets
 
-Each skill contains comprehensive documentation in `SKILL.md` (50-262 lines) explaining purpose, workflow, and error handling. Helper scripts are located in each skill's `scripts/` directory.
+Each skill contains comprehensive documentation in `SKILL.md` explaining purpose, workflow, and error handling. Helper scripts are located in each skill's `scripts/` directory.
 
-- **`.claude/skills/project-init/`**: Initialize SynthesisFlow directory structure in new projects. Creates docs/specs and docs/changes directories.
-- **`skills/project-migrate/`**: Migrate existing (brownfield) projects with established documentation to SynthesisFlow structure. Intelligently discovers, categorizes, and migrates documentation while preserving content, adding frontmatter, and maintaining git history.
-- **`skills/prd-authoring/`**: Guide early-stage project planning through Product Requirements Documents (PRDs). Manages the complete workflow from initial product briefs through market research, PRD creation, validation, and epic decomposition. Bridges the gap between project ideas and spec-driven development with data-driven requirements and measurable success criteria.
-- **`.claude/skills/doc-indexer/`**: Scan and index project documentation for just-in-time context discovery. Provides a map of all available docs without loading full content.
-- **`.claude/skills/spec-authoring/`**: Create and refine specification proposals via Spec PR workflow. Supports both proposing new specs and updating based on review feedback.
-- **`.claude/skills/sprint-planner/`**: Plan sprints by creating GitHub milestones and issues from approved specs. Automates issue creation while LLM guides strategic planning.
-- **`.claude/skills/issue-executor/`**: Execute development workflow for a single issue. Loads full context (specs, retrospective, doc index) and creates feature branch.
-- **`.claude/skills/change-integrator/`**: Integrate completed changes post-merge. Moves specs to source-of-truth, updates retrospective, and cleans up branches.
-- **`.claude/skills/agent-integrator/`**: Create or update this AGENTS.md file. Uses marker-based idempotent updates to register SynthesisFlow capabilities.
+```
+.
+└── .claude/
+    └── skills/
+        ├── agent-integrator/ — Use this skill to create or update the root AGENTS.md file to register SynthesisFlow skills for AI agent discovery. Triggers include "register SynthesisFlow", "update AGENTS.md", "setup agent guide", or initializing a new project.
+        ├── change-integrator/ — Use this skill after a code PR is merged to integrate approved specs into the source-of-truth, update the retrospective with learnings, and clean up branches. Triggers include "integrate change", "post-merge cleanup", or completing a feature implementation.
+        ├── doc-indexer/ — Use this skill at the beginning of any session or when needing to understand available project documentation. Provides just-in-time context by scanning YAML frontmatter from all markdown files in the docs/ directory without loading full content.
+        ├── issue-executor/ — Use this skill to start work on an assigned GitHub issue. This is the core implementation loop of the SynthesisFlow methodology. Guides the AI to load full context (specs, plans, retrospective), create a feature branch, and begin implementation. Triggers include "start work on issue", "implement issue #X", or beginning development work.
+        ├── prd-authoring/ — Use this skill for early-stage project planning through Product Requirements Documents (PRDs). Guides users from initial project ideas through product briefs, market research, PRD creation, validation, and epic decomposition. Triggers include "create PRD", "product brief", "validate requirements", or beginning project inception activities.
+        ├── project-init/ — Use this skill when starting a new project or adding SynthesisFlow to an existing project. Scaffolds the directory structure (docs/specs, docs/changes) and configuration files needed for the spec-driven development workflow.
+        ├── project-migrate/ — Use this skill to migrate existing (brownfield) projects with established documentation to the SynthesisFlow structure. Intelligently discovers, categorizes, and migrates documentation while preserving content, adding frontmatter, and maintaining git history.
+        ├── spec-authoring/ — Use this skill when proposing new features or changes via the Spec PR process. Manages the creation, refinement, and approval of feature specifications before any code is written. Triggers include "create spec", "propose change", "start spec PR", or beginning feature definition.
+        └── sprint-planner/ — Use this skill when planning a new sprint by selecting approved specs from the project board and creating atomic GitHub issues for the development team. Triggers include "plan sprint", "create sprint", "start new sprint", or beginning a development cycle.
 
-## Getting Started
+```
 
-To begin working on this project:
-1. Check current git branch and status
-2. Run `doc-indexer` skill to get documentation map
-3. Review `RETROSPECTIVE.md` for recent learnings
-4. Use `issue-executor` skill to start work on assigned issues
-
-Each skill's `SKILL.md` provides detailed workflow instructions and explains when to use the skill.
+To begin, always assess the current state by checking the git branch and running the `doc-indexer`.
 <!-- SYNTHESIS_FLOW_END -->
 
 

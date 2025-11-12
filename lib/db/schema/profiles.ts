@@ -1,5 +1,6 @@
 import { jsonb, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { z } from 'zod';
+import { organizations } from './organizations';
 
 /**
  * Profiles represent the application-facing identity for Supabase Auth users.
@@ -28,6 +29,9 @@ export type ProfileMetadata = z.infer<typeof profileMetadataSchema>;
 
 export const profiles = pgTable('profiles', {
   id: uuid('id').primaryKey(),
+  organizationId: uuid('organization_id')
+    .notNull()
+    .references(() => organizations.id, { onDelete: 'cascade' }),
   role: profileRoleEnum('role').notNull().default('student'),
   displayName: text('display_name'),
   avatarUrl: text('avatar_url'),
