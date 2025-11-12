@@ -83,7 +83,7 @@ export async function proxy(request: NextRequest) {
       // Students trying to access teacher routes get redirected to student area
       if (profile.role === 'student') {
         const redirectUrl = request.nextUrl.clone();
-        redirectUrl.pathname = '/student';
+        redirectUrl.pathname = '/student/dashboard';
         return NextResponse.redirect(redirectUrl);
       }
       // Other unauthorized users go to login

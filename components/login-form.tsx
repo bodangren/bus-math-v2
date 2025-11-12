@@ -59,17 +59,9 @@ export function LoginForm({
 
   // Handle redirect after profile loads
   useEffect(() => {
-    console.log('[LoginForm] Redirect check:', {
-      shouldRedirect: shouldRedirectRef.current,
-      hasUser: !!user,
-      hasProfile: !!profile,
-      profileRole: profile?.role,
-    });
-
     // Only redirect if we just logged in and have both user and profile
     if (shouldRedirectRef.current && user && profile) {
       const redirect = searchParams.get('redirect');
-      console.log('[LoginForm] Redirecting to:', redirect || `/${profile.role}/dashboard`);
 
       if (redirect) {
         router.push(redirect);

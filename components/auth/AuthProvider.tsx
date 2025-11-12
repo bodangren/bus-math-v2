@@ -49,7 +49,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Fetch profile when user changes
   useEffect(() => {
     async function fetchProfile(userId: string) {
-      console.log('[AuthProvider] Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -57,12 +56,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .single();
 
       if (error) {
-        console.error('[AuthProvider] Error fetching profile:', error);
+        console.error('Error fetching profile:', error);
         setProfile(null);
         return;
       }
 
-      console.log('[AuthProvider] Profile loaded:', data);
       setProfile(data);
     }
 
