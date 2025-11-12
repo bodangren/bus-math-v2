@@ -249,3 +249,42 @@ A condensed summary of key learnings from the project.
 - **Consistent Naming**: Used NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY instead of ANON_KEY for clarity, though both terms are used in Supabase docs
 - **Script Portability**: Test scripts use dotenv to load .env.local, enabling standalone execution outside Next.js runtime
 
+## Recent Integration: Authentication System (#87) - 2025-11-12
+
+### Auth Architecture Learnings
+- **Username-Based Auth Pattern**: Successfully implemented username-only authentication using Supabase Auth's email field as transport layer (`username@internal.domain`)
+- **React Context for Auth State**: Established global auth context pattern using React Context API, providing clean `useAuth()` hook interface throughout app
+- **Profile Schema Extension**: Added username field to profiles table with proper unique constraint, requiring migration coordination with existing data
+- **Three-Part Auth State**: Auth context provides user (Supabase), profile (database), and loading state for comprehensive auth information
+- **Session Persistence**: Leveraged Supabase's built-in session management for automatic auth state persistence across page reloads
+
+### Testing Strategy
+- **Comprehensive Mock Coverage**: Created 10 unit tests with proper Supabase client mocking, covering success paths, error handling, and edge cases
+- **Mock Before Import Pattern**: Vitest mocks must be defined before component imports to properly intercept module resolution
+- **Context Testing Pattern**: Established pattern for testing React Context providers with test components consuming the context
+- **Error Path Testing**: Included tests for profile fetch failures and unauthorized context usage, ensuring graceful degradation
+
+### Schema Management
+- **Migration Workflow**: Successfully used drizzle-kit generate followed by direct SQL application to avoid interactive prompts
+- **Schema-First Development**: Updated Drizzle schema first, then generated migration, ensuring type safety before database changes
+- **Unique Constraint Timing**: Applied username unique constraint requires careful data seeding order (profiles need usernames before constraint enforcement)
+- **Migration Numbering**: Drizzle auto-numbers migrations (0001_, 0002_), maintaining clear migration history
+
+### Component Integration
+- **Provider Wrapping Order**: AuthProvider must wrap ThemeProvider to ensure auth context available to themed components
+- **Client-Only Context**: Auth provider marked with 'use client' directive since React Context is client-side only in Next.js 15
+- **Async Profile Fetching**: Profile fetch triggered by useEffect on user change, avoiding race conditions during auth state updates
+- **Loading State Management**: Three-stage loading: initial (true) → session check → profile fetch, providing smooth UX
+
+### Development Workflow
+- **Lint-First Approach**: Running linting immediately after implementation caught unused import before tests, saving iteration time
+- **Test Isolation**: Each test properly mocks dependencies and cleans up, preventing test interdependencies
+- **Type Safety Over Any**: Avoided 'any' types throughout implementation, maintaining TypeScript strictness even in test mocks
+- **Git Hygiene**: Feature branch, PR, squash merge, and cleanup workflow keeps main branch history clean and linear
+
+### Quality Assurance
+- **100% Test Pass Rate**: All 10 new tests passing, no new failures introduced to existing test suite
+- **Zero Linting Errors**: Fixed unused import immediately, maintaining clean codebase standards
+- **Type Compilation Success**: TypeScript compilation passed without errors, validating type safety of auth implementation
+- **Mock Quality**: Proper mock types and return values prevented test brittleness and false positives
+
