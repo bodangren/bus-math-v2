@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { InfoIcon } from "lucide-react";
 
 export function LoginForm({
@@ -35,15 +35,7 @@ export function LoginForm({
 
     try {
       await signIn(username, password);
-
-      // Get redirect parameter from URL, default based on role
-      const redirect = searchParams.get('redirect');
-      if (redirect) {
-        router.push(redirect);
-      } else {
-        // Wait for profile to load to determine redirect
-        // This will be handled by the useEffect watching profile changes
-      }
+      // Profile will be loaded by AuthProvider, and useEffect will handle redirect
     } catch (error: unknown) {
       // Display user-friendly error messages without technical details
       if (error instanceof Error) {
@@ -57,27 +49,29 @@ export function LoginForm({
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
-    } finally {
       setIsLoading(false);
     }
   };
 
   // Handle redirect after profile loads
-  if (profile && !isLoading) {
-    const redirect = searchParams.get('redirect');
-    if (redirect) {
-      router.push(redirect);
-    } else {
-      // Default redirects based on role
-      if (profile.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else if (profile.role === 'teacher') {
-        router.push('/teacher/dashboard');
+  useEffect(() => {
+    if (profile && isLoading) {
+      const redirect = searchParams.get('redirect');
+      if (redirect) {
+        router.push(redirect);
       } else {
-        router.push('/student/dashboard');
+        // Default redirects based on role
+        if (profile.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else if (profile.role === 'teacher') {
+          router.push('/teacher/dashboard');
+        } else {
+          router.push('/student/dashboard');
+        }
       }
+      setIsLoading(false);
     }
-  }
+  }, [profile, isLoading, router, searchParams]);
 
   const handleDemoLogin = (demoUsername: string, demoPassword: string) => {
     setUsername(demoUsername);
