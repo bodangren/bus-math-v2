@@ -432,3 +432,75 @@ A condensed summary of key learnings from the project.
 - **RLS Policy Fixed Permanently**: Migration file ensures recursive policy never gets re-created
 - **Login Flow Verified**: Both demo accounts successfully authenticate and redirect to appropriate dashboards
 - **Clean Branch History**: Squash merge kept main branch history readable despite 6 feature branch commits
+
+
+## Recent Integration: Lesson Page Refactor (#91) - 2025-11-12
+
+### Server Component Patterns
+- **Async Server Components**: Successfully implemented Next.js 15 server component with async data fetching directly in component body
+- **Database in Server Components**: Used Drizzle ORM db client directly in server component without additional abstraction layer
+- **No Client Boundary**: Kept page component fully server-rendered, delegating client interactivity to separate LessonRenderer component
+- **Efficient Data Flow**: Props passed from server component to client component maintain type safety through Drizzle schema types
+
+### Database Query Strategy
+- **Separate Queries Pattern**: Fetched lesson first, then phases in ordered query rather than attempting complex joins
+- **Order By Best Practice**: Used `.orderBy(phases.phaseNumber)` to ensure phases render in correct sequence
+- **Early Return on Null**: Checked for null lesson result before querying phases, avoiding unnecessary database calls
+- **Type Safety Throughout**: Drizzle schema types automatically inferred for query results, no manual type casting needed
+
+### Content Block Rendering
+- **Discriminated Union Pattern**: Content blocks schema uses discriminated union on `type` field, enabling TypeScript narrowing in rendering logic
+- **Placeholder Rendering Strategy**: Implemented basic rendering for all 5 content block types (markdown, callout, video, image, activity) as foundation for future enhancement
+- **Regex for Display Text**: Used `replace(/-/g, ' ')` with global flag to properly format callout variant names (fixed initial bug with single replace)
+- **Graceful Degradation**: Components handle null/undefined for optional fields (description, estimatedMinutes, metadata) without errors
+
+### Next.js Loading States
+- **loading.tsx Convention**: Created loading.tsx sibling to page.tsx for automatic Suspense boundary handling
+- **Skeleton UI Pattern**: Loading state mirrors actual content structure (header, phases) for smooth visual transition
+- **Animate Pulse Utility**: Used Tailwind `animate-pulse` class for subtle loading animation on skeleton elements
+- **No Manual Suspense**: Next.js automatically wraps page in Suspense when loading.tsx exists, no manual implementation needed
+
+### 404 Handling
+- **notFound() Import**: Imported `notFound` from `next/navigation`, not custom implementation
+- **Early Return Pattern**: Called `notFound()` immediately after null check, preventing further execution
+- **No Custom 404 Page Needed**: Next.js default 404 page sufficient for this use case, can be customized later via not-found.tsx
+- **Type Safety**: TypeScript knows `notFound()` never returns, so subsequent code assumes lesson exists
+
+### Testing Strategy
+- **15 Tests, All Passing**: Achieved comprehensive coverage with 4 page integration tests + 11 component tests
+- **Mock Chain Complexity**: Database query mocking required careful mock chain construction (select → from → where → limit/orderBy)
+- **Mock Before Import**: Mocked modules (`next/navigation`, `@/lib/db/drizzle`) before importing component to avoid initialization errors
+- **Component Mocking**: Mocked LessonRenderer in page tests to isolate data fetching logic from rendering logic
+- **Test Data Factories**: Created reusable mock lesson and phase objects with all required fields for consistent test fixtures
+
+### Type Safety Patterns
+- **Schema as Single Source**: Imported types directly from Drizzle schema files (LessonMetadata, PhaseMetadata, ContentBlock)
+- **No Type Assertions**: Zero use of `as` or `any` throughout implementation, relying on proper schema types
+- **Interface Alignment**: Component prop interfaces use same types as database schema, preventing drift
+- **Promise Params Pattern**: Next.js 15 dynamic route params are Promises, used `await params` pattern correctly
+
+### Development Workflow
+- **Issue Executor Skill**: Used SynthesisFlow skill to load context and create feature branch automatically
+- **TDD Approach**: Wrote tests alongside implementation, catching issues early (e.g., regex bug in callout rendering)
+- **Iterative Testing**: Ran specific test suites (`npm test -- components/student/LessonRenderer`) during development for fast feedback
+- **Linting First**: Ran linting before committing to catch issues like unused imports or type errors
+
+### Quality Assurance
+- **Zero Linting Errors**: All ESLint checks passed with no warnings
+- **All Tests Passing**: Both new tests (15) and existing test suite passed
+- **Build Not Run**: Did not run production build as part of this task (should be added to workflow)
+- **Acceptance Criteria**: All 4 criteria from issue #67 explicitly verified and documented in PR
+
+### Architecture Decisions
+- **Component Separation**: Split server page from client renderer for clear server/client boundary
+- **No Data Fetching in Client**: All data loading happens server-side, client components are pure presentational
+- **Placeholder Content**: Chose simple rendering over complex markdown/video players to ship faster, iterate later
+- **No State Management**: Static rendering with no client-side state, keeping implementation simple
+
+### Future Enhancements Identified
+- **Markdown Rendering**: Need proper markdown parser (react-markdown) for rich content formatting
+- **Video Embeds**: Placeholder shows URL, should embed actual video player
+- **Activity Components**: Activity blocks need dynamic component loading based on activity type
+- **Phase Navigation**: Add prev/next buttons and phase selection UI
+- **Progress Tracking**: Integrate with student_progress table to track completion
+
