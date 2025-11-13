@@ -28,9 +28,11 @@ if [ -z "$PR_NUMBER" ] || [ -z "$BRANCH_NAME" ] || [ -z "$ITEM_ID" ]; then
 fi
 
 # --- CONFIGURATION (should be detected dynamically in a future version) ---
-PROJECT_ID="PVT_kwHOARC_Ns4BG9YU"
-FIELD_ID="PVTSSF_lAHOARC_Ns4BG9YUzg32qas" # Workflow Stage
-DONE_OPTION_ID="6bc77efe"
+# Project: Business Math v2
+PROJECT_ID="PVT_kwHOARC_Ns4BHjGx"
+FIELD_ID="PVTSSF_lAHOARC_Ns4BHjGxzg4RYRY" # Status
+DONE_OPTION_ID="98236657"
+RETRO_FILE="docs/RETROSPECTIVE.md"
 
 echo "Starting complete-change workflow for PR #$PR_NUMBER..."
 
@@ -50,7 +52,11 @@ git pull
 # 3. Delete merged branch
 echo "Deleting merged branch: $BRANCH_NAME..."
 git push origin --delete "$BRANCH_NAME" || echo "Remote branch $BRANCH_NAME may have already been deleted."
-git branch -D "$BRANCH_NAME"
+if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1; then
+  git branch -D "$BRANCH_NAME"
+else
+  echo "Local branch $BRANCH_NAME not found, skipping delete."
+fi
 
 # 4. Integrate Spec (if a change directory was provided)
 if [ -n "$CHANGE_DIR" ] && [ -d "$CHANGE_DIR" ]; then
@@ -73,8 +79,8 @@ gh project item-edit --project-id "$PROJECT_ID" --id "$ITEM_ID" --field-id "$FIE
 echo "Updating retrospective..."
 # In a real implementation, this would be a more interactive process.
 RETRO_ENTRY="### #$PR_NUMBER - $BRANCH_NAME\n\n- **Went well:** The auto-merge workflow completed successfully.\n- **Lesson:** N/A\n"
-echo -e "\n$RETRO_ENTRY" >> RETROSPECTIVE.md
-git add RETROSPECTIVE.md
+echo -e "\n$RETRO_ENTRY" >> "$RETRO_FILE"
+git add "$RETRO_FILE"
 git commit -m "docs: Add retrospective for PR #$PR_NUMBER"
 
 # 7. Push final changes

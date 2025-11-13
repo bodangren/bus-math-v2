@@ -63,6 +63,5 @@ A condensed summary of key learnings from the project.
 - **Home Page Refactor (#71):** Refactored home page to async Server Component with database-driven content. Created RPC function `get_curriculum_stats()` and implemented fallback pattern for PostgREST schema cache refresh delays. Migrated from HSL to oklch color space for Excel-themed professional palette. Key lesson: gradient text (bg-clip-text) severely impacts readability—use solid text colors for headings. Card foreground colors must contrast with card backgrounds (Capstone card was white-on-white). Always verify color accessibility after theme changes.
 ### #96 - feat/72-task-11-curriculum-overview-page
 
-- **Went well:** The auto-merge workflow completed successfully.
-- **Lesson:** N/A
-
+- **Went well:** Grouping lessons by unit inside a dedicated helper let the new curriculum overview render Supabase data with minimal server-component logic, so the page stayed easy to test.
+- **Lesson:** Navigation changes must target the header actually mounted in `app/layout.tsx`; deleting unused components avoided confusion, but we now double-check layout wiring before assuming which shell is live.
