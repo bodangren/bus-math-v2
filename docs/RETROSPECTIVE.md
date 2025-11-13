@@ -81,3 +81,7 @@ A condensed summary of key learnings from the project.
 - **Went well:** The auto-merge workflow completed successfully.
 - **Lesson:** N/A
 
+### #100 - feat/76-task-15-assessment-submission-api
+
+- **Went well:** Consolidating scoring into a shared helper plus the new assessment API meant server-only grading and persistence dropped in cleanly, and Vitest mocks kept Supabase auth flows reliable without hitting the network.
+- **Lesson:** Casting PostgREST timestamp strings to `Date` objects before running them through the Drizzle select schemas avoids avoidable validation noise, especially when writing API tests against mocked records.
