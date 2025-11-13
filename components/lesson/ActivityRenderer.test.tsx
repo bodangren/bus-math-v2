@@ -1,37 +1,79 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+
 import { ActivityRenderer } from './ActivityRenderer';
 import type { Activity } from '@/lib/db/schema/validators';
 
-// Mock fetch globally
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+global.fetch = mockFetch as unknown as typeof fetch;
 
-// Mock the activity registry
-vi.mock('@/lib/activities/registry', () => ({
-  getActivityComponent: vi.fn((componentKey: string) => {
-    // Return a mock component for valid keys, null for invalid ones
-    if (componentKey === 'comprehension-quiz') {
-      const MockActivity = ({ title, description }: { title: string; description: string }) => (
-        <div data-testid="mock-activity">
-          <h2>{title}</h2>
-          <p>{description}</p>
-        </div>
-      );
-      MockActivity.displayName = 'MockActivity';
-      return MockActivity;
-    }
-    return null;
-  }),
-}));
+var mockGetActivityComponent: ReturnType<typeof vi.fn>;
+vi.mock('@/lib/activities/registry', () => {
+  mockGetActivityComponent = vi.fn();
+  return {
+    getActivityComponent: mockGetActivityComponent,
+  };
+});
+
+const MockActivityComponent = ({
+  activity,
+  onSubmit,
+}: {
+  activity: Activity;
+  onSubmit?: (payload: Record<string, unknown>) => void;
+}) => {
+  const props = activity.props as { title?: string; description?: string };
+
+  return (
+    <div data-testid="mock-activity">
+      <h2>{props.title ?? activity.displayName}</h2>
+      {props.description && <p>{props.description}</p>}
+      {onSubmit && (
+        <button onClick={() => onSubmit({ activityId: activity.id, responses: { q1: '4' } })}>
+          Submit answers
+        </button>
+      )}
+    </div>
+  );
+};
+
+const buildActivity = (overrides?: Partial<Activity>): Activity => ({
+  id: 'test-activity-id',
+  componentKey: 'comprehension-quiz',
+  displayName: 'Test Quiz',
+  description: 'A test comprehension quiz',
+  props: {
+    title: 'Sample Quiz',
+    description: 'Test your understanding',
+    showExplanations: true,
+    allowRetry: true,
+    questions: [
+      {
+        id: 'q1',
+        text: 'What is 2+2?',
+        type: 'multiple-choice',
+        options: ['3', '4', '5'],
+        correctAnswer: '4',
+        explanation: 'Two plus two equals four',
+      },
+    ],
+  },
+  gradingConfig: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...overrides,
+});
 
 describe('ActivityRenderer', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
+    mockFetch.mockReset();
+    mockGetActivityComponent!.mockReset();
+    mockGetActivityComponent!.mockImplementation((componentKey: string) => {
+      if (componentKey === 'comprehension-quiz') {
+        return MockActivityComponent;
+      }
+      return null;
+    });
   });
 
   it('should show loading state initially', () => {
@@ -45,35 +87,9 @@ describe('ActivityRenderer', () => {
   });
 
   it('should fetch and render activity with correct props', async () => {
-    const mockActivity: Activity = {
-      id: 'test-activity-id',
-      componentKey: 'comprehension-quiz',
-      displayName: 'Test Quiz',
-      description: 'A test comprehension quiz',
-      props: {
-        title: 'Sample Quiz',
-        description: 'Test your understanding',
-        showExplanations: true,
-        allowRetry: true,
-        questions: [
-          {
-            id: 'q1',
-            text: 'What is 2+2?',
-            type: 'multiple-choice',
-            options: ['3', '4', '5'],
-            correctAnswer: '4',
-            explanation: 'Two plus two equals four',
-          },
-        ],
-      },
-      gradingConfig: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockActivity,
+      json: async () => buildActivity(),
     });
 
     render(<ActivityRenderer activityId="test-activity-id" />);
@@ -88,26 +104,19 @@ describe('ActivityRenderer', () => {
   });
 
   it('should render required badge when required prop is true', async () => {
-    const mockActivity: Activity = {
-      id: 'test-activity-id',
-      componentKey: 'comprehension-quiz',
-      displayName: 'Required Quiz',
-      description: 'A required quiz',
-      props: {
-        title: 'Important Quiz',
-        description: 'Must complete',
-        showExplanations: true,
-        allowRetry: false,
-        questions: [],
-      },
-      gradingConfig: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockActivity,
+      json: async () =>
+        buildActivity({
+          displayName: 'Required Quiz',
+          props: {
+            title: 'Important Quiz',
+            description: 'Must complete',
+            showExplanations: true,
+            allowRetry: false,
+            questions: [],
+          } as Activity['props'],
+        }),
     });
 
     render(<ActivityRenderer activityId="test-activity-id" required={true} />);
@@ -150,21 +159,15 @@ describe('ActivityRenderer', () => {
   });
 
   it('should show error message when component key is invalid', async () => {
-    const mockActivity: Activity = {
-      id: 'test-activity-id',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      componentKey: 'invalid-component' as any,
-      displayName: 'Invalid Activity',
-      description: 'This component does not exist',
-      props: {},
-      gradingConfig: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
+    mockGetActivityComponent!.mockImplementation(() => null);
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockActivity,
+      json: async () =>
+        buildActivity({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          componentKey: 'invalid-component' as any,
+          displayName: 'Invalid Activity',
+        }),
     });
 
     render(<ActivityRenderer activityId="test-activity-id" />);
@@ -189,26 +192,13 @@ describe('ActivityRenderer', () => {
   });
 
   it('should render description when provided', async () => {
-    const mockActivity: Activity = {
-      id: 'test-activity-id',
-      componentKey: 'comprehension-quiz',
-      displayName: 'Quiz with Description',
-      description: 'This is a detailed description of the activity',
-      props: {
-        title: 'Sample Quiz',
-        description: 'Test description',
-        showExplanations: true,
-        allowRetry: true,
-        questions: [],
-      },
-      gradingConfig: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockActivity,
+      json: async () =>
+        buildActivity({
+          displayName: 'Quiz with Description',
+          description: 'This is a detailed description of the activity',
+        }),
     });
 
     render(<ActivityRenderer activityId="test-activity-id" />);
@@ -218,5 +208,90 @@ describe('ActivityRenderer', () => {
     });
 
     expect(screen.getByText('This is a detailed description of the activity')).toBeInTheDocument();
+  });
+
+  it('submits answers to the assessment API and shows server score', async () => {
+    const gradedActivity = buildActivity({
+      gradingConfig: {
+        autoGrade: true,
+        passingScore: 80,
+        partialCredit: false,
+      },
+    });
+
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => gradedActivity,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          score: 3,
+          maxScore: 4,
+          percentage: 75,
+          feedback: 'Great effort!',
+        }),
+      });
+
+    render(<ActivityRenderer activityId="test-activity-id" />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Quiz')).toBeInTheDocument();
+    });
+
+    const submitButton = screen.getByRole('button', { name: /submit answers/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Assessment submitted/i)).toBeInTheDocument();
+    });
+
+    const submissionCall = mockFetch.mock.calls[1];
+    expect(submissionCall?.[0]).toBe('/api/progress/assessment');
+    const body = JSON.parse(submissionCall?.[1]?.body as string);
+    expect(body).toMatchObject({
+      activityId: gradedActivity.id,
+      answers: { q1: '4' },
+    });
+    expect(body).not.toHaveProperty('score');
+
+    expect(screen.getByText(/3\/4/)).toBeInTheDocument();
+    expect(screen.getByText(/Great effort/)).toBeInTheDocument();
+  });
+
+  it('shows an error when assessment submission fails', async () => {
+    const gradedActivity = buildActivity({
+      gradingConfig: {
+        autoGrade: true,
+        passingScore: 80,
+        partialCredit: false,
+      },
+    });
+
+    mockFetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => gradedActivity,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({ error: 'Unable to save submission' }),
+      });
+
+    render(<ActivityRenderer activityId="test-activity-id" />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Quiz')).toBeInTheDocument();
+    });
+
+    const submitButton = screen.getByRole('button', { name: /submit answers/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Submission failed/i)).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/Unable to save submission/i)).toBeInTheDocument();
   });
 });

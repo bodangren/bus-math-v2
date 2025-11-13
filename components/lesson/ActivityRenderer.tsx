@@ -1,15 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+
 import { getActivityComponent } from '@/lib/activities/registry';
 import type { Activity } from '@/lib/db/schema/validators';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2 } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ActivityRendererProps {
   activityId: string;
   required?: boolean;
+}
+
+interface ActivitySubmissionPayload {
+  activityId?: string;
+  answers?: Record<string, unknown>;
+  responses?: Record<string, unknown>;
+  interactionHistory?: unknown[];
+  metadata?: Record<string, unknown>;
+}
+
+interface AssessmentResponse {
+  score: number;
+  maxScore: number;
+  percentage: number;
+  feedback?: string;
 }
 
 /**
@@ -20,6 +37,9 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [submissionResult, setSubmissionResult] = useState<AssessmentResponse | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     async function fetchActivity() {
@@ -46,6 +66,73 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
 
     fetchActivity();
   }, [activityId]);
+
+  useEffect(() => {
+    setSubmissionResult(null);
+    setSubmissionError(null);
+    setSubmitting(false);
+  }, [activityId]);
+
+  const handleAssessmentSubmit = useCallback(
+    async (payload: ActivitySubmissionPayload) => {
+      if (!activity || !activity.gradingConfig?.autoGrade) {
+        return;
+      }
+
+      const answers = payload.answers ?? payload.responses;
+      if (
+        !answers ||
+        typeof answers !== 'object' ||
+        Array.isArray(answers) ||
+        Object.keys(answers).length === 0
+      ) {
+        setSubmissionError('Please complete the assessment before submitting.');
+        setSubmissionResult(null);
+        return;
+      }
+
+      setSubmitting(true);
+      setSubmissionError(null);
+      setSubmissionResult(null);
+
+      try {
+        const response = await fetch('/api/progress/assessment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            activityId: payload.activityId ?? activity.id,
+            answers,
+            interactionHistory: payload.interactionHistory,
+            metadata: payload.metadata,
+          }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data?.error ?? 'Unable to submit assessment');
+        }
+
+        setSubmissionResult({
+          score: data.score,
+          maxScore: data.maxScore,
+          percentage: data.percentage,
+          feedback: data.feedback,
+        });
+      } catch (submitError) {
+        setSubmissionResult(null);
+        setSubmissionError(
+          submitError instanceof Error
+            ? submitError.message
+            : 'Unable to submit assessment',
+        );
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [activity],
+  );
 
   if (loading) {
     return (
@@ -96,8 +183,39 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
           <p className="text-sm text-muted-foreground">{activity.description}</p>
         )}
       </CardHeader>
-      <CardContent>
-        <ActivityComponent {...activity.props} />
+      <CardContent className="space-y-4">
+        <ActivityComponent
+          activity={activity}
+          onSubmit={activity.gradingConfig?.autoGrade ? handleAssessmentSubmit : undefined}
+        />
+        {submitting && (
+          <Alert>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <AlertTitle>Submitting answers…</AlertTitle>
+            <AlertDescription>
+              <p>We&apos;re recording your work and calculating your score.</p>
+            </AlertDescription>
+          </Alert>
+        )}
+        {submissionResult && (
+          <Alert>
+            <AlertTitle>Assessment submitted</AlertTitle>
+            <AlertDescription>
+              <p>
+                Score: {submissionResult.score}/{submissionResult.maxScore} ({submissionResult.percentage}%)
+              </p>
+              {submissionResult.feedback && <p>{submissionResult.feedback}</p>}
+            </AlertDescription>
+          </Alert>
+        )}
+        {submissionError && !submitting && (
+          <Alert variant="destructive">
+            <AlertTitle>Submission failed</AlertTitle>
+            <AlertDescription>
+              <p>{submissionError}</p>
+            </AlertDescription>
+          </Alert>
+        )}
       </CardContent>
     </Card>
   );
