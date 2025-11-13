@@ -37,8 +37,6 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "bus-math-nextjs",
-    "bus-math-nextjs/**"
+    "node_modules"
   ]
 }

@@ -13,8 +13,7 @@ const eslintConfig = [
   {
     ignores: [
       "**/.next/**",
-      "node_modules/**",
-      "bus-math-nextjs/**"
+      "node_modules/**"
     ]
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),

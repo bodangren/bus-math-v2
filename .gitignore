@@ -43,3 +43,7 @@ next-env.d.ts
 
 # migration
 bus-math-nextjs
+
+# setup scripts with credentials
+setup-vercel-env.sh
+VERCEL_SETUP.md
