@@ -75,3 +75,9 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Leaning on the shared Supabase server client plus Zod payload parsing made the new `/api/progress/phase` endpoint trivial to test while still respecting RLS, and the capstone overview copy now pulls directly from the curriculum narrative without duplicating data entry.
 - **Lesson:** Mocking `@/lib/supabase/server` in Vitest let us exercise API routes without touching the network; we should rinse-and-repeat for the assessment submission work so regressions get caught before deploying server mutations.
+
+### #99 - feat/75-task-14-phase-complete-button-component
+
+- **Went well:** The auto-merge workflow completed successfully.
+- **Lesson:** N/A
+
