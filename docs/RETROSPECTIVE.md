@@ -65,3 +65,9 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Grouping lessons by unit inside a dedicated helper let the new curriculum overview render Supabase data with minimal server-component logic, so the page stayed easy to test.
 - **Lesson:** Navigation changes must target the header actually mounted in `app/layout.tsx`; deleting unused components avoided confusion, but we now double-check layout wiring before assuming which shell is live.
+
+### #97 - feat/73-task-12-preface-page-refactor
+
+- **Went well:** The auto-merge workflow completed successfully.
+- **Lesson:** N/A
+
