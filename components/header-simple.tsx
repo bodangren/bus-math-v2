@@ -37,7 +37,7 @@ export function HeaderSimple() {
               Home
             </Link>
             <Link
-              href="/frontmatter/preface"
+              href="/preface"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Preface
