@@ -211,7 +211,7 @@ export default async function Home() {
                   size="lg"
                   className="gradient-financial text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <Link href="/login">Login</Link>
+                  <Link href="/auth/login">Login</Link>
                 </Button>
                 <Button
                   asChild
