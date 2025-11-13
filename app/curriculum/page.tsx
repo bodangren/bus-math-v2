@@ -43,7 +43,7 @@ function deriveUnitTitle(metadata: LessonMetadata | null, unitNumber: number) {
 function deriveUnitDescription(row: LessonRow) {
   return (
     row.metadata?.unitContent?.drivingQuestion?.question ??
-    row.metadata?.unitContent?.projectOverview?.scenario ??
+    row.metadata?.unitContent?.introduction?.projectOverview?.scenario ??
     row.description ??
     "Explore core accounting and Excel skills through real classroom projects."
   );
