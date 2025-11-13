@@ -88,6 +88,5 @@ A condensed summary of key learnings from the project.
 
 ### #101 - feat/77-task-16-assessment-submission-integration-client-sends-answers-only
 
-- **Went well:** The auto-merge workflow completed successfully.
-- **Lesson:** N/A
-
+- **Went well:** Centralizing the submission handler in `ActivityRenderer` meant every registry component picked up the server-scored flow with one change, and the updated Vitest suite now proves the client only ever ships answer payloads.
+- **Lesson:** When activities need new props (like `onSubmit`), pass the full activity object as well—otherwise each component grows its own fetch logic and we lose parity with Supabase content.
