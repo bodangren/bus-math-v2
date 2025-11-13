@@ -1,51 +1,407 @@
-import { DeployButton } from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  BookOpen,
+  Calculator,
+  CheckSquare,
+  Dice6,
+  TrendingUp,
+  Search,
+  BarChart3,
+} from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+const features = [
+  {
+    icon: BookOpen,
+    title: "Interactive Spreadsheets",
+    description: "Work with live Excel-like interfaces directly in your browser",
+  },
+  {
+    icon: Calculator,
+    title: "Financial Calculators",
+    description: "Built-in calculators for NPV, loan payments, and more",
+  },
+  {
+    icon: CheckSquare,
+    title: "Comprehension Checks",
+    description:
+      "Immediate feedback on your understanding after each section",
+  },
+  {
+    icon: Dice6,
+    title: "Dynamic Exercises",
+    description: "Practice with different scenarios and data every time",
+  },
+  {
+    icon: TrendingUp,
+    title: "Progress Tracking",
+    description: "Monitor your learning journey and identify areas to review",
+  },
+  {
+    icon: Search,
+    title: "Smart Search",
+    description: "Find concepts, formulas, and examples instantly",
+  },
+];
+
+const getDifficultyColor = (difficulty: string) => {
+  switch (difficulty) {
+    case "beginner":
+      return "text-green-700 dark:text-green-300 bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30";
+    case "intermediate":
+      return "text-primary bg-primary/5 border-primary/20 dark:bg-primary/10 dark:border-primary/30";
+    case "advanced":
+      return "text-orange-700 dark:text-orange-300 bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30";
+    case "expert":
+      return "text-red-700 dark:text-red-300 bg-red-50/50 dark:bg-red-950/20 border-red-200/50 dark:border-red-800/30";
+    default:
+      return "text-muted-foreground bg-muted/30 border-border/30";
+  }
+};
+
+const formatDifficulty = (difficulty: string) => {
+  return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+};
+
+interface CurriculumStats {
+  unitCount: number;
+  lessonCount: number;
+  activityCount: number;
+}
+
+interface LessonMetadata {
+  duration?: string;
+  difficulty?: string;
+  tags?: string[];
+}
+
+interface Lesson {
+  id: string;
+  unit_number: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  learning_objectives: string[] | null;
+  order_index: number;
+  metadata: LessonMetadata | null;
+  created_at: string;
+  updated_at: string;
+}
+
+async function getCurriculumStats(): Promise<CurriculumStats> {
+  const supabase = await createClient();
+
+  // Try using the RPC function first
+  const { data, error } = await supabase.rpc("get_curriculum_stats");
+
+  if (error) {
+    // If RPC fails, fall back to manual counting
+    // This can happen if PostgREST schema cache hasn't refreshed yet
+    try {
+      const [unitsResult, lessonsResult, activitiesResult] = await Promise.all([
+        supabase.from("lessons").select("unit_number", { count: "exact", head: true }),
+        supabase.from("lessons").select("*", { count: "exact", head: true }),
+        supabase.from("activities").select("*", { count: "exact", head: true }),
+      ]);
+
+      // Get distinct unit count by querying all lessons and counting unique unit_numbers
+      const { data: lessons } = await supabase.from("lessons").select("unit_number");
+      const uniqueUnits = new Set(lessons?.map(l => l.unit_number) || []);
+
+      return {
+        unitCount: uniqueUnits.size,
+        lessonCount: lessonsResult.count || 0,
+        activityCount: activitiesResult.count || 0,
+      };
+    } catch (fallbackError) {
+      console.error("Error fetching curriculum stats (fallback):", fallbackError);
+      return { unitCount: 0, lessonCount: 0, activityCount: 0 };
+    }
+  }
+
+  return data as CurriculumStats;
+}
+
+async function getUnits() {
+  const supabase = await createClient();
+
+  // Fetch first lesson of each unit (order_index = 1) to represent the unit
+  const { data: lessons, error } = await supabase
+    .from("lessons")
+    .select("*")
+    .eq("order_index", 1)
+    .order("unit_number", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching units:", error);
+    return [];
+  }
+
+  return lessons as Lesson[];
+}
+
+export default async function Home() {
+  const stats = await getCurriculumStats();
+  const units = await getUnits();
+
   return (
-    <main className="min-h-screen flex flex-col items-center">
-      <div className="flex-1 w-full flex flex-col gap-20 items-center">
-        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>Next.js Supabase Starter</Link>
-              <div className="flex items-center gap-2">
-                <DeployButton />
+    <main className="flex-1">
+      {/* Hero section */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-4">
+                <Calculator className="h-8 w-8 text-primary" />
+                <BarChart3 className="h-7 w-7 text-accent" />
+                <TrendingUp className="h-6 w-6 text-green-600" />
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
+                Math for Business Operations
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                Master accounting principles, spreadsheet modeling, and
+                entrepreneurship through hands-on Excel projects and real-world
+                business applications.
+              </p>
+              {/* Stats display */}
+              {stats && (
+                <div className="flex gap-6 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-primary" />
+                    <span>
+                      <strong className="text-foreground">
+                        {stats.unitCount}
+                      </strong>{" "}
+                      Units
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calculator className="h-4 w-4 text-accent" />
+                    <span>
+                      <strong className="text-foreground">
+                        {stats.lessonCount}
+                      </strong>{" "}
+                      Lessons
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="h-4 w-4 text-green-600" />
+                    <span>
+                      <strong className="text-foreground">
+                        {stats.activityCount}+
+                      </strong>{" "}
+                      Activities
+                    </span>
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  asChild
+                  size="lg"
+                  className="gradient-financial text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-primary/30 hover:bg-primary/10"
+                >
+                  <Link href="/frontmatter/preface">Start Reading</Link>
+                </Button>
               </div>
             </div>
-            {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
+            <div className="flex justify-center lg:justify-end">
+              <div className="w-full max-w-md relative">
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-lg blur-xl opacity-30"></div>
+                <Image
+                  src="/cover.png"
+                  alt="Math for Business Operations textbook cover showing business charts and Excel spreadsheets"
+                  width={400}
+                  height={533}
+                  className="relative w-full h-auto rounded-lg shadow-2xl border border-border/50"
+                  priority
+                />
+              </div>
+            </div>
           </div>
-        </nav>
-        <div className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
-          <Hero />
-          <main className="flex-1 flex flex-col gap-6 px-4">
-            <h2 className="font-medium text-xl mb-4">Next steps</h2>
-            {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-          </main>
         </div>
+      </section>
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
-          <p>
-            Powered by{" "}
-            <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-              target="_blank"
-              className="font-bold hover:underline"
-              rel="noreferrer"
-            >
-              Supabase
-            </a>
-          </p>
-          <ThemeSwitcher />
-        </footer>
-      </div>
+      {/* Table of Contents */}
+      <section className="py-16 bg-muted/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Course Structure
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Eight hands-on units plus a comprehensive capstone project
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {units.map((unit) => (
+              <Card
+                key={unit.id}
+                className="card-ledger hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50"
+              >
+                <CardHeader>
+                  <CardTitle className="text-lg">
+                    <Link
+                      href={`/student/unit${String(unit.unit_number).padStart(2, "0")}/lesson01`}
+                      className="hover:text-primary transition-colors"
+                    >
+                      Unit {unit.unit_number}: {unit.title}
+                    </Link>
+                  </CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    {unit.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground font-medium">
+                      {unit.metadata?.duration || "2-3 weeks"}
+                    </span>
+                    {unit.metadata?.difficulty && (
+                      <span
+                        className={`px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
+                          unit.metadata.difficulty
+                        )}`}
+                      >
+                        {formatDifficulty(unit.metadata.difficulty)}
+                      </span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="card-statement border-primary/20">
+              <CardHeader className="excel-header">
+                <CardTitle className="text-primary">Getting Started</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Link
+                  href="/frontmatter/preface"
+                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
+                >
+                  Preface
+                </Link>
+                <Link
+                  href="/frontmatter/acknowledgments"
+                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
+                >
+                  Acknowledgments
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="card-statement border-accent/20">
+              <CardHeader className="bg-gradient-to-r from-accent/5 to-accent/10 border-b border-accent/20">
+                <CardTitle className="text-foreground">Capstone Project</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Link
+                  href="/capstone"
+                  className="block text-sm hover:text-accent transition-colors p-2 rounded hover:bg-accent/5"
+                >
+                  Project Overview
+                </Link>
+                <Link
+                  href="/capstone/guidelines"
+                  className="block text-sm hover:text-accent transition-colors p-2 rounded hover:bg-accent/5"
+                >
+                  Guidelines & Timeline
+                </Link>
+                <Link
+                  href="/capstone/rubrics"
+                  className="block text-sm hover:text-accent transition-colors p-2 rounded hover:bg-accent/5"
+                >
+                  Assessment Rubrics
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="card-ledger border-border/50">
+              <CardHeader>
+                <CardTitle>Reference Materials</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Link
+                  href="/backmatter/glossary"
+                  className="block text-sm hover:text-foreground transition-colors p-2 rounded hover:bg-muted/50"
+                >
+                  Glossary
+                </Link>
+                <Link
+                  href="/backmatter/index"
+                  className="block text-sm hover:text-foreground transition-colors p-2 rounded hover:bg-muted/50"
+                >
+                  Subject Index
+                </Link>
+                <Link
+                  href="/backmatter/bibliography"
+                  className="block text-sm hover:text-foreground transition-colors p-2 rounded hover:bg-muted/50"
+                >
+                  Bibliography
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features highlight */}
+      <section className="py-16 bg-gradient-to-br from-muted/10 via-background to-muted/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Interactive Learning Features
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Everything you need for hands-on business math education with
+              Excel integration
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card
+                key={index}
+                className="card-ledger text-center hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50 group"
+              >
+                <CardContent className="pt-6">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center group-hover:from-primary/20 group-hover:to-accent/20 transition-colors">
+                    <feature.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 text-foreground">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
