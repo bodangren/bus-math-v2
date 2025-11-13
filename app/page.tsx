@@ -107,8 +107,7 @@ async function getCurriculumStats(): Promise<CurriculumStats> {
     // If RPC fails, fall back to manual counting
     // This can happen if PostgREST schema cache hasn't refreshed yet
     try {
-      const [unitsResult, lessonsResult, activitiesResult] = await Promise.all([
-        supabase.from("lessons").select("unit_number", { count: "exact", head: true }),
+      const [lessonsResult, activitiesResult] = await Promise.all([
         supabase.from("lessons").select("*", { count: "exact", head: true }),
         supabase.from("activities").select("*", { count: "exact", head: true }),
       ]);
