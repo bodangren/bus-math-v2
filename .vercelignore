@@ -1,0 +1,13 @@
+# Exclude local dev assets
+bus-math-nextjs/
+bus-math-nextjs
+.claude/
+setup-vercel-env.sh
+VERCEL_SETUP.md
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# SynthesisFlow backups
+.synthesisflow-backup-*/
