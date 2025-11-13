@@ -3,6 +3,7 @@
 import { type ContentBlock } from '@/lib/db/schema/phases';
 import { type LessonMetadata } from '@/lib/db/schema/lessons';
 import { type PhaseMetadata } from '@/lib/db/schema/phases';
+import { PhaseCompleteButton } from '@/components/lesson/PhaseCompleteButton';
 
 interface Phase {
   id: string;
@@ -124,6 +125,10 @@ export function LessonRenderer({ lesson, phases }: LessonRendererProps) {
                     )}
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <PhaseCompleteButton phaseId={phase.id} />
               </div>
             </div>
           ))}
