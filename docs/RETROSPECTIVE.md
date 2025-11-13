@@ -61,3 +61,8 @@ A condensed summary of key learnings from the project.
 - **Activity Registry Integration (#93):** Implemented database-driven activity fetching via `/api/activities/[activityId]` endpoint with UUID validation. Created ActivityRenderer component with comprehensive test suite. Resolved Next.js 15+ breaking change where route params became Promises, requiring async destructuring in API handlers.
 - **Sample Lesson Seeding (#70):** Created seed files for Units 1-3 Lesson 1 (18 phases, 13 activities) using curriculum matrix content from `docs/curriculum/`. Used JSONB content blocks with discriminated union types (markdown, video, callout, activity, image). Applied fixed UUIDs with `ON CONFLICT DO UPDATE` pattern for deterministic seeding. Activities reference component_key values from activity registry (comprehension-quiz, categorization-drag-drop).
 - **Home Page Refactor (#71):** Refactored home page to async Server Component with database-driven content. Created RPC function `get_curriculum_stats()` and implemented fallback pattern for PostgREST schema cache refresh delays. Migrated from HSL to oklch color space for Excel-themed professional palette. Key lesson: gradient text (bg-clip-text) severely impacts readability—use solid text colors for headings. Card foreground colors must contrast with card backgrounds (Capstone card was white-on-white). Always verify color accessibility after theme changes.
+### #96 - feat/72-task-11-curriculum-overview-page
+
+- **Went well:** The auto-merge workflow completed successfully.
+- **Lesson:** N/A
+
