@@ -8,7 +8,7 @@ export default async function StudentDashboard() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   return (
