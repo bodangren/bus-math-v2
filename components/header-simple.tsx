@@ -43,6 +43,12 @@ export function HeaderSimple() {
               Preface
             </Link>
             <Link
+              href="/curriculum"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Curriculum
+            </Link>
+            <Link
               href="/capstone"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
