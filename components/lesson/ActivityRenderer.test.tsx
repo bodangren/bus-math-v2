@@ -7,7 +7,7 @@ import type { Activity } from '@/lib/db/schema/validators';
 const mockFetch = vi.fn();
 global.fetch = mockFetch as unknown as typeof fetch;
 
-var mockGetActivityComponent: ReturnType<typeof vi.fn>;
+let mockGetActivityComponent: ReturnType<typeof vi.fn>;
 vi.mock('@/lib/activities/registry', () => {
   mockGetActivityComponent = vi.fn();
   return {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginForm } from './login-form';
 
@@ -18,8 +18,8 @@ vi.mock('next/navigation', () => ({
 const mockSignIn = vi.fn();
 const mockAuthContext = {
   signIn: mockSignIn,
-  profile: null,
-  user: null,
+  profile: null as any,
+  user: null as any,
   loading: false,
   signOut: vi.fn(),
 };
@@ -28,10 +28,41 @@ vi.mock('@/components/auth/AuthProvider', () => ({
   useAuth: () => mockAuthContext,
 }));
 
+const buildProfile = (overrides?: Partial<{
+  id: string;
+  username: string;
+  role: 'student' | 'teacher' | 'admin';
+  organization_id: string;
+  display_name: string | null;
+}>) => ({
+  id: overrides?.id ?? 'user-123',
+  organization_id: overrides?.organization_id ?? 'org-1',
+  username: overrides?.username ?? 'demo_student',
+  role: overrides?.role ?? 'student' as const,
+  display_name: overrides?.display_name ?? 'Demo User',
+  avatar_url: null,
+  metadata: null,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+});
+
+const simulateProfileLoad = (
+  rerender: ReturnType<typeof render>['rerender'],
+  overrides?: Parameters<typeof buildProfile>[0],
+) => {
+  act(() => {
+    const profile = buildProfile(overrides);
+    mockAuthContext.profile = profile;
+    mockAuthContext.user = { id: profile.id };
+    rerender(<LoginForm />);
+  });
+};
+
 describe('LoginForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockAuthContext.profile = null;
+    mockAuthContext.user = null;
     mockSearchParams.delete('redirect');
   });
 
@@ -138,23 +169,19 @@ describe('LoginForm', () => {
     const user = userEvent.setup();
     mockSignIn.mockResolvedValue(undefined);
     mockSearchParams.set('redirect', '/student/dashboard');
-    mockAuthContext.profile = {
-      id: '123',
-      username: 'demo_student',
-      role: 'student',
-      organizationId: 'org-1',
-      displayName: 'Demo Student',
-      avatarUrl: null,
-      metadata: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
 
-    render(<LoginForm />);
+    const { rerender } = render(<LoginForm />);
 
     await user.type(screen.getByLabelText(/username/i), 'demo_student');
     await user.type(screen.getByLabelText(/password/i), 'demo123');
     await user.click(screen.getByRole('button', { name: /login/i }));
+
+    simulateProfileLoad(rerender, {
+      id: '123',
+      username: 'demo_student',
+      role: 'student',
+      display_name: 'Demo Student',
+    });
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/student/dashboard');
@@ -164,23 +191,18 @@ describe('LoginForm', () => {
   it('redirects to student dashboard for student role without redirect param', async () => {
     const user = userEvent.setup();
     mockSignIn.mockResolvedValue(undefined);
-    mockAuthContext.profile = {
-      id: '123',
-      username: 'demo_student',
-      role: 'student',
-      organizationId: 'org-1',
-      displayName: 'Demo Student',
-      avatarUrl: null,
-      metadata: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    render(<LoginForm />);
+    const { rerender } = render(<LoginForm />);
 
     await user.type(screen.getByLabelText(/username/i), 'demo_student');
     await user.type(screen.getByLabelText(/password/i), 'demo123');
     await user.click(screen.getByRole('button', { name: /login/i }));
+
+    simulateProfileLoad(rerender, {
+      id: '123',
+      username: 'demo_student',
+      role: 'student',
+      display_name: 'Demo Student',
+    });
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/student/dashboard');
@@ -190,23 +212,18 @@ describe('LoginForm', () => {
   it('redirects to teacher dashboard for teacher role', async () => {
     const user = userEvent.setup();
     mockSignIn.mockResolvedValue(undefined);
-    mockAuthContext.profile = {
-      id: '456',
-      username: 'demo_teacher',
-      role: 'teacher',
-      organizationId: 'org-1',
-      displayName: 'Demo Teacher',
-      avatarUrl: null,
-      metadata: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    render(<LoginForm />);
+    const { rerender } = render(<LoginForm />);
 
     await user.type(screen.getByLabelText(/username/i), 'demo_teacher');
     await user.type(screen.getByLabelText(/password/i), 'demo123');
     await user.click(screen.getByRole('button', { name: /login/i }));
+
+    simulateProfileLoad(rerender, {
+      id: '456',
+      username: 'demo_teacher',
+      role: 'teacher',
+      display_name: 'Demo Teacher',
+    });
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/teacher/dashboard');
@@ -216,23 +233,18 @@ describe('LoginForm', () => {
   it('redirects to admin dashboard for admin role', async () => {
     const user = userEvent.setup();
     mockSignIn.mockResolvedValue(undefined);
-    mockAuthContext.profile = {
-      id: '789',
-      username: 'admin',
-      role: 'admin',
-      organizationId: 'org-1',
-      displayName: 'Admin User',
-      avatarUrl: null,
-      metadata: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    render(<LoginForm />);
+    const { rerender } = render(<LoginForm />);
 
     await user.type(screen.getByLabelText(/username/i), 'admin');
     await user.type(screen.getByLabelText(/password/i), 'admin123');
     await user.click(screen.getByRole('button', { name: /login/i }));
+
+    simulateProfileLoad(rerender, {
+      id: '789',
+      username: 'admin',
+      role: 'admin',
+      display_name: 'Admin User',
+    });
 
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/admin/dashboard');
