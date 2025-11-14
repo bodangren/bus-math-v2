@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, LineChart, UserPlus, Users } from "lucide-react";
+import { CheckCircle2, LineChart, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
+import { TeacherCreateStudentDialog } from "./TeacherCreateStudentDialog";
 
 export interface StudentDashboardRow {
   id: string;
@@ -125,16 +126,7 @@ export function TeacherDashboardContent({
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Button
-              type="button"
-              className="gap-2"
-              aria-label="Create a new student (coming soon)"
-              title="Task 19 will connect this control to the create-student flow."
-              disabled
-            >
-              <UserPlus className="size-4" aria-hidden="true" />
-              Create Student
-            </Button>
+            <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />
           </div>
         </header>
