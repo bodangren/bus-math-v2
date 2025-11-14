@@ -57,7 +57,7 @@ export async function proxy(request: NextRequest) {
   // Redirect unauthenticated users to login
   if (!user) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/login';
+    redirectUrl.pathname = '/auth/login';
     redirectUrl.searchParams.set('redirect', path);
     return NextResponse.redirect(redirectUrl);
   }
@@ -67,12 +67,12 @@ export async function proxy(request: NextRequest) {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!profile) {
     // User has no profile, redirect to login
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/login';
+    redirectUrl.pathname = '/auth/login';
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -88,7 +88,7 @@ export async function proxy(request: NextRequest) {
       }
       // Other unauthorized users go to login
       const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = '/login';
+      redirectUrl.pathname = '/auth/login';
       return NextResponse.redirect(redirectUrl);
     }
   }
@@ -97,7 +97,7 @@ export async function proxy(request: NextRequest) {
     // Student routes require student or teacher role
     if (profile.role !== 'student' && profile.role !== 'teacher' && profile.role !== 'admin') {
       const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = '/login';
+      redirectUrl.pathname = '/auth/login';
       return NextResponse.redirect(redirectUrl);
     }
   }
