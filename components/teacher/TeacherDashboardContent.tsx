@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, FileDown, LineChart, UserPlus, Users } from "lucide-react";
+import { CheckCircle2, LineChart, UserPlus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
 
 export interface StudentDashboardRow {
   id: string;
@@ -134,17 +135,7 @@ export function TeacherDashboardContent({
               <UserPlus className="size-4" aria-hidden="true" />
               Create Student
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="gap-2"
-              aria-label="Export student progress to CSV (coming soon)"
-              title="Task 18 enables CSV exports. Until then this button is disabled."
-              disabled
-            >
-              <FileDown className="size-4" aria-hidden="true" />
-              Export CSV
-            </Button>
+            <TeacherCsvExportButton students={students} />
           </div>
         </header>
 
