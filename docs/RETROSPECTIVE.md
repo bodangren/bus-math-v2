@@ -95,3 +95,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Moving the dashboard to `app/teacher/page.tsx` plus the new `get_student_progress` RPC gave us trustworthy percentages, so the UI could simply hydrate progress state and lean on accessible shadcn primitives.
 - **Lesson:** When redirects depend on auth context (like `LoginForm` waiting for `profile`), test helpers need to simulate the second render that happens once Supabase returns data—otherwise Vitest never sees navigation fire and we chase phantom regressions.
+
+### #103 - feat/80-task-19-create-student-account-feature-edge-function
+
+- **Went well:** Keeping the service-role client inside a Supabase Edge Function let us add student creation without leaking secrets into Next.js, and the forwarding API route plus modal flow gave teachers immediate, printable credentials.
+- **Lesson:** Edge function sources need lightweight TypeScript annotations (like a `Deno` declaration and explicit handler types) so `next build` can statically analyze them alongside the rest of the repo.
