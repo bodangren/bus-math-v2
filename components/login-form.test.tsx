@@ -16,10 +16,29 @@ vi.mock('next/navigation', () => ({
 
 // Mock AuthProvider
 const mockSignIn = vi.fn();
-const mockAuthContext = {
+
+type MockProfile = {
+  id: string;
+  username: string;
+  role: 'student' | 'teacher' | 'admin';
+  organization_id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  metadata: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+const mockAuthContext: {
+  signIn: typeof mockSignIn;
+  profile: MockProfile | null;
+  user: { id: string } | null;
+  loading: boolean;
+  signOut: ReturnType<typeof vi.fn>;
+} = {
   signIn: mockSignIn,
-  profile: null as any,
-  user: null as any,
+  profile: null,
+  user: null,
   loading: false,
   signOut: vi.fn(),
 };
@@ -28,13 +47,7 @@ vi.mock('@/components/auth/AuthProvider', () => ({
   useAuth: () => mockAuthContext,
 }));
 
-const buildProfile = (overrides?: Partial<{
-  id: string;
-  username: string;
-  role: 'student' | 'teacher' | 'admin';
-  organization_id: string;
-  display_name: string | null;
-}>) => ({
+const buildProfile = (overrides?: Partial<MockProfile>): MockProfile => ({
   id: overrides?.id ?? 'user-123',
   organization_id: overrides?.organization_id ?? 'org-1',
   username: overrides?.username ?? 'demo_student',
