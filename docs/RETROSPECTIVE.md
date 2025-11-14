@@ -90,3 +90,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Centralizing the submission handler in `ActivityRenderer` meant every registry component picked up the server-scored flow with one change, and the updated Vitest suite now proves the client only ever ships answer payloads.
 - **Lesson:** When activities need new props (like `onSubmit`), pass the full activity object as well—otherwise each component grows its own fetch logic and we lose parity with Supabase content.
+
+### #102 - feat/78-task-17-teacher-dashboard-layout-accurate-progress-calculation
+
+- **Went well:** Moving the dashboard to `app/teacher/page.tsx` plus the new `get_student_progress` RPC gave us trustworthy percentages, so the UI could simply hydrate progress state and lean on accessible shadcn primitives.
+- **Lesson:** When redirects depend on auth context (like `LoginForm` waiting for `profile`), test helpers need to simulate the second render that happens once Supabase returns data—otherwise Vitest never sees navigation fire and we chase phantom regressions.
