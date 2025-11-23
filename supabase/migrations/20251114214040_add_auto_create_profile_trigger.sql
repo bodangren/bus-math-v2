@@ -23,12 +23,13 @@ begin
   end if;
 
   -- Create the profile with default values
-  insert into public.profiles (id, organization_id, role, display_name, metadata)
+  insert into public.profiles (id, organization_id, role, display_name, username, metadata)
   values (
     new.id,
     default_org_id,
-    'student', -- Default role is student; can be updated later
+    coalesce((new.raw_user_meta_data->>'role')::profile_role, 'student'::profile_role), -- Use role from metadata if available
     coalesce(new.raw_user_meta_data->>'display_name', split_part(new.email, '@', 1)), -- Use display_name from metadata or email prefix
+    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)), -- Use username from metadata or email prefix
     jsonb_build_object(
       'email', new.email,
       'created_via', 'auto_trigger'
@@ -48,7 +49,7 @@ create trigger on_auth_user_created
 
 -- Backfill: Create profiles for any existing auth users that don't have profiles yet
 -- This handles users that were created before this trigger was added
-insert into public.profiles (id, organization_id, role, display_name, metadata)
+insert into public.profiles (id, organization_id, role, display_name, username, metadata)
 select
   au.id,
   coalesce(
@@ -57,6 +58,7 @@ select
   ),
   'student',
   coalesce(au.raw_user_meta_data->>'display_name', split_part(au.email, '@', 1)),
+  split_part(au.email, '@', 1), -- Derive username from email
   jsonb_build_object(
     'email', au.email,
     'backfilled', true,
