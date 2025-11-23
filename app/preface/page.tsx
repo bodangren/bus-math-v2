@@ -16,6 +16,8 @@ import type {
 } from '@/lib/db/schema/activities';
 import type { Activity } from '@/lib/db/schema/validators';
 
+export const dynamic = 'force-dynamic';
+
 type LessonRow = InferSelectModel<typeof lessons>;
 
 interface UnitSummary {
