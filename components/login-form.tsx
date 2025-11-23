@@ -59,8 +59,8 @@ export function LoginForm({
 
   // Handle redirect after profile loads
   useEffect(() => {
-    // Only redirect if we just logged in and have both user and profile
-    if (shouldRedirectRef.current && user && profile) {
+    // Redirect if we have a user and profile
+    if (user && profile) {
       const redirect = searchParams.get('redirect');
 
       if (redirect) {
@@ -75,8 +75,7 @@ export function LoginForm({
           router.push('/student/dashboard');
         }
       }
-      // Reset state after redirect
-      shouldRedirectRef.current = false;
+      // Reset loading state
       setIsLoading(false);
     }
   }, [profile, user, router, searchParams]);

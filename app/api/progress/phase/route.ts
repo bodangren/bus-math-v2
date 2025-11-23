@@ -101,6 +101,7 @@ export async function POST(request: Request) {
       .upsert(record, { onConflict: 'user_id,phase_id' });
 
     if (upsertError) {
+      console.error('Upsert error:', upsertError);
       return NextResponse.json(
         { error: upsertError.message ?? 'Unable to save progress' },
         { status: 500 },
