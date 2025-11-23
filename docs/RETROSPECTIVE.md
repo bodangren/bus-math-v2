@@ -96,7 +96,7 @@ A condensed summary of key learnings from the project.
 - **Went well:** Moving the dashboard to `app/teacher/page.tsx` plus the new `get_student_progress` RPC gave us trustworthy percentages, so the UI could simply hydrate progress state and lean on accessible shadcn primitives.
 - **Lesson:** When redirects depend on auth context (like `LoginForm` waiting for `profile`), test helpers need to simulate the second render that happens once Supabase returns data—otherwise Vitest never sees navigation fire and we chase phantom regressions.
 
-### #106 - feat/81-task-20-end-to-end-testing
+### #107 - feat/82-task-21-performance-optimization
 
-- **Went well:** Implementing E2E tests with Playwright provided a way to verify critical user flows (login, navigation, phase completion) in an automated way.
-- **Lesson:** The schema for the `profiles` table in Supabase migrations was missing the `username` column, despite it being in the Drizzle schema. This caused silent failures in profile creation that only surfaced during E2E testing. Always verify that generated migrations match the expected schema, especially when using multiple tools (Drizzle + Supabase). Additionally, test data seeding scripts must be robust enough to handle existing users and ensure profiles are correctly linked.
+- **Went well:** Added comprehensive database indexes for foreign keys and JSONB columns to improve query performance.
+- **Lesson:** Verifying migration files against the current schema state is crucial. We caught a typo in the migration file (`class_enrollments` does not have `metadata`) during the `db reset` process, preventing a broken migration from being committed. This reinforces the value of testing migrations locally before merging.
