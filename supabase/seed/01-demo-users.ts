@@ -75,95 +75,60 @@ async function seedDemoUsers() {
   for (const user of demoUsers) {
     console.log(`\n👤 Processing ${user.username}...`);
 
-    // Create auth user using Auth Admin API
-    // Username-based auth uses email field as transport: username@internal.domain
-    const { data: authData, error: authError } =
-      await supabase.auth.admin.createUser({
-        email: `${user.username}@internal.domain`,
-        password: user.password,
-        email_confirm: true, // Auto-confirm email
-        user_metadata: {
-          role: user.role,
-        },
-      });
+    // 1. Check if user exists and clean up if necessary (optional, but safer for seeding)
+    // For now, we'll just try to find them.
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existingUser = existingUsers.users.find(
+        (u) => u.email === `${user.username}@internal.domain`
+    );
 
-    if (authError) {
-      // Check if user already exists
-      if (authError.message.includes("already registered")) {
-        console.log(`⚠️  Auth user ${user.username} already exists, skipping...`);
+    let userId = existingUser?.id;
 
-        // Fetch existing user to get their ID for profile upsert
-        const { data: existingUsers, error: listError } =
-          await supabase.auth.admin.listUsers();
+    if (existingUser) {
+        console.log(`⚠️  Auth user ${user.username} already exists (ID: ${userId}).`);
+        // Optional: Delete and recreate to ensure clean state?
+        // await supabase.auth.admin.deleteUser(existingUser.id);
+        // userId = null;
+    } else {
+        // Create auth user
+        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+            email: `${user.username}@internal.domain`,
+            password: user.password,
+            email_confirm: true,
+            user_metadata: { role: user.role },
+        });
 
-        if (listError) {
-          console.error(`❌ Failed to list users: ${listError.message}`);
-          continue;
+        if (authError) {
+            console.error(`❌ Failed to create auth user ${user.username}: ${authError.message}`);
+            continue;
         }
-
-        const existingUser = existingUsers.users.find(
-          (u) => u.email === `${user.username}@internal.domain`
-        );
-
-        if (!existingUser) {
-          console.error(`❌ Could not find existing user ${user.username}`);
-          continue;
-        }
-
-        // Upsert profile for existing user
-        const { error: profileError } = await supabase.from("profiles").upsert(
-          {
-            id: existingUser.id,
-            organization_id: DEMO_ORG_ID,
-            username: user.username,
-            role: user.role,
-            display_name: user.displayName,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "id" }
-        );
-
-        if (profileError) {
-          console.error(
-            `❌ Failed to upsert profile for ${user.username}: ${profileError.message}`
-          );
-        } else {
-          console.log(`✅ Profile upserted for ${user.username}`);
-        }
-
-        continue;
-      }
-
-      console.error(
-        `❌ Failed to create auth user ${user.username}: ${authError.message}`
-      );
-      continue;
+        userId = authData.user?.id;
+        console.log(`✅ Auth user created: ${userId}`);
     }
 
-    if (!authData.user) {
-      console.error(`❌ No user data returned for ${user.username}`);
-      continue;
-    }
+    if (!userId) continue;
 
-    console.log(`✅ Auth user created: ${authData.user.id}`);
-
-    // Create profile record
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: authData.user.id,
-      organization_id: DEMO_ORG_ID,
-      username: user.username,
-      role: user.role,
-      display_name: user.displayName,
-    });
+    // 2. Upsert profile
+    // We use upsert to handle both new and existing cases
+    const { error: profileError } = await supabase.from("profiles").upsert(
+      {
+        id: userId,
+        organization_id: DEMO_ORG_ID,
+        username: user.username,
+        role: user.role,
+        display_name: user.displayName,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    );
 
     if (profileError) {
       console.error(
-        `❌ Failed to create profile for ${user.username}: ${profileError.message}`
+        `❌ Failed to upsert profile for ${user.username}: ${profileError.message}`
       );
-      continue;
+    } else {
+      console.log(`✅ Profile upserted for ${user.username}`);
     }
-
-    console.log(`✅ Profile created for ${user.username}`);
   }
 
   console.log("\n🎉 Demo user seed completed!");

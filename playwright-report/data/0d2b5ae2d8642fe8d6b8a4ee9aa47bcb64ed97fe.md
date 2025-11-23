@@ -1,0 +1,104 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "Math for Business Operations" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]:
+            - img [ref=e8]
+            - img [ref=e10]
+          - generic [ref=e13]: Math for Business Operations
+        - paragraph [ref=e14]: Applied Accounting with Excel
+      - navigation [ref=e15]:
+        - link "Home" [ref=e16] [cursor=pointer]:
+          - /url: /
+        - link "Preface" [ref=e17] [cursor=pointer]:
+          - /url: /preface
+        - link "Curriculum" [ref=e18] [cursor=pointer]:
+          - /url: /curriculum
+        - link "Capstone" [ref=e19] [cursor=pointer]:
+          - /url: /capstone
+        - link "Glossary" [ref=e20] [cursor=pointer]:
+          - /url: /backmatter/glossary
+        - link "Search" [ref=e21] [cursor=pointer]:
+          - /url: /search
+      - generic [ref=e22]:
+        - searchbox "Search..." [ref=e23]
+        - button [ref=e24] [cursor=pointer]:
+          - img
+  - main [ref=e25]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]: Login
+        - generic [ref=e32]: Enter your username and password to access your account
+      - generic [ref=e33]:
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - generic [ref=e37]: Username
+            - textbox "Username" [ref=e38]:
+              - /placeholder: demo_student
+              - text: demo_student
+          - generic [ref=e39]:
+            - generic [ref=e40]: Password
+            - textbox "Password" [ref=e41]:
+              - /placeholder: Enter your password
+              - text: demo123
+          - button "Login" [ref=e42] [cursor=pointer]
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - img [ref=e45]
+            - heading "Demo Accounts" [level=3] [ref=e47]
+          - paragraph [ref=e48]: "Click to populate the login form:"
+          - generic [ref=e49]:
+            - button "Use demo student credentials" [ref=e50] [cursor=pointer]:
+              - generic [ref=e51]:
+                - generic [ref=e52]: Student Account
+                - generic [ref=e53]: demo_student / demo123
+            - button "Use demo teacher credentials" [ref=e54] [cursor=pointer]:
+              - generic [ref=e55]:
+                - generic [ref=e56]: Teacher Account
+                - generic [ref=e57]: demo_teacher / demo123
+  - contentinfo [ref=e58]:
+    - generic [ref=e60]:
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - img [ref=e63]
+          - img [ref=e65]
+          - heading "Math for Business Operations" [level=3] [ref=e68]
+        - paragraph [ref=e69]: An interactive Grade 12 textbook blending applied accounting with Excel automation.
+        - paragraph [ref=e70]: © 2025 Daniel Bodanske
+      - generic [ref=e71]:
+        - heading "Quick Links" [level=4] [ref=e72]
+        - navigation [ref=e73]:
+          - link "Getting Started" [ref=e74] [cursor=pointer]:
+            - /url: /frontmatter/preface
+          - link "Glossary" [ref=e75] [cursor=pointer]:
+            - /url: /backmatter/glossary
+          - link "Search" [ref=e76] [cursor=pointer]:
+            - /url: /search
+          - link "Capstone" [ref=e77] [cursor=pointer]:
+            - /url: /capstone
+      - generic [ref=e78]:
+        - heading "Teacher Resources" [level=4] [ref=e79]
+        - navigation [ref=e80]:
+          - link "PBL Methodology" [ref=e81] [cursor=pointer]:
+            - /url: /teacher/course-overview/pbl-methodology
+          - link "Backward Design" [ref=e82] [cursor=pointer]:
+            - /url: /teacher/course-overview/backward-design
+          - link "Teacher Dashboard" [ref=e83] [cursor=pointer]:
+            - /url: /teacher
+      - generic [ref=e84]:
+        - heading "Support" [level=4] [ref=e85]
+        - paragraph [ref=e86]: Questions about the course? Contact your instructor or visit the help center to get support.
+  - button "Open Next.js Dev Tools" [ref=e92] [cursor=pointer]:
+    - generic [ref=e95]:
+      - text: Compiling
+      - generic [ref=e96]:
+        - generic [ref=e97]: .
+        - generic [ref=e98]: .
+        - generic [ref=e99]: .
+  - alert [ref=e100]
+```
