@@ -96,7 +96,7 @@ A condensed summary of key learnings from the project.
 - **Went well:** Moving the dashboard to `app/teacher/page.tsx` plus the new `get_student_progress` RPC gave us trustworthy percentages, so the UI could simply hydrate progress state and lean on accessible shadcn primitives.
 - **Lesson:** When redirects depend on auth context (like `LoginForm` waiting for `profile`), test helpers need to simulate the second render that happens once Supabase returns data—otherwise Vitest never sees navigation fire and we chase phantom regressions.
 
-### #107 - feat/82-task-21-performance-optimization
+### #109 - feat/83-task-22-security-audit
 
-- **Went well:** Added comprehensive database indexes for foreign keys and JSONB columns to improve query performance.
-- **Lesson:** Verifying migration files against the current schema state is crucial. We caught a typo in the migration file (`class_enrollments` does not have `metadata`) during the `db reset` process, preventing a broken migration from being committed. This reinforces the value of testing migrations locally before merging.
+- **Went well:** Identified a critical security gap where the `profiles` table RLS was permissive/missing, allowing `anon` access. Hardened security by revoking anon access and implementing strict owner-only RLS policies. Added a dedicated security test suite to verify these policies.
+- **Lesson:** Security testing in a local CLI environment can be flaky due to container/network instability (e.g., `AuthRetryableFetchError` during concurrent user creation). However, manual verification and checking policy definitions (e.g., via `db dump`) are reliable fallbacks when automated tests struggle with environment limits. Always explicitly `REVOKE` permissions from `anon` for sensitive tables, rather than relying solely on RLS policies, as a defense-in-depth measure.
