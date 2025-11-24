@@ -33,3 +33,4 @@ export * from './live-responses';
 export * from './session-leaderboard';
 export * from './content-revisions';
 export * from './validators';
+export * from './relations';

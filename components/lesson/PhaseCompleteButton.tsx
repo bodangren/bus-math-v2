@@ -90,10 +90,19 @@ export function PhaseCompleteButton({
   }, []);
 
   const extractErrorMessage = useCallback((payload: unknown, fallback: string) => {
-    if (payload && typeof payload === 'object' && 'error' in payload) {
-      const { error } = payload as { error?: unknown };
-      if (typeof error === 'string') {
-        return error;
+    if (payload && typeof payload === 'object') {
+      const errorObj = payload as { error?: unknown; details?: unknown };
+      
+      if ('error' in errorObj && typeof errorObj.error === 'string') {
+         if (errorObj.error === 'Invalid payload' && 'details' in errorObj && typeof errorObj.details === 'object' && errorObj.details) {
+             // Format Zod validation errors if available
+             const details = errorObj.details as Record<string, string[]>;
+             const fieldErrors = Object.entries(details)
+                 .map(([field, msgs]) => `${field}: ${msgs.join(', ')}`)
+                 .join('; ');
+             if (fieldErrors) return `${errorObj.error}: ${fieldErrors}`;
+         }
+        return errorObj.error;
       }
     }
 

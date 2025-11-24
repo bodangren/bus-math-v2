@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 
 const requestSchema = z.object({
-  phaseId: z.string().uuid(),
+  // Use regex to validate UUID format without enforcing version/variant bits (for seeded data compatibility)
+  phaseId: z.string().regex(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/, 'Invalid UUID format'),
   status: z.enum(['not_started', 'in_progress', 'completed']).optional(),
   completed: z.boolean().optional(),
   timeSpentSeconds: z.number().int().nonnegative().optional(),
