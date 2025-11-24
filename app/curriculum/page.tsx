@@ -52,11 +52,17 @@ function deriveUnitDescription(row: LessonRow) {
 }
 
 function deriveObjectives(row: LessonRow) {
-  return (
-    row.metadata?.unitContent?.objectives?.content ??
-    row.learningObjectives ??
-    []
-  );
+  const fromMetadata = row.metadata?.unitContent?.objectives?.content;
+  if (Array.isArray(fromMetadata)) {
+    return fromMetadata;
+  }
+
+  const fromRow = row.learningObjectives;
+  if (Array.isArray(fromRow)) {
+    return fromRow;
+  }
+
+  return [];
 }
 
 export function groupLessonsByUnit(rows: LessonRow[]): UnitCurriculum[] {
