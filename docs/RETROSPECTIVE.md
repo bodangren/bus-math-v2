@@ -99,4 +99,8 @@ A condensed summary of key learnings from the project.
 ### #109 - feat/83-task-22-security-audit
 
 - **Went well:** Identified a critical security gap where the `profiles` table RLS was permissive/missing, allowing `anon` access. Hardened security by revoking anon access and implementing strict owner-only RLS policies. Added a dedicated security test suite to verify these policies.
-- **Lesson:** Security testing in a local CLI environment can be flaky due to container/network instability (e.g., `AuthRetryableFetchError` during concurrent user creation). However, manual verification and checking policy definitions (e.g., via `db dump`) are reliable fallbacks when automated tests struggle with environment limits. Always explicitly `REVOKE` permissions from `anon` for sensitive tables, rather than relying solely on RLS policies, as a defense-in-depth measure.
+### #115 - feat/115-add-user-menu-avatar-with-settings-and-logout
+
+- **Went well:** Replaced the basic authentication button with a full-featured `UserMenu` component using `shadcn/ui` primitives (Dropdown, Avatar), enhancing the user experience.
+- **Lesson:** When modifying authentication flows (like removing sign-up), ensure deep cleaning of all related routes and components to prevent dead code and potential security confusion. `next build` is excellent for catching stale imports in type definitions after file deletions.
+
