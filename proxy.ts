@@ -2,6 +2,9 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
+  // Debug logging to verify proxy execution
+  console.log(`[Proxy] Processing request: ${request.nextUrl.pathname}`);
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -30,8 +33,15 @@ export async function proxy(request: NextRequest) {
     },
   );
 
-  // Refresh session
-  const { data: { user } } = await supabase.auth.getUser();
+  // Refresh session with error handling
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch (error) {
+    console.error('[Proxy] Auth error:', error);
+    // Treat fetch errors as unauthenticated to prevent 502 crashes
+  }
 
   const path = request.nextUrl.pathname;
 
