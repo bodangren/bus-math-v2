@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Search, Calculator, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UserMenu } from "@/components/user-menu";
 
 export function HeaderSimple() {
   return (
@@ -68,20 +69,23 @@ export function HeaderSimple() {
             </Link>
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex items-center space-x-2 flex-shrink-0">
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-40 lg:w-64 border-border/50 bg-background/50 focus:bg-background transition-colors"
-            />
-            <Button
-              size="sm"
-              variant="outline"
-              className="border-border/50 hover:bg-accent/50"
-            >
-              <Search className="h-4 w-4" />
-            </Button>
+          {/* Search Bar & User Menu */}
+          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+            <div className="hidden md:flex items-center space-x-2">
+              <Input
+                type="search"
+                placeholder="Search..."
+                className="w-40 lg:w-64 border-border/50 bg-background/50 focus:bg-background transition-colors"
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-border/50 hover:bg-accent/50"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </div>
+            <UserMenu />
           </div>
         </div>
       </div>
