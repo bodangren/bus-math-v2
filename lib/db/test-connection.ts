@@ -9,6 +9,8 @@
 
 import { db } from './drizzle';
 import { sql } from 'drizzle-orm';
+import { lessons } from './schema';
+import { count } from 'drizzle-orm';
 
 export async function testDatabaseConnection() {
   try {
@@ -38,6 +40,24 @@ export async function testDatabaseConnection() {
 
     const row = rowCandidate as { current_time: Date; postgres_version: string };
 
+    // Check lessons table existence and count
+    let lessonsCount = 0;
+    try {
+      const countResult = await db.select({ count: count() }).from(lessons);
+      lessonsCount = countResult[0]?.count ?? 0;
+    } catch (tableError) {
+      return {
+        success: false,
+        message: 'Database connected but lessons table check failed',
+        error: tableError instanceof Error ? tableError.message : 'Unknown table error',
+        data: {
+            currentTime: row.current_time,
+            postgresVersion: row.postgres_version,
+            connectionType: 'Drizzle ORM with Supabase Session Pooler',
+        }
+      };
+    }
+
     return {
       success: true,
       message: 'Database connection successful!',
@@ -45,6 +65,7 @@ export async function testDatabaseConnection() {
         currentTime: row.current_time,
         postgresVersion: row.postgres_version,
         connectionType: 'Drizzle ORM with Supabase Session Pooler',
+        lessonsCount,
       },
     };
   } catch (error) {
