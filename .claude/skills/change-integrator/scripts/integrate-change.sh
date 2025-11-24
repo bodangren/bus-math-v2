@@ -3,28 +3,81 @@
 
 set -e
 
+# Ensure GH_TOKEN is set for GitHub CLI authentication
+if [ -z "$GH_TOKEN" ]; then
+    echo "Error: GH_TOKEN environment variable is not set." >&2
+    echo "Please set it to a GitHub Personal Access Token with appropriate permissions (repo, project, read:user)." >&2
+    echo "You can generate one at https://github.com/settings/tokens" >&2
+    exit 1
+fi
+
 usage() {
-    echo "Usage: $0 -p <pr-number> -b <branch-name> -i <item-id> [-c <change-dir>]"
+    echo "Usage: $0 -p <pr-number> -b <branch-name> (-i <item-id> | -N <issue-number>) [-c <change-dir>]"
     echo "  -p: The number of the pull request that was merged."
     echo "  -b: The name of the feature branch that was merged."
-    echo "  -i: The project board item ID for the task."
+    echo "  -i: The project board item ID for the task (GraphQL ID)."
+    echo "  -N: The GitHub Issue Number for the task (e.g., 123)."
     echo "  -c: (Optional) The path to the original change proposal directory."
     exit 1
 }
 
-while getopts ":p:b:i:c:" opt; do
+while getopts ":p:b:i:N:c:" opt; do
   case ${opt} in
     p ) PR_NUMBER=$OPTARG;; 
     b ) BRANCH_NAME=$OPTARG;; 
     i ) ITEM_ID=$OPTARG;; 
+    N ) ISSUE_NUMBER=$OPTARG;; 
     c ) CHANGE_DIR=$OPTARG;; 
     \? ) echo "Invalid option: $OPTARG" 1>&2; usage;; 
     : ) echo "Invalid option: $OPTARG requires an argument" 1>&2; usage;; 
   esac
 done
 
-if [ -z "$PR_NUMBER" ] || [ -z "$BRANCH_NAME" ] || [ -z "$ITEM_ID" ]; then
+if [ -z "$PR_NUMBER" ] || [ -z "$BRANCH_NAME" ] || { [ -z "$ITEM_ID" ] && [ -z "$ISSUE_NUMBER" ]; }; then
     usage
+fi
+
+if [ -z "$ITEM_ID" ] && [ -n "$ISSUE_NUMBER" ]; then
+    echo "Attempting to retrieve Project V2 Item ID for Issue #$ISSUE_NUMBER..."
+    # GraphQL query to find the ProjectV2Item's ID by Issue number and Project ID
+    GRAPHQL_QUERY=$(cat <<EOF
+query {
+  node(id: "$PROJECT_ID") {
+    ... on ProjectV2 {
+      items(first: 100) {
+        nodes {
+          id
+          fieldValues(first: 20) {
+            nodes {
+              ... on ProjectV2ItemFieldRepositoryFieldValue {
+                repository {
+                  nameWithOwner
+                }
+              }
+              ... on ProjectV2ItemFieldIssueValue {
+                issue {
+                  number
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+EOF
+)
+    # Execute the GraphQL query and parse the JSON response
+    ITEM_DATA=$(gh api graphql -F owner='$(gh repo view --json owner | jq -r ".owner.login")' -F repo='$(gh repo view --json name | jq -r ".name")' -f query="$GRAPHQL_QUERY")
+    # Filter items to find the one linked to our issue number
+    ITEM_ID=$(echo "$ITEM_DATA" | jq -r --arg ISSUE_NUMBER "$ISSUE_NUMBER" '.data.node.items.nodes[] | select(.fieldValues.nodes[]?.issue?.number == ($ISSUE_NUMBER | tonumber)) | .id')
+
+    if [ -z "$ITEM_ID" ]; then
+        echo "Error: Could not find Project V2 Item ID for Issue #$ISSUE_NUMBER in project $PROJECT_ID." >&2
+        exit 1
+    fi
+    echo "Successfully retrieved Project V2 Item ID: $ITEM_ID for Issue #$ISSUE_NUMBER."
 fi
 
 # --- CONFIGURATION (should be detected dynamically in a future version) ---
