@@ -52,6 +52,7 @@ export async function proxy(request: NextRequest) {
     '/curriculum',
     '/login',
     '/auth',
+    '/api', // Allow API access
   ];
 
   // Check if current path is public
