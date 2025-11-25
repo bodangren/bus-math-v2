@@ -1,13 +1,19 @@
 import { relations } from 'drizzle-orm';
 import { lessons } from './lessons';
+import { lessonVersions, phaseVersions, phaseSections, lessonStandards } from './lesson-versions';
 import { phases } from './phases';
 import { studentProgress } from './student-progress';
 import { profiles } from './profiles';
 import { competencyStandards, studentCompetency } from './competencies';
 import { activities } from './activities';
 
-export const lessonsRelations = relations(lessons, ({ many }) => ({
+export const lessonsRelations = relations(lessons, ({ one, many }) => ({
   phases: many(phases),
+  versions: many(lessonVersions),
+  currentVersion: one(lessonVersions, {
+    fields: [lessons.currentVersionId],
+    references: [lessonVersions.id],
+  }),
 }));
 
 export const phasesRelations = relations(phases, ({ one, many }) => ({
@@ -41,6 +47,8 @@ export const profilesRelations = relations(profiles, ({ many }) => ({
 
 export const competencyStandardsRelations = relations(competencyStandards, ({ many }) => ({
   studentCompetencies: many(studentCompetency),
+  lessonStandards: many(lessonStandards),
+  activities: many(activities),
 }));
 
 export const studentCompetencyRelations = relations(studentCompetency, ({ one }) => ({
@@ -64,6 +72,46 @@ export const studentCompetencyRelations = relations(studentCompetency, ({ one })
   }),
 }));
 
-export const activitiesRelations = relations(activities, ({ many }) => ({
+export const activitiesRelations = relations(activities, ({ one, many }) => ({
   studentCompetencies: many(studentCompetency),
+  standard: one(competencyStandards, {
+    fields: [activities.standardId],
+    references: [competencyStandards.id],
+  }),
+}));
+
+// Lesson Versioning Relations
+export const lessonVersionsRelations = relations(lessonVersions, ({ one, many }) => ({
+  lesson: one(lessons, {
+    fields: [lessonVersions.lessonId],
+    references: [lessons.id],
+  }),
+  phaseVersions: many(phaseVersions),
+  standards: many(lessonStandards),
+}));
+
+export const phaseVersionsRelations = relations(phaseVersions, ({ one, many }) => ({
+  lessonVersion: one(lessonVersions, {
+    fields: [phaseVersions.lessonVersionId],
+    references: [lessonVersions.id],
+  }),
+  sections: many(phaseSections),
+}));
+
+export const phaseSectionsRelations = relations(phaseSections, ({ one }) => ({
+  phaseVersion: one(phaseVersions, {
+    fields: [phaseSections.phaseVersionId],
+    references: [phaseVersions.id],
+  }),
+}));
+
+export const lessonStandardsRelations = relations(lessonStandards, ({ one }) => ({
+  lessonVersion: one(lessonVersions, {
+    fields: [lessonStandards.lessonVersionId],
+    references: [lessonVersions.id],
+  }),
+  standard: one(competencyStandards, {
+    fields: [lessonStandards.standardId],
+    references: [competencyStandards.id],
+  }),
 }));

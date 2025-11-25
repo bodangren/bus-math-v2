@@ -1,5 +1,6 @@
-import { jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, text, timestamp, uuid, index } from 'drizzle-orm/pg-core';
 import { z } from 'zod';
+import { competencyStandards } from './competencies';
 
 const matchingItemSchema = z.object({
   id: z.string(),
@@ -1158,6 +1159,10 @@ export const activities = pgTable('activities', {
   description: text('description'),
   props: jsonb('props').$type<ActivityProps>().notNull(),
   gradingConfig: jsonb('grading_config').$type<GradingConfig | null>(),
+  standardId: uuid('standard_id')
+    .references(() => competencyStandards.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  standardIdIdx: index('idx_activities_standard_id').on(table.standardId),
+}));
