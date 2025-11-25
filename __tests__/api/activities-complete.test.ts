@@ -123,7 +123,6 @@ describe('POST /api/activities/complete', () => {
     expect(data.completionId).toBe('completion-123');
 
     expect(mockRpc).toHaveBeenCalledWith('complete_activity_atomic', {
-      p_student_id: mockUser.id,
       p_activity_id: requestBody.activityId,
       p_lesson_id: requestBody.lessonId,
       p_phase_number: requestBody.phaseNumber,
@@ -279,7 +278,6 @@ describe('POST /api/activities/complete', () => {
 
     expect(response.status).toBe(200);
     expect(mockRpc).toHaveBeenCalledWith('complete_activity_atomic', {
-      p_student_id: mockUser.id,
       p_activity_id: requestBody.activityId,
       p_lesson_id: requestBody.lessonId,
       p_phase_number: requestBody.phaseNumber,

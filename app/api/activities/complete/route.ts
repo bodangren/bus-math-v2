@@ -82,10 +82,11 @@ export async function POST(request: NextRequest) {
     }: CompleteActivityRequest = validationResult.data;
 
     // Call the RPC function for atomic completion
+    // SECURITY: student_id is derived from auth.uid() in the RPC function
+    // to prevent auth bypass attacks
     const { data: rpcResult, error: rpcError } = await supabase.rpc(
       'complete_activity_atomic',
       {
-        p_student_id: user.id,
         p_activity_id: activityId,
         p_lesson_id: lessonId,
         p_phase_number: phaseNumber,
