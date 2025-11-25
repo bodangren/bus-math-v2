@@ -109,3 +109,8 @@ A condensed summary of key learnings from the project.
 - **Went well:** Structured seed data as external JSON files with idempotent upsert logic allows versioning and iteration without schema recreation. Establishing 7 foundational accounting standards (ACC-1.1 through ACC-1.7) provides a clear competency framework for Unit 1. Documentation in `supabase/seed/README.md` guides future seed script development.
 - **Lesson:** Seed scripts should use `ON CONFLICT DO UPDATE` patterns for deterministic, repeatable seeding across environments. Separating data (JSON) from logic (TypeScript) keeps seed files maintainable and allows non-developers to contribute standards content.
 
+### #164 - feat/153-implement-rls-policies-enrollment-schema
+
+- **Went well:** Leveraged existing `class_enrollments` and `classes` schema instead of creating redundant enrollment tables. Codex MCP code review caught a critical security vulnerability where students could modify their own competency records. Implementing 7 granular RLS policies provides defense-in-depth for competency data access.
+- **Lesson:** RLS policies that check "can view" are insufficient for write operations—always add explicit role gates (`role IN ('teacher', 'admin')`) to UPDATE/INSERT policies. SECURITY DEFINER functions must set `search_path = public, pg_temp` to prevent object spoofing attacks. Automated code review tools like Codex catch subtle security issues that manual review might miss.
+
