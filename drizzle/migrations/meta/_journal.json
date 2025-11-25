@@ -15,6 +15,13 @@
       "when": 1762949233087,
       "tag": "0001_ambitious_punisher",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764059842348,
+      "tag": "0002_lying_boomer",
+      "breakpoints": true
     }
   ]
 }
