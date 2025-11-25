@@ -104,3 +104,8 @@ A condensed summary of key learnings from the project.
 - **Went well:** Replaced the basic authentication button with a full-featured `UserMenu` component using `shadcn/ui` primitives (Dropdown, Avatar), enhancing the user experience.
 - **Lesson:** When modifying authentication flows (like removing sign-up), ensure deep cleaning of all related routes and components to prevent dead code and potential security confusion. `next build` is excellent for catching stale imports in type definitions after file deletions.
 
+### #163 - feat/152-seed-accounting-standards
+
+- **Went well:** Structured seed data as external JSON files with idempotent upsert logic allows versioning and iteration without schema recreation. Establishing 7 foundational accounting standards (ACC-1.1 through ACC-1.7) provides a clear competency framework for Unit 1. Documentation in `supabase/seed/README.md` guides future seed script development.
+- **Lesson:** Seed scripts should use `ON CONFLICT DO UPDATE` patterns for deterministic, repeatable seeding across environments. Separating data (JSON) from logic (TypeScript) keeps seed files maintainable and allows non-developers to contribute standards content.
+
