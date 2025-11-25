@@ -22,10 +22,11 @@ export const createLesson = (overrides: PartialDeep<Lesson> = {}): Lesson => {
     slug: 'unit01-lesson01',
     description: 'Students learn how Sarah stabilized her books using structured ledgers.',
     learningObjectives: [
-      'Diagnose Sarah’s accounting gaps with structured data review.',
+      'Diagnose Sarah\'s accounting gaps with structured data review.',
       'Translate financial stories into spreadsheet automations.'
     ],
     orderIndex: 1,
+    currentVersionId: null,
     metadata: {
       duration: 90,
       difficulty: 'beginner',
