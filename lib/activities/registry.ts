@@ -28,8 +28,9 @@ import { CashFlowChallenge } from '@/components/business-simulations/CashFlowCha
 import { InventoryManager } from '@/components/business-simulations/InventoryManager';
 import { PitchPresentationBuilder } from '@/components/business-simulations/PitchPresentationBuilder';
 
-// Import spreadsheet component
+// Import spreadsheet components
 import { SpreadsheetActivity } from '@/components/spreadsheet/SpreadsheetActivity';
+import { SpreadsheetEvaluator } from '@/components/activities/SpreadsheetEvaluator';
 
 /**
  * Centralized registry for activity components.
@@ -62,6 +63,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'pitch-presentation-builder': PitchPresentationBuilder,
   'pitch': PitchPresentationBuilder, // Alias for pitch-presentation-builder
   'spreadsheet': SpreadsheetActivity,
+  'spreadsheet-evaluator': SpreadsheetEvaluator,
 
   // Placeholder for remaining activity types - to be implemented
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
