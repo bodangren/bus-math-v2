@@ -1,0 +1,51 @@
+[
+  {
+    "code": "ACC-1.1",
+    "description": "Understand and apply the fundamental accounting equation (Assets = Liabilities + Equity) to business scenarios",
+    "studentFriendlyDescription": "Learn why a business's stuff (assets) always equals what it owes (liabilities) plus what the owners put in (equity)",
+    "category": "Fundamentals",
+    "isActive": true
+  },
+  {
+    "code": "ACC-1.2",
+    "description": "Classify business accounts accurately into Assets, Liabilities, and Equity categories",
+    "studentFriendlyDescription": "Sort business accounts into the right buckets: things you own, things you owe, and owner's stake",
+    "category": "Account Classification",
+    "isActive": true
+  },
+  {
+    "code": "ACC-1.3",
+    "description": "Construct a properly formatted Balance Sheet with correct account categorization and subtotals",
+    "studentFriendlyDescription": "Build a financial snapshot that shows what a business owns and owes at a specific point in time",
+    "category": "Financial Statements",
+    "isActive": true
+  },
+  {
+    "code": "ACC-1.4",
+    "description": "Analyze how business transactions affect the accounting equation while maintaining balance",
+    "studentFriendlyDescription": "Track how business events change assets, liabilities, and equity without breaking the balance",
+    "category": "Transaction Analysis",
+    "isActive": true
+  },
+  {
+    "code": "ACC-1.5",
+    "description": "Identify and correct common accounting errors including misclassifications and missing entries",
+    "studentFriendlyDescription": "Spot and fix mistakes like putting accounts in the wrong category or forgetting to record something",
+    "category": "Data Quality",
+    "isActive": true
+  },
+  {
+    "code": "ACC-1.6",
+    "description": "Apply data validation techniques to ensure accounting data integrity and consistency",
+    "studentFriendlyDescription": "Use Excel tools to prevent errors and keep your accounting data clean and reliable",
+    "category": "Data Quality",
+    "isActive": true
+  },
+  {
+    "code": "ACC-1.7",
+    "description": "Communicate financial position effectively through visual Balance Sheet representations",
+    "studentFriendlyDescription": "Create clear charts and visuals that tell the story of a business's financial health",
+    "category": "Financial Communication",
+    "isActive": true
+  }
+]
