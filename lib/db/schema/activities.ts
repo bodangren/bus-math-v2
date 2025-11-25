@@ -1090,6 +1090,18 @@ export const activityPropsSchemas = {
     })
   }),
   'spreadsheet': spreadsheetActivitySchema,
+  'spreadsheet-evaluator': z.object({
+    templateId: z.string(),
+    instructions: z.string(),
+    targetCells: z.array(
+      z.object({
+        cell: z.string().regex(/^[A-Z]+[0-9]+$/),
+        expectedValue: z.union([z.string(), z.number()]),
+        expectedFormula: z.string().optional(),
+      })
+    ).min(1),
+    initialData: z.array(z.array(z.any())).optional(),
+  }),
   'pitch': z.object({
     initialState: pitchInitialStateSchema.default({
       businessModel: { type: 'saas', name: '', industry: '', targetMarket: '', revenueModel: '' },
@@ -1135,6 +1147,7 @@ export type CashFlowChallengeActivityProps = z.infer<typeof activityPropsSchemas
 export type InventoryManagerActivityProps = z.infer<typeof activityPropsSchemas['inventory-manager']>;
 export type PitchPresentationBuilderActivityProps = z.infer<typeof activityPropsSchemas['pitch-presentation-builder']>;
 export type SpreadsheetActivityProps = z.infer<typeof activityPropsSchemas['spreadsheet']>;
+export type SpreadsheetEvaluatorActivityProps = z.infer<typeof activityPropsSchemas['spreadsheet-evaluator']>;
 
 export const gradingConfigSchema = z.object({
   autoGrade: z.boolean().default(false),

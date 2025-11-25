@@ -34,5 +34,6 @@ export * from './live-responses';
 export * from './session-leaderboard';
 export * from './content-revisions';
 export * from './competencies';
+export * from './spreadsheet-responses';
 export * from './validators';
 export * from './relations';

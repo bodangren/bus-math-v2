@@ -92,7 +92,7 @@ async function seedCompetencyStandards() {
         RETURNING (xmax = 0) AS inserted
       `);
 
-      if (result.rows[0]?.inserted) {
+      if (result[0]?.inserted) {
         insertCount++;
       } else {
         updateCount++;
@@ -111,17 +111,17 @@ async function seedCompetencyStandards() {
     `);
 
     console.log('\n=� Verification:');
-    for (const row of verification.rows) {
+    for (const row of verification) {
       console.log(`  ${row.category}: ${row.count} standards`);
     }
 
     const total = await db.execute(sql`
       SELECT COUNT(*) as total FROM competency_standards WHERE code LIKE 'ACC-1.%'
     `);
-    console.log(`  Total ACC-1.x standards: ${total.rows[0].total}`);
+    console.log(`  Total ACC-1.x standards: ${total[0].total}`);
 
-    if (Number(total.rows[0].total) !== unit1Data.length) {
-      console.warn(`�  Warning: Expected ${unit1Data.length} standards, found ${total.rows[0].total}`);
+    if (Number(total[0].total) !== unit1Data.length) {
+      console.warn(`�  Warning: Expected ${unit1Data.length} standards, found ${total[0].total}`);
     }
 
   } catch (error) {
