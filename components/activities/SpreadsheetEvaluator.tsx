@@ -203,14 +203,19 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
       return data;
     }
 
-    const highlighted = data.map((row) => row.map((cell) => ({ ...cell })));
+    const highlighted = data.map((row) => row.map((cell) => ({
+      value: cell?.value ?? '',
+      readOnly: cell?.readOnly,
+      className: cell?.className,
+    } as SpreadsheetCell)));
 
     for (const fb of feedback) {
       try {
         const { row, col } = a1ToCoordinates(fb.cell);
         if (highlighted[row]?.[col]) {
           highlighted[row][col] = {
-            ...highlighted[row][col],
+            value: highlighted[row][col].value,
+            readOnly: highlighted[row][col].readOnly,
             className: fb.isCorrect
               ? 'bg-green-100 border-green-500'
               : 'bg-red-100 border-red-500',
