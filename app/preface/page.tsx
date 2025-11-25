@@ -115,6 +115,7 @@ const introQuizActivity: ComprehensionCheckActivity = {
   componentKey: 'comprehension-quiz',
   displayName: 'Preface: Getting Started Quiz',
   description: 'Check your understanding of the course structure and capstone.',
+  standardId: null,
   props: {
     title: 'Getting Started Quiz',
     description: 'Check your understanding of the course structure and capstone.',
@@ -166,6 +167,7 @@ const vocabWarmupActivity: FillInTheBlankActivity = {
   id: 'preface-vocab-warmup',
   componentKey: 'fill-in-the-blank',
   displayName: 'Business Math Vocabulary Warm-Up',
+  standardId: null,
   description: "Fill the blanks to preview key ideas we'll use often.",
   props: {
     title: 'Business Math Vocabulary Warm-Up',
@@ -208,6 +210,7 @@ const reflectionJournalActivity: ReflectionJournalActivity = {
   id: 'preface-reflection',
   componentKey: 'reflection-journal',
   displayName: 'Quick Reflection',
+  standardId: null,
   description: 'Set goals for the semester using the CAP framework.',
   props: {
     unitTitle: 'My Starting Goals',
