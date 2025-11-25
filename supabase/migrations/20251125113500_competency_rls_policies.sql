@@ -11,6 +11,7 @@ RETURNS boolean
 LANGUAGE plpgsql
 SECURITY DEFINER
 STABLE
+SET search_path = public, pg_temp
 AS $$
 DECLARE
   current_user_id uuid;
@@ -121,15 +122,33 @@ CREATE POLICY "Teachers and admins can update student competency records"
   ON student_competency
   FOR UPDATE
   TO authenticated
-  USING (user_can_view_student(student_id))
-  WITH CHECK (user_can_view_student(student_id));
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid()
+        AND role IN ('teacher', 'admin')
+    ) AND user_can_view_student(student_id)
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid()
+        AND role IN ('teacher', 'admin')
+    ) AND user_can_view_student(student_id)
+  );
 
 -- Policy: Teachers and admins can insert competency records for accessible students
 CREATE POLICY "Teachers and admins can insert student competency records"
   ON student_competency
   FOR INSERT
   TO authenticated
-  WITH CHECK (user_can_view_student(student_id));
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid()
+        AND role IN ('teacher', 'admin')
+    ) AND user_can_view_student(student_id)
+  );
 
 -- Policy: Only admins can delete competency records
 CREATE POLICY "Only admins can delete student competency records"
