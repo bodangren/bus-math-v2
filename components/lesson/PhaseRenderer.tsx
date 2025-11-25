@@ -10,13 +10,15 @@ import { ContentBlockErrorBoundary } from './ContentBlockErrorBoundary';
 
 interface PhaseRendererProps {
   contentBlocks: ContentBlock[];
+  lessonId: string;
+  phaseNumber: number;
 }
 
 /**
  * PhaseRenderer iterates over phase.contentBlocks and renders each block
  * according to its type using discriminated union pattern.
  */
-export function PhaseRenderer({ contentBlocks }: PhaseRendererProps) {
+export function PhaseRenderer({ contentBlocks, lessonId, phaseNumber }: PhaseRendererProps) {
   // Validate content blocks with Zod
   const validatedBlocks = contentBlocks.map((block, index) => {
     try {
@@ -39,7 +41,7 @@ export function PhaseRenderer({ contentBlocks }: PhaseRendererProps) {
     <div className="space-y-4">
       {validatedBlocks.map((block) => (
         <ContentBlockErrorBoundary key={block.id}>
-          <ContentBlockRenderer block={block} />
+          <ContentBlockRenderer block={block} lessonId={lessonId} phaseNumber={phaseNumber} />
         </ContentBlockErrorBoundary>
       ))}
     </div>
@@ -49,7 +51,15 @@ export function PhaseRenderer({ contentBlocks }: PhaseRendererProps) {
 /**
  * Renders a single content block based on its type
  */
-function ContentBlockRenderer({ block }: { block: ContentBlock }) {
+function ContentBlockRenderer({
+  block,
+  lessonId,
+  phaseNumber
+}: {
+  block: ContentBlock;
+  lessonId: string;
+  phaseNumber: number;
+}) {
   switch (block.type) {
     case 'markdown':
       return <MarkdownRenderer content={block.content} />;
@@ -92,6 +102,8 @@ function ContentBlockRenderer({ block }: { block: ContentBlock }) {
       return (
         <ActivityRenderer
           activityId={block.activityId}
+          lessonId={lessonId}
+          phaseNumber={phaseNumber}
           required={block.required}
         />
       );

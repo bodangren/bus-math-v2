@@ -79,7 +79,7 @@ describe('ActivityRenderer', () => {
   it('should show loading state initially', () => {
     mockFetch.mockImplementation(() => new Promise(() => {})); // Never resolves
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     // Check for the animated spinner icon
     const spinner = document.querySelector('.animate-spin');
@@ -92,7 +92,7 @@ describe('ActivityRenderer', () => {
       json: async () => buildActivity(),
     });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Quiz')).toBeInTheDocument();
@@ -119,7 +119,7 @@ describe('ActivityRenderer', () => {
         }),
     });
 
-    render(<ActivityRenderer activityId="test-activity-id" required={true} />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} required={true} />);
 
     await waitFor(() => {
       expect(screen.getByText('Required Quiz')).toBeInTheDocument();
@@ -134,7 +134,7 @@ describe('ActivityRenderer', () => {
       statusText: 'Not Found',
     });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText(/Failed to load activity/i)).toBeInTheDocument();
@@ -149,7 +149,7 @@ describe('ActivityRenderer', () => {
       json: async () => null,
     });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText(/Failed to load activity/i)).toBeInTheDocument();
@@ -170,7 +170,7 @@ describe('ActivityRenderer', () => {
         }),
     });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText(/Activity component not found/i)).toBeInTheDocument();
@@ -182,7 +182,7 @@ describe('ActivityRenderer', () => {
   it('should show error message when network error occurs', async () => {
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText(/Failed to load activity/i)).toBeInTheDocument();
@@ -201,7 +201,7 @@ describe('ActivityRenderer', () => {
         }),
     });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText('Quiz with Description')).toBeInTheDocument();
@@ -234,7 +234,7 @@ describe('ActivityRenderer', () => {
         }),
       });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Quiz')).toBeInTheDocument();
@@ -279,7 +279,7 @@ describe('ActivityRenderer', () => {
         json: async () => ({ error: 'Unable to save submission' }),
       });
 
-    render(<ActivityRenderer activityId="test-activity-id" />);
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Quiz')).toBeInTheDocument();

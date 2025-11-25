@@ -36,6 +36,20 @@
       "when": 1764075632231,
       "tag": "0004_true_quentin_quire",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1764112062860,
+      "tag": "0005_gifted_shotgun",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1764112100000,
+      "tag": "0006_complete_activity_atomic",
+      "breakpoints": true
     }
   ]
 }
