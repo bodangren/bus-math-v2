@@ -18,9 +18,8 @@ export const competencyStandards = pgTable('competency_standards', {
   category: text('category'),
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-}, (table) => ({
-  codeIdx: index('idx_competency_standards_code').on(table.code),
-}));
+});
+// Note: unique() on 'code' already creates an implicit index
 
 /**
  * Student Competency
@@ -45,9 +44,9 @@ export const studentCompetency = pgTable('student_competency', {
   updatedBy: uuid('updated_by')
     .references(() => profiles.id, { onDelete: 'set null' }),
 }, (table) => ({
-  studentIdx: index('idx_student_competency_student_id').on(table.studentId),
+  // Note: unique constraint on (student_id, standard_id) already creates composite index
+  // Only need explicit index on standard_id for reverse lookups
   standardIdx: index('idx_student_competency_standard_id').on(table.standardId),
-  compositeIdx: index('idx_student_competency_composite').on(table.studentId, table.standardId),
   studentStandardUnique: unique('uq_student_competency_student_standard').on(table.studentId, table.standardId),
   masteryLevelCheck: check('chk_mastery_level_range', sql`mastery_level >= 0 AND mastery_level <= 100`),
 }));

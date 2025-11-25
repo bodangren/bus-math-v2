@@ -26,7 +26,7 @@ ALTER TABLE "student_competency" ADD CONSTRAINT "student_competency_student_id_p
 ALTER TABLE "student_competency" ADD CONSTRAINT "student_competency_standard_id_competency_standards_id_fk" FOREIGN KEY ("standard_id") REFERENCES "public"."competency_standards"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "student_competency" ADD CONSTRAINT "student_competency_evidence_activity_id_activities_id_fk" FOREIGN KEY ("evidence_activity_id") REFERENCES "public"."activities"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "student_competency" ADD CONSTRAINT "student_competency_updated_by_profiles_id_fk" FOREIGN KEY ("updated_by") REFERENCES "public"."profiles"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "idx_competency_standards_code" ON "competency_standards" USING btree ("code");--> statement-breakpoint
-CREATE INDEX "idx_student_competency_student_id" ON "student_competency" USING btree ("student_id");--> statement-breakpoint
-CREATE INDEX "idx_student_competency_standard_id" ON "student_competency" USING btree ("standard_id");--> statement-breakpoint
-CREATE INDEX "idx_student_competency_composite" ON "student_competency" USING btree ("student_id","standard_id");
+-- Note: idx_competency_standards_code removed - UNIQUE constraint creates implicit index
+-- Note: idx_student_competency_student_id removed - covered by unique composite index leading column
+-- Note: idx_student_competency_composite removed - unique constraint already creates this index
+CREATE INDEX "idx_student_competency_standard_id" ON "student_competency" USING btree ("standard_id");
