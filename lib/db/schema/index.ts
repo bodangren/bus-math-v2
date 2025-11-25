@@ -32,5 +32,6 @@ export * from './live-sessions';
 export * from './live-responses';
 export * from './session-leaderboard';
 export * from './content-revisions';
+export * from './competencies';
 export * from './validators';
 export * from './relations';
