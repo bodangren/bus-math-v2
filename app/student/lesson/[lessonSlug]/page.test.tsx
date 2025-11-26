@@ -100,21 +100,32 @@ describe('LessonPage', () => {
         updatedAt: new Date(),
       },
     ];
+    const mockProfile = {
+      id: 'user-123',
+      role: 'student' as const,
+    };
 
     // Mock the query chain
     const orderByMock = vi.fn().mockResolvedValue(mockPhases);
     const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMock = vi.fn().mockResolvedValue([mockLesson]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMock });
+    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
+    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
+    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
+    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
     const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
     const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
+    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
 
     let callCount = 0;
     vi.mocked(db.select).mockImplementation(() => {
       callCount++;
-      return {
-        from: callCount === 1 ? fromMockForLesson : fromMockForPhases,
-      } as never;
+      if (callCount === 1) {
+        return { from: fromMockForLesson } as never;
+      } else if (callCount === 2) {
+        return { from: fromMockForPhases } as never;
+      } else {
+        return { from: fromMockForProfile } as never;
+      }
     });
 
     const params = Promise.resolve({ lessonSlug: 'test-lesson' });
@@ -254,20 +265,31 @@ describe('LessonPage', () => {
         updatedAt: new Date(),
       },
     ];
+    const mockProfile = {
+      id: 'user-123',
+      role: 'student' as const,
+    };
 
     const orderByMock = vi.fn().mockResolvedValue(mockPhases);
     const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMock = vi.fn().mockResolvedValue([mockLesson]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMock });
+    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
+    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
+    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
+    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
     const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
     const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
+    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
 
     let callCount = 0;
     vi.mocked(db.select).mockImplementation(() => {
       callCount++;
-      return {
-        from: callCount === 1 ? fromMockForLesson : fromMockForPhases,
-      } as never;
+      if (callCount === 1) {
+        return { from: fromMockForLesson } as never;
+      } else if (callCount === 2) {
+        return { from: fromMockForPhases } as never;
+      } else {
+        return { from: fromMockForProfile } as never;
+      }
     });
 
     const params = Promise.resolve({ lessonSlug: 'test-lesson' });
@@ -323,6 +345,71 @@ describe('LessonPage', () => {
         updatedAt: new Date(),
       },
     ];
+    const mockProfile = {
+      id: 'user-123',
+      role: 'student' as const,
+    };
+
+    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
+    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
+    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
+    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
+    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
+    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
+    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
+    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
+    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
+
+    let callCount = 0;
+    vi.mocked(db.select).mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) {
+        return { from: fromMockForLesson } as never;
+      } else if (callCount === 2) {
+        return { from: fromMockForPhases } as never;
+      } else {
+        return { from: fromMockForProfile } as never;
+      }
+    });
+
+    const params = Promise.resolve({ lessonSlug: 'another-lesson' });
+    const searchParams = Promise.resolve({});
+    const result = await LessonPage({ params, searchParams });
+
+    render(result);
+
+    expect(screen.getByText('Another Lesson')).toBeInTheDocument();
+    expect(screen.getByTestId('current-phase')).toHaveTextContent('1');
+  });
+
+  it('shows error page when lesson has zero phases', async () => {
+    // Mock Supabase auth
+    const { createClient } = await import('@/lib/supabase/server');
+    const mockSupabaseClient = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123', email: 'test@example.com' } },
+          error: null,
+        }),
+      },
+    };
+    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+
+    // Mock database query - lesson exists but has no phases
+    const { db } = await import('@/lib/db/drizzle');
+    const mockLesson = {
+      id: '789',
+      unitNumber: 3,
+      title: 'Empty Lesson',
+      slug: 'empty-lesson',
+      description: null,
+      learningObjectives: null,
+      orderIndex: 3,
+      metadata: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const mockPhases: never[] = []; // No phases
 
     const orderByMock = vi.fn().mockResolvedValue(mockPhases);
     const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
@@ -339,13 +426,297 @@ describe('LessonPage', () => {
       } as never;
     });
 
-    const params = Promise.resolve({ lessonSlug: 'another-lesson' });
+    const params = Promise.resolve({ lessonSlug: 'empty-lesson' });
     const searchParams = Promise.resolve({});
     const result = await LessonPage({ params, searchParams });
 
     render(result);
 
-    expect(screen.getByText('Another Lesson')).toBeInTheDocument();
-    expect(screen.getByTestId('current-phase')).toHaveTextContent('1');
+    expect(screen.getByText('Lesson Not Available')).toBeInTheDocument();
+    expect(screen.getByText(/does not have any phases configured/i)).toBeInTheDocument();
+    expect(screen.getByText('Return to Dashboard')).toBeInTheDocument();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('shows error page when RPC fails', async () => {
+    // Mock Supabase auth
+    const { createClient } = await import('@/lib/supabase/server');
+    const mockSupabaseClient = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123', email: 'test@example.com' } },
+          error: null,
+        }),
+      },
+      rpc: vi.fn().mockResolvedValue({
+        data: null,
+        error: { message: 'Database connection failed' },
+      }),
+    };
+    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+
+    // Mock database query
+    const { db } = await import('@/lib/db/drizzle');
+    const mockLesson = {
+      id: '999',
+      unitNumber: 4,
+      title: 'RPC Error Lesson',
+      slug: 'rpc-error-lesson',
+      description: null,
+      learningObjectives: null,
+      orderIndex: 4,
+      metadata: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        lessonId: '999',
+        phaseNumber: 1,
+        title: 'Phase 1',
+        contentBlocks: [],
+        estimatedMinutes: 30,
+        metadata: { phaseType: 'intro' as const },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    const mockProfile = {
+      id: 'user-123',
+      role: 'student' as const,
+    };
+
+    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
+    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
+    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
+    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
+    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
+    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
+    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
+    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
+    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
+
+    let callCount = 0;
+    vi.mocked(db.select).mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) {
+        return { from: fromMockForLesson } as never;
+      } else if (callCount === 2) {
+        return { from: fromMockForPhases } as never;
+      } else {
+        return { from: fromMockForProfile } as never;
+      }
+    });
+
+    const params = Promise.resolve({ lessonSlug: 'rpc-error-lesson' });
+    const searchParams = Promise.resolve({ phase: '1' });
+    const result = await LessonPage({ params, searchParams });
+
+    render(result);
+
+    expect(screen.getByText('Unable to Verify Access')).toBeInTheDocument();
+    expect(screen.getByText(/encountered an error while checking your access/i)).toBeInTheDocument();
+    expect(screen.getByText('Return to Dashboard')).toBeInTheDocument();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('allows teachers to bypass phase locking', async () => {
+    // Mock Supabase auth
+    const { createClient } = await import('@/lib/supabase/server');
+    const mockSupabaseClient = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'teacher-123', email: 'teacher@example.com' } },
+          error: null,
+        }),
+      },
+      // RPC should NOT be called for teachers
+      rpc: vi.fn(),
+    };
+    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+
+    // Mock database query
+    const { db } = await import('@/lib/db/drizzle');
+    const mockLesson = {
+      id: '111',
+      unitNumber: 1,
+      title: 'Teacher Accessible Lesson',
+      slug: 'teacher-lesson',
+      description: 'Test description',
+      learningObjectives: ['Objective 1'],
+      orderIndex: 1,
+      metadata: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        lessonId: '111',
+        phaseNumber: 1,
+        title: 'Phase 1',
+        contentBlocks: [],
+        estimatedMinutes: 30,
+        metadata: { phaseType: 'intro' as const },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 'phase-2',
+        lessonId: '111',
+        phaseNumber: 2,
+        title: 'Phase 2',
+        contentBlocks: [],
+        estimatedMinutes: 45,
+        metadata: { phaseType: 'practice' as const },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 'phase-3',
+        lessonId: '111',
+        phaseNumber: 3,
+        title: 'Phase 3',
+        contentBlocks: [],
+        estimatedMinutes: 45,
+        metadata: { phaseType: 'practice' as const },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    const mockProfile = {
+      id: 'teacher-123',
+      role: 'teacher' as const,
+    };
+
+    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
+    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
+    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
+    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
+    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
+    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
+    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
+    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
+    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
+
+    let callCount = 0;
+    vi.mocked(db.select).mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) {
+        return { from: fromMockForLesson } as never;
+      } else if (callCount === 2) {
+        return { from: fromMockForPhases } as never;
+      } else {
+        return { from: fromMockForProfile } as never;
+      }
+    });
+
+    const params = Promise.resolve({ lessonSlug: 'teacher-lesson' });
+    const searchParams = Promise.resolve({ phase: '3' });
+    const result = await LessonPage({ params, searchParams });
+
+    render(result);
+
+    expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
+    expect(screen.getByText('Teacher Accessible Lesson')).toBeInTheDocument();
+    expect(screen.getByTestId('current-phase')).toHaveTextContent('3');
+    // Verify RPC was NOT called for teacher
+    expect(mockSupabaseClient.rpc).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('allows admins to bypass phase locking', async () => {
+    // Mock Supabase auth
+    const { createClient } = await import('@/lib/supabase/server');
+    const mockSupabaseClient = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'admin-123', email: 'admin@example.com' } },
+          error: null,
+        }),
+      },
+      // RPC should NOT be called for admins
+      rpc: vi.fn(),
+    };
+    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+
+    // Mock database query
+    const { db } = await import('@/lib/db/drizzle');
+    const mockLesson = {
+      id: '222',
+      unitNumber: 1,
+      title: 'Admin Accessible Lesson',
+      slug: 'admin-lesson',
+      description: 'Test description',
+      learningObjectives: ['Objective 1'],
+      orderIndex: 1,
+      metadata: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        lessonId: '222',
+        phaseNumber: 1,
+        title: 'Phase 1',
+        contentBlocks: [],
+        estimatedMinutes: 30,
+        metadata: { phaseType: 'intro' as const },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 'phase-2',
+        lessonId: '222',
+        phaseNumber: 2,
+        title: 'Phase 2',
+        contentBlocks: [],
+        estimatedMinutes: 45,
+        metadata: { phaseType: 'practice' as const },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+    const mockProfile = {
+      id: 'admin-123',
+      role: 'admin' as const,
+    };
+
+    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
+    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
+    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
+    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
+    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
+    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
+    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
+    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
+    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
+
+    let callCount = 0;
+    vi.mocked(db.select).mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) {
+        return { from: fromMockForLesson } as never;
+      } else if (callCount === 2) {
+        return { from: fromMockForPhases } as never;
+      } else {
+        return { from: fromMockForProfile } as never;
+      }
+    });
+
+    const params = Promise.resolve({ lessonSlug: 'admin-lesson' });
+    const searchParams = Promise.resolve({ phase: '2' });
+    const result = await LessonPage({ params, searchParams });
+
+    render(result);
+
+    expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
+    expect(screen.getByText('Admin Accessible Lesson')).toBeInTheDocument();
+    expect(screen.getByTestId('current-phase')).toHaveTextContent('2');
+    // Verify RPC was NOT called for admin
+    expect(mockSupabaseClient.rpc).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
   });
 });
