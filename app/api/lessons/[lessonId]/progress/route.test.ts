@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const mockGetUser = vi.fn();
 const mockSelect = vi.fn();
 const mockEq = vi.fn();
+const mockSingle = vi.fn();
 const mockOrder = vi.fn();
 const mockFrom = vi.fn();
 
@@ -34,7 +35,14 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
       error: null,
     });
 
-    // Setup default chain
+    // Setup default chain for lesson existence check
+    const lessonData = {
+      data: { id: 'b4b82cad-64f6-46cc-933a-5bb8299a23d4' },
+      error: null,
+    };
+    mockSingle.mockReturnValue(lessonData);
+
+    // Setup default chain for phases query
     const defaultData = {
       data: [
         {
@@ -83,7 +91,15 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
     const secondEq = vi.fn().mockReturnValue({ order: mockOrder });
 
     // First .eq() returns an object with .eq()
-    mockEq.mockReturnValue({ eq: secondEq });
+    const lessonEq = vi.fn().mockReturnValue({ single: mockSingle });
+
+    // Setup mock chain to handle both lesson and phases queries
+    mockEq.mockImplementation((field: string) => {
+      if (field === 'id') {
+        return lessonEq(field);
+      }
+      return { eq: secondEq };
+    });
 
     mockSelect.mockReturnValue({ eq: mockEq });
     mockFrom.mockReturnValue({ select: mockSelect });
@@ -111,6 +127,20 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
     expect(response.status).toBe(400);
     const payload = await response.json();
     expect(payload.error).toBe('Invalid parameters');
+  });
+
+  it('returns 404 when lesson does not exist', async () => {
+    // Mock lesson not found
+    mockSingle.mockReturnValue({ data: null, error: { message: 'Not found' } });
+
+    const response = await GET(
+      new Request('http://localhost/api/lessons/lesson-123/progress'),
+      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
+    );
+
+    expect(response.status).toBe(404);
+    const body = await response.json();
+    expect(body.error).toBe('Lesson not found');
   });
 
   it('returns 404 when lesson has no phases', async () => {

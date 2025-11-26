@@ -14,13 +14,15 @@ const adminClient = createClient(supabaseUrl, serviceRoleKey);
 const anonClient = createClient(supabaseUrl, anonKey);
 
 // We will create temporary users for testing
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let studentUser: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let teacherUser: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let otherStudentUser: any;
 
 let studentClient: ReturnType<typeof createClient>;
 let teacherClient: ReturnType<typeof createClient>;
-let otherStudentClient: ReturnType<typeof createClient>;
 
 const TEST_PREFIX = 'sec_test_';
 
@@ -95,7 +97,7 @@ describe('RLS Security Policies', () => {
     // If we rely on 'authenticated' role to view profiles, we need to check if it's scoped.
     // Let's assume strict privacy: Student A shouldn't see full details of Student B.
     
-    const { data, error } = await studentClient
+    await studentClient
       .from('profiles')
       .select('*')
       .eq('id', otherStudentUser.id);
@@ -114,7 +116,7 @@ describe('RLS Security Policies', () => {
 
   it('Students can read/write their own progress', async () => {
     // Insert some progress
-    const { error: insertError } = await studentClient
+    await studentClient
       .from('student_progress')
       .insert({
         user_id: studentUser.id,
@@ -135,21 +137,21 @@ describe('RLS Security Policies', () => {
   });
 
   it('Students CANNOT read other students progress', async () => {
-    const { data, error } = await studentClient
+    const { data } = await studentClient
       .from('student_progress')
       .select('*')
       .eq('user_id', otherStudentUser.id);
-      
+
     // Should return empty list even if data exists, due to RLS
-    expect(data).toEqual([]); 
+    expect(data).toEqual([]);
   });
 
   it('Teachers can read students profiles in their org', async () => {
-    const { data, error } = await teacherClient
+    const { error } = await teacherClient
       .from('profiles')
       .select('*')
       .eq('id', studentUser.id);
-      
+
     // This depends on the policy "Teachers view org profiles"
     // We had issues with recursion, so we might have disabled it or fixed it.
     // Let's verify behavior.
@@ -158,10 +160,10 @@ describe('RLS Security Policies', () => {
   });
   
   it('Anon users cannot read profiles', async () => {
-    const { data, error } = await anonClient
+    const { data } = await anonClient
         .from('profiles')
         .select('*');
-        
+
     expect(data).toEqual([]);
   });
 });

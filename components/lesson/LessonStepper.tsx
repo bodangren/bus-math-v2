@@ -26,8 +26,8 @@ export function LessonStepper({
   className,
 }: LessonStepperProps) {
   const handlePhaseClick = (phase: StepperPhase) => {
-    // Only allow clicking on completed or current phases
-    if (phase.status === 'completed' || phase.status === 'current') {
+    // Allow clicking on completed, current, or available phases
+    if (phase.status === 'completed' || phase.status === 'current' || phase.status === 'available') {
       onPhaseClick?.(phase.phaseNumber, phase.phaseId);
     }
   };
@@ -79,7 +79,7 @@ interface StepButtonProps {
 }
 
 function StepButton({ phase, isCurrent, onClick, compact = false }: StepButtonProps) {
-  const isClickable = phase.status === 'completed' || phase.status === 'current';
+  const isClickable = phase.status === 'completed' || phase.status === 'current' || phase.status === 'available';
   const isLocked = phase.status === 'locked';
 
   const statusColors = {

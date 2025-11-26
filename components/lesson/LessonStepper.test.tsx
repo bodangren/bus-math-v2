@@ -91,7 +91,7 @@ describe('LessonStepper', () => {
     expect(handlePhaseClick).not.toHaveBeenCalled();
   });
 
-  it('does not trigger onClick for available but not started phases', async () => {
+  it('allows clicking on available phases', async () => {
     const handlePhaseClick = vi.fn();
     render(
       <LessonStepper
@@ -103,11 +103,11 @@ describe('LessonStepper', () => {
 
     const availablePhaseButtons = screen.getAllByLabelText('Phase 3: Practice');
     availablePhaseButtons.forEach(button => {
-      expect(button).toBeDisabled();
+      expect(button).not.toBeDisabled();
     });
 
     await userEvent.click(availablePhaseButtons[0]);
-    expect(handlePhaseClick).not.toHaveBeenCalled();
+    expect(handlePhaseClick).toHaveBeenCalledWith(3, 'phase-3');
   });
 
   it('shows lock icon title for locked phases', () => {

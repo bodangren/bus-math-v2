@@ -61,7 +61,22 @@ export async function GET(
 
     const { lessonId } = parsed.data;
 
+    // Verify the lesson exists before fetching progress
+    const { data: lessonData, error: lessonError } = await supabase
+      .from('lessons')
+      .select('id')
+      .eq('id', lessonId)
+      .single();
+
+    if (lessonError || !lessonData) {
+      return NextResponse.json(
+        { error: 'Lesson not found' },
+        { status: 404 },
+      );
+    }
+
     // Fetch all phases for this lesson with their progress
+    // Use LEFT JOIN behavior by fetching all progress and filtering in code
     const { data: phasesData, error: phasesError } = await supabase
       .from('phases')
       .select(`
@@ -72,11 +87,11 @@ export async function GET(
           status,
           started_at,
           completed_at,
-          time_spent_seconds
+          time_spent_seconds,
+          user_id
         )
       `)
       .eq('lesson_id', lessonId)
-      .eq('student_progress.user_id', user.id)
       .order('phase_number', { ascending: true });
 
     if (phasesError) {
@@ -96,9 +111,11 @@ export async function GET(
 
     // Calculate status for each phase
     const phases: PhaseProgressResponse[] = phasesData.map((phase, index) => {
-      const progress = Array.isArray(phase.student_progress) && phase.student_progress.length > 0
-        ? phase.student_progress[0]
+      // Filter progress records for the current user (LEFT JOIN behavior in code)
+      const userProgress = Array.isArray(phase.student_progress)
+        ? phase.student_progress.find((p) => p.user_id === user.id)
         : null;
+      const progress = userProgress ?? null;
 
       let status: PhaseStatus;
 
@@ -112,11 +129,11 @@ export async function GET(
           status = 'available';
         } else {
           const previousPhase = phasesData[index - 1];
-          const previousProgress = Array.isArray(previousPhase.student_progress) && previousPhase.student_progress.length > 0
-            ? previousPhase.student_progress[0]
+          const previousUserProgress = Array.isArray(previousPhase.student_progress)
+            ? previousPhase.student_progress.find((p) => p.user_id === user.id)
             : null;
 
-          status = previousProgress?.status === 'completed' ? 'available' : 'locked';
+          status = previousUserProgress?.status === 'completed' ? 'available' : 'locked';
         }
       }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { asc, eq } from "drizzle-orm";
 import { db } from "@/lib/db/drizzle";
-import { lessons, studentProgress, phases } from "@/lib/db/schema";
+import { lessons, studentProgress } from "@/lib/db/schema";
 import { createClient } from "@/lib/supabase/server";
 import {
   Card,
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 
 export const dynamic = 'force-dynamic';
 
