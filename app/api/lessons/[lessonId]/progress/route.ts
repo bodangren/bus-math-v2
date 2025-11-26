@@ -61,6 +61,20 @@ export async function GET(
 
     const { lessonId } = parsed.data;
 
+    // Verify the lesson exists before fetching progress
+    const { data: lessonData, error: lessonError } = await supabase
+      .from('lessons')
+      .select('id')
+      .eq('id', lessonId)
+      .single();
+
+    if (lessonError || !lessonData) {
+      return NextResponse.json(
+        { error: 'Lesson not found' },
+        { status: 404 },
+      );
+    }
+
     // Fetch all phases for this lesson with their progress
     const { data: phasesData, error: phasesError } = await supabase
       .from('phases')
