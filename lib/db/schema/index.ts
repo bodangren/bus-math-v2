@@ -35,5 +35,6 @@ export * from './session-leaderboard';
 export * from './content-revisions';
 export * from './competencies';
 export * from './spreadsheet-responses';
+export * from './activity-completions';
 export * from './validators';
 export * from './relations';

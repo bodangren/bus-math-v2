@@ -23,8 +23,18 @@ vi.mock('./MarkdownRenderer', () => ({
 }));
 
 vi.mock('./ActivityRenderer', () => ({
-  ActivityRenderer: ({ activityId, required }: { activityId: string; required: boolean }) => (
-    <div data-testid="activity-renderer" data-required={required}>
+  ActivityRenderer: ({
+    activityId,
+    lessonId,
+    phaseNumber,
+    required
+  }: {
+    activityId: string;
+    lessonId: string;
+    phaseNumber: number;
+    required: boolean;
+  }) => (
+    <div data-testid="activity-renderer" data-required={required} data-lesson={lessonId} data-phase={phaseNumber}>
       Activity: {activityId}
     </div>
   ),
@@ -53,7 +63,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       expect(screen.getByTestId('markdown')).toHaveTextContent('# Hello World');
     });
   });
@@ -72,7 +82,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const videoPlayer = screen.getByTestId('video-player');
       expect(videoPlayer).toBeInTheDocument();
       expect(videoPlayer).toHaveTextContent('https://youtube.com/watch?v=test123');
@@ -91,7 +101,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       expect(screen.getByTestId('video-player')).toBeInTheDocument();
     });
   });
@@ -110,7 +120,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const image = screen.getByTestId('next-image');
       expect(image).toHaveAttribute('src', 'https://example.com/image.jpg');
       expect(image).toHaveAttribute('alt', 'Test image');
@@ -129,7 +139,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const image = screen.getByTestId('next-image');
       expect(image).toHaveAttribute('src', 'https://example.com/image2.jpg');
     });
@@ -146,7 +156,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const callout = screen.getByTestId('callout');
       expect(callout).toHaveAttribute('data-variant', 'why-this-matters');
       expect(callout).toHaveTextContent('This is important because...');
@@ -162,7 +172,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const callout = screen.getByTestId('callout');
       expect(callout).toHaveAttribute('data-variant', 'tip');
     });
@@ -177,7 +187,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const callout = screen.getByTestId('callout');
       expect(callout).toHaveAttribute('data-variant', 'warning');
     });
@@ -192,7 +202,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const callout = screen.getByTestId('callout');
       expect(callout).toHaveAttribute('data-variant', 'example');
     });
@@ -210,7 +220,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const activity = screen.getByTestId('activity-renderer');
       expect(activity).toHaveTextContent(activityId);
       expect(activity).toHaveAttribute('data-required', 'true');
@@ -227,7 +237,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       const activity = screen.getByTestId('activity-renderer');
       expect(activity).toHaveAttribute('data-required', 'false');
     });
@@ -257,7 +267,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
       expect(screen.getByTestId('markdown')).toBeInTheDocument();
       expect(screen.getByTestId('video-player')).toBeInTheDocument();
       expect(screen.getByTestId('callout')).toBeInTheDocument();
@@ -283,7 +293,7 @@ describe('PhaseRenderer', () => {
         { id: 'invalid-block' } as unknown as ContentBlock,
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
 
       // Should render the valid block
       expect(screen.getByTestId('markdown')).toBeInTheDocument();
@@ -310,7 +320,7 @@ describe('PhaseRenderer', () => {
         },
       ];
 
-      render(<PhaseRenderer contentBlocks={contentBlocks} />);
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
 
       // Both blocks should render without type errors
       expect(screen.getByTestId('markdown')).toBeInTheDocument();

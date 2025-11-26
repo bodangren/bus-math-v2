@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ActivityRendererProps {
   activityId: string;
+  lessonId: string;
+  phaseNumber: number;
   required?: boolean;
 }
 
@@ -30,16 +32,30 @@ interface AssessmentResponse {
 }
 
 /**
+ * Response from activity completion endpoint
+ */
+interface ActivityCompletionResponse {
+  success: boolean;
+  nextPhaseUnlocked: boolean;
+  message: string;
+  completionId?: string;
+  completedPhases?: number;
+  totalPhases?: number;
+}
+
+/**
  * ActivityRenderer fetches an activity from the database by ID
  * and renders it using the activity registry.
  */
-export function ActivityRenderer({ activityId, required = false }: ActivityRendererProps) {
+export function ActivityRenderer({ activityId, lessonId, phaseNumber, required = false }: ActivityRendererProps) {
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submissionResult, setSubmissionResult] = useState<AssessmentResponse | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [completionResult, setCompletionResult] = useState<ActivityCompletionResponse | null>(null);
+  const [completing, setCompleting] = useState(false);
 
   useEffect(() => {
     async function fetchActivity() {
@@ -134,6 +150,63 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
     [activity],
   );
 
+  /**
+   * Handle atomic activity completion
+   * Generates an idempotency key and calls the completion endpoint
+   */
+  const handleActivityComplete = useCallback(
+    async (completionData?: Record<string, unknown>) => {
+      if (!activity) {
+        return;
+      }
+
+      setCompleting(true);
+      setSubmissionError(null);
+      setCompletionResult(null);
+
+      try {
+        // Generate idempotency key for this completion attempt
+        const idempotencyKey = crypto.randomUUID();
+
+        const response = await fetch('/api/activities/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            activityId: activity.id,
+            lessonId,
+            phaseNumber,
+            linkedStandardId: activity.standardId,
+            completionData: completionData || null,
+            idempotencyKey,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data?.error ?? data?.message ?? 'Failed to complete activity');
+        }
+
+        setCompletionResult(data);
+
+        // Show success feedback
+        // TODO: Replace with proper toast/confetti component when available
+        console.log('Activity completed successfully!', data);
+      } catch (completionError) {
+        setSubmissionError(
+          completionError instanceof Error
+            ? completionError.message
+            : 'Unable to complete activity',
+        );
+      } finally {
+        setCompleting(false);
+      }
+    },
+    [activity, lessonId, phaseNumber],
+  );
+
   if (loading) {
     return (
       <Card className="my-4">
@@ -187,6 +260,7 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
         <ActivityComponent
           activity={activity}
           onSubmit={activity.gradingConfig?.autoGrade ? handleAssessmentSubmit : undefined}
+          onComplete={handleActivityComplete}
         />
         {submitting && (
           <Alert>
@@ -194,6 +268,15 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
             <AlertTitle>Submitting answers…</AlertTitle>
             <AlertDescription>
               <p>We&apos;re recording your work and calculating your score.</p>
+            </AlertDescription>
+          </Alert>
+        )}
+        {completing && (
+          <Alert>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <AlertTitle>Completing activity…</AlertTitle>
+            <AlertDescription>
+              <p>Saving your progress and updating your achievements.</p>
             </AlertDescription>
           </Alert>
         )}
@@ -208,11 +291,33 @@ export function ActivityRenderer({ activityId, required = false }: ActivityRende
             </AlertDescription>
           </Alert>
         )}
-        {submissionError && !submitting && (
+        {completionResult && (
+          <Alert className="border-green-200 bg-green-50">
+            <AlertTitle className="text-green-800">Activity completed!</AlertTitle>
+            <AlertDescription className="text-green-700">
+              <p>{completionResult.message}</p>
+              {completionResult.nextPhaseUnlocked && (
+                <p className="mt-2 font-medium">Next phase unlocked! Continue to the next section.</p>
+              )}
+              {completionResult.completedPhases !== undefined && completionResult.totalPhases !== undefined && (
+                <p className="mt-1 text-sm">
+                  Progress: {completionResult.completedPhases}/{completionResult.totalPhases} phases completed
+                </p>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
+        {submissionError && !submitting && !completing && (
           <Alert variant="destructive">
-            <AlertTitle>Submission failed</AlertTitle>
+            <AlertTitle>Error</AlertTitle>
             <AlertDescription>
               <p>{submissionError}</p>
+              <button
+                onClick={() => handleActivityComplete()}
+                className="mt-2 text-sm underline hover:no-underline"
+              >
+                Try again
+              </button>
             </AlertDescription>
           </Alert>
         )}
