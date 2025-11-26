@@ -1,6 +1,6 @@
-// @ts-ignore - Deno edge runtime import resolved at deploy time
+// @ts-expect-error - Deno edge runtime import resolved at deploy time
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-// @ts-ignore - Supabase client import for Deno edge runtime
+// @ts-expect-error - Supabase client import for Deno edge runtime
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 declare const Deno: {

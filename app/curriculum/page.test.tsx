@@ -110,6 +110,7 @@ describe("CurriculumPage", () => {
 
 describe("groupLessonsByUnit", () => {
   it("ENSURES objectives is always an array (regression test)", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const badDataScenarios: any[] = [
       // String instead of array
       {

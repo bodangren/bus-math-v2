@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';
 
 import {
   SpreadsheetEvaluator,
@@ -9,7 +9,7 @@ import {
 import type { SpreadsheetEvaluatorConfig } from '@/components/activities/SpreadsheetEvaluator';
 
 // Mock fetch globally
-global.fetch = vi.fn();
+global.fetch = vi.fn() as Mock;
 
 const buildActivity = (
   overrides: Partial<SpreadsheetEvaluatorConfig> = {}
@@ -41,7 +41,7 @@ describe('SpreadsheetEvaluator', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock successful fetch responses
-    (global.fetch as any).mockResolvedValue({
+    (global.fetch as Mock).mockResolvedValue({
       ok: true,
       json: async () => ({
         success: true,
@@ -73,7 +73,7 @@ describe('SpreadsheetEvaluator', () => {
     const user = userEvent.setup();
     const activity = buildActivity();
 
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         success: true,
@@ -105,7 +105,7 @@ describe('SpreadsheetEvaluator', () => {
     const user = userEvent.setup();
     const activity = buildActivity();
 
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         success: true,
@@ -133,7 +133,7 @@ describe('SpreadsheetEvaluator', () => {
     const user = userEvent.setup();
     const activity = buildActivity();
 
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         success: true,
@@ -160,7 +160,7 @@ describe('SpreadsheetEvaluator', () => {
     const user = userEvent.setup();
     const activity = buildActivity();
 
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: false,
       json: async () => ({ error: 'Submission failed' }),
     });
@@ -180,7 +180,7 @@ describe('SpreadsheetEvaluator', () => {
     const onSubmit = vi.fn();
     const activity = buildActivity();
 
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         success: true,
@@ -222,7 +222,7 @@ describe('SpreadsheetEvaluator', () => {
       [{ value: 100 }, { value: 'Data' }],
     ];
 
-    (global.fetch as any).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({
         draftData,
