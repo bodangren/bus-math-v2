@@ -1,4 +1,4 @@
-import { integer, pgEnum, pgTable, timestamp, uuid, uniqueIndex } from 'drizzle-orm/pg-core';
+import { integer, pgEnum, pgTable, text, timestamp, uuid, uniqueIndex } from 'drizzle-orm/pg-core';
 
 import { phases } from './phases';
 import { profiles } from './profiles';
@@ -19,6 +19,7 @@ export const studentProgress = pgTable(
     startedAt: timestamp('started_at'),
     completedAt: timestamp('completed_at'),
     timeSpentSeconds: integer('time_spent_seconds').default(0),
+    idempotencyKey: text('idempotency_key'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
