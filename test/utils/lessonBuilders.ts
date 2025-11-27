@@ -26,7 +26,8 @@ export const createLesson = (overrides: PartialDeep<Lesson> = {}): Lesson => {
       'Translate financial stories into spreadsheet automations.'
     ],
     orderIndex: 1,
-    currentVersionId: null,
+    // Temporarily commented out until migration is applied to production
+    // currentVersionId: null,
     metadata: {
       duration: 90,
       difficulty: 'beginner',

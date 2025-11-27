@@ -163,7 +163,8 @@ export const lessons = pgTable('lessons', {
   learningObjectives: jsonb('learning_objectives').$type<string[] | null>(),
   orderIndex: integer('order_index').notNull(),
   metadata: jsonb('metadata').$type<LessonMetadata | null>(),
-  currentVersionId: uuid('current_version_id'),
+  // Temporarily commented out until migration is applied to production
+  // currentVersionId: uuid('current_version_id'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

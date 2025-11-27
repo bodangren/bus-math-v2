@@ -7,13 +7,14 @@ import { profiles } from './profiles';
 import { competencyStandards, studentCompetency } from './competencies';
 import { activities } from './activities';
 
-export const lessonsRelations = relations(lessons, ({ one, many }) => ({
+export const lessonsRelations = relations(lessons, ({ many }) => ({
   phases: many(phases),
   versions: many(lessonVersions),
-  currentVersion: one(lessonVersions, {
-    fields: [lessons.currentVersionId],
-    references: [lessonVersions.id],
-  }),
+  // Temporarily commented out until migration is applied to production
+  // currentVersion: one(lessonVersions, {
+  //   fields: [lessons.currentVersionId],
+  //   references: [lessonVersions.id],
+  // }),
 }));
 
 export const phasesRelations = relations(phases, ({ one, many }) => ({
