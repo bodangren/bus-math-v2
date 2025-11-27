@@ -14,6 +14,8 @@
  *   npx tsx supabase/seed/03-unit-1-lesson-1-v2.ts
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { config } from 'dotenv';
@@ -385,10 +387,10 @@ Now that you've tracked Sarah's revenue, let's see how **real transactions** aff
           content: {
             activityType: 'spreadsheet-evaluator',
             templateId: 'accounting-equation-challenge',
-            instructions: 'Sarah has several transactions to record. For each transaction, calculate how it affects Assets, Liabilities, and Equity. Then verify the equation still balances in cell D15.',
+            instructions: 'Sarah has several transactions to record. For each transaction, calculate how it affects Assets, Liabilities, and Equity. Then verify the equation still balances in cell E15.',
             targetCells: [
               {
-                cell: 'D15',
+                cell: 'E15',
                 expectedFormula: '=B15-(C15+D15)',
                 feedbackSuccess: 'Perfect! You verified that Assets = Liabilities + Equity.',
                 feedbackError: 'Check your equation. Remember: Assets = Liabilities + Equity, so the difference should be zero.',
@@ -549,7 +551,17 @@ async function createPhase(
       estimated_minutes = EXCLUDED.estimated_minutes
   `);
 
-  // Create sections
+  // Clean up stale sections (remove sections not in current config)
+  const validSequenceOrders = config.sections.map(s => s.sequenceOrder);
+  if (validSequenceOrders.length > 0) {
+    await db.execute(sql`
+      DELETE FROM phase_sections
+      WHERE phase_version_id = ${config.id}::uuid
+      AND sequence_order NOT IN (${sql.raw(validSequenceOrders.join(','))})
+    `);
+  }
+
+  // Create/update sections
   for (const section of config.sections) {
     await db.execute(sql`
       INSERT INTO phase_sections (
