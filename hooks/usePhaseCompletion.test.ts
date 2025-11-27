@@ -3,6 +3,16 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { usePhaseCompletion } from './usePhaseCompletion';
 
+// Mock Supabase client
+const mockUser = { id: 'test-user-123' };
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: vi.fn(() => ({
+    auth: {
+      getUser: vi.fn(async () => ({ data: { user: mockUser }, error: null })),
+    },
+  })),
+}));
+
 // Mock fetch globally
 global.fetch = vi.fn();
 
@@ -61,6 +71,17 @@ describe('usePhaseCompletion', () => {
 
       const { result } = renderHook(() => usePhaseCompletion(mockOptions));
 
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       await result.current.completePhase();
 
       await waitFor(() => {
@@ -77,7 +98,7 @@ describe('usePhaseCompletion', () => {
         );
       });
 
-      // Verify the payload
+      // Verify the payload (completedAt removed - server generates timestamp)
       const callArgs = (global.fetch as any).mock.calls[0];
       const body = JSON.parse(callArgs[1].body);
 
@@ -86,8 +107,10 @@ describe('usePhaseCompletion', () => {
         phaseNumber: mockOptions.phaseNumber,
         timeSpent: expect.any(Number),
         idempotencyKey: 'test-uuid-1234',
-        completedAt: expect.any(String),
       });
+
+      // Verify completedAt is NOT in payload (server-side timestamp)
+      expect(body.completedAt).toBeUndefined();
 
       expect(result.current.isCompleting).toBe(false);
       expect(result.current.error).toBeNull();
@@ -109,6 +132,17 @@ describe('usePhaseCompletion', () => {
         usePhaseCompletion({ ...mockOptions, onSuccess })
       );
 
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       await result.current.completePhase();
 
       await waitFor(() => {
@@ -120,6 +154,17 @@ describe('usePhaseCompletion', () => {
       (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
 
       const { result } = renderHook(() => usePhaseCompletion(mockOptions));
+
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       await result.current.completePhase();
 
@@ -151,6 +196,17 @@ describe('usePhaseCompletion', () => {
         usePhaseCompletion({ ...mockOptions, onError })
       );
 
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       await result.current.completePhase();
 
       await waitFor(() => {
@@ -168,6 +224,17 @@ describe('usePhaseCompletion', () => {
       (global.fetch as any).mockReturnValue(fetchPromise);
 
       const { result } = renderHook(() => usePhaseCompletion(mockOptions));
+
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Start completion
       const completePromise = result.current.completePhase();
@@ -199,6 +266,17 @@ describe('usePhaseCompletion', () => {
 
       const { result } = renderHook(() => usePhaseCompletion(mockOptions));
 
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       await result.current.completePhase();
 
       await waitFor(() => {
@@ -216,6 +294,17 @@ describe('usePhaseCompletion', () => {
 
       const { result } = renderHook(() => usePhaseCompletion(mockOptions));
 
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       await result.current.completePhase();
 
       await waitFor(() => {
@@ -227,8 +316,9 @@ describe('usePhaseCompletion', () => {
 
   describe('offline queue processing', () => {
     it('processes queued completions on mount', async () => {
-      // Pre-populate queue with a completion
+      // Pre-populate queue with a completion (includes userId)
       const queuedCompletion = {
+        userId: mockUser.id,
         lessonId: mockOptions.lessonId,
         phaseNumber: mockOptions.phaseNumber,
         timeSpent: 100,
@@ -266,6 +356,7 @@ describe('usePhaseCompletion', () => {
 
     it('increments retry count when queued completion fails', async () => {
       const queuedCompletion = {
+        userId: mockUser.id,
         lessonId: mockOptions.lessonId,
         phaseNumber: mockOptions.phaseNumber,
         timeSpent: 100,
@@ -288,6 +379,7 @@ describe('usePhaseCompletion', () => {
 
     it('removes completion from queue after max retries', async () => {
       const queuedCompletion = {
+        userId: mockUser.id,
         lessonId: mockOptions.lessonId,
         phaseNumber: mockOptions.phaseNumber,
         timeSpent: 100,
@@ -310,6 +402,34 @@ describe('usePhaseCompletion', () => {
       // Should not make API call for max-retry completions
       expect(global.fetch).not.toHaveBeenCalled();
     });
+
+    it('clears queue when legacy items without userId are detected', async () => {
+      // Pre-populate queue with legacy completion (no userId)
+      const legacyCompletion = {
+        lessonId: mockOptions.lessonId,
+        phaseNumber: mockOptions.phaseNumber,
+        timeSpent: 100,
+        idempotencyKey: 'legacy-uuid',
+        completedAt: new Date().toISOString(),
+        retryCount: 0,
+        // No userId field (legacy format)
+      };
+
+      localStorageMock['completion-queue'] = JSON.stringify([legacyCompletion]);
+
+      renderHook(() => usePhaseCompletion(mockOptions));
+
+      await waitFor(() => {
+        // Queue should be cleared
+        const queue = localStorageMock['completion-queue']
+          ? JSON.parse(localStorageMock['completion-queue'])
+          : [];
+        expect(queue).toHaveLength(0);
+      });
+
+      // Should not make API call for legacy items
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 
   describe('idempotency', () => {
@@ -320,6 +440,17 @@ describe('usePhaseCompletion', () => {
       });
 
       const { result } = renderHook(() => usePhaseCompletion(mockOptions));
+
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       await result.current.completePhase();
       await result.current.completePhase();
@@ -348,6 +479,17 @@ describe('usePhaseCompletion', () => {
         usePhaseCompletion({ ...mockOptions, onError })
       );
 
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       await result.current.completePhase();
 
       await waitFor(() => {
@@ -369,6 +511,17 @@ describe('usePhaseCompletion', () => {
       const { result } = renderHook(() =>
         usePhaseCompletion({ ...mockOptions, onError })
       );
+
+      // Wait for authentication to complete and user ID to be set
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      // Small delay to ensure userId state is set
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       await result.current.completePhase();
 

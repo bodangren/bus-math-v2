@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 /**
  * Queued completion payload stored in localStorage
  */
 interface QueuedCompletion {
+  userId: string; // Bind queue item to user
   lessonId: string;
   phaseNumber: number;
   timeSpent: number;
@@ -16,13 +18,13 @@ interface QueuedCompletion {
 
 /**
  * API request payload for phase completion
+ * Note: completedAt removed - server uses its own timestamp
  */
 interface CompletePhasePayload {
   lessonId: string;
   phaseNumber: number;
   timeSpent: number;
   idempotencyKey: string;
-  completedAt: string;
 }
 
 /**
@@ -56,6 +58,7 @@ interface UsePhaseCompletionResult {
 }
 
 const COMPLETION_QUEUE_KEY = 'completion-queue';
+const CURRENT_USER_KEY = 'completion-queue-user';
 const MAX_RETRY_COUNT = 3;
 
 /**
@@ -66,12 +69,66 @@ function generateIdempotencyKey(): string {
 }
 
 /**
- * Get the completion queue from localStorage
+ * Get the current user ID from localStorage
  */
-function getCompletionQueue(): QueuedCompletion[] {
+function getCurrentUserId(): string | null {
+  try {
+    return localStorage.getItem(CURRENT_USER_KEY);
+  } catch (error) {
+    console.error('Failed to read current user ID:', error);
+    return null;
+  }
+}
+
+/**
+ * Set the current user ID in localStorage
+ */
+function setCurrentUserId(userId: string): void {
+  try {
+    localStorage.setItem(CURRENT_USER_KEY, userId);
+  } catch (error) {
+    console.error('Failed to save current user ID:', error);
+  }
+}
+
+/**
+ * Clear the completion queue (used when user changes)
+ */
+function clearCompletionQueue(): void {
+  try {
+    localStorage.removeItem(COMPLETION_QUEUE_KEY);
+  } catch (error) {
+    console.error('Failed to clear completion queue:', error);
+  }
+}
+
+/**
+ * Get the completion queue from localStorage
+ * Filters to only return items for the current user
+ * Migrates legacy items without userId by clearing them
+ */
+function getCompletionQueue(userId?: string): QueuedCompletion[] {
   try {
     const stored = localStorage.getItem(COMPLETION_QUEUE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    const allQueue: QueuedCompletion[] = stored ? JSON.parse(stored) : [];
+
+    // Detect legacy items without userId and clear the entire queue
+    // This is safer than trying to migrate them since we can't determine ownership
+    const hasLegacyItems = allQueue.some(item => !item.userId);
+    if (hasLegacyItems) {
+      console.warn(
+        'Detected legacy completion queue items without userId. Clearing queue for safety.'
+      );
+      clearCompletionQueue();
+      return [];
+    }
+
+    // If userId provided, filter to only that user's items
+    if (userId) {
+      return allQueue.filter(item => item.userId === userId);
+    }
+
+    return allQueue;
   } catch (error) {
     console.error('Failed to read completion queue:', error);
     return [];
@@ -108,7 +165,37 @@ function dequeueCompletion(idempotencyKey: string): void {
 }
 
 /**
+ * Determine if an error is transient (should be retried)
+ */
+function isTransientError(error: unknown, status?: number): boolean {
+  // Network errors (no status) should be retried
+  if (!status) {
+    return true;
+  }
+
+  // 5xx errors are transient (server errors)
+  if (status >= 500 && status < 600) {
+    return true;
+  }
+
+  // 408 Request Timeout is transient
+  if (status === 408) {
+    return true;
+  }
+
+  // 429 Too Many Requests is transient
+  if (status === 429) {
+    return true;
+  }
+
+  // All 4xx errors except the above are permanent (validation, auth, conflict, etc.)
+  // These include: 400, 401, 403, 404, 409, 422, etc.
+  return false;
+}
+
+/**
  * Send a phase completion request to the API
+ * Throws an error with status code for proper error handling
  */
 async function sendCompletionRequest(payload: CompletePhasePayload): Promise<CompletePhaseResponse> {
   const response = await fetch('/api/phases/complete', {
@@ -123,7 +210,9 @@ async function sendCompletionRequest(payload: CompletePhasePayload): Promise<Com
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    const error = new Error(errorData.error || `HTTP error! status: ${response.status}`) as Error & { status?: number };
+    error.status = response.status;
+    throw error;
   }
 
   return response.json();
@@ -131,18 +220,28 @@ async function sendCompletionRequest(payload: CompletePhasePayload): Promise<Com
 
 /**
  * Process queued completions (retry failed requests)
+ * Only processes items for the current user
  */
-async function processQueuedCompletions(): Promise<void> {
-  const queue = getCompletionQueue();
+async function processQueuedCompletions(userId: string): Promise<void> {
+  const queue = getCompletionQueue(userId);
 
   if (queue.length === 0) {
     return;
   }
 
-  console.log(`Processing ${queue.length} queued completion(s)`);
+  console.log(`Processing ${queue.length} queued completion(s) for user ${userId}`);
 
   // Process each queued completion
   for (const completion of queue) {
+    // Double-check user ID matches (defense in depth)
+    if (completion.userId !== userId) {
+      console.warn(
+        `Skipping completion ${completion.idempotencyKey} - user mismatch (expected ${userId}, got ${completion.userId})`
+      );
+      dequeueCompletion(completion.idempotencyKey);
+      continue;
+    }
+
     // Skip if max retries exceeded
     if (completion.retryCount >= MAX_RETRY_COUNT) {
       console.warn(
@@ -158,22 +257,32 @@ async function processQueuedCompletions(): Promise<void> {
         phaseNumber: completion.phaseNumber,
         timeSpent: completion.timeSpent,
         idempotencyKey: completion.idempotencyKey,
-        completedAt: completion.completedAt,
       });
 
       // Success - remove from queue
       console.log(`Successfully processed queued completion ${completion.idempotencyKey}`);
       dequeueCompletion(completion.idempotencyKey);
     } catch (error) {
+      const errorWithStatus = error as Error & { status?: number };
       console.error(`Failed to process queued completion ${completion.idempotencyKey}:`, error);
 
-      // Increment retry count
-      const updatedQueue = getCompletionQueue().map((c) =>
-        c.idempotencyKey === completion.idempotencyKey
-          ? { ...c, retryCount: c.retryCount + 1 }
-          : c
-      );
-      saveCompletionQueue(updatedQueue);
+      // Only retry transient errors
+      if (isTransientError(error, errorWithStatus.status)) {
+        console.log(`Error is transient, incrementing retry count`);
+        // Increment retry count
+        const updatedQueue = getCompletionQueue().map((c) =>
+          c.idempotencyKey === completion.idempotencyKey
+            ? { ...c, retryCount: c.retryCount + 1 }
+            : c
+        );
+        saveCompletionQueue(updatedQueue);
+      } else {
+        // Permanent error (4xx) - remove from queue and log
+        console.error(
+          `Error is permanent (status ${errorWithStatus.status}), removing from queue`
+        );
+        dequeueCompletion(completion.idempotencyKey);
+      }
     }
   }
 }
@@ -213,6 +322,7 @@ export function usePhaseCompletion({
 }: UsePhaseCompletionOptions): UsePhaseCompletionResult {
   const [isCompleting, setIsCompleting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   // Track start time (persists across rerenders)
   const startTimeRef = useRef<number>(Date.now());
@@ -220,11 +330,41 @@ export function usePhaseCompletion({
   // Track if we've already generated an idempotency key for this session
   const idempotencyKeyRef = useRef<string | null>(null);
 
-  // Process queued completions on mount
+  // Initialize user ID and manage queue on mount
   useEffect(() => {
-    processQueuedCompletions().catch((error) => {
-      console.error('Failed to process queued completions:', error);
-    });
+    const initializeUser = async () => {
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          console.warn('No authenticated user found');
+          return;
+        }
+
+        const currentUserId = user.id;
+        setUserId(currentUserId);
+
+        // Check if user changed since last session
+        const lastUserId = getCurrentUserId();
+        if (lastUserId && lastUserId !== currentUserId) {
+          console.log(`User changed from ${lastUserId} to ${currentUserId}, clearing queue`);
+          clearCompletionQueue();
+        }
+
+        // Update stored user ID
+        setCurrentUserId(currentUserId);
+
+        // Process queued completions for this user
+        await processQueuedCompletions(currentUserId);
+      } catch (err) {
+        console.error('Failed to initialize user:', err);
+      }
+    };
+
+    initializeUser();
   }, []);
 
   /**
@@ -233,6 +373,15 @@ export function usePhaseCompletion({
   const completePhase = useCallback(async () => {
     if (isCompleting) {
       console.warn('Completion already in progress');
+      return;
+    }
+
+    if (!userId) {
+      const errorObj = new Error('User not authenticated');
+      setError(errorObj);
+      if (onError) {
+        onError(errorObj);
+      }
       return;
     }
 
@@ -254,30 +403,42 @@ export function usePhaseCompletion({
         phaseNumber,
         timeSpent,
         idempotencyKey,
-        completedAt: new Date().toISOString(),
       };
 
       try {
         const response = await sendCompletionRequest(payload);
+
+        // Success - clear the in-memory idempotency key so next completion gets new key
+        idempotencyKeyRef.current = null;
 
         // Success callback
         if (onSuccess) {
           onSuccess(response);
         }
       } catch (requestError) {
-        // Request failed - queue for retry
-        console.error('Failed to complete phase, queueing for retry:', requestError);
+        const errorWithStatus = requestError as Error & { status?: number };
+        console.error('Failed to complete phase:', requestError);
 
-        const queuedCompletion: QueuedCompletion = {
-          lessonId,
-          phaseNumber,
-          timeSpent,
-          idempotencyKey,
-          completedAt: payload.completedAt,
-          retryCount: 0,
-        };
+        // Only queue transient errors for retry
+        if (isTransientError(requestError, errorWithStatus.status)) {
+          console.log('Error is transient, queueing for retry');
 
-        enqueueCompletion(queuedCompletion);
+          const queuedCompletion: QueuedCompletion = {
+            userId,
+            lessonId,
+            phaseNumber,
+            timeSpent,
+            idempotencyKey,
+            completedAt: new Date().toISOString(),
+            retryCount: 0,
+          };
+
+          enqueueCompletion(queuedCompletion);
+        } else {
+          // Permanent error - clear idempotency key and surface error
+          console.error(`Error is permanent (status ${errorWithStatus.status}), not queueing`);
+          idempotencyKeyRef.current = null;
+        }
 
         // Re-throw error to trigger error callback
         throw requestError;
@@ -292,7 +453,7 @@ export function usePhaseCompletion({
     } finally {
       setIsCompleting(false);
     }
-  }, [lessonId, phaseNumber, onSuccess, onError, isCompleting]);
+  }, [lessonId, phaseNumber, userId, onSuccess, onError, isCompleting]);
 
   return {
     completePhase,

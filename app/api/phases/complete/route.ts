@@ -4,13 +4,14 @@ import { createClient } from '@/lib/supabase/server';
 
 /**
  * Request schema for phase completion
+ * Note: completedAt is removed - server uses current time
+ * timeSpent is validated and clamped to prevent abuse
  */
 const CompletePhaseSchema = z.object({
   lessonId: z.string().uuid('Invalid lesson ID format'),
   phaseNumber: z.number().int().positive('Phase number must be a positive integer'),
-  timeSpent: z.number().int().nonnegative('Time spent must be non-negative'),
+  timeSpent: z.number().int().nonnegative('Time spent must be non-negative').max(86400, 'Time spent cannot exceed 24 hours'),
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
-  completedAt: z.string().datetime('Invalid ISO datetime format'),
 });
 
 type CompletePhaseRequest = z.infer<typeof CompletePhaseSchema>;
@@ -62,7 +63,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse and validate request body
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      return NextResponse.json(
+        {
+          error: 'Invalid JSON in request body',
+          details: parseError instanceof Error ? parseError.message : 'Malformed JSON',
+        },
+        { status: 400 }
+      );
+    }
+
     const validationResult = CompletePhaseSchema.safeParse(body);
 
     if (!validationResult.success) {
@@ -80,8 +93,10 @@ export async function POST(request: NextRequest) {
       phaseNumber,
       timeSpent,
       idempotencyKey,
-      completedAt,
     }: CompletePhaseRequest = validationResult.data;
+
+    // Use server timestamp for security - never trust client timestamps
+    const serverTimestamp = new Date().toISOString();
 
     // Step 1: Check if user can access this phase
     const { data: canAccess, error: accessError } = await supabase.rpc(
@@ -136,27 +151,39 @@ export async function POST(request: NextRequest) {
     const phaseId = phase.id;
 
     // Step 3: Check for existing completion with this idempotency key
-    const { data: existingCompletion, error: existingError } = await supabase
+    // This must check across ALL phases, not just the current one
+    const { data: existingWithKey, error: existingKeyError } = await supabase
       .from('student_progress')
-      .select('id, completed_at, idempotency_key')
+      .select('id, phase_id, completed_at')
       .eq('user_id', user.id)
-      .eq('phase_id', phaseId)
       .eq('idempotency_key', idempotencyKey)
       .maybeSingle();
 
-    if (existingError) {
-      console.error('Error checking existing completion:', existingError);
+    if (existingKeyError) {
+      console.error('Error checking existing idempotency key:', existingKeyError);
       return NextResponse.json(
         {
           error: 'Failed to check existing completion',
-          details: existingError.message,
+          details: existingKeyError.message,
         },
         { status: 500 }
       );
     }
 
-    // If this idempotency key already exists, return success (idempotent)
-    if (existingCompletion) {
+    // If this idempotency key already exists, verify it matches the current phase
+    if (existingWithKey) {
+      if (existingWithKey.phase_id !== phaseId) {
+        // Idempotency key reused for different phase - reject
+        return NextResponse.json(
+          {
+            error: 'Idempotency key already used for a different phase',
+            details: 'This idempotency key has been used for another completion',
+          },
+          { status: 409 }
+        );
+      }
+
+      // Same phase, same key - return cached result (idempotent)
       console.log(`Idempotent request detected: ${idempotencyKey}, returning cached result`);
 
       // Check if next phase exists
@@ -172,20 +199,51 @@ export async function POST(request: NextRequest) {
         nextPhaseUnlocked: !!nextPhase,
         message: 'Phase already completed (idempotent request)',
         phaseId,
-        completedAt: existingCompletion.completed_at,
+        completedAt: existingWithKey.completed_at,
       });
     }
 
-    // Step 4: Upsert phase completion
+    // Step 4: Check if phase already completed (different idempotency key)
+    // If so, reject to prevent overwriting time_spent with a new key
+    const { data: existingProgress, error: progressError } = await supabase
+      .from('student_progress')
+      .select('id, idempotency_key, completed_at')
+      .eq('user_id', user.id)
+      .eq('phase_id', phaseId)
+      .maybeSingle();
+
+    if (progressError) {
+      console.error('Error checking existing progress:', progressError);
+      return NextResponse.json(
+        {
+          error: 'Failed to check existing progress',
+          details: progressError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (existingProgress && existingProgress.idempotency_key && existingProgress.idempotency_key !== idempotencyKey) {
+      // Phase already completed with different idempotency key - reject
+      return NextResponse.json(
+        {
+          error: 'Phase already completed',
+          details: 'This phase has already been completed. Use the original idempotency key to replay.',
+        },
+        { status: 409 }
+      );
+    }
+
+    // Step 5: Upsert phase completion using server timestamp
     const progressRecord = {
       user_id: user.id,
       phase_id: phaseId,
       status: 'completed' as const,
-      started_at: completedAt, // Use completedAt as fallback for started_at
-      completed_at: completedAt,
-      time_spent_seconds: timeSpent,
+      started_at: existingProgress?.completed_at || serverTimestamp, // Preserve original start if exists
+      completed_at: serverTimestamp, // Always use server time
+      time_spent_seconds: timeSpent, // Validated and clamped by schema
       idempotency_key: idempotencyKey,
-      updated_at: new Date().toISOString(),
+      updated_at: serverTimestamp,
     };
 
     const { error: upsertError } = await supabase
@@ -228,7 +286,7 @@ export async function POST(request: NextRequest) {
         ? `Phase ${phaseNumber} completed. Phase ${phaseNumber + 1} unlocked.`
         : `Phase ${phaseNumber} completed. This was the final phase.`,
       phaseId,
-      completedAt,
+      completedAt: serverTimestamp, // Return server timestamp
     };
 
     return NextResponse.json(response, { status: 200 });

@@ -39,7 +39,7 @@ describe('POST /api/phases/complete', () => {
     phaseNumber: 2,
     timeSpent: 120,
     idempotencyKey: '987e6543-e21b-12d3-a456-426614174000',
-    completedAt: '2024-11-27T10:00:00.000Z',
+    // Note: completedAt removed - server uses its own timestamp
   };
 
   beforeEach(() => {
@@ -156,15 +156,15 @@ describe('POST /api/phases/complete', () => {
       expect(body.details?.idempotencyKey).toBeDefined();
     });
 
-    it('validates completedAt is an ISO datetime', async () => {
+    it('validates timeSpent does not exceed 24 hours (86400 seconds)', async () => {
       const response = await POST(
-        buildRequest({ ...validPayload, completedAt: 'invalid-date' })
+        buildRequest({ ...validPayload, timeSpent: 90000 })
       );
 
       expect(response.status).toBe(400);
       const body = await response.json();
       expect(body.error).toBe('Invalid request data');
-      expect(body.details?.completedAt).toBeDefined();
+      expect(body.details?.timeSpent).toBeDefined();
     });
 
     it('rejects missing required fields', async () => {
@@ -236,13 +236,14 @@ describe('POST /api/phases/complete', () => {
   });
 
   describe('idempotency', () => {
-    it('returns existing result when idempotency key already used', async () => {
+    it('returns existing result when idempotency key already used for same phase', async () => {
       const existingCompletion = {
         id: 'existing-123',
+        phase_id: 'phase-456',
         completed_at: '2024-11-27T09:00:00.000Z',
-        idempotency_key: validPayload.idempotencyKey,
       };
 
+      // First check: idempotency key exists for this phase
       mockMaybeSingle.mockResolvedValueOnce({
         data: existingCompletion,
         error: null,
@@ -267,34 +268,124 @@ describe('POST /api/phases/complete', () => {
       expect(mockUpsert).not.toHaveBeenCalled();
     });
 
+    it('returns 409 when idempotency key used for different phase', async () => {
+      const existingCompletion = {
+        id: 'existing-123',
+        phase_id: 'different-phase-789', // Different phase!
+        completed_at: '2024-11-27T09:00:00.000Z',
+      };
+
+      // First check: idempotency key exists but for different phase
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: existingCompletion,
+        error: null,
+      });
+
+      const response = await POST(buildRequest(validPayload));
+
+      expect(response.status).toBe(409);
+      const body = await response.json();
+      expect(body.error).toMatch(/already used for a different phase/i);
+
+      // Should not proceed to upsert
+      expect(mockUpsert).not.toHaveBeenCalled();
+    });
+
+    it('returns 409 when phase already completed with different idempotency key', async () => {
+      // First check: idempotency key not found
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Second check: phase already has progress with different key
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: {
+          id: 'existing-123',
+          idempotency_key: 'different-key-999',
+          completed_at: '2024-11-27T09:00:00.000Z',
+        },
+        error: null,
+      });
+
+      const response = await POST(buildRequest(validPayload));
+
+      expect(response.status).toBe(409);
+      const body = await response.json();
+      expect(body.error).toMatch(/already completed/i);
+
+      // Should not upsert when phase already completed with different key
+      expect(mockUpsert).not.toHaveBeenCalled();
+    });
+
     it('checks for existing completion with correct parameters', async () => {
+      // First check: idempotency key lookup
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Second check: existing progress lookup
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Third check: next phase
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
       await POST(buildRequest(validPayload));
 
       expect(mockFrom).toHaveBeenCalledWith('student_progress');
-      expect(mockSelect).toHaveBeenCalledWith('id, completed_at, idempotency_key');
+      expect(mockSelect).toHaveBeenCalledWith('id, phase_id, completed_at');
       expect(mockEq).toHaveBeenCalledWith('user_id', 'user-123');
-      expect(mockEq).toHaveBeenCalledWith('phase_id', 'phase-456');
       expect(mockEq).toHaveBeenCalledWith('idempotency_key', validPayload.idempotencyKey);
     });
   });
 
   describe('progress upsert', () => {
-    it('upserts student progress with correct data', async () => {
+    it('upserts student progress with server timestamp', async () => {
+      // First check: no existing idempotency key
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Second check: no existing progress
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      const beforeRequest = new Date().toISOString();
       await POST(buildRequest(validPayload));
+      const afterRequest = new Date().toISOString();
 
       expect(mockUpsert).toHaveBeenCalledWith(
         expect.objectContaining({
           user_id: 'user-123',
           phase_id: 'phase-456',
           status: 'completed',
-          started_at: validPayload.completedAt,
-          completed_at: validPayload.completedAt,
           time_spent_seconds: validPayload.timeSpent,
           idempotency_key: validPayload.idempotencyKey,
-          updated_at: expect.any(String),
         }),
         { onConflict: 'user_id,phase_id' }
       );
+
+      // Verify server timestamp is used (compare as Date objects)
+      const upsertCall = mockUpsert.mock.calls[0][0];
+      const completedAtDate = new Date(upsertCall.completed_at).getTime();
+      const updatedAtDate = new Date(upsertCall.updated_at).getTime();
+      const beforeDate = new Date(beforeRequest).getTime();
+      const afterDate = new Date(afterRequest).getTime();
+
+      expect(completedAtDate).toBeGreaterThanOrEqual(beforeDate);
+      expect(completedAtDate).toBeLessThanOrEqual(afterDate);
+      expect(updatedAtDate).toBeGreaterThanOrEqual(beforeDate);
+      expect(updatedAtDate).toBeLessThanOrEqual(afterDate);
     });
 
     it('returns 500 when upsert fails', async () => {
@@ -312,13 +403,19 @@ describe('POST /api/phases/complete', () => {
 
   describe('next phase unlock detection', () => {
     it('returns nextPhaseUnlocked=true when next phase exists', async () => {
-      // First maybeSingle: no existing completion
+      // First: no existing idempotency key
       mockMaybeSingle.mockResolvedValueOnce({
         data: null,
         error: null,
       });
 
-      // Second maybeSingle: next phase exists
+      // Second: no existing progress
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Third: next phase exists
       mockMaybeSingle.mockResolvedValueOnce({
         data: { id: 'next-phase-789', phase_number: 3 },
         error: null,
@@ -334,13 +431,19 @@ describe('POST /api/phases/complete', () => {
     });
 
     it('returns nextPhaseUnlocked=false when no next phase', async () => {
-      // First maybeSingle: no existing completion
+      // First: no existing idempotency key
       mockMaybeSingle.mockResolvedValueOnce({
         data: null,
         error: null,
       });
 
-      // Second maybeSingle: no next phase
+      // Second: no existing progress
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Third: no next phase
       mockMaybeSingle.mockResolvedValueOnce({
         data: null,
         error: null,
@@ -376,13 +479,19 @@ describe('POST /api/phases/complete', () => {
     });
 
     it('handles errors when checking next phase gracefully', async () => {
-      // First maybeSingle: no existing completion
+      // First: no existing idempotency key
       mockMaybeSingle.mockResolvedValueOnce({
         data: null,
         error: null,
       });
 
-      // Second maybeSingle: error checking next phase
+      // Second: no existing progress
+      mockMaybeSingle.mockResolvedValueOnce({
+        data: null,
+        error: null,
+      });
+
+      // Third: error checking next phase (should be gracefully handled)
       mockMaybeSingle.mockResolvedValueOnce({
         data: null,
         error: { message: 'Query error' },
@@ -398,14 +507,22 @@ describe('POST /api/phases/complete', () => {
   });
 
   describe('response format', () => {
-    it('returns success response with all required fields', async () => {
+    it('returns success response with server timestamp', async () => {
+      // First: no existing idempotency key
       mockMaybeSingle.mockResolvedValueOnce({ data: null, error: null });
+
+      // Second: no existing progress
+      mockMaybeSingle.mockResolvedValueOnce({ data: null, error: null });
+
+      // Third: next phase exists
       mockMaybeSingle.mockResolvedValueOnce({
         data: { id: 'next-phase-789' },
         error: null,
       });
 
+      const beforeRequest = new Date().toISOString();
       const response = await POST(buildRequest(validPayload));
+      const afterRequest = new Date().toISOString();
 
       expect(response.status).toBe(200);
       const body = await response.json();
@@ -415,8 +532,15 @@ describe('POST /api/phases/complete', () => {
         nextPhaseUnlocked: true,
         message: expect.any(String),
         phaseId: 'phase-456',
-        completedAt: validPayload.completedAt,
       });
+
+      // Verify server timestamp is returned (compare as Date objects)
+      const completedAtDate = new Date(body.completedAt).getTime();
+      const beforeDate = new Date(beforeRequest).getTime();
+      const afterDate = new Date(afterRequest).getTime();
+
+      expect(completedAtDate).toBeGreaterThanOrEqual(beforeDate);
+      expect(completedAtDate).toBeLessThanOrEqual(afterDate);
     });
   });
 
@@ -431,20 +555,20 @@ describe('POST /api/phases/complete', () => {
       expect(body.error).toMatch(/internal server error/i);
     });
 
-    it('handles malformed JSON', async () => {
+    it('returns 400 for malformed JSON', async () => {
       const malformedRequest = new Request('http://localhost/api/phases/complete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: 'not valid json',
+        body: 'not valid json{',
       });
 
       const response = await POST(malformedRequest);
 
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(400);
       const body = await response.json();
-      expect(body.error).toBeDefined();
+      expect(body.error).toMatch(/invalid json/i);
     });
   });
 
