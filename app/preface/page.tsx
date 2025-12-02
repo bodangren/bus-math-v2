@@ -571,11 +571,11 @@ export default async function PrefacePage() {
         <section className="space-y-3 text-center">
           <p className="text-muted-foreground">Ready to start?</p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Link href="/student/unit01" className="underline">Jump to Unit 1</Link>
+            <Link href="/curriculum" className="underline">View Curriculum</Link>
             <span>•</span>
             <Link href="/capstone" className="underline">Preview the Capstone</Link>
             <span>•</span>
-            <Link href="/frontmatter/acknowledgments" className="underline">Acknowledgments &amp; Author</Link>
+            <Link href="/acknowledgments" className="underline">Acknowledgments &amp; Author</Link>
           </div>
         </section>
       </main>
