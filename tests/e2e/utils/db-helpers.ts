@@ -12,7 +12,7 @@ import { createClient } from '@supabase/supabase-js';
 import { db } from '@/lib/db';
 import { studentProgress } from '@/lib/db/schema/student-progress';
 import { studentCompetency, competencyStandards } from '@/lib/db/schema/competencies';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 
 /**
  * Create a Supabase Admin client for direct database access
@@ -105,23 +105,23 @@ export async function getStudentCompetencyByCode(userId: string, standardCode: s
  */
 export async function getLessonCompletion(userId: string, lessonId: string): Promise<number> {
   // Query to get all phases for the lesson and their completion status
-  const result = await db.execute<{
+  const [counts] = await db.execute<{
     total_phases: number;
     completed_phases: number;
-  }>`
+  }>(sql`
     SELECT
       COUNT(p.id) as total_phases,
       COUNT(CASE WHEN sp.status = 'completed' THEN 1 END) as completed_phases
     FROM phases p
     LEFT JOIN student_progress sp ON sp.phase_id = p.id AND sp.user_id = ${userId}
     WHERE p.lesson_id = ${lessonId}
-  `;
+  `);
 
-  if (!result.rows[0]) {
+  if (!counts) {
     return 0;
   }
 
-  const { total_phases, completed_phases } = result.rows[0];
+  const { total_phases, completed_phases } = counts;
 
   if (total_phases === 0) {
     return 0;
@@ -150,13 +150,13 @@ export async function isPhaseCompleted(userId: string, phaseId: string): Promise
  * @returns Array of progress records
  */
 export async function getLessonProgress(userId: string, lessonId: string) {
-  const result = await db.execute<{
+  const rows = await db.execute<{
     phase_id: string;
     phase_number: number;
     status: string;
     completed_at: string | null;
     time_spent_seconds: number;
-  }>`
+  }>(sql`
     SELECT
       p.id as phase_id,
       p.phase_number,
@@ -167,9 +167,9 @@ export async function getLessonProgress(userId: string, lessonId: string) {
     LEFT JOIN student_progress sp ON sp.phase_id = p.id AND sp.user_id = ${userId}
     WHERE p.lesson_id = ${lessonId}
     ORDER BY p.phase_number ASC
-  `;
+  `);
 
-  return result.rows;
+  return rows;
 }
 
 /**

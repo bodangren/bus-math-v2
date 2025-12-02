@@ -15,15 +15,14 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { db } from '@/lib/db';
 import { lessons } from '@/lib/db/schema/lessons';
 import { competencyStandards } from '@/lib/db/schema/competencies';
+import { organizations } from '@/lib/db/schema/organizations';
 import { eq } from 'drizzle-orm';
 
-// Security check: Only allow in non-production environments
-if (process.env.NODE_ENV === 'production') {
-  throw new Error('Test cleanup API cannot be used in production');
-}
+export const dynamic = 'force-dynamic';
 
 // Fixed UUIDs matching the seed API
 const TEST_LESSON_ID = '00000000-0000-0000-0000-000000000002';
+const TEST_ORGANIZATION_ID = '00000000-0000-0000-0000-000000000000';
 const TEST_STANDARD_ID = '00000000-0000-0000-0000-000000000006';
 
 interface CleanupRequest {
@@ -32,6 +31,14 @@ interface CleanupRequest {
 }
 
 export async function POST(request: Request) {
+  // Security check: Only allow in non-production environments
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      { success: false, error: 'Test cleanup API cannot be used in production' },
+      { status: 403 }
+    );
+  }
+
   try {
     const body: CleanupRequest = await request.json();
     const { userId, lessonId } = body;
@@ -70,6 +77,17 @@ export async function POST(request: Request) {
     } catch (error) {
       // It's okay if this fails due to foreign key constraints
       console.warn('Could not delete test standard (may be in use):', error);
+    }
+
+    // 4. Delete test organization (cascades to profile)
+    try {
+      await db.delete(organizations).where(eq(organizations.id, TEST_ORGANIZATION_ID));
+    } catch (error) {
+      errors.push(
+        `Failed to delete organization ${TEST_ORGANIZATION_ID}: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`
+      );
     }
 
     return NextResponse.json({
