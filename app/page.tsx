@@ -172,8 +172,8 @@ export default async function Home() {
                 entrepreneurship through hands-on Excel projects and real-world
                 business applications.
               </p>
-              {/* Stats display */}
-              {stats && (
+              {/* Stats display - only show if we have actual data */}
+              {stats && stats.unitCount > 0 && (
                 <div className="flex gap-6 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <BookOpen className="h-4 w-4 text-primary" />
@@ -210,15 +210,7 @@ export default async function Home() {
                   size="lg"
                   className="gradient-financial text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <Link href="/auth/login">Login</Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="border-primary/30 hover:bg-primary/10"
-                >
-                  <Link href="/preface">Start Reading</Link>
+                  <Link href="/curriculum">Browse Units</Link>
                 </Button>
               </div>
             </div>
