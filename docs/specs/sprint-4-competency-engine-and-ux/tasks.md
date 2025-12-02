@@ -1,3 +1,14 @@
+---
+title: Sprint 4 - Competency Engine & Seamless UX Tasks
+type: tasks
+status: active
+created: 2025-11-25
+updated: 2025-11-25
+epic: 4
+description: Implementation tasks for building competency tracking engine and seamless phase navigation UX
+tags: [sprint-4, competency, ux, spreadsheet-evaluator]
+---
+
 # Tasks: Sprint 4 - Competency Engine & Seamless UX
 
 ## Phase 1: Schema & Backend

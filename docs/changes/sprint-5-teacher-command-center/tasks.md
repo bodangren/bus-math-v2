@@ -1,3 +1,14 @@
+---
+title: Sprint 5 - Teacher Command Center Tasks
+type: tasks
+status: draft
+created: 2025-11-25
+updated: 2025-11-25
+epic: 5
+description: Implementation tasks for bulk student onboarding, interactive gradebook, and classroom management tools
+tags: [sprint-5, teacher, gradebook, bulk-import]
+---
+
 # Tasks: Sprint 5 - Teacher Command Center
 
 ## Phase 1: Bulk Onboarding

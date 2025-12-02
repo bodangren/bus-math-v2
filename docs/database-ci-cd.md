@@ -1,3 +1,13 @@
+---
+title: Database CI/CD Setup & Troubleshooting
+type: guide
+status: active
+created: 2025-11-28
+updated: 2025-11-28
+description: Comprehensive guide for Supabase database CI/CD pipeline, automated migration deployment, and troubleshooting common issues
+tags: [ci-cd, supabase, migrations, github-actions, deployment]
+---
+
 # Database CI/CD Setup & Troubleshooting
 
 ## Overview

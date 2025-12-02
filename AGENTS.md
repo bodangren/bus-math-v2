@@ -53,6 +53,7 @@ To begin, always assess the current state by checking the git branch and running
 4. Practice TDD. Write/adjust tests first (unit/integration/E2E) and run `npm run lint` plus relevant test scripts before each commit.
 5. Keep documentation current. If work changes architecture, workflow, or schema, update `docs/` (and this file) in the same PR.
 6. Push the branch, open a PR with issue links, test evidence, and run checks. Squash merge after green CI and update sprint artifacts.
+7. **Report discovered bugs proactively.** When you discover bugs, issues, or technical debt outside the scope of your current work, immediately create a GitHub issue to track them. Don't defer or ignore problems—capturing them ensures they're addressed systematically. Use appropriate labels (bug, documentation, tech-debt) and provide clear reproduction steps or evidence.
 
 ## Supabase Responsibilities
 - **Database is source of truth** for lessons, phases, activity configs, and student analytics.

@@ -1,3 +1,14 @@
+---
+title: Sprint 5 - Teacher Command Center Proposal
+type: proposal
+status: draft
+created: 2025-11-25
+updated: 2025-11-25
+epic: 5
+description: Proposal for efficient classroom management tools including bulk onboarding, visual gradebook matrix, and student administration
+tags: [sprint-5, teacher, proposal, classroom-management]
+---
+
 # Proposal: Sprint 5 - Teacher Command Center
 
 ## Problem Statement

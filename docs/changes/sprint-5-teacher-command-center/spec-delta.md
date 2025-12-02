@@ -1,3 +1,14 @@
+---
+title: Sprint 5 - Teacher Command Center Specification
+type: spec-delta
+status: draft
+created: 2025-11-25
+updated: 2025-11-25
+epic: 5
+description: Specifications for bulk student import workflow, interactive gradebook grid, and student management features
+tags: [sprint-5, teacher, gradebook, bulk-import, edge-functions]
+---
+
 # Spec Delta: Sprint 5 - Teacher Command Center
 
 ## 1. Bulk Student Import
