@@ -90,7 +90,8 @@ export function NavigationSidebar({
   )
 
   return (
-    <aside
+    <nav
+      aria-label="Course navigation"
       className={cn(
         'w-full max-w-xs space-y-6 rounded-xl border border-border/40 bg-card p-4 shadow-sm',
         className
@@ -136,6 +137,6 @@ export function NavigationSidebar({
         <p className="text-sm font-semibold text-foreground">Additional Resources</p>
         {renderLinks(additionalLinks)}
       </section>
-    </aside>
+    </nav>
   )
 }

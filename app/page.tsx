@@ -154,9 +154,9 @@ export default async function Home() {
   const units = await getUnits();
 
   return (
-    <main className="flex-1">
+    <>
       {/* Hero section */}
-      <section className="py-24 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <section aria-labelledby="hero-heading" className="py-24 bg-gradient-to-br from-background via-primary/5 to-accent/5">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -165,7 +165,7 @@ export default async function Home() {
                 <BarChart3 className="h-7 w-7 text-accent" />
                 <TrendingUp className="h-6 w-6 text-green-600" />
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
+              <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
                 Math for Business Operations
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
@@ -233,10 +233,10 @@ export default async function Home() {
       </section>
 
       {/* Table of Contents */}
-      <section className="py-24 bg-muted/10">
+      <section aria-labelledby="course-structure-heading" className="py-24 bg-muted/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
+            <h2 id="course-structure-heading" className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
               Course Structure
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -330,10 +330,10 @@ export default async function Home() {
             </Carousel>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-1 gap-6">
+          <nav aria-labelledby="getting-started-heading" className="mt-12 grid grid-cols-1 md:grid-cols-1 gap-6">
             <Card className="card-statement border-primary/20">
               <CardHeader className="excel-header">
-                <CardTitle className="text-primary">Getting Started</CardTitle>
+                <CardTitle id="getting-started-heading" className="text-primary">Getting Started</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link
@@ -350,15 +350,15 @@ export default async function Home() {
                 </Link>
               </CardContent>
             </Card>
-          </div>
+          </nav>
         </div>
       </section>
 
       {/* Features highlight */}
-      <section className="py-24 bg-gradient-to-br from-muted/10 via-background to-muted/5">
+      <section aria-labelledby="features-heading" className="py-24 bg-gradient-to-br from-muted/10 via-background to-muted/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
+            <h2 id="features-heading" className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
               Interactive Learning Features
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -389,6 +389,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }
