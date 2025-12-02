@@ -275,17 +275,17 @@ export default function DepreciationMethodBuilder() {
 
       {/* Instructions Panel */}
       {showInstructions && (
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-blue-300 bg-blue-100">
           <CardHeader>
-            <CardTitle className="text-xl text-blue-800 flex items-center gap-2">
+            <CardTitle className="text-xl text-blue-900 flex items-center gap-2">
               <HelpCircle className="w-5 h-5" />
               How to Use the Depreciation Method Builder
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">🎯 Learning Objectives</h4>
-              <ul className="text-blue-700 space-y-1 text-sm">
+              <h4 className="font-semibold text-blue-900 mb-2">🎯 Learning Objectives</h4>
+              <ul className="text-blue-800 space-y-1 text-sm">
                 <li>• Compare four major depreciation methods used in business accounting</li>
                 <li>• Understand tax implications of different depreciation strategies</li>
                 <li>• Calculate multi-year depreciation schedules for long-term assets</li>
@@ -294,8 +294,8 @@ export default function DepreciationMethodBuilder() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">📋 Step-by-Step Instructions</h4>
-              <ol className="list-decimal list-inside space-y-1 text-blue-700 text-sm">
+              <h4 className="font-semibold text-blue-900 mb-2">📋 Step-by-Step Instructions</h4>
+              <ol className="list-decimal list-inside space-y-1 text-blue-800 text-sm">
                 <li>Choose a depreciation method from the tabs</li>
                 <li>Enter asset information (cost, salvage value, useful life)</li>
                 <li>Click &quot;Calculate Depreciation&quot; to see the full schedule</li>
@@ -306,8 +306,8 @@ export default function DepreciationMethodBuilder() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">💡 Business Applications</h4>
-              <p className="text-blue-700 text-sm">
+              <h4 className="font-semibold text-blue-900 mb-2">💡 Business Applications</h4>
+              <p className="text-blue-800 text-sm">
                 Depreciation method choice significantly impacts financial statements, tax obligations, and business decisions.
                 Straight-line provides consistency, while accelerated methods (DDB, SYD) front-load expenses and tax deductions.
                 Understanding these trade-offs helps business owners make strategic asset management decisions.
@@ -425,9 +425,9 @@ export default function DepreciationMethodBuilder() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {showFormulas && (
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h4 className="font-medium text-blue-800 mb-2">Formula:</h4>
-                      <code className="text-sm text-blue-700 block">{method.formula}</code>
+                    <div className="p-4 bg-blue-100 rounded-lg border border-blue-300">
+                      <h4 className="font-medium text-blue-900 mb-2">Formula:</h4>
+                      <code className="text-sm text-blue-800 block">{method.formula}</code>
                     </div>
                   )}
 
@@ -505,9 +505,9 @@ export default function DepreciationMethodBuilder() {
                         </table>
                       </div>
 
-                      <div className="p-4 bg-blue-50 rounded-lg">
-                        <h4 className="font-medium text-blue-800 mb-2">Comparison Insights:</h4>
-                        <ul className="text-sm text-blue-700 space-y-1">
+                      <div className="p-4 bg-blue-100 rounded-lg">
+                        <h4 className="font-medium text-blue-900 mb-2">Comparison Insights:</h4>
+                        <ul className="text-sm text-blue-800 space-y-1">
                           <li>• Accelerated methods (DDB, SYD) provide higher Year 1 deductions</li>
                           <li>• All methods reach the same total depreciation over the asset&apos;s life</li>
                           <li>• Straight-line offers predictable, consistent expenses each year</li>
@@ -559,9 +559,9 @@ export default function DepreciationMethodBuilder() {
                       </div>
 
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="p-4 bg-blue-50 rounded-lg text-center">
+                        <div className="p-4 bg-blue-100 rounded-lg text-center">
                           <div className="text-sm text-blue-600 mb-1">Total Depreciation</div>
-                          <div className="text-2xl font-bold text-blue-800">
+                          <div className="text-2xl font-bold text-blue-900">
                             ${schedule[schedule.length - 1].accumulatedDepreciation.toFixed(0)}
                           </div>
                         </div>
