@@ -652,24 +652,27 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
       </Card>
 
       {/* Game Controls */}
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-col items-center gap-4">
         <Button
           onClick={advanceDay}
           size="lg"
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-3 h-auto"
           disabled={gameState.gameStatus !== 'playing'}
         >
-          <Calendar className="w-4 h-4 mr-2" />
-          Advance Day
+          <Calendar className="w-5 h-5 mr-3" />
+          Run Simulation
+          <span className="ml-2 text-sm opacity-75">({gameState.day} → {gameState.day + 1})</span>
         </Button>
-        <Button
-          onClick={resetGame}
-          variant="outline"
-          size="lg"
-        >
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Reset Challenge
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            onClick={resetGame}
+            variant="outline"
+            size="sm"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Reset Challenge
+          </Button>
+        </div>
       </div>
 
       {/* Notifications */}

@@ -87,7 +87,7 @@ describe('CashFlowChallenge', () => {
     const user = userEvent.setup()
     render(<CashFlowChallenge activity={mockActivity} />)
 
-    const advanceButton = screen.getByRole('button', { name: /advance day/i })
+    const advanceButton = screen.getByRole('button', { name: /run simulation/i })
     await user.click(advanceButton)
 
     await waitFor(() => {
@@ -124,7 +124,7 @@ describe('CashFlowChallenge', () => {
     render(<CashFlowChallenge activity={winningActivity} onSubmit={onSubmit} />)
 
     // Advance one more day to trigger win
-    const advanceButton = screen.getByRole('button', { name: /advance day/i })
+    const advanceButton = screen.getByRole('button', { name: /run simulation/i })
     await userEvent.click(advanceButton)
 
     await waitFor(() => {
@@ -144,7 +144,7 @@ describe('CashFlowChallenge', () => {
     render(<CashFlowChallenge activity={mockActivity} />)
 
     // Advance a day first
-    const advanceButton = screen.getByRole('button', { name: /advance day/i })
+    const advanceButton = screen.getByRole('button', { name: /run simulation/i })
     await user.click(advanceButton)
 
     await waitFor(() => {
@@ -177,7 +177,7 @@ describe('CashFlowChallenge', () => {
 
     render(<CashFlowChallenge activity={nearBankruptActivity} />)
 
-    const advanceButton = screen.getByRole('button', { name: /advance day/i })
+    const advanceButton = screen.getByRole('button', { name: /run simulation/i })
     await userEvent.click(advanceButton)
 
     await waitFor(() => {
