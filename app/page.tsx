@@ -23,33 +23,33 @@ const features = [
   {
     icon: BookOpen,
     title: "Interactive Spreadsheets",
-    description: "Work with live Excel-like interfaces directly in your browser",
+    description: "Work with live Excel-like interfaces directly in your browser.",
   },
   {
     icon: Calculator,
     title: "Financial Calculators",
-    description: "Built-in calculators for NPV, loan payments, and more",
+    description: "Built-in calculators for NPV, loan payments, and more.",
   },
   {
     icon: CheckSquare,
     title: "Comprehension Checks",
     description:
-      "Immediate feedback on your understanding after each section",
+      "Immediate feedback on your understanding after each section.",
   },
   {
     icon: Dice6,
     title: "Dynamic Exercises",
-    description: "Practice with different scenarios and data every time",
+    description: "Practice with different scenarios and data every time.",
   },
   {
     icon: TrendingUp,
     title: "Progress Tracking",
-    description: "Monitor your learning journey and identify areas to review",
+    description: "Monitor your learning journey and identify areas to review.",
   },
   {
     icon: Search,
     title: "Smart Search",
-    description: "Find concepts, formulas, and examples instantly",
+    description: "Find concepts, formulas, and examples instantly.",
   },
 ];
 
@@ -239,7 +239,7 @@ export default async function Home() {
               Course Structure
             </h2>
             <p className="text-xl text-muted-foreground">
-              Hands-on units plus a comprehensive capstone project
+              Hands-on units plus a comprehensive capstone project.
             </p>
           </div>
 
@@ -315,7 +315,7 @@ export default async function Home() {
             </h2>
             <p className="text-xl text-muted-foreground">
               Everything you need for hands-on business math education with
-              Excel integration
+              Excel integration.
             </p>
           </div>
 
