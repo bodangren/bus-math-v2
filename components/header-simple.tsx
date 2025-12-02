@@ -71,18 +71,19 @@ export function HeaderSimple() {
 
           {/* Search Bar & User Menu */}
           <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
               <Input
                 type="search"
-                placeholder="Search..."
-                className="w-40 lg:w-64 border-border/50 bg-background/50 focus:bg-background transition-colors"
+                placeholder="Search lessons, concepts, formulas..."
+                className="w-32 sm:w-40 md:w-64 lg:w-80 border-border/50 bg-background/50 focus:bg-background transition-colors"
               />
               <Button
                 size="sm"
                 variant="outline"
-                className="border-border/50 hover:bg-accent/50"
+                className="border-border/50 hover:bg-accent/50 shrink-0"
               >
                 <Search className="h-4 w-4" />
+                <span className="hidden sm:inline ml-2">Search</span>
               </Button>
             </div>
             <UserMenu />
