@@ -239,7 +239,7 @@ export default async function Home() {
               Course Structure
             </h2>
             <p className="text-xl text-muted-foreground">
-              Eight hands-on units plus a comprehensive capstone project
+              Hands-on units plus a comprehensive capstone project
             </p>
           </div>
 
