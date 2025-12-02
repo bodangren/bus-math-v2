@@ -89,6 +89,20 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
       <CardHeader>
         <CardTitle className="text-2xl">{activity.props.title}</CardTitle>
         <CardDescription>{activity.props.description ?? activity.description}</CardDescription>
+        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground border-t pt-4">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Purpose:</span>
+            <span>Practice key vocabulary and concepts</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Time:</span>
+            <span>~3 minutes</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Save Progress:</span>
+            <span>Auto-saved locally</span>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
