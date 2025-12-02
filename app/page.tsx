@@ -218,7 +218,7 @@ export default async function Home() {
                   size="lg"
                   className="border-primary/30 hover:bg-primary/10"
                 >
-                  <Link href="/frontmatter/preface">Start Reading</Link>
+                  <Link href="/preface">Start Reading</Link>
                 </Button>
               </div>
             </div>
@@ -260,7 +260,7 @@ export default async function Home() {
                 <CardHeader>
                   <CardTitle className="text-lg">
                     <Link
-                      href={`/student/unit${String(unit.unit_number).padStart(2, "0")}/lesson01`}
+                      href={`/student/lesson/${unit.slug}`}
                       className="hover:text-primary transition-colors"
                     >
                       Unit {unit.unit_number}: {unit.title}
@@ -297,13 +297,13 @@ export default async function Home() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link
-                  href="/frontmatter/preface"
+                  href="/preface"
                   className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
                 >
                   Preface
                 </Link>
                 <Link
-                  href="/frontmatter/acknowledgments"
+                  href="/acknowledgments"
                   className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
                 >
                   Acknowledgments
