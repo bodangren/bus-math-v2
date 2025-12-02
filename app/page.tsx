@@ -214,8 +214,8 @@ export default async function Home() {
                 </Button>
               </div>
             </div>
-            <div className="flex justify-center lg:justify-end">
-              <div className="w-full max-w-md relative">
+            <div className="flex justify-center lg:justify-end mt-12 lg:mt-0">
+              <div className="w-full max-w-sm md:max-w-md relative">
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-lg blur-xl opacity-30"></div>
                 <Image
                   src="/cover.png"
