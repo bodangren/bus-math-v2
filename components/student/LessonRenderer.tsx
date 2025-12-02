@@ -44,7 +44,7 @@ interface LessonRendererProps {
  */
 export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug }: LessonRendererProps) {
   const router = useRouter();
-  const { data: progressData, isLoading } = usePhaseProgress(lesson.id);
+  const { data: progressData, isLoading, refetch } = usePhaseProgress(lesson.id);
 
   // Find the current phase
   const currentPhase = phases.find(p => p.phaseNumber === currentPhaseNumber);
@@ -81,9 +81,13 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
   const canGoPrevious = currentPhaseNumber > 1;
   const canGoNext = currentPhaseNumber < phases.length;
 
-  // Check if next phase is unlocked
+  // Get current phase completion status
+  const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase.id);
+  const isCurrentPhaseCompleted = currentPhaseProgress?.status === 'completed';
+
+  // Check if next phase is unlocked (either already unlocked OR current phase is completed)
   const nextPhaseStatus = stepperPhases.find(p => p.phaseNumber === currentPhaseNumber + 1)?.status;
-  const isNextPhaseUnlocked = nextPhaseStatus === 'available' || nextPhaseStatus === 'current' || nextPhaseStatus === 'completed';
+  const isNextPhaseUnlocked = isCurrentPhaseCompleted || nextPhaseStatus === 'available' || nextPhaseStatus === 'current' || nextPhaseStatus === 'completed';
 
   const handlePrevious = () => {
     if (canGoPrevious) {
@@ -200,7 +204,14 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
             </div>
 
             <div className="mt-6 flex justify-end">
-              <PhaseCompleteButton phaseId={currentPhase.id} />
+              <PhaseCompleteButton
+                phaseId={currentPhase.id}
+                initialStatus={isCurrentPhaseCompleted ? 'completed' : 'not_started'}
+                onStatusChange={() => {
+                  // Refetch progress to update button states and stepper
+                  refetch();
+                }}
+              />
             </div>
           </div>
         </div>
