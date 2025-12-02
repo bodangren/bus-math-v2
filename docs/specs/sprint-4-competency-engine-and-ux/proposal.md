@@ -1,3 +1,14 @@
+---
+title: Sprint 4 - Competency Engine & Seamless UX Proposal
+type: proposal
+status: active
+created: 2025-11-25
+updated: 2025-11-25
+epic: 4
+description: Proposal for building educational standards tracking and frictionless auto-capture UX to replace manual phase completion
+tags: [sprint-4, competency, ux, proposal]
+---
+
 # Proposal: Sprint 4 - Competency Engine & Seamless UX
 
 ## Problem Statement

@@ -1,3 +1,14 @@
+---
+title: Sprint 4 - Competency Engine & Seamless UX Specification
+type: spec-delta
+status: active
+created: 2025-11-25
+updated: 2025-11-25
+epic: 4
+description: Schema changes and component specifications for competency standards tracking and automatic phase completion
+tags: [sprint-4, competency, schema, spreadsheet-evaluator, auto-capture]
+---
+
 # Spec Delta: Sprint 4 - Competency Engine & Seamless UX
 
 ## 1. Schema Changes
