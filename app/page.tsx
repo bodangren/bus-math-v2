@@ -282,7 +282,7 @@ export default async function Home() {
             ))}
           </div>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-1 gap-6">
             <Card className="card-statement border-primary/20">
               <CardHeader className="excel-header">
                 <CardTitle className="text-primary">Getting Started</CardTitle>
@@ -299,58 +299,6 @@ export default async function Home() {
                   className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
                 >
                   Acknowledgments
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="card-statement border-accent/20">
-              <CardHeader className="bg-gradient-to-r from-accent/5 to-accent/10 border-b border-accent/20">
-                <CardTitle className="text-foreground">Capstone Project</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Link
-                  href="/capstone"
-                  className="block text-sm hover:text-accent transition-colors p-2 rounded hover:bg-accent/5"
-                >
-                  Project Overview
-                </Link>
-                <Link
-                  href="/capstone/guidelines"
-                  className="block text-sm hover:text-accent transition-colors p-2 rounded hover:bg-accent/5"
-                >
-                  Guidelines & Timeline
-                </Link>
-                <Link
-                  href="/capstone/rubrics"
-                  className="block text-sm hover:text-accent transition-colors p-2 rounded hover:bg-accent/5"
-                >
-                  Assessment Rubrics
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="card-ledger border-border/50">
-              <CardHeader>
-                <CardTitle>Reference Materials</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Link
-                  href="/backmatter/glossary"
-                  className="block text-sm hover:text-foreground transition-colors p-2 rounded hover:bg-muted/50"
-                >
-                  Glossary
-                </Link>
-                <Link
-                  href="/backmatter/index"
-                  className="block text-sm hover:text-foreground transition-colors p-2 rounded hover:bg-muted/50"
-                >
-                  Subject Index
-                </Link>
-                <Link
-                  href="/backmatter/bibliography"
-                  className="block text-sm hover:text-foreground transition-colors p-2 rounded hover:bg-muted/50"
-                >
-                  Bibliography
                 </Link>
               </CardContent>
             </Card>
