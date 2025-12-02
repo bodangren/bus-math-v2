@@ -17,6 +17,7 @@ import {
   Search,
   BarChart3,
 } from "lucide-react";
+import { Carousel } from "@/components/ui/carousel";
 import { createClient } from "@/lib/supabase/server";
 
 const features = [
@@ -243,7 +244,8 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {/* Desktop grid view */}
+          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {units.map((unit) => (
               <Card
                 key={unit.id}
@@ -280,6 +282,52 @@ export default async function Home() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Mobile/Tablet carousel view */}
+          <div className="lg:hidden">
+            <Carousel 
+              itemsPerView={1} 
+              className="max-w-md mx-auto"
+              gap="gap-4"
+            >
+              {units.map((unit) => (
+                <Card
+                  key={unit.id}
+                  className="card-ledger hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50"
+                >
+                  <CardHeader>
+                    <CardTitle className="text-lg">
+                      <Link
+                        href={`/student/lesson/${unit.slug}`}
+                        className="hover:text-primary transition-colors"
+                      >
+                        Unit {unit.unit_number}: {unit.title}
+                      </Link>
+                    </CardTitle>
+                    <CardDescription className="text-sm text-muted-foreground">
+                      {unit.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-medium">
+                        {unit.metadata?.duration || "2-3 weeks"}
+                      </span>
+                      {unit.metadata?.difficulty && (
+                        <span
+                          className={`px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
+                            unit.metadata.difficulty
+                          )}`}
+                        >
+                          {formatDifficulty(unit.metadata.difficulty)}
+                        </span>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </Carousel>
           </div>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-1 gap-6">
