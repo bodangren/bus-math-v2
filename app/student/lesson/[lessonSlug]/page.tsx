@@ -157,6 +157,32 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
 
   // Skip access checks for teachers and admins
   if (!isBypassRole) {
+    // If no phase specified (default to 1), redirect to first incomplete phase
+    if (!phaseParam) {
+      // Fetch user's progress to find first incomplete phase
+      const { data: progressResponse } = await supabase
+        .from('student_progress')
+        .select('phase_id, status')
+        .eq('user_id', user.id)
+        .in('phase_id', lessonPhases.map(p => p.id));
+
+      // Create a map of completed phases
+      const completedPhaseIds = new Set(
+        progressResponse
+          ?.filter(p => p.status === 'completed')
+          ?.map(p => p.phase_id) || []
+      );
+
+      // Find first incomplete phase
+      const firstIncompletePhase = lessonPhases.find(p => !completedPhaseIds.has(p.id));
+      const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
+
+      // Redirect to first incomplete phase
+      if (targetPhaseNumber !== requestedPhaseNumber) {
+        redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+      }
+    }
+
     // Check if user can access this phase using RPC function
     const { data: canAccess, error: rpcError } = await supabase.rpc('can_access_phase', {
       p_lesson_id: lesson.id,
