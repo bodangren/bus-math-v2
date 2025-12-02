@@ -104,6 +104,20 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
           )}
         </CardTitle>
         <CardDescription>{activity.props.description ?? activity.description}</CardDescription>
+        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground border-t pt-4">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Purpose:</span>
+            <span>Check your understanding of key concepts</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Time:</span>
+            <span>~5 minutes</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Save Progress:</span>
+            <span>Auto-saved locally</span>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {preparedQuestions.map((question, questionIndex) => {
