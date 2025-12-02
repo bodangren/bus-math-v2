@@ -78,7 +78,7 @@ export function NavigationSidebar({
           <li key={link.title}>
             <Link
               href={link.url}
-              className="flex items-center gap-2 rounded-md px-2 py-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+              className="flex items-center gap-2 rounded-md px-2 py-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
             >
               <Icon className="h-4 w-4" />
               {link.title}
@@ -111,7 +111,7 @@ export function NavigationSidebar({
             const Icon = getLessonIcon(lesson)
             return (
               <li key={lesson.id} className="rounded-lg border border-border/30 p-3">
-                <Link href={getLessonUrl(lesson)} className="flex items-start gap-3">
+                <Link href={getLessonUrl(lesson)} className="flex items-start gap-3 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-lg">
                   <Icon className="mt-1 h-4 w-4 text-primary" />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">

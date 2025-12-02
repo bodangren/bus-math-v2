@@ -86,7 +86,7 @@ export function Carousel({
           <button
             key={index}
             className={cn(
-              "w-2 h-2 rounded-full transition-colors",
+              "w-2 h-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
               index === currentIndex 
                 ? "bg-primary" 
                 : "bg-muted-foreground/30 hover:bg-muted-foreground/50"

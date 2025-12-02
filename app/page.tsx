@@ -211,7 +211,7 @@ export default async function Home() {
                   size="lg"
                   className="gradient-financial text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <Link href="/curriculum">Browse Units</Link>
+                  <Link href="/curriculum" className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded">Browse Units</Link>
                 </Button>
               </div>
             </div>
@@ -294,13 +294,13 @@ export default async function Home() {
               {units.map((unit) => (
                 <Card
                   key={unit.id}
-                  className="card-ledger hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50"
+                className="card-ledger hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                 >
                   <CardHeader>
                     <CardTitle className="text-lg">
                       <Link
                         href={`/student/lesson/${unit.slug}`}
-                        className="hover:text-primary transition-colors"
+                      className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded"
                       >
                         Unit {unit.unit_number}: {unit.title}
                       </Link>
@@ -338,13 +338,13 @@ export default async function Home() {
               <CardContent className="space-y-2">
                 <Link
                   href="/preface"
-                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
+                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                 >
                   Preface
                 </Link>
                 <Link
                   href="/acknowledgments"
-                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5"
+                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                 >
                   Acknowledgments
                 </Link>
