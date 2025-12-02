@@ -47,11 +47,7 @@ const features = [
     title: "Progress Tracking",
     description: "Monitor your learning journey and identify areas to review.",
   },
-  {
-    icon: Search,
-    title: "Smart Search",
-    description: "Find concepts, formulas, and examples instantly.",
-  },
+
 ];
 
 const getDifficultyColor = (difficulty: string) => {
@@ -227,6 +223,36 @@ export default async function Home() {
                   priority
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section aria-labelledby="search-heading" className="py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 id="search-heading" className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
+              Search Course Content
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Find lessons, concepts, formulas, and examples instantly.
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center space-x-2">
+              <Input
+                type="search"
+                placeholder="Search for lessons, topics, formulas, or examples..."
+                className="flex-1 h-12 text-base border-border/50 bg-background/80 focus:bg-background transition-colors"
+              />
+              <Button
+                size="lg"
+                className="h-12 px-6 shrink-0"
+              >
+                <Search className="h-5 w-5 mr-2" />
+                Search
+              </Button>
             </div>
           </div>
         </div>
