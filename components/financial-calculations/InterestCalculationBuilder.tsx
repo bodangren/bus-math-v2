@@ -266,17 +266,17 @@ export default function InterestCalculationBuilder() {
 
       {/* Instructions Panel */}
       {showInstructions && (
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-blue-300 bg-blue-100">
           <CardHeader>
-            <CardTitle className="text-xl text-blue-800 flex items-center gap-2">
+            <CardTitle className="text-xl text-blue-900 flex items-center gap-2">
               <HelpCircle className="w-5 h-5" />
               How to Use the Interest Calculation Builder
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">🎯 Learning Objectives</h4>
-              <ul className="text-blue-700 space-y-1 text-sm">
+              <h4 className="font-semibold text-blue-900 mb-2">🎯 Learning Objectives</h4>
+              <ul className="text-blue-800 space-y-1 text-sm">
                 <li>• Calculate interest costs for business financing needs</li>
                 <li>• Understand different types of interest calculations for cash flow management</li>
                 <li>• Learn Excel financial functions for real-world business analysis</li>
@@ -285,8 +285,8 @@ export default function InterestCalculationBuilder() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">📋 Step-by-Step Instructions</h4>
-              <ol className="list-decimal list-inside space-y-1 text-blue-700 text-sm">
+              <h4 className="font-semibold text-blue-900 mb-2">📋 Step-by-Step Instructions</h4>
+              <ol className="list-decimal list-inside space-y-1 text-blue-800 text-sm">
                 <li>Choose a business scenario from the tabs above</li>
                 <li>Review the business context and default values</li>
                 <li>Adjust input values to explore different scenarios</li>
@@ -297,8 +297,8 @@ export default function InterestCalculationBuilder() {
             </div>
 
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">💡 Business Context</h4>
-              <p className="text-blue-700 text-sm">
+              <h4 className="font-semibold text-blue-900 mb-2">💡 Business Context</h4>
+              <p className="text-blue-800 text-sm">
                 These calculations help business owners make informed decisions about financing, cash flow management,
                 and the true cost of different financial options. Understanding interest calculations is essential for
                 managing payroll timing, equipment purchases, and operational cash flow challenges.
@@ -343,13 +343,13 @@ export default function InterestCalculationBuilder() {
                   </div>
 
                   {showFormulas && (
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <h4 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                    <div className="p-4 bg-blue-100 rounded-lg border border-blue-300">
+                      <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
                         <Calculator className="w-4 h-4" />
                         Mathematical Formula:
                       </h4>
-                      <p className="text-sm text-blue-700 font-mono mb-2">{scenario.formula}</p>
-                      <p className="text-sm text-blue-700">
+                      <p className="text-sm text-blue-800 font-mono mb-2">{scenario.formula}</p>
+                      <p className="text-sm text-blue-800">
                         <strong>Excel Function:</strong> <code className="bg-white px-2 py-1 rounded">{scenario.excelFunction}</code>
                       </p>
                     </div>
@@ -473,12 +473,12 @@ export default function InterestCalculationBuilder() {
                       </div>
 
                       {/* Business Advice */}
-                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <h4 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                      <div className="p-4 bg-blue-100 rounded-lg border border-blue-300">
+                        <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
                           <CheckCircle className="w-4 h-4" />
                           Business Advice:
                         </h4>
-                        <p className="text-blue-700 text-sm">{result.businessAdvice}</p>
+                        <p className="text-blue-800 text-sm">{result.businessAdvice}</p>
                       </div>
 
                       {/* Excel Implementation */}

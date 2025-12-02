@@ -151,35 +151,35 @@ export function LoginForm({
           </form>
 
           {/* Demo Credentials Below Login Button */}
-          <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <div className="mt-6 rounded-lg border border-blue-400 bg-blue-100 p-4">
             <div className="flex items-center gap-2 mb-3">
-              <InfoIcon className="h-4 w-4 text-blue-600" aria-hidden="true" />
-              <h3 className="text-sm font-semibold text-blue-900">Demo Accounts</h3>
+              <InfoIcon className="h-4 w-4 text-blue-700" aria-hidden="true" />
+              <h3 className="text-sm font-semibold text-blue-950">Demo Accounts</h3>
             </div>
-            <p className="text-xs text-blue-700 mb-3">Click to populate the login form:</p>
+            <p className="text-xs text-blue-800 mb-3">Click to populate the login form:</p>
             <div className="flex flex-col gap-2">
               <Button
                 type="button"
                 variant="outline"
-                className="w-full justify-start text-left border-blue-300 hover:bg-blue-100"
+                className="w-full justify-start text-left border-blue-400 hover:bg-blue-200"
                 onClick={() => handleDemoLogin('demo_student', 'demo123')}
                 aria-label="Use demo student credentials"
               >
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold text-blue-900">Student Account</span>
-                  <span className="text-xs text-blue-600">demo_student / demo123</span>
+                  <span className="font-semibold text-blue-950">Student Account</span>
+                  <span className="text-xs text-blue-700">demo_student / demo123</span>
                 </div>
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                className="w-full justify-start text-left border-blue-300 hover:bg-blue-100"
+                className="w-full justify-start text-left border-blue-400 hover:bg-blue-200"
                 onClick={() => handleDemoLogin('demo_teacher', 'demo123')}
                 aria-label="Use demo teacher credentials"
               >
                 <div className="flex flex-col items-start">
-                  <span className="font-semibold text-blue-900">Teacher Account</span>
-                  <span className="text-xs text-blue-600">demo_teacher / demo123</span>
+                  <span className="font-semibold text-blue-950">Teacher Account</span>
+                  <span className="text-xs text-blue-700">demo_teacher / demo123</span>
                 </div>
               </Button>
             </div>

@@ -302,17 +302,17 @@ export function BreakEvenAnalysisCalculator() {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-300">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
-            <Calculator className="w-8 h-8 text-blue-600" />
+            <Calculator className="w-8 h-8 text-blue-700" />
             Advanced Break-Even Analysis Calculator
           </CardTitle>
           <CardDescription className="text-lg">
             Master Goal Seek, Data Tables, and Sensitivity Analysis for professional CVP modeling
           </CardDescription>
           <div className="flex justify-center gap-2 mt-4">
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+            <Badge variant="secondary" className="bg-blue-100 text-blue-900">
               <Target className="w-3 h-3 mr-1" />
               Goal Seek
             </Badge>
@@ -346,9 +346,9 @@ export function BreakEvenAnalysisCalculator() {
 
       {/* Instructions Panel */}
       {showInstructions && (
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-blue-300 bg-blue-100">
           <CardHeader>
-            <CardTitle className="text-xl text-blue-800 flex items-center gap-2">
+            <CardTitle className="text-xl text-blue-900 flex items-center gap-2">
               <HelpCircle className="w-5 h-5" />
               How to Use the Advanced Break-Even Analysis Calculator
             </CardTitle>
@@ -356,8 +356,8 @@ export function BreakEvenAnalysisCalculator() {
           <CardContent className="space-y-6">
             {/* Objective */}
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">🎯 Learning Objective</h4>
-              <p className="text-blue-700">
+              <h4 className="font-semibold text-blue-900 mb-2">🎯 Learning Objective</h4>
+              <p className="text-blue-900">
                 Master advanced break-even analysis techniques including Goal Seek, Data Tables, and Sensitivity Analysis
                 to make professional business decisions and create investor-ready financial models for Unit 6 PriceLab Challenge.
               </p>
@@ -365,50 +365,50 @@ export function BreakEvenAnalysisCalculator() {
 
             {/* Tab Overview */}
             <div>
-              <h4 className="font-semibold text-blue-800 mb-3">📋 Calculator Tabs Overview</h4>
+              <h4 className="font-semibold text-blue-900 mb-3">📋 Calculator Tabs Overview</h4>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div className="p-3 bg-white rounded-lg border border-blue-200">
+                <div className="p-3 bg-white rounded-lg border border-blue-300">
                   <div className="flex items-center gap-2 mb-2">
-                    <Settings className="w-4 h-4 text-blue-600" />
-                    <h5 className="font-medium text-blue-800">Inputs</h5>
+                    <Settings className="w-4 h-4 text-blue-700" />
+                    <h5 className="font-medium text-blue-900">Inputs</h5>
                   </div>
-                  <p className="text-xs text-blue-600">Set your business cost structure and pricing parameters</p>
+                  <p className="text-xs text-blue-800">Set your business cost structure and pricing parameters</p>
                 </div>
-                <div className="p-3 bg-white rounded-lg border border-blue-200">
+                <div className="p-3 bg-white rounded-lg border border-blue-300">
                   <div className="flex items-center gap-2 mb-2">
-                    <Calculator className="w-4 h-4 text-blue-600" />
-                    <h5 className="font-medium text-blue-800">Results</h5>
+                    <Calculator className="w-4 h-4 text-blue-700" />
+                    <h5 className="font-medium text-blue-900">Results</h5>
                   </div>
-                  <p className="text-xs text-blue-600">View comprehensive break-even calculations and risk assessment</p>
+                  <p className="text-xs text-blue-800">View comprehensive break-even calculations and risk assessment</p>
                 </div>
-                <div className="p-3 bg-white rounded-lg border border-blue-200">
+                <div className="p-3 bg-white rounded-lg border border-blue-300">
                   <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-4 h-4 text-blue-600" />
-                    <h5 className="font-medium text-blue-800">Goal Seek</h5>
+                    <Target className="w-4 h-4 text-blue-700" />
+                    <h5 className="font-medium text-blue-900">Goal Seek</h5>
                   </div>
-                  <p className="text-xs text-blue-600">Reverse-engineer what changes needed for target profit</p>
+                  <p className="text-xs text-blue-700">Reverse-engineer what changes needed for target profit</p>
                 </div>
-                <div className="p-3 bg-white rounded-lg border border-blue-200">
+                <div className="p-3 bg-white rounded-lg border border-blue-300">
                   <div className="flex items-center gap-2 mb-2">
-                    <Table className="w-4 h-4 text-blue-600" />
-                    <h5 className="font-medium text-blue-800">Data Tables</h5>
+                    <Table className="w-4 h-4 text-blue-700" />
+                    <h5 className="font-medium text-blue-900">Data Tables</h5>
                   </div>
-                  <p className="text-xs text-blue-600">Build what-if scenarios with one- and two-variable analysis</p>
+                  <p className="text-xs text-blue-700">Build what-if scenarios with one- and two-variable analysis</p>
                 </div>
-                <div className="p-3 bg-white rounded-lg border border-blue-200">
+                <div className="p-3 bg-white rounded-lg border border-blue-300">
                   <div className="flex items-center gap-2 mb-2">
-                    <BarChart3 className="w-4 h-4 text-blue-600" />
-                    <h5 className="font-medium text-blue-800">Analysis</h5>
+                    <BarChart3 className="w-4 h-4 text-blue-700" />
+                    <h5 className="font-medium text-blue-900">Analysis</h5>
                   </div>
-                  <p className="text-xs text-blue-600">Executive summary with strategic recommendations</p>
+                  <p className="text-xs text-blue-700">Executive summary with strategic recommendations</p>
                 </div>
               </div>
             </div>
 
             {/* Step-by-Step Instructions */}
             <div>
-              <h4 className="font-semibold text-blue-800 mb-3">🔢 Step-by-Step Instructions</h4>
-              <ol className="list-decimal list-inside space-y-2 text-blue-700">
+              <h4 className="font-semibold text-blue-900 mb-3">🔢 Step-by-Step Instructions</h4>
+              <ol className="list-decimal list-inside space-y-2 text-blue-800">
                 <li><strong>Start with Inputs:</strong> Enter your fixed costs, variable cost per unit, selling price, target profit, and current sales volume</li>
                 <li><strong>Review Results:</strong> Examine break-even calculations, margin of safety, and risk assessment indicators</li>
                 <li><strong>Use Goal Seek:</strong> Set a target profit and see what changes are needed (sales volume, price, or cost reductions)</li>
@@ -443,7 +443,7 @@ export function BreakEvenAnalysisCalculator() {
 
             {/* Formulas Reference */}
             <div>
-              <h4 className="font-semibold text-blue-800 mb-3">🧮 Key Break-Even Formulas</h4>
+              <h4 className="font-semibold text-blue-900 mb-3">🧮 Key Break-Even Formulas</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-3 bg-white rounded-lg border">
                   <h5 className="font-medium mb-2">Contribution Margin</h5>
@@ -466,8 +466,8 @@ export function BreakEvenAnalysisCalculator() {
 
             {/* Business Context */}
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">🏪 PriceLab Challenge Context</h4>
-              <p className="text-sm text-blue-700">
+              <h4 className="font-semibold text-blue-900 mb-2">🏪 PriceLab Challenge Context</h4>
+              <p className="text-sm text-blue-800">
                 You&apos;re developing a data-driven pricing strategy for a competitive local market. Use this calculator to
                 analyze competitor pricing data, test different cost scenarios, and build a compelling pricing recommendation
                 that balances profitability with market competitiveness. Your analysis will be presented to a town hall
@@ -477,8 +477,8 @@ export function BreakEvenAnalysisCalculator() {
 
             {/* Success Tips */}
             <div>
-              <h4 className="font-semibold text-blue-800 mb-2">💡 Pro Tips for Success</h4>
-              <ul className="text-sm text-blue-700 space-y-1">
+              <h4 className="font-semibold text-blue-900 mb-2">💡 Pro Tips for Success</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
                 <li>• <strong>Start Conservative:</strong> Use realistic cost estimates rather than optimistic projections</li>
                 <li>• <strong>Test Multiple Scenarios:</strong> Use data tables to understand range of outcomes</li>
                 <li>• <strong>Consider Market Context:</strong> Balance profitability with competitive positioning</li>
@@ -520,7 +520,7 @@ export function BreakEvenAnalysisCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5 text-blue-600" />
+                <Settings className="w-5 h-5 text-blue-700" />
                 Business Model Inputs
               </CardTitle>
               <CardDescription>
@@ -531,7 +531,7 @@ export function BreakEvenAnalysisCalculator() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="fixedCosts" className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-blue-600" />
+                    <Building2 className="w-4 h-4 text-blue-700" />
                     Fixed Costs ($)
                   </Label>
                   <Input
@@ -628,14 +628,14 @@ export function BreakEvenAnalysisCalculator() {
         {/* Results Tab */}
         <TabsContent value="results" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-blue-100 border-blue-300">
               <CardContent className="p-6 text-center">
-                <Target className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                <p className="text-sm font-medium text-blue-700">Break-Even Units</p>
-                <p className="text-2xl font-bold text-blue-800">
+                <Target className="w-8 h-8 text-blue-700 mx-auto mb-2" />
+                <p className="text-sm font-medium text-blue-800">Break-Even Units</p>
+                <p className="text-2xl font-bold text-blue-900">
                   {results.breakEvenUnits.toLocaleString()}
                 </p>
-                <p className="text-xs text-blue-600 mt-1">
+                <p className="text-xs text-blue-700 mt-1">
                   Units needed to cover costs
                 </p>
               </CardContent>
@@ -684,7 +684,7 @@ export function BreakEvenAnalysisCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-blue-600" />
+                <BarChart3 className="w-5 h-5 text-blue-700" />
                 Detailed Financial Analysis
               </CardTitle>
             </CardHeader>
@@ -782,14 +782,14 @@ export function BreakEvenAnalysisCalculator() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="bg-blue-50 border-blue-200">
+                <Card className="bg-blue-100 border-blue-300">
                   <CardContent className="p-4 text-center">
-                    <TrendingUp className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-blue-700">Required Sales Volume</p>
-                    <p className="text-xl font-bold text-blue-800">
+                    <TrendingUp className="w-6 h-6 text-blue-700 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-blue-800">Required Sales Volume</p>
+                    <p className="text-xl font-bold text-blue-900">
                       {goalSeekResults.requiredUnits.toLocaleString()}
                     </p>
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-xs text-blue-700 mt-1">
                       units at current price
                     </p>
                   </CardContent>
@@ -1048,7 +1048,7 @@ export function BreakEvenAnalysisCalculator() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-blue-600" />
+                <BarChart3 className="w-5 h-5 text-blue-700" />
                 Executive Summary & Recommendations
               </CardTitle>
             </CardHeader>
@@ -1130,7 +1130,7 @@ export function BreakEvenAnalysisCalculator() {
                   </Card>
 
                   <Card className="p-4">
-                    <h5 className="font-medium text-blue-700 mb-2 flex items-center gap-2">
+                    <h5 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
                       <TrendingDown className="w-4 h-4" />
                       Cost Optimization
                     </h5>
