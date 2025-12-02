@@ -155,7 +155,7 @@ export default async function Home() {
   return (
     <main className="flex-1">
       {/* Hero section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-background via-primary/5 to-accent/5">
+      <section className="py-24 bg-gradient-to-br from-background via-primary/5 to-accent/5">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -232,10 +232,10 @@ export default async function Home() {
       </section>
 
       {/* Table of Contents */}
-      <section className="py-16 bg-muted/10">
+      <section className="py-24 bg-muted/10">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
               Course Structure
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -307,10 +307,10 @@ export default async function Home() {
       </section>
 
       {/* Features highlight */}
-      <section className="py-16 bg-gradient-to-br from-muted/10 via-background to-muted/5">
+      <section className="py-24 bg-gradient-to-br from-muted/10 via-background to-muted/5">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
               Interactive Learning Features
             </h2>
             <p className="text-xl text-muted-foreground">
