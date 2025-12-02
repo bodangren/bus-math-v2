@@ -175,7 +175,7 @@ export default async function Home() {
               {/* Stats display - only show if we have actual data */}
               {stats && stats.unitCount > 0 && (
                 <div className="flex gap-6 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-baseline gap-2">
                     <BookOpen className="h-4 w-4 text-primary" />
                     <span>
                       <strong className="text-foreground">
@@ -184,7 +184,7 @@ export default async function Home() {
                       Units
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-baseline gap-2">
                     <Calculator className="h-4 w-4 text-accent" />
                     <span>
                       <strong className="text-foreground">
@@ -193,7 +193,7 @@ export default async function Home() {
                       Lessons
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-baseline gap-2">
                     <CheckSquare className="h-4 w-4 text-green-600" />
                     <span>
                       <strong className="text-foreground">
