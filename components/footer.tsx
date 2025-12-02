@@ -3,7 +3,7 @@ import { Calculator, TrendingUp } from 'lucide-react'
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/40 bg-muted/30 mt-auto">
+    <footer role="contentinfo" className="border-t border-border/40 bg-muted/30 mt-auto">
       <div className="container mx-auto px-4 py-8">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="space-y-3">
