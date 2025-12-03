@@ -21,8 +21,9 @@ let teacherUser: any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let otherStudentUser: any;
 
-let studentClient: ReturnType<typeof createClient>;
-let teacherClient: ReturnType<typeof createClient>;
+let studentClient: any;
+let teacherClient: any;
+let otherStudentClient: any;
 
 const TEST_PREFIX = 'sec_test_';
 

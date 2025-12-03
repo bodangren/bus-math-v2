@@ -60,6 +60,10 @@ describe('components/auth/AuthProvider', () => {
     mockFrom.mockReturnValue({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({
+        data: null,
+        error: null,
+      }),
       single: vi.fn().mockResolvedValue({
         data: null,
         error: null,
@@ -229,7 +233,7 @@ describe('components/auth/AuthProvider', () => {
       mockFrom.mockReturnValue({
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
-        single: vi.fn().mockResolvedValue({
+        maybeSingle: vi.fn().mockResolvedValue({
           data: mockProfile,
           error: null,
         }),
@@ -263,7 +267,7 @@ describe('components/auth/AuthProvider', () => {
       mockFrom.mockReturnValue({
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
-        single: vi.fn().mockResolvedValue({
+        maybeSingle: vi.fn().mockResolvedValue({
           data: null,
           error: { message: 'Profile not found' },
         }),
