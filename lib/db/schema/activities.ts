@@ -1089,6 +1089,25 @@ export const activityPropsSchemas = {
       sectionDefinitions: {}
     })
   }),
+  'data-cleaning': z.object({
+    title: z.string().default('Data Cleaning Exercise'),
+    description: z.string().default('Clean and analyze messy datasets to prepare them for analysis.'),
+    dataset: z.object({
+      name: z.string(),
+      description: z.string(),
+      rows: z.array(z.object({
+        id: z.string(),
+        data: z.record(z.string()),
+          issues: z.array(z.object({
+            type: z.enum(['missing', 'inconsistent', 'duplicate', 'format']),
+            description: z.string(),
+            severity: z.enum(['low', 'medium', 'high'])
+          }))
+        })).min(1),
+    }),
+    cleaningSteps: z.array(z.string()).min(1),
+    showHints: z.boolean().default(false)
+  }),
   'spreadsheet': spreadsheetActivitySchema,
   'spreadsheet-evaluator': z.object({
     templateId: z.string(),

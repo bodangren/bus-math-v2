@@ -412,6 +412,142 @@ export const breakEvenTemplate: SpreadsheetTemplate = {
   ],
 };
 
+// Balance Sheet Template (for Unit 1 & 2)
+export const balanceSheetTemplate: SpreadsheetTemplate = {
+  name: "Balance Sheet Template",
+  description: "Standard balance sheet format for financial position reporting",
+  data: [
+    [
+      { value: "Assets", readOnly: true },
+      { value: "Amount", readOnly: true },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Current Assets:", readOnly: true },
+      { value: 15000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Cash", readOnly: true },
+      { value: 8000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Accounts Receivable", readOnly: true },
+      { value: 5000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Inventory", readOnly: true },
+      { value: 2000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Total Current Assets", readOnly: true },
+      { value: "=SUM(B3:B5)", readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Fixed Assets:", readOnly: true },
+      { value: 25000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Equipment", readOnly: true },
+      { value: 20000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Accumulated Depreciation", readOnly: true },
+      { value: -5000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Total Fixed Assets", readOnly: true },
+      { value: "=SUM(B9:B11)", readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "TOTAL ASSETS", readOnly: true },
+      { value: "=B7+B12", readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Liabilities & Equity", readOnly: true },
+      { value: "Amount", readOnly: true },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Current Liabilities:", readOnly: true },
+      { value: 8000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Accounts Payable", readOnly: true },
+      { value: 6000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Total Current Liabilities", readOnly: true },
+      { value: "=SUM(B16:B17)", readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "Owner's Equity:", readOnly: true },
+      { value: 32000, readOnly: false },
+      { value: "", readOnly: true },
+    ],
+    [
+      { value: "TOTAL LIABILITIES & EQUITY", readOnly: true },
+      { value: "=B18+B20", readOnly: false },
+      { value: "", readOnly: true },
+    ],
+  ],
+};
+
+// Transaction Log Template (for Unit 1 & 2)
+export const transactionLogTemplate: SpreadsheetTemplate = {
+  name: "Transaction Log Template",
+  description: "Daily transaction log for tracking business activities",
+  data: [
+    [
+      { value: "Date", readOnly: true },
+      { value: "Description", readOnly: true },
+      { value: "Debit", readOnly: true },
+      { value: "Credit", readOnly: true },
+      { value: "Balance", readOnly: true },
+    ],
+    [
+      { value: "1/1/2024", readOnly: false },
+      { value: "Initial Investment", readOnly: false },
+      { value: 10000, readOnly: false },
+      { value: "", readOnly: false },
+      { value: 10000, readOnly: false },
+    ],
+    [
+      { value: "1/5/2024", readOnly: false },
+      { value: "Equipment Purchase", readOnly: false },
+      { value: 5000, readOnly: false },
+      { value: "", readOnly: false },
+      { value: 5000, readOnly: false },
+    ],
+    [
+      { value: "1/10/2024", readOnly: false },
+      { value: "Cash Sale", readOnly: false },
+      { value: "", readOnly: false },
+      { value: 2000, readOnly: false },
+      { value: 7000, readOnly: false },
+    ],
+    [
+      { value: "1/15/2024", readOnly: false },
+      { value: "Rent Payment", readOnly: false },
+      { value: "", readOnly: false },
+      { value: 1500, readOnly: false },
+      { value: 5500, readOnly: false },
+    ],
+  ],
+};
+
 // Export all templates
 export const spreadsheetTemplates = {
   't-account': tAccountTemplate,
@@ -420,6 +556,8 @@ export const spreadsheetTemplates = {
   'statistical-analysis': statisticalAnalysisTemplate,
   'payroll': payrollTemplate,
   'break-even': breakEvenTemplate,
+  'balance-sheet': balanceSheetTemplate,
+  'transaction-log': transactionLogTemplate,
 };
 
 // Helper function to get template by key
@@ -431,9 +569,9 @@ export const getTemplateByKey = (templateKey: string): SpreadsheetTemplate | nul
 export const getTemplateByUnit = (unitNumber: number): SpreadsheetTemplate[] => {
   switch (unitNumber) {
     case 1:
-      return [tAccountTemplate];
+      return [tAccountTemplate, balanceSheetTemplate, transactionLogTemplate];
     case 2:
-      return [trialBalanceTemplate];
+      return [trialBalanceTemplate, balanceSheetTemplate, transactionLogTemplate];
     case 3:
       return [incomeStatementTemplate];
     case 4:

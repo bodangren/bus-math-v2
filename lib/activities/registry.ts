@@ -20,6 +20,9 @@ import { CashFlowTimeline } from '@/components/drag-drop-exercises/CashFlowTimel
 import { FinancialStatementMatching } from '@/components/drag-drop-exercises/FinancialStatementMatching';
 import { TrialBalanceSorting } from '@/components/drag-drop-exercises/TrialBalanceSorting';
 
+// Import data cleaning exercises
+import DataCleaningExercise from '@/components/data-cleaning/DataCleaningExercise';
+
 // Import business simulations
 import { LemonadeStand } from '@/components/business-simulations/LemonadeStand';
 import { StartupJourney } from '@/components/business-simulations/StartupJourney';
@@ -64,6 +67,9 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'pitch': PitchPresentationBuilder, // Alias for pitch-presentation-builder
   'spreadsheet': SpreadsheetActivity,
   'spreadsheet-evaluator': SpreadsheetEvaluator,
+
+  // Data cleaning exercises
+  'data-cleaning': DataCleaningExercise,
 
   // Placeholder for remaining activity types - to be implemented
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
