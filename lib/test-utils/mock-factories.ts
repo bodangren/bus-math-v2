@@ -370,13 +370,12 @@ export function buildActivityInput(overrides: Partial<NewActivity> = {}): NewAct
     displayName: overrides.displayName ?? 'Comprehension Quiz',
     description: overrides.description ?? 'Quick formative assessment',
     props: derivedProps,
-    gradingConfig:
-      overrides.gradingConfig ??
-      {
-        autoGrade: true,
-        passingScore: 70,
-        partialCredit: false
-      },
+    standardId: overrides.standardId ?? randomUUID(), // Add required standardId with UUID format
+    gradingConfig: overrides.gradingConfig ?? {
+      autoGrade: true,
+      passingScore: 70,
+      partialCredit: false
+    },
     createdAt: overrides.createdAt ?? now(),
     updatedAt: overrides.updatedAt ?? now()
   };

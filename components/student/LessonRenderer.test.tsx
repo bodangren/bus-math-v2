@@ -1,7 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LessonRenderer } from './LessonRenderer';
 import type { ContentBlock } from '@/lib/db/schema/phases';
+
+// Mock usePhaseProgress hook
+vi.mock('@/hooks/usePhaseProgress', () => ({
+  usePhaseProgress: vi.fn(() => ({
+    data: null,
+    isLoading: false,
+    refetch: vi.fn(),
+  })),
+}));
 
 describe('LessonRenderer', () => {
   const mockLesson = {
@@ -19,8 +28,24 @@ describe('LessonRenderer', () => {
     metadata: null,
   };
 
+  const defaultProps = {
+    currentPhaseNumber: 1,
+    lessonSlug: 'intro-to-financial-statements',
+  };
+
   it('renders lesson header with title and description', () => {
-    render(<LessonRenderer lesson={mockLesson} phases={[]} />);
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        phaseNumber: 1,
+        title: 'Introduction',
+        contentBlocks: [] as ContentBlock[],
+        estimatedMinutes: 15,
+        metadata: { phaseType: 'intro' as const },
+      },
+    ];
+    
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Unit 1')).toBeInTheDocument();
     expect(screen.getByText('Introduction to Financial Statements')).toBeInTheDocument();
@@ -28,7 +53,18 @@ describe('LessonRenderer', () => {
   });
 
   it('renders learning objectives', () => {
-    render(<LessonRenderer lesson={mockLesson} phases={[]} />);
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        phaseNumber: 1,
+        title: 'Introduction',
+        contentBlocks: [] as ContentBlock[],
+        estimatedMinutes: 15,
+        metadata: { phaseType: 'intro' as const },
+      },
+    ];
+    
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Learning Objectives')).toBeInTheDocument();
     expect(screen.getByText('Understand balance sheets')).toBeInTheDocument();
@@ -37,9 +73,9 @@ describe('LessonRenderer', () => {
   });
 
   it('renders empty state when no phases', () => {
-    render(<LessonRenderer lesson={mockLesson} phases={[]} />);
+    render(<LessonRenderer lesson={mockLesson} phases={[]} currentPhaseNumber={99} lessonSlug="intro-to-financial-statements" />);
 
-    expect(screen.getByText('No phases available for this lesson yet.')).toBeInTheDocument();
+    expect(screen.getByText('Phase not found.')).toBeInTheDocument();
   });
 
   it('renders phases with titles and numbers', () => {
@@ -62,13 +98,10 @@ describe('LessonRenderer', () => {
       },
     ];
 
-    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} currentPhaseNumber={2} lessonSlug="intro-to-financial-statements" />);
 
-    expect(screen.getByText('Phase 1')).toBeInTheDocument();
-    expect(screen.getByText('Introduction')).toBeInTheDocument();
-    expect(screen.getByText('15 min')).toBeInTheDocument();
-
-    expect(screen.getByText('Phase 2')).toBeInTheDocument();
+    expect(screen.getAllByText('Phase 1')).toHaveLength(1); // Only in stepper
+    expect(screen.getAllByText('Phase 2')).toHaveLength(2); // One in stepper, one in content
     expect(screen.getByText('Practice')).toBeInTheDocument();
     expect(screen.getByText('30 min')).toBeInTheDocument();
   });
@@ -91,7 +124,7 @@ describe('LessonRenderer', () => {
       },
     ];
 
-    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('This is markdown content')).toBeInTheDocument();
   });
@@ -115,7 +148,7 @@ describe('LessonRenderer', () => {
       },
     ];
 
-    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('why this matters')).toBeInTheDocument();
     expect(screen.getByText('This is important information')).toBeInTheDocument();
@@ -142,7 +175,7 @@ describe('LessonRenderer', () => {
       },
     ];
 
-    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Video')).toBeInTheDocument();
     expect(screen.getByText('https://example.com/video.mp4')).toBeInTheDocument();
@@ -169,7 +202,7 @@ describe('LessonRenderer', () => {
       },
     ];
 
-    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Image')).toBeInTheDocument();
     expect(screen.getByText('Example diagram')).toBeInTheDocument();
@@ -194,7 +227,7 @@ describe('LessonRenderer', () => {
       },
     ];
 
-    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Activity')).toBeInTheDocument();
     expect(screen.getByText(/activity-123/i)).toBeInTheDocument();
@@ -206,8 +239,19 @@ describe('LessonRenderer', () => {
       ...mockLesson,
       description: null,
     };
+    
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        phaseNumber: 1,
+        title: 'Introduction',
+        contentBlocks: [] as ContentBlock[],
+        estimatedMinutes: 15,
+        metadata: { phaseType: 'intro' as const },
+      },
+    ];
 
-    render(<LessonRenderer lesson={lessonWithoutDescription} phases={[]} />);
+    render(<LessonRenderer lesson={lessonWithoutDescription} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Introduction to Financial Statements')).toBeInTheDocument();
     expect(screen.queryByText('Learn the basics of financial statements')).not.toBeInTheDocument();
@@ -219,7 +263,7 @@ describe('LessonRenderer', () => {
       learningObjectives: null,
     };
 
-    render(<LessonRenderer lesson={lessonWithoutObjectives} phases={[]} />);
+    render(<LessonRenderer lesson={lessonWithoutObjectives} phases={[]} {...defaultProps} />);
 
     expect(screen.queryByText('Learning Objectives')).not.toBeInTheDocument();
   });

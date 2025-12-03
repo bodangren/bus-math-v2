@@ -14,8 +14,8 @@ describe('InterestCalculationBuilder', () => {
   it('displays scenario tabs', () => {
     render(<InterestCalculationBuilder />)
 
-    expect(screen.getByText(/Payroll Bridge/i)).toBeInTheDocument()
-    expect(screen.getByText(/POS System/i)).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Payroll Bridge/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /POS System/i })).toBeInTheDocument()
   })
 
   it('shows input fields for the default scenario', () => {

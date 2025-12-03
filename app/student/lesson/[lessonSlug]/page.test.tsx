@@ -315,6 +315,13 @@ describe('LessonPage', () => {
         }),
       },
       rpc: vi.fn().mockResolvedValue({ data: true, error: null }),
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            in: vi.fn().mockResolvedValue({ data: [], error: null })
+          })
+        })
+      })
     };
     vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
 

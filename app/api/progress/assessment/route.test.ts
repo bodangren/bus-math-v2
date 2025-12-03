@@ -61,6 +61,7 @@ const baseActivity = {
     passingScore: 70,
     partialCredit: false,
   },
+  standardId: '12345678-1234-1234-8234-123456789012',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
