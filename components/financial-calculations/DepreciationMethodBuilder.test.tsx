@@ -14,10 +14,10 @@ describe('DepreciationMethodBuilder', () => {
   it('displays all depreciation method tabs', () => {
     render(<DepreciationMethodBuilder />)
 
-    expect(screen.getByText(/Straight-Line Depreciation/i)).toBeInTheDocument()
-    expect(screen.getByText(/Double Declining/i)).toBeInTheDocument()
-    expect(screen.getByText(/Sum-of-the-Years/i)).toBeInTheDocument()
-    expect(screen.getByText(/Units of/i)).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Straight-Line/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Double Declining/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Sum-of-the-Years/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Units of/i })).toBeInTheDocument()
   })
 
   it('shows asset information input fields', () => {
@@ -37,8 +37,8 @@ describe('DepreciationMethodBuilder', () => {
     await user.click(calculateButton)
 
     // Should show depreciation schedule table
-    expect(screen.getByText(/Depreciation Schedule/i)).toBeInTheDocument()
-    expect(screen.getByText(/Year/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Depreciation Schedule/i)[0]).toBeInTheDocument()
+    expect(screen.getAllByText(/Year/i)[0]).toBeInTheDocument()
     expect(screen.getByText(/Beginning Value/i)).toBeInTheDocument()
   })
 
@@ -118,7 +118,7 @@ describe('DepreciationMethodBuilder', () => {
     await user.click(screen.getByRole('button', { name: /Calculate Depreciation/i }))
 
     expect(screen.getByText(/Beginning Value/i)).toBeInTheDocument()
-    expect(screen.getByText(/Depreciation/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Depreciation/i)[1]).toBeInTheDocument() // Get the table header, not the title
     expect(screen.getByText(/Accumulated/i)).toBeInTheDocument()
     expect(screen.getByText(/Ending Value/i)).toBeInTheDocument()
   })
