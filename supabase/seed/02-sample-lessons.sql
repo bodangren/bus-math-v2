@@ -131,10 +131,16 @@ VALUES (
     {
       "id": "practice-intro",
       "type": "markdown",
-      "content": "# Practice: Categorizing Business Items\\n\\nNow it''s your turn! Can you identify which items are Assets, Liabilities, or Equity?"
+      "content": "# Practice: Categorizing Business Items\\n\\nNow it''s your turn! Can you identify which items are Assets, Liabilities, or Equity? Try the mini balance simulator first, then drag items into the right bucket."
     },
     {
-      "id": "activity-3",
+      "id": "activity-3a",
+      "type": "activity",
+      "activityId": "30000000-0000-0000-0000-000000000004",
+      "required": true
+    },
+    {
+      "id": "activity-3b",
       "type": "activity",
       "activityId": "30000000-0000-0000-0000-000000000003",
       "required": true
@@ -170,12 +176,12 @@ VALUES (
     {
       "id": "independent-intro",
       "type": "markdown",
-      "content": "# Work Independently\\n\\nTake what you''ve learned and apply it to these scenarios. Work with a partner to discuss your thinking."
+      "content": "# Work Independently\\n\\nTake what you''ve learned and apply it to these scenarios. Try the Budget Balancer sim for a quick, fun way to see how choices affect cash."
     },
     {
       "id": "activity-4",
       "type": "activity",
-      "activityId": "30000000-0000-0000-0000-000000000004",
+      "activityId": "30000000-0000-0000-0000-000000000014",
       "required": true
     }
   ]'::jsonb,
@@ -210,6 +216,12 @@ VALUES (
       "type": "callout",
       "variant": "why-this-matters",
       "content": "Balanced books mean transparent, auditable records. This is the foundation of investor confidence, loan approval, and business growth."
+    },
+    {
+      "id": "activity-5",
+      "type": "activity",
+      "activityId": "30000000-0000-0000-0000-000000000015",
+      "required": false
     }
   ]'::jsonb,
   3,

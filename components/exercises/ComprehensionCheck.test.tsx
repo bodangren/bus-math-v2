@@ -58,4 +58,47 @@ describe('ComprehensionCheck', () => {
       })
     )
   })
+
+  it('accepts short-answer input and scores correctly', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      questions: [
+        {
+          id: 'sa1',
+          text: 'Define the accounting equation.',
+          type: 'short-answer',
+          correctAnswer: 'Assets = Liabilities + Equity',
+          explanation: 'Basic accounting identity.'
+        },
+        {
+          id: 'mc1',
+          text: 'Which statement shows profit?',
+          type: 'multiple-choice',
+          options: ['Income Statement', 'Balance Sheet'],
+          correctAnswer: 'Income Statement',
+          explanation: 'Income statement reports revenue and expenses.'
+        }
+      ]
+    })
+
+    render(<ComprehensionCheck activity={activity} onSubmit={onSubmit} />)
+
+    await user.type(screen.getByPlaceholderText(/type your answer/i), 'assets = liabilities + equity')
+    await user.click(screen.getByRole('button', { name: /income statement/i }))
+    await user.click(screen.getByRole('button', { name: /submit answers/i }))
+
+    expect(await screen.findByText(/2\/2 correct/i)).toBeInTheDocument()
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activityId: 'activity-quiz',
+        score: 2,
+        totalQuestions: 2,
+        responses: expect.objectContaining({
+          sa1: 'assets = liabilities + equity',
+          mc1: 'Income Statement'
+        })
+      })
+    )
+  })
 })

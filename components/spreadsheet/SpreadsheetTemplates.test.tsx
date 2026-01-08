@@ -6,6 +6,8 @@ import {
   statisticalAnalysisTemplate,
   payrollTemplate,
   breakEvenTemplate,
+  balanceSheetTemplate,
+  transactionLogTemplate,
   spreadsheetTemplates,
   getTemplateByKey,
   getTemplateByUnit,
@@ -199,8 +201,10 @@ describe('SpreadsheetTemplates', () => {
       expect(spreadsheetTemplates).toHaveProperty('statistical-analysis');
       expect(spreadsheetTemplates).toHaveProperty('payroll');
       expect(spreadsheetTemplates).toHaveProperty('break-even');
+      expect(spreadsheetTemplates).toHaveProperty('balance-sheet');
+      expect(spreadsheetTemplates).toHaveProperty('transaction-log');
       
-      expect(Object.keys(spreadsheetTemplates)).toHaveLength(6);
+      expect(Object.keys(spreadsheetTemplates)).toHaveLength(8);
     });
 
     it('templates match individual exports', () => {
@@ -210,6 +214,8 @@ describe('SpreadsheetTemplates', () => {
       expect(spreadsheetTemplates['statistical-analysis']).toBe(statisticalAnalysisTemplate);
       expect(spreadsheetTemplates['payroll']).toBe(payrollTemplate);
       expect(spreadsheetTemplates['break-even']).toBe(breakEvenTemplate);
+      expect(spreadsheetTemplates['balance-sheet']).toBe(balanceSheetTemplate);
+      expect(spreadsheetTemplates['transaction-log']).toBe(transactionLogTemplate);
     });
   });
 
@@ -228,8 +234,8 @@ describe('SpreadsheetTemplates', () => {
 
   describe('getTemplateByUnit', () => {
     it('returns correct templates for each unit', () => {
-      expect(getTemplateByUnit(1)).toEqual([tAccountTemplate]);
-      expect(getTemplateByUnit(2)).toEqual([trialBalanceTemplate]);
+      expect(getTemplateByUnit(1)).toEqual([tAccountTemplate, balanceSheetTemplate, transactionLogTemplate]);
+      expect(getTemplateByUnit(2)).toEqual([trialBalanceTemplate, balanceSheetTemplate, transactionLogTemplate]);
       expect(getTemplateByUnit(3)).toEqual([incomeStatementTemplate]);
       expect(getTemplateByUnit(4)).toEqual([statisticalAnalysisTemplate]);
       expect(getTemplateByUnit(5)).toEqual([payrollTemplate]);
@@ -266,10 +272,14 @@ describe('SpreadsheetTemplates', () => {
       });
     });
 
-    it('all templates contain at least one formula', () => {
-      const templates = Object.values(spreadsheetTemplates);
+    it('calculation templates contain formulas', () => {
+      const calculationTemplates = [
+        't-account', 'trial-balance', 'income-statement', 
+        'statistical-analysis', 'payroll', 'break-even', 'balance-sheet'
+      ];
       
-      templates.forEach((template: SpreadsheetTemplate) => {
+      calculationTemplates.forEach(templateKey => {
+        const template = spreadsheetTemplates[templateKey as keyof typeof spreadsheetTemplates];
         const hasFormula = template.data.some(row =>
           row.some(cell => typeof cell.value === 'string' && cell.value.startsWith('='))
         );

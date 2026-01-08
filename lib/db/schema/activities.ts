@@ -495,7 +495,17 @@ const spreadsheetTemplateSchema = z.object({
 const spreadsheetActivitySchema = z.object({
   title: z.string().default('Spreadsheet Exercise'),
   description: z.string().default('Complete the spreadsheet exercise using the provided template.'),
-  template: z.enum(['t-account', 'trial-balance', 'income-statement', 'statistical-analysis', 'payroll', 'break-even', 'custom']),
+  template: z.enum([
+    't-account',
+    'trial-balance',
+    'income-statement',
+    'statistical-analysis',
+    'payroll',
+    'break-even',
+    'balance-sheet',
+    'transaction-log',
+    'custom'
+  ]),
   customTemplate: spreadsheetTemplateSchema.optional(),
   initialData: spreadsheetDataSchema.optional(),
   allowFormulaEntry: z.boolean().default(true),
@@ -538,6 +548,45 @@ const trialBalanceAccountSchema = z.object({
   sideId: z.string(),
   category: z.string(),
   context: z.string().optional()
+});
+
+const chartSeriesSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  color: z.string().optional()
+});
+
+const chartSegmentSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  value: z.number(),
+  color: z.string().optional()
+});
+
+const chartDataPointSchema = z.record(
+  z.string(),
+  z.union([z.string(), z.number(), z.null(), z.undefined()])
+);
+
+const financialKpiSchema = z.object({
+  title: z.string(),
+  value: z.string(),
+  change: z.number(),
+  trend: z.enum(['up', 'down']),
+  helperText: z.string().optional()
+});
+
+const financialDashboardSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  className: z.string().optional(),
+  monthlyMetrics: z.array(chartDataPointSchema).optional(),
+  performanceSeries: z.array(chartSeriesSchema).optional(),
+  cashflowSeries: z.array(chartSeriesSchema).optional(),
+  accountBreakdown: z.array(chartSegmentSchema).optional(),
+  kpis: z.array(financialKpiSchema).optional(),
+  refreshable: z.boolean().optional(),
+  exportable: z.boolean().optional()
 });
 
 export const activityPropsSchemas = {
@@ -664,6 +713,8 @@ export const activityPropsSchemas = {
     categories: z.array(peerCritiqueCategorySchema).min(1),
     overallPrompt: z.string().optional()
   }),
+  'financial-dashboard': financialDashboardSchema,
+  'chart-builder': financialDashboardSchema,
   'profit-calculator': z.object({
     initialRevenue: z.number().optional(),
     initialExpenses: z.number().optional(),
@@ -1097,13 +1148,16 @@ export const activityPropsSchemas = {
       description: z.string(),
       rows: z.array(z.object({
         id: z.string(),
-        data: z.record(z.string()),
-          issues: z.array(z.object({
-            type: z.enum(['missing', 'inconsistent', 'duplicate', 'format']),
-            description: z.string(),
-            severity: z.enum(['low', 'medium', 'high'])
-          }))
-        })).min(1),
+        data: z.record(
+          z.string(),
+          z.union([z.string(), z.number(), z.null(), z.undefined()])
+        ),
+        issues: z.array(z.object({
+          type: z.enum(['missing', 'inconsistent', 'duplicate', 'format']),
+          description: z.string(),
+          severity: z.enum(['low', 'medium', 'high'])
+        })).optional()
+      })).min(1),
     }),
     cleaningSteps: z.array(z.string()).min(1),
     showHints: z.boolean().default(false)

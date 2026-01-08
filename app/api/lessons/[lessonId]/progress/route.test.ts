@@ -167,8 +167,8 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
 
     mockOrder.mockReturnValue(defaultData);
 
-    // Second .eq() returns an object with .order()
-    const secondEq = vi.fn().mockReturnValue({ order: mockOrder });
+    // Second .eq() returns an object with .order() and .single()
+    const secondEq = vi.fn().mockReturnValue({ order: mockOrder, single: mockSingle });
 
     // First .eq() returns an object with .single()
     const lessonEq = vi.fn().mockReturnValue({ single: mockSingle });
@@ -176,11 +176,11 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
     // Setup mock chain to handle both lesson and phases queries
     mockEq.mockImplementation((field: string, value: string) => {
       if (field === 'id' && value === 'b4b82cad-64f6-46cc-933a-5bb8299a23d4') {
-        // This is the lesson query - return object with single()
+        // This is lesson query - return object with single()
         return lessonEq;
       }
-      // This is the phases query - return object with eq() then order()
-      return { eq: secondEq };
+      // This is phases query - return object with eq() then order()
+      return { eq: secondEq, single: mockSingle };
     });
 
     mockSelect.mockReturnValue({ eq: mockEq });
@@ -201,6 +201,12 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
   });
 
   it('validates the lessonId parameter and rejects invalid UUIDs', async () => {
+    // Ensure auth mock is properly set for this test
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    });
+
     const response = await GET(
       new Request('http://localhost/api/lessons/not-a-uuid/progress'),
       buildContext('not-a-uuid'),
@@ -212,6 +218,12 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
   });
 
   it('returns 404 when lesson does not exist', async () => {
+    // Ensure auth is properly mocked
+    mockGetUser.mockResolvedValue({
+      data: { user: { id: 'user-123' } },
+      error: null,
+    });
+    
     // Mock lesson not found
     mockSingle.mockReturnValue({ data: null, error: { message: 'Not found' } });
 
@@ -359,4 +371,3 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
     const payload = await response.json();
     expect(payload.error).toMatch(/database error/i);
   });
-});

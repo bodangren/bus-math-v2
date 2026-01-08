@@ -5,7 +5,6 @@
 -- UNIT 1 ACTIVITIES: Understanding the Accounting Equation
 -- ============================================================================
 
--- Activity 1: Hook Video Comprehension Check
 INSERT INTO activities (id, component_key, display_name, description, props, grading_config, created_at, updated_at)
 VALUES (
   '30000000-0000-0000-0000-000000000001'::uuid,
@@ -34,6 +33,13 @@ VALUES (
         "options": ["True", "False"],
         "correctAnswer": "False",
         "explanation": "False. The accounting equation applies to businesses of all sizes, from sole proprietorships to multinational corporations."
+      },
+      {
+        "id": "q3",
+        "text": "In your own words, why does Sarah need accounting for TechStart?",
+        "type": "short-answer",
+        "correctAnswer": "To track financial health and keep the business credible",
+        "explanation": "She needs accounting to keep balanced, trustworthy records that show financial health."
       }
     ]
   }'::jsonb,
@@ -121,29 +127,36 @@ SET
   grading_config = EXCLUDED.grading_config,
   updated_at = now();
 
--- Activity 3: Sorting Items (Drag-Drop)
 INSERT INTO activities (id, component_key, display_name, description, props, grading_config, created_at, updated_at)
 VALUES (
   '30000000-0000-0000-0000-000000000003'::uuid,
-  'categorization-drag-drop',
+  'account-categorization',
   'Sort Business Items into A/L/E',
-  'Drag and drop business items into the correct categories: Assets, Liabilities, or Equity',
+  'Drag items into Asset, Liability, or Equity buckets to see how balance is built.',
   '{
-    "items": [
-      {"id": "item1", "text": "Office equipment", "category": "Assets"},
-      {"id": "item2", "text": "Bank loan", "category": "Liabilities"},
-      {"id": "item3", "text": "Owner investment", "category": "Equity"},
-      {"id": "item4", "text": "Inventory", "category": "Assets"},
-      {"id": "item5", "text": "Accounts payable", "category": "Liabilities"},
-      {"id": "item6", "text": "Retained earnings", "category": "Equity"},
-      {"id": "item7", "text": "Cash", "category": "Assets"},
-      {"id": "item8", "text": "Credit card debt", "category": "Liabilities"}
+    "title": "Classify TechStart Items",
+    "description": "Place each item into the correct balance category.",
+    "categories": [
+      { "id": "assets", "name": "Assets", "description": "What the business owns" },
+      { "id": "liabilities", "name": "Liabilities", "description": "What the business owes" },
+      { "id": "equity", "name": "Equity", "description": "Owner''s stake" }
     ],
-    "categories": ["Assets", "Liabilities", "Equity"]
+    "accounts": [
+      { "id": "cash", "name": "Cash", "description": "Bank balance", "categoryId": "assets" },
+      { "id": "laptops", "name": "Laptops", "description": "Equipment for consultants", "categoryId": "assets" },
+      { "id": "inventory", "name": "Inventory", "description": "Hardware resale stock", "categoryId": "assets" },
+      { "id": "loan", "name": "Bank Loan", "description": "Startup loan balance", "categoryId": "liabilities" },
+      { "id": "payables", "name": "Accounts Payable", "description": "Vendor invoices due", "categoryId": "liabilities" },
+      { "id": "creditcard", "name": "Credit Card", "description": "Corporate card balance", "categoryId": "liabilities" },
+      { "id": "owner", "name": "Owner Investment", "description": "Sarah''s cash in", "categoryId": "equity" },
+      { "id": "retained", "name": "Retained Earnings", "description": "Accumulated profit", "categoryId": "equity" }
+    ],
+    "showHintsByDefault": false,
+    "shuffleItems": true
   }'::jsonb,
   '{
-    "autoGrade": true,
-    "passingScore": 75,
+    "autoGrade": false,
+    "passingScore": 0,
     "partialCredit": true
   }'::jsonb,
   now(),
@@ -158,45 +171,26 @@ SET
   grading_config = EXCLUDED.grading_config,
   updated_at = now();
 
--- Activity 4: Independent Categorization Exercise
 INSERT INTO activities (id, component_key, display_name, description, props, grading_config, created_at, updated_at)
 VALUES (
   '30000000-0000-0000-0000-000000000004'::uuid,
-  'comprehension-quiz',
-  'Independent A/L/E Practice',
-  'Apply your knowledge to categorize items independently',
+  'spreadsheet',
+  'Mini Balance Simulator',
+  'Inline spreadsheet to see Assets, Liabilities, and Equity add up before moving to Excel.',
   '{
-    "questions": [
-      {
-        "id": "q1",
-        "text": "A delivery truck purchased for business use is classified as:",
-        "type": "multiple-choice",
-        "options": ["Asset", "Liability", "Equity", "Expense"],
-        "correctAnswer": "Asset",
-        "explanation": "A delivery truck is something the business owns, making it an Asset."
-      },
-      {
-        "id": "q2",
-        "text": "Money invested by the business owner at startup is classified as:",
-        "type": "multiple-choice",
-        "options": ["Asset", "Liability", "Equity", "Revenue"],
-        "correctAnswer": "Equity",
-        "explanation": "Owner investment represents the owner''s stake in the business, which is Equity."
-      },
-      {
-        "id": "q3",
-        "text": "A 5-year loan from the bank is classified as:",
-        "type": "multiple-choice",
-        "options": ["Asset", "Liability", "Equity", "Expense"],
-        "correctAnswer": "Liability",
-        "explanation": "A loan represents money the business owes, making it a Liability."
-      }
-    ]
+    "title": "Balance Simulator",
+    "description": "Enter simple amounts and watch A = L + E stay balanced.",
+    "template": "balance-sheet",
+    "allowFormulaEntry": true,
+    "showColumnLabels": true,
+    "showRowLabels": true,
+    "readOnly": false,
+    "validateFormulas": false
   }'::jsonb,
   '{
-    "autoGrade": true,
-    "passingScore": 70,
-    "partialCredit": true
+    "autoGrade": false,
+    "passingScore": 0,
+    "partialCredit": false
   }'::jsonb,
   now(),
   now()
@@ -210,7 +204,6 @@ SET
   grading_config = EXCLUDED.grading_config,
   updated_at = now();
 
--- Activity 5: Unit 1 Lesson 1 Exit Ticket
 INSERT INTO activities (id, component_key, display_name, description, props, grading_config, created_at, updated_at)
 VALUES (
   '30000000-0000-0000-0000-000000000005'::uuid,
@@ -245,6 +238,79 @@ VALUES (
   '{
     "autoGrade": false,
     "passingScore": 70,
+    "partialCredit": false
+  }'::jsonb,
+  now(),
+  now()
+)
+ON CONFLICT (id) DO UPDATE
+SET
+  component_key = EXCLUDED.component_key,
+  display_name = EXCLUDED.display_name,
+  description = EXCLUDED.description,
+  props = EXCLUDED.props,
+  grading_config = EXCLUDED.grading_config,
+  updated_at = now();
+
+-- Activity 14: Budget Balancer (non-assessed, playful sim)
+INSERT INTO activities (id, component_key, display_name, description, props, grading_config, created_at, updated_at)
+VALUES (
+  '30000000-0000-0000-0000-000000000014'::uuid,
+  'budget-balancer',
+  'Budget Balancer: TechStart Cash Choices',
+  'Lightweight simulation to explore how spending choices affect cash and savings.',
+  '{
+    "title": "Budget Balancer: Sarah''s Choices",
+    "description": "Experiment with TechStart''s monthly cash. Try to end the month with positive savings.",
+    "expenses": [
+      { "id": "rent", "label": "Office Rent", "required": true, "defaultAmount": 1200, "icon": "home", "color": "bg-blue-500" },
+      { "id": "cloud", "label": "Cloud Tools", "required": true, "defaultAmount": 400, "icon": "cloud", "color": "bg-indigo-500" },
+      { "id": "laptops", "label": "Laptop Lease", "required": true, "defaultAmount": 350, "icon": "monitor", "color": "bg-emerald-500" },
+      { "id": "marketing", "label": "Marketing", "required": false, "defaultAmount": 200, "icon": "megaphone", "color": "bg-orange-500" },
+      { "id": "team", "label": "Team Lunch", "required": false, "defaultAmount": 150, "icon": "utensils", "color": "bg-pink-500" }
+    ],
+    "initialState": {
+      "monthlyIncome": 4800,
+      "month": 1,
+      "totalSavings": 500,
+      "emergencyFund": 250,
+      "financialHealth": 90
+    }
+  }'::jsonb,
+  '{
+    "autoGrade": false,
+    "passingScore": 0,
+    "partialCredit": false
+  }'::jsonb,
+  now(),
+  now()
+)
+ON CONFLICT (id) DO UPDATE
+SET
+  component_key = EXCLUDED.component_key,
+  display_name = EXCLUDED.display_name,
+  description = EXCLUDED.description,
+  props = EXCLUDED.props,
+  grading_config = EXCLUDED.grading_config,
+  updated_at = now();
+
+-- Activity 15: Reflection Journal
+INSERT INTO activities (id, component_key, display_name, description, props, grading_config, created_at, updated_at)
+VALUES (
+  '30000000-0000-0000-0000-000000000015'::uuid,
+  'reflection-journal',
+  'Reflection: Why Balance Builds Trust',
+  'Students reflect on the role of balance for credibility.',
+  '{
+    "unitTitle": "Balance by Design",
+    "prompts": [
+      { "id": "r1", "category": "persistence", "prompt": "Why does A=L+E build trust with investors or clients?" },
+      { "id": "r2", "category": "adaptability", "prompt": "When have you seen messy data hurt a project? How would balance help?" }
+    ]
+  }'::jsonb,
+  '{
+    "autoGrade": false,
+    "passingScore": 0,
     "partialCredit": false
   }'::jsonb,
   now(),
