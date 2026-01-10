@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,9 +15,9 @@ import {
   Dice6,
   TrendingUp,
   Search,
-  BarChart3,
 } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
+import { Hero } from "@/components/hero";
 import { createClient } from "@/lib/supabase/server";
 
 const features = [
@@ -152,82 +151,7 @@ export default async function Home() {
 
   return (
     <>
-      {/* Hero section */}
-      <section aria-labelledby="hero-heading" className="py-24 bg-gradient-to-br from-background via-primary/5 to-accent/5">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Calculator className="h-8 w-8 text-primary" />
-                <BarChart3 className="h-7 w-7 text-accent" />
-                <TrendingUp className="h-6 w-6 text-green-600" />
-              </div>
-              <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-                Math for Business Operations
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Master accounting principles, spreadsheet modeling, and
-                entrepreneurship through hands-on Excel projects and real-world
-                business applications.
-              </p>
-              {/* Stats display - only show if we have actual data */}
-              {stats && stats.unitCount > 0 && (
-                <div className="flex gap-6 text-sm text-muted-foreground">
-                  <div className="flex items-baseline gap-2">
-                    <BookOpen className="h-4 w-4 text-primary" />
-                    <span>
-                      <strong className="text-foreground">
-                        {stats.unitCount}
-                      </strong>{" "}
-                      Units
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <Calculator className="h-4 w-4 text-accent" />
-                    <span>
-                      <strong className="text-foreground">
-                        {stats.lessonCount}
-                      </strong>{" "}
-                      Lessons
-                    </span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <CheckSquare className="h-4 w-4 text-green-600" />
-                    <span>
-                      <strong className="text-foreground">
-                        {stats.activityCount}+
-                      </strong>{" "}
-                      Activities
-                    </span>
-                  </div>
-                </div>
-              )}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  asChild
-                  size="lg"
-                  className="gradient-financial text-primary-foreground shadow-lg hover:shadow-xl transition-shadow"
-                >
-                  <Link href="/curriculum" className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded">Browse Units</Link>
-                </Button>
-              </div>
-            </div>
-            <div className="flex justify-center lg:justify-end mt-12 lg:mt-0">
-              <div className="w-full max-w-sm md:max-w-md relative">
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-lg blur-xl opacity-30"></div>
-                <Image
-                  src="/cover.png"
-                  alt="Math for Business Operations textbook cover showing business charts and Excel spreadsheets"
-                  width={400}
-                  height={533}
-                  className="relative w-full h-auto rounded-lg shadow-2xl border border-border/50"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Hero stats={stats} />
 
       {/* Search Section */}
       <section aria-labelledby="search-heading" className="py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5">
@@ -260,77 +184,31 @@ export default async function Home() {
       </section>
 
       {/* Table of Contents */}
-      <section aria-labelledby="course-structure-heading" className="py-24 bg-muted/10">
+      <section aria-labelledby="course-structure-heading" className="py-16 bg-muted/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 id="course-structure-heading" className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
               Course Structure
             </h2>
             <p className="text-xl text-muted-foreground">
-              Hands-on units plus a comprehensive capstone project.
+              8 Units + Capstone
             </p>
           </div>
 
           {/* Desktop grid view */}
           <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {units.map((unit) => (
-              <Card
+              <Link
                 key={unit.id}
-                className="card-ledger hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50"
+                href={`/student/lesson/${unit.slug}`}
+                className="group block outline-none focus-visible:outline-none"
               >
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    <Link
-                      href={`/student/lesson/${unit.slug}`}
-                      className="hover:text-primary transition-colors"
-                    >
-                      Unit {unit.unit_number}: {unit.title}
-                    </Link>
-                  </CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">
-                    {unit.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground font-medium">
-                      {unit.metadata?.duration || "2-3 weeks"}
-                    </span>
-                    {unit.metadata?.difficulty && (
-                      <span
-                        className={`px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
-                          unit.metadata.difficulty
-                        )}`}
-                      >
-                        {formatDifficulty(unit.metadata.difficulty)}
-                      </span>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          {/* Mobile/Tablet carousel view */}
-          <div className="lg:hidden">
-            <Carousel 
-              itemsPerView={1} 
-              className="max-w-md mx-auto"
-              gap="gap-4"
-            >
-              {units.map((unit) => (
                 <Card
-                  key={unit.id}
-                className="card-ledger hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                  className="card-ledger h-full hover:shadow-lg transition-all duration-300 group-hover:scale-105 border-border/50 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2"
                 >
                   <CardHeader>
-                    <CardTitle className="text-lg">
-                      <Link
-                        href={`/student/lesson/${unit.slug}`}
-                      className="hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded"
-                      >
-                        Unit {unit.unit_number}: {unit.title}
-                      </Link>
+                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                      Unit {unit.unit_number}: {unit.title}
                     </CardTitle>
                     <CardDescription className="text-sm text-muted-foreground">
                       {unit.description}
@@ -353,6 +231,52 @@ export default async function Home() {
                     </div>
                   </CardContent>
                 </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* Mobile/Tablet carousel view */}
+          <div className="lg:hidden">
+            <Carousel 
+              itemsPerView={1} 
+              className="max-w-md mx-auto"
+              gap="gap-4"
+            >
+              {units.map((unit) => (
+                <Link
+                  key={unit.id}
+                  href={`/student/lesson/${unit.slug}`}
+                  className="group block outline-none focus-visible:outline-none p-1"
+                >
+                  <Card
+                    className="card-ledger hover:shadow-lg transition-all duration-300 group-hover:scale-105 border-border/50 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2"
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                        Unit {unit.unit_number}: {unit.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">
+                        {unit.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground font-medium">
+                          {unit.metadata?.duration || "2-3 weeks"}
+                        </span>
+                        {unit.metadata?.difficulty && (
+                          <span
+                            className={`px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
+                              unit.metadata.difficulty
+                            )}`}
+                          >
+                            {formatDifficulty(unit.metadata.difficulty)}
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </Carousel>
           </div>
@@ -382,7 +306,7 @@ export default async function Home() {
       </section>
 
       {/* Features highlight */}
-      <section aria-labelledby="features-heading" className="py-24 bg-gradient-to-br from-muted/10 via-background to-muted/5">
+      <section aria-labelledby="features-heading" className="py-16 bg-gradient-to-br from-muted/10 via-background to-muted/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 id="features-heading" className="text-3xl md:text-4xl font-bold mb-6 text-foreground">

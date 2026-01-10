@@ -35,8 +35,8 @@ describe('TAccountDetailed', () => {
       />
     );
 
-    expect(screen.getByText(/Ending Balance/)).toHaveTextContent('$4,000');
+    expect(screen.getByText(/Ending Balance:/)).toHaveTextContent('$4,000');
     expect(screen.getByTestId('running-balance-debit-1')).toHaveTextContent('Bal: $5,000');
-    expect(screen.getByText(/JE: JE-101/)).toBeInTheDocument();
+    expect(screen.getByText(/JE-101/)).toBeInTheDocument();
   });
 });

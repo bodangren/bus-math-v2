@@ -101,7 +101,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
 
   const getCashHealthStatus = (cash: number) => {
     if (cash >= 20000) return { status: 'Healthy', color: 'text-green-600', bgColor: 'bg-green-50' }
-    if (cash >= 10000) return { status: 'Good', color: 'text-blue-600', bgColor: 'bg-blue-50' }
+    if (cash >= 10000) return { status: 'Good', color: 'text-blue-700', bgColor: 'bg-blue-50' }
     if (cash >= 5000) return { status: 'Tight', color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
     if (cash >= 0) return { status: 'Critical', color: 'text-orange-600', bgColor: 'bg-orange-50' }
     return { status: 'Bankrupt', color: 'text-red-600', bgColor: 'bg-red-50' }
@@ -370,7 +370,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
       <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
-            <Wallet className="w-8 h-8 text-blue-600" />
+            <Wallet className="w-8 h-8 text-blue-700" />
             {activity.title}
           </CardTitle>
           <CardDescription className="text-lg">
@@ -557,7 +557,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
               className="h-auto p-4 flex flex-col items-center gap-2"
               disabled={gameState.gameStatus !== 'playing'}
             >
-              <Phone className="w-6 h-6 text-blue-600" />
+              <Phone className="w-6 h-6 text-blue-700" />
               <div className="text-center">
                 <p className="font-medium">Request Payment</p>
                 <p className="text-xs text-gray-500">Expedite customer payment (5% fee)</p>
@@ -642,7 +642,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
                 </Button>
               </div>
               {gameState.creditUsed > 0 && (
-                <p className="text-xs text-blue-600 mt-2">
+                <p className="text-xs text-blue-700 mt-2">
                   Daily interest: ${(gameState.creditUsed * gameState.creditInterestRate / 365).toFixed(2)}
                 </p>
               )}
@@ -652,22 +652,23 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
       </Card>
 
       {/* Game Controls */}
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-6 py-6 bg-muted/20 rounded-xl border border-border/50 shadow-inner">
         <Button
           onClick={advanceDay}
           size="lg"
-          className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-3 h-auto"
+          className="gradient-financial text-white text-xl px-12 py-8 h-auto shadow-xl hover:shadow-2xl transition-all hover:scale-105 active:scale-95"
           disabled={gameState.gameStatus !== 'playing'}
         >
-          <Calendar className="w-5 h-5 mr-3" />
+          <Calendar className="w-6 h-6 mr-3" />
           Run Simulation
-          <span className="ml-2 text-sm opacity-75">({gameState.day} → {gameState.day + 1})</span>
+          <span className="ml-3 text-base opacity-90 border-l border-white/30 pl-3">Day {gameState.day} → {gameState.day + 1}</span>
         </Button>
         <div className="flex gap-3">
           <Button
             onClick={resetGame}
-            variant="outline"
+            variant="ghost"
             size="sm"
+            className="text-muted-foreground hover:text-foreground"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Reset Challenge

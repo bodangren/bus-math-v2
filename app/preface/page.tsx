@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { asc, type InferSelectModel } from 'drizzle-orm';
-import { BookOpen, CalendarDays, Rocket, School, Target, Users, CheckCircle2, Lightbulb } from 'lucide-react';
+import { BookOpen, CalendarDays, School, Target, Users, CheckCircle2, Lightbulb } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -385,7 +385,7 @@ export default async function PrefacePage() {
         <section className="space-y-6">
           <div className="text-center space-y-2">
             <Badge className="bg-blue-100 text-blue-800">Course Map</Badge>
-            <h2 className="text-2xl font-semibold">Eight Hands-On Units</h2>
+            <h2 className="text-2xl font-semibold">8 Units + Capstone</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto">
               Semester 1 builds solid accounting and Excel skills. Semester 2 assembles a full startup model and prepares you for the capstone.
             </p>
@@ -498,15 +498,7 @@ export default async function PrefacePage() {
               <FillInTheBlank activity={vocabWarmupActivity} />
             </div>
             <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base flex items-center gap-2"><Rocket className="h-4 w-4" /> 60-Second Simulation</CardTitle>
-                  <CardDescription>Keep your startup cash-positive for a month.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <CashFlowChallenge activity={cashFlowChallengeActivity} />
-                </CardContent>
-              </Card>
+              <CashFlowChallenge activity={cashFlowChallengeActivity} />
             </div>
           </div>
         </section>
