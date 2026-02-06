@@ -4,10 +4,10 @@
 - [x] Task: Choose canonical completion contract
     - [x] Task: Compare `/api/phases/complete` vs `/api/progress/phase` behaviors
     - [x] Task: Document canonical request/response schema and status codes
-- [~] Task: Write failing contract tests (Red phase)
-    - [ ] Task: Add tests for idempotency replay behavior
-    - [ ] Task: Add tests for unauthorized, forbidden, conflict, and success cases
-    - [ ] Task: Add tests for progress refresh expectations after completion
+- [x] Task: Write failing contract tests (Red phase)
+    - [x] Task: Add tests for idempotency replay behavior
+    - [x] Task: Add tests for unauthorized, forbidden, conflict, and success cases
+    - [x] Task: Add tests for progress refresh expectations after completion
 
 ## Phase 2: Shared Client Path Migration
 - [x] Task: Implement shared client completion module/hook
@@ -23,11 +23,11 @@
 - [x] Task: Remove or deprecate non-canonical completion endpoint
     - [x] Task: Remove dead client usage (`usePhaseCompletion` or direct fetch path, based on chosen contract)
     - [x] Task: Clean up obsolete tests and mocks
-- [~] Task: Run route + component integration tests (Green phase)
-    - [ ] Task: Confirm no behavior regression in lesson progression
-    - [ ] Task: Confirm idempotency and lock enforcement remain correct
+- [x] Task: Run route + component integration tests (Green phase)
+    - [x] Task: Confirm no behavior regression in lesson progression
+    - [x] Task: Confirm idempotency and lock enforcement remain correct
 
 ## Phase 4: Documentation And Follow-Through
-- [ ] Task: Update architecture docs with canonical completion flow
-    - [ ] Task: Document endpoint, client entry point, and error semantics
-    - [ ] Task: Add migration notes for future contributors
+- [x] Task: Update architecture docs with canonical completion flow
+    - [x] Task: Document endpoint, client entry point, and error semantics
+    - [x] Task: Add migration notes for future contributors

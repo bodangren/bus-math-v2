@@ -3,7 +3,7 @@ title: Frontend Architecture
 type: architecture
 status: active
 created: 2025-11-11
-updated: 2025-11-11
+updated: 2026-02-06
 tags: [architecture, frontend, nextjs, components, patterns]
 ---
 
@@ -18,7 +18,8 @@ Comprehensive guide to the Next.js 15 frontend architecture for Math for Busines
 3. [Rendering Strategy](#rendering-strategy)
 4. [State Management](#state-management)
 5. [Routing and Navigation](#routing-and-navigation)
-6. [Testing Patterns](#testing-patterns)
+6. [Phase Completion Flow](#phase-completion-flow)
+7. [Testing Patterns](#testing-patterns)
 
 ---
 
@@ -418,6 +419,49 @@ export const getLessonBySlug = unstable_cache(
 ```
 
 ---
+
+## Phase Completion Flow
+
+Phase completion now has a single canonical client/server path:
+
+- Client entry point: `hooks/usePhaseCompletion.ts`
+- Shared request/error client: `lib/phase-completion/client.ts`
+- Runtime UI consumer: `components/lesson/PhaseCompleteButton.tsx`
+- Canonical API route: `POST /api/phases/complete`
+
+### Canonical Request Contract
+
+```json
+{
+  "lessonId": "uuid",
+  "phaseNumber": 2,
+  "timeSpent": 120,
+  "idempotencyKey": "uuid"
+}
+```
+
+### Canonical Response Contract
+
+```json
+{
+  "success": true,
+  "nextPhaseUnlocked": true,
+  "message": "Phase 2 completed. Phase 3 unlocked.",
+  "phaseId": "uuid",
+  "completedAt": "2026-02-06T18:00:00.000Z"
+}
+```
+
+### Error Semantics
+
+- `400`: invalid payload/schema
+- `401`: unauthenticated
+- `403`: sequential lock enforcement failed
+- `404`: phase lookup failed
+- `409`: idempotency conflict or duplicate completion with different key
+- `500`: server-side persistence/check failure
+
+The legacy `POST /api/progress/phase` route is deprecated and returns `410 Gone` with a replacement pointer.
 
 ## State Management
 
