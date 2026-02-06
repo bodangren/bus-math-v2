@@ -26,11 +26,11 @@
 - [x] Task: Configure Vitest types in tsconfig.json `f6e0e2c`
     - [x] Write test verifying tsconfig includes vitest/globals
     - [x] Add vitest/globals to tsconfig.json types array (already present; verified)
-- [ ] Task: Fix failing unit test files (batch 1 — component tests)
-    - [ ] Fix DepreciationMethodBuilder.test.tsx regex selection errors
-    - [ ] Fix InterestCalculationBuilder.test.tsx regex selection errors
-    - [ ] Fix LessonRenderer.test.tsx router mounting and prop errors
-    - [ ] Fix AuthProvider.test.tsx unhandled rejections
+- [x] Task: Fix failing unit test files (batch 1 — component tests) `447e6c5`
+    - [x] Fix DepreciationMethodBuilder.test.tsx regex selection errors (verified passing baseline)
+    - [x] Fix InterestCalculationBuilder.test.tsx regex selection errors (verified passing baseline)
+    - [x] Fix LessonRenderer.test.tsx router mounting and prop errors
+    - [x] Fix AuthProvider.test.tsx unhandled rejections (verified passing baseline)
 - [ ] Task: Fix failing unit test files (batch 2 — API and integration tests)
     - [ ] Fix api/progress/assessment/route.test.ts status code failures
     - [ ] Fix api/lessons/[lessonId]/progress/route.test.ts status code failures
