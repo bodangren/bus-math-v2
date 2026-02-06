@@ -1,0 +1,11 @@
+Task: Configure Vitest types in tsconfig.json
+
+Summary:
+- Added a regression test asserting tsconfig includes compilerOptions.types entry for vitest/globals.
+- Confirmed current tsconfig already has vitest/globals configured, so no tsconfig change was required.
+
+Files:
+- __tests__/config/tsconfig-vitest-types.test.ts
+
+Why:
+- Prevent future configuration drift that would break test globals typing in Vitest test files.
