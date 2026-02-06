@@ -36,10 +36,10 @@
     - [x] Fix api/lessons/[lessonId]/progress/route.test.ts status code failures (verified passing baseline)
     - [x] Fix app/student/lesson/[lessonSlug]/page.test.tsx Supabase mocking (verified passing baseline)
     - [x] Fix mock-factories.test.ts Zod validation errors (verified passing baseline)
-- [ ] Task: Fix failing unit test files (batch 3 — type and schema tests)
-    - [ ] Fix SpreadsheetTemplates.test.tsx undefined object errors
-    - [ ] Fix SupabaseClient type mismatches in security tests
-    - [ ] Fix LessonRendererProps type mismatches in tests
+- [x] Task: Fix failing unit test files (batch 3 — type and schema tests) `26c00ba`
+    - [x] Fix SpreadsheetTemplates.test.tsx undefined object errors
+    - [x] Fix SupabaseClient type mismatches in security tests
+    - [x] Fix LessonRendererProps type mismatches in tests
 - [ ] Task: Resolve all remaining TypeScript errors
     - [ ] Run tsc --noEmit and catalog errors by category
     - [ ] Fix test file TS errors (missing type definitions, loose mocks)
