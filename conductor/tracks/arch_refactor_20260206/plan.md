@@ -20,7 +20,7 @@
 - [x] Task: Clean up stale docs/ references `e31b061`
     - [x] Verify docs/RETROSPECTIVE.md, docs/security-api-route-matrix.md, docs/curriculum/ are still valid
     - [x] Remove or redirect any other stale docs/ pointers in the codebase
-- [ ] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md)
 
 ## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption)
 - [ ] Task: Configure Vitest types in tsconfig.json
