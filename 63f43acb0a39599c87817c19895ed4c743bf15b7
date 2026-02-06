@@ -1,0 +1,12 @@
+Task: Fix failing unit test files (batch 2 — API and integration tests)
+
+Summary:
+- Executed all four targeted batch-2 test files defined in the track plan.
+- Confirmed all suites pass in current baseline; no status-code regressions, Supabase mocking breakages, or mock-factory Zod failures were reproducible.
+- Added an auditable verification artifact with commands and outcomes.
+
+Files:
+- conductor/tracks/arch_refactor_20260206/phase2-batch2-verification.md
+
+Why:
+- Preserve explicit evidence for batch-2 closure when no code-level fixes are necessary.
