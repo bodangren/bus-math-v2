@@ -3,7 +3,7 @@ title: Database CI/CD Setup & Troubleshooting
 type: guide
 status: active
 created: 2025-11-28
-updated: 2025-11-28
+updated: 2026-02-06
 description: Comprehensive guide for Supabase database CI/CD pipeline, automated migration deployment, and troubleshooting common issues
 tags: [ci-cd, supabase, migrations, github-actions, deployment]
 ---
@@ -21,6 +21,16 @@ The project uses:
 - **Supabase CLI** for migration management
 - **GitHub Actions** for automated deployment
 - **Migration files** in `supabase/migrations/`
+
+## Source Of Truth Policy
+
+- `supabase/migrations/` is the only deployable schema history.
+- Legacy `drizzle/migrations/` files are historical references only and must not be used for production schema rollout.
+- Any runtime DB object used by `app/api/**` must be represented in `supabase/migrations/`.
+- Migration parity must pass before merge:
+  ```bash
+  node scripts/check-migration-parity.mjs
+  ```
 
 ## GitHub Actions Workflow
 
@@ -57,9 +67,10 @@ Configure these in GitHub repository settings:
 ### Workflow Steps
 
 1. **Checkout code** - Gets the latest migrations
-2. **Setup Supabase CLI** - Installs latest CLI version
-3. **Link project** - Connects to production database
-4. **Apply migrations** - Runs `supabase db push --include-all`
+2. **Validate migration parity** - Fails if required runtime DB objects are missing from `supabase/migrations`
+3. **Setup Supabase CLI** - Installs latest CLI version
+4. **Link project** - Connects to production database
+5. **Apply migrations** - Runs `supabase db push --include-all`
 
 ## Common Issues
 
@@ -174,6 +185,7 @@ npx supabase migration list
 
 - Create migrations with descriptive timestamps and names
 - Test migrations locally before pushing
+- Run `node scripts/check-migration-parity.mjs` before opening a PR
 - Use `--include-all` flag to handle out-of-order migrations
 - Keep migrations idempotent (safe to re-run)
 - Document breaking changes in migration comments

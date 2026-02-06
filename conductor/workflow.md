@@ -307,6 +307,7 @@ A task is complete when:
 - [ ] Mobile testing complete
 - [ ] Environment variables configured
 - [ ] Database migrations ready
+- [ ] Migration parity check passes (`node scripts/check-migration-parity.mjs`)
 - [ ] Backup created
 
 ### Deployment Steps

@@ -1,0 +1,26 @@
+name: Migration Parity Check
+
+on:
+  pull_request:
+    paths:
+      - 'app/api/**'
+      - 'supabase/migrations/**'
+      - 'scripts/check-migration-parity.mjs'
+      - '.github/workflows/migration-parity.yml'
+  workflow_dispatch:
+
+jobs:
+  migration-parity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate runtime DB dependencies exist in supabase migrations
+        run: node scripts/check-migration-parity.mjs

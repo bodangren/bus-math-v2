@@ -7,56 +7,19 @@ Agent rules for the Supabase-backed rewrite. Read this before touching the codeb
 - Keep v1 assets (`bus-math-nextjs/`, root docs) untouched. They remain the static reference implementation.
 - Treat `app/`, `components/`, `lib/`, `supabase/` migrations, and `public/` as active surface area; everything else requires confirmation.
 
-<!-- SYNTHESIS_FLOW_START -->
-# SynthesisFlow Agent Guide
-
-This project uses SynthesisFlow, a modular, spec-driven development methodology. The workflow is broken down into several discrete skills located in the `.claude/skills/` directory.
-
-## Core Philosophy
-1.  **Specs as Code:** All specification changes are proposed and approved via Pull Requests.
-2.  **Just-in-Time Context:** Use the `doc-indexer` skill to get a real-time map of all project documentation.
-3.  **Sprint-Based:** Work is organized into GitHub Milestones and planned via the `sprint-planner` skill.
-4.  **Atomic Issues:** Implementation is done via atomic GitHub Issues, which are executed by the `issue-executor` skill.
-5.  **Hybrid Architecture:** LLM executes workflow steps with strategic reasoning, helper scripts automate repetitive tasks.
-6.  **Use Subagents:** Use subagents for the various skills whenever possible and act as an orchstrator for most tasks of any real size.
-
-## Available Skillsets
-
-Each skill contains comprehensive documentation in `SKILL.md` explaining purpose, workflow, and error handling. Helper scripts are located in each skill's `scripts/` directory.
-
-```
-.
-└── .claude/
-    └── skills/
-        ├── agent-integrator/ — Use this skill to create or update the root AGENTS.md file to register SynthesisFlow skills for AI agent discovery. Triggers include "register SynthesisFlow", "update AGENTS.md", "setup agent guide", or initializing a new project.
-        ├── change-integrator/ — Use this skill after a code PR is merged to integrate approved specs into the source-of-truth, update the retrospective with learnings, and clean up branches. Triggers include "integrate change", "post-merge cleanup", or completing a feature implementation.
-        ├── doc-indexer/ — Use this skill at the beginning of any session or when needing to understand available project documentation. Provides just-in-time context by scanning YAML frontmatter from all markdown files in the docs/ directory without loading full content.
-        ├── issue-executor/ — Use this skill to start work on an assigned GitHub issue. This is the core implementation loop of the SynthesisFlow methodology. Guides the AI to load full context (specs, plans, retrospective), create a feature branch, and begin implementation. Triggers include "start work on issue", "implement issue #X", or beginning development work.
-        ├── prd-authoring/ — Use this skill for early-stage project planning through Product Requirements Documents (PRDs). Guides users from initial project ideas through product briefs, market research, PRD creation, validation, and epic decomposition. Triggers include "create PRD", "product brief", "validate requirements", or beginning project inception activities.
-        ├── project-init/ — Use this skill when starting a new project or adding SynthesisFlow to an existing project. Scaffolds the directory structure (docs/specs, docs/changes) and configuration files needed for the spec-driven development workflow.
-        ├── project-migrate/ — Use this skill to migrate existing (brownfield) projects with established documentation to the SynthesisFlow structure. Intelligently discovers, categorizes, and migrates documentation while preserving content, adding frontmatter, and maintaining git history.
-        ├── spec-authoring/ — Use this skill when proposing new features or changes via the Spec PR process. Manages the creation, refinement, and approval of feature specifications before any code is written. Triggers include "create spec", "propose change", "start spec PR", or beginning feature definition.
-        └── sprint-planner/ — Use this skill when planning a new sprint by selecting approved specs from the project board and creating atomic GitHub issues for the development team. Triggers include "plan sprint", "create sprint", "start new sprint", or beginning a development cycle.
-
-```
-
-To begin, always assess the current state by checking the git branch and running the `doc-indexer`.
-<!-- SYNTHESIS_FLOW_END -->
-
 
 ## Workflow Guardrails
 1. Start from a clean, synced `main`. If the worktree is dirty (outside your edits), stop and clarify.
-2. Review the `docs/` knowledge base before coding—start with `docs/project-brief.md`, `docs/backend-architecture.md`, `docs/frontend-architecture.md`, `docs/full-stack-architecture.md`, `docs/brownfield-architecture.md`, `docs/TDD.md`, and the current planning notes in `docs/sprints/epics.md`. If a root `TODO.md` is added, fold it into this review loop.
-3. Github-centric workflow:
-  - Use gh to check the current epic tracker and related issues. Propose three next issues to the user, numbered for ease of choice.
-  - Open a GitHub issue per slice, branch as `<type>/<issue>-<slug>` from `main`, and follow Conventional Commits.
-  - Execute each Conductor track on its own branch (one active track per branch).
+2. Review the `docs/` knowledge base before coding—start with `docs/project-brief.md`, `docs/backend-architecture.md`, `docs/frontend-architecture.md`, `docs/full-stack-architecture.md`, `docs/brownfield-architecture.md`, and `docs/TDD.md`. If a root `TODO.md` is added, fold it into this review loop.
+3. Conductor-first workflow:
+  - Use the `conductor` skill as the source of truth for track setup, implementation flow, status updates, and completion steps.
+  - Execute one Conductor track per branch (one active track per branch).
   - When a track is complete, merge that track branch back into `main` before starting the next track branch.
   - After merge, archive completed track folders from `conductor/tracks/<track_id>/` to `conductor/archive/<track_id>/` and update `conductor/tracks.md`.
 4. Practice TDD. Write/adjust tests first (unit/integration/E2E) and run `npm run lint` plus relevant test scripts before each commit.
 5. Keep documentation current. If work changes architecture, workflow, or schema, update `docs/` (and this file) in the same PR.
-6. Push the branch, open a PR with issue links, test evidence, and run checks. Squash merge after green CI and update sprint artifacts.
-7. **Report discovered bugs proactively.** When you discover bugs, issues, or technical debt outside the scope of your current work, immediately create a GitHub issue to track them. Don't defer or ignore problems—capturing them ensures they're addressed systematically. Use appropriate labels (bug, documentation, tech-debt) and provide clear reproduction steps or evidence.
+6. Push the branch, open a PR with test evidence, and run checks. Squash merge after green CI and update sprint artifacts.
+7. **Report discovered bugs proactively.** When you discover bugs, issues, or technical debt outside the scope of your current work, capture them immediately in Conductor planning artifacts so they are tracked and addressed systematically.
 
 ## Supabase Responsibilities
 - **Database is source of truth** for lessons, phases, activity configs, and student analytics.
@@ -107,7 +70,6 @@ Canonical documentation lives under `docs/`; keep this section synced as new ref
 - `docs/full-stack-architecture.md` — End-to-end stack responsibilities, deployment model, and testing matrix.
 - `docs/brownfield-architecture.md` — Migration plan from v1, cutover phases, and operational checklists.
 - `docs/TDD.md` — Issue workflow, TDD loop, testing expectations, and PR discipline.
-- `docs/sprints/epics.md` — Active epics and milestone definitions for the current sprint cycle.
 - Additional additions belong in `docs/`; update this section whenever new canonical references ship.
 
 ## Non-Negotiables
