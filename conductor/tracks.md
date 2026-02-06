@@ -16,7 +16,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Sprint 4: Competency Engine & Seamless UX
 *Link: [./conductor/tracks/sprint4_competency_20251101/](./conductor/tracks/sprint4_competency_20251101/)*
 
-## [~] Track: Sprint 5: Teacher Command Center
+## [ ] Track: Sprint 5: Teacher Command Center
 *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
 
 ## [—] Track: Sprint 6: Quality & Stability *(superseded by arch_refactor_20260206)*
