@@ -31,11 +31,11 @@
     - [x] Fix InterestCalculationBuilder.test.tsx regex selection errors (verified passing baseline)
     - [x] Fix LessonRenderer.test.tsx router mounting and prop errors
     - [x] Fix AuthProvider.test.tsx unhandled rejections (verified passing baseline)
-- [ ] Task: Fix failing unit test files (batch 2 — API and integration tests)
-    - [ ] Fix api/progress/assessment/route.test.ts status code failures
-    - [ ] Fix api/lessons/[lessonId]/progress/route.test.ts status code failures
-    - [ ] Fix app/student/lesson/[lessonSlug]/page.test.tsx Supabase mocking
-    - [ ] Fix mock-factories.test.ts Zod validation errors
+- [x] Task: Fix failing unit test files (batch 2 — API and integration tests) `63f43ac`
+    - [x] Fix api/progress/assessment/route.test.ts status code failures (verified passing baseline)
+    - [x] Fix api/lessons/[lessonId]/progress/route.test.ts status code failures (verified passing baseline)
+    - [x] Fix app/student/lesson/[lessonSlug]/page.test.tsx Supabase mocking (verified passing baseline)
+    - [x] Fix mock-factories.test.ts Zod validation errors (verified passing baseline)
 - [ ] Task: Fix failing unit test files (batch 3 — type and schema tests)
     - [ ] Fix SpreadsheetTemplates.test.tsx undefined object errors
     - [ ] Fix SupabaseClient type mismatches in security tests
