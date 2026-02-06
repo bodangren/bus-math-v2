@@ -10,14 +10,14 @@ Agent rules for the Supabase-backed rewrite. Read this before touching the codeb
 
 ## Workflow Guardrails
 1. Start from a clean, synced `main`. If the worktree is dirty (outside your edits), stop and clarify.
-2. Review the `docs/` knowledge base before coding—start with `docs/project-brief.md`, `docs/backend-architecture.md`, `docs/frontend-architecture.md`, `docs/full-stack-architecture.md`, `docs/brownfield-architecture.md`, and `docs/TDD.md`. If a root `TODO.md` is added, fold it into this review loop.
+2. Review the Conductor knowledge base before coding—start with `conductor/product.md`, `conductor/architecture.md`, `conductor/tech-stack.md`, and `conductor/workflow.md`. Also review `docs/security-api-route-matrix.md` and `docs/RETROSPECTIVE.md` when relevant. If a root `TODO.md` is added, fold it into this review loop.
 3. Conductor-first workflow:
   - Use the `conductor` skill as the source of truth for track setup, implementation flow, status updates, and completion steps.
   - Execute one Conductor track per branch (one active track per branch).
   - When a track is complete, merge that track branch back into `main` before starting the next track branch.
   - After merge, archive completed track folders from `conductor/tracks/<track_id>/` to `conductor/archive/<track_id>/` and update `conductor/tracks.md`.
 4. Practice TDD. Write/adjust tests first (unit/integration/E2E) and run `npm run lint` plus relevant test scripts before each commit.
-5. Keep documentation current. If work changes architecture, workflow, or schema, update `docs/` (and this file) in the same PR.
+5. Keep documentation current. If work changes architecture, workflow, or schema, update `conductor/` canonical docs (and this file) in the same PR. Update `docs/` when changing retrospectives, curriculum artifacts, or security route matrices.
 6. Push the branch, open a PR with test evidence, and run checks. Squash merge after green CI and update sprint artifacts.
 7. **Report discovered bugs proactively.** When you discover bugs, issues, or technical debt outside the scope of your current work, capture them immediately in Conductor planning artifacts so they are tracked and addressed systematically.
 
@@ -63,14 +63,15 @@ Agent rules for the Supabase-backed rewrite. Read this before touching the codeb
 - Keep bundle sizes modest; avoid adding large libraries when a simpler alternative exists.
 
 ## Documentation Map
-Canonical documentation lives under `docs/`; keep this section synced as new references are added.
-- `docs/project-brief.md` — Scope, constraints, roadmap, and working agreements.
-- `docs/backend-architecture.md` — Supabase schema design, RLS posture, and data access guidance.
-- `docs/frontend-architecture.md` — Next.js structure, component patterns, and rendering strategy.
-- `docs/full-stack-architecture.md` — End-to-end stack responsibilities, deployment model, and testing matrix.
-- `docs/brownfield-architecture.md` — Migration plan from v1, cutover phases, and operational checklists.
-- `docs/TDD.md` — Issue workflow, TDD loop, testing expectations, and PR discipline.
-- Additional additions belong in `docs/`; update this section whenever new canonical references ship.
+Canonical implementation documentation lives under `conductor/`; keep this section synced as new references are added.
+- `conductor/product.md` — Product scope, audience, system boundaries, and data-flow responsibilities.
+- `conductor/architecture.md` — Backend/frontend/full-stack architecture, brownfield status, and testing matrix.
+- `conductor/tech-stack.md` — Technology choices and stack constraints.
+- `conductor/workflow.md` — TDD workflow, quality gates, and verification protocol.
+- `conductor/tracks.md` + `conductor/tracks/<track_id>/` — Active execution plan and per-track specs.
+- `docs/RETROSPECTIVE.md` — Historical project learnings and refactor outcomes.
+- `docs/security-api-route-matrix.md` — Security posture for API route auth/authorization.
+- `docs/curriculum/` — Curriculum source artifacts and lesson matrices.
 
 ## Non-Negotiables
 - No `npm install` or dependency upgrades without explicit approval.

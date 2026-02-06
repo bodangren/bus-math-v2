@@ -181,13 +181,19 @@ This project is configured for deployment on Vercel with Supabase Cloud.
 
 ## Documentation
 
-Comprehensive documentation is available in the `docs/` directory:
+Canonical implementation documentation is available in `conductor/`:
 
-- `docs/project-brief.md` - Project scope and constraints
-- `docs/backend-architecture.md` - Database schema and RLS policies
-- `docs/frontend-architecture.md` - Component patterns and conventions
-- `docs/full-stack-architecture.md` - End-to-end architecture
-- `docs/TDD.md` - Development workflow and testing practices
+- `conductor/product.md` - Product scope, responsibilities, and data flow
+- `conductor/architecture.md` - Backend/frontend/full-stack architecture reference
+- `conductor/tech-stack.md` - Technology choices and constraints
+- `conductor/workflow.md` - Development workflow and testing practices
+- `conductor/tracks.md` - Active and completed implementation tracks
+
+Supplemental historical/security/curriculum documentation remains in `docs/`:
+
+- `docs/RETROSPECTIVE.md`
+- `docs/security-api-route-matrix.md`
+- `docs/curriculum/`
 
 ## Contributing
 

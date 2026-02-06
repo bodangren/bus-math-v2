@@ -28,7 +28,7 @@ Final verification and documentation for the v1 component migration to v2 archit
 
 ### Status: COMPLETE
 
-Created comprehensive frontend architecture documentation at `docs/frontend-architecture.md` (500+ lines) covering:
+Created comprehensive frontend architecture documentation (now consolidated into `conductor/architecture.md`) covering:
 
 - ✅ Database-shaped props patterns
 - ✅ Drizzle-zod integration patterns
@@ -41,7 +41,7 @@ Created comprehensive frontend architecture documentation at `docs/frontend-arch
 - ✅ Component lifecycle patterns
 - ✅ Error handling strategies
 
-**Location:** `docs/frontend-architecture.md`
+**Canonical Location:** `conductor/architecture.md` (Frontend section)
 **Lines of documentation:** 500+
 **Patterns documented:** 12 major patterns
 
@@ -367,7 +367,7 @@ The migration is functionally complete with 89 components successfully migrated 
 ## Appendix A: Quick Reference
 
 ### File Locations
-- Frontend architecture: `docs/frontend-architecture.md`
+- Frontend architecture: `conductor/architecture.md` (Frontend section)
 - This checklist: `docs/MIGRATION_COMPLETION_CHECKLIST.md`
 - Retrospective: `docs/RETROSPECTIVE.md`
 - Migration spec: `docs/specs/v1-component-migration.md`
@@ -393,5 +393,5 @@ npm run lint
 
 ### Useful Resources
 - CLAUDE.md: Agent rules and workflow
-- docs/TDD.md: Testing standards
-- docs/project-brief.md: Project scope and constraints
+- conductor/workflow.md: Testing standards
+- conductor/product.md: Project scope and constraints

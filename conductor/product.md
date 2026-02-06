@@ -20,3 +20,16 @@ An interactive, Supabase-backed digital textbook for teaching business mathemati
 - **Spreadsheet Integration**: Built-in spreadsheet tools for financial modeling and accounting exercises.
 - **Progress Analytics**: Dashboards for tracking completion and mastery of learning objectives.
 - **Multi-tenant Architecture**: Organization-based data isolation and access control.
+
+## System Boundaries & Responsibilities
+- **Client UI (`app/`, `components/`)**: Renders lesson and dashboard experiences, captures user input, and displays server-validated results.
+- **Application Server (Next.js routes/actions)**: Enforces session and role checks, orchestrates Supabase calls, and keeps service-role access on the server side only.
+- **Supabase Platform**: Owns auth, persistence, row-level security, storage, and edge functions for privileged operations.
+- **Conductor Planning Layer (`conductor/`)**: Owns implementation workflow, architectural guidance, and track execution status.
+
+## Data Flow Overview
+1. User interaction starts in a client component or server-rendered page.
+2. Request is sent to a Next.js API route/server action with authenticated session context.
+3. Server validates role/permissions, then queries Supabase tables or invokes edge functions.
+4. Supabase enforces RLS and returns scoped data or mutation outcomes.
+5. Server returns normalized payload to the UI for render/update, preserving least-privilege access.

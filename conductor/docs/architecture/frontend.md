@@ -859,5 +859,5 @@ it('has correct ARIA attributes', () => {
 For additional context, refer to:
 - `docs/RETROSPECTIVE.md` - Project-wide learnings from component migration
 - `lib/db/schema.ts` - Database schemas and Zod validators
-- `docs/TDD.md` - Testing expectations and workflow
+- `conductor/workflow.md` - Testing expectations and workflow
 - `.claude/skills/issue-executor/` - SynthesisFlow development workflow
