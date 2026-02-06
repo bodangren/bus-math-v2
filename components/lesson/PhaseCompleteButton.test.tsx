@@ -29,10 +29,13 @@ describe('PhaseCompleteButton', () => {
   });
 
   it('optimistically marks the phase as complete and calls completion hook', async () => {
+    const onStatusChange = vi.fn();
+
     render(
       <PhaseCompleteButton
         lessonId="123e4567-e89b-12d3-a456-426614174000"
         phaseNumber={2}
+        onStatusChange={onStatusChange}
       />,
     );
 
@@ -53,6 +56,7 @@ describe('PhaseCompleteButton', () => {
       }),
     );
     expect(mockCompletePhase).toHaveBeenCalledTimes(1);
+    expect(onStatusChange).toHaveBeenCalledWith('completed');
 
     expect(await screen.findByText(/phase completed/i)).toBeInTheDocument();
   });
@@ -66,10 +70,12 @@ describe('PhaseCompleteButton', () => {
       error: null,
     }));
 
+    const onStatusChange = vi.fn();
     render(
       <PhaseCompleteButton
         lessonId="123e4567-e89b-12d3-a456-426614174000"
         phaseNumber={3}
+        onStatusChange={onStatusChange}
       />,
     );
 
@@ -83,6 +89,8 @@ describe('PhaseCompleteButton', () => {
     const errorCopies = await screen.findAllByText(/mock failure/i);
     expect(errorCopies.length).toBeGreaterThanOrEqual(1);
     expect(await screen.findByText(/unable to save progress/i)).toBeInTheDocument();
+    expect(onStatusChange).toHaveBeenCalledWith('completed');
+    expect(onStatusChange).toHaveBeenCalledWith('not_started');
   });
 
   it('disables the button when the phase is already completed', () => {
