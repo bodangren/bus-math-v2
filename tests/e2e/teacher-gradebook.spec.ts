@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import { test, expect } from '@playwright/test';
 
 test.describe('Teacher Gradebook View', () => {
@@ -67,8 +68,7 @@ test.describe('Teacher Gradebook View', () => {
     
     // 3. Verify download contains progress data
     const path = await download.path();
-    const fs = require('fs');
-    const content = fs.readFileSync(path, 'utf8');
+    const content = readFileSync(path, 'utf8');
     expect(content).toContain(/username/i);
     expect(content).toContain(/progress/i);
     expect(content).toContain(/completed/i);

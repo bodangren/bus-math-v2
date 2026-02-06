@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient, type User } from '@supabase/supabase-js';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { config } from 'dotenv';
 
@@ -14,16 +14,12 @@ const adminClient = createClient(supabaseUrl, serviceRoleKey);
 const anonClient = createClient(supabaseUrl, anonKey);
 
 // We will create temporary users for testing
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let studentUser: any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let teacherUser: any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let otherStudentUser: any;
+let studentUser: User | null = null;
+let teacherUser: User | null = null;
+let otherStudentUser: User | null = null;
 
-let studentClient: any;
-let teacherClient: any;
-let otherStudentClient: any;
+let studentClient: SupabaseClient;
+let teacherClient: SupabaseClient;
 
 const TEST_PREFIX = 'sec_test_';
 
@@ -68,7 +64,6 @@ describe('RLS Security Policies', () => {
 
     const s2 = await createTestUser('student');
     otherStudentUser = s2.user;
-    otherStudentClient = s2.client;
   }, 60000); // Increased timeout for user creation
 
   afterAll(async () => {
@@ -82,11 +77,11 @@ describe('RLS Security Policies', () => {
     const { data, error } = await studentClient
       .from('profiles')
       .select('*')
-      .eq('id', studentUser.id)
+      .eq('id', studentUser!.id)
       .single();
     
     expect(error).toBeNull();
-    expect(data.id).toBe(studentUser.id);
+    expect(data.id).toBe(studentUser!.id);
   });
 
   it('Students CANNOT read other students profiles (except basic info if public)', async () => {
@@ -101,7 +96,7 @@ describe('RLS Security Policies', () => {
     await studentClient
       .from('profiles')
       .select('*')
-      .eq('id', otherStudentUser.id);
+      .eq('id', otherStudentUser!.id);
       
     // If RLS works, this should return empty array or error if using .single()
     // Or returns data if the policy allows it.
@@ -110,7 +105,7 @@ describe('RLS Security Policies', () => {
     const { error: updateError } = await studentClient
       .from('profiles')
       .update({ display_name: 'Hacked' })
-      .eq('id', otherStudentUser.id);
+      .eq('id', otherStudentUser!.id);
       
     expect(updateError).not.toBeNull(); // Should fail
   });

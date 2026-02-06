@@ -49,13 +49,13 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
           id: 'phase-1',
           phase_number: 1,
           title: 'Introduction',
-          student_progress: [{ status: 'completed', started_at: '2024-01-01', completed_at: '2024-01-01', time_spent_seconds: 300 }],
+          student_progress: [{ status: 'completed', started_at: '2024-01-01', completed_at: '2024-01-01', time_spent_seconds: 300, user_id: 'user-123' }],
         },
         {
           id: 'phase-2',
           phase_number: 2,
           title: 'Theory',
-          student_progress: [{ status: 'in_progress', started_at: '2024-01-02', completed_at: null, time_spent_seconds: 150 }],
+          student_progress: [{ status: 'in_progress', started_at: '2024-01-02', completed_at: null, time_spent_seconds: 150, user_id: 'user-123' }],
         },
         {
           id: 'phase-3',
@@ -87,100 +87,11 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
 
     mockOrder.mockReturnValue(defaultData);
 
-    // Setup mock chain based on table name
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'lessons') {
-        // Lesson query: from('lessons').select('id').eq('id', lessonId).single()
-        return {
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              single: mockSingle
-            })
-          })
-        };
+    mockEq.mockImplementation((field: string) => {
+      if (field === 'id') {
+        return { single: mockSingle };
       }
-      
-      if (table === 'phases') {
-        // Phases query: from('phases').select(...).eq('lesson_id', lessonId).order(...)
-        return {
-          select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue({
-              order: mockOrder
-            })
-          })
-        };
-      }
-      
-      throw new Error(`Unexpected table: ${table}`);
-    });
-  });
-
-    // Setup default chain for lesson existence check
-    const lessonData = {
-      data: { id: 'b4b82cad-64f6-46cc-933a-5bb8299a23d4' },
-      error: null,
-    };
-    mockSingle.mockReturnValue(lessonData);
-
-    // Setup default chain for phases query
-    const defaultData = {
-      data: [
-        {
-          id: 'phase-1',
-          phase_number: 1,
-          title: 'Introduction',
-          student_progress: [{ status: 'completed', started_at: '2024-01-01', completed_at: '2024-01-01', time_spent_seconds: 300 }],
-        },
-        {
-          id: 'phase-2',
-          phase_number: 2,
-          title: 'Theory',
-          student_progress: [{ status: 'in_progress', started_at: '2024-01-02', completed_at: null, time_spent_seconds: 150 }],
-        },
-        {
-          id: 'phase-3',
-          phase_number: 3,
-          title: 'Practice',
-          student_progress: [],
-        },
-        {
-          id: 'phase-4',
-          phase_number: 4,
-          title: 'Application',
-          student_progress: [],
-        },
-        {
-          id: 'phase-5',
-          phase_number: 5,
-          title: 'Assessment',
-          student_progress: [],
-        },
-        {
-          id: 'phase-6',
-          phase_number: 6,
-          title: 'Reflection',
-          student_progress: [],
-        },
-      ],
-      error: null,
-    };
-
-    mockOrder.mockReturnValue(defaultData);
-
-    // Second .eq() returns an object with .order() and .single()
-    const secondEq = vi.fn().mockReturnValue({ order: mockOrder, single: mockSingle });
-
-    // First .eq() returns an object with .single()
-    const lessonEq = vi.fn().mockReturnValue({ single: mockSingle });
-
-    // Setup mock chain to handle both lesson and phases queries
-    mockEq.mockImplementation((field: string, value: string) => {
-      if (field === 'id' && value === 'b4b82cad-64f6-46cc-933a-5bb8299a23d4') {
-        // This is lesson query - return object with single()
-        return lessonEq;
-      }
-      // This is phases query - return object with eq() then order()
-      return { eq: secondEq, single: mockSingle };
+      return { order: mockOrder };
     });
 
     mockSelect.mockReturnValue({ eq: mockEq });
@@ -262,7 +173,6 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
     expect(mockSelect).toHaveBeenCalledWith(expect.stringContaining('student_progress'));
     // First .eq() is called with lesson_id
     expect(mockEq).toHaveBeenCalledWith('lesson_id', 'b4b82cad-64f6-46cc-933a-5bb8299a23d4');
-    // The chain ensures the second .eq() is called via the secondEq mock
   });
 
   it('calculates correct phase statuses based on progress', async () => {
@@ -337,7 +247,7 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
   it('marks next phase as available when previous phase is completed', async () => {
     const progressData = {
       data: [
-        { id: 'phase-1', phase_number: 1, title: 'Intro', student_progress: [{ status: 'completed' }] },
+        { id: 'phase-1', phase_number: 1, title: 'Intro', student_progress: [{ status: 'completed', user_id: 'user-123' }] },
         { id: 'phase-2', phase_number: 2, title: 'Theory', student_progress: [] },
         { id: 'phase-3', phase_number: 3, title: 'Practice', student_progress: [] },
       ],
@@ -371,3 +281,4 @@ describe('GET /api/lessons/[lessonId]/progress', () => {
     const payload = await response.json();
     expect(payload.error).toMatch(/database error/i);
   });
+});

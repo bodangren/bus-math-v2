@@ -2,6 +2,12 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import {
+  completePhaseRequest,
+  type CompletePhaseResponse,
+  type CompletePhaseRequest,
+  PhaseCompletionError,
+} from '@/lib/phase-completion/client';
 
 /**
  * Queued completion payload stored in localStorage
@@ -14,27 +20,6 @@ interface QueuedCompletion {
   idempotencyKey: string;
   completedAt: string;
   retryCount: number;
-}
-
-/**
- * API request payload for phase completion
- * Note: completedAt removed - server uses its own timestamp
- */
-interface CompletePhasePayload {
-  lessonId: string;
-  phaseNumber: number;
-  timeSpent: number;
-  idempotencyKey: string;
-}
-
-/**
- * API response from /api/phases/complete
- */
-interface CompletePhaseResponse {
-  success: boolean;
-  nextPhaseUnlocked: boolean;
-  message?: string;
-  error?: string;
 }
 
 /**
@@ -165,60 +150,6 @@ function dequeueCompletion(idempotencyKey: string): void {
 }
 
 /**
- * Determine if an error is transient (should be retried)
- */
-function isTransientError(error: unknown, status?: number): boolean {
-  // Network errors (no status) should be retried
-  if (!status) {
-    return true;
-  }
-
-  // 5xx errors are transient (server errors)
-  if (status >= 500 && status < 600) {
-    return true;
-  }
-
-  // 408 Request Timeout is transient
-  if (status === 408) {
-    return true;
-  }
-
-  // 429 Too Many Requests is transient
-  if (status === 429) {
-    return true;
-  }
-
-  // All 4xx errors except the above are permanent (validation, auth, conflict, etc.)
-  // These include: 400, 401, 403, 404, 409, 422, etc.
-  return false;
-}
-
-/**
- * Send a phase completion request to the API
- * Throws an error with status code for proper error handling
- */
-async function sendCompletionRequest(payload: CompletePhasePayload): Promise<CompletePhaseResponse> {
-  const response = await fetch('/api/phases/complete', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-    // Enable keepalive to ensure request completes even if page unloads
-    keepalive: true,
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const error = new Error(errorData.error || `HTTP error! status: ${response.status}`) as Error & { status?: number };
-    error.status = response.status;
-    throw error;
-  }
-
-  return response.json();
-}
-
-/**
  * Process queued completions (retry failed requests)
  * Only processes items for the current user
  */
@@ -252,7 +183,7 @@ async function processQueuedCompletions(userId: string): Promise<void> {
     }
 
     try {
-      await sendCompletionRequest({
+      await completePhaseRequest({
         lessonId: completion.lessonId,
         phaseNumber: completion.phaseNumber,
         timeSpent: completion.timeSpent,
@@ -263,11 +194,13 @@ async function processQueuedCompletions(userId: string): Promise<void> {
       console.log(`Successfully processed queued completion ${completion.idempotencyKey}`);
       dequeueCompletion(completion.idempotencyKey);
     } catch (error) {
-      const errorWithStatus = error as Error & { status?: number };
       console.error(`Failed to process queued completion ${completion.idempotencyKey}:`, error);
 
       // Only retry transient errors
-      if (isTransientError(error, errorWithStatus.status)) {
+      if (
+        (error instanceof PhaseCompletionError && error.transient) ||
+        !(error instanceof PhaseCompletionError)
+      ) {
         console.log(`Error is transient, incrementing retry count`);
         // Increment retry count
         const updatedQueue = getCompletionQueue().map((c) =>
@@ -278,8 +211,9 @@ async function processQueuedCompletions(userId: string): Promise<void> {
         saveCompletionQueue(updatedQueue);
       } else {
         // Permanent error (4xx) - remove from queue and log
+        const status = error instanceof PhaseCompletionError ? error.status : 'unknown';
         console.error(
-          `Error is permanent (status ${errorWithStatus.status}), removing from queue`
+          `Error is permanent (status ${status}), removing from queue`
         );
         dequeueCompletion(completion.idempotencyKey);
       }
@@ -398,7 +332,7 @@ export function usePhaseCompletion({
       }
       const idempotencyKey = idempotencyKeyRef.current;
 
-      const payload: CompletePhasePayload = {
+      const payload: CompletePhaseRequest = {
         lessonId,
         phaseNumber,
         timeSpent,
@@ -406,7 +340,7 @@ export function usePhaseCompletion({
       };
 
       try {
-        const response = await sendCompletionRequest(payload);
+        const response = await completePhaseRequest(payload);
 
         // Success - clear the in-memory idempotency key so next completion gets new key
         idempotencyKeyRef.current = null;
@@ -416,11 +350,13 @@ export function usePhaseCompletion({
           onSuccess(response);
         }
       } catch (requestError) {
-        const errorWithStatus = requestError as Error & { status?: number };
         console.error('Failed to complete phase:', requestError);
 
         // Only queue transient errors for retry
-        if (isTransientError(requestError, errorWithStatus.status)) {
+        if (
+          (requestError instanceof PhaseCompletionError && requestError.transient) ||
+          !(requestError instanceof PhaseCompletionError)
+        ) {
           console.log('Error is transient, queueing for retry');
 
           const queuedCompletion: QueuedCompletion = {
@@ -436,7 +372,11 @@ export function usePhaseCompletion({
           enqueueCompletion(queuedCompletion);
         } else {
           // Permanent error - clear idempotency key and surface error
-          console.error(`Error is permanent (status ${errorWithStatus.status}), not queueing`);
+          console.error(
+            `Error is permanent (status ${
+              requestError instanceof PhaseCompletionError ? requestError.status : 'unknown'
+            }), not queueing`
+          );
           idempotencyKeyRef.current = null;
         }
 

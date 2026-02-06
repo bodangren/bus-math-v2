@@ -21,7 +21,7 @@ const mockGetUser = vi.fn();
 const mockFrom = vi.fn();
 const mockSelect = vi.fn();
 const mockEq = vi.fn();
-const mockSingle = vi.fn();
+const mockMaybeSingle = vi.fn();
 
 vi.mock('@supabase/ssr', () => ({
   createServerClient: vi.fn(() => ({
@@ -83,8 +83,8 @@ describe('proxy', () => {
     });
 
     // Setup default mock chain for profile queries
-    mockSingle.mockResolvedValue({ data: null, error: null });
-    mockEq.mockReturnValue({ single: mockSingle });
+    mockMaybeSingle.mockResolvedValue({ data: null, error: null });
+    mockEq.mockReturnValue({ maybeSingle: mockMaybeSingle });
     mockSelect.mockReturnValue({ eq: mockEq });
     mockFrom.mockReturnValue({ select: mockSelect });
   });
@@ -134,6 +134,15 @@ describe('proxy', () => {
 
       expect(response.status).toBe(200);
     });
+
+    it('allows access to /api/test/seed-e2e without authentication', async () => {
+      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+
+      const request = createRequest('/api/test/seed-e2e');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
   });
 
   describe('Unauthenticated access to protected routes', () => {
@@ -168,6 +177,17 @@ describe('proxy', () => {
       expect(response.status).toBe(307);
       expect(response.headers.get('location')).toContain('redirect=%2Fstudent%2Fdashboard%2Fprogress');
     });
+
+    it('redirects to /login when accessing private API routes without auth', async () => {
+      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+
+      const request = createRequest('/api/progress/phase');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get('location')).toContain('/login');
+      expect(response.headers.get('location')).toContain('redirect=%2Fapi%2Fprogress%2Fphase');
+    });
   });
 
   describe('Student role access', () => {
@@ -176,7 +196,7 @@ describe('proxy', () => {
         data: { user: { id: 'student-123' } },
         error: null,
       });
-      mockSingle.mockResolvedValue({
+      mockMaybeSingle.mockResolvedValue({
         data: { role: 'student' },
         error: null,
       });
@@ -211,7 +231,7 @@ describe('proxy', () => {
         data: { user: { id: 'teacher-123' } },
         error: null,
       });
-      mockSingle.mockResolvedValue({
+      mockMaybeSingle.mockResolvedValue({
         data: { role: 'teacher' },
         error: null,
       });
@@ -252,7 +272,7 @@ describe('proxy', () => {
         data: { user: { id: 'admin-123' } },
         error: null,
       });
-      mockSingle.mockResolvedValue({
+      mockMaybeSingle.mockResolvedValue({
         data: { role: 'admin' },
         error: null,
       });
@@ -279,7 +299,7 @@ describe('proxy', () => {
         data: { user: { id: 'user-no-profile' } },
         error: null,
       });
-      mockSingle.mockResolvedValue({
+      mockMaybeSingle.mockResolvedValue({
         data: null,
         error: null,
       });

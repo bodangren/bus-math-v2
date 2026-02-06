@@ -15,7 +15,7 @@ export function HeaderSimple() {
           <div className="flex flex-col min-w-0">
             <Link
               href="/"
-              className="flex items-center gap-2 text-lg md:text-xl font-bold text-foreground hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-lg md:text-xl font-bold text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               <div className="flex items-center gap-1 flex-shrink-0">
                 <Calculator className="h-5 w-5 md:h-6 md:w-6 text-primary" />
@@ -33,37 +33,37 @@ export function HeaderSimple() {
           <nav className="hidden lg:flex items-center gap-4 flex-shrink-0">
             <Link
               href="/"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               Home
             </Link>
             <Link
               href="/preface"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               Preface
             </Link>
             <Link
               href="/curriculum"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               Curriculum
             </Link>
             <Link
               href="/capstone"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               Capstone
             </Link>
             <Link
               href="/backmatter/glossary"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               Glossary
             </Link>
             <Link
               href="/search"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
             >
               Search
             </Link>

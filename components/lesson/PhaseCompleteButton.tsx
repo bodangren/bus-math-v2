@@ -1,10 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import { cn } from '@/lib/utils';
 
 type ProgressStatus = 'not_started' | 'in_progress' | 'completed';
@@ -18,15 +19,13 @@ interface ToastState {
 }
 
 interface PhaseCompleteButtonProps {
-  phaseId: string;
+  lessonId: string;
+  phaseNumber: number;
+  phaseType?: 'read' | 'do';
   /**
    * Optional initial status from the server so the UI can render completed phases as disabled.
    */
   initialStatus?: ProgressStatus;
-  /**
-   * Optional time on task metric (in seconds) to forward to the progress API.
-   */
-  timeSpentSeconds?: number;
   disabled?: boolean;
   className?: string;
   idleLabel?: string;
@@ -38,9 +37,10 @@ const DEFAULT_IDLE_LABEL = 'Mark Complete';
 const DEFAULT_COMPLETED_LABEL = 'Completed';
 
 export function PhaseCompleteButton({
-  phaseId,
+  lessonId,
+  phaseNumber,
+  phaseType = 'read',
   initialStatus = 'not_started',
-  timeSpentSeconds,
   disabled = false,
   className,
   idleLabel = DEFAULT_IDLE_LABEL,
@@ -48,25 +48,9 @@ export function PhaseCompleteButton({
   onStatusChange,
 }: PhaseCompleteButtonProps) {
   const [status, setStatus] = useState<ProgressStatus>(initialStatus);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const isCompleted = status === 'completed';
-  const isButtonDisabled = disabled || isSubmitting || isCompleted;
-
-  useEffect(() => {
-    setStatus(initialStatus);
-  }, [initialStatus]);
-
-  useEffect(() => {
-    if (!toast) return;
-
-    const timeout = window.setTimeout(() => setToast(null), 4000);
-    return () => window.clearTimeout(timeout);
-  }, [toast]);
-
-  const buttonLabel = isCompleted ? completedLabel : idleLabel;
+  const previousStatusRef = useRef<ProgressStatus>(initialStatus);
 
   const handleStatusChange = useCallback(
     (nextStatus: ProgressStatus) => {
@@ -80,83 +64,20 @@ export function PhaseCompleteButton({
     setToast(payload);
   }, []);
 
-  const parseApiResponse = useCallback((payload: unknown): ProgressStatus | null => {
-    if (!payload || typeof payload !== 'object') {
-      return null;
-    }
-
-    const response = payload as { progress?: { status?: ProgressStatus } };
-    return response.progress?.status ?? null;
-  }, []);
-
-  const extractErrorMessage = useCallback((payload: unknown, fallback: string) => {
-    if (payload && typeof payload === 'object') {
-      const errorObj = payload as { error?: unknown; details?: unknown };
-      
-      if ('error' in errorObj && typeof errorObj.error === 'string') {
-         if (errorObj.error === 'Invalid payload' && 'details' in errorObj && typeof errorObj.details === 'object' && errorObj.details) {
-             // Format Zod validation errors if available
-             const details = errorObj.details as Record<string, string[]>;
-             const fieldErrors = Object.entries(details)
-                 .map(([field, msgs]) => `${field}: ${msgs.join(', ')}`)
-                 .join('; ');
-             if (fieldErrors) return `${errorObj.error}: ${fieldErrors}`;
-         }
-        return errorObj.error;
-      }
-    }
-
-    return fallback;
-  }, []);
-
-  const markPhaseComplete = useCallback(async () => {
-    if (isButtonDisabled) {
-      return;
-    }
-
-    const previousStatus = status;
-    setIsSubmitting(true);
-    setErrorMessage(null);
-
-    // Optimistic update: immediately reflect completion
-    handleStatusChange('completed');
-
-    try {
-      const response = await fetch('/api/progress/phase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phaseId,
-          status: 'completed',
-          completed: true,
-          timeSpentSeconds,
-        }),
-      });
-
-      let payload: unknown = null;
-      try {
-        payload = await response.json();
-      } catch {
-        payload = null;
-      }
-
-      if (!response.ok) {
-        const reason = extractErrorMessage(payload, response.statusText || 'Unable to save progress');
-        throw new Error(reason || 'Unable to save progress');
-      }
-
-      const resolvedStatus = parseApiResponse(payload) ?? 'completed';
-      handleStatusChange(resolvedStatus);
+  const { completePhase, isCompleting } = usePhaseCompletion({
+    lessonId,
+    phaseNumber,
+    phaseType,
+    onSuccess: () => {
+      handleStatusChange('completed');
       showToast({
         message: 'Phase completed',
         description: 'Your progress is synced.',
         variant: 'success',
       });
-    } catch (error) {
-      console.error('Failed to save phase progress:', error);
-      handleStatusChange(previousStatus);
+    },
+    onError: (error) => {
+      handleStatusChange(previousStatusRef.current);
       const friendlyMessage =
         error instanceof Error ? error.message : 'Unable to save progress. Please try again.';
       setErrorMessage(friendlyMessage);
@@ -165,20 +86,49 @@ export function PhaseCompleteButton({
         description: friendlyMessage,
         variant: 'error',
       });
-    } finally {
-      setIsSubmitting(false);
+    },
+  });
+
+  const isCompleted = status === 'completed';
+  const isButtonDisabled = disabled || isCompleting || isCompleted;
+
+  useEffect(() => {
+    setStatus(initialStatus);
+    previousStatusRef.current = initialStatus;
+  }, [initialStatus]);
+
+  useEffect(() => {
+    if (!toast) return;
+
+    const timeout = window.setTimeout(() => setToast(null), 4000);
+    return () => window.clearTimeout(timeout);
+  }, [toast]);
+
+  const buttonLabel = isCompleted ? completedLabel : idleLabel;
+
+  const markPhaseComplete = useCallback(async () => {
+    if (isButtonDisabled) {
+      return;
     }
-  }, [extractErrorMessage, handleStatusChange, isButtonDisabled, parseApiResponse, phaseId, showToast, status, timeSpentSeconds]);
+
+    previousStatusRef.current = status;
+    setErrorMessage(null);
+
+    // Optimistic update: immediately reflect completion
+    handleStatusChange('completed');
+
+    await completePhase();
+  }, [completePhase, handleStatusChange, isButtonDisabled, status]);
 
   const statusHelper = useMemo(() => {
-    if (isSubmitting) {
+    if (isCompleting) {
       return 'Syncing progress…';
     }
     if (isCompleted) {
       return 'Marked complete';
     }
     return null;
-  }, [isCompleted, isSubmitting]);
+  }, [isCompleted, isCompleting]);
 
   return (
     <>
@@ -195,8 +145,8 @@ export function PhaseCompleteButton({
             isCompleted ? 'border-green-300 text-green-700 dark:text-green-300' : '',
           )}
         >
-          {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
-          {!isSubmitting && isCompleted && <CheckCircle2 className="h-4 w-4" aria-hidden />}
+          {isCompleting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}
+          {!isCompleting && isCompleted && <CheckCircle2 className="h-4 w-4" aria-hidden />}
           <span>{buttonLabel}</span>
         </Button>
 

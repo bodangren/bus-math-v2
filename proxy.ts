@@ -45,23 +45,27 @@ export async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  // Define public routes
-  const publicRoutes = [
+  const publicPageRoutes = [
     '/',
     '/preface',
     '/curriculum',
     '/login',
     '/auth',
-    '/api', // Allow API access
+  ];
+  const publicApiRoutes = [
+    '/api/test/seed-e2e',
+    '/api/test/cleanup-e2e',
   ];
 
-  // Check if current path is public
-  const isPublicRoute = publicRoutes.some(route =>
+  const isPublicPageRoute = publicPageRoutes.some(route =>
+    path === route || path.startsWith(`${route}/`)
+  );
+  const isPublicApiRoute = publicApiRoutes.some(route =>
     path === route || path.startsWith(`${route}/`)
   );
 
   // Allow access to public routes without authentication
-  if (isPublicRoute) {
+  if (isPublicPageRoute || isPublicApiRoute) {
     return supabaseResponse;
   }
 

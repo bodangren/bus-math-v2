@@ -76,7 +76,7 @@ export function TAccountsVisualization({
     indicatorClass: string;
     labelClass: string;
   }> = [
-    { type: 'asset', label: 'Assets', indicatorClass: 'bg-blue-600', labelClass: 'text-blue-600' },
+    { type: 'asset', label: 'Assets', indicatorClass: 'bg-blue-700', labelClass: 'text-blue-700' },
     {
       type: 'liability',
       label: 'Liabilities',
@@ -243,7 +243,7 @@ export function TAccountsVisualization({
                 <h3 className="mb-4 text-center text-lg font-semibold">Accounting Equation</h3>
                 <div className="flex flex-wrap items-center justify-center gap-4 text-lg font-mono">
                   <div className="text-center">
-                    <div className="font-bold text-blue-600">ASSETS</div>
+                    <div className="font-bold text-blue-700">ASSETS</div>
                     <div className="text-2xl">{formatCurrency(totalAssets)}</div>
                   </div>
                   <div className="text-2xl font-bold">=</div>
@@ -295,7 +295,7 @@ export function TAccountsVisualization({
                 <h4 className="mb-2 font-semibold text-blue-800">
                   Selected Account: {accounts.find((account) => account.id === selectedAccount)?.name}
                 </h4>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-blue-800">
                   Click a different account to compare balances or click the selected card again to
                   clear the highlight.
                 </p>

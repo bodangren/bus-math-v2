@@ -223,10 +223,10 @@ export function JournalEntry({
           <div className="mt-6 space-y-4">
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
               <div className="mb-2 flex items-center gap-2">
-                <Calculator className="h-4 w-4 text-blue-600" />
+                <Calculator className="h-4 w-4 text-blue-700" />
                 <h4 className="font-semibold text-blue-800">Accounting Equation Impact</h4>
               </div>
-              <div className="grid gap-4 text-sm text-blue-700 md:grid-cols-3">
+              <div className="grid gap-4 text-sm text-blue-800 md:grid-cols-3">
                 {['asset', 'liability', 'equity'].map((type) => {
                   const relatedLines = lines.filter((line) => line.accountType === type);
                   if (type === 'equity') {

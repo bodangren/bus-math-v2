@@ -5,8 +5,14 @@
 
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { enforceTestRouteGuard } from '@/lib/api/test-route-guard';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const guardResponse = enforceTestRouteGuard(request);
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;

@@ -153,10 +153,10 @@ export function LoginForm({
           {/* Demo Credentials Below Login Button */}
           <div className="mt-6 rounded-lg border border-blue-400 bg-blue-100 p-4">
             <div className="flex items-center gap-2 mb-3">
-              <InfoIcon className="h-4 w-4 text-blue-700" aria-hidden="true" />
+              <InfoIcon className="h-4 w-4 text-blue-800" aria-hidden="true" />
               <h3 className="text-sm font-semibold text-blue-950">Demo Accounts</h3>
             </div>
-            <p className="text-xs text-blue-800 mb-3">Click to populate the login form:</p>
+            <p className="text-xs text-blue-900 mb-3">Click to populate the login form:</p>
             <div className="flex flex-col gap-2">
               <Button
                 type="button"
@@ -167,7 +167,7 @@ export function LoginForm({
               >
                 <div className="flex flex-col items-start">
                   <span className="font-semibold text-blue-950">Student Account</span>
-                  <span className="text-xs text-blue-700">demo_student / demo123</span>
+                  <span className="text-xs text-blue-800">demo_student / demo123</span>
                 </div>
               </Button>
               <Button
@@ -179,7 +179,7 @@ export function LoginForm({
               >
                 <div className="flex flex-col items-start">
                   <span className="font-semibold text-blue-950">Teacher Account</span>
-                  <span className="text-xs text-blue-700">demo_teacher / demo123</span>
+                  <span className="text-xs text-blue-800">demo_teacher / demo123</span>
                 </div>
               </Button>
             </div>

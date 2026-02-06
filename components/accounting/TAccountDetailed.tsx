@@ -34,7 +34,7 @@ export interface TAccountDetailedProps {
 
 const categoryColors: Record<string, string> = {
   operating: 'bg-green-100 text-green-700',
-  investing: 'bg-blue-100 text-blue-700',
+  investing: 'bg-blue-100 text-blue-800',
   financing: 'bg-purple-100 text-purple-700',
   adjustment: 'bg-yellow-100 text-yellow-700',
   closing: 'bg-gray-100 text-gray-700'

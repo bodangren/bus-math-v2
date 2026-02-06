@@ -205,7 +205,8 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
 
             <div className="mt-6 flex justify-end">
               <PhaseCompleteButton
-                phaseId={currentPhase.id}
+                lessonId={lesson.id}
+                phaseNumber={currentPhase.phaseNumber}
                 initialStatus={isCurrentPhaseCompleted ? 'completed' : 'not_started'}
                 onStatusChange={() => {
                   // Refetch progress to update button states and stepper

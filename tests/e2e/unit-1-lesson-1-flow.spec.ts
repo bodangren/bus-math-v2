@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 const LESSON_SLUG = '/student/lesson/unit-1-lesson-1-accounting-equation';
 
-async function loginAsDemoStudent(page: any) {
+async function loginAsDemoStudent(page: Page) {
   await page.goto('/auth/login');
   await page.getByRole('button', { name: 'Use demo student credentials' }).click();
   await page.getByRole('button', { name: 'Login', exact: true }).click();
