@@ -1,0 +1,15 @@
+Task: Create bulk-create-students Edge Function (transactional)
+
+Summary:
+- Refactored bulk-create logic into a reusable transactional helper (bulkCreateStudentsTransactional) to enforce all-or-nothing student provisioning.
+- Added rollback behavior that deletes already-created auth users when any downstream step fails.
+- Updated edge function wiring to delegate username resolution, auth-user creation, profile insert, and rollback via injected operations.
+- Added unit tests for successful batch creation and rollback-on-failure scenarios.
+
+Files:
+- supabase/functions/bulk-create-students/logic.ts
+- supabase/functions/bulk-create-students/index.ts
+- supabase/functions/bulk-create-students/logic.test.ts
+
+Why:
+- Sprint 5 Phase 1 requires transactional bulk onboarding so teachers never receive partial account creation results.
