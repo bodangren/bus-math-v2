@@ -19,7 +19,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [ ] Track: Sprint 5: Teacher Command Center
 *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
 
-## [ ] Track: Sprint 6: Quality & Stability
+## [—] Track: Sprint 6: Quality & Stability *(superseded by arch_refactor_20260206)*
 *Link: [./conductor/tracks/sprint6_quality_20260101/](./conductor/tracks/sprint6_quality_20260101/)*
 
 ## [x] Track: Refactor - Database Migration Unification
@@ -27,3 +27,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [x] Track: Refactor - Phase Completion Consolidation
 *Link: [./conductor/archive/phase_completion_consolidation_20260206/](./conductor/archive/phase_completion_consolidation_20260206/)*
+
+## [ ] Track: Architectural Refactor & Stability
+*Link: [./conductor/tracks/arch_refactor_20260206/](./conductor/tracks/arch_refactor_20260206/)*
