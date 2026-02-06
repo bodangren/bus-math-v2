@@ -1,0 +1,203 @@
+# Tasks: Architectural Refactor & Stability
+
+## Phase 1: Documentation & Conductor Enrichment
+- [ ] Task: Audit existing conductor/ files and identify content gaps
+    - [ ] Catalog what product.md, tech-stack.md, workflow.md currently cover
+    - [ ] Map the intended content from each missing docs/ file to its conductor/ destination
+- [ ] Task: Create conductor/architecture.md
+    - [ ] Write backend architecture section (Supabase schema design, RLS posture, data access patterns)
+    - [ ] Write frontend architecture section (Next.js App Router structure, component patterns, rendering strategy)
+    - [ ] Write full-stack integration section (deployment model, environment variables, testing matrix)
+    - [ ] Write brownfield migration status section (v1→v2 progress, cutover checklist, what remains)
+    - [ ] Write TDD & workflow section (issue workflow, TDD loop, testing expectations, PR discipline)
+- [ ] Task: Enrich conductor/product.md with architectural context
+    - [ ] Add current system boundaries and responsibilities
+    - [ ] Add data flow overview (client → API → Supabase → response)
+- [ ] Task: Update AGENTS.md
+    - [ ] Replace Documentation Map section to reference conductor/ files
+    - [ ] Remove references to non-existent docs/ files
+    - [ ] Update Workflow Guardrails step 2 to reference conductor/ instead of docs/
+- [ ] Task: Clean up stale docs/ references
+    - [ ] Verify docs/RETROSPECTIVE.md, docs/security-api-route-matrix.md, docs/curriculum/ are still valid
+    - [ ] Remove or redirect any other stale docs/ pointers in the codebase
+- [ ] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md)
+
+## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption)
+- [ ] Task: Configure Vitest types in tsconfig.json
+    - [ ] Write test verifying tsconfig includes vitest/globals
+    - [ ] Add vitest/globals to tsconfig.json types array
+- [ ] Task: Fix failing unit test files (batch 1 — component tests)
+    - [ ] Fix DepreciationMethodBuilder.test.tsx regex selection errors
+    - [ ] Fix InterestCalculationBuilder.test.tsx regex selection errors
+    - [ ] Fix LessonRenderer.test.tsx router mounting and prop errors
+    - [ ] Fix AuthProvider.test.tsx unhandled rejections
+- [ ] Task: Fix failing unit test files (batch 2 — API and integration tests)
+    - [ ] Fix api/progress/assessment/route.test.ts status code failures
+    - [ ] Fix api/lessons/[lessonId]/progress/route.test.ts status code failures
+    - [ ] Fix app/student/lesson/[lessonSlug]/page.test.tsx Supabase mocking
+    - [ ] Fix mock-factories.test.ts Zod validation errors
+- [ ] Task: Fix failing unit test files (batch 3 — type and schema tests)
+    - [ ] Fix SpreadsheetTemplates.test.tsx undefined object errors
+    - [ ] Fix SupabaseClient type mismatches in security tests
+    - [ ] Fix LessonRendererProps type mismatches in tests
+- [ ] Task: Resolve all remaining TypeScript errors
+    - [ ] Run tsc --noEmit and catalog errors by category
+    - [ ] Fix test file TS errors (missing type definitions, loose mocks)
+    - [ ] Fix source file TS errors (implicit any, null checks)
+- [ ] Task: Verify npm run lint passes clean
+    - [ ] Fix all ESLint errors
+    - [ ] Fix all ESLint warnings that indicate real problems
+- [ ] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md)
+
+## Phase 3: Test Structure Consolidation
+- [ ] Task: Define and document the target test directory structure
+    - [ ] Write test validating that test config resolves the new paths
+    - [ ] Document convention: __tests__/ for Vitest, tests/ for Playwright
+- [ ] Task: Relocate /test contents into __tests__/
+    - [ ] Move test/supabase/client.test.ts to __tests__/supabase/
+    - [ ] Update any import paths in moved files
+    - [ ] Verify moved tests still pass
+- [ ] Task: Consolidate co-located test files
+    - [ ] Identify all *.test.ts(x) files outside __tests__/ and tests/
+    - [ ] Relocate to __tests__/ preserving directory structure mirroring
+    - [ ] Update vitest.config to resolve new locations
+    - [ ] Verify all relocated tests pass
+- [ ] Task: Remove empty /test directory
+- [ ] Task: Update vitest.config and playwright.config to reflect new structure
+    - [ ] Write test confirming vitest discovers all test files
+    - [ ] Write test confirming playwright discovers all E2E specs
+- [ ] Task: Conductor - User Manual Verification 'Test Structure Consolidation' (Protocol in workflow.md)
+
+## Phase 4: Centralized Types
+- [ ] Task: Create types/ directory with initial structure
+    - [ ] Write test verifying types/database.ts exports expected type names
+    - [ ] Create types/database.ts with core table types derived from Supabase schema
+- [ ] Task: Create types/api.ts
+    - [ ] Write test verifying API request/response types match route expectations
+    - [ ] Extract shared request/response types from API routes into types/api.ts
+- [ ] Task: Create types/activities.ts
+    - [ ] Write test verifying activity config and submission types
+    - [ ] Extract activity configuration and submission types from schema files
+- [ ] Task: Create types/curriculum.ts
+    - [ ] Write test verifying lesson, phase, and content block types
+    - [ ] Extract curriculum-related types from scattered definitions
+- [ ] Task: Update imports across the codebase
+    - [ ] Replace inline type definitions with imports from types/
+    - [ ] Replace schema-file type imports where types/ provides the canonical version
+    - [ ] Verify tsc --noEmit passes after all import changes
+- [ ] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md)
+
+## Phase 5: Activities Schema Decomposition
+- [ ] Task: Analyze activities.ts and identify domain boundaries
+    - [ ] Map each type/table/validator to its domain (core, spreadsheet, quiz, categorization, simulation)
+    - [ ] Identify shared dependencies between domains
+- [ ] Task: Create activities-core.ts
+    - [ ] Write test verifying core activity table and shared types export correctly
+    - [ ] Extract base activity table, shared enums, and common types
+- [ ] Task: Create activities-spreadsheet.ts
+    - [ ] Write test verifying spreadsheet JSONB types and validators
+    - [ ] Extract spreadsheet-specific types and validators
+- [ ] Task: Create activities-quiz.ts
+    - [ ] Write test verifying quiz/comprehension question types
+    - [ ] Extract quiz and comprehension types
+- [ ] Task: Create activities-categorization.ts
+    - [ ] Write test verifying categorization types
+    - [ ] Extract drag-and-drop categorization types
+- [ ] Task: Create activities-simulation.ts
+    - [ ] Write test verifying simulation types
+    - [ ] Extract business simulation types
+- [ ] Task: Create activities/index.ts barrel export
+    - [ ] Write test verifying all existing imports resolve through barrel
+    - [ ] Implement barrel export re-exporting all domain files
+- [ ] Task: Remove original monolithic activities.ts
+    - [ ] Update all imports across codebase to use barrel or domain-specific imports
+    - [ ] Verify tsc --noEmit and all tests pass
+- [ ] Task: Conductor - User Manual Verification 'Activities Schema Decomposition' (Protocol in workflow.md)
+
+## Phase 6: Supabase-First Migration Unification
+- [ ] Task: Audit current Drizzle↔Supabase coupling
+    - [ ] Catalog all places drizzle-kit is used for schema generation
+    - [ ] Catalog all places Drizzle schema files define tables (vs just types)
+    - [ ] Verify scripts/check-migration-parity.mjs exists and functions
+- [ ] Task: Archive drizzle/migrations/ directory
+    - [ ] Write test verifying no runtime code imports from drizzle/migrations/
+    - [ ] Move drizzle/migrations/ to drizzle/archived-migrations/
+    - [ ] Update drizzle.config.ts to remove migration generation config
+- [ ] Task: Refactor Drizzle schema files to query-only role
+    - [ ] Write test verifying Drizzle schema types match Supabase SQL schema
+    - [ ] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
+    - [ ] Ensure Drizzle is used only for type-safe query building, not schema management
+- [ ] Task: Update parity check script
+    - [ ] Write test verifying parity script detects intentional drift
+    - [ ] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
+- [ ] Task: Document Supabase-first flow in conductor/architecture.md
+    - [ ] Add section: "Schema Change Workflow" (edit SQL migration → update Drizzle types → run parity check)
+    - [ ] Add section: "Migration Runbook" for creating new migrations
+- [ ] Task: Conductor - User Manual Verification 'Supabase-First Migration Unification' (Protocol in workflow.md)
+
+## Phase 7: Versioned Lesson Schema Migration
+- [ ] Task: Audit all legacy schema references
+    - [ ] Catalog every query, component, API route, and seed file that references legacy lessons/phases tables
+    - [ ] Map each reference to its versioned schema equivalent
+- [ ] Task: Migrate seed files to versioned schema
+    - [ ] Write test verifying seed files only reference versioned tables
+    - [ ] Update or replace legacy seed files (e.g., 02-sample-lessons.sql)
+    - [ ] Ensure all seed scripts are idempotent with versioned schema
+- [ ] Task: Migrate API routes to versioned schema
+    - [ ] Write integration tests for each affected API route with versioned schema
+    - [ ] Update lesson-fetching queries to use lesson_versions/phase_versions/phase_sections
+    - [ ] Update progress-tracking queries to reference versioned schema
+- [ ] Task: Migrate components and pages to versioned schema
+    - [ ] Write component tests verifying props match versioned schema shape
+    - [ ] Update LessonRenderer, LessonStepper, and phase components
+    - [ ] Update teacher dashboard queries
+- [ ] Task: Create deprecation migration for legacy tables
+    - [ ] Write test verifying no runtime code references legacy table names
+    - [ ] Create Supabase migration renaming legacy tables to _deprecated suffix
+    - [ ] Update Drizzle schema to remove legacy table definitions
+- [ ] Task: Final cleanup — drop deprecated tables
+    - [ ] Verify all tests pass without legacy tables
+    - [ ] Create Supabase migration dropping _deprecated tables
+    - [ ] Remove any remaining legacy type definitions
+- [ ] Task: Conductor - User Manual Verification 'Versioned Lesson Schema Migration' (Protocol in workflow.md)
+
+## Phase 8: Component Prop Standardization
+- [ ] Task: Audit activity registry for any types
+    - [ ] Write test verifying registry entries have typed component props
+    - [ ] Catalog all `any` type usages in lib/activities/registry.ts
+- [ ] Task: Type the activity registry
+    - [ ] Define typed interfaces for each activity component's props in types/activities.ts
+    - [ ] Replace `any` types in registry with proper typed interfaces
+    - [ ] Verify tsc --noEmit passes
+- [ ] Task: Audit component prop patterns
+    - [ ] Catalog components using plain props vs database-shaped props
+    - [ ] Identify components that should be updated to database-shaped props
+- [ ] Task: Standardize component props (batch 1 — lesson/phase components)
+    - [ ] Write tests for updated prop interfaces
+    - [ ] Update lesson and phase rendering components to use centralized types
+- [ ] Task: Standardize component props (batch 2 — activity components)
+    - [ ] Write tests for updated prop interfaces
+    - [ ] Update activity components to use typed props from types/activities.ts
+- [ ] Task: Standardize component props (batch 3 — teacher/dashboard components)
+    - [ ] Write tests for updated prop interfaces
+    - [ ] Update teacher and analytics components to use centralized types
+- [ ] Task: Document prop conventions in conductor/architecture.md
+    - [ ] Add section: "Component Prop Contract" with examples and rationale
+- [ ] Task: Conductor - User Manual Verification 'Component Prop Standardization' (Protocol in workflow.md)
+
+## Phase 9: Final Verification & Cleanup
+- [ ] Task: Full test suite pass
+    - [ ] Run CI=true npm test — all tests must pass
+    - [ ] Run npx tsc --noEmit — zero errors
+    - [ ] Run npm run lint — zero errors
+- [ ] Task: Verify no stale references
+    - [ ] Grep for legacy table names (lessons, phases without version suffix) in runtime code
+    - [ ] Grep for docs/ references that point to non-existent files
+    - [ ] Grep for drizzle/migrations/ imports
+    - [ ] Grep for remaining `any` types in registry and prop definitions
+- [ ] Task: Update conductor/tracks.md
+    - [ ] Mark Sprint 6 as absorbed/superseded
+    - [ ] Mark this track as complete
+- [ ] Task: Final retrospective entry
+    - [ ] Add architectural refactor learnings to docs/RETROSPECTIVE.md
+- [ ] Task: Conductor - User Manual Verification 'Final Verification & Cleanup' (Protocol in workflow.md)
