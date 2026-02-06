@@ -1,7 +1,7 @@
 # Tasks: Sprint 5 - Teacher Command Center
 
 ## Phase 1: Bulk Onboarding
-- [~] Task: Create `bulk-create-students` Edge Function (transactional).
+- [x] Task: Create `bulk-create-students` Edge Function (transactional). `1015ba9`
 - [ ] Task: Implement `BulkImportDialog` component (Parse/Review/Submit steps).
 - [ ] Task: Implement `CredentialsSheet` component (Print-friendly CSS).
 - [ ] Task: Integration Test: Import 30 names, verify all created.
