@@ -23,9 +23,9 @@
 - [x] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md) `890213d`
 
 ## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption)
-- [ ] Task: Configure Vitest types in tsconfig.json
-    - [ ] Write test verifying tsconfig includes vitest/globals
-    - [ ] Add vitest/globals to tsconfig.json types array
+- [x] Task: Configure Vitest types in tsconfig.json `f6e0e2c`
+    - [x] Write test verifying tsconfig includes vitest/globals
+    - [x] Add vitest/globals to tsconfig.json types array (already present; verified)
 - [ ] Task: Fix failing unit test files (batch 1 — component tests)
     - [ ] Fix DepreciationMethodBuilder.test.tsx regex selection errors
     - [ ] Fix InterestCalculationBuilder.test.tsx regex selection errors
