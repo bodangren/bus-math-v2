@@ -1,0 +1,16 @@
+Task: Fix failing unit test files (batch 1 — component tests)
+
+Summary:
+- Added explicit test mocks for next/navigation and PhaseCompleteButton in LessonRenderer tests to eliminate Supabase client initialization side effects.
+- Verified all batch-1 target suites pass:
+  - components/financial-calculations/DepreciationMethodBuilder.test.tsx
+  - components/financial-calculations/InterestCalculationBuilder.test.tsx
+  - components/student/LessonRenderer.test.tsx
+  - components/auth/AuthProvider.test.tsx
+- No code changes were required for DepreciationMethodBuilder, InterestCalculationBuilder, or AuthProvider tests because they already pass in current baseline.
+
+Files:
+- components/student/LessonRenderer.test.tsx
+
+Why:
+- Keep component test runs deterministic and free of unrelated Supabase initialization noise while validating the planned batch-1 scope.
