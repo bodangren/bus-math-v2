@@ -4,10 +4,8 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import {
+  bulkCreateStudentsTransactional,
   buildDisplayName,
-  generateRandomPassword,
-  generateUniqueUsername,
-  sanitizeInput,
 } from "./logic.ts";
 
 declare const Deno: {
@@ -101,101 +99,74 @@ serve(async (req: Request) => {
     return jsonResponse({ error: "Only teachers can create students" }, 403);
   }
 
-  const reservedUsernames = new Set<string>();
-  const createdUserIds: string[] = [];
-  const createdCredentials: Array<{
-    username: string;
-    password: string;
-    displayName: string;
-    email: string;
-    organizationId: string;
-  }> = [];
-
   try {
-    for (const student of payload.students) {
-      const firstName = sanitizeInput(student.firstName);
-      const lastName = sanitizeInput(student.lastName);
-      const displayName = sanitizeInput(student.displayName);
-      const preferredUsername = sanitizeInput(student.username);
-
-      const username = await generateUniqueUsername(
-        { preferredUsername, firstName, lastName },
-        {
-          reserved: reservedUsernames,
-          exists: async (candidate: string) => usernameExists(supabase, candidate),
-        },
-      );
-
-      const password = generateRandomPassword();
-      const resolvedDisplayName = displayName || buildDisplayName(firstName, lastName, username);
-
-      const {
-        data: createdUser,
-        error: createUserError,
-      } = await supabase.auth.admin.createUser({
-        email: `${username}@internal.domain`,
-        password,
-        email_confirm: true,
-        user_metadata: {
-          role: "student",
-          firstName,
-          lastName,
-          organizationId: teacherProfile.organization_id,
-          createdBy: teacherProfile.id,
-        },
-      });
-
-      if (createUserError || !createdUser?.user) {
-        throw new Error(createUserError?.message ?? "Failed to create user");
-      }
-
-      createdUserIds.push(createdUser.user.id);
-
-      const profilePayload = {
-        id: createdUser.user.id,
+    const createdCredentials = await bulkCreateStudentsTransactional({
+      students: payload.students,
+      teacherProfile: {
+        id: teacherProfile.id,
         organization_id: teacherProfile.organization_id,
-        username,
-        role: "student",
-        display_name: resolvedDisplayName,
-        metadata: {
-          firstName: firstName || null,
-          lastName: lastName || null,
-          createdBy: teacherProfile.id,
-        },
-      };
+      },
+      usernameExists: async (candidate: string) => usernameExists(supabase, candidate),
+      createUser: async ({ email, password, firstName, lastName, teacherProfile: owner }) => {
+        const {
+          data: createdUser,
+          error: createUserError,
+        } = await supabase.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: {
+            role: "student",
+            firstName,
+            lastName,
+            organizationId: owner.organization_id,
+            createdBy: owner.id,
+          },
+        });
 
-      const { error: profileError } = await supabase.from("profiles").insert(profilePayload);
+        if (createUserError || !createdUser?.user) {
+          throw new Error(createUserError?.message ?? "Failed to create user");
+        }
 
-      if (profileError) {
-        throw new Error(`Failed to create profile for ${username}`);
-      }
+        return { id: createdUser.user.id, email };
+      },
+      insertProfile: async ({ id, username, displayName, firstName, lastName, teacherProfile: owner }) => {
+        const resolvedDisplayName = displayName || buildDisplayName(firstName, lastName, username);
+        const profilePayload = {
+          id,
+          organization_id: owner.organization_id,
+          username,
+          role: "student",
+          display_name: resolvedDisplayName,
+          metadata: {
+            firstName: firstName || null,
+            lastName: lastName || null,
+            createdBy: owner.id,
+          },
+        };
 
-      createdCredentials.push({
-        username,
-        password,
-        displayName: resolvedDisplayName,
-        email: `${username}@internal.domain`,
+        const { error: profileError } = await supabase.from("profiles").insert(profilePayload);
+        if (profileError) {
+          throw new Error(`Failed to create profile for ${username}`);
+        }
+      },
+      deleteUser: async (id) => {
+        await supabase.auth.admin.deleteUser(id);
+      },
+    });
+
+    return jsonResponse(
+      {
+        totalCreated: createdCredentials.length,
         organizationId: teacherProfile.organization_id,
-      });
-    }
+        students: createdCredentials,
+      },
+      201,
+    );
   } catch (error) {
     console.error("Bulk student creation failed. Rolling back.", error);
-
-    await Promise.allSettled(
-      createdUserIds.map((id) => supabase.auth.admin.deleteUser(id)),
-    );
-
     return jsonResponse({ error: "Failed to create all students. No accounts were created." }, 500);
   }
-
-  return jsonResponse(
-    {
-      totalCreated: createdCredentials.length,
-      organizationId: teacherProfile.organization_id,
-      students: createdCredentials,
-    },
-    201,
-  );
 });
 
 function jsonResponse(body: Record<string, unknown>, status = 200) {
