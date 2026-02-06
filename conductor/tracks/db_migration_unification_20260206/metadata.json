@@ -1,8 +1,0 @@
-{
-  "track_id": "db_migration_unification_20260206",
-  "type": "technical_debt",
-  "status": "new",
-  "created_at": "2026-02-06T00:00:00Z",
-  "updated_at": "2026-02-06T00:00:00Z",
-  "description": "Refactor: unify database migration source of truth under supabase/migrations"
-}
