@@ -1,0 +1,22 @@
+Task Group: Architectural Refactor Phase 1 documentation foundation
+
+Summary:
+- Added canonical architecture reference at conductor/architecture.md with backend, frontend, full-stack, brownfield, and workflow sections.
+- Added explicit phase audit artifact at conductor/tracks/arch_refactor_20260206/phase1-audit.md documenting coverage gaps and docs-to-conductor mapping.
+- Enriched conductor/product.md with system boundaries/responsibilities and end-to-end data flow.
+- Updated AGENTS.md documentation map and workflow guardrails to point at canonical conductor documents.
+- Redirected stale README/docs checklist references away from missing docs/*.md architecture files.
+- Marked Architectural Refactor track as in progress in conductor/tracks.md.
+
+Files:
+- conductor/architecture.md
+- conductor/tracks/arch_refactor_20260206/phase1-audit.md
+- conductor/product.md
+- AGENTS.md
+- README.md
+- docs/MIGRATION_COMPLETION_CHECKLIST.md
+- conductor/docs/architecture/frontend.md
+- conductor/tracks.md
+
+Why:
+- Align project documentation with actual canonical sources and unblock the architecture refactor track from stale/invalid references.
