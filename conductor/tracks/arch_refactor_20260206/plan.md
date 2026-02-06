@@ -1,25 +1,25 @@
 # Tasks: Architectural Refactor & Stability
 
 ## Phase 1: Documentation & Conductor Enrichment
-- [ ] Task: Audit existing conductor/ files and identify content gaps
-    - [ ] Catalog what product.md, tech-stack.md, workflow.md currently cover
-    - [ ] Map the intended content from each missing docs/ file to its conductor/ destination
-- [ ] Task: Create conductor/architecture.md
-    - [ ] Write backend architecture section (Supabase schema design, RLS posture, data access patterns)
-    - [ ] Write frontend architecture section (Next.js App Router structure, component patterns, rendering strategy)
-    - [ ] Write full-stack integration section (deployment model, environment variables, testing matrix)
-    - [ ] Write brownfield migration status section (v1→v2 progress, cutover checklist, what remains)
-    - [ ] Write TDD & workflow section (issue workflow, TDD loop, testing expectations, PR discipline)
-- [ ] Task: Enrich conductor/product.md with architectural context
-    - [ ] Add current system boundaries and responsibilities
-    - [ ] Add data flow overview (client → API → Supabase → response)
-- [ ] Task: Update AGENTS.md
-    - [ ] Replace Documentation Map section to reference conductor/ files
-    - [ ] Remove references to non-existent docs/ files
-    - [ ] Update Workflow Guardrails step 2 to reference conductor/ instead of docs/
-- [ ] Task: Clean up stale docs/ references
-    - [ ] Verify docs/RETROSPECTIVE.md, docs/security-api-route-matrix.md, docs/curriculum/ are still valid
-    - [ ] Remove or redirect any other stale docs/ pointers in the codebase
+- [x] Task: Audit existing conductor/ files and identify content gaps `e31b061`
+    - [x] Catalog what product.md, tech-stack.md, workflow.md currently cover
+    - [x] Map the intended content from each missing docs/ file to its conductor/ destination
+- [x] Task: Create conductor/architecture.md `e31b061`
+    - [x] Write backend architecture section (Supabase schema design, RLS posture, data access patterns)
+    - [x] Write frontend architecture section (Next.js App Router structure, component patterns, rendering strategy)
+    - [x] Write full-stack integration section (deployment model, environment variables, testing matrix)
+    - [x] Write brownfield migration status section (v1→v2 progress, cutover checklist, what remains)
+    - [x] Write TDD & workflow section (issue workflow, TDD loop, testing expectations, PR discipline)
+- [x] Task: Enrich conductor/product.md with architectural context `e31b061`
+    - [x] Add current system boundaries and responsibilities
+    - [x] Add data flow overview (client → API → Supabase → response)
+- [x] Task: Update AGENTS.md `e31b061`
+    - [x] Replace Documentation Map section to reference conductor/ files
+    - [x] Remove references to non-existent docs/ files
+    - [x] Update Workflow Guardrails step 2 to reference conductor/ instead of docs/
+- [x] Task: Clean up stale docs/ references `e31b061`
+    - [x] Verify docs/RETROSPECTIVE.md, docs/security-api-route-matrix.md, docs/curriculum/ are still valid
+    - [x] Remove or redirect any other stale docs/ pointers in the codebase
 - [ ] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md)
 
 ## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption)
