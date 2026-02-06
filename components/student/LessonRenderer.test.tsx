@@ -3,6 +3,12 @@ import { render, screen } from '@testing-library/react';
 import { LessonRenderer } from './LessonRenderer';
 import type { ContentBlock } from '@/lib/db/schema/phases';
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+}));
+
 // Mock usePhaseProgress hook
 vi.mock('@/hooks/usePhaseProgress', () => ({
   usePhaseProgress: vi.fn(() => ({
@@ -10,6 +16,10 @@ vi.mock('@/hooks/usePhaseProgress', () => ({
     isLoading: false,
     refetch: vi.fn(),
   })),
+}));
+
+vi.mock('@/components/lesson/PhaseCompleteButton', () => ({
+  PhaseCompleteButton: () => <button type="button">Mock Complete Phase</button>,
 }));
 
 describe('LessonRenderer', () => {
