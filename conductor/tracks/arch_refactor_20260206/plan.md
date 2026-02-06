@@ -1,6 +1,6 @@
 # Tasks: Architectural Refactor & Stability
 
-## Phase 1: Documentation & Conductor Enrichment
+## Phase 1: Documentation & Conductor Enrichment [checkpoint: 890213d]
 - [x] Task: Audit existing conductor/ files and identify content gaps `e31b061`
     - [x] Catalog what product.md, tech-stack.md, workflow.md currently cover
     - [x] Map the intended content from each missing docs/ file to its conductor/ destination
@@ -20,7 +20,7 @@
 - [x] Task: Clean up stale docs/ references `e31b061`
     - [x] Verify docs/RETROSPECTIVE.md, docs/security-api-route-matrix.md, docs/curriculum/ are still valid
     - [x] Remove or redirect any other stale docs/ pointers in the codebase
-- [~] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md) `890213d`
 
 ## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption)
 - [ ] Task: Configure Vitest types in tsconfig.json
