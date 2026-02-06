@@ -50,6 +50,9 @@ To begin, always assess the current state by checking the git branch and running
 3. Github-centric workflow:
   - Use gh to check the current epic tracker and related issues. Propose three next issues to the user, numbered for ease of choice.
   - Open a GitHub issue per slice, branch as `<type>/<issue>-<slug>` from `main`, and follow Conventional Commits.
+  - Execute each Conductor track on its own branch (one active track per branch).
+  - When a track is complete, merge that track branch back into `main` before starting the next track branch.
+  - After merge, archive completed track folders from `conductor/tracks/<track_id>/` to `conductor/archive/<track_id>/` and update `conductor/tracks.md`.
 4. Practice TDD. Write/adjust tests first (unit/integration/E2E) and run `npm run lint` plus relevant test scripts before each commit.
 5. Keep documentation current. If work changes architecture, workflow, or schema, update `docs/` (and this file) in the same PR.
 6. Push the branch, open a PR with issue links, test evidence, and run checks. Squash merge after green CI and update sprint artifacts.
