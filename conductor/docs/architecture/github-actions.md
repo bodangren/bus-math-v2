@@ -23,6 +23,11 @@ A GitHub Actions workflow (`.github/workflows/deploy-migrations.yml`) that:
 2. Uses Supabase CLI to apply migrations to production
 3. Runs automatically on every relevant push
 
+And a PR guard workflow (`.github/workflows/migration-parity.yml`) that:
+1. Triggers on pull requests that touch API routes or migration files
+2. Runs `node scripts/check-migration-parity.mjs`
+3. Fails when runtime DB dependencies are not defined in `supabase/migrations`
+
 ## Required GitHub Secrets
 
 You need to add three secrets to your GitHub repository:
@@ -90,10 +95,11 @@ You can also trigger migrations manually:
 ### Workflow Steps
 
 1. **Checkout code** - Gets the latest code from the repository
-2. **Setup Supabase CLI** - Installs the Supabase CLI tool
-3. **Link to project** - Connects to your production Supabase instance
-4. **Apply migrations** - Runs `supabase db push` to apply all pending migrations
-5. **Notify on failure** - Reports if anything goes wrong
+2. **Validate migration parity** - Runs `node scripts/check-migration-parity.mjs`
+3. **Setup Supabase CLI** - Installs the Supabase CLI tool
+4. **Link to project** - Connects to your production Supabase instance
+5. **Apply migrations** - Runs `supabase db push` to apply all pending migrations
+6. **Notify on failure** - Reports if anything goes wrong
 
 ## Testing the Setup
 
