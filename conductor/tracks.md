@@ -21,3 +21,9 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## [ ] Track: Sprint 6: Quality & Stability
 *Link: [./conductor/tracks/sprint6_quality_20260101/](./conductor/tracks/sprint6_quality_20260101/)*
+
+## [ ] Track: Refactor - Database Migration Unification
+*Link: [./conductor/tracks/db_migration_unification_20260206/](./conductor/tracks/db_migration_unification_20260206/)*
+
+## [ ] Track: Refactor - Phase Completion Consolidation
+*Link: [./conductor/tracks/phase_completion_consolidation_20260206/](./conductor/tracks/phase_completion_consolidation_20260206/)*

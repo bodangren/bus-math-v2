@@ -20,6 +20,7 @@ import { competencyStandards } from '@/lib/db/schema/competencies';
 import { profiles } from '@/lib/db/schema/profiles';
 import { organizations } from '@/lib/db/schema/organizations';
 import type { NewPhase } from '@/lib/db/schema/validators';
+import { enforceTestRouteGuard } from '@/lib/api/test-route-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,13 +37,10 @@ const TEST_EMAIL = 'e2e-test-student@test.local';
 const TEST_PASSWORD = 'TestPassword123!';
 const TEST_USERNAME = 'e2e-test-student';
 
-export async function POST() {
-  // Security check: Only allow in non-production environments
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { error: 'Test seed API cannot be used in production' },
-      { status: 403 }
-    );
+export async function POST(request: Request) {
+  const guardResponse = enforceTestRouteGuard(request);
+  if (guardResponse) {
+    return guardResponse;
   }
 
   try {

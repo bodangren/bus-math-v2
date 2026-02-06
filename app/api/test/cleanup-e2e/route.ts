@@ -17,6 +17,7 @@ import { lessons } from '@/lib/db/schema/lessons';
 import { competencyStandards } from '@/lib/db/schema/competencies';
 import { organizations } from '@/lib/db/schema/organizations';
 import { eq } from 'drizzle-orm';
+import { enforceTestRouteGuard } from '@/lib/api/test-route-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,12 +32,9 @@ interface CleanupRequest {
 }
 
 export async function POST(request: Request) {
-  // Security check: Only allow in non-production environments
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      { success: false, error: 'Test cleanup API cannot be used in production' },
-      { status: 403 }
-    );
+  const guardResponse = enforceTestRouteGuard(request);
+  if (guardResponse) {
+    return guardResponse;
   }
 
   try {

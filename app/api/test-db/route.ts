@@ -9,8 +9,14 @@
 
 import { NextResponse } from 'next/server';
 import { testDatabaseConnection } from '@/lib/db/test-connection';
+import { enforceTestRouteGuard } from '@/lib/api/test-route-guard';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const guardResponse = enforceTestRouteGuard(request);
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   const result = await testDatabaseConnection();
 
   return NextResponse.json(result, {
