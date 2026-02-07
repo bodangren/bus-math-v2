@@ -1,0 +1,138 @@
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
+
+import { ComprehensionCheck, type ComprehensionCheckActivity } from '../../../components/exercises/ComprehensionCheck'
+import type { ComprehensionQuizActivityProps } from '@/lib/db/schema/activities'
+
+const buildActivity = (overrides: Partial<ComprehensionQuizActivityProps> = {}): ComprehensionCheckActivity => ({
+  id: 'activity-quiz',
+  componentKey: 'comprehension-quiz',
+  displayName: 'Knowledge Check',
+  description: 'Verify understanding',
+  props: {
+    title: 'Quick Quiz',
+    description: 'Answer a few questions.',
+    allowRetry: true,
+    showExplanations: true,
+    questions: [
+      {
+        id: 'q1',
+        text: 'What is revenue minus expenses?',
+        type: 'multiple-choice',
+        options: ['Net Income', 'Assets', 'Liabilities'],
+        correctAnswer: 'Net Income',
+        explanation: 'Net income measures profitability.'
+      },
+      {
+        id: 'q2',
+        text: 'True or false: Assets = Liabilities + Equity.',
+        type: 'true-false',
+        correctAnswer: 'True',
+        explanation: 'This is the fundamental accounting equation.'
+      }
+    ],
+    ...overrides
+  },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date(),
+  updatedAt: new Date()
+})
+
+describe('ComprehensionCheck', () => {
+  it('submits answers and reports score', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    render(<ComprehensionCheck activity={buildActivity()} onSubmit={onSubmit} />)
+
+    await user.click(screen.getByRole('button', { name: /Net Income/i }))
+    await user.click(screen.getByRole('button', { name: /True/i }))
+    await user.click(screen.getByRole('button', { name: /Submit answers/i }))
+
+    expect(await screen.findByText(/2\/2 correct/i)).toBeInTheDocument()
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activityId: 'activity-quiz',
+        score: 2,
+        totalQuestions: 2
+      })
+    )
+  })
+
+  it('accepts short-answer input and scores correctly', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      questions: [
+        {
+          id: 'sa1',
+          text: 'Define the accounting equation.',
+          type: 'short-answer',
+          correctAnswer: 'Assets = Liabilities + Equity',
+          explanation: 'Basic accounting identity.'
+        },
+        {
+          id: 'mc1',
+          text: 'Which statement shows profit?',
+          type: 'multiple-choice',
+          options: ['Income Statement', 'Balance Sheet'],
+          correctAnswer: 'Income Statement',
+          explanation: 'Income statement reports revenue and expenses.'
+        }
+      ]
+    })
+
+    render(<ComprehensionCheck activity={activity} onSubmit={onSubmit} />)
+
+    await user.type(screen.getByPlaceholderText(/type your answer/i), 'assets = liabilities + equity')
+    await user.click(screen.getByRole('button', { name: /income statement/i }))
+    await user.click(screen.getByRole('button', { name: /submit answers/i }))
+
+    expect(await screen.findByText(/2\/2 correct/i)).toBeInTheDocument()
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        activityId: 'activity-quiz',
+        score: 2,
+        totalQuestions: 2,
+        responses: expect.objectContaining({
+          sa1: 'assets = liabilities + equity',
+          mc1: 'Income Statement'
+        })
+      })
+    )
+  })
+
+  it('keeps multiple-choice option order stable across rerenders', () => {
+    const activity = buildActivity({
+      questions: [
+        {
+          id: 'stable-order',
+          text: 'Pick the matching definition',
+          type: 'multiple-choice',
+          options: ['100% tests', '50% homework, 50% participation', '60% formative, 40% summative'],
+          correctAnswer: '60% formative, 40% summative',
+          explanation: 'Course grading split.'
+        }
+      ]
+    })
+
+    const { rerender } = render(<ComprehensionCheck activity={activity} />)
+
+    const questionContainer = screen.getByText(/Pick the matching definition/i).closest('div')
+    expect(questionContainer).not.toBeNull()
+    const initialOptionLabels = within(questionContainer as HTMLElement)
+      .getAllByRole('button')
+      .map((button) => button.textContent?.trim())
+
+    rerender(<ComprehensionCheck activity={activity} />)
+
+    const rerenderedContainer = screen.getByText(/Pick the matching definition/i).closest('div')
+    expect(rerenderedContainer).not.toBeNull()
+    const rerenderedOptionLabels = within(rerenderedContainer as HTMLElement)
+      .getAllByRole('button')
+      .map((button) => button.textContent?.trim())
+
+    expect(rerenderedOptionLabels).toEqual(initialOptionLabels)
+  })
+})

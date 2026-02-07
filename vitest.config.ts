@@ -10,13 +10,7 @@ export default defineConfig({
     globals: true,
     include: [
       '__tests__/**/*.test.{ts,tsx}',
-      'app/**/*.test.{ts,tsx}',
-      'components/**/*.test.{ts,tsx}',
-      'hooks/**/*.test.{ts,tsx}',
-      'lib/**/*.test.{ts,tsx}',
-      'supabase/**/*.test.{ts,tsx}',
       'tests/security/**/*.test.{ts,tsx}',
-      'proxy.test.ts',
     ],
     reporters: 'default'
   },
