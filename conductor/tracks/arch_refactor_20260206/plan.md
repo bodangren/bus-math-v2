@@ -22,7 +22,7 @@
     - [x] Remove or redirect any other stale docs/ pointers in the codebase
 - [x] Task: Conductor - User Manual Verification 'Documentation & Conductor Enrichment' (Protocol in workflow.md) `890213d`
 
-## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption)
+## Phase 2: Test Stabilization & Type Safety (Sprint 6 Absorption) [checkpoint: 1c2de5e]
 - [x] Task: Configure Vitest types in tsconfig.json `f6e0e2c`
     - [x] Write test verifying tsconfig includes vitest/globals
     - [x] Add vitest/globals to tsconfig.json types array (already present; verified)
@@ -47,7 +47,7 @@
 - [x] Task: Verify npm run lint passes clean
     - [x] Fix all ESLint errors
     - [x] Fix all ESLint warnings that indicate real problems
-- [~] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md) `1c2de5e`
 
 ## Phase 3: Test Structure Consolidation
 - [ ] Task: Define and document the target test directory structure
