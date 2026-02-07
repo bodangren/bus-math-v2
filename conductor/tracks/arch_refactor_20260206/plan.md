@@ -116,7 +116,7 @@
     - [x] Automated verification completed
     - [x] Manual verification steps 1-3 confirmed by user; steps 4-5 blocked pending seed data
 
-## Phase 6: Supabase-First Migration Unification
+## Phase 6: Supabase-First Migration Unification [checkpoint: 4221208]
 - [x] Task: Audit current Drizzle↔Supabase coupling `f641a9d`
     - [x] Catalog all places drizzle-kit is used for schema generation
     - [x] Catalog all places Drizzle schema files define tables (vs just types)
