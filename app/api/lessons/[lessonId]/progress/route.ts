@@ -2,25 +2,15 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
+import type {
+  LessonProgressResponse,
+  PhaseProgressResponse,
+  PhaseStatus,
+} from '@/types/api';
 
 const paramsSchema = z.object({
   lessonId: z.string().uuid('Invalid lesson ID format'),
 });
-
-type PhaseStatus = 'completed' | 'current' | 'available' | 'locked';
-
-interface PhaseProgressResponse {
-  phaseNumber: number;
-  phaseId: string;
-  status: PhaseStatus;
-  startedAt: string | null;
-  completedAt: string | null;
-  timeSpentSeconds: number | null;
-}
-
-interface ProgressResponse {
-  phases: PhaseProgressResponse[];
-}
 
 export async function GET(
   request: Request,
@@ -147,7 +137,7 @@ export async function GET(
       };
     });
 
-    const response: ProgressResponse = { phases };
+    const response: LessonProgressResponse = { phases };
 
     return NextResponse.json(response);
   } catch (error) {

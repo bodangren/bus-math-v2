@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
+import type {
+  CompleteActivityRequest,
+  CompleteActivityResponse,
+} from '@/types/api';
 
 /**
  * Request schema for activity completion
@@ -14,21 +18,8 @@ const CompleteActivitySchema = z.object({
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
 });
 
-type CompleteActivityRequest = z.infer<typeof CompleteActivitySchema>;
-
-/**
- * RPC function response from complete_activity_atomic
- */
-interface CompleteActivityResponse {
-  success: boolean;
-  nextPhaseUnlocked: boolean;
-  message: string;
-  completionId?: string;
-  completedAt?: string;
-  completedPhases?: number;
-  totalPhases?: number;
-  errorCode?: string;
-}
+type CompleteActivityPayload = z.infer<typeof CompleteActivitySchema> &
+  CompleteActivityRequest;
 
 /**
  * POST /api/activities/complete
@@ -79,7 +70,7 @@ export async function POST(request: NextRequest) {
       linkedStandardId,
       completionData,
       idempotencyKey,
-    }: CompleteActivityRequest = validationResult.data;
+    }: CompleteActivityPayload = validationResult.data;
 
     // Call the RPC function for atomic completion
     // SECURITY: student_id is derived from auth.uid() in the RPC function

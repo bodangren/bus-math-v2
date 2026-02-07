@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
+import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
 /**
  * Request schema for phase completion
@@ -14,19 +15,7 @@ const CompletePhaseSchema = z.object({
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
 });
 
-type CompletePhaseRequest = z.infer<typeof CompletePhaseSchema>;
-
-/**
- * Response from the API
- */
-interface CompletePhaseResponse {
-  success: boolean;
-  nextPhaseUnlocked: boolean;
-  message?: string;
-  error?: string;
-  phaseId?: string;
-  completedAt?: string;
-}
+type CompletePhasePayload = z.infer<typeof CompletePhaseSchema> & CompletePhaseRequest;
 
 /**
  * POST /api/phases/complete
@@ -93,7 +82,7 @@ export async function POST(request: Request) {
       phaseNumber,
       timeSpent,
       idempotencyKey,
-    }: CompletePhaseRequest = validationResult.data;
+    }: CompletePhasePayload = validationResult.data;
 
     // Use server timestamp for security - never trust client timestamps
     const serverTimestamp = new Date().toISOString();

@@ -1,18 +1,4 @@
-export interface CompletePhaseRequest {
-  lessonId: string;
-  phaseNumber: number;
-  timeSpent: number;
-  idempotencyKey: string;
-}
-
-export interface CompletePhaseResponse {
-  success: boolean;
-  nextPhaseUnlocked: boolean;
-  message?: string;
-  error?: string;
-  phaseId?: string;
-  completedAt?: string;
-}
+import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
 export class PhaseCompletionError extends Error {
   status?: number;

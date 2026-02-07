@@ -4,10 +4,9 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import {
   completePhaseRequest,
-  type CompletePhaseResponse,
-  type CompletePhaseRequest,
   PhaseCompletionError,
 } from '@/lib/phase-completion/client';
+import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
 /**
  * Queued completion payload stored in localStorage
