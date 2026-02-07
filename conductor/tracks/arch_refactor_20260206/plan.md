@@ -81,10 +81,10 @@
 - [x] Task: Create types/curriculum.ts `fc09ac2`
     - [x] Write test verifying lesson, phase, and content block types
     - [x] Extract curriculum-related types from scattered definitions
-- [ ] Task: Update imports across the codebase
-    - [ ] Replace inline type definitions with imports from types/
-    - [ ] Replace schema-file type imports where types/ provides the canonical version
-    - [ ] Verify tsc --noEmit passes after all import changes
+- [x] Task: Update imports across the codebase `03461eb`
+    - [x] Replace inline type definitions with imports from types/
+    - [x] Replace schema-file type imports where types/ provides the canonical version
+    - [x] Verify tsc --noEmit passes after all import changes
 - [ ] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md)
 
 ## Phase 5: Activities Schema Decomposition
