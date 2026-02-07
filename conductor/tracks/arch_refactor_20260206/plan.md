@@ -122,10 +122,10 @@
     - [x] Catalog all places Drizzle schema files define tables (vs just types)
     - [x] Verify scripts/check-migration-parity.mjs exists and functions
     - [x] Findings recorded in `conductor/tracks/arch_refactor_20260206/phase6-audit.md`
-- [ ] Task: Archive drizzle/migrations/ directory
-    - [ ] Write test verifying no runtime code imports from drizzle/migrations/
-    - [ ] Move drizzle/migrations/ to drizzle/archived-migrations/
-    - [ ] Update drizzle.config.ts to remove migration generation config
+- [x] Task: Archive drizzle/migrations/ directory `5bba2f7`
+    - [x] Write test verifying no runtime code imports from drizzle/migrations/
+    - [x] Move drizzle/migrations/ to drizzle/archived-migrations/
+    - [x] Update drizzle.config.ts to remove migration generation config
 - [ ] Task: Refactor Drizzle schema files to query-only role
     - [ ] Write test verifying Drizzle schema types match Supabase SQL schema
     - [ ] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
