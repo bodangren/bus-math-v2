@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { type UnitIntroduction as UnitIntroductionData } from '@/lib/db/schema/lessons';
+import { type UnitIntroduction as UnitIntroductionData } from '@/types/curriculum';
 import {
   ArrowRight,
   Clock,

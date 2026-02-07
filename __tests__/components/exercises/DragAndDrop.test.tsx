@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { DropResult } from '@hello-pangea/dnd'
 
 import { DragAndDrop, type DragAndDropActivity } from '../../../components/exercises/DragAndDrop'
-import type { DragAndDropActivityProps } from '@/lib/db/schema/activities'
+import type { DragAndDropActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<DragAndDropActivityProps> = {}): DragAndDropActivity => ({
   id: 'activity-dnd',

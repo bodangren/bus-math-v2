@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { type UnitDrivingQuestion } from '@/lib/db/schema/lessons';
+import { type UnitDrivingQuestion } from '@/types/curriculum';
 import { HelpCircle } from 'lucide-react';
 
 interface DrivingQuestionProps {

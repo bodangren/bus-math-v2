@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { JournalEntryBuilding } from '../../../components/exercises/JournalEntryBuilding'
-import type { JournalEntryActivityProps } from '@/lib/db/schema/activities'
+import type { JournalEntryActivityProps } from '@/types/activities'
 import type { JournalEntryActivity } from '../../../components/exercises/JournalEntryBuilding'
 
 const buildActivity = (overrides: Partial<JournalEntryActivityProps> = {}): JournalEntryActivity => ({

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SpreadsheetWrapper, type SpreadsheetData, getTemplateByKey } from "./index";
-import type { SpreadsheetActivityProps } from "@/lib/db/schema/activities";
+import type { SpreadsheetActivityProps } from "@/types/activities";
 
 type SpreadsheetActivityComponentProps = Omit<SpreadsheetActivityProps, "initialData"> & {
   onSubmit?: (data: { spreadsheetData: SpreadsheetData }) => void;

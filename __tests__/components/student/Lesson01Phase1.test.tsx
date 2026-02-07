@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import { type Lesson, type Phase } from '@/lib/db/schema/validators';
 import Lesson01Phase1 from '../../../components/student/Lesson01Phase1';
 import { createLesson, createPhase } from '@/__tests__/utils/lessonBuilders';
-import type { ContentBlock } from '@/lib/db/schema/phases';
+import type { ContentBlock } from '@/types/curriculum';
 
 const buildContentBlocks = (): ContentBlock[] => [
   {

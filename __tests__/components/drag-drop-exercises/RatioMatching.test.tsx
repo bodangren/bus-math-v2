@@ -9,7 +9,7 @@ import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
 } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { RatioMatchingActivityProps } from '@/lib/db/schema/activities';
+import type { RatioMatchingActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<RatioMatchingActivityProps> = {}): RatioMatchingActivity => ({
   id: 'activity-ratio',

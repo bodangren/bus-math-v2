@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
-import { type InventoryFlowDiagramActivityProps } from '@/lib/db/schema/activities';
+import { type InventoryFlowDiagramActivityProps } from '@/types/activities';
 
 export type InventoryFlowDiagramActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'inventory-flow-diagram';

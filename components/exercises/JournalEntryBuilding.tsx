@@ -81,7 +81,7 @@ import {
   Building
 } from 'lucide-react'
 
-import { type JournalEntryActivityProps } from '@/lib/db/schema/activities'
+import { type JournalEntryActivityProps } from '@/types/activities'
 import { type Activity } from '@/lib/db/schema/validators'
 
 interface JournalEntry {

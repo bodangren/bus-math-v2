@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { LemonadeStand, type LemonadeStandActivity, type LemonadeStandState } from '../../../components/business-simulations/LemonadeStand'
-import type { LemonadeStandActivityProps } from '@/lib/db/schema/activities'
+import type { LemonadeStandActivityProps } from '@/types/activities'
 
 const defaultLemonadeProps: LemonadeStandActivityProps = {
   title: 'Lemonade Stand Tycoon',

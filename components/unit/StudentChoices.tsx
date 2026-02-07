@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { type UnitStudentChoices } from '@/lib/db/schema/lessons';
+import { type UnitStudentChoices } from '@/types/curriculum';
 import { Presentation, UserCheck, Users } from 'lucide-react';
 
 interface StudentChoicesProps {

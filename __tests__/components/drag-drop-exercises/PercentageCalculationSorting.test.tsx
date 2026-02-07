@@ -12,7 +12,7 @@ import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
 } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { PercentageCalculationSortingActivityProps } from '@/lib/db/schema/activities';
+import type { PercentageCalculationSortingActivityProps } from '@/types/activities';
 
 const buildActivity = (
   overrides: Partial<PercentageCalculationSortingActivityProps> = {}

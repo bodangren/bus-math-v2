@@ -1,5 +1,5 @@
 import type { Lesson, Phase } from '@/lib/db/schema/validators';
-import type { ContentBlock, PhaseMetadata } from '@/lib/db/schema/phases';
+import type { ContentBlock, PhaseMetadata } from '@/types/curriculum';
 
 type PartialDeep<T> = {
   [K in keyof T]?: T[K] extends object ? PartialDeep<T[K]> : T[K];

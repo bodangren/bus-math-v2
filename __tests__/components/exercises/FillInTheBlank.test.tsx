@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { FillInTheBlank, type FillInTheBlankActivity } from '../../../components/exercises/FillInTheBlank'
-import type { FillInTheBlankActivityProps } from '@/lib/db/schema/activities'
+import type { FillInTheBlankActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<FillInTheBlankActivityProps> = {}): FillInTheBlankActivity => ({
   id: 'activity-fill',

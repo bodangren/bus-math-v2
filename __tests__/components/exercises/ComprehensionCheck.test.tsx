@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { ComprehensionCheck, type ComprehensionCheckActivity } from '../../../components/exercises/ComprehensionCheck'
-import type { ComprehensionQuizActivityProps } from '@/lib/db/schema/activities'
+import type { ComprehensionQuizActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<ComprehensionQuizActivityProps> = {}): ComprehensionCheckActivity => ({
   id: 'activity-quiz',

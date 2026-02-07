@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { CashFlowChallenge } from '../../../components/business-simulations/CashFlowChallenge'
-import type { CashFlowChallengeActivityProps } from '@/lib/db/schema/activities'
+import type { CashFlowChallengeActivityProps } from '@/types/activities'
 
 const mockActivity: CashFlowChallengeActivityProps = {
   title: 'Cash Flow Challenge',

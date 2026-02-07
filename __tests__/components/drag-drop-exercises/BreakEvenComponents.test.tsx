@@ -6,7 +6,7 @@ import type { DropResult } from '@hello-pangea/dnd';
 
 import { BreakEvenComponents, type BreakEvenComponentsActivity } from '../../../components/drag-drop-exercises/BreakEvenComponents';
 import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { BreakEvenComponentsActivityProps } from '@/lib/db/schema/activities';
+import type { BreakEvenComponentsActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<BreakEvenComponentsActivityProps> = {}): BreakEvenComponentsActivity => ({
   id: 'activity-break-even',

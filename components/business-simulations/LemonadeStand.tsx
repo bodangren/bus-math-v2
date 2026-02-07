@@ -111,7 +111,7 @@ import {
 } from 'lucide-react'
 
 import type { Activity } from '@/lib/db/schema/validators'
-import type { LemonadeStandActivityProps } from '@/lib/db/schema/activities'
+import type { LemonadeStandActivityProps } from '@/types/activities'
 
 export type LemonadeStandActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'lemonade-stand'

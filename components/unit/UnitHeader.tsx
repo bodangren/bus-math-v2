@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { type LessonMetadata } from '@/lib/db/schema/lessons';
+import { type LessonMetadata } from '@/types/curriculum';
 import { cn } from '@/lib/utils';
 import { Clock, GraduationCap } from 'lucide-react';
 

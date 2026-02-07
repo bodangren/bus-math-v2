@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LessonRenderer } from '../../../components/student/LessonRenderer';
-import type { ContentBlock } from '@/lib/db/schema/phases';
+import type { ContentBlock } from '@/types/curriculum';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({

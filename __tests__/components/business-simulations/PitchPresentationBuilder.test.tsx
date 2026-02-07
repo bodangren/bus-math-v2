@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { PitchPresentationBuilder } from '../../../components/business-simulations/PitchPresentationBuilder'
-import type { PitchPresentationBuilderActivityProps } from '@/lib/db/schema/activities'
+import type { PitchPresentationBuilderActivityProps } from '@/types/activities'
 
 const mockActivity: PitchPresentationBuilderActivityProps = {
   title: 'Investor Pitch Builder',

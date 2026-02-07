@@ -28,7 +28,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react'
-import type { CashFlowChallengeActivityProps } from '@/lib/db/schema/activities'
+import type { CashFlowChallengeActivityProps } from '@/types/activities'
 
 interface CashFlow {
   id: string

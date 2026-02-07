@@ -6,7 +6,7 @@ import type { DropResult } from '@hello-pangea/dnd';
 
 import { CashFlowTimeline, type CashFlowTimelineActivity } from '../../../components/drag-drop-exercises/CashFlowTimeline';
 import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { CashFlowTimelineActivityProps } from '@/lib/db/schema/activities';
+import type { CashFlowTimelineActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<CashFlowTimelineActivityProps> = {}): CashFlowTimelineActivity => ({
   id: 'activity-cash-flow',

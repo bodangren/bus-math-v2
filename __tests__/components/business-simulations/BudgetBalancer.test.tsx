@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { BudgetBalancer, type BudgetBalancerActivity, type BudgetBalancerState } from '../../../components/business-simulations/BudgetBalancer'
-import type { BudgetBalancerActivityProps } from '@/lib/db/schema/activities'
+import type { BudgetBalancerActivityProps } from '@/types/activities'
 
 const defaultBudgetProps: BudgetBalancerActivityProps = {
   title: 'Budget Balancer',

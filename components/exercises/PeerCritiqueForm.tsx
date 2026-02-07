@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { AlertCircle, FileText, Send, Star, User } from 'lucide-react'
 
-import { type PeerCritiqueActivityProps } from '@/lib/db/schema/activities'
+import { type PeerCritiqueActivityProps } from '@/types/activities'
 import { type Activity } from '@/lib/db/schema/validators'
 
 const DEFAULT_CATEGORIES: PeerCritiqueActivityProps['categories'] = [

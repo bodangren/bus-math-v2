@@ -6,7 +6,7 @@ import type { DropResult } from '@hello-pangea/dnd';
 
 import { FinancialStatementMatching, type FinancialStatementMatchingActivity } from '../../../components/drag-drop-exercises/FinancialStatementMatching';
 import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { FinancialStatementMatchingActivityProps } from '@/lib/db/schema/activities';
+import type { FinancialStatementMatchingActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<FinancialStatementMatchingActivityProps> = {}): FinancialStatementMatchingActivity => ({
   id: 'activity-financial-statements',

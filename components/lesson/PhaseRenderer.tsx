@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { contentBlockSchema, type ContentBlock } from '@/lib/db/schema/phases';
+import { contentBlockSchema, type ContentBlock } from '@/types/curriculum';
 import { VideoPlayer } from './VideoPlayer';
 import { Callout } from './Callout';
 import { MarkdownRenderer } from './MarkdownRenderer';

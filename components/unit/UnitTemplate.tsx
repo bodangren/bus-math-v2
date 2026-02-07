@@ -1,4 +1,4 @@
-import { type LessonMetadata, type UnitContent } from '@/lib/db/schema/lessons';
+import { type LessonMetadata, type UnitContent } from '@/types/curriculum';
 import { cn } from '@/lib/utils';
 
 import { AssessmentOverview } from './AssessmentOverview';

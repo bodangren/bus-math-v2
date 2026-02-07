@@ -92,7 +92,7 @@ import {
   BarChart3,
   PieChart
 } from 'lucide-react'
-import type { PitchPresentationBuilderActivityProps } from '@/lib/db/schema/activities'
+import type { PitchPresentationBuilderActivityProps } from '@/types/activities'
 
 type PitchSection = 'problem' | 'solution' | 'market' | 'business-model' | 'financials' | 'ask'
 type BusinessType = 'saas' | 'ecommerce' | 'fintech' | 'healthtech' | 'marketplace' | 'ai-ml'

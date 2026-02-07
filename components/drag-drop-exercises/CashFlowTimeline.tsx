@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
-import { type CashFlowTimelineActivityProps } from '@/lib/db/schema/activities';
+import { type CashFlowTimelineActivityProps } from '@/types/activities';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,

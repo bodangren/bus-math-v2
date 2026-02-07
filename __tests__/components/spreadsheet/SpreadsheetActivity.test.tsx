@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SpreadsheetActivity } from '../../../components/spreadsheet/SpreadsheetActivity';
-import type { SpreadsheetActivityProps } from '@/lib/db/schema/activities';
+import type { SpreadsheetActivityProps } from '@/types/activities';
 
 // Mock react-spreadsheet
 vi.mock('react-spreadsheet', () => ({

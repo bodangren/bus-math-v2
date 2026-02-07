@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
-import { type BudgetCategorySortActivityProps } from '@/lib/db/schema/activities';
+import { type BudgetCategorySortActivityProps } from '@/types/activities';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,

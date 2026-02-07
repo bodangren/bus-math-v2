@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { InventoryManager } from '../../../components/business-simulations/InventoryManager'
-import type { InventoryManagerActivityProps } from '@/lib/db/schema/activities'
+import type { InventoryManagerActivityProps } from '@/types/activities'
 
 const mockActivity: InventoryManagerActivityProps = {
   title: 'Inventory Manager',

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import Image from 'next/image';
 
 import type { Lesson, Phase } from '@/lib/db/schema/validators';
-import type { ContentBlock } from '@/lib/db/schema/phases';
+import type { ContentBlock } from '@/types/curriculum';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PhaseHeader } from './PhaseHeader';

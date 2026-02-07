@@ -1,21 +1,13 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import type {
+  LessonProgressResponse as ProgressData,
+  PhaseProgressResponse as PhaseProgress,
+  PhaseStatus,
+} from '@/types/api';
 
-export type PhaseStatus = 'completed' | 'current' | 'available' | 'locked';
-
-export interface PhaseProgress {
-  phaseNumber: number;
-  phaseId: string;
-  status: PhaseStatus;
-  startedAt: string | null;
-  completedAt: string | null;
-  timeSpentSeconds: number | null;
-}
-
-export interface ProgressData {
-  phases: PhaseProgress[];
-}
+export type { PhaseStatus, PhaseProgress, ProgressData };
 
 interface UsePhaseProgressResult {
   data: ProgressData | null;

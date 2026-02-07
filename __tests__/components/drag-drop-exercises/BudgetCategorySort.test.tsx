@@ -9,7 +9,7 @@ import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
 } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { BudgetCategorySortActivityProps } from '@/lib/db/schema/activities';
+import type { BudgetCategorySortActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<BudgetCategorySortActivityProps> = {}): BudgetCategorySortActivity => ({
   id: 'activity-budget',

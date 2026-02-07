@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 
-import { type ReflectionJournalActivityProps } from '@/lib/db/schema/activities'
+import { type ReflectionJournalActivityProps } from '@/types/activities'
 import { type Activity } from '@/lib/db/schema/validators'
 
 interface ReflectionPrompt {

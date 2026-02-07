@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { type UnitObjectives } from '@/lib/db/schema/lessons';
+import { type UnitObjectives } from '@/types/curriculum';
 import { BarChart3, Target, Wrench } from 'lucide-react';
 
 interface UnitOverviewProps {

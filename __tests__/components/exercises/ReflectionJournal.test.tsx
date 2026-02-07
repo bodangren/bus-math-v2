@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import ReflectionJournal from '../../../components/exercises/ReflectionJournal'
-import type { ReflectionJournalActivityProps } from '@/lib/db/schema/activities'
+import type { ReflectionJournalActivityProps } from '@/types/activities'
 import type { Activity } from '@/lib/db/schema/validators'
 
 type ReflectionJournalActivity = Omit<Activity, 'componentKey' | 'props'> & {

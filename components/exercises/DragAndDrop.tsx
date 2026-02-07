@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { type DragAndDropActivityProps } from '@/lib/db/schema/activities';
+import { type DragAndDropActivityProps } from '@/types/activities';
 import { type Activity } from '@/lib/db/schema/validators';
 
 interface MatchingItem {

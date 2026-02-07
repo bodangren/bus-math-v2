@@ -87,7 +87,7 @@ import {
 } from 'lucide-react'
 
 import type { Activity } from '@/lib/db/schema/validators'
-import type { BudgetBalancerActivityProps } from '@/lib/db/schema/activities'
+import type { BudgetBalancerActivityProps } from '@/types/activities'
 
 export type BudgetBalancerActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'budget-balancer'

@@ -4,7 +4,7 @@ import {
   type UnitDifferentiation,
   type UnitPrerequisites,
   type UnitResource
-} from '@/lib/db/schema/lessons';
+} from '@/types/curriculum';
 import { CheckSquare, Download, ExternalLink, Monitor } from 'lucide-react';
 
 interface PrerequisitesProps {

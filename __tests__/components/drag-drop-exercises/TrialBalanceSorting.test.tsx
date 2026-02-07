@@ -6,7 +6,7 @@ import type { DropResult } from '@hello-pangea/dnd';
 
 import { TrialBalanceSorting, type TrialBalanceSortingActivity } from '../../../components/drag-drop-exercises/TrialBalanceSorting';
 import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
-import type { TrialBalanceSortingActivityProps } from '@/lib/db/schema/activities';
+import type { TrialBalanceSortingActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<TrialBalanceSortingActivityProps> = {}): TrialBalanceSortingActivity => ({
   id: 'activity-trial-balance',

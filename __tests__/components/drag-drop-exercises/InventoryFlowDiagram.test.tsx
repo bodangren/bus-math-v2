@@ -10,7 +10,7 @@ import {
   INVENTORY_AVAILABLE_DROPPABLE,
   type InventoryFlowDiagramActivity
 } from '../../../components/drag-drop-exercises/InventoryFlowDiagram';
-import type { InventoryFlowDiagramActivityProps } from '@/lib/db/schema/activities';
+import type { InventoryFlowDiagramActivityProps } from '@/types/activities';
 
 const buildActivity = (
   overrides: Partial<InventoryFlowDiagramActivityProps> = {}

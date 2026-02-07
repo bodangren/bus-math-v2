@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { type FillInTheBlankActivityProps } from '@/lib/db/schema/activities';
+import { type FillInTheBlankActivityProps } from '@/types/activities';
 import { type Activity } from '@/lib/db/schema/validators';
 
 export type FillInTheBlankActivity = Omit<Activity, 'componentKey' | 'props'> & {

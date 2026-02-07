@@ -13,7 +13,7 @@ import { lessons } from '@/lib/db/schema';
 import type {
   CashFlowChallengeActivityProps,
   ReflectionJournalActivityProps,
-} from '@/lib/db/schema/activities';
+} from '@/types/activities';
 import type { Activity } from '@/lib/db/schema/validators';
 
 export const dynamic = 'force-dynamic';

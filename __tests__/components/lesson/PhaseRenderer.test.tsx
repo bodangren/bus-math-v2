@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { PhaseRenderer } from '../../../components/lesson/PhaseRenderer';
-import type { ContentBlock } from '@/lib/db/schema/phases';
+import type { ContentBlock } from '@/types/curriculum';
 
 // Mock the child components
 vi.mock('../../../components/lesson/VideoPlayer', () => ({

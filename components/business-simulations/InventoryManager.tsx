@@ -30,7 +30,7 @@ import {
   Warehouse,
   BarChart3
 } from 'lucide-react'
-import type { InventoryManagerActivityProps } from '@/lib/db/schema/activities'
+import type { InventoryManagerActivityProps } from '@/types/activities'
 
 interface Product {
   id: string

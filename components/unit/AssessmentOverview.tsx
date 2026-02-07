@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { type UnitAssessment } from '@/lib/db/schema/lessons';
+import { type UnitAssessment } from '@/types/curriculum';
 import { CheckCircle, Star, Target } from 'lucide-react';
 
 interface AssessmentOverviewProps {

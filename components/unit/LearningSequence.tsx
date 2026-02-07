@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { type UnitLearningSequence } from '@/lib/db/schema/lessons';
+import { type UnitLearningSequence } from '@/types/curriculum';
 import { BookOpen, Calendar, Target } from 'lucide-react';
 
 interface LearningSequenceProps {
