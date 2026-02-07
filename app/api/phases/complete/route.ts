@@ -17,6 +17,66 @@ const CompletePhaseSchema = z.object({
 
 type CompletePhasePayload = z.infer<typeof CompletePhaseSchema> & CompletePhaseRequest;
 
+interface ResolvedPhaseContext {
+  phaseId: string;
+  lessonVersionId: string;
+}
+
+async function resolveVersionedPhaseContext(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  lessonId: string,
+  phaseNumber: number,
+): Promise<ResolvedPhaseContext | null> {
+  const { data: lessonVersions, error: lessonVersionError } = await supabase
+    .from('lesson_versions')
+    .select('id, version, status')
+    .eq('lesson_id', lessonId)
+    .order('version', { ascending: false })
+    .limit(1);
+
+  if (lessonVersionError || !lessonVersions || lessonVersions.length === 0) {
+    return null;
+  }
+
+  const lessonVersionId = lessonVersions[0].id;
+
+  const { data: currentPhase, error: currentPhaseError } = await supabase
+    .from('phase_versions')
+    .select('id')
+    .eq('lesson_version_id', lessonVersionId)
+    .eq('phase_number', phaseNumber)
+    .maybeSingle();
+
+  if (currentPhaseError || !currentPhase) {
+    return null;
+  }
+
+  return {
+    phaseId: currentPhase.id,
+    lessonVersionId,
+  };
+}
+
+async function checkNextPhaseExists(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  lessonVersionId: string,
+  phaseNumber: number,
+): Promise<boolean> {
+  const { data: nextPhase, error: nextPhaseError } = await supabase
+    .from('phase_versions')
+    .select('id')
+    .eq('lesson_version_id', lessonVersionId)
+    .eq('phase_number', phaseNumber + 1)
+    .maybeSingle();
+
+  if (nextPhaseError) {
+    console.error('Error checking next phase:', nextPhaseError);
+    return false;
+  }
+
+  return !!nextPhase;
+}
+
 /**
  * POST /api/phases/complete
  *
@@ -118,26 +178,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 2: Get the phase ID
-    const { data: phase, error: phaseError } = await supabase
-      .from('phases')
-      .select('id')
-      .eq('lesson_id', lessonId)
-      .eq('phase_number', phaseNumber)
-      .single();
+    // Step 2: Resolve phase from versioned schema.
+    const phaseContext = await resolveVersionedPhaseContext(supabase, lessonId, phaseNumber);
 
-    if (phaseError || !phase) {
-      console.error('Error fetching phase:', phaseError);
+    if (!phaseContext) {
       return NextResponse.json(
         {
           error: 'Phase not found',
-          details: phaseError?.message || 'No phase exists for this lesson and phase number',
+          details: 'No versioned phase exists for this lesson and phase number',
         },
         { status: 404 }
       );
     }
 
-    const phaseId = phase.id;
+    const phaseId = phaseContext.phaseId;
 
     // Step 3: Check for existing completion with this idempotency key
     // This must check across ALL phases, not just the current one
@@ -176,16 +230,13 @@ export async function POST(request: Request) {
       console.log(`Idempotent request detected: ${idempotencyKey}, returning cached result`);
 
       // Check if next phase exists
-      const { data: nextPhase } = await supabase
-        .from('phases')
-        .select('id')
-        .eq('lesson_id', lessonId)
-        .eq('phase_number', phaseNumber + 1)
-        .maybeSingle();
-
       return NextResponse.json({
         success: true,
-        nextPhaseUnlocked: !!nextPhase,
+        nextPhaseUnlocked: await checkNextPhaseExists(
+          supabase,
+          phaseContext.lessonVersionId,
+          phaseNumber,
+        ),
         message: 'Phase already completed (idempotent request)',
         phaseId,
         completedAt: existingWithKey.completed_at,
@@ -252,20 +303,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 5: Check if next phase exists (to determine if it was unlocked)
-    const { data: nextPhase, error: nextPhaseError } = await supabase
-      .from('phases')
-      .select('id, phase_number')
-      .eq('lesson_id', lessonId)
-      .eq('phase_number', phaseNumber + 1)
-      .maybeSingle();
-
-    if (nextPhaseError) {
-      console.error('Error checking next phase:', nextPhaseError);
-      // Don't fail the request, just log the error
-    }
-
-    const nextPhaseUnlocked = !!nextPhase;
+    const nextPhaseUnlocked = await checkNextPhaseExists(
+      supabase,
+      phaseContext.lessonVersionId,
+      phaseNumber,
+    );
 
     // Step 6: Return success response
     const response: CompletePhaseResponse = {

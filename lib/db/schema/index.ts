@@ -21,7 +21,6 @@
 export * from './organizations';
 export * from './lessons';
 export * from './lesson-versions';
-export * from './phases';
 export * from './activities';
 export * from './resources';
 export * from './profiles';

@@ -1,14 +1,12 @@
 import { relations } from 'drizzle-orm';
 import { lessons } from './lessons';
 import { lessonVersions, phaseVersions, phaseSections, lessonStandards } from './lesson-versions';
-import { phases } from './phases';
 import { studentProgress } from './student-progress';
 import { profiles } from './profiles';
 import { competencyStandards, studentCompetency } from './competencies';
 import { activities } from './activities';
 
 export const lessonsRelations = relations(lessons, ({ many }) => ({
-  phases: many(phases),
   versions: many(lessonVersions),
   // Temporarily commented out until migration is applied to production
   // currentVersion: one(lessonVersions, {
@@ -17,22 +15,14 @@ export const lessonsRelations = relations(lessons, ({ many }) => ({
   // }),
 }));
 
-export const phasesRelations = relations(phases, ({ one, many }) => ({
-  lesson: one(lessons, {
-    fields: [phases.lessonId],
-    references: [lessons.id],
-  }),
-  studentProgress: many(studentProgress),
-}));
-
 export const studentProgressRelations = relations(studentProgress, ({ one }) => ({
   profile: one(profiles, {
     fields: [studentProgress.userId],
     references: [profiles.id],
   }),
-  phase: one(phases, {
+  phase: one(phaseVersions, {
     fields: [studentProgress.phaseId],
-    references: [phases.id],
+    references: [phaseVersions.id],
   }),
 }));
 

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { asc, type InferSelectModel } from 'drizzle-orm';
+import { asc, desc, inArray, type InferSelectModel } from 'drizzle-orm';
 import { BookOpen, CalendarDays, School, Target, Users, CheckCircle2, Lightbulb } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +9,7 @@ import { FillInTheBlank, type FillInTheBlankActivity } from '@/components/exerci
 import ReflectionJournal from '@/components/exercises/ReflectionJournal';
 import { CashFlowChallenge } from '@/components/business-simulations/CashFlowChallenge';
 import { db } from '@/lib/db/drizzle';
-import { lessons } from '@/lib/db/schema';
+import { lessonVersions, lessons } from '@/lib/db/schema';
 import type {
   CashFlowChallengeActivityProps,
   ReflectionJournalActivityProps,
@@ -95,9 +95,49 @@ async function getUnitSummaries() {
     .from(lessons)
     .orderBy(asc(lessons.unitNumber), asc(lessons.orderIndex));
 
+  let effectiveRows = lessonRows;
+  if (lessonRows.length > 0) {
+    try {
+      const lessonIds = lessonRows.map((row) => row.id);
+      const versionRows = await db
+        .select({
+          lessonId: lessonVersions.lessonId,
+          title: lessonVersions.title,
+          description: lessonVersions.description,
+          version: lessonVersions.version,
+        })
+        .from(lessonVersions)
+        .where(inArray(lessonVersions.lessonId, lessonIds))
+        .orderBy(asc(lessonVersions.lessonId), desc(lessonVersions.version));
+
+      const latestVersionByLessonId = new Map<string, { title: string | null; description: string | null }>();
+      for (const row of versionRows) {
+        if (!latestVersionByLessonId.has(row.lessonId)) {
+          latestVersionByLessonId.set(row.lessonId, {
+            title: row.title ?? null,
+            description: row.description ?? null,
+          });
+        }
+      }
+
+      effectiveRows = lessonRows.map((row) => {
+        const latestVersion = latestVersionByLessonId.get(row.id);
+        if (!latestVersion) return row;
+        return {
+          ...row,
+          title: latestVersion.title ?? row.title,
+          description: latestVersion.description ?? row.description,
+        };
+      });
+    } catch {
+      // Fallback to legacy lesson shell fields during migration.
+      effectiveRows = lessonRows;
+    }
+  }
+
   const units = new Map<number, UnitSummary>();
 
-  lessonRows.forEach((row) => {
+  effectiveRows.forEach((row) => {
     if (!units.has(row.unitNumber)) {
       units.set(row.unitNumber, {
         unitNumber: row.unitNumber,

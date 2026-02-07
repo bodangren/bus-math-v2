@@ -141,30 +141,30 @@
     - [x] Manual verification confirmed by user (including expected directional parity failure output)
 
 ## Phase 7: Versioned Lesson Schema Migration
-- [ ] Task: Audit all legacy schema references
-    - [ ] Catalog every query, component, API route, and seed file that references legacy lessons/phases tables
-    - [ ] Map each reference to its versioned schema equivalent
-- [ ] Task: Migrate seed files to versioned schema
-    - [ ] Write test verifying seed files only reference versioned tables
-    - [ ] Update or replace legacy seed files (e.g., 02-sample-lessons.sql)
-    - [ ] Ensure all seed scripts are idempotent with versioned schema
-- [ ] Task: Migrate API routes to versioned schema
-    - [ ] Write integration tests for each affected API route with versioned schema
-    - [ ] Update lesson-fetching queries to use lesson_versions/phase_versions/phase_sections
-    - [ ] Update progress-tracking queries to reference versioned schema
-- [ ] Task: Migrate components and pages to versioned schema
-    - [ ] Write component tests verifying props match versioned schema shape
-    - [ ] Update LessonRenderer, LessonStepper, and phase components
-    - [ ] Update teacher dashboard queries
-- [ ] Task: Create deprecation migration for legacy tables
-    - [ ] Write test verifying no runtime code references legacy table names
-    - [ ] Create Supabase migration renaming legacy tables to _deprecated suffix
-    - [ ] Update Drizzle schema to remove legacy table definitions
-- [ ] Task: Final cleanup — drop deprecated tables
-    - [ ] Verify all tests pass without legacy tables
-    - [ ] Create Supabase migration dropping _deprecated tables
-    - [ ] Remove any remaining legacy type definitions
-- [ ] Task: Conductor - User Manual Verification 'Versioned Lesson Schema Migration' (Protocol in workflow.md)
+- [x] Task: Audit all legacy schema references
+    - [x] Catalog every query, component, API route, and seed file that references legacy lessons/phases tables
+    - [x] Map each reference to its versioned schema equivalent
+- [x] Task: Migrate seed files to versioned schema
+    - [x] Write test verifying seed files only reference versioned tables
+    - [x] Update or replace legacy seed files (e.g., 02-sample-lessons.sql)
+    - [x] Ensure all seed scripts are idempotent with versioned schema
+- [x] Task: Migrate API routes to versioned schema
+    - [x] Write integration tests for each affected API route with versioned schema
+    - [x] Update lesson-fetching queries to use lesson_versions/phase_versions/phase_sections
+    - [x] Update progress-tracking queries to reference versioned schema
+- [x] Task: Migrate components and pages to versioned schema
+    - [x] Write component tests verifying props match versioned schema shape
+    - [x] Update LessonRenderer, LessonStepper, and phase components
+    - [x] Update teacher dashboard queries
+- [x] Task: Create deprecation migration for legacy tables
+    - [x] Write test verifying no runtime code references legacy table names
+    - [x] Create Supabase migration renaming legacy tables to _deprecated suffix
+    - [x] Update Drizzle schema to remove legacy table definitions
+- [x] Task: Final cleanup — drop deprecated tables
+    - [x] Verify all tests pass without legacy tables
+    - [x] Create Supabase migration dropping _deprecated tables
+    - [x] Remove any remaining legacy type definitions
+- [x] Task: Conductor - User Manual Verification 'Versioned Lesson Schema Migration' (Protocol in workflow.md)
 
 ## Phase 8: Component Prop Standardization
 - [ ] Task: Audit activity registry for any types

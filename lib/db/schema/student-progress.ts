@@ -1,7 +1,7 @@
 import { integer, pgEnum, pgTable, text, timestamp, uuid, uniqueIndex } from 'drizzle-orm/pg-core';
 
-import { phases } from './phases';
 import { profiles } from './profiles';
+import { phaseVersions } from './lesson-versions';
 
 export const progressStatusEnum = pgEnum('progress_status', ['not_started', 'in_progress', 'completed']);
 
@@ -14,7 +14,7 @@ export const studentProgress = pgTable(
       .references(() => profiles.id, { onDelete: 'cascade' }),
     phaseId: uuid('phase_id')
       .notNull()
-      .references(() => phases.id, { onDelete: 'cascade' }),
+      .references(() => phaseVersions.id, { onDelete: 'cascade' }),
     status: progressStatusEnum('status').notNull().default('not_started'),
     startedAt: timestamp('started_at'),
     completedAt: timestamp('completed_at'),
@@ -27,4 +27,3 @@ export const studentProgress = pgTable(
     uniqueUserPhase: uniqueIndex('student_progress_user_phase_idx').on(table.userId, table.phaseId),
   }),
 );
-

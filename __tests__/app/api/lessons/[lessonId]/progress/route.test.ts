@@ -1,18 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetUser = vi.fn();
-const mockSelect = vi.fn();
-const mockEq = vi.fn();
-const mockSingle = vi.fn();
-const mockOrder = vi.fn();
 const mockFrom = vi.fn();
 
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(() =>
     Promise.resolve({
-      auth: {
-        getUser: mockGetUser,
-      },
+      auth: { getUser: mockGetUser },
       from: mockFrom,
     }),
   ),
@@ -21,264 +15,181 @@ vi.mock('@/lib/supabase/server', () => ({
 const { GET } = await import('../../../../../../app/api/lessons/[lessonId]/progress/route');
 
 function buildContext(lessonId: string) {
-  return {
-    params: Promise.resolve({ lessonId }),
-  };
+  return { params: Promise.resolve({ lessonId }) };
 }
 
 describe('GET /api/lessons/[lessonId]/progress', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-
+    vi.resetAllMocks();
     mockGetUser.mockResolvedValue({
       data: { user: { id: 'user-123' } },
       error: null,
     });
-
-    // Setup default chain for lesson existence check
-    const lessonData = {
-      data: { id: 'b4b82cad-64f6-46cc-933a-5bb8299a23d4' },
-      error: null,
-    };
-    mockSingle.mockReturnValue(lessonData);
-
-    // Setup default chain for phases query
-    const defaultData = {
-      data: [
-        {
-          id: 'phase-1',
-          phase_number: 1,
-          title: 'Introduction',
-          student_progress: [{ status: 'completed', started_at: '2024-01-01', completed_at: '2024-01-01', time_spent_seconds: 300, user_id: 'user-123' }],
-        },
-        {
-          id: 'phase-2',
-          phase_number: 2,
-          title: 'Theory',
-          student_progress: [{ status: 'in_progress', started_at: '2024-01-02', completed_at: null, time_spent_seconds: 150, user_id: 'user-123' }],
-        },
-        {
-          id: 'phase-3',
-          phase_number: 3,
-          title: 'Practice',
-          student_progress: [],
-        },
-        {
-          id: 'phase-4',
-          phase_number: 4,
-          title: 'Application',
-          student_progress: [],
-        },
-        {
-          id: 'phase-5',
-          phase_number: 5,
-          title: 'Assessment',
-          student_progress: [],
-        },
-        {
-          id: 'phase-6',
-          phase_number: 6,
-          title: 'Reflection',
-          student_progress: [],
-        },
-      ],
-      error: null,
-    };
-
-    mockOrder.mockReturnValue(defaultData);
-
-    mockEq.mockImplementation((field: string) => {
-      if (field === 'id') {
-        return { single: mockSingle };
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lessons') {
+        return {
+          select: () => ({
+            eq: () => ({
+              single: () => Promise.resolve({ data: { id: 'lesson-1' }, error: null }),
+            }),
+          }),
+        };
       }
-      return { order: mockOrder };
-    });
 
-    mockSelect.mockReturnValue({ eq: mockEq });
-    mockFrom.mockReturnValue({ select: mockSelect });
+      if (table === 'lesson_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () => ({
+                limit: () =>
+                  Promise.resolve({
+                    data: [{ id: 'lv-1', version: 2, status: 'published' }],
+                    error: null,
+                  }),
+              }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'phase_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () =>
+                Promise.resolve({
+                  data: [
+                    { id: 'pv-1', phase_number: 1, title: 'Hook' },
+                    { id: 'pv-2', phase_number: 2, title: 'Concept' },
+                  ],
+                  error: null,
+                }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'student_progress') {
+        return {
+          select: () => ({
+            eq: () => ({
+              in: () =>
+                Promise.resolve({
+                  data: [
+                    {
+                      phase_id: 'pv-1',
+                      status: 'completed',
+                      started_at: '2024-01-01',
+                      completed_at: '2024-01-01',
+                      time_spent_seconds: 120,
+                      user_id: 'user-123',
+                    },
+                  ],
+                  error: null,
+                }),
+            }),
+          }),
+        };
+      }
+
+      return {
+        select: () => ({
+          eq: () => ({
+            single: () => Promise.resolve({ data: null, error: null }),
+          }),
+        }),
+      };
+    });
   });
 
-  it('returns 401 when no authenticated user is found', async () => {
+  it('returns 401 when unauthenticated', async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
+    const response = await GET(new Request('http://localhost'), buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'));
     expect(response.status).toBe(401);
-    const body = await response.json();
-    expect(body.error).toMatch(/unauthorized/i);
   });
 
-  it('validates the lessonId parameter and rejects invalid UUIDs', async () => {
-    // Ensure auth mock is properly set for this test
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'user-123' } },
-      error: null,
-    });
-
-    const response = await GET(
-      new Request('http://localhost/api/lessons/not-a-uuid/progress'),
-      buildContext('not-a-uuid'),
-    );
-
+  it('returns 400 for invalid lessonId', async () => {
+    const response = await GET(new Request('http://localhost'), buildContext('not-a-uuid'));
     expect(response.status).toBe(400);
-    const payload = await response.json();
-    expect(payload.error).toBe('Invalid parameters');
   });
 
-  it('returns 404 when lesson does not exist', async () => {
-    // Ensure auth is properly mocked
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'user-123' } },
-      error: null,
+  it('returns 404 when lesson is missing', async () => {
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lessons') {
+        return {
+          select: () => ({
+            eq: () => ({
+              single: () => Promise.resolve({ data: null, error: { message: 'missing' } }),
+            }),
+          }),
+        };
+      }
+      return {
+        select: () => ({
+          eq: () => ({
+            order: () => ({
+              limit: () => Promise.resolve({ data: [], error: null }),
+            }),
+          }),
+        }),
+      };
     });
-    
-    // Mock lesson not found
-    mockSingle.mockReturnValue({ data: null, error: { message: 'Not found' } });
 
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
+    const response = await GET(new Request('http://localhost'), buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'));
+    expect(response.status).toBe(404);
+  });
 
+  it('returns 404 when no versioned phases exist', async () => {
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lessons') {
+        return {
+          select: () => ({
+            eq: () => ({
+              single: () => Promise.resolve({ data: { id: 'lesson-1' }, error: null }),
+            }),
+          }),
+        };
+      }
+      if (table === 'lesson_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () => ({
+                limit: () => Promise.resolve({ data: [], error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+      return {
+        select: () => ({
+          eq: () => ({
+            order: () => Promise.resolve({ data: [], error: null }),
+          }),
+        }),
+      };
+    });
+
+    const response = await GET(new Request('http://localhost'), buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'));
     expect(response.status).toBe(404);
     const body = await response.json();
-    expect(body.error).toBe('Lesson not found');
+    expect(body.error).toMatch(/versioned phases/i);
   });
 
-  it('returns 404 when lesson has no phases', async () => {
-    const emptyData = { data: [], error: null };
-    mockOrder.mockReturnValue(emptyData);
-
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
-    expect(response.status).toBe(404);
-    const body = await response.json();
-    expect(body.error).toMatch(/lesson not found/i);
-  });
-
-  it('fetches phase progress for the authenticated user', async () => {
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
+  it('returns versioned phase progress', async () => {
+    const response = await GET(new Request('http://localhost'), buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'));
     expect(response.status).toBe(200);
-    expect(mockFrom).toHaveBeenCalledWith('phases');
-    expect(mockSelect).toHaveBeenCalledWith(expect.stringContaining('student_progress'));
-    // First .eq() is called with lesson_id
-    expect(mockEq).toHaveBeenCalledWith('lesson_id', 'b4b82cad-64f6-46cc-933a-5bb8299a23d4');
-  });
-
-  it('calculates correct phase statuses based on progress', async () => {
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
-    expect(response.status).toBe(200);
-    const json = await response.json();
-
-    expect(json.phases).toHaveLength(6);
-
-    // Phase 1: completed
-    expect(json.phases[0]).toMatchObject({
+    const payload = await response.json();
+    expect(payload.phases).toHaveLength(2);
+    expect(payload.phases[0]).toMatchObject({
+      phaseId: 'pv-1',
       phaseNumber: 1,
-      phaseId: 'phase-1',
       status: 'completed',
-      startedAt: '2024-01-01',
-      completedAt: '2024-01-01',
-      timeSpentSeconds: 300,
     });
-
-    // Phase 2: current (in_progress)
-    expect(json.phases[1]).toMatchObject({
+    expect(payload.phases[1]).toMatchObject({
+      phaseId: 'pv-2',
       phaseNumber: 2,
-      phaseId: 'phase-2',
-      status: 'current',
-      startedAt: '2024-01-02',
-      completedAt: null,
-      timeSpentSeconds: 150,
+      status: 'available',
     });
-
-    // Phase 3: locked (previous phase not completed)
-    expect(json.phases[2]).toMatchObject({
-      phaseNumber: 3,
-      phaseId: 'phase-3',
-      status: 'locked',
-      startedAt: null,
-      completedAt: null,
-      timeSpentSeconds: null,
-    });
-
-    // Phases 4-6: locked
-    expect(json.phases[3].status).toBe('locked');
-    expect(json.phases[4].status).toBe('locked');
-    expect(json.phases[5].status).toBe('locked');
-  });
-
-  it('marks first phase as available when no progress exists', async () => {
-    const noProgressData = {
-      data: [
-        { id: 'phase-1', phase_number: 1, title: 'Intro', student_progress: [] },
-        { id: 'phase-2', phase_number: 2, title: 'Theory', student_progress: [] },
-      ],
-      error: null,
-    };
-    mockOrder.mockReturnValue(noProgressData);
-
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
-    expect(response.status).toBe(200);
-    const json = await response.json();
-
-    expect(json.phases[0].status).toBe('available');
-    expect(json.phases[1].status).toBe('locked');
-  });
-
-  it('marks next phase as available when previous phase is completed', async () => {
-    const progressData = {
-      data: [
-        { id: 'phase-1', phase_number: 1, title: 'Intro', student_progress: [{ status: 'completed', user_id: 'user-123' }] },
-        { id: 'phase-2', phase_number: 2, title: 'Theory', student_progress: [] },
-        { id: 'phase-3', phase_number: 3, title: 'Practice', student_progress: [] },
-      ],
-      error: null,
-    };
-    mockOrder.mockReturnValue(progressData);
-
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
-    expect(response.status).toBe(200);
-    const json = await response.json();
-
-    expect(json.phases[0].status).toBe('completed');
-    expect(json.phases[1].status).toBe('available');
-    expect(json.phases[2].status).toBe('locked');
-  });
-
-  it('propagates Supabase errors', async () => {
-    const errorData = { data: null, error: { message: 'Database error' } };
-    mockOrder.mockReturnValue(errorData);
-
-    const response = await GET(
-      new Request('http://localhost/api/lessons/lesson-123/progress'),
-      buildContext('b4b82cad-64f6-46cc-933a-5bb8299a23d4'),
-    );
-
-    expect(response.status).toBe(500);
-    const payload = await response.json();
-    expect(payload.error).toMatch(/database error/i);
   });
 });

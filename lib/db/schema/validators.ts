@@ -9,7 +9,7 @@ import { contentRevisions, validationErrorSchema } from './content-revisions';
 import { lessons, lessonMetadataSchema } from './lessons';
 import { liveResponses, liveResponseAnswerSchema } from './live-responses';
 import { liveSessions, sessionSettingsSchema } from './live-sessions';
-import { phases, contentBlockSchema, phaseMetadataSchema } from './phases';
+import { contentBlockSchema, phaseMetadataSchema } from './phase-content';
 import { profiles, profileMetadataSchema } from './profiles';
 import { resources, resourceMetadataSchema } from './resources';
 import { sessionLeaderboard } from './session-leaderboard';
@@ -57,15 +57,20 @@ export const selectLessonSchema = createSelectSchema(lessons, {
 export type Lesson = z.infer<typeof selectLessonSchema>;
 export type NewLesson = z.infer<typeof insertLessonSchema>;
 
-export const insertPhaseSchema = createInsertSchema(phases, {
+const phaseShapeSchema = z.object({
+  id: z.string(),
+  lessonId: z.string(),
+  phaseNumber: z.number().int(),
+  title: z.string(),
   contentBlocks: z.array(contentBlockSchema),
-  metadata: phaseMetadataSchema
+  estimatedMinutes: z.number().int().nullable().optional(),
+  metadata: phaseMetadataSchema,
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
-export const selectPhaseSchema = createSelectSchema(phases, {
-  contentBlocks: z.array(contentBlockSchema),
-  metadata: phaseMetadataSchema
-});
+export const insertPhaseSchema = phaseShapeSchema;
+export const selectPhaseSchema = phaseShapeSchema;
 
 export type Phase = z.infer<typeof selectPhaseSchema>;
 export type NewPhase = z.infer<typeof insertPhaseSchema>;

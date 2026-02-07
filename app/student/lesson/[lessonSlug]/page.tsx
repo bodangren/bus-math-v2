@@ -1,9 +1,10 @@
 import { notFound, redirect } from 'next/navigation';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { db } from '@/lib/db/drizzle';
-import { lessons, phases, profiles } from '@/lib/db/schema';
+import { lessonVersions, lessons, phaseSections, phaseVersions, profiles } from '@/lib/db/schema';
 import { LessonRenderer } from '@/components/student/LessonRenderer';
 import { createClient } from '@/lib/supabase/server';
+import type { ContentBlock } from '@/types/curriculum';
 
 interface LessonPageProps {
   params: Promise<{
@@ -12,6 +13,121 @@ interface LessonPageProps {
   searchParams: Promise<{
     phase?: string;
   }>;
+}
+
+const PHASE_TYPE_BY_NUMBER = {
+  1: 'intro',
+  2: 'example',
+  3: 'practice',
+  4: 'challenge',
+  5: 'assessment',
+  6: 'reflection',
+} as const;
+
+function fallbackPhaseTitle(phaseNumber: number): string {
+  const labels: Record<number, string> = {
+    1: 'Hook',
+    2: 'Introduction',
+    3: 'Guided Practice',
+    4: 'Independent Practice',
+    5: 'Assessment',
+    6: 'Closing',
+  };
+
+  return labels[phaseNumber] ?? `Phase ${phaseNumber}`;
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object') return null;
+  return value as Record<string, unknown>;
+}
+
+function contentToText(content: unknown): string {
+  if (typeof content === 'string') return content;
+  const obj = asRecord(content);
+  if (!obj) return '';
+  const markdown = obj.markdown;
+  const text = obj.text;
+  const value = typeof markdown === 'string' ? markdown : text;
+  return typeof value === 'string' ? value : '';
+}
+
+function toContentBlock(
+  section: { id: string; sectionType: string; content: unknown },
+  fallbackOrder: number,
+): ContentBlock {
+  const obj = asRecord(section.content);
+  const blockId = section.id || `section-${fallbackOrder}`;
+
+  if (section.sectionType === 'callout') {
+    const variantRaw = obj?.variant;
+    const variant =
+      variantRaw === 'why-this-matters' ||
+      variantRaw === 'tip' ||
+      variantRaw === 'warning' ||
+      variantRaw === 'example'
+        ? variantRaw
+        : 'tip';
+    return {
+      id: blockId,
+      type: 'callout',
+      variant,
+      content: contentToText(section.content) || 'Callout content',
+    };
+  }
+
+  if (section.sectionType === 'activity') {
+    const activityId = obj?.activityId;
+    const required = obj?.required;
+    if (typeof activityId === 'string') {
+      return {
+        id: blockId,
+        type: 'activity',
+        activityId,
+        required: required === true,
+      };
+    }
+  }
+
+  if (section.sectionType === 'video') {
+    const videoUrl = obj?.videoUrl;
+    const duration = obj?.duration;
+    const transcript = obj?.transcript;
+    if (typeof videoUrl === 'string' && typeof duration === 'number' && duration > 0) {
+      return {
+        id: blockId,
+        type: 'video',
+        props: {
+          videoUrl,
+          duration,
+          transcript: typeof transcript === 'string' ? transcript : undefined,
+        },
+      };
+    }
+  }
+
+  if (section.sectionType === 'image') {
+    const imageUrl = obj?.imageUrl;
+    const alt = obj?.alt;
+    const caption = obj?.caption;
+    if (typeof imageUrl === 'string' && typeof alt === 'string') {
+      return {
+        id: blockId,
+        type: 'image',
+        props: {
+          imageUrl,
+          alt,
+          caption: typeof caption === 'string' ? caption : undefined,
+        },
+      };
+    }
+  }
+
+  return {
+    id: blockId,
+    type: 'markdown',
+    content: contentToText(section.content) || 'Content coming soon.',
+  };
 }
 
 /**
@@ -97,16 +213,104 @@ async function getLessonWithPhases(slug: string) {
     return null;
   }
 
-  // Query phases for this lesson, ordered by phase number
-  const lessonPhases = await db
-    .select()
-    .from(phases)
-    .where(eq(phases.lessonId, lesson.id))
-    .orderBy(phases.phaseNumber);
+  const queryApi = (
+    db as {
+      query?: {
+        lessonVersions?: {
+          findMany?: (args: unknown) => Promise<Array<typeof lessonVersions.$inferSelect>>;
+        };
+        phaseVersions?: {
+          findMany?: (args: unknown) => Promise<Array<typeof phaseVersions.$inferSelect>>;
+        };
+        phaseSections?: {
+          findMany?: (args: unknown) => Promise<Array<typeof phaseSections.$inferSelect>>;
+        };
+      };
+    }
+  ).query;
+
+  const lessonVersionRows = queryApi?.lessonVersions?.findMany
+    ? await queryApi.lessonVersions.findMany({
+        where: eq(lessonVersions.lessonId, lesson.id),
+      })
+    : [];
+
+  const normalizedLessonVersionRows = Array.isArray(lessonVersionRows) ? lessonVersionRows : [];
+  const latestVersion = [...normalizedLessonVersionRows].sort((a, b) => b.version - a.version)[0];
+  if (!latestVersion || !queryApi?.phaseVersions?.findMany) {
+    return {
+      lesson,
+      phases: [],
+    };
+  }
+
+  const versionedPhaseRows = await queryApi.phaseVersions.findMany({
+    where: eq(phaseVersions.lessonVersionId, latestVersion.id),
+  });
+  const normalizedVersionedPhases = Array.isArray(versionedPhaseRows) ? versionedPhaseRows : [];
+  const versionedPhases = [...normalizedVersionedPhases].sort((a, b) => a.phaseNumber - b.phaseNumber);
+
+  if (versionedPhases.length === 0) {
+    return {
+      lesson: {
+        ...lesson,
+        title: latestVersion.title ?? lesson.title,
+        description: latestVersion.description ?? lesson.description,
+      },
+      phases: [],
+    };
+  }
+
+  let sections: Array<typeof phaseSections.$inferSelect> = [];
+  const phaseVersionIds = versionedPhases.map((phase) => phase.id);
+  if (phaseVersionIds.length > 0 && queryApi?.phaseSections?.findMany) {
+    const sectionRows = await queryApi.phaseSections.findMany({
+      where: inArray(phaseSections.phaseVersionId, phaseVersionIds),
+    });
+    sections = Array.isArray(sectionRows) ? sectionRows : [];
+    sections.sort((a, b) => {
+      if (a.phaseVersionId === b.phaseVersionId) {
+        return a.sequenceOrder - b.sequenceOrder;
+      }
+      return a.phaseVersionId.localeCompare(b.phaseVersionId);
+    });
+  }
+
+  const sectionsByPhaseId = new Map<string, Array<typeof phaseSections.$inferSelect>>();
+  for (const section of sections) {
+    const current = sectionsByPhaseId.get(section.phaseVersionId) ?? [];
+    current.push(section);
+    sectionsByPhaseId.set(section.phaseVersionId, current);
+  }
+
+  const mappedPhases = versionedPhases.map((phase) => {
+    const phaseSectionsForPhase = sectionsByPhaseId.get(phase.id) ?? [];
+    const contentBlocks = phaseSectionsForPhase.map((section, index) =>
+      toContentBlock(section, index + 1),
+    );
+
+    return {
+      id: phase.id,
+      lessonId: lesson.id,
+      phaseNumber: phase.phaseNumber,
+      title: phase.title ?? fallbackPhaseTitle(phase.phaseNumber),
+      contentBlocks,
+      estimatedMinutes: phase.estimatedMinutes,
+      metadata: {
+        phaseType: PHASE_TYPE_BY_NUMBER[phase.phaseNumber as keyof typeof PHASE_TYPE_BY_NUMBER],
+      },
+      createdAt: phase.createdAt,
+      updatedAt: lesson.updatedAt,
+    };
+  });
 
   return {
-    lesson,
-    phases: lessonPhases,
+    lesson: {
+      ...lesson,
+      title: latestVersion.title ?? lesson.title,
+      description: latestVersion.description ?? lesson.description,
+    },
+    phases: mappedPhases,
   };
 }
 
