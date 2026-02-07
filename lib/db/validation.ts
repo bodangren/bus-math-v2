@@ -1,7 +1,7 @@
 import { ZodIssue } from 'zod';
 
 import { activityPropsSchemas, ActivityComponentKey } from './schema/activities';
-import { contentBlockSchema } from './schema/phases';
+import { contentBlockSchema } from './schema/phase-content';
 
 export type ValidationError = {
   path: string;
@@ -63,4 +63,3 @@ export function validateActivityProps(componentKey: string, props: unknown): Val
 
   return { valid: true, errors: [] };
 }
-

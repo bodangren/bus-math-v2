@@ -15,11 +15,10 @@ import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { db } from '@/lib/db';
 import { lessons } from '@/lib/db/schema/lessons';
-import { phases } from '@/lib/db/schema/phases';
+import { lessonVersions, phaseSections, phaseVersions } from '@/lib/db/schema/lesson-versions';
 import { competencyStandards } from '@/lib/db/schema/competencies';
 import { profiles } from '@/lib/db/schema/profiles';
 import { organizations } from '@/lib/db/schema/organizations';
-import type { NewPhase } from '@/lib/db/schema/validators';
 import { enforceTestRouteGuard } from '@/lib/api/test-route-guard';
 
 export const dynamic = 'force-dynamic';
@@ -28,9 +27,10 @@ export const dynamic = 'force-dynamic';
 const TEST_ORGANIZATION_ID = '00000000-0000-0000-0000-000000000000';
 const TEST_USER_ID = '00000000-0000-0000-0000-000000000001';
 const TEST_LESSON_ID = '00000000-0000-0000-0000-000000000002';
-const TEST_PHASE_1_ID = '00000000-0000-0000-0000-000000000003';
-const TEST_PHASE_2_ID = '00000000-0000-0000-0000-000000000004';
-const TEST_PHASE_3_ID = '00000000-0000-0000-0000-000000000005';
+const TEST_LESSON_VERSION_ID = '00000000-0000-0000-0000-000000000010';
+const TEST_PHASE_1_ID = '00000000-0000-0000-0000-000000000011';
+const TEST_PHASE_2_ID = '00000000-0000-0000-0000-000000000012';
+const TEST_PHASE_3_ID = '00000000-0000-0000-0000-000000000013';
 const TEST_STANDARD_ID = '00000000-0000-0000-0000-000000000006';
 
 const TEST_EMAIL = 'e2e-test-student@test.local';
@@ -153,78 +153,122 @@ export async function POST(request: Request) {
         },
       });
 
-    // 5. Create test phases (3 sequential phases)
-    const phaseData: NewPhase[] = [
+    // 5. Create versioned lesson + phases + sections
+    await db
+      .insert(lessonVersions)
+      .values({
+        id: TEST_LESSON_VERSION_ID,
+        lessonId: TEST_LESSON_ID,
+        version: 1,
+        title: 'E2E Test Lesson',
+        description: 'Test lesson for end-to-end testing',
+        status: 'published',
+        createdAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: [lessonVersions.lessonId, lessonVersions.version],
+        set: {
+          title: 'E2E Test Lesson',
+          description: 'Test lesson for end-to-end testing',
+          status: 'published',
+        },
+      });
+
+    const phaseData = [
       {
         id: TEST_PHASE_1_ID,
-        lessonId: TEST_LESSON_ID,
+        lessonVersionId: TEST_LESSON_VERSION_ID,
         phaseNumber: 1,
         title: 'Phase 1 - Introduction',
         estimatedMinutes: 5,
-        contentBlocks: [
-          {
-            id: 'phase-1-block-1',
-            type: 'markdown',
-            content: 'Welcome to the test lesson. This is a read phase for E2E testing.',
-          },
-          {
-            id: 'phase-1-block-2',
-            type: 'callout',
-            variant: 'why-this-matters',
-            content: 'Use this flow to verify student navigation and progress tracking.',
-          },
-        ],
-        metadata: { phaseType: 'intro' },
       },
       {
         id: TEST_PHASE_2_ID,
-        lessonId: TEST_LESSON_ID,
+        lessonVersionId: TEST_LESSON_VERSION_ID,
         phaseNumber: 2,
         title: 'Phase 2 - Practice Activity',
         estimatedMinutes: 5,
-        contentBlocks: [
-          {
-            id: 'phase-2-block-1',
-            type: 'markdown',
-            content: 'Complete the practice activity below.',
-          },
-          {
-            id: 'phase-2-block-activity',
-            type: 'activity',
-            activityId: '00000000-0000-0000-0000-000000000007',
-            required: true,
-          },
-        ],
-        metadata: { phaseType: 'practice' },
       },
       {
         id: TEST_PHASE_3_ID,
-        lessonId: TEST_LESSON_ID,
+        lessonVersionId: TEST_LESSON_VERSION_ID,
         phaseNumber: 3,
         title: 'Phase 3 - Review',
         estimatedMinutes: 5,
-        contentBlocks: [
-          {
-            id: 'phase-3-block-1',
-            type: 'markdown',
-            content: 'Great work! You have completed the test lesson.',
-          },
-        ],
-        metadata: { phaseType: 'reflection' },
       },
     ];
 
     for (const phase of phaseData) {
       await db
-        .insert(phases)
+        .insert(phaseVersions)
         .values(phase)
         .onConflictDoUpdate({
-          target: phases.id,
+          target: [phaseVersions.lessonVersionId, phaseVersions.phaseNumber],
           set: {
             title: phase.title,
-            contentBlocks: phase.contentBlocks,
-            metadata: phase.metadata,
-            updatedAt: new Date(),
+            estimatedMinutes: phase.estimatedMinutes,
+          },
+        });
+    }
+
+    const sectionRows = [
+      {
+        id: '00000000-0000-0000-0000-000000000021',
+        phaseVersionId: TEST_PHASE_1_ID,
+        sequenceOrder: 1,
+        sectionType: 'text' as const,
+        content: { markdown: 'Welcome to the test lesson. This is a read phase for E2E testing.' },
+        createdAt: new Date(),
+      },
+      {
+        id: '00000000-0000-0000-0000-000000000022',
+        phaseVersionId: TEST_PHASE_1_ID,
+        sequenceOrder: 2,
+        sectionType: 'callout' as const,
+        content: {
+          variant: 'why-this-matters',
+          markdown: 'Use this flow to verify student navigation and progress tracking.',
+        },
+        createdAt: new Date(),
+      },
+      {
+        id: '00000000-0000-0000-0000-000000000023',
+        phaseVersionId: TEST_PHASE_2_ID,
+        sequenceOrder: 1,
+        sectionType: 'text' as const,
+        content: { markdown: 'Complete the practice activity below.' },
+        createdAt: new Date(),
+      },
+      {
+        id: '00000000-0000-0000-0000-000000000024',
+        phaseVersionId: TEST_PHASE_2_ID,
+        sequenceOrder: 2,
+        sectionType: 'activity' as const,
+        content: {
+          activityId: '00000000-0000-0000-0000-000000000007',
+          required: true,
+        },
+        createdAt: new Date(),
+      },
+      {
+        id: '00000000-0000-0000-0000-000000000025',
+        phaseVersionId: TEST_PHASE_3_ID,
+        sequenceOrder: 1,
+        sectionType: 'text' as const,
+        content: { markdown: 'Great work! You have completed the test lesson.' },
+        createdAt: new Date(),
+      },
+    ];
+
+    for (const section of sectionRows) {
+      await db
+        .insert(phaseSections)
+        .values(section)
+        .onConflictDoUpdate({
+          target: [phaseSections.phaseVersionId, phaseSections.sequenceOrder],
+          set: {
+            sectionType: section.sectionType,
+            content: section.content,
           },
         });
     }

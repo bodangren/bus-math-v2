@@ -12,7 +12,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Lesson, Phase } from '@/lib/db/schema/validators';
+import type { Lesson } from '@/lib/db/schema/validators';
+import type { PhaseMetadata } from '@/types/curriculum';
 import { ResourceBasePathFixer } from '@/components/ResourceBasePathFixer';
 
 const phaseIcons: Record<string, typeof PlayCircle> = {
@@ -29,13 +30,20 @@ export interface PhaseFooterNavigationOverrides {
   lessonOverviewLabel?: string;
   backToLessonLabel?: string;
   completeLessonLabel?: string;
-  phaseHrefBuilder?: (phase: Phase) => string;
+  phaseHrefBuilder?: (phase: PhaseLike) => string;
+}
+
+interface PhaseLike {
+  id: string;
+  phaseNumber: number;
+  title: string;
+  metadata?: { phaseType?: PhaseMetadata['phaseType'] } | null;
 }
 
 export interface PhaseFooterProps {
   lesson: Lesson;
-  phase: Phase;
-  phases: Phase[];
+  phase: PhaseLike;
+  phases: PhaseLike[];
   navigationOverrides?: PhaseFooterNavigationOverrides;
 }
 
@@ -62,7 +70,7 @@ export function PhaseFooter({ lesson, phase, phases, navigationOverrides }: Phas
   const lessonHref = navigationOverrides?.lessonHref ?? buildLessonHref(lesson);
   const defaultPhaseHrefBuilder =
     navigationOverrides?.phaseHrefBuilder ??
-    ((phaseToLink: Phase) => `${lessonHref}/phase-${formatNumber(phaseToLink.phaseNumber)}`);
+    ((phaseToLink: PhaseLike) => `${lessonHref}/phase-${formatNumber(phaseToLink.phaseNumber)}`);
 
   const lessonOverviewLabel = navigationOverrides?.lessonOverviewLabel ?? 'Lesson Overview';
   const backToLessonLabel = navigationOverrides?.backToLessonLabel ?? `Back to ${lessonOverviewLabel}`;
@@ -118,7 +126,7 @@ export function PhaseFooter({ lesson, phase, phases, navigationOverrides }: Phas
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {sortedPhases.map((phaseEntry, index) => {
-            const Icon = phaseIcons[phaseEntry.metadata.phaseType ?? 'intro'] ?? PlayCircle;
+            const Icon = phaseIcons[phaseEntry.metadata?.phaseType ?? 'intro'] ?? PlayCircle;
             const isCurrent = phaseEntry.id === phase.id;
             const isCompleted = index < currentIndex;
 

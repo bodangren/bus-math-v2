@@ -13,11 +13,20 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import type { Lesson, Phase } from '@/lib/db/schema/validators';
+import type { Lesson } from '@/lib/db/schema/validators';
+import type { ContentBlock, PhaseMetadata } from '@/types/curriculum';
 import { cn } from '@/lib/utils';
 import { ResourceBasePathFixer } from '@/components/ResourceBasePathFixer';
 
-type PhaseThemeKey = NonNullable<Phase['metadata']['phaseType']> | 'default';
+interface PhaseLike {
+  id: string;
+  phaseNumber: number;
+  title: string;
+  metadata?: { phaseType?: PhaseMetadata['phaseType'] } | null;
+  contentBlocks?: ContentBlock[];
+}
+
+type PhaseThemeKey = NonNullable<NonNullable<PhaseLike['metadata']>['phaseType']> | 'default';
 
 const phaseThemes: Record<
   PhaseThemeKey,
@@ -73,8 +82,8 @@ export interface PhaseHeaderNavigationOverrides {
 
 export interface PhaseHeaderProps {
   lesson: Lesson;
-  phase: Phase;
-  phases: Phase[];
+  phase: PhaseLike;
+  phases: PhaseLike[];
   unit?: {
     title?: string;
   };
@@ -98,7 +107,7 @@ export function PhaseHeader({ lesson, phase, phases, unit, navigationOverrides }
   const unitHref = navigationOverrides?.unitHref ?? `/student/unit${unitNumber}`;
   const lessonHref = navigationOverrides?.lessonHref ?? baseLessonHref;
 
-  const theme = phaseThemes[phase.metadata.phaseType ?? 'default'];
+  const theme = phaseThemes[phase.metadata?.phaseType ?? 'default'];
   const Icon = theme.icon;
   const breadcrumbPhaseLabel = navigationOverrides?.phaseLabel ?? phase.title;
   const breadcrumbLessonLabel = navigationOverrides?.lessonLabel ?? `Lesson ${lesson.orderIndex}`;
@@ -163,7 +172,7 @@ export function PhaseHeader({ lesson, phase, phases, unit, navigationOverrides }
             </div>
           </div>
           {(() => {
-            const firstBlock = phase.contentBlocks[0];
+            const firstBlock = phase.contentBlocks?.[0];
             if (firstBlock && firstBlock.type === 'markdown') {
               return (
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

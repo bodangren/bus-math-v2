@@ -50,7 +50,9 @@ describe('POST /api/users/ensure-demo', () => {
     expect(mockFrom).toHaveBeenCalledWith('organizations');
     expect(mockFrom).toHaveBeenCalledWith('profiles');
     expect(mockFrom).toHaveBeenCalledWith('lessons');
-    expect(mockFrom).toHaveBeenCalledWith('phases');
+    expect(mockFrom).toHaveBeenCalledWith('lesson_versions');
+    expect(mockFrom).toHaveBeenCalledWith('phase_versions');
+    expect(mockFrom).toHaveBeenCalledWith('phase_sections');
   });
 
   it('resets passwords for existing demo users', async () => {

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db/drizzle";
-import { lessons, studentProgress } from "@/lib/db/schema";
+import { lessonVersions, lessons, phaseVersions, studentProgress } from "@/lib/db/schema";
 import { createClient } from "@/lib/supabase/server";
 import {
   Card,
@@ -41,50 +41,108 @@ function deriveUnitTitle(lesson: typeof lessons.$inferSelect) {
   );
 }
 
-async function getStudentDashboardData(userId: string) {
-  // Fetch all lessons with their phases
-  const lessonsWithPhases = await db.query.lessons.findMany({
-    with: {
-      phases: true,
-    },
-    orderBy: [asc(lessons.unitNumber), asc(lessons.orderIndex)],
-  });
+type DashboardLessonRow = typeof lessons.$inferSelect;
 
-  // Fetch the student's progress for all phases
+export async function getStudentDashboardData(userId: string) {
+  const lessonRows = await db
+    .select()
+    .from(lessons)
+    .orderBy(asc(lessons.unitNumber), asc(lessons.orderIndex));
+
+  if (lessonRows.length === 0) {
+    return [];
+  }
+
+  const lessonIds = lessonRows.map((lesson) => lesson.id);
+
   const userProgressEntries = await db.query.studentProgress.findMany({
     where: eq(studentProgress.userId, userId),
   });
-
-  // Create a map for quick lookup of completed phases
-  const completedPhasesMap = new Set(
+  const completedPhaseIds = new Set(
     userProgressEntries
-      .filter((p) => p.status === 'completed')
-      .map((p) => p.phaseId)
+      .filter((entry) => entry.status === "completed")
+      .map((entry) => entry.phaseId),
   );
 
-  const unitsMap = new Map<number, UnitOverview>();
+  const latestVersionByLessonId = new Map<string, { id: string; title: string | null; description: string | null }>();
+  const versionRows = await db
+    .select({
+      id: lessonVersions.id,
+      lessonId: lessonVersions.lessonId,
+      title: lessonVersions.title,
+      description: lessonVersions.description,
+      version: lessonVersions.version,
+    })
+    .from(lessonVersions)
+    .where(inArray(lessonVersions.lessonId, lessonIds))
+    .orderBy(asc(lessonVersions.lessonId), desc(lessonVersions.version));
 
-  for (const lesson of lessonsWithPhases) {
-    const totalPhases = lesson.phases.length;
-    const completedPhases = lesson.phases.filter(phase =>
-      completedPhasesMap.has(phase.id)
-    ).length;
+  for (const versionRow of versionRows) {
+    if (!latestVersionByLessonId.has(versionRow.lessonId)) {
+      latestVersionByLessonId.set(versionRow.lessonId, {
+        id: versionRow.id,
+        title: versionRow.title ?? null,
+        description: versionRow.description ?? null,
+      });
+    }
+  }
+
+  const versionIds = Array.from(latestVersionByLessonId.values()).map((row) => row.id);
+  const versionedPhaseIdsByLessonId = new Map<string, string[]>();
+  if (versionIds.length > 0) {
+    const versionedPhaseRows = await db
+      .select({
+        id: phaseVersions.id,
+        lessonVersionId: phaseVersions.lessonVersionId,
+      })
+      .from(phaseVersions)
+      .where(inArray(phaseVersions.lessonVersionId, versionIds));
+
+    const lessonIdByVersionId = new Map<string, string>();
+    for (const [lessonId, version] of latestVersionByLessonId.entries()) {
+      lessonIdByVersionId.set(version.id, lessonId);
+    }
+
+    for (const phaseRow of versionedPhaseRows) {
+      const lessonId = lessonIdByVersionId.get(phaseRow.lessonVersionId);
+      if (!lessonId) continue;
+      const current = versionedPhaseIdsByLessonId.get(lessonId) ?? [];
+      current.push(phaseRow.id);
+      versionedPhaseIdsByLessonId.set(lessonId, current);
+    }
+  }
+
+  const unitsMap = new Map<number, UnitOverview>();
+  for (const lessonRow of lessonRows) {
+    const versionedInfo = latestVersionByLessonId.get(lessonRow.id);
+    const effectiveLesson: DashboardLessonRow = {
+      ...lessonRow,
+      title: versionedInfo?.title ?? lessonRow.title,
+      description: versionedInfo?.description ?? lessonRow.description,
+    };
+
+    const versionedPhaseIds = versionedPhaseIdsByLessonId.get(lessonRow.id) ?? [];
+
+    const totalPhases = versionedPhaseIds.length;
+    const completedVersioned = versionedPhaseIds.filter((phaseId) => completedPhaseIds.has(phaseId)).length;
+    const completedPhases = completedVersioned;
+
     const progressPercentage = totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
 
-    if (!unitsMap.has(lesson.unitNumber)) {
-      unitsMap.set(lesson.unitNumber, {
-        unitNumber: lesson.unitNumber,
-        unitTitle: deriveUnitTitle(lesson),
+    if (!unitsMap.has(effectiveLesson.unitNumber)) {
+      unitsMap.set(effectiveLesson.unitNumber, {
+        unitNumber: effectiveLesson.unitNumber,
+        unitTitle: deriveUnitTitle(effectiveLesson),
         lessons: [],
       });
     }
 
-    unitsMap.get(lesson.unitNumber)?.lessons.push({
-      id: lesson.id,
-      unitNumber: lesson.unitNumber,
-      title: lesson.title,
-      slug: lesson.slug,
-      description: lesson.description,
+    unitsMap.get(effectiveLesson.unitNumber)?.lessons.push({
+      id: effectiveLesson.id,
+      unitNumber: effectiveLesson.unitNumber,
+      title: effectiveLesson.title,
+      slug: effectiveLesson.slug,
+      description: effectiveLesson.description,
       totalPhases,
       completedPhases,
       progressPercentage,
@@ -157,4 +215,3 @@ export default async function StudentDashboard() {
     </div>
   );
 }
-

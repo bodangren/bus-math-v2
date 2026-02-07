@@ -20,6 +20,27 @@ This is the canonical architecture reference for the v2 system.
 - Drizzle is retained for query ergonomics and type-safe modeling where helpful, not as schema truth.
 - Edge functions handle privileged transactional operations (for example, teacher-managed account creation).
 
+### Schema Change Workflow (Supabase First)
+1. Create or update SQL in `supabase/migrations/` as the canonical schema change.
+2. Align Drizzle schema mappings in `lib/db/schema/` to mirror the SQL result for query/type safety.
+3. Run directional parity checks:
+   - `CI=true node scripts/check-migration-parity.mjs`
+   - `CI=true npm test -- __tests__/config/check-migration-parity-script.test.ts __tests__/config/drizzle-supabase-schema-parity.test.ts`
+4. Run project quality gates before merge:
+   - `npx tsc --noEmit`
+   - `npm run lint`
+   - relevant Vitest suites for changed domains
+5. Merge only when Supabase SQL and Drizzle query models are in parity.
+
+### Migration Runbook
+1. Add a timestamped migration file under `supabase/migrations/` for the schema change.
+2. For data-affecting changes, add/update deterministic seed scripts under `supabase/seed/`.
+3. Update Drizzle table/relations/types in `lib/db/schema/` to match the migration output.
+4. Execute `CI=true node scripts/check-migration-parity.mjs`; resolve all reported drift before merge.
+5. Add or update tests for new schema contracts (validators, API behavior, RLS-sensitive flows).
+6. Validate local integration (`npx tsc --noEmit`, `npm run lint`, targeted tests).
+7. Include schema + seed + parity evidence in the track plan and commit notes.
+
 ## Frontend Architecture
 
 ### App Structure

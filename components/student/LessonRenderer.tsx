@@ -13,9 +13,9 @@ interface Phase {
   id: string;
   phaseNumber: number;
   title: string;
-  contentBlocks: ContentBlock[];
+  contentBlocks?: ContentBlock[];
   estimatedMinutes: number | null;
-  metadata: PhaseMetadata;
+  metadata?: PhaseMetadata;
 }
 
 interface Lesson {
@@ -155,7 +155,7 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
 
             {/* Content Blocks - Basic rendering */}
             <div className="space-y-4">
-              {currentPhase.contentBlocks.map((block) => (
+              {(currentPhase.contentBlocks ?? []).map((block) => (
                 <div key={block.id}>
                   {block.type === 'markdown' && (
                     <div className="prose prose-sm max-w-none">

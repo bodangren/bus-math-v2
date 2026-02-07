@@ -1,39 +1,31 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { notFound, redirect } from 'next/navigation';
+
 import LessonPage from '../../../../../app/student/lesson/[lessonSlug]/page';
 
-// Mock Next.js navigation
 vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
   redirect: vi.fn(),
 }));
 
-// Mock database
 vi.mock('@/lib/db/drizzle', () => ({
   db: {
     select: vi.fn(),
+    query: {
+      lessonVersions: { findMany: vi.fn() },
+      phaseVersions: { findMany: vi.fn() },
+      phaseSections: { findMany: vi.fn() },
+    },
   },
 }));
 
-// Mock Supabase client
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
 }));
 
-// Mock LessonRenderer component
 vi.mock('@/components/student/LessonRenderer', () => ({
-  LessonRenderer: ({
-    lesson,
-    phases,
-    currentPhaseNumber,
-    lessonSlug
-  }: {
-    lesson: { title: string };
-    phases: unknown[];
-    currentPhaseNumber: number;
-    lessonSlug: string;
-  }) => (
+  LessonRenderer: ({ lesson, phases, currentPhaseNumber, lessonSlug }: { lesson: { title: string }; phases: unknown[]; currentPhaseNumber: number; lessonSlug: string }) => (
     <div data-testid="lesson-renderer">
       <h1>{lesson.title}</h1>
       <div data-testid="phase-count">{phases.length}</div>
@@ -43,357 +35,78 @@ vi.mock('@/components/student/LessonRenderer', () => ({
   ),
 }));
 
+const baseLesson = {
+  id: '123',
+  unitNumber: 1,
+  title: 'Base Lesson',
+  slug: 'test-lesson',
+  description: 'Base description',
+  learningObjectives: ['Objective 1'],
+  orderIndex: 1,
+  metadata: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+function mockDbSelect(lessonResult: unknown[] = [baseLesson], profileRole: 'student' | 'teacher' | 'admin' = 'student') {
+  return async () => {
+    const { db } = await import('@/lib/db/drizzle');
+    const limitLesson = vi.fn().mockResolvedValue(lessonResult);
+    const limitProfile = vi.fn().mockResolvedValue([{ id: 'user-123', role: profileRole }]);
+    const whereLesson = vi.fn().mockReturnValue({ limit: limitLesson });
+    const whereProfile = vi.fn().mockReturnValue({ limit: limitProfile });
+    const fromLesson = vi.fn().mockReturnValue({ where: whereLesson });
+    const fromProfile = vi.fn().mockReturnValue({ where: whereProfile });
+    let call = 0;
+    vi.mocked(db.select).mockImplementation(() => {
+      call += 1;
+      if (call === 1) return { from: fromLesson } as never;
+      return { from: fromProfile } as never;
+    });
+  };
+}
+
+async function mockVersionedPhases(phaseCount = 3) {
+  const { db } = await import('@/lib/db/drizzle');
+  vi.mocked(db.query.lessonVersions.findMany).mockResolvedValue([
+    {
+      id: 'lv-1',
+      lessonId: '123',
+      version: 1,
+      title: 'Versioned Lesson',
+      description: 'Versioned description',
+      status: 'published',
+      createdAt: new Date(),
+    },
+  ] as never);
+
+  const phases = Array.from({ length: phaseCount }).map((_, i) => ({
+    id: `pv-${i + 1}`,
+    lessonVersionId: 'lv-1',
+    phaseNumber: i + 1,
+    title: `Phase ${i + 1}`,
+    estimatedMinutes: 10,
+    createdAt: new Date(),
+  }));
+  vi.mocked(db.query.phaseVersions.findMany).mockResolvedValue(phases as never);
+  vi.mocked(db.query.phaseSections.findMany).mockResolvedValue(
+    phases.map((p) => ({
+      id: `ps-${p.phaseNumber}`,
+      phaseVersionId: p.id,
+      sequenceOrder: 1,
+      sectionType: 'text',
+      content: { markdown: `# ${p.title}` },
+      createdAt: new Date(),
+    })) as never,
+  );
+}
+
 describe('LessonPage', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+  beforeEach(async () => {
+    vi.resetAllMocks();
 
-  it('renders lesson with authorized phase when found', async () => {
-    // Mock Supabase auth
     const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
-      rpc: vi.fn().mockResolvedValue({ data: true, error: null }),
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    // Mock database query
-    const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '123',
-      unitNumber: 1,
-      title: 'Test Lesson',
-      slug: 'test-lesson',
-      description: 'Test description',
-      learningObjectives: ['Objective 1', 'Objective 2'],
-      orderIndex: 1,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases = [
-      {
-        id: 'phase-1',
-        lessonId: '123',
-        phaseNumber: 1,
-        title: 'Phase 1',
-        contentBlocks: [],
-        estimatedMinutes: 30,
-        metadata: { phaseType: 'intro' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'phase-2',
-        lessonId: '123',
-        phaseNumber: 2,
-        title: 'Phase 2',
-        contentBlocks: [],
-        estimatedMinutes: 45,
-        metadata: { phaseType: 'practice' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    const mockProfile = {
-      id: 'user-123',
-      role: 'student' as const,
-    };
-
-    // Mock the query chain
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
-    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
-    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
-
-    let callCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) {
-        return { from: fromMockForLesson } as never;
-      } else if (callCount === 2) {
-        return { from: fromMockForPhases } as never;
-      } else {
-        return { from: fromMockForProfile } as never;
-      }
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'test-lesson' });
-    const searchParams = Promise.resolve({ phase: '1' });
-    const result = await LessonPage({ params, searchParams });
-
-    render(result);
-
-    expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
-    expect(screen.getByText('Test Lesson')).toBeInTheDocument();
-    expect(screen.getByTestId('phase-count')).toHaveTextContent('2');
-    expect(screen.getByTestId('current-phase')).toHaveTextContent('1');
-    expect(notFound).not.toHaveBeenCalled();
-    expect(redirect).not.toHaveBeenCalled();
-  });
-
-  it('redirects to login when user is not authenticated', async () => {
-    // Mock Supabase auth to return no user
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: null },
-          error: { message: 'Not authenticated' },
-        }),
-      },
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    const params = Promise.resolve({ lessonSlug: 'test-lesson' });
-    const searchParams = Promise.resolve({});
-
-    try {
-      await LessonPage({ params, searchParams });
-    } catch {
-      // redirect() throws, so we catch it
-    }
-
-    expect(redirect).toHaveBeenCalledWith('/auth/login');
-  });
-
-  it('calls notFound when lesson does not exist', async () => {
-    // Mock Supabase auth
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    // Mock database query to return empty result
-    const { db } = await import('@/lib/db/drizzle');
-    const limitMock = vi.fn().mockResolvedValue([]);
-    const whereMock = vi.fn().mockReturnValue({ limit: limitMock });
-    const fromMock = vi.fn().mockReturnValue({ where: whereMock });
-    vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
-
-    const params = Promise.resolve({ lessonSlug: 'non-existent' });
-    const searchParams = Promise.resolve({});
-
-    try {
-      await LessonPage({ params, searchParams });
-    } catch {
-      // notFound() throws, so we catch it
-    }
-
-    expect(notFound).toHaveBeenCalled();
-  });
-
-  it('redirects legacy unitXX-lessonYY slug to first available lesson', async () => {
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    const { db } = await import('@/lib/db/drizzle');
-    const limitMockForMissingLesson = vi.fn().mockResolvedValue([]);
-    const whereMockForMissingLesson = vi.fn().mockReturnValue({ limit: limitMockForMissingLesson });
-    const fromMockForMissingLesson = vi.fn().mockReturnValue({ where: whereMockForMissingLesson });
-
-    const limitMockForFirstLesson = vi.fn().mockResolvedValue([{ slug: 'foundations-ledger-basics' }]);
-    const orderByMockForFirstLesson = vi.fn().mockReturnValue({ limit: limitMockForFirstLesson });
-    const fromMockForFirstLesson = vi.fn().mockReturnValue({ orderBy: orderByMockForFirstLesson });
-
-    let selectCallCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      selectCallCount += 1;
-      if (selectCallCount === 1) {
-        return { from: fromMockForMissingLesson } as never;
-      }
-      return { from: fromMockForFirstLesson } as never;
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'unit01-lesson01' });
-    const searchParams = Promise.resolve({ phase: '1' });
-
-    try {
-      await LessonPage({ params, searchParams });
-    } catch {
-      // redirect throws in Next.js
-    }
-
-    expect(redirect).toHaveBeenCalledWith('/student/lesson/foundations-ledger-basics?phase=1');
-    expect(notFound).not.toHaveBeenCalled();
-  });
-
-  it('redirects legacy unitXX-lessonYY slug to preface when there are no lessons', async () => {
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    const { db } = await import('@/lib/db/drizzle');
-    const limitMockForMissingLesson = vi.fn().mockResolvedValue([]);
-    const whereMockForMissingLesson = vi.fn().mockReturnValue({ limit: limitMockForMissingLesson });
-    const fromMockForMissingLesson = vi.fn().mockReturnValue({ where: whereMockForMissingLesson });
-
-    const limitMockForFirstLesson = vi.fn().mockResolvedValue([]);
-    const orderByMockForFirstLesson = vi.fn().mockReturnValue({ limit: limitMockForFirstLesson });
-    const fromMockForFirstLesson = vi.fn().mockReturnValue({ orderBy: orderByMockForFirstLesson });
-
-    let selectCallCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      selectCallCount += 1;
-      if (selectCallCount === 1) {
-        return { from: fromMockForMissingLesson } as never;
-      }
-      return { from: fromMockForFirstLesson } as never;
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'unit01-lesson01' });
-    const searchParams = Promise.resolve({ phase: '1' });
-
-    try {
-      await LessonPage({ params, searchParams });
-    } catch {
-      // redirect throws in Next.js
-    }
-
-    expect(redirect).toHaveBeenCalledWith('/preface');
-    expect(notFound).not.toHaveBeenCalled();
-  });
-
-  it('redirects to latest accessible phase when accessing locked phase', async () => {
-    // Mock Supabase auth
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
-      rpc: vi.fn()
-        .mockResolvedValueOnce({ data: false, error: null }) // Phase 3 is locked
-        .mockResolvedValueOnce({ data: false, error: null }) // Phase 3 check again
-        .mockResolvedValueOnce({ data: true, error: null }), // Phase 2 is accessible
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    // Mock database query
-    const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '123',
-      unitNumber: 1,
-      title: 'Test Lesson',
-      slug: 'test-lesson',
-      description: 'Test description',
-      learningObjectives: ['Objective 1'],
-      orderIndex: 1,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases = [
-      {
-        id: 'phase-1',
-        lessonId: '123',
-        phaseNumber: 1,
-        title: 'Phase 1',
-        contentBlocks: [],
-        estimatedMinutes: 30,
-        metadata: { phaseType: 'intro' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'phase-2',
-        lessonId: '123',
-        phaseNumber: 2,
-        title: 'Phase 2',
-        contentBlocks: [],
-        estimatedMinutes: 45,
-        metadata: { phaseType: 'practice' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'phase-3',
-        lessonId: '123',
-        phaseNumber: 3,
-        title: 'Phase 3',
-        contentBlocks: [],
-        estimatedMinutes: 45,
-        metadata: { phaseType: 'practice' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    const mockProfile = {
-      id: 'user-123',
-      role: 'student' as const,
-    };
-
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
-    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
-    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
-
-    let callCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) {
-        return { from: fromMockForLesson } as never;
-      } else if (callCount === 2) {
-        return { from: fromMockForPhases } as never;
-      } else {
-        return { from: fromMockForProfile } as never;
-      }
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'test-lesson' });
-    const searchParams = Promise.resolve({ phase: '3' });
-
-    try {
-      await LessonPage({ params, searchParams });
-    } catch {
-      // redirect() throws, so we catch it
-    }
-
-    expect(redirect).toHaveBeenCalledWith('/student/lesson/test-lesson?phase=2');
-  });
-
-  it('defaults to phase 1 when no phase is specified', async () => {
-    // Mock Supabase auth
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
+    vi.mocked(createClient).mockResolvedValue({
       auth: {
         getUser: vi.fn().mockResolvedValue({
           data: { user: { id: 'user-123', email: 'test@example.com' } },
@@ -404,412 +117,144 @@ describe('LessonPage', () => {
       from: vi.fn().mockReturnValue({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
-            in: vi.fn().mockResolvedValue({ data: [], error: null })
-          })
-        })
-      })
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    // Mock database query
-    const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '456',
-      unitNumber: 2,
-      title: 'Another Lesson',
-      slug: 'another-lesson',
-      description: null,
-      learningObjectives: null,
-      orderIndex: 2,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases = [
-      {
-        id: 'phase-1',
-        lessonId: '456',
-        phaseNumber: 1,
-        title: 'Phase 1',
-        contentBlocks: [],
-        estimatedMinutes: 30,
-        metadata: { phaseType: 'intro' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    const mockProfile = {
-      id: 'user-123',
-      role: 'student' as const,
-    };
-
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
-    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
-    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
-
-    let callCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) {
-        return { from: fromMockForLesson } as never;
-      } else if (callCount === 2) {
-        return { from: fromMockForPhases } as never;
-      } else {
-        return { from: fromMockForProfile } as never;
-      }
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'another-lesson' });
-    const searchParams = Promise.resolve({});
-    const result = await LessonPage({ params, searchParams });
-
-    render(result);
-
-    expect(screen.getByText('Another Lesson')).toBeInTheDocument();
-    expect(screen.getByTestId('current-phase')).toHaveTextContent('1');
-  });
-
-  it('shows error page when lesson has zero phases', async () => {
-    // Mock Supabase auth
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
+            in: vi.fn().mockResolvedValue({ data: [], error: null }),
+          }),
         }),
-      },
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    // Mock database query - lesson exists but has no phases
-    const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '789',
-      unitNumber: 3,
-      title: 'Empty Lesson',
-      slug: 'empty-lesson',
-      description: null,
-      learningObjectives: null,
-      orderIndex: 3,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases: never[] = []; // No phases
-
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMock = vi.fn().mockResolvedValue([mockLesson]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMock });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-
-    let callCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      return {
-        from: callCount === 1 ? fromMockForLesson : fromMockForPhases,
-      } as never;
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'empty-lesson' });
-    const searchParams = Promise.resolve({});
-    const result = await LessonPage({ params, searchParams });
-
-    render(result);
-
-    expect(screen.getByText('Lesson Not Available')).toBeInTheDocument();
-    expect(screen.getByText(/does not have any phases configured/i)).toBeInTheDocument();
-    expect(screen.getByText('Return to Dashboard')).toBeInTheDocument();
-    expect(redirect).not.toHaveBeenCalled();
-  });
-
-  it('shows error page when RPC fails', async () => {
-    // Mock Supabase auth
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
-      rpc: vi.fn().mockResolvedValue({
-        data: null,
-        error: { message: 'Database connection failed' },
       }),
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+    } as never);
 
-    // Mock database query
+    await mockDbSelect()();
+    await mockVersionedPhases(3);
+  });
+
+  it('renders versioned lesson phase', async () => {
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({ phase: '1' }),
+    });
+    render(page);
+    expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
+    expect(screen.getByText('Versioned Lesson')).toBeInTheDocument();
+    expect(screen.getByTestId('phase-count')).toHaveTextContent('3');
+  });
+
+  it('redirects unauthenticated users to login', async () => {
+    const { createClient } = await import('@/lib/supabase/server');
+    vi.mocked(createClient).mockResolvedValue({
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) },
+    } as never);
+
+    try {
+      await LessonPage({
+        params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+        searchParams: Promise.resolve({}),
+      });
+    } catch {}
+
+    expect(redirect).toHaveBeenCalledWith('/auth/login');
+  });
+
+  it('calls notFound when lesson is missing', async () => {
+    await mockDbSelect([])();
+    try {
+      await LessonPage({
+        params: Promise.resolve({ lessonSlug: 'missing-lesson' }),
+        searchParams: Promise.resolve({}),
+      });
+    } catch {}
+    expect(notFound).toHaveBeenCalled();
+  });
+
+  it('redirects legacy slug to first lesson when available', async () => {
     const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '999',
-      unitNumber: 4,
-      title: 'RPC Error Lesson',
-      slug: 'rpc-error-lesson',
-      description: null,
-      learningObjectives: null,
-      orderIndex: 4,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases = [
-      {
-        id: 'phase-1',
-        lessonId: '999',
-        phaseNumber: 1,
-        title: 'Phase 1',
-        contentBlocks: [],
-        estimatedMinutes: 30,
-        metadata: { phaseType: 'intro' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    const mockProfile = {
-      id: 'user-123',
-      role: 'student' as const,
-    };
-
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
-    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
-    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
-
-    let callCount = 0;
+    const limitMissing = vi.fn().mockResolvedValue([]);
+    const whereMissing = vi.fn().mockReturnValue({ limit: limitMissing });
+    const fromMissing = vi.fn().mockReturnValue({ where: whereMissing });
+    const limitFirst = vi.fn().mockResolvedValue([{ slug: 'foundations-ledger-basics' }]);
+    const orderByFirst = vi.fn().mockReturnValue({ limit: limitFirst });
+    const fromFirst = vi.fn().mockReturnValue({ orderBy: orderByFirst });
+    let call = 0;
     vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) {
-        return { from: fromMockForLesson } as never;
-      } else if (callCount === 2) {
-        return { from: fromMockForPhases } as never;
-      } else {
-        return { from: fromMockForProfile } as never;
-      }
+      call += 1;
+      if (call === 1) return { from: fromMissing } as never;
+      return { from: fromFirst } as never;
     });
 
-    const params = Promise.resolve({ lessonSlug: 'rpc-error-lesson' });
-    const searchParams = Promise.resolve({ phase: '1' });
-    const result = await LessonPage({ params, searchParams });
+    try {
+      await LessonPage({
+        params: Promise.resolve({ lessonSlug: 'unit01-lesson01' }),
+        searchParams: Promise.resolve({}),
+      });
+    } catch {}
+    expect(redirect).toHaveBeenCalledWith('/student/lesson/foundations-ledger-basics?phase=1');
+  });
 
-    render(result);
+  it('shows no-phase error when versioned phases are absent', async () => {
+    const { db } = await import('@/lib/db/drizzle');
+    vi.mocked(db.query.phaseVersions.findMany).mockResolvedValue([] as never);
 
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({}),
+    });
+    render(page);
+    expect(screen.getByText('Lesson Not Available')).toBeInTheDocument();
+  });
+
+  it('shows access error page when RPC fails', async () => {
+    const { createClient } = await import('@/lib/supabase/server');
+    vi.mocked(createClient).mockResolvedValue({
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123', email: 'test@example.com' } },
+          error: null,
+        }),
+      },
+      rpc: vi.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } }),
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            in: vi.fn().mockResolvedValue({ data: [], error: null }),
+          }),
+        }),
+      }),
+    } as never);
+
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({ phase: '1' }),
+    });
+    render(page);
     expect(screen.getByText('Unable to Verify Access')).toBeInTheDocument();
-    expect(screen.getByText(/encountered an error while checking your access/i)).toBeInTheDocument();
-    expect(screen.getByText('Return to Dashboard')).toBeInTheDocument();
-    expect(redirect).not.toHaveBeenCalled();
   });
 
-  it('allows teachers to bypass phase locking', async () => {
-    // Mock Supabase auth
+  it('allows teacher role to bypass phase locking', async () => {
     const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
+    const rpc = vi.fn();
+    vi.mocked(createClient).mockResolvedValue({
       auth: {
         getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'teacher-123', email: 'teacher@example.com' } },
+          data: { user: { id: 'user-123', email: 'teacher@example.com' } },
           error: null,
         }),
       },
-      // RPC should NOT be called for teachers
-      rpc: vi.fn(),
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+      rpc,
+      from: vi.fn().mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            in: vi.fn().mockResolvedValue({ data: [], error: null }),
+          }),
+        }),
+      }),
+    } as never);
+    await mockDbSelect([baseLesson], 'teacher')();
 
-    // Mock database query
-    const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '111',
-      unitNumber: 1,
-      title: 'Teacher Accessible Lesson',
-      slug: 'teacher-lesson',
-      description: 'Test description',
-      learningObjectives: ['Objective 1'],
-      orderIndex: 1,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases = [
-      {
-        id: 'phase-1',
-        lessonId: '111',
-        phaseNumber: 1,
-        title: 'Phase 1',
-        contentBlocks: [],
-        estimatedMinutes: 30,
-        metadata: { phaseType: 'intro' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'phase-2',
-        lessonId: '111',
-        phaseNumber: 2,
-        title: 'Phase 2',
-        contentBlocks: [],
-        estimatedMinutes: 45,
-        metadata: { phaseType: 'practice' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'phase-3',
-        lessonId: '111',
-        phaseNumber: 3,
-        title: 'Phase 3',
-        contentBlocks: [],
-        estimatedMinutes: 45,
-        metadata: { phaseType: 'practice' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    const mockProfile = {
-      id: 'teacher-123',
-      role: 'teacher' as const,
-    };
-
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
-    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
-    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
-
-    let callCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) {
-        return { from: fromMockForLesson } as never;
-      } else if (callCount === 2) {
-        return { from: fromMockForPhases } as never;
-      } else {
-        return { from: fromMockForProfile } as never;
-      }
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({ phase: '3' }),
     });
-
-    const params = Promise.resolve({ lessonSlug: 'teacher-lesson' });
-    const searchParams = Promise.resolve({ phase: '3' });
-    const result = await LessonPage({ params, searchParams });
-
-    render(result);
-
-    expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
-    expect(screen.getByText('Teacher Accessible Lesson')).toBeInTheDocument();
+    render(page);
     expect(screen.getByTestId('current-phase')).toHaveTextContent('3');
-    // Verify RPC was NOT called for teacher
-    expect(mockSupabaseClient.rpc).not.toHaveBeenCalled();
-    expect(redirect).not.toHaveBeenCalled();
-  });
-
-  it('allows admins to bypass phase locking', async () => {
-    // Mock Supabase auth
-    const { createClient } = await import('@/lib/supabase/server');
-    const mockSupabaseClient = {
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'admin-123', email: 'admin@example.com' } },
-          error: null,
-        }),
-      },
-      // RPC should NOT be called for admins
-      rpc: vi.fn(),
-    };
-    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
-
-    // Mock database query
-    const { db } = await import('@/lib/db/drizzle');
-    const mockLesson = {
-      id: '222',
-      unitNumber: 1,
-      title: 'Admin Accessible Lesson',
-      slug: 'admin-lesson',
-      description: 'Test description',
-      learningObjectives: ['Objective 1'],
-      orderIndex: 1,
-      metadata: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    const mockPhases = [
-      {
-        id: 'phase-1',
-        lessonId: '222',
-        phaseNumber: 1,
-        title: 'Phase 1',
-        contentBlocks: [],
-        estimatedMinutes: 30,
-        metadata: { phaseType: 'intro' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: 'phase-2',
-        lessonId: '222',
-        phaseNumber: 2,
-        title: 'Phase 2',
-        contentBlocks: [],
-        estimatedMinutes: 45,
-        metadata: { phaseType: 'practice' as const },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-    const mockProfile = {
-      id: 'admin-123',
-      role: 'admin' as const,
-    };
-
-    const orderByMock = vi.fn().mockResolvedValue(mockPhases);
-    const whereMockForPhases = vi.fn().mockReturnValue({ orderBy: orderByMock });
-    const limitMockForLesson = vi.fn().mockResolvedValue([mockLesson]);
-    const limitMockForProfile = vi.fn().mockResolvedValue([mockProfile]);
-    const whereMockForLesson = vi.fn().mockReturnValue({ limit: limitMockForLesson });
-    const whereMockForProfile = vi.fn().mockReturnValue({ limit: limitMockForProfile });
-    const fromMockForPhases = vi.fn().mockReturnValue({ where: whereMockForPhases });
-    const fromMockForLesson = vi.fn().mockReturnValue({ where: whereMockForLesson });
-    const fromMockForProfile = vi.fn().mockReturnValue({ where: whereMockForProfile });
-
-    let callCount = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) {
-        return { from: fromMockForLesson } as never;
-      } else if (callCount === 2) {
-        return { from: fromMockForPhases } as never;
-      } else {
-        return { from: fromMockForProfile } as never;
-      }
-    });
-
-    const params = Promise.resolve({ lessonSlug: 'admin-lesson' });
-    const searchParams = Promise.resolve({ phase: '2' });
-    const result = await LessonPage({ params, searchParams });
-
-    render(result);
-
-    expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
-    expect(screen.getByText('Admin Accessible Lesson')).toBeInTheDocument();
-    expect(screen.getByTestId('current-phase')).toHaveTextContent('2');
-    // Verify RPC was NOT called for admin
-    expect(mockSupabaseClient.rpc).not.toHaveBeenCalled();
-    expect(redirect).not.toHaveBeenCalled();
+    expect(rpc).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,6 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { lessons, phases } from '@/lib/db/schema';
+import { lessons } from '@/lib/db/schema';
+import type { Phase as SchemaPhase, NewPhase as SchemaNewPhase } from '@/lib/db/schema/validators';
 import type {
   LessonMetadata as SchemaLessonMetadata,
   UnitAssessment as SchemaUnitAssessment,
@@ -16,16 +17,16 @@ import type {
 import type {
   ContentBlock as SchemaContentBlock,
   PhaseMetadata as SchemaPhaseMetadata,
-} from '@/lib/db/schema/phases';
-import { contentBlockSchema as schemaContentBlockSchema } from '@/lib/db/schema/phases';
+} from '@/lib/db/schema/phase-content';
+import { contentBlockSchema as schemaContentBlockSchema } from '@/lib/db/schema/phase-content';
 
 export const CURRICULUM_PHASE_COUNT = 6;
 export const contentBlockSchema = schemaContentBlockSchema;
 
 export type LessonRow = InferSelectModel<typeof lessons>;
 export type NewLessonRow = InferInsertModel<typeof lessons>;
-export type PhaseRow = InferSelectModel<typeof phases>;
-export type NewPhaseRow = InferInsertModel<typeof phases>;
+export type PhaseRow = SchemaPhase;
+export type NewPhaseRow = SchemaNewPhase;
 
 export type LessonMetadata = SchemaLessonMetadata;
 export type UnitContent = SchemaUnitContent;

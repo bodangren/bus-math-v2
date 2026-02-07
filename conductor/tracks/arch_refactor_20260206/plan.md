@@ -87,79 +87,84 @@
     - [x] Verify tsc --noEmit passes after all import changes
 - [x] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md) `dc0ef0f`
 
-## Phase 5: Activities Schema Decomposition
-- [ ] Task: Analyze activities.ts and identify domain boundaries
-    - [ ] Map each type/table/validator to its domain (core, spreadsheet, quiz, categorization, simulation)
-    - [ ] Identify shared dependencies between domains
-- [ ] Task: Create activities-core.ts
-    - [ ] Write test verifying core activity table and shared types export correctly
-    - [ ] Extract base activity table, shared enums, and common types
-- [ ] Task: Create activities-spreadsheet.ts
-    - [ ] Write test verifying spreadsheet JSONB types and validators
-    - [ ] Extract spreadsheet-specific types and validators
-- [ ] Task: Create activities-quiz.ts
-    - [ ] Write test verifying quiz/comprehension question types
-    - [ ] Extract quiz and comprehension types
-- [ ] Task: Create activities-categorization.ts
-    - [ ] Write test verifying categorization types
-    - [ ] Extract drag-and-drop categorization types
-- [ ] Task: Create activities-simulation.ts
-    - [ ] Write test verifying simulation types
-    - [ ] Extract business simulation types
-- [ ] Task: Create activities/index.ts barrel export
-    - [ ] Write test verifying all existing imports resolve through barrel
-    - [ ] Implement barrel export re-exporting all domain files
-- [ ] Task: Remove original monolithic activities.ts
-    - [ ] Update all imports across codebase to use barrel or domain-specific imports
-    - [ ] Verify tsc --noEmit and all tests pass
-- [ ] Task: Conductor - User Manual Verification 'Activities Schema Decomposition' (Protocol in workflow.md)
+## Phase 5: Activities Schema Decomposition [checkpoint: d5d7b96]
+- [x] Task: Analyze activities.ts and identify domain boundaries
+    - [x] Map each type/table/validator to its domain (core, spreadsheet, quiz, categorization, simulation)
+    - [x] Identify shared dependencies between domains
+- [x] Task: Create activities-core.ts
+    - [x] Write test verifying core activity table and shared types export correctly
+    - [x] Extract base activity table, shared enums, and common types
+- [x] Task: Create activities-spreadsheet.ts
+    - [x] Write test verifying spreadsheet JSONB types and validators
+    - [x] Extract spreadsheet-specific types and validators
+- [x] Task: Create activities-quiz.ts
+    - [x] Write test verifying quiz/comprehension question types
+    - [x] Extract quiz and comprehension types
+- [x] Task: Create activities-categorization.ts
+    - [x] Write test verifying categorization types
+    - [x] Extract drag-and-drop categorization types
+- [x] Task: Create activities-simulation.ts
+    - [x] Write test verifying simulation types
+    - [x] Extract business simulation types
+- [x] Task: Create activities/index.ts barrel export
+    - [x] Write test verifying all existing imports resolve through barrel
+    - [x] Implement barrel export re-exporting all domain files
+- [x] Task: Remove original monolithic activities.ts
+    - [x] Update all imports across codebase to use barrel or domain-specific imports
+    - [x] Verify tsc --noEmit and all tests pass
+- [x] Task: Conductor - User Manual Verification 'Activities Schema Decomposition' (Protocol in workflow.md)
+    - [x] Automated verification completed
+    - [x] Manual verification steps 1-3 confirmed by user; steps 4-5 blocked pending seed data
 
-## Phase 6: Supabase-First Migration Unification
-- [ ] Task: Audit current Drizzle↔Supabase coupling
-    - [ ] Catalog all places drizzle-kit is used for schema generation
-    - [ ] Catalog all places Drizzle schema files define tables (vs just types)
-    - [ ] Verify scripts/check-migration-parity.mjs exists and functions
-- [ ] Task: Archive drizzle/migrations/ directory
-    - [ ] Write test verifying no runtime code imports from drizzle/migrations/
-    - [ ] Move drizzle/migrations/ to drizzle/archived-migrations/
-    - [ ] Update drizzle.config.ts to remove migration generation config
-- [ ] Task: Refactor Drizzle schema files to query-only role
-    - [ ] Write test verifying Drizzle schema types match Supabase SQL schema
-    - [ ] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
-    - [ ] Ensure Drizzle is used only for type-safe query building, not schema management
-- [ ] Task: Update parity check script
-    - [ ] Write test verifying parity script detects intentional drift
-    - [ ] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
-- [ ] Task: Document Supabase-first flow in conductor/architecture.md
-    - [ ] Add section: "Schema Change Workflow" (edit SQL migration → update Drizzle types → run parity check)
-    - [ ] Add section: "Migration Runbook" for creating new migrations
-- [ ] Task: Conductor - User Manual Verification 'Supabase-First Migration Unification' (Protocol in workflow.md)
+## Phase 6: Supabase-First Migration Unification [checkpoint: 4221208]
+- [x] Task: Audit current Drizzle↔Supabase coupling `f641a9d`
+    - [x] Catalog all places drizzle-kit is used for schema generation
+    - [x] Catalog all places Drizzle schema files define tables (vs just types)
+    - [x] Verify scripts/check-migration-parity.mjs exists and functions
+    - [x] Findings recorded in `conductor/tracks/arch_refactor_20260206/phase6-audit.md`
+- [x] Task: Archive drizzle/migrations/ directory `5bba2f7`
+    - [x] Write test verifying no runtime code imports from drizzle/migrations/
+    - [x] Move drizzle/migrations/ to drizzle/archived-migrations/
+    - [x] Update drizzle.config.ts to remove migration generation config
+- [x] Task: Refactor Drizzle schema files to query-only role `e9f557c`
+    - [x] Write test verifying Drizzle schema types match Supabase SQL schema
+    - [x] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
+    - [x] Ensure Drizzle is used only for type-safe query building, not schema management
+- [x] Task: Update parity check script `935febe`
+    - [x] Write test verifying parity script detects intentional drift
+    - [x] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
+- [x] Task: Document Supabase-first flow in conductor/architecture.md `08d064a`
+    - [x] Add section: "Schema Change Workflow" (edit SQL migration → update Drizzle types → run parity check)
+    - [x] Add section: "Migration Runbook" for creating new migrations
+- [x] Task: Conductor - User Manual Verification 'Supabase-First Migration Unification' (Protocol in workflow.md)
+    - [x] Automated verification passed (`npm test`, `tsc --noEmit`, `npm run lint`)
+    - [x] Manual verification confirmed by user (including expected directional parity failure output)
 
 ## Phase 7: Versioned Lesson Schema Migration
-- [ ] Task: Audit all legacy schema references
-    - [ ] Catalog every query, component, API route, and seed file that references legacy lessons/phases tables
-    - [ ] Map each reference to its versioned schema equivalent
-- [ ] Task: Migrate seed files to versioned schema
-    - [ ] Write test verifying seed files only reference versioned tables
-    - [ ] Update or replace legacy seed files (e.g., 02-sample-lessons.sql)
-    - [ ] Ensure all seed scripts are idempotent with versioned schema
-- [ ] Task: Migrate API routes to versioned schema
-    - [ ] Write integration tests for each affected API route with versioned schema
-    - [ ] Update lesson-fetching queries to use lesson_versions/phase_versions/phase_sections
-    - [ ] Update progress-tracking queries to reference versioned schema
-- [ ] Task: Migrate components and pages to versioned schema
-    - [ ] Write component tests verifying props match versioned schema shape
-    - [ ] Update LessonRenderer, LessonStepper, and phase components
-    - [ ] Update teacher dashboard queries
-- [ ] Task: Create deprecation migration for legacy tables
-    - [ ] Write test verifying no runtime code references legacy table names
-    - [ ] Create Supabase migration renaming legacy tables to _deprecated suffix
-    - [ ] Update Drizzle schema to remove legacy table definitions
-- [ ] Task: Final cleanup — drop deprecated tables
-    - [ ] Verify all tests pass without legacy tables
-    - [ ] Create Supabase migration dropping _deprecated tables
-    - [ ] Remove any remaining legacy type definitions
-- [ ] Task: Conductor - User Manual Verification 'Versioned Lesson Schema Migration' (Protocol in workflow.md)
+- [x] Task: Audit all legacy schema references
+    - [x] Catalog every query, component, API route, and seed file that references legacy lessons/phases tables
+    - [x] Map each reference to its versioned schema equivalent
+- [x] Task: Migrate seed files to versioned schema
+    - [x] Write test verifying seed files only reference versioned tables
+    - [x] Update or replace legacy seed files (e.g., 02-sample-lessons.sql)
+    - [x] Ensure all seed scripts are idempotent with versioned schema
+- [x] Task: Migrate API routes to versioned schema
+    - [x] Write integration tests for each affected API route with versioned schema
+    - [x] Update lesson-fetching queries to use lesson_versions/phase_versions/phase_sections
+    - [x] Update progress-tracking queries to reference versioned schema
+- [x] Task: Migrate components and pages to versioned schema
+    - [x] Write component tests verifying props match versioned schema shape
+    - [x] Update LessonRenderer, LessonStepper, and phase components
+    - [x] Update teacher dashboard queries
+- [x] Task: Create deprecation migration for legacy tables
+    - [x] Write test verifying no runtime code references legacy table names
+    - [x] Create Supabase migration renaming legacy tables to _deprecated suffix
+    - [x] Update Drizzle schema to remove legacy table definitions
+- [x] Task: Final cleanup — drop deprecated tables
+    - [x] Verify all tests pass without legacy tables
+    - [x] Create Supabase migration dropping _deprecated tables
+    - [x] Remove any remaining legacy type definitions
+- [x] Task: Conductor - User Manual Verification 'Versioned Lesson Schema Migration' (Protocol in workflow.md)
 
 ## Phase 8: Component Prop Standardization
 - [ ] Task: Audit activity registry for any types

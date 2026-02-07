@@ -20,10 +20,11 @@ const DEMO_USERS = [
 ];
 
 const DEMO_LESSON_ID = '10000000-0000-0000-0000-000000000001';
+const DEMO_LESSON_VERSION_ID = '10000000-0000-0000-0000-000000000101';
 const DEMO_PHASE_IDS = [
-  '10000000-0000-0000-0000-000000000002',
-  '10000000-0000-0000-0000-000000000003',
-  '10000000-0000-0000-0000-000000000004',
+  '10000000-0000-0000-0000-000000000201',
+  '10000000-0000-0000-0000-000000000202',
+  '10000000-0000-0000-0000-000000000203',
 ] as const;
 
 export async function POST() {
@@ -136,69 +137,100 @@ export async function POST() {
       throw lessonError;
     }
 
+    const { error: versionError } = await adminClient.from('lesson_versions').upsert(
+      {
+        id: DEMO_LESSON_VERSION_ID,
+        lesson_id: DEMO_LESSON_ID,
+        version: 1,
+        title: 'Introduction to Business Math',
+        description: 'Foundational lesson automatically provisioned for demo environments.',
+        status: 'published',
+      },
+      { onConflict: 'lesson_id,version' }
+    );
+    if (versionError) {
+      throw versionError;
+    }
+
     const phaseRows = [
       {
         id: DEMO_PHASE_IDS[0],
-        lesson_id: DEMO_LESSON_ID,
+        lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 1,
         title: 'Hook',
-        content_blocks: [
-          {
-            id: 'demo-phase-1-block-1',
-            type: 'markdown',
-            content:
-              'Welcome to Math for Business Operations. This demo lesson confirms curriculum provisioning is working.',
-          },
-        ],
         estimated_minutes: 5,
-        metadata: { phaseType: 'intro', color: '#2563eb', icon: 'book-open' },
-        updated_at: now,
       },
       {
         id: DEMO_PHASE_IDS[1],
-        lesson_id: DEMO_LESSON_ID,
+        lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 2,
         title: 'Guided Practice',
-        content_blocks: [
-          {
-            id: 'demo-phase-2-block-1',
-            type: 'markdown',
-            content:
-              'Use this phase to practice identifying revenue, expenses, and profit in a basic startup scenario.',
-          },
-          {
-            id: 'demo-phase-2-block-2',
-            type: 'callout',
-            variant: 'why-this-matters',
-            content: 'Business math helps founders make confident decisions with real data.',
-          },
-        ],
         estimated_minutes: 10,
-        metadata: { phaseType: 'practice', color: '#0891b2', icon: 'calculator' },
-        updated_at: now,
       },
       {
         id: DEMO_PHASE_IDS[2],
-        lesson_id: DEMO_LESSON_ID,
+        lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 3,
         title: 'Closing',
-        content_blocks: [
-          {
-            id: 'demo-phase-3-block-1',
-            type: 'markdown',
-            content:
-              'Great work. You can now continue through the platform with a guaranteed starter lesson in place.',
-          },
-        ],
         estimated_minutes: 5,
-        metadata: { phaseType: 'reflection', color: '#7c3aed', icon: 'check-circle' },
-        updated_at: now,
       },
     ];
 
-    const { error: phaseError } = await adminClient.from('phases').upsert(phaseRows, { onConflict: 'id' });
+    const { error: phaseError } = await adminClient.from('phase_versions').upsert(phaseRows, {
+      onConflict: 'lesson_version_id,phase_number',
+    });
     if (phaseError) {
       throw phaseError;
+    }
+
+    const sectionRows = [
+      {
+        id: '10000000-0000-0000-0000-000000000301',
+        phase_version_id: DEMO_PHASE_IDS[0],
+        sequence_order: 1,
+        section_type: 'text',
+        content: {
+          markdown:
+            'Welcome to Math for Business Operations. This demo lesson confirms curriculum provisioning is working.',
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000302',
+        phase_version_id: DEMO_PHASE_IDS[1],
+        sequence_order: 1,
+        section_type: 'text',
+        content: {
+          markdown:
+            'Use this phase to practice identifying revenue, expenses, and profit in a basic startup scenario.',
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000303',
+        phase_version_id: DEMO_PHASE_IDS[1],
+        sequence_order: 2,
+        section_type: 'callout',
+        content: {
+          variant: 'why-this-matters',
+          markdown: 'Business math helps founders make confident decisions with real data.',
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000304',
+        phase_version_id: DEMO_PHASE_IDS[2],
+        sequence_order: 1,
+        section_type: 'text',
+        content: {
+          markdown:
+            'Great work. You can now continue through the platform with a guaranteed starter lesson in place.',
+        },
+      },
+    ];
+
+    const { error: sectionError } = await adminClient.from('phase_sections').upsert(sectionRows, {
+      onConflict: 'phase_version_id,sequence_order',
+    });
+    if (sectionError) {
+      throw sectionError;
     }
 
     return NextResponse.json({ ok: true });

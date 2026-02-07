@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { asc } from "drizzle-orm";
+import { asc, desc, inArray } from "drizzle-orm";
 import { db } from "@/lib/db/drizzle";
-import { lessons } from "@/lib/db/schema";
+import { lessonVersions, lessons } from "@/lib/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CurriculumUnitCard } from "./CurriculumUnitCard";
@@ -85,7 +85,48 @@ async function getCurriculum() {
     .from(lessons)
     .orderBy(asc(lessons.unitNumber), asc(lessons.orderIndex));
 
-  return groupLessonsByUnit(lessonRows);
+  if (lessonRows.length === 0) {
+    return groupLessonsByUnit(lessonRows);
+  }
+
+  try {
+    const lessonIds = lessonRows.map((row) => row.id);
+    const versionRows = await db
+      .select({
+        lessonId: lessonVersions.lessonId,
+        title: lessonVersions.title,
+        description: lessonVersions.description,
+        version: lessonVersions.version,
+      })
+      .from(lessonVersions)
+      .where(inArray(lessonVersions.lessonId, lessonIds))
+      .orderBy(asc(lessonVersions.lessonId), desc(lessonVersions.version));
+
+    const latestVersionByLessonId = new Map<string, { title: string | null; description: string | null }>();
+    for (const row of versionRows) {
+      if (!latestVersionByLessonId.has(row.lessonId)) {
+        latestVersionByLessonId.set(row.lessonId, {
+          title: row.title ?? null,
+          description: row.description ?? null,
+        });
+      }
+    }
+
+    const mergedRows = lessonRows.map((lessonRow) => {
+      const latestVersion = latestVersionByLessonId.get(lessonRow.id);
+      if (!latestVersion) return lessonRow;
+      return {
+        ...lessonRow,
+        title: latestVersion.title ?? lessonRow.title,
+        description: latestVersion.description ?? lessonRow.description,
+      };
+    });
+
+    return groupLessonsByUnit(mergedRows);
+  } catch {
+    // Keep legacy lesson-only behavior while versioned schema rollout is in progress.
+    return groupLessonsByUnit(lessonRows);
+  }
 }
 
 export default async function CurriculumPage() {

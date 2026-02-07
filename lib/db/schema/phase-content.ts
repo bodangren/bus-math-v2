@@ -1,7 +1,4 @@
-import { integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { z } from 'zod';
-
-import { lessons } from './lessons';
 
 export const contentBlockSchema = z.discriminatedUnion('type', [
   z.object({
@@ -51,18 +48,3 @@ export const phaseMetadataSchema = z.object({
 });
 
 export type PhaseMetadata = z.infer<typeof phaseMetadataSchema>;
-
-export const phases = pgTable('phases', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  lessonId: uuid('lesson_id')
-    .notNull()
-    .references(() => lessons.id, { onDelete: 'cascade' }),
-  phaseNumber: integer('phase_number').notNull(),
-  title: text('title').notNull(),
-  contentBlocks: jsonb('content_blocks').$type<ContentBlock[]>().notNull(),
-  estimatedMinutes: integer('estimated_minutes'),
-  metadata: jsonb('metadata').$type<PhaseMetadata>().notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
-
