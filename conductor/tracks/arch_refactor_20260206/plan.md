@@ -75,9 +75,9 @@
 - [x] Task: Create types/api.ts `b7560e6`
     - [x] Write test verifying API request/response types match route expectations
     - [x] Extract shared request/response types from API routes into types/api.ts
-- [ ] Task: Create types/activities.ts
-    - [ ] Write test verifying activity config and submission types
-    - [ ] Extract activity configuration and submission types from schema files
+- [x] Task: Create types/activities.ts `abf2199`
+    - [x] Write test verifying activity config and submission types
+    - [x] Extract activity configuration and submission types from schema files
 - [ ] Task: Create types/curriculum.ts
     - [ ] Write test verifying lesson, phase, and content block types
     - [ ] Extract curriculum-related types from scattered definitions
