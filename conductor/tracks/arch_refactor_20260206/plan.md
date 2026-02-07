@@ -62,7 +62,7 @@
     - [x] Relocate to __tests__/ preserving directory structure mirroring
     - [x] Update vitest.config to resolve new locations
     - [x] Verify all relocated tests pass
-- [ ] Task: Remove empty /test directory
+- [x] Task: Remove empty /test directory `f159538`
 - [ ] Task: Update vitest.config and playwright.config to reflect new structure
     - [ ] Write test confirming vitest discovers all test files
     - [ ] Write test confirming playwright discovers all E2E specs
