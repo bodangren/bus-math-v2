@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { type Lesson, type Phase } from '@/lib/db/schema/validators';
 import { StudentLessonOverview } from './StudentLessonOverview';
-import { createLesson, createPhase } from '@/test/utils/lessonBuilders';
+import { createLesson, createPhase } from '@/__tests__/utils/lessonBuilders';
 
 describe('StudentLessonOverview', () => {
   const lesson: Lesson = createLesson({

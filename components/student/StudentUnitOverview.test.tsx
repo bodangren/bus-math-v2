@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { type Lesson } from '@/lib/db/schema/validators';
 import { StudentUnitOverview } from './StudentUnitOverview';
-import { createLesson } from '@/test/utils/lessonBuilders';
+import { createLesson } from '@/__tests__/utils/lessonBuilders';
 
 describe('StudentUnitOverview', () => {
   const lessons: Lesson[] = [

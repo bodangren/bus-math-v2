@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { type Lesson, type Phase } from '@/lib/db/schema/validators';
 import { PhaseFooter } from './PhaseFooter';
-import { createLesson, createPhase } from '@/test/utils/lessonBuilders';
+import { createLesson, createPhase } from '@/__tests__/utils/lessonBuilders';
 
 const buildPhases = (): Phase[] => [
   createPhase({ phaseNumber: 1, title: 'Hook', id: 'phase-1' }),
