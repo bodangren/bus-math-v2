@@ -1,0 +1,14 @@
+Task: Create types/curriculum.ts
+
+Summary:
+- Added centralized curriculum contract module at types/curriculum.ts.
+- Added contract tests in __tests__/types/curriculum-types.test.ts for lesson/phase/content-block types.
+- Updated LessonRenderer to import curriculum types from the central types module.
+
+Files changed:
+- types/curriculum.ts (created)
+- __tests__/types/curriculum-types.test.ts (created)
+- components/student/LessonRenderer.tsx
+
+Why:
+- Consolidates curriculum-related typing into a single shared module to reduce schema-level type scattering and support upcoming import-standardization work.
