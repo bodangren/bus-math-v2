@@ -126,10 +126,10 @@
     - [x] Write test verifying no runtime code imports from drizzle/migrations/
     - [x] Move drizzle/migrations/ to drizzle/archived-migrations/
     - [x] Update drizzle.config.ts to remove migration generation config
-- [ ] Task: Refactor Drizzle schema files to query-only role
-    - [ ] Write test verifying Drizzle schema types match Supabase SQL schema
-    - [ ] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
-    - [ ] Ensure Drizzle is used only for type-safe query building, not schema management
+- [x] Task: Refactor Drizzle schema files to query-only role `e9f557c`
+    - [x] Write test verifying Drizzle schema types match Supabase SQL schema
+    - [x] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
+    - [x] Ensure Drizzle is used only for type-safe query building, not schema management
 - [ ] Task: Update parity check script
     - [ ] Write test verifying parity script detects intentional drift
     - [ ] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
