@@ -29,6 +29,7 @@ const buildActivity = (overrides: Partial<FinancialStatementMatchingActivityProp
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 });

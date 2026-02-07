@@ -40,14 +40,14 @@
     - [x] Fix SpreadsheetTemplates.test.tsx undefined object errors
     - [x] Fix SupabaseClient type mismatches in security tests
     - [x] Fix LessonRendererProps type mismatches in tests
-- [ ] Task: Resolve all remaining TypeScript errors
-    - [ ] Run tsc --noEmit and catalog errors by category
-    - [ ] Fix test file TS errors (missing type definitions, loose mocks)
-    - [ ] Fix source file TS errors (implicit any, null checks)
-- [ ] Task: Verify npm run lint passes clean
-    - [ ] Fix all ESLint errors
-    - [ ] Fix all ESLint warnings that indicate real problems
-- [ ] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md)
+- [x] Task: Resolve all remaining TypeScript errors
+    - [x] Run tsc --noEmit and catalog errors by category
+    - [x] Fix test file TS errors (missing type definitions, loose mocks)
+    - [x] Fix source file TS errors (implicit any, null checks)
+- [x] Task: Verify npm run lint passes clean
+    - [x] Fix all ESLint errors
+    - [x] Fix all ESLint warnings that indicate real problems
+- [~] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md)
 
 ## Phase 3: Test Structure Consolidation
 - [ ] Task: Define and document the target test directory structure

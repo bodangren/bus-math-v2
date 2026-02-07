@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ResourceBasePathFixer } from './ResourceBasePathFixer';
 
@@ -11,16 +11,14 @@ const appendResourceLink = (href: string) => {
 };
 
 describe('ResourceBasePathFixer', () => {
-  const originalEnv = process.env.NODE_ENV;
-
   afterEach(() => {
     document.body.innerHTML = '';
-    process.env.NODE_ENV = originalEnv;
+    vi.unstubAllEnvs();
   });
 
   it('prefixes resource links in production builds', async () => {
     const anchor = appendResourceLink('/resources/data.csv');
-    process.env.NODE_ENV = 'production';
+    vi.stubEnv('NODE_ENV', 'production');
 
     render(<ResourceBasePathFixer />);
 
@@ -31,7 +29,7 @@ describe('ResourceBasePathFixer', () => {
 
   it('keeps resource links untouched outside production', async () => {
     const anchor = appendResourceLink('/resources/data.csv');
-    process.env.NODE_ENV = 'development';
+    vi.stubEnv('NODE_ENV', 'development');
 
     render(<ResourceBasePathFixer />);
 

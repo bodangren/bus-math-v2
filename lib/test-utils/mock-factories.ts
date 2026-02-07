@@ -444,6 +444,7 @@ export function createProfile(overrides: Partial<Profile> = {}): Profile {
 export function buildStudentProgressInput(overrides: Partial<NewStudentProgress> = {}): NewStudentProgress {
   const payload = {
     id: overrides.id ?? randomUUID(),
+    idempotencyKey: overrides.idempotencyKey ?? randomUUID(),
     userId: overrides.userId ?? randomUUID(),
     phaseId: overrides.phaseId ?? randomUUID(),
     status: overrides.status ?? 'not_started',

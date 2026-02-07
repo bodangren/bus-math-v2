@@ -1,4 +1,5 @@
 import type { SpreadsheetData, SpreadsheetCell } from "./SpreadsheetWrapper";
+export type { SpreadsheetData, SpreadsheetCell } from "./SpreadsheetWrapper";
 
 // Formula validation helper
 export const validateFormula = (formula: string): { isValid: boolean; error?: string } => {

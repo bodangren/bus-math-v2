@@ -30,6 +30,29 @@ type Question = ComprehensionQuizActivityProps['questions'][number];
 
 type ShuffledQuestion = Question & { options: string[] };
 
+const stableHash = (value: string) => {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+  return hash;
+};
+
+const sortOptionsDeterministically = (questionId: string, options: string[]) =>
+  [...options]
+    .map((option, index) => ({
+      option,
+      index,
+      weight: stableHash(`${questionId}:${option}`),
+    }))
+    .sort((a, b) => {
+      if (a.weight !== b.weight) {
+        return a.weight - b.weight;
+      }
+      return a.index - b.index;
+    })
+    .map((entry) => entry.option);
+
 const normalizeAnswer = (value: string | string[]) =>
   Array.isArray(value)
     ? value.map((entry) => entry.trim().toLowerCase()).sort().join('|')
@@ -49,10 +72,9 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
       }
 
       if (baseOptions) {
-        const shuffled = [...baseOptions].sort(() => Math.random() - 0.5);
         return {
           ...question,
-          options: shuffled,
+          options: sortOptionsDeterministically(question.id, baseOptions),
         };
       }
 
@@ -131,14 +153,14 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
 
               {question.options.length > 0 ? (
                 <div className="grid gap-2">
-                  {question.options.map((option) => {
+                  {question.options.map((option, optionIndex) => {
                     const isSelected = selected === option;
                     const showCorrect = submitted && option === selected;
                     const optionIsCorrect = normalizeAnswer(option) === normalizeAnswer(question.correctAnswer);
 
                     return (
                       <Button
-                        key={option}
+                        key={`${question.id}-${option}-${optionIndex}`}
                         variant={isSelected ? 'secondary' : 'outline'}
                         className="justify-start text-left h-auto p-4"
                         onClick={() => recordResponse(question.id, option)}

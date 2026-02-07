@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import FeedbackCollector from './FeedbackCollector'
 
@@ -14,7 +14,7 @@ describe('FeedbackCollector', () => {
   it('displays stakeholder type badge', () => {
     render(<FeedbackCollector stakeholderType="investor" />)
 
-    expect(screen.getByText(/Investor \/ VC/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Investor \/ VC/i).length).toBeGreaterThan(0)
   })
 
   it('shows project title when provided', () => {
@@ -61,18 +61,21 @@ describe('FeedbackCollector', () => {
     const advancedButtons = screen.getAllByRole('button', { name: /Advanced/i })
     await user.click(advancedButtons[0])
 
-    // The button should be selected (checking aria-pressed or visual state would be ideal)
-    expect(advancedButtons[0]).toBeInTheDocument()
+    await waitFor(() => {
+      const selectedButtons = screen.getAllByRole('button', { name: /Advanced/i })
+      expect(selectedButtons.some((button) => button.className.includes('bg-blue-600'))).toBe(true)
+    })
   })
 
   it('allows entering feedback text for a category', async () => {
-    const user = userEvent.setup()
     render(<FeedbackCollector />)
 
     const textareas = screen.getAllByRole('textbox')
-    const firstCategoryTextarea = textareas[2] // Skip stakeholder name/company fields
+    const firstCategoryTextarea = textareas[2]
 
-    await user.type(firstCategoryTextarea, 'Excellent financial modeling skills')
+    fireEvent.change(firstCategoryTextarea, {
+      target: { value: 'Excellent financial modeling skills' }
+    })
     expect(firstCategoryTextarea).toHaveValue('Excellent financial modeling skills')
   })
 
@@ -91,44 +94,36 @@ describe('FeedbackCollector', () => {
   })
 
   it('enables submit button when all fields are completed', async () => {
-    const user = userEvent.setup()
     render(<FeedbackCollector />)
 
-    // Fill in all category feedback fields
-    const textareas = screen.getAllByRole('textbox')
+    const textboxes = screen.getAllByRole('textbox')
+    const categoryTextareas = textboxes.slice(2, 8)
+    const overallRecommendations = textboxes[8]
 
-    // Fill stakeholder info (optional)
-    await user.type(textareas[0], 'John Doe')
-    await user.type(textareas[1], 'Acme Corp')
-
-    // Fill all 6 category feedback fields
-    for (let i = 2; i < 8; i++) {
-      await user.type(textareas[i], 'Good work on this category')
-    }
-
-    // Fill overall recommendations (required)
-    await user.type(textareas[8], 'Overall excellent project with room for growth')
+    categoryTextareas.forEach((textarea) => {
+      fireEvent.change(textarea, { target: { value: 'Good work on this category' } })
+    })
+    fireEvent.change(overallRecommendations, {
+      target: { value: 'Overall excellent project with room for growth' }
+    })
 
     const submitButton = screen.getByRole('button', { name: /Submit Professional Feedback/i })
     expect(submitButton).not.toBeDisabled()
   })
 
   it('calls onSubmit with feedback data when submitted', async () => {
-    const user = userEvent.setup()
     const onSubmit = vi.fn()
 
     render(<FeedbackCollector onSubmit={onSubmit} />)
 
-    // Fill required fields
     const textareas = screen.getAllByRole('textbox')
-
-    for (let i = 2; i < 8; i++) {
-      await user.type(textareas[i], 'Feedback')
-    }
-    await user.type(textareas[8], 'Overall recommendations')
+    textareas.slice(2, 8).forEach((textarea) => {
+      fireEvent.change(textarea, { target: { value: 'Feedback' } })
+    })
+    fireEvent.change(textareas[8], { target: { value: 'Overall recommendations' } })
 
     const submitButton = screen.getByRole('button', { name: /Submit Professional Feedback/i })
-    await user.click(submitButton)
+    fireEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -140,39 +135,37 @@ describe('FeedbackCollector', () => {
   })
 
   it('shows success message after submission', async () => {
-    const user = userEvent.setup()
     render(<FeedbackCollector />)
 
-    // Fill all required fields
     const textareas = screen.getAllByRole('textbox')
-    for (let i = 2; i < 8; i++) {
-      await user.type(textareas[i], 'Feedback')
-    }
-    await user.type(textareas[8], 'Overall recommendations')
+    textareas.slice(2, 8).forEach((textarea) => {
+      fireEvent.change(textarea, { target: { value: 'Feedback' } })
+    })
+    fireEvent.change(textareas[8], { target: { value: 'Overall recommendations' } })
 
     // Submit
     const submitButton = screen.getByRole('button', { name: /Submit Professional Feedback/i })
-    await user.click(submitButton)
+    fireEvent.click(submitButton)
 
     expect(screen.getByText(/Expert Feedback Submitted Successfully!/i)).toBeInTheDocument()
   })
 
   it('displays different stakeholder types correctly', () => {
     const { rerender } = render(<FeedbackCollector stakeholderType="entrepreneur" />)
-    expect(screen.getByText(/Entrepreneur/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Entrepreneur/i).length).toBeGreaterThan(0)
 
     rerender(<FeedbackCollector stakeholderType="consultant" />)
-    expect(screen.getByText(/Business Consultant/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Business Consultant/i).length).toBeGreaterThan(0)
 
     rerender(<FeedbackCollector stakeholderType="banker" />)
-    expect(screen.getByText(/Commercial Banker/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Commercial Banker/i).length).toBeGreaterThan(0)
   })
 
   it('tracks follow-up interest checkbox', async () => {
     const user = userEvent.setup()
     render(<FeedbackCollector />)
 
-    const followUpCheckbox = screen.getByRole('checkbox', { name: /follow-up mentorship/i })
+    const followUpCheckbox = screen.getByRole('checkbox', { name: /follow-up mentorship opportunities/i })
     expect(followUpCheckbox).not.toBeChecked()
 
     await user.click(followUpCheckbox)
@@ -186,14 +179,12 @@ describe('FeedbackCollector', () => {
   })
 
   it('shows average rating calculation', async () => {
-    const user = userEvent.setup()
     render(<FeedbackCollector />)
 
-    // Fill feedback to see stats
     const textareas = screen.getAllByRole('textbox')
-    for (let i = 2; i < 8; i++) {
-      await user.type(textareas[i], 'Feedback')
-    }
+    textareas.slice(2, 8).forEach((textarea) => {
+      fireEvent.change(textarea, { target: { value: 'Feedback' } })
+    })
 
     // Should show average rating display
     expect(screen.getByText(/Average Rating/i)).toBeInTheDocument()

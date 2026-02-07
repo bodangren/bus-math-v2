@@ -30,6 +30,7 @@ const buildActivity = (overrides: Partial<CashFlowTimelineActivityProps> = {}): 
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 });

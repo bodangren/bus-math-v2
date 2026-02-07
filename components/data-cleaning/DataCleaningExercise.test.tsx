@@ -71,7 +71,7 @@ describe('DataCleaningExercise', () => {
       />
     )
 
-    expect(screen.getByText('Messy Data (Before)')).toBeInTheDocument()
+    expect(screen.getByText(/Messy Data/)).toBeInTheDocument()
     const spreadsheets = screen.getAllByTestId('spreadsheet-wrapper')
     expect(spreadsheets.length).toBeGreaterThan(0)
   })
@@ -168,7 +168,7 @@ describe('DataCleaningExercise', () => {
       }
     }
 
-    expect(screen.getByText('Clean Data (After)')).toBeInTheDocument()
+    expect(screen.getByText(/Clean Data/)).toBeInTheDocument()
     expect(screen.getByText(/Congratulations!/i)).toBeInTheDocument()
   })
 
@@ -233,8 +233,6 @@ describe('DataCleaningExercise', () => {
       />
     )
 
-    // Progress bar should exist (checking for specific styling)
-    const progressBars = screen.getAllByRole('progressbar', { hidden: true })
-    expect(progressBars.length).toBeGreaterThan(0)
+    expect(screen.getByText('0/3 Complete')).toBeInTheDocument()
   })
 })

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -35,6 +35,7 @@ const buildActivity = (overrides: Partial<ComprehensionQuizActivityProps> = {}):
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 })
@@ -100,5 +101,38 @@ describe('ComprehensionCheck', () => {
         })
       })
     )
+  })
+
+  it('keeps multiple-choice option order stable across rerenders', () => {
+    const activity = buildActivity({
+      questions: [
+        {
+          id: 'stable-order',
+          text: 'Pick the matching definition',
+          type: 'multiple-choice',
+          options: ['100% tests', '50% homework, 50% participation', '60% formative, 40% summative'],
+          correctAnswer: '60% formative, 40% summative',
+          explanation: 'Course grading split.'
+        }
+      ]
+    })
+
+    const { rerender } = render(<ComprehensionCheck activity={activity} />)
+
+    const questionContainer = screen.getByText(/Pick the matching definition/i).closest('div')
+    expect(questionContainer).not.toBeNull()
+    const initialOptionLabels = within(questionContainer as HTMLElement)
+      .getAllByRole('button')
+      .map((button) => button.textContent?.trim())
+
+    rerender(<ComprehensionCheck activity={activity} />)
+
+    const rerenderedContainer = screen.getByText(/Pick the matching definition/i).closest('div')
+    expect(rerenderedContainer).not.toBeNull()
+    const rerenderedOptionLabels = within(rerenderedContainer as HTMLElement)
+      .getAllByRole('button')
+      .map((button) => button.textContent?.trim())
+
+    expect(rerenderedOptionLabels).toEqual(initialOptionLabels)
   })
 })

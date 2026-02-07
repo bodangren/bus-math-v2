@@ -26,6 +26,7 @@ const buildActivity = (overrides: Partial<FillInTheBlankActivityProps> = {}): Fi
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 })

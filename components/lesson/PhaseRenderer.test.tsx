@@ -276,7 +276,7 @@ describe('PhaseRenderer', () => {
 
   describe('Edge cases', () => {
     it('should show empty state when no content blocks', () => {
-      render(<PhaseRenderer contentBlocks={[]} />);
+      render(<PhaseRenderer contentBlocks={[]} lessonId="test-lesson-id" phaseNumber={1} />);
       expect(screen.getByText('No content available for this phase.')).toBeInTheDocument();
     });
 

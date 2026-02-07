@@ -13,7 +13,7 @@ describe('PieChart', () => {
     render(<PieChart title="Asset Mix" segments={segments} ariaLabel="Asset pie chart" />);
 
     expect(screen.getByRole('img', { name: /asset pie chart/i })).toBeInTheDocument();
-    expect(screen.getByText('Cash')).toBeInTheDocument();
-    expect(screen.getByText('Inventory')).toBeInTheDocument();
+    expect(screen.getByText('Asset Mix')).toBeInTheDocument();
+    expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
   });
 });

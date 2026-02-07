@@ -90,6 +90,7 @@ const buildActivity = (overrides: Partial<StartupJourneyActivityProps> = {}): St
     description: 'Strategic startup simulation.',
     props,
     gradingConfig: null,
+    standardId: null,
     createdAt: new Date(),
     updatedAt: new Date()
   }

@@ -208,7 +208,7 @@ describe('validateSpreadsheetData', () => {
 
   it('handles null cells gracefully', () => {
     const data: SpreadsheetData = [
-      [{ value: 'Test' }, null, { value: '=SUM(A1:A5)' }],
+      [{ value: 'Test' }, undefined, { value: '=SUM(A1:A5)' }],
     ];
 
     const result = validateSpreadsheetData(data);
@@ -256,7 +256,7 @@ describe('getCellValue', () => {
   const testData: SpreadsheetData = [
     [{ value: 'A1' }, { value: 'B1' }, { value: 'C1' }],
     [{ value: 100 }, { value: 200 }, { value: 300 }],
-    [{ value: '=SUM(A2:C2)' }, null, { value: '' }],
+    [{ value: '=SUM(A2:C2)' }, undefined, { value: '' }],
   ];
 
   it('retrieves cell values correctly', () => {

@@ -28,6 +28,7 @@ const buildActivity = (overrides: Partial<DragAndDropActivityProps> = {}): DragA
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 })

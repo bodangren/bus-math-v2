@@ -49,6 +49,7 @@ const buildActivity = (overrides: Partial<BudgetBalancerActivityProps> = {}): Bu
     description: 'Plan monthly finances.',
     props,
     gradingConfig: null,
+    standardId: null,
     createdAt: new Date(),
     updatedAt: new Date()
   }

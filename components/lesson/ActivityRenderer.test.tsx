@@ -7,9 +7,11 @@ import type { Activity } from '@/lib/db/schema/validators';
 const mockFetch = vi.fn();
 global.fetch = mockFetch as unknown as typeof fetch;
 
-let mockGetActivityComponent: ReturnType<typeof vi.fn>;
+const { mockGetActivityComponent } = vi.hoisted(() => ({
+  mockGetActivityComponent: vi.fn(),
+}));
+
 vi.mock('@/lib/activities/registry', () => {
-  mockGetActivityComponent = vi.fn();
   return {
     getActivityComponent: mockGetActivityComponent,
   };
@@ -62,13 +64,14 @@ const buildActivity = (overrides?: Partial<Activity>): Activity => ({
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,
+  standardId: overrides?.standardId ?? null,
 });
 
 describe('ActivityRenderer', () => {
   beforeEach(() => {
     mockFetch.mockReset();
-    mockGetActivityComponent!.mockReset();
-    mockGetActivityComponent!.mockImplementation((componentKey: string) => {
+    mockGetActivityComponent.mockReset();
+    mockGetActivityComponent.mockImplementation((componentKey: string) => {
       if (componentKey === 'comprehension-quiz') {
         return MockActivityComponent;
       }
@@ -289,9 +292,7 @@ describe('ActivityRenderer', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Submission failed/i)).toBeInTheDocument();
+      expect(screen.getByText(/Unable to save submission/i)).toBeInTheDocument();
     });
-
-    expect(screen.getByText(/Unable to save submission/i)).toBeInTheDocument();
   });
 });

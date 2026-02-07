@@ -170,7 +170,7 @@ describe('SpreadsheetHelpers', () => {
     });
 
     it('returns 0 for undefined values', () => {
-      const data: SpreadsheetData = [[{ value: undefined }]];
+      const data: SpreadsheetData = [[undefined]];
       
       expect(getNumericValue(data, 0, 0)).toBe(0);
     });
@@ -190,7 +190,7 @@ describe('SpreadsheetHelpers', () => {
     });
 
     it('detects invalid data types', () => {
-      const result = validateSpreadsheetData('not an array');
+      const result = validateSpreadsheetData('not an array' as unknown as SpreadsheetData);
       
       expect(result.isValid).toBe(false);
       expect(result.errors).toContain('Data must be an array');
@@ -200,7 +200,7 @@ describe('SpreadsheetHelpers', () => {
       const data = [
         ['not an object'],
         [{ value: 'valid' }],
-      ] as unknown[][];
+      ] as unknown as SpreadsheetData;
       
       const result = validateSpreadsheetData(data);
       
@@ -211,7 +211,7 @@ describe('SpreadsheetHelpers', () => {
     it('detects invalid cell values', () => {
       const data = [
         [{ value: { invalid: 'object' } }],
-      ] as unknown[][];
+      ] as unknown as SpreadsheetData;
       
       const result = validateSpreadsheetData(data);
       
@@ -220,7 +220,7 @@ describe('SpreadsheetHelpers', () => {
     });
 
     it('validates formulas', () => {
-      const data = [
+      const data: SpreadsheetData = [
         [{ value: '=INVALID()' }],
       ];
       

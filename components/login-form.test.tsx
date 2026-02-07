@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginForm } from './login-form';
@@ -16,6 +16,7 @@ vi.mock('next/navigation', () => ({
 
 // Mock AuthProvider
 const mockSignIn = vi.fn();
+const mockFetch = vi.fn();
 
 type MockProfile = {
   id: string;
@@ -72,12 +73,18 @@ const simulateProfileLoad = (
 };
 
 describe('LoginForm', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockAuthContext.profile = null;
-    mockAuthContext.user = null;
-    mockSearchParams.delete('redirect');
-  });
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockAuthContext.profile = null;
+  mockAuthContext.user = null;
+  mockSearchParams.delete('redirect');
+  vi.stubGlobal('fetch', mockFetch);
+  mockFetch.mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
   it('renders login form with username and password fields', () => {
     render(<LoginForm />);
@@ -145,6 +152,40 @@ describe('LoginForm', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/invalid username or password/i);
+    });
+  });
+
+  it('retries demo login with legacy password when default demo password fails', async () => {
+    const user = userEvent.setup();
+    mockSignIn
+      .mockRejectedValueOnce(new Error('Invalid login credentials'))
+      .mockResolvedValueOnce(undefined);
+
+    render(<LoginForm />);
+
+    await user.type(screen.getByLabelText(/username/i), 'demo_student');
+    await user.type(screen.getByLabelText(/password/i), 'demo123');
+    await user.click(screen.getByRole('button', { name: /login/i }));
+
+    await waitFor(() => {
+      expect(mockSignIn).toHaveBeenNthCalledWith(1, 'demo_student', 'demo123');
+      expect(mockSignIn).toHaveBeenNthCalledWith(2, 'demo_student', 'demo123');
+    });
+  });
+
+  it('attempts auto-provisioning for demo credentials before login', async () => {
+    const user = userEvent.setup();
+    mockSignIn.mockResolvedValue(undefined);
+
+    render(<LoginForm />);
+
+    await user.type(screen.getByLabelText(/username/i), 'demo_teacher');
+    await user.type(screen.getByLabelText(/password/i), 'demo123');
+    await user.click(screen.getByRole('button', { name: /login/i }));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith('/api/users/ensure-demo', { method: 'POST' });
+      expect(mockSignIn).toHaveBeenCalledWith('demo_teacher', 'demo123');
     });
   });
 

@@ -29,6 +29,46 @@ export function LoginForm({
   const { signIn, profile, user } = useAuth();
   const shouldRedirectRef = useRef(false);
 
+  const ensureDemoUsers = async () => {
+    const response = await fetch('/api/users/ensure-demo', { method: 'POST' });
+    if (!response.ok) {
+      throw new Error('Failed to provision demo users');
+    }
+  };
+
+  const trySignIn = async (loginUsername: string, loginPassword: string) => {
+    const isDemoLogin =
+      (loginUsername === 'demo_student' || loginUsername === 'demo_teacher') &&
+      loginPassword === 'demo123';
+
+    if (isDemoLogin) {
+      try {
+        await ensureDemoUsers();
+      } catch {
+        // Don't block login on provisioning errors; auth may still succeed with existing accounts.
+      }
+    }
+
+    try {
+      await signIn(loginUsername, loginPassword);
+      return;
+    } catch (primaryError) {
+      if (!isDemoLogin) {
+        throw primaryError;
+      }
+
+      try {
+        await ensureDemoUsers();
+        await signIn(loginUsername, loginPassword);
+        return;
+      } catch {
+        // Legacy fallback for environments where demo accounts were seeded with an older password.
+      }
+
+      await signIn(loginUsername, 'password123');
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -36,7 +76,7 @@ export function LoginForm({
     shouldRedirectRef.current = false;
 
     try {
-      await signIn(username, password);
+      await trySignIn(username, password);
       // Mark that we should redirect when profile loads
       shouldRedirectRef.current = true;
     } catch (error: unknown) {

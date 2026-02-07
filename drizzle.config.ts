@@ -13,7 +13,6 @@
  * @see https://orm.drizzle.team/kit-docs/config-reference
  */
 
-import { defineConfig } from 'drizzle-kit';
 import * as dotenv from 'dotenv';
 
 // Load environment variables from .env.local
@@ -27,7 +26,7 @@ if (!process.env.DIRECT_URL) {
   );
 }
 
-export default defineConfig({
+const config = {
   // Database dialect
   dialect: 'postgresql',
 
@@ -45,4 +44,6 @@ export default defineConfig({
   // Additional options
   verbose: true, // Show detailed logs during migration operations
   strict: true, // Enable strict mode for safer migrations
-});
+};
+
+export default config;

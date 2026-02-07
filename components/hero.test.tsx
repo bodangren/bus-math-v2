@@ -15,7 +15,8 @@ vi.mock('next/link', () => ({
 // Mock next/image since it's hard to test in Vitest
 vi.mock('next/image', () => ({
   __esModule: true,
-  default: (props: ComponentPropsWithoutRef<'img'>) => <img {...props} />
+  // eslint-disable-next-line @next/next/no-img-element
+  default: (props: ComponentPropsWithoutRef<'img'>) => <img {...props} alt={props.alt ?? ''} />
 }));
 
 describe('Hero', () => {

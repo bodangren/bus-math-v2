@@ -86,9 +86,17 @@ async function seedDemoUsers() {
 
     if (existingUser) {
         console.log(`⚠️  Auth user ${user.username} already exists (ID: ${userId}).`);
-        // Optional: Delete and recreate to ensure clean state?
-        // await supabase.auth.admin.deleteUser(existingUser.id);
-        // userId = null;
+        const { error: updateAuthError } = await supabase.auth.admin.updateUserById(existingUser.id, {
+          password: user.password,
+          user_metadata: { role: user.role },
+        });
+
+        if (updateAuthError) {
+          console.error(`❌ Failed to reset password for ${user.username}: ${updateAuthError.message}`);
+          continue;
+        }
+
+        console.log(`✅ Reset password for existing user ${user.username}`);
     } else {
         // Create auth user
         const { data: authData, error: authError } = await supabase.auth.admin.createUser({

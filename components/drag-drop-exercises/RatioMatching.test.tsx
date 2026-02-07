@@ -56,6 +56,7 @@ const buildActivity = (overrides: Partial<RatioMatchingActivityProps> = {}): Rat
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 });

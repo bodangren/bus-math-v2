@@ -200,7 +200,7 @@ describe('SpreadsheetActivity', () => {
       name: 'Custom Template',
       description: 'Custom description',
       data: [
-        [{ value: 'Custom' }, { value: 'Template' }],
+        [{ value: 'Custom', readOnly: false }, { value: 'Template', readOnly: false }],
       ]
     };
     
@@ -232,20 +232,20 @@ describe('SpreadsheetActivity', () => {
   });
 
   it('handles missing title gracefully', () => {
-    const propsWithoutTitle = { ...defaultProps };
-    delete (propsWithoutTitle as SpreadsheetActivityProps).title;
+    const propsWithoutTitle = { ...defaultProps } as Record<string, unknown>;
+    delete propsWithoutTitle.title;
     
-    render(<SpreadsheetActivity {...propsWithoutTitle} />);
+    render(<SpreadsheetActivity {...(propsWithoutTitle as SpreadsheetActivityProps)} />);
     
     // Should not crash and should still render spreadsheet
     expect(screen.getByTestId('spreadsheet')).toBeInTheDocument();
   });
 
   it('handles missing description gracefully', () => {
-    const propsWithoutDescription = { ...defaultProps };
-    delete (propsWithoutDescription as SpreadsheetActivityProps).description;
+    const propsWithoutDescription = { ...defaultProps } as Record<string, unknown>;
+    delete propsWithoutDescription.description;
     
-    render(<SpreadsheetActivity {...propsWithoutDescription} />);
+    render(<SpreadsheetActivity {...(propsWithoutDescription as SpreadsheetActivityProps)} />);
     
     // Should not crash and should still render spreadsheet
     expect(screen.getByTestId('spreadsheet')).toBeInTheDocument();

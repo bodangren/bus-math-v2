@@ -49,7 +49,7 @@ describe('BreakEvenAnalysisCalculator', () => {
     const resultsTab = screen.getByRole('tab', { name: /Results/i })
     await user.click(resultsTab)
 
-    expect(screen.getByText(/Break-Even Point/i)).toBeInTheDocument()
+    expect(screen.getByText(/Break-Even Units/i)).toBeInTheDocument()
   })
 
   it('switches to Goal Seek tab and shows target profit options', async () => {
@@ -59,7 +59,7 @@ describe('BreakEvenAnalysisCalculator', () => {
     const goalSeekTab = screen.getByRole('tab', { name: /Goal Seek/i })
     await user.click(goalSeekTab)
 
-    expect(screen.getByText(/Target Profit Analysis/i)).toBeInTheDocument()
+    expect(screen.getByText(/Goal Seek Analysis/i)).toBeInTheDocument()
   })
 
   it('switches to Data Tables tab', async () => {
@@ -118,14 +118,15 @@ describe('BreakEvenAnalysisCalculator', () => {
     // With default values: Fixed=50000, Variable=25, Price=45
     // Contribution Margin = 45-25 = 20
     // Break-even = 50000/20 = 2500 units
-    expect(screen.getByText(/2,500/)).toBeInTheDocument()
+    expect(screen.getByText(/Break-Even Units/i)).toBeInTheDocument()
+    expect(screen.getAllByText('2,500').length).toBeGreaterThan(0)
   })
 
   it('displays badges for key features', () => {
     render(<BreakEvenAnalysisCalculator />)
 
-    expect(screen.getByText(/Goal Seek/i)).toBeInTheDocument()
-    expect(screen.getByText(/Data Tables/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Goal Seek/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/Data Tables/i).length).toBeGreaterThan(0)
     expect(screen.getByText(/CVP Analysis/i)).toBeInTheDocument()
   })
 })

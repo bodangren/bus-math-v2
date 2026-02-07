@@ -51,7 +51,11 @@ const defaultLemonadeProps: LemonadeStandActivityProps = {
   }
 }
 
-const buildActivity = (overrides: Partial<LemonadeStandActivityProps> = {}): LemonadeStandActivity => {
+type LemonadeStandOverrides = Omit<Partial<LemonadeStandActivityProps>, 'initialState'> & {
+  initialState?: Partial<LemonadeStandActivityProps['initialState']>
+}
+
+const buildActivity = (overrides: LemonadeStandOverrides = {}): LemonadeStandActivity => {
   const mergedInitialState = {
     ...defaultLemonadeProps.initialState,
     ...(overrides.initialState ?? {}),
@@ -87,6 +91,7 @@ const buildActivity = (overrides: Partial<LemonadeStandActivityProps> = {}): Lem
     description: 'Simulated lemonade business.',
     props,
     gradingConfig: null,
+    standardId: null,
     createdAt: new Date(),
     updatedAt: new Date()
   }

@@ -1,5 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { PeerCritiqueForm, type PeerCritiqueActivity } from './PeerCritiqueForm'
@@ -28,13 +27,13 @@ const buildActivity = (overrides: Partial<PeerCritiqueActivityProps> = {}): Peer
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 })
 
 describe('PeerCritiqueForm', () => {
   it('requires ratings/comments before submission and forwards payload', async () => {
-    const user = userEvent.setup()
     const onSubmit = vi.fn()
     render(<PeerCritiqueForm activity={buildActivity()} onSubmit={onSubmit} />)
 
@@ -43,13 +42,17 @@ describe('PeerCritiqueForm', () => {
 
     const categorySection = screen.getByText('Highlights').closest('section') as HTMLElement
     const ratingButton = within(categorySection).getByRole('button', { name: /rating 4/i })
-    await user.click(ratingButton)
-    await user.type(screen.getByPlaceholderText(/share specific wins/i), 'Excellent structure and visuals.')
-    await user.type(screen.getByLabelText(/final thoughts/i), 'Great peer coaching!')
-    await user.type(screen.getByPlaceholderText(/add your name/i), 'Casey')
+    fireEvent.click(ratingButton)
+    fireEvent.change(screen.getByPlaceholderText(/share specific wins/i), {
+      target: { value: 'Excellent structure and visuals.' }
+    })
+    fireEvent.change(screen.getByLabelText(/final thoughts/i), {
+      target: { value: 'Great peer coaching!' }
+    })
+    fireEvent.change(screen.getByPlaceholderText(/add your name/i), { target: { value: 'Casey' } })
 
     expect(submitButton).not.toBeDisabled()
-    await user.click(submitButton)
+    fireEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({

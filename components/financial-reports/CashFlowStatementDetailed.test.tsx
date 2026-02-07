@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 
 import {
   CashFlowStatementDetailed,
-  type CashFlowStatementDetailedData
+  type DetailedCashFlowData
 } from './CashFlowStatementDetailed';
 
-const detailedCashFlow: CashFlowStatementDetailedData = {
+const detailedCashFlow: DetailedCashFlowData = {
   period: 'For the Year Ended December 31, 2024',
   operatingActivities: {
     netIncome: 29_250,

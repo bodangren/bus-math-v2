@@ -46,6 +46,7 @@ const buildActivity = (
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 });

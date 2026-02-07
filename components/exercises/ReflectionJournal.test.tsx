@@ -29,6 +29,7 @@ const buildActivity = (overrides: Partial<ReflectionJournalActivityProps> = {}):
     ...overrides
   },
   gradingConfig: null,
+  standardId: null,
   createdAt: new Date(),
   updatedAt: new Date()
 })

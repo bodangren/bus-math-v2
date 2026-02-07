@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 
@@ -44,7 +44,7 @@ interface CompletePhaseResponse {
  * - Sequential phase access is enforced via can_access_phase RPC
  * - Idempotency key prevents duplicate completions
  */
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     // Create Supabase client
     const supabase = await createClient();

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { createClient } from "./client";
+import { createBrowserClient } from "@supabase/ssr";
 
 // Mock the @supabase/ssr module
 vi.mock("@supabase/ssr", () => ({
@@ -21,16 +22,19 @@ describe("lib/supabase/client", () => {
     const client = createClient();
 
     expect(client).toBeDefined();
-    expect(client).toHaveProperty("url", "https://test.supabase.co");
-    expect(client).toHaveProperty("key", "test-anon-key");
-    expect(client).toHaveProperty("type", "browser");
+    expect(createBrowserClient).toHaveBeenCalledWith(
+      "https://test.supabase.co",
+      "test-anon-key"
+    );
   });
 
   it("uses NEXT_PUBLIC_ prefixed environment variables", () => {
-    const client = createClient();
+    createClient();
+    const mockedCreateBrowserClient = vi.mocked(createBrowserClient);
+    const [urlArg, keyArg] = mockedCreateBrowserClient.mock.calls[0] ?? [];
 
     // Browser client should use public env vars
-    expect(client.url).toBe(process.env.NEXT_PUBLIC_SUPABASE_URL);
-    expect(client.key).toBe(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+    expect(urlArg).toBe(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    expect(keyArg).toBe(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
   });
 });

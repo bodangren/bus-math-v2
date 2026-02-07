@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { createAdminClient } from "./admin";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 // Mock the @supabase/supabase-js module
 vi.mock("@supabase/supabase-js", () => ({
@@ -24,15 +25,19 @@ describe("lib/supabase/admin", () => {
     const client = createAdminClient();
 
     expect(client).toBeDefined();
-    expect(client).toHaveProperty("url", "https://test.supabase.co");
-    expect(client).toHaveProperty("key", "test-service-role-key");
-    expect(client).toHaveProperty("type", "admin");
+    expect(createSupabaseClient).toHaveBeenCalledWith(
+      "https://test.supabase.co",
+      "test-service-role-key",
+      expect.any(Object)
+    );
   });
 
   it("configures auth options correctly", () => {
-    const client = createAdminClient();
+    createAdminClient();
 
-    expect(client.options.auth).toEqual({
+    const mockedCreateClient = vi.mocked(createSupabaseClient);
+    const options = mockedCreateClient.mock.calls[0]?.[2];
+    expect(options?.auth).toEqual({
       autoRefreshToken: false,
       persistSession: false,
     });
@@ -55,10 +60,12 @@ describe("lib/supabase/admin", () => {
   });
 
   it("uses non-public service role key (security check)", () => {
-    const client = createAdminClient();
+    createAdminClient();
+    const mockedCreateClient = vi.mocked(createSupabaseClient);
+    const keyArg = mockedCreateClient.mock.calls[0]?.[1];
 
     // Service role key should NOT use NEXT_PUBLIC_ prefix
-    expect(client.key).not.toContain("NEXT_PUBLIC");
-    expect(client.key).toBe(process.env.SUPABASE_SERVICE_ROLE_KEY);
+    expect(keyArg).not.toContain("NEXT_PUBLIC");
+    expect(keyArg).toBe(process.env.SUPABASE_SERVICE_ROLE_KEY);
   });
 });

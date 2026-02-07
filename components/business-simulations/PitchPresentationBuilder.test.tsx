@@ -75,7 +75,8 @@ const mockActivity: PitchPresentationBuilderActivityProps = {
       initialInvestment: 0,
       useOfFunds: [],
       keyMetrics: {}
-    }
+    },
+    sectionDefinitions: {}
   }
 }
 

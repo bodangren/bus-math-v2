@@ -1,21 +1,19 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { FinancialDashboard } from './FinancialDashboard';
 
 describe('FinancialDashboard', () => {
   it('calls refresh and export handlers', async () => {
-    const user = userEvent.setup();
     const onRefresh = vi.fn().mockResolvedValue(undefined);
     const onExport = vi.fn();
 
     render(<FinancialDashboard onRefresh={onRefresh} onExport={onExport} />);
 
-    await user.click(screen.getByRole('button', { name: /refresh data/i }));
+    fireEvent.click(screen.getByRole('button', { name: /refresh data/i }));
     expect(onRefresh).toHaveBeenCalledTimes(1);
 
-    await user.click(screen.getByRole('button', { name: /export csv/i }));
+    fireEvent.click(screen.getByRole('button', { name: /export csv/i }));
     expect(onExport).toHaveBeenCalledTimes(1);
   });
 
