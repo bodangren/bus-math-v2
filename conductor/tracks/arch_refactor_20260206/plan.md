@@ -133,9 +133,9 @@
 - [x] Task: Update parity check script `935febe`
     - [x] Write test verifying parity script detects intentional drift
     - [x] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
-- [ ] Task: Document Supabase-first flow in conductor/architecture.md
-    - [ ] Add section: "Schema Change Workflow" (edit SQL migration → update Drizzle types → run parity check)
-    - [ ] Add section: "Migration Runbook" for creating new migrations
+- [x] Task: Document Supabase-first flow in conductor/architecture.md `08d064a`
+    - [x] Add section: "Schema Change Workflow" (edit SQL migration → update Drizzle types → run parity check)
+    - [x] Add section: "Migration Runbook" for creating new migrations
 - [ ] Task: Conductor - User Manual Verification 'Supabase-First Migration Unification' (Protocol in workflow.md)
 
 ## Phase 7: Versioned Lesson Schema Migration
