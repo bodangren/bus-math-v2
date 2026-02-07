@@ -130,9 +130,9 @@
     - [x] Write test verifying Drizzle schema types match Supabase SQL schema
     - [x] Remove table creation concerns from lib/db/schema/*.ts (keep type definitions and relations)
     - [x] Ensure Drizzle is used only for type-safe query building, not schema management
-- [ ] Task: Update parity check script
-    - [ ] Write test verifying parity script detects intentional drift
-    - [ ] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
+- [x] Task: Update parity check script `935febe`
+    - [x] Write test verifying parity script detects intentional drift
+    - [x] Update scripts/check-migration-parity.mjs to enforce Supabase→Drizzle direction
 - [ ] Task: Document Supabase-first flow in conductor/architecture.md
     - [ ] Add section: "Schema Change Workflow" (edit SQL migration → update Drizzle types → run parity check)
     - [ ] Add section: "Migration Runbook" for creating new migrations
