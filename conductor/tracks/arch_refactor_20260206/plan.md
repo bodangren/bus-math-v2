@@ -88,31 +88,33 @@
 - [x] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md) `dc0ef0f`
 
 ## Phase 5: Activities Schema Decomposition
-- [ ] Task: Analyze activities.ts and identify domain boundaries
-    - [ ] Map each type/table/validator to its domain (core, spreadsheet, quiz, categorization, simulation)
-    - [ ] Identify shared dependencies between domains
-- [ ] Task: Create activities-core.ts
-    - [ ] Write test verifying core activity table and shared types export correctly
-    - [ ] Extract base activity table, shared enums, and common types
-- [ ] Task: Create activities-spreadsheet.ts
-    - [ ] Write test verifying spreadsheet JSONB types and validators
-    - [ ] Extract spreadsheet-specific types and validators
-- [ ] Task: Create activities-quiz.ts
-    - [ ] Write test verifying quiz/comprehension question types
-    - [ ] Extract quiz and comprehension types
-- [ ] Task: Create activities-categorization.ts
-    - [ ] Write test verifying categorization types
-    - [ ] Extract drag-and-drop categorization types
-- [ ] Task: Create activities-simulation.ts
-    - [ ] Write test verifying simulation types
-    - [ ] Extract business simulation types
-- [ ] Task: Create activities/index.ts barrel export
-    - [ ] Write test verifying all existing imports resolve through barrel
-    - [ ] Implement barrel export re-exporting all domain files
-- [ ] Task: Remove original monolithic activities.ts
-    - [ ] Update all imports across codebase to use barrel or domain-specific imports
-    - [ ] Verify tsc --noEmit and all tests pass
-- [ ] Task: Conductor - User Manual Verification 'Activities Schema Decomposition' (Protocol in workflow.md)
+- [x] Task: Analyze activities.ts and identify domain boundaries
+    - [x] Map each type/table/validator to its domain (core, spreadsheet, quiz, categorization, simulation)
+    - [x] Identify shared dependencies between domains
+- [x] Task: Create activities-core.ts
+    - [x] Write test verifying core activity table and shared types export correctly
+    - [x] Extract base activity table, shared enums, and common types
+- [x] Task: Create activities-spreadsheet.ts
+    - [x] Write test verifying spreadsheet JSONB types and validators
+    - [x] Extract spreadsheet-specific types and validators
+- [x] Task: Create activities-quiz.ts
+    - [x] Write test verifying quiz/comprehension question types
+    - [x] Extract quiz and comprehension types
+- [x] Task: Create activities-categorization.ts
+    - [x] Write test verifying categorization types
+    - [x] Extract drag-and-drop categorization types
+- [x] Task: Create activities-simulation.ts
+    - [x] Write test verifying simulation types
+    - [x] Extract business simulation types
+- [x] Task: Create activities/index.ts barrel export
+    - [x] Write test verifying all existing imports resolve through barrel
+    - [x] Implement barrel export re-exporting all domain files
+- [x] Task: Remove original monolithic activities.ts
+    - [x] Update all imports across codebase to use barrel or domain-specific imports
+    - [x] Verify tsc --noEmit and all tests pass
+- [x] Task: Conductor - User Manual Verification 'Activities Schema Decomposition' (Protocol in workflow.md)
+    - [x] Automated verification completed
+    - [x] Manual verification steps 1-3 confirmed by user; steps 4-5 blocked pending seed data
 
 ## Phase 6: Supabase-First Migration Unification
 - [ ] Task: Audit current Drizzle↔Supabase coupling
