@@ -53,10 +53,10 @@
 - [x] Task: Define and document the target test directory structure `b208f80`
     - [x] Write test validating that test config resolves the new paths
     - [x] Document convention: __tests__/ for Vitest, tests/ for Playwright
-- [ ] Task: Relocate /test contents into __tests__/
-    - [ ] Move test/supabase/client.test.ts to __tests__/supabase/
-    - [ ] Update any import paths in moved files
-    - [ ] Verify moved tests still pass
+- [x] Task: Relocate /test contents into __tests__/ `c95e90b`
+    - [x] Move `test/utils/lessonBuilders.ts` to `__tests__/utils/lessonBuilders.ts` (legacy `test/supabase/client.test.ts` was no longer present)
+    - [x] Update any import paths in moved files
+    - [x] Verify moved tests still pass
 - [ ] Task: Consolidate co-located test files
     - [ ] Identify all *.test.ts(x) files outside __tests__/ and tests/
     - [ ] Relocate to __tests__/ preserving directory structure mirroring
