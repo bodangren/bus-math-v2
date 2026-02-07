@@ -1,0 +1,14 @@
+Task: Create types/activities.ts
+
+Summary:
+- Added centralized activity contract module at types/activities.ts.
+- Added contract tests in __tests__/types/activities-types.test.ts for activity config/submission types.
+- Updated activity registry to consume ActivityComponentKey from the new central types module.
+
+Files changed:
+- types/activities.ts (created)
+- __tests__/types/activities-types.test.ts (created)
+- lib/activities/registry.ts
+
+Why:
+- Begins centralizing activity configuration and submission type contracts out of scattered schema usage, aligning with Phase 4 centralized types goals.
