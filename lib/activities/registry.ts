@@ -25,7 +25,7 @@ import { PeerCritiqueForm } from '@/components/exercises/PeerCritiqueForm';
 import ReflectionJournal from '@/components/exercises/ReflectionJournal';
 import { SpreadsheetEvaluator } from '@/components/activities/SpreadsheetEvaluator';
 import { SpreadsheetActivity } from '@/components/spreadsheet/SpreadsheetActivity';
-import type { ActivityComponentKey } from '@/lib/db/schema/activities';
+import type { ActivityComponentKey } from '@/types/activities';
 
 /**
  * Centralized registry for activity components.
