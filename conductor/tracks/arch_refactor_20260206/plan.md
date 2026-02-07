@@ -68,7 +68,7 @@
     - [x] Write test confirming playwright discovers all E2E specs
 - [x] Task: Conductor - User Manual Verification 'Test Structure Consolidation' (Protocol in workflow.md) `3ef98c9`
 
-## Phase 4: Centralized Types
+## Phase 4: Centralized Types [checkpoint: dc0ef0f]
 - [x] Task: Create types/ directory with initial structure `31272f9`
     - [x] Write test verifying types/database.ts exports expected type names
     - [x] Create types/database.ts with core table types derived from Supabase schema
@@ -85,7 +85,7 @@
     - [x] Replace inline type definitions with imports from types/
     - [x] Replace schema-file type imports where types/ provides the canonical version
     - [x] Verify tsc --noEmit passes after all import changes
-- [ ] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md) `dc0ef0f`
 
 ## Phase 5: Activities Schema Decomposition
 - [ ] Task: Analyze activities.ts and identify domain boundaries
