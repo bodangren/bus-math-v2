@@ -49,7 +49,7 @@
     - [x] Fix all ESLint warnings that indicate real problems
 - [x] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md) `1c2de5e`
 
-## Phase 3: Test Structure Consolidation
+## Phase 3: Test Structure Consolidation [checkpoint: 3ef98c9]
 - [x] Task: Define and document the target test directory structure `b208f80`
     - [x] Write test validating that test config resolves the new paths
     - [x] Document convention: __tests__/ for Vitest, tests/ for Playwright
@@ -66,7 +66,7 @@
 - [x] Task: Update vitest.config and playwright.config to reflect new structure `8eb0b50`
     - [x] Write test confirming vitest discovers all test files
     - [x] Write test confirming playwright discovers all E2E specs
-- [~] Task: Conductor - User Manual Verification 'Test Structure Consolidation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Test Structure Consolidation' (Protocol in workflow.md) `3ef98c9`
 
 ## Phase 4: Centralized Types
 - [ ] Task: Create types/ directory with initial structure
