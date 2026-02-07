@@ -2,14 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type ContentBlock } from '@/lib/db/schema/phases';
-import { type LessonMetadata } from '@/lib/db/schema/lessons';
-import { type PhaseMetadata } from '@/lib/db/schema/phases';
 import { PhaseCompleteButton } from '@/components/lesson/PhaseCompleteButton';
 import { LessonStepper, type StepperPhase } from '@/components/lesson/LessonStepper';
 import { usePhaseProgress } from '@/hooks/usePhaseProgress';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
 interface Phase {
   id: string;
