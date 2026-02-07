@@ -110,6 +110,16 @@ async function getLessonWithPhases(slug: string) {
   };
 }
 
+async function getFirstLessonSlug() {
+  const [firstLesson] = await db
+    .select({ slug: lessons.slug })
+    .from(lessons)
+    .orderBy(lessons.unitNumber, lessons.orderIndex)
+    .limit(1);
+
+  return firstLesson?.slug ?? null;
+}
+
 /**
  * Lesson page - displays a single lesson with a single phase
  * Server component that fetches data and enforces server-side phase locking
@@ -128,6 +138,14 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
 
   // Fetch lesson and phases
   const data = await getLessonWithPhases(lessonSlug);
+
+  // Legacy URLs like unit01-lesson01 may not match current seeded slugs.
+  if (!data && /^unit\d{2}-lesson\d{2}$/i.test(lessonSlug)) {
+    const firstLessonSlug = await getFirstLessonSlug();
+    if (firstLessonSlug) {
+      return redirect(`/student/lesson/${firstLessonSlug}?phase=1`);
+    }
+  }
 
   // Show 404 if lesson not found
   if (!data) {

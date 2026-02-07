@@ -199,6 +199,49 @@ describe('LessonPage', () => {
     expect(notFound).toHaveBeenCalled();
   });
 
+  it('redirects legacy unitXX-lessonYY slug to first available lesson', async () => {
+    const { createClient } = await import('@/lib/supabase/server');
+    const mockSupabaseClient = {
+      auth: {
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: 'user-123', email: 'test@example.com' } },
+          error: null,
+        }),
+      },
+    };
+    vi.mocked(createClient).mockResolvedValue(mockSupabaseClient as never);
+
+    const { db } = await import('@/lib/db/drizzle');
+    const limitMockForMissingLesson = vi.fn().mockResolvedValue([]);
+    const whereMockForMissingLesson = vi.fn().mockReturnValue({ limit: limitMockForMissingLesson });
+    const fromMockForMissingLesson = vi.fn().mockReturnValue({ where: whereMockForMissingLesson });
+
+    const limitMockForFirstLesson = vi.fn().mockResolvedValue([{ slug: 'foundations-ledger-basics' }]);
+    const orderByMockForFirstLesson = vi.fn().mockReturnValue({ limit: limitMockForFirstLesson });
+    const fromMockForFirstLesson = vi.fn().mockReturnValue({ orderBy: orderByMockForFirstLesson });
+
+    let selectCallCount = 0;
+    vi.mocked(db.select).mockImplementation(() => {
+      selectCallCount += 1;
+      if (selectCallCount === 1) {
+        return { from: fromMockForMissingLesson } as never;
+      }
+      return { from: fromMockForFirstLesson } as never;
+    });
+
+    const params = Promise.resolve({ lessonSlug: 'unit01-lesson01' });
+    const searchParams = Promise.resolve({ phase: '1' });
+
+    try {
+      await LessonPage({ params, searchParams });
+    } catch {
+      // redirect throws in Next.js
+    }
+
+    expect(redirect).toHaveBeenCalledWith('/student/lesson/foundations-ledger-basics?phase=1');
+    expect(notFound).not.toHaveBeenCalled();
+  });
+
   it('redirects to latest accessible phase when accessing locked phase', async () => {
     // Mock Supabase auth
     const { createClient } = await import('@/lib/supabase/server');

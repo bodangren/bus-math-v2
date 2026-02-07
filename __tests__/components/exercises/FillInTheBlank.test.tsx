@@ -47,4 +47,28 @@ describe('FillInTheBlank', () => {
       })
     )
   })
+
+  it('keeps word bank ordering stable when randomizeWordOrder is enabled', () => {
+    const wordListActivity = buildActivity({
+      showWordList: true,
+      randomizeWordOrder: true,
+      sentences: [
+        { id: 's1', text: 'Assets = {blank} + Equity', answer: 'Liabilities' },
+        { id: 's2', text: 'CVP means Cost-Volume-{blank}', answer: 'Profit' },
+        { id: 's3', text: '{blank} analysis compares outcomes', answer: 'Scenario' },
+      ],
+    })
+
+    const { rerender } = render(<FillInTheBlank activity={wordListActivity} />)
+    const initialOrder = screen
+      .getAllByText(/Liabilities|Profit|Scenario/)
+      .map((node) => node.textContent)
+
+    rerender(<FillInTheBlank activity={wordListActivity} />)
+    const rerenderOrder = screen
+      .getAllByText(/Liabilities|Profit|Scenario/)
+      .map((node) => node.textContent)
+
+    expect(rerenderOrder).toEqual(initialOrder)
+  })
 })

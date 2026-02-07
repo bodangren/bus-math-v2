@@ -33,6 +33,17 @@ interface SentenceState {
 
 const normalize = (value: string) => value.trim().toLowerCase();
 
+function createDeterministicOrder(words: string[], seed: string): string[] {
+  return [...words].sort((a, b) => {
+    const scoreA = `${seed}:${a}`.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const scoreB = `${seed}:${b}`.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    if (scoreA === scoreB) {
+      return a.localeCompare(b);
+    }
+    return scoreA - scoreB;
+  });
+}
+
 export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
   const { sentences, showWordList, randomizeWordOrder, showHints } = activity.props;
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -50,8 +61,13 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
     if (!showWordList) return [];
     const baseWords = sentences.flatMap((sentence) => [sentence.answer, ...(sentence.alternativeAnswers ?? [])]);
     const uniqueWords = Array.from(new Set(baseWords));
-    return randomizeWordOrder ? uniqueWords.sort(() => Math.random() - 0.5) : uniqueWords;
-  }, [sentences, showWordList, randomizeWordOrder]);
+    if (!randomizeWordOrder) {
+      return uniqueWords;
+    }
+
+    // Avoid hydration mismatches by using deterministic order for SSR+CSR.
+    return createDeterministicOrder(uniqueWords, activity.id);
+  }, [activity.id, sentences, showWordList, randomizeWordOrder]);
 
   const handleSubmit = () => {
     const updatedStates: SentenceState[] = sentences.map((sentence) => {

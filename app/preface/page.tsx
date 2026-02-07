@@ -26,6 +26,17 @@ interface UnitSummary {
   summary: string;
 }
 
+const DEFAULT_UNIT_SUMMARIES: UnitSummary[] = [
+  { unitNumber: 1, title: 'Balance by Design', summary: 'Build accounting equation fluency and set up clean ledger structures.' },
+  { unitNumber: 2, title: 'Flow of Transactions', summary: 'Track transaction lifecycles from source documents to journal entries.' },
+  { unitNumber: 3, title: 'Statements in Balance', summary: 'Assemble income statement, balance sheet, and cash flow connections.' },
+  { unitNumber: 4, title: 'Payroll in Motion', summary: 'Model payroll processing, compliance checks, and employer obligations.' },
+  { unitNumber: 5, title: 'Assets That Age', summary: 'Apply depreciation methods and interpret fixed-asset reporting impacts.' },
+  { unitNumber: 6, title: 'Inventory & Project Costing', summary: 'Manage inventory valuation and project-level costing decisions.' },
+  { unitNumber: 7, title: 'Financing the Future', summary: 'Compare funding structures and map repayment scenarios in Excel.' },
+  { unitNumber: 8, title: 'Integrated Model Sprint', summary: 'Link assumptions to 3-statement forecasts and stress-test decisions.' },
+];
+
 function sanitizeUnitTitle(rawTitle: string | undefined | null, unitNumber: number) {
   if (!rawTitle) return `Unit ${unitNumber}`;
 
@@ -269,6 +280,7 @@ const cashFlowChallengeActivity: CashFlowChallengeActivityProps = {
 
 export default async function PrefacePage() {
   const units = await getUnitSummaries();
+  const displayUnits = units.length > 0 ? units : DEFAULT_UNIT_SUMMARIES;
   const unitGroups = [
     {
       title: 'Units 1–3 · Build the Financial Spine',
@@ -290,7 +302,7 @@ export default async function PrefacePage() {
     },
   ].map((group) => ({
     ...group,
-    units: units.filter(
+    units: displayUnits.filter(
       (unit) => unit.unitNumber >= group.minUnit && unit.unitNumber <= group.maxUnit,
     ),
   }));
@@ -390,43 +402,33 @@ export default async function PrefacePage() {
               Semester 1 builds solid accounting and Excel skills. Semester 2 assembles a full startup model and prepares you for the capstone.
             </p>
           </div>
-          {units.length === 0 ? (
-            <Card>
-              <CardContent>
-                <p className="text-center text-muted-foreground">
-                  Curriculum data isn&apos;t available yet. Seed lessons in Supabase to populate this overview.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid md:grid-cols-2 gap-4">
-              {unitGroups
-                .filter((group) => group.units.length > 0)
-                .map((group) => (
-                  <Card key={group.title}>
-                    <CardHeader>
-                      <CardTitle className="text-base">{group.title}</CardTitle>
-                      <CardDescription>{group.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="list-disc list-inside text-sm space-y-1">
-                        {group.units.map((unit) => (
-                          <li key={unit.unitNumber}>
-                            <strong>
-                              Unit {unit.unitNumber}
-                              {unit.title && unit.title !== `Unit ${unit.unitNumber}`
-                                ? `: ${unit.title}`
-                                : ''}
-                            </strong>
-                            {' '}- {unit.summary}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                ))}
-            </div>
-          )}
+          <div className="grid md:grid-cols-2 gap-4">
+            {unitGroups
+              .filter((group) => group.units.length > 0)
+              .map((group) => (
+                <Card key={group.title}>
+                  <CardHeader>
+                    <CardTitle className="text-base">{group.title}</CardTitle>
+                    <CardDescription>{group.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="list-disc list-inside text-sm space-y-1">
+                      {group.units.map((unit) => (
+                        <li key={unit.unitNumber}>
+                          <strong>
+                            Unit {unit.unitNumber}
+                            {unit.title && unit.title !== `Unit ${unit.unitNumber}`
+                              ? `: ${unit.title}`
+                              : ''}
+                          </strong>
+                          {' '}- {unit.summary}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
         </section>
 
         <section className="space-y-6">
