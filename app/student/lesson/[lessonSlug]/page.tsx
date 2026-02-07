@@ -145,6 +145,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
     if (firstLessonSlug) {
       return redirect(`/student/lesson/${firstLessonSlug}?phase=1`);
     }
+    return redirect('/preface');
   }
 
   // Show 404 if lesson not found
