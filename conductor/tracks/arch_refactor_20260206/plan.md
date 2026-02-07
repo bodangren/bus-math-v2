@@ -78,9 +78,9 @@
 - [x] Task: Create types/activities.ts `abf2199`
     - [x] Write test verifying activity config and submission types
     - [x] Extract activity configuration and submission types from schema files
-- [ ] Task: Create types/curriculum.ts
-    - [ ] Write test verifying lesson, phase, and content block types
-    - [ ] Extract curriculum-related types from scattered definitions
+- [x] Task: Create types/curriculum.ts `fc09ac2`
+    - [x] Write test verifying lesson, phase, and content block types
+    - [x] Extract curriculum-related types from scattered definitions
 - [ ] Task: Update imports across the codebase
     - [ ] Replace inline type definitions with imports from types/
     - [ ] Replace schema-file type imports where types/ provides the canonical version
