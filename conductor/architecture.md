@@ -55,7 +55,8 @@ This is the canonical architecture reference for the v2 system.
 
 ### Testing Matrix
 - Unit/component tests: Vitest + Testing Library.
-- E2E tests: Playwright in `tests/`.
+- Vitest convention: `__tests__/` is the canonical directory for unit/integration suites. During the consolidation track, legacy co-located tests are still discovered, but new tests should be added under `__tests__/`.
+- E2E tests: Playwright specs live in `tests/e2e/`.
 - Lint and type checks gate commits and PRs.
 
 ## Brownfield Migration Status (v1 -> v2)
