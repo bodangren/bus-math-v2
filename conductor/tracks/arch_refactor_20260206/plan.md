@@ -63,10 +63,10 @@
     - [x] Update vitest.config to resolve new locations
     - [x] Verify all relocated tests pass
 - [x] Task: Remove empty /test directory `f159538`
-- [~] Task: Update vitest.config and playwright.config to reflect new structure
-    - [ ] Write test confirming vitest discovers all test files
-    - [ ] Write test confirming playwright discovers all E2E specs
-- [ ] Task: Conductor - User Manual Verification 'Test Structure Consolidation' (Protocol in workflow.md)
+- [x] Task: Update vitest.config and playwright.config to reflect new structure `8eb0b50`
+    - [x] Write test confirming vitest discovers all test files
+    - [x] Write test confirming playwright discovers all E2E specs
+- [~] Task: Conductor - User Manual Verification 'Test Structure Consolidation' (Protocol in workflow.md)
 
 ## Phase 4: Centralized Types
 - [ ] Task: Create types/ directory with initial structure

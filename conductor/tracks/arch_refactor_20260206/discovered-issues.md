@@ -25,3 +25,15 @@ Date: 2026-02-07
 - Symptom: UI displays “Curriculum data isn’t available yet. Seed lessons in Supabase to populate this overview.”
 - Risk: local/manual QA appears broken even when app code is healthy.
 - Follow-up: add an explicit seed runbook for local dev (legacy lesson seeds + activity seeds) and optionally a one-command project seed script.
+
+## 5) E2E public access spec drift + Playwright server reuse ambiguity
+- Source: manual run on 2026-02-07 (`npx playwright test tests/e2e/public-access.spec.ts`)
+- Symptom:
+  - stale assertion expected `/Math for Business/i` title while app metadata is `Math for Business Operations: Applied Accounting with Excel`
+  - routing assumption mismatch in manual QA (`/student` vs `/student/dashboard`)
+  - `reuseExistingServer` can run tests against an unrelated app already listening on port 3000
+- Risk: false negative/false positive E2E outcomes unrelated to current repo state.
+- Follow-up:
+  - keep E2E assertions aligned with current app metadata and route map
+  - force Playwright to start this repo's server (`reuseExistingServer: false`)
+  - document expected student landing route as `/student/dashboard`
