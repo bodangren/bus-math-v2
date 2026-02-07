@@ -1,0 +1,10 @@
+Manual verification follow-up fixes:
+- Replaced non-deterministic word bank randomization in FillInTheBlank to prevent SSR/CSR hydration mismatches.
+- Added fallback preface unit summaries when lessons table is empty so /preface remains useful.
+- Added legacy slug redirect in student lesson page for unitXX-lessonYY URLs.
+- Added regression tests for preface fallback, stable word-bank ordering, and legacy slug redirect.
+
+Verification:
+- CI=true npx vitest run __tests__/app/preface/page.test.tsx __tests__/components/exercises/FillInTheBlank.test.tsx __tests__/app/student/lesson/[lessonSlug]/page.test.tsx
+- CI=true npx tsc --noEmit
+- CI=true npm run lint
