@@ -50,9 +50,9 @@
 - [x] Task: Conductor - User Manual Verification 'Test Stabilization & Type Safety' (Protocol in workflow.md) `1c2de5e`
 
 ## Phase 3: Test Structure Consolidation
-- [~] Task: Define and document the target test directory structure
-    - [ ] Write test validating that test config resolves the new paths
-    - [ ] Document convention: __tests__/ for Vitest, tests/ for Playwright
+- [x] Task: Define and document the target test directory structure `b208f80`
+    - [x] Write test validating that test config resolves the new paths
+    - [x] Document convention: __tests__/ for Vitest, tests/ for Playwright
 - [ ] Task: Relocate /test contents into __tests__/
     - [ ] Move test/supabase/client.test.ts to __tests__/supabase/
     - [ ] Update any import paths in moved files
