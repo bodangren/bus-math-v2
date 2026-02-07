@@ -117,10 +117,11 @@
     - [x] Manual verification steps 1-3 confirmed by user; steps 4-5 blocked pending seed data
 
 ## Phase 6: Supabase-First Migration Unification
-- [ ] Task: Audit current Drizzle↔Supabase coupling
-    - [ ] Catalog all places drizzle-kit is used for schema generation
-    - [ ] Catalog all places Drizzle schema files define tables (vs just types)
-    - [ ] Verify scripts/check-migration-parity.mjs exists and functions
+- [x] Task: Audit current Drizzle↔Supabase coupling `f641a9d`
+    - [x] Catalog all places drizzle-kit is used for schema generation
+    - [x] Catalog all places Drizzle schema files define tables (vs just types)
+    - [x] Verify scripts/check-migration-parity.mjs exists and functions
+    - [x] Findings recorded in `conductor/tracks/arch_refactor_20260206/phase6-audit.md`
 - [ ] Task: Archive drizzle/migrations/ directory
     - [ ] Write test verifying no runtime code imports from drizzle/migrations/
     - [ ] Move drizzle/migrations/ to drizzle/archived-migrations/
