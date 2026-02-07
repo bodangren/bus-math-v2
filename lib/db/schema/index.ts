@@ -1,10 +1,11 @@
 /**
  * Drizzle Schema Index
  *
- * Central export for all database schema definitions.
- * Add new schema files here as they are created.
+ * Central export for Drizzle query-model mappings.
+ * Supabase SQL migrations remain the canonical schema source of truth.
+ * Keep these exports aligned to Supabase for type-safe query building.
  *
- * drizzle-zod Integration:
+ * drizzle-zod integration:
  * - Use createInsertSchema() to generate Zod schemas for inserts
  * - Use createSelectSchema() to generate Zod schemas for selects
  * - Extend schemas for custom validation (JSONB fields, etc.)

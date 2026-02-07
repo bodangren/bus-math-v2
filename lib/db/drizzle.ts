@@ -8,8 +8,12 @@
  * or API Routes. Never import this in client-side code.
  *
  * Connection Strategy:
- * - DATABASE_URL: Transaction pooler for all queries (recommended for Next.js)
- * - DIRECT_URL: Direct connection for migrations only (used by drizzle-kit)
+ * - DATABASE_URL: Transaction pooler for application queries (recommended for Next.js)
+ * - DIRECT_URL: Direct connection for local Drizzle tooling where needed
+ *
+ * Schema ownership:
+ * - Supabase SQL migrations are the only migration source of truth.
+ * - Drizzle schema modules are query/type mappings and must not be treated as migration authority.
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
