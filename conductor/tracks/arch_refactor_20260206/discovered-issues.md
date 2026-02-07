@@ -37,3 +37,16 @@ Date: 2026-02-07
   - keep E2E assertions aligned with current app metadata and route map
   - force Playwright to start this repo's server (`reuseExistingServer: false`)
   - document expected student landing route as `/student/dashboard`
+
+## 6) Supabase migration coverage drift detected by parity script
+- Source: `scripts/check-migration-parity.mjs` after directional parity update (2026-02-07)
+- Symptom: Drizzle defines tables not found in `supabase/migrations`:
+  - `competency_standards`
+  - `student_competency`
+  - `lesson_versions`
+  - `phase_versions`
+  - `phase_sections`
+  - `lesson_standards`
+  - `student_spreadsheet_responses`
+- Risk: schema-source-of-truth mismatch can cause runtime/type drift and invalid assumptions during migrations/deploys.
+- Follow-up: add/locate missing Supabase SQL migrations for these tables before enabling parity script as a strict CI gate.

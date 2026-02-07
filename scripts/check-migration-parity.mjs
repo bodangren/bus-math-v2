@@ -2,9 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-
-const REPO_ROOT = process.cwd();
-const MIGRATIONS_DIR = path.join(REPO_ROOT, 'supabase', 'migrations');
+import { pathToFileURL } from 'node:url';
 
 const REQUIREMENTS = [
   {
@@ -44,18 +42,18 @@ const REQUIREMENTS = [
   },
 ];
 
-function readMigrationFiles() {
-  if (!fs.existsSync(MIGRATIONS_DIR)) {
-    throw new Error(`Migrations directory not found: ${MIGRATIONS_DIR}`);
+function readMigrationFiles(migrationsDir) {
+  if (!fs.existsSync(migrationsDir)) {
+    throw new Error(`Migrations directory not found: ${migrationsDir}`);
   }
 
   const files = fs
-    .readdirSync(MIGRATIONS_DIR)
+    .readdirSync(migrationsDir)
     .filter((file) => file.endsWith('.sql'))
     .sort();
 
   return files.map((file) => {
-    const absolutePath = path.join(MIGRATIONS_DIR, file);
+    const absolutePath = path.join(migrationsDir, file);
     const contents = fs.readFileSync(absolutePath, 'utf8');
     return {
       file,
@@ -64,28 +62,131 @@ function readMigrationFiles() {
   });
 }
 
-function run() {
-  const migrations = readMigrationFiles();
-  const missing = [];
+function readDrizzleSchemaFiles(drizzleSchemaDir) {
+  if (!fs.existsSync(drizzleSchemaDir)) {
+    throw new Error(`Drizzle schema directory not found: ${drizzleSchemaDir}`);
+  }
+
+  const files = fs
+    .readdirSync(drizzleSchemaDir)
+    .filter((file) => file.endsWith('.ts'))
+    .sort();
+
+  return files.map((file) => {
+    const absolutePath = path.join(drizzleSchemaDir, file);
+    const contents = fs.readFileSync(absolutePath, 'utf8');
+    return {
+      file,
+      contents,
+    };
+  });
+}
+
+function extractSupabaseTables(migrations) {
+  const tables = new Set();
+
+  for (const { contents } of migrations) {
+    const pattern = /^\s*create\s+table\s+(?:if\s+(?:not\s+)?exists\s+)?(?:public\.)?("?)([a-z_][a-z0-9_]*)\1\b/gim;
+    let match = pattern.exec(contents);
+    while (match) {
+      const tableName = match[2];
+      if (!/^(if|for)$/i.test(tableName)) {
+        tables.add(tableName);
+      }
+      match = pattern.exec(contents);
+    }
+  }
+
+  return tables;
+}
+
+function extractDrizzleTables(drizzleFiles) {
+  const tables = new Set();
+
+  for (const { contents } of drizzleFiles) {
+    const pattern = /\bpgTable\(\s*['"`]([a-z_][a-z0-9_]*)['"`]/gi;
+    let match = pattern.exec(contents);
+    while (match) {
+      tables.add(match[1]);
+      match = pattern.exec(contents);
+    }
+  }
+
+  return tables;
+}
+
+export function checkMigrationParity({ repoRoot = process.cwd() } = {}) {
+  const migrationsDir = path.join(repoRoot, 'supabase', 'migrations');
+  const drizzleSchemaDir = path.join(repoRoot, 'lib', 'db', 'schema');
+
+  const migrations = readMigrationFiles(migrationsDir);
+  const drizzleFiles = readDrizzleSchemaFiles(drizzleSchemaDir);
+
+  const missingRequirements = [];
 
   for (const requirement of REQUIREMENTS) {
     const foundIn = migrations.find(({ contents }) => requirement.pattern.test(contents));
     if (!foundIn) {
-      missing.push(requirement);
+      missingRequirements.push(requirement);
     }
   }
 
-  if (missing.length > 0) {
+  const supabaseTables = extractSupabaseTables(migrations);
+  const drizzleTables = extractDrizzleTables(drizzleFiles);
+
+  const drizzleMissingInSupabase = [...drizzleTables].filter((table) => !supabaseTables.has(table)).sort();
+  const supabaseMissingInDrizzle = [...supabaseTables].filter((table) => !drizzleTables.has(table)).sort();
+
+  return {
+    ok:
+      missingRequirements.length === 0 &&
+      drizzleMissingInSupabase.length === 0 &&
+      supabaseMissingInDrizzle.length === 0,
+    missingRequirements,
+    drizzleMissingInSupabase,
+    supabaseMissingInDrizzle,
+    requirementCount: REQUIREMENTS.length,
+    supabaseTableCount: supabaseTables.size,
+    drizzleTableCount: drizzleTables.size,
+  };
+}
+
+function runCli() {
+  const result = checkMigrationParity();
+
+  if (result.missingRequirements.length > 0) {
     console.error('Migration parity check failed.');
     console.error('Missing required runtime DB objects from supabase/migrations:');
-    for (const item of missing) {
+    for (const item of result.missingRequirements) {
       console.error(`- ${item.id}: ${item.description}`);
     }
     process.exit(1);
   }
 
+  if (result.drizzleMissingInSupabase.length > 0 || result.supabaseMissingInDrizzle.length > 0) {
+    console.error('Directional migration parity check failed.');
+    if (result.drizzleMissingInSupabase.length > 0) {
+      console.error('Drizzle tables missing from Supabase migrations:');
+      for (const table of result.drizzleMissingInSupabase) {
+        console.error(`- ${table}`);
+      }
+    }
+    if (result.supabaseMissingInDrizzle.length > 0) {
+      console.error('Supabase migration tables missing from Drizzle schema:');
+      for (const table of result.supabaseMissingInDrizzle) {
+        console.error(`- ${table}`);
+      }
+    }
+    process.exit(1);
+  }
+
   console.log('Migration parity check passed.');
-  console.log(`Validated ${REQUIREMENTS.length} runtime DB requirements against supabase migrations.`);
+  console.log(`Validated ${result.requirementCount} runtime DB requirements against supabase migrations.`);
+  console.log(
+    `Validated directional table parity across ${result.supabaseTableCount} Supabase tables and ${result.drizzleTableCount} Drizzle tables.`,
+  );
 }
 
-run();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  runCli();
+}
