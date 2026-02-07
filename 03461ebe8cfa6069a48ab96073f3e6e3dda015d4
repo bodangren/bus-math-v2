@@ -1,0 +1,16 @@
+Task: Update imports across the codebase
+
+Summary:
+- Repointed activity, curriculum, and phase-progress type imports from schema-local files to centralized modules in types/.
+- Re-exported needed activity and curriculum type surfaces from types/activities.ts and types/curriculum.ts.
+- Replaced inline phase-progress interfaces in hooks/usePhaseProgress.ts with shared API contracts from types/api.
+
+Files changed:
+- types/activities.ts
+- types/curriculum.ts
+- hooks/usePhaseProgress.ts
+- app/preface/page.tsx
+- components/* and __tests__/* files that previously imported schema-level activity/lesson/phase types
+
+Why:
+- Aligns runtime and test code with the new centralized type layer, reducing scattered schema-type coupling and preparing for later schema decomposition phases.
