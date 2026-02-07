@@ -72,9 +72,9 @@
 - [x] Task: Create types/ directory with initial structure `31272f9`
     - [x] Write test verifying types/database.ts exports expected type names
     - [x] Create types/database.ts with core table types derived from Supabase schema
-- [ ] Task: Create types/api.ts
-    - [ ] Write test verifying API request/response types match route expectations
-    - [ ] Extract shared request/response types from API routes into types/api.ts
+- [x] Task: Create types/api.ts `b7560e6`
+    - [x] Write test verifying API request/response types match route expectations
+    - [x] Extract shared request/response types from API routes into types/api.ts
 - [ ] Task: Create types/activities.ts
     - [ ] Write test verifying activity config and submission types
     - [ ] Extract activity configuration and submission types from schema files
