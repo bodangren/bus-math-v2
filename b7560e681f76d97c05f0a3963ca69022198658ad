@@ -1,0 +1,18 @@
+Task: Create types/api.ts
+
+Summary:
+- Added a new centralized API contract module at types/api.ts for shared request/response and progress types.
+- Added contract test coverage in __tests__/types/api-types.test.ts to verify canonical exports.
+- Updated API routes and client code to consume shared contracts instead of repeating local interfaces.
+
+Files changed:
+- types/api.ts (created)
+- __tests__/types/api-types.test.ts (created)
+- app/api/phases/complete/route.ts
+- app/api/activities/complete/route.ts
+- app/api/lessons/[lessonId]/progress/route.ts
+- lib/phase-completion/client.ts
+- hooks/usePhaseCompletion.ts
+
+Why:
+- Eliminates duplicated API type definitions and establishes a single source of truth for cross-route API contracts as required by Phase 4 (Centralized Types).
