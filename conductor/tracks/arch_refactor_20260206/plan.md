@@ -87,7 +87,7 @@
     - [x] Verify tsc --noEmit passes after all import changes
 - [x] Task: Conductor - User Manual Verification 'Centralized Types' (Protocol in workflow.md) `dc0ef0f`
 
-## Phase 5: Activities Schema Decomposition
+## Phase 5: Activities Schema Decomposition [checkpoint: d5d7b96]
 - [x] Task: Analyze activities.ts and identify domain boundaries
     - [x] Map each type/table/validator to its domain (core, spreadsheet, quiz, categorization, simulation)
     - [x] Identify shared dependencies between domains
