@@ -57,11 +57,11 @@
     - [x] Move `test/utils/lessonBuilders.ts` to `__tests__/utils/lessonBuilders.ts` (legacy `test/supabase/client.test.ts` was no longer present)
     - [x] Update any import paths in moved files
     - [x] Verify moved tests still pass
-- [~] Task: Consolidate co-located test files
-    - [ ] Identify all *.test.ts(x) files outside __tests__/ and tests/
-    - [ ] Relocate to __tests__/ preserving directory structure mirroring
-    - [ ] Update vitest.config to resolve new locations
-    - [ ] Verify all relocated tests pass
+- [x] Task: Consolidate co-located test files `8480136`
+    - [x] Identify all *.test.ts(x) files outside __tests__/ and tests/
+    - [x] Relocate to __tests__/ preserving directory structure mirroring
+    - [x] Update vitest.config to resolve new locations
+    - [x] Verify all relocated tests pass
 - [ ] Task: Remove empty /test directory
 - [ ] Task: Update vitest.config and playwright.config to reflect new structure
     - [ ] Write test confirming vitest discovers all test files
