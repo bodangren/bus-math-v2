@@ -1,0 +1,9 @@
+Task set: Sprint 3 Phase 1 baseline audit + scope lock.
+
+Changes:
+- Added conductor/tracks/sprint3_core_platform_20251111/gap-audit.md with pass/fail matrix for auth, middleware, lesson rendering, progress APIs, and teacher baseline.
+- Identified confirmed execution gaps: proxy debug-route allowlist mismatch, canonical phase-completion client drift, teacher dashboard dead link, and seed runbook ordering drift.
+- Rebased remaining plan tasks in conductor/tracks/sprint3_core_platform_20251111/plan.md to ordered, actionable items aligned to current code reality.
+
+Why:
+- Lock implementation scope against current runtime/security posture before continuing Sprint 3 feature work.
