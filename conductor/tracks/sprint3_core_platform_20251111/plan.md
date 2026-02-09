@@ -8,7 +8,7 @@
 ## Phase 2: Auth, Access, And Seed Reliability
 - [x] Task: Align proxy/API behavior with `docs/security-api-route-matrix.md`, including public debug endpoints (`/api/test-db`, `/api/test-supabase`) guarded by env + optional `x-test-api-key`. [0c71565]
 - [x] Task: Add/update proxy and API tests for debug endpoint allowlist behavior and deny-by-default enforcement on private `/api/**` routes. [0c71565]
-- [ ] Task: Reconcile demo provisioning runbook (`supabase/seed/README.md`) with required org-first seed ordering and login-time `ensure-demo` fallback behavior.
+- [x] Task: Reconcile demo provisioning runbook (`supabase/seed/README.md`) with required org-first seed ordering and login-time `ensure-demo` fallback behavior. [1e3537f]
 
 ## Phase 3: Data-Driven Lesson Delivery
 - [ ] Task: Add coverage for server-rendered lesson behavior: `loading.tsx`, `notFound()`, zero-phase error UI, and RPC access-check failure UI.
