@@ -1,10 +1,10 @@
 # Plan: Sprint 4 - Competency Engine & Lesson Gating (Rebaseline 2026-02-09)
 
 ## Dependency Gate
-- [ ] Task: Confirm Sprint 3 is complete and competency prerequisite schema/routes are stable.
+- [x] Task: Confirm Sprint 3 is complete and competency prerequisite schema/routes are stable. [afdf6d3]
 
 ## Phase 1: Competency Schema And RLS
-- [ ] Task: Validate `competency_standards` and `student_competency` schema parity against Supabase migrations.
+- [x] Task: Validate `competency_standards` and `student_competency` schema parity against Supabase migrations. [afdf6d3]
 - [ ] Task: Tighten RLS policies for student self-read and teacher/admin scoped read access.
 - [ ] Task: Add seed coverage for Unit 1 accounting standards and verify idempotency.
 
