@@ -16,9 +16,9 @@
 - [x] Task: Verify curriculum/home DB-fallback behavior against versioned lesson data and lock expected rendering contracts. [97251a5]
 
 ## Phase 4: Progress And Assessment Integrity
-- [~] Task: Migrate `ActivityRenderer` completion path to canonical `/api/phases/complete` flow (via shared phase-completion client/hook) and preserve UX feedback.
-- [ ] Task: Define compatibility strategy for `/api/activities/complete` (shim or deprecation) and enforce with tests.
-- [ ] Task: Expand integration coverage for idempotency conflicts, private-route access control, and server-scored assessment response contracts.
+- [x] Task: Migrate `ActivityRenderer` completion path to canonical `/api/phases/complete` flow (via shared phase-completion client/hook) and preserve UX feedback. [local-uncommitted]
+- [x] Task: Define compatibility strategy for `/api/activities/complete` (shim or deprecation) and enforce with tests. [local-uncommitted]
+- [x] Task: Expand integration coverage for idempotency conflicts, private-route access control, and server-scored assessment response contracts. [local-uncommitted]
 
 ## Phase 5: Teacher Baseline And Release Gate
 - [ ] Task: Resolve teacher dashboard dead link (`/teacher/students/[studentId]`) by implementing a baseline student detail route or replacing with explicit non-breaking fallback UX.
@@ -28,11 +28,16 @@
 
 ## Session Handoff Notes (2026-02-09)
 
-- Completed through Phase 3 and all Phase 2 tasks; latest completed plan commit: `b6d0fe5`.
-- Current WIP (not committed): `__tests__/components/lesson/ActivityRenderer.test.tsx` has red-phase additions to assert canonical phase-completion hook usage from `ActivityRenderer`.
-- Interrupted command during red phase:
-  - `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx`
+- Phase 4 task implementation is complete locally and uncommitted (`[local-uncommitted]` markers above).
+- `ActivityRenderer` now uses canonical `usePhaseCompletion` (`phaseType: do`) instead of direct `/api/activities/complete` calls.
+- `/api/activities/complete` is now a compatibility shim that forwards to `/api/phases/complete` with deprecation metadata and replacement hints.
+- Expanded API coverage now includes:
+  - idempotent replay and same-phase/different-key conflict branches for `/api/phases/complete`
+  - auth-provider-error private-route protection for `/api/progress/assessment`
+  - server-scoring response contract enforcement (client score metadata ignored)
+- Last verification command:
+  - `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx __tests__/api/activities-complete.test.ts __tests__/app/api/phases/complete/route.test.ts __tests__/app/api/progress/assessment/route.test.ts`
 - Next session recommended sequence:
-  1. Re-run `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx` to capture/confirm current failing assertions.
-  2. Refactor `components/lesson/ActivityRenderer.tsx` to use `usePhaseCompletion` (phase type `do`) for completion flow instead of direct `/api/activities/complete` calls.
-  3. Define and implement compatibility strategy for `/api/activities/complete` (shim/deprecation), then update tests and plan statuses.
+  1. Decide whether to commit Phase 4 task slices individually (per Conductor workflow) or as one squashed WIP commit.
+  2. Start Phase 5 by implementing/fixing `/teacher/students/[studentId]` route behavior and adding teacher roster navigation tests.
+  3. Run full Sprint 3 quality gates (`npm run lint` + broader test suites) before checkpointing Phase 4/5 completion.

@@ -8,6 +8,8 @@ import type { Activity } from '@/lib/db/schema/validators';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
+import type { CompletePhaseResponse } from '@/types/api';
 
 interface ActivityRendererProps {
   activityId: string;
@@ -32,18 +34,6 @@ interface AssessmentResponse {
 }
 
 /**
- * Response from activity completion endpoint
- */
-interface ActivityCompletionResponse {
-  success: boolean;
-  nextPhaseUnlocked: boolean;
-  message: string;
-  completionId?: string;
-  completedPhases?: number;
-  totalPhases?: number;
-}
-
-/**
  * ActivityRenderer fetches an activity from the database by ID
  * and renders it using the activity registry.
  */
@@ -54,8 +44,25 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
   const [submissionResult, setSubmissionResult] = useState<AssessmentResponse | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [completionResult, setCompletionResult] = useState<ActivityCompletionResponse | null>(null);
-  const [completing, setCompleting] = useState(false);
+  const [completionResult, setCompletionResult] = useState<CompletePhaseResponse | null>(null);
+
+  const { completePhase, isCompleting } = usePhaseCompletion({
+    lessonId,
+    phaseNumber,
+    phaseType: 'do',
+    onSuccess: (response) => {
+      setCompletionResult(response);
+      setSubmissionError(null);
+    },
+    onError: (completionError) => {
+      setCompletionResult(null);
+      setSubmissionError(
+        completionError instanceof Error
+          ? completionError.message
+          : 'Unable to complete activity',
+      );
+    },
+  });
 
   useEffect(() => {
     async function fetchActivity() {
@@ -151,60 +158,19 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
   );
 
   /**
-   * Handle atomic activity completion
-   * Generates an idempotency key and calls the completion endpoint
+   * Trigger canonical phase completion flow for activity phases.
    */
   const handleActivityComplete = useCallback(
-    async (completionData?: Record<string, unknown>) => {
+    async () => {
       if (!activity) {
         return;
       }
 
-      setCompleting(true);
       setSubmissionError(null);
       setCompletionResult(null);
-
-      try {
-        // Generate idempotency key for this completion attempt
-        const idempotencyKey = crypto.randomUUID();
-
-        const response = await fetch('/api/activities/complete', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            activityId: activity.id,
-            lessonId,
-            phaseNumber,
-            linkedStandardId: activity.standardId,
-            completionData: completionData || null,
-            idempotencyKey,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data?.error ?? data?.message ?? 'Failed to complete activity');
-        }
-
-        setCompletionResult(data);
-
-        // Show success feedback
-        // TODO: Replace with proper toast/confetti component when available
-        console.log('Activity completed successfully!', data);
-      } catch (completionError) {
-        setSubmissionError(
-          completionError instanceof Error
-            ? completionError.message
-            : 'Unable to complete activity',
-        );
-      } finally {
-        setCompleting(false);
-      }
+      await completePhase();
     },
-    [activity, lessonId, phaseNumber],
+    [activity, completePhase],
   );
 
   if (loading) {
@@ -271,7 +237,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
             </AlertDescription>
           </Alert>
         )}
-        {completing && (
+        {isCompleting && (
           <Alert>
             <Loader2 className="h-4 w-4 animate-spin" />
             <AlertTitle>Completing activity…</AlertTitle>
@@ -299,15 +265,10 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
               {completionResult.nextPhaseUnlocked && (
                 <p className="mt-2 font-medium">Next phase unlocked! Continue to the next section.</p>
               )}
-              {completionResult.completedPhases !== undefined && completionResult.totalPhases !== undefined && (
-                <p className="mt-1 text-sm">
-                  Progress: {completionResult.completedPhases}/{completionResult.totalPhases} phases completed
-                </p>
-              )}
             </AlertDescription>
           </Alert>
         )}
-        {submissionError && !submitting && !completing && (
+        {submissionError && !submitting && !isCompleting && (
           <Alert variant="destructive">
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>

@@ -9,7 +9,7 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 | Route | Methods | Current State | Required State | Required Role |
 | --- | --- | --- | --- | --- |
 | `/api/activities/[activityId]` | `GET` | Public via proxy, no auth in handler, raw activity payload | Private, auth required, student-safe payload redaction | `student`, `teacher`, `admin` |
-| `/api/activities/complete` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
+| `/api/activities/complete` | `POST` | Deprecated compatibility shim forwarding to `/api/phases/complete` | Private while shim exists; migrate runtime clients to `/api/phases/complete` | `student`, `teacher`, `admin` |
 | `/api/activities/spreadsheet/[activityId]/draft` | `GET`, `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
 | `/api/activities/spreadsheet/[activityId]/submit` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
 | `/api/lessons/[lessonId]/progress` | `GET` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
