@@ -6,10 +6,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [~] **Track: Sprint 3: Core Platform Completion (Rebaseline)**
+- [x] **Track: Sprint 3: Core Platform Completion (Rebaseline)**
   *Link: [./conductor/tracks/sprint3_core_platform_20251111/](./conductor/tracks/sprint3_core_platform_20251111/)*
   *Depends on: none (current foundation track)*
-  *Current status (2026-02-09): Implementation + manual verification complete; final checkpoint commit/git-note + archive workflow still pending.*
+  *Current status (2026-02-09): Completed with Phase 5 checkpoint `5722e1e`; pending merge-to-main and archive move per Conductor workflow.*
 
 - [ ] **Track: Sprint 4: Competency Engine & Lesson Gating**
   *Link: [./conductor/tracks/sprint4_competency_20251101/](./conductor/tracks/sprint4_competency_20251101/)*
