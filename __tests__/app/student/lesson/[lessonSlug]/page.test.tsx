@@ -25,14 +25,20 @@ vi.mock('@/lib/supabase/server', () => ({
 }));
 
 vi.mock('@/components/student/LessonRenderer', () => ({
-  LessonRenderer: ({ lesson, phases, currentPhaseNumber, lessonSlug }: { lesson: { title: string }; phases: unknown[]; currentPhaseNumber: number; lessonSlug: string }) => (
-    <div data-testid="lesson-renderer">
-      <h1>{lesson.title}</h1>
-      <div data-testid="phase-count">{phases.length}</div>
-      <div data-testid="current-phase">{currentPhaseNumber}</div>
-      <div data-testid="lesson-slug">{lessonSlug}</div>
-    </div>
-  ),
+  LessonRenderer: ({ lesson, phases, currentPhaseNumber, lessonSlug }: { lesson: { title: string }; phases: unknown[]; currentPhaseNumber: number; lessonSlug: string }) => {
+    const firstPhase = phases[0] as { contentBlocks?: unknown[] } | undefined;
+    const firstBlock = firstPhase?.contentBlocks?.[0] ?? null;
+
+    return (
+      <div data-testid="lesson-renderer">
+        <h1>{lesson.title}</h1>
+        <div data-testid="phase-count">{phases.length}</div>
+        <div data-testid="current-phase">{currentPhaseNumber}</div>
+        <div data-testid="lesson-slug">{lessonSlug}</div>
+        <pre data-testid="first-block">{JSON.stringify(firstBlock)}</pre>
+      </div>
+    );
+  },
 }));
 
 const baseLesson = {
@@ -199,6 +205,75 @@ describe('LessonPage', () => {
     });
     render(page);
     expect(screen.getByText('Lesson Not Available')).toBeInTheDocument();
+  });
+
+  it('maps activity sections into activity content blocks', async () => {
+    const { db } = await import('@/lib/db/drizzle');
+    vi.mocked(db.query.phaseSections.findMany).mockResolvedValue(
+      [
+        {
+          id: 'ps-activity',
+          phaseVersionId: 'pv-1',
+          sequenceOrder: 1,
+          sectionType: 'activity',
+          content: {
+            activityId: 'activity-123',
+            required: true,
+          },
+          createdAt: new Date(),
+        },
+      ] as never,
+    );
+
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({ phase: '1' }),
+    });
+    render(page);
+
+    const firstBlockText = screen.getByTestId('first-block').textContent ?? 'null';
+    const firstBlock = JSON.parse(firstBlockText) as {
+      type: string;
+      activityId?: string;
+      required?: boolean;
+    };
+
+    expect(firstBlock.type).toBe('activity');
+    expect(firstBlock.activityId).toBe('activity-123');
+    expect(firstBlock.required).toBe(true);
+  });
+
+  it('falls back to markdown content for unsupported section types', async () => {
+    const { db } = await import('@/lib/db/drizzle');
+    vi.mocked(db.query.phaseSections.findMany).mockResolvedValue(
+      [
+        {
+          id: 'ps-unsupported',
+          phaseVersionId: 'pv-1',
+          sequenceOrder: 1,
+          sectionType: 'unsupported',
+          content: {
+            text: 'Fallback content',
+          },
+          createdAt: new Date(),
+        },
+      ] as never,
+    );
+
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({ phase: '1' }),
+    });
+    render(page);
+
+    const firstBlockText = screen.getByTestId('first-block').textContent ?? 'null';
+    const firstBlock = JSON.parse(firstBlockText) as {
+      type: string;
+      content?: string;
+    };
+
+    expect(firstBlock.type).toBe('markdown');
+    expect(firstBlock.content).toBe('Fallback content');
   });
 
   it('shows access error page when RPC fails', async () => {
