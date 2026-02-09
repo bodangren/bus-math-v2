@@ -1,0 +1,9 @@
+Task: Sprint 3 Phase 2 demo provisioning runbook reconciliation.
+
+Changes:
+- Updated supabase/seed/README.md to require org-first seeding via 00-demo-org.sql before 01-demo-users.ts.
+- Clarified deterministic seed order for demo/org/standards setup.
+- Documented /api/users/ensure-demo as a dev/test fallback, not a migration/seed pipeline substitute.
+
+Why:
+- Prevent profile foreign-key failures and keep environment provisioning behavior explicit and repeatable.
