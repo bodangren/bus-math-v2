@@ -21,6 +21,7 @@ const DEMO_USERS = [
 
 const DEMO_LESSON_ID = '10000000-0000-0000-0000-000000000001';
 const DEMO_LESSON_VERSION_ID = '10000000-0000-0000-0000-000000000101';
+const DEMO_LESSON_VERSION_NUMBER = 999;
 const DEMO_SPREADSHEET_ACTIVITY_ID = '10000000-0000-0000-0000-000000000401';
 const DEMO_PHASE_IDS = [
   '10000000-0000-0000-0000-000000000201',
@@ -145,7 +146,7 @@ export async function POST() {
       {
         id: DEMO_LESSON_VERSION_ID,
         lesson_id: DEMO_LESSON_ID,
-        version: 1,
+        version: DEMO_LESSON_VERSION_NUMBER,
         title: 'Introduction to Business Math',
         description: 'Foundational lesson automatically provisioned for demo environments.',
         status: 'published',
@@ -154,6 +155,28 @@ export async function POST() {
     );
     if (versionError) {
       throw versionError;
+    }
+
+    // Normalize to a single active demo lesson version so runtime "latest version" selection
+    // cannot land on stale empty content from prior local test runs.
+    const { data: staleVersions, error: staleVersionsError } = await adminClient
+      .from('lesson_versions')
+      .select('id')
+      .eq('lesson_id', DEMO_LESSON_ID)
+      .neq('id', DEMO_LESSON_VERSION_ID);
+    if (staleVersionsError) {
+      throw staleVersionsError;
+    }
+
+    const staleVersionIds = (staleVersions ?? []).map((row) => row.id);
+    if (staleVersionIds.length > 0) {
+      const { error: deleteStaleVersionsError } = await adminClient
+        .from('lesson_versions')
+        .delete()
+        .in('id', staleVersionIds);
+      if (deleteStaleVersionsError) {
+        throw deleteStaleVersionsError;
+      }
     }
 
     const { error: activityError } = await adminClient.from('activities').upsert(
@@ -239,10 +262,33 @@ export async function POST() {
       throw phaseError;
     }
 
+    const { data: persistedPhases, error: persistedPhasesError } = await adminClient
+      .from('phase_versions')
+      .select('id, phase_number')
+      .eq('lesson_version_id', DEMO_LESSON_VERSION_ID);
+    if (persistedPhasesError) {
+      throw persistedPhasesError;
+    }
+
+    const phaseIdByNumber = new Map<number, string>();
+    for (const row of persistedPhases ?? []) {
+      if (typeof row.phase_number === 'number' && typeof row.id === 'string') {
+        phaseIdByNumber.set(row.phase_number, row.id);
+      }
+    }
+
+    const getPhaseId = (phaseNumber: number) => {
+      const phaseId = phaseIdByNumber.get(phaseNumber);
+      if (!phaseId) {
+        throw new Error(`Missing persisted phase for phase number ${phaseNumber}`);
+      }
+      return phaseId;
+    };
+
     const sectionRows = [
       {
         id: '10000000-0000-0000-0000-000000000301',
-        phase_version_id: DEMO_PHASE_IDS[0],
+        phase_version_id: getPhaseId(1),
         sequence_order: 1,
         section_type: 'text',
         content: {
@@ -252,7 +298,7 @@ export async function POST() {
       },
       {
         id: '10000000-0000-0000-0000-000000000302',
-        phase_version_id: DEMO_PHASE_IDS[1],
+        phase_version_id: getPhaseId(2),
         sequence_order: 1,
         section_type: 'text',
         content: {
@@ -262,7 +308,7 @@ export async function POST() {
       },
       {
         id: '10000000-0000-0000-0000-000000000303',
-        phase_version_id: DEMO_PHASE_IDS[2],
+        phase_version_id: getPhaseId(3),
         sequence_order: 1,
         section_type: 'text',
         content: {
@@ -272,7 +318,7 @@ export async function POST() {
       },
       {
         id: '10000000-0000-0000-0000-000000000304',
-        phase_version_id: DEMO_PHASE_IDS[2],
+        phase_version_id: getPhaseId(3),
         sequence_order: 2,
         section_type: 'activity',
         content: {
@@ -282,7 +328,7 @@ export async function POST() {
       },
       {
         id: '10000000-0000-0000-0000-000000000305',
-        phase_version_id: DEMO_PHASE_IDS[3],
+        phase_version_id: getPhaseId(4),
         sequence_order: 1,
         section_type: 'text',
         content: {
@@ -292,7 +338,7 @@ export async function POST() {
       },
       {
         id: '10000000-0000-0000-0000-000000000306',
-        phase_version_id: DEMO_PHASE_IDS[4],
+        phase_version_id: getPhaseId(5),
         sequence_order: 1,
         section_type: 'callout',
         content: {
@@ -302,7 +348,7 @@ export async function POST() {
       },
       {
         id: '10000000-0000-0000-0000-000000000307',
-        phase_version_id: DEMO_PHASE_IDS[5],
+        phase_version_id: getPhaseId(6),
         sequence_order: 1,
         section_type: 'text',
         content: {

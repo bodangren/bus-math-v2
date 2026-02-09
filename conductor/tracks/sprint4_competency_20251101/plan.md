@@ -32,3 +32,5 @@
 - Follow-up updates:
   - Phase 2 tasks completed and committed (`8a4fd4a`, `42e6ac3`, `27bb1b3`).
   - Fixed demo provisioning gap: `ensure-demo` now seeds a six-phase lesson with a required `spreadsheet-evaluator` activity so `demo_student` can complete activity phases.
+  - Fixed stale demo-version fallback and phase-link drift in `ensure-demo` seeding; now normalizes to one active version and resolves persisted phase IDs before section upsert.
+  - Fixed `/api/phases/complete` duplicate-click behavior to return idempotent success (instead of `409`) when a phase is already completed.

@@ -6,6 +6,9 @@ const mockUpdateUserById = vi.fn();
 const mockCreateUser = vi.fn();
 const mockFrom = vi.fn();
 const mockUpsert = vi.fn();
+const mockDelete = vi.fn();
+const mockIn = vi.fn();
+let staleVersionRows: Array<{ id: string }> = [];
 
 vi.mock('@/lib/supabase/admin', () => ({
   createAdminClient: () => mockCreateAdminClient(),
@@ -16,9 +19,51 @@ const { POST } = await import('../../../../../app/api/users/ensure-demo/route');
 describe('POST /api/users/ensure-demo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    staleVersionRows = [];
 
-    mockFrom.mockReturnValue({ upsert: mockUpsert });
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lesson_versions') {
+        return {
+          upsert: mockUpsert,
+          select: () => ({
+            eq: () => ({
+              neq: () =>
+                Promise.resolve({
+                  data: staleVersionRows,
+                  error: null,
+                }),
+            }),
+          }),
+          delete: mockDelete,
+        };
+      }
+
+      if (table === 'phase_versions') {
+        return {
+          upsert: mockUpsert,
+          select: () => ({
+            eq: () =>
+              Promise.resolve({
+                data: [
+                  { id: 'phase-1', phase_number: 1 },
+                  { id: 'phase-2', phase_number: 2 },
+                  { id: 'phase-3', phase_number: 3 },
+                  { id: 'phase-4', phase_number: 4 },
+                  { id: 'phase-5', phase_number: 5 },
+                  { id: 'phase-6', phase_number: 6 },
+                ],
+                error: null,
+              }),
+          }),
+        };
+      }
+
+      return { upsert: mockUpsert };
+    });
+
     mockUpsert.mockResolvedValue({ error: null });
+    mockDelete.mockReturnValue({ in: mockIn });
+    mockIn.mockResolvedValue({ error: null });
     mockListUsers.mockResolvedValue({ data: { users: [] }, error: null });
     mockUpdateUserById.mockResolvedValue({ error: null });
     mockCreateUser.mockResolvedValue({
@@ -124,5 +169,17 @@ describe('POST /api/users/ensure-demo', () => {
 
     expect(response.status).toBe(500);
     expect(json.error).toBe('Failed to ensure demo users');
+  });
+
+  it('deletes stale demo lesson versions before seeding sections', async () => {
+    staleVersionRows = [{ id: 'stale-version-1' }, { id: 'stale-version-2' }];
+
+    const response = await POST();
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.ok).toBe(true);
+    expect(mockDelete).toHaveBeenCalled();
+    expect(mockIn).toHaveBeenCalledWith('id', ['stale-version-1', 'stale-version-2']);
   });
 });
