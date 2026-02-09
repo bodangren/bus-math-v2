@@ -1,0 +1,7 @@
+Bug fix: /api/phases/complete now treats already-completed phase submissions (different idempotency key, same phase) as idempotent success instead of 409 conflict.
+
+Impact: PhaseCompleteButton no longer surfaces hard error when user retries an already-completed phase.
+
+Files:
+- app/api/phases/complete/route.ts
+- __tests__/app/api/phases/complete/route.test.ts
