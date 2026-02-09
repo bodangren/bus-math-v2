@@ -11,8 +11,8 @@
 - [x] Task: Reconcile demo provisioning runbook (`supabase/seed/README.md`) with required org-first seed ordering and login-time `ensure-demo` fallback behavior. [1e3537f]
 
 ## Phase 3: Data-Driven Lesson Delivery
-- [ ] Task: Add coverage for server-rendered lesson behavior: `loading.tsx`, `notFound()`, zero-phase error UI, and RPC access-check failure UI.
-- [ ] Task: Add contract tests for phase section -> content block mapping (`callout`, `activity`, `video`, `image`, markdown fallback) and invalid payload fallback safety.
+- [x] Task: Add coverage for server-rendered lesson behavior: `loading.tsx`, `notFound()`, zero-phase error UI, and RPC access-check failure UI. [e45730a]
+- [x] Task: Add contract tests for phase section -> content block mapping (`callout`, `activity`, `video`, `image`, markdown fallback) and invalid payload fallback safety. [e45730a]
 - [ ] Task: Verify curriculum/home DB-fallback behavior against versioned lesson data and lock expected rendering contracts.
 
 ## Phase 4: Progress And Assessment Integrity
