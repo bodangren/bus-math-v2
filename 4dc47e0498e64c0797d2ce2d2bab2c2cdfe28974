@@ -1,0 +1,14 @@
+Bug fix: lesson activity blocks now render through ActivityRenderer in student lesson UI.
+
+Root cause:
+- LessonRenderer rendered activity blocks as static text (Activity ID), so spreadsheet activities were not interactively visible even when phase content referenced activity sections.
+
+Fix:
+- Wire activity blocks to ActivityRenderer with lesson slug + phase number context.
+- Update LessonRenderer tests to assert ActivityRenderer mount path.
+- Track this bug in sprint4 plan handoff notes.
+
+Files:
+- components/student/LessonRenderer.tsx
+- __tests__/components/student/LessonRenderer.test.tsx
+- conductor/tracks/sprint4_competency_20251101/plan.md
