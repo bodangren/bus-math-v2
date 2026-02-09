@@ -1,0 +1,12 @@
+Bug fix: ensure-demo provisioning hardened to prevent empty-content demo lessons.
+
+Changes:
+- Normalizes demo lesson to a single active lesson_version (deletes stale versions).
+- Uses high version number for deterministic latest-version selection.
+- Resolves persisted phase IDs from DB before upserting phase_sections, preventing phase-ID drift.
+- Keeps required spreadsheet-evaluator activity wired into phase sections.
+
+Files:
+- app/api/users/ensure-demo/route.ts
+- __tests__/app/api/users/ensure-demo/route.test.ts
+- conductor/tracks/sprint4_competency_20251101/plan.md
