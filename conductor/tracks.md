@@ -6,9 +6,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [ ] **Track: Sprint 4: Competency Engine & Lesson Gating**
+- [~] **Track: Sprint 4: Competency Engine & Lesson Gating**
   *Link: [./conductor/tracks/sprint4_competency_20251101/](./conductor/tracks/sprint4_competency_20251101/)*
   *Depends on: Sprint 3 core platform completion*
+  *Current status (2026-02-09): In progress on branch `sprint4_competency_20260209`.*
 
 - [ ] **Track: Sprint 5: Teacher Command Center**
   *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
