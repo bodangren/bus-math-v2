@@ -1,0 +1,20 @@
+Phase 5 checkpoint verification report
+
+Scope:
+- Lesson progress/completion compatibility fixes for slug vs UUID lesson identifiers
+- Proxy allowlist update for /api/users/ensure-demo
+- Hook resilience improvements for stale queue entries and slug fallback
+
+Automated verification executed:
+1) CI=true npm test -- __tests__/app/api/lessons/[lessonId]/progress/route.test.ts __tests__/app/api/phases/complete/route.test.ts __tests__/hooks/usePhaseCompletion.test.ts __tests__/proxy.test.ts __tests__/components/student/LessonRenderer.test.tsx
+   Result: PASS (67 tests, 5 files)
+2) npm run lint
+   Result: PASS
+3) npx supabase migration list --local
+   Result: Local/remote migration versions aligned (no pending drift)
+
+Manual verification reference:
+- Prior session user confirmation recorded in plan handoff notes: "OK, works" on 2026-02-09 after student flow retest.
+
+Outcome:
+- Phase 5 release gate satisfied with updated test evidence and migration parity confirmation.
