@@ -1,28 +1,19 @@
 /**
  * Competency Standards Seeding Script
  *
- * Seeds accounting competency standards from JSON files.
- * Uses upsert (INSERT ON CONFLICT) for idempotency.
- *
- * Prerequisites:
- * - competency_standards table must exist (from migration 0002)
- * - DIRECT_URL must be set in .env.local
- *
- * Usage:
- *   npx tsx supabase/seed/02-competency-standards.ts
+ * Seeds Unit 1 accounting standards from JSON files using idempotent upserts.
  */
 
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
 import { config } from 'dotenv';
+import { sql, type SQL } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { sql } from 'drizzle-orm';
+import postgres from 'postgres';
 
-// Load environment variables
 config({ path: '.env.local' });
 
-interface StandardSeedData {
+export interface StandardSeedData {
   code: string;
   description: string;
   studentFriendlyDescription: string;
@@ -30,113 +21,199 @@ interface StandardSeedData {
   isActive: boolean;
 }
 
-async function seedCompetencyStandards() {
-  console.log('<1 Starting competency standards seed...');
+interface SeedLogger {
+  log: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+}
 
-  // Validate environment
-  const directUrl = process.env.DIRECT_URL;
+interface SeedOptions {
+  directUrl?: string;
+  standardsPath?: string;
+  logger?: SeedLogger;
+}
+
+interface DatabaseClient {
+  execute: <T = Record<string, unknown>>(query: SQL) => Promise<T[]>;
+}
+
+const CODE_PATTERN = /^[A-Z]{3}-\d+\.\d+$/;
+
+export const COMPETENCY_STANDARD_UPSERT_SQL = `
+INSERT INTO competency_standards (
+  code,
+  description,
+  student_friendly_description,
+  category,
+  is_active,
+  created_at
+)
+VALUES ($1, $2, $3, $4, $5, NOW())
+ON CONFLICT (code)
+DO UPDATE SET
+  description = EXCLUDED.description,
+  student_friendly_description = EXCLUDED.student_friendly_description,
+  category = EXCLUDED.category,
+  is_active = EXCLUDED.is_active
+RETURNING (xmax = 0) AS inserted
+`;
+
+export function getUnitOneStandardsPath(cwd: string = process.cwd()): string {
+  return join(cwd, 'supabase/seed/standards/unit-1-accounting.json');
+}
+
+export function loadStandardsFromFile(filePath: string): StandardSeedData[] {
+  const parsed = JSON.parse(readFileSync(filePath, 'utf-8')) as unknown;
+
+  if (!Array.isArray(parsed)) {
+    throw new Error(`Expected standards array in ${filePath}`);
+  }
+
+  return parsed as StandardSeedData[];
+}
+
+export function validateStandardSeedData(standards: StandardSeedData[]): void {
+  if (standards.length === 0) {
+    throw new Error('Standards list cannot be empty');
+  }
+
+  const seenCodes = new Set<string>();
+
+  for (const standard of standards) {
+    if (!standard.code || !standard.description || !standard.category) {
+      throw new Error(`Invalid standard data: ${JSON.stringify(standard)}`);
+    }
+
+    if (!CODE_PATTERN.test(standard.code)) {
+      throw new Error(`Invalid code format: ${standard.code} (expected format: XXX-N.N)`);
+    }
+
+    if (seenCodes.has(standard.code)) {
+      throw new Error(`Duplicate standard code detected: ${standard.code}`);
+    }
+
+    seenCodes.add(standard.code);
+  }
+}
+
+async function upsertStandards(
+  db: DatabaseClient,
+  standards: StandardSeedData[],
+): Promise<{ inserted: number; updated: number }> {
+  let inserted = 0;
+  let updated = 0;
+
+  for (const standard of standards) {
+    const result = await db.execute<{ inserted: boolean }>(sql`
+      INSERT INTO competency_standards (
+        code,
+        description,
+        student_friendly_description,
+        category,
+        is_active,
+        created_at
+      )
+      VALUES (
+        ${standard.code},
+        ${standard.description},
+        ${standard.studentFriendlyDescription},
+        ${standard.category},
+        ${standard.isActive},
+        NOW()
+      )
+      ON CONFLICT (code)
+      DO UPDATE SET
+        description = EXCLUDED.description,
+        student_friendly_description = EXCLUDED.student_friendly_description,
+        category = EXCLUDED.category,
+        is_active = EXCLUDED.is_active
+      RETURNING (xmax = 0) AS inserted
+    `);
+
+    if (result[0]?.inserted) {
+      inserted++;
+    } else {
+      updated++;
+    }
+  }
+
+  return { inserted, updated };
+}
+
+async function verifyTotals(db: DatabaseClient): Promise<{ total: number; byCategory: Array<{ category: string; count: number }> }> {
+  const byCategoryRows = await db.execute<{ category: string; count: string | number }>(sql`
+    SELECT category, COUNT(*) as count
+    FROM competency_standards
+    WHERE code LIKE 'ACC-1.%'
+    GROUP BY category
+    ORDER BY category
+  `);
+
+  const totalRows = await db.execute<{ total: string | number }>(sql`
+    SELECT COUNT(*) as total
+    FROM competency_standards
+    WHERE code LIKE 'ACC-1.%'
+  `);
+
+  return {
+    total: Number(totalRows[0]?.total ?? 0),
+    byCategory: byCategoryRows.map((row) => ({
+      category: row.category,
+      count: Number(row.count),
+    })),
+  };
+}
+
+export async function seedCompetencyStandards(options: SeedOptions = {}): Promise<void> {
+  const logger = options.logger ?? console;
+  const directUrl = options.directUrl ?? process.env.DIRECT_URL;
+  const standardsPath = options.standardsPath ?? getUnitOneStandardsPath();
+
+  logger.log('Starting competency standards seed...');
+
   if (!directUrl) {
     throw new Error('DIRECT_URL not found in environment');
   }
 
-  // Create Drizzle client
   const queryClient = postgres(directUrl);
   const db = drizzle(queryClient);
 
   try {
-    // Load Unit 1 standards
-    const unit1Path = join(process.cwd(), 'supabase/seed/standards/unit-1-accounting.json');
-    const unit1Data: StandardSeedData[] = JSON.parse(readFileSync(unit1Path, 'utf-8'));
+    const standards = loadStandardsFromFile(standardsPath);
+    validateStandardSeedData(standards);
 
-    console.log(`=� Loaded ${unit1Data.length} standards from unit-1-accounting.json`);
+    logger.log(`Loaded ${standards.length} standards from ${standardsPath}`);
 
-    // Validate data format
-    for (const standard of unit1Data) {
-      if (!standard.code || !standard.description) {
-        const errorMsg = 'Invalid standard data: ' + JSON.stringify(standard);
-        throw new Error(errorMsg);
-      }
-      if (!/^[A-Z]{3}-\d+\.\d+$/.test(standard.code)) {
-        throw new Error(`Invalid code format: ${standard.code} (expected format: XXX-N.N)`);
-      }
+    const { inserted, updated } = await upsertStandards(db, standards);
+    logger.log(`Seed complete: ${inserted} inserted, ${updated} updated`);
+
+    const verification = await verifyTotals(db);
+    logger.log('Verification by category:');
+    for (const row of verification.byCategory) {
+      logger.log(`  ${row.category}: ${row.count} standards`);
     }
+    logger.log(`  Total ACC-1.x standards: ${verification.total}`);
 
-    // Upsert standards (idempotent)
-    let insertCount = 0;
-    let updateCount = 0;
-
-    for (const standard of unit1Data) {
-      const result = await db.execute(sql`
-        INSERT INTO competency_standards (
-          code,
-          description,
-          student_friendly_description,
-          category,
-          is_active,
-          created_at
-        )
-        VALUES (
-          ${standard.code},
-          ${standard.description},
-          ${standard.studentFriendlyDescription},
-          ${standard.category},
-          ${standard.isActive},
-          NOW()
-        )
-        ON CONFLICT (code)
-        DO UPDATE SET
-          description = EXCLUDED.description,
-          student_friendly_description = EXCLUDED.student_friendly_description,
-          category = EXCLUDED.category,
-          is_active = EXCLUDED.is_active
-        RETURNING (xmax = 0) AS inserted
-      `);
-
-      if (result[0]?.inserted) {
-        insertCount++;
-      } else {
-        updateCount++;
-      }
+    if (verification.total !== standards.length) {
+      logger.warn(`Expected ${standards.length} standards, found ${verification.total}`);
     }
-
-    console.log(` Seed complete: ${insertCount} inserted, ${updateCount} updated`);
-
-    // Verification
-    const verification = await db.execute(sql`
-      SELECT category, COUNT(*) as count
-      FROM competency_standards
-      WHERE code LIKE 'ACC-1.%'
-      GROUP BY category
-      ORDER BY category
-    `);
-
-    console.log('\n=� Verification:');
-    for (const row of verification) {
-      console.log(`  ${row.category}: ${row.count} standards`);
-    }
-
-    const total = await db.execute(sql`
-      SELECT COUNT(*) as total FROM competency_standards WHERE code LIKE 'ACC-1.%'
-    `);
-    console.log(`  Total ACC-1.x standards: ${total[0].total}`);
-
-    if (Number(total[0].total) !== unit1Data.length) {
-      console.warn(`�  Warning: Expected ${unit1Data.length} standards, found ${total[0].total}`);
-    }
-
   } catch (error) {
-    console.error('L Seed failed:', error);
+    logger.error('Seed failed:', error);
     throw error;
   } finally {
     await queryClient.end();
   }
 }
 
-// Run if called directly
-if (require.main === module) {
+const isDirectExecution =
+  typeof require !== 'undefined' &&
+  typeof module !== 'undefined' &&
+  require.main === module;
+
+if (isDirectExecution) {
   seedCompetencyStandards()
     .then(() => {
-      console.log('( Done!');
+      console.log('Done.');
       process.exit(0);
     })
     .catch((error) => {
@@ -144,5 +221,3 @@ if (require.main === module) {
       process.exit(1);
     });
 }
-
-export { seedCompetencyStandards };
