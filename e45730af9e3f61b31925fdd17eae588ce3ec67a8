@@ -1,0 +1,9 @@
+Task set: Sprint 3 Phase 3 lesson delivery coverage.
+
+Changes:
+- Added loading skeleton test for app/student/lesson/[lessonSlug]/loading.tsx.
+- Extended lesson page tests to validate section->content block mapping contracts for activity sections and unsupported-section markdown fallback.
+- Exposed first mapped content block through the mocked LessonRenderer to assert runtime-mapped payloads.
+
+Why:
+- Increase confidence in server-rendered lesson behavior and mapping safety without changing production runtime logic.
