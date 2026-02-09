@@ -1,0 +1,23 @@
+Task: Add seed coverage for Unit 1 accounting standards and verify idempotency
+
+Summary:
+- Refactored competency standards seed script for testability and stricter validation.
+- Added exported helpers for standards file loading and validation.
+- Added duplicate-code validation guard to prevent ambiguous seed input.
+- Added explicit idempotency contract constant for competency upsert SQL (ON CONFLICT by code).
+- Added unit tests for:
+  - full ACC-1.1..ACC-1.7 standards coverage
+  - duplicate-code rejection
+  - upsert idempotency contract
+
+Files:
+- supabase/seed/02-competency-standards.ts
+- __tests__/seed/competency-standards-seed.test.ts
+
+Verification:
+- CI=true npm test -- __tests__/seed/competency-standards-seed.test.ts
+- npx tsx supabase/seed/02-competency-standards.ts (run #1: 7 inserted, 0 updated)
+- npx tsx supabase/seed/02-competency-standards.ts (run #2: 0 inserted, 7 updated)
+- CI=true node scripts/check-migration-parity.mjs
+- CI=true npm test -- __tests__/config/competency-rls-scope.test.ts __tests__/seed/competency-standards-seed.test.ts __tests__/config/check-migration-parity-script.test.ts __tests__/config/drizzle-supabase-schema-parity.test.ts
+- npm run lint
