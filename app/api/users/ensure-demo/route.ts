@@ -32,9 +32,13 @@ const DEMO_PHASE_IDS = [
   '10000000-0000-0000-0000-000000000206',
 ] as const;
 
-export async function POST() {
+export async function POST(request?: Request) {
   try {
+    const requestUrl = request ? new URL(request.url) : null;
+    const shouldResetFull = requestUrl?.searchParams.get('reset') === 'full';
+
     const adminClient = createAdminClient();
+    const demoUserIds = new Map<string, string>();
 
     const { error: organizationError } = await adminClient.from('organizations').upsert(
       {
@@ -108,6 +112,10 @@ export async function POST() {
       );
       if (profileError) {
         throw profileError;
+      }
+
+      if (userId) {
+        demoUserIds.set(demoUser.username, userId);
       }
     }
 
@@ -365,7 +373,32 @@ export async function POST() {
       throw sectionError;
     }
 
-    return NextResponse.json({ ok: true });
+    if (shouldResetFull) {
+      const demoStudentId = demoUserIds.get('demo_student');
+      if (!demoStudentId) {
+        throw new Error('Unable to resolve demo_student ID for reset');
+      }
+
+      const resetTargets: Array<{ table: string; column: string }> = [
+        { table: 'student_progress', column: 'user_id' },
+        { table: 'activity_submissions', column: 'user_id' },
+        { table: 'activity_completions', column: 'student_id' },
+        { table: 'student_spreadsheet_responses', column: 'student_id' },
+        { table: 'student_competency', column: 'student_id' },
+      ];
+
+      for (const target of resetTargets) {
+        const { error: resetError } = await adminClient
+          .from(target.table)
+          .delete()
+          .eq(target.column, demoStudentId);
+        if (resetError) {
+          throw resetError;
+        }
+      }
+    }
+
+    return NextResponse.json({ ok: true, resetApplied: shouldResetFull });
   } catch (error) {
     console.error('Failed to ensure demo users', error);
     return NextResponse.json({ error: 'Failed to ensure demo users' }, { status: 500 });

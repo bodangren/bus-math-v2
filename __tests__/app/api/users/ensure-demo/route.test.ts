@@ -8,6 +8,7 @@ const mockFrom = vi.fn();
 const mockUpsert = vi.fn();
 const mockDelete = vi.fn();
 const mockIn = vi.fn();
+const mockDeleteEq = vi.fn();
 let staleVersionRows: Array<{ id: string }> = [];
 
 vi.mock('@/lib/supabase/admin', () => ({
@@ -55,21 +56,28 @@ describe('POST /api/users/ensure-demo', () => {
                 error: null,
               }),
           }),
+          delete: mockDelete,
         };
       }
 
-      return { upsert: mockUpsert };
+      return { upsert: mockUpsert, delete: mockDelete };
     });
 
     mockUpsert.mockResolvedValue({ error: null });
-    mockDelete.mockReturnValue({ in: mockIn });
+    mockDelete.mockReturnValue({ in: mockIn, eq: mockDeleteEq });
     mockIn.mockResolvedValue({ error: null });
+    mockDeleteEq.mockResolvedValue({ error: null });
     mockListUsers.mockResolvedValue({ data: { users: [] }, error: null });
     mockUpdateUserById.mockResolvedValue({ error: null });
-    mockCreateUser.mockResolvedValue({
-      data: { user: { id: 'new-demo-user-id' } },
-      error: null,
-    });
+    mockCreateUser
+      .mockResolvedValueOnce({
+        data: { user: { id: 'new-demo-teacher-id' } },
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: { user: { id: 'new-demo-student-id' } },
+        error: null,
+      });
 
     mockCreateAdminClient.mockReturnValue({
       auth: {
@@ -181,5 +189,18 @@ describe('POST /api/users/ensure-demo', () => {
     expect(json.ok).toBe(true);
     expect(mockDelete).toHaveBeenCalled();
     expect(mockIn).toHaveBeenCalledWith('id', ['stale-version-1', 'stale-version-2']);
+  });
+
+  it('fully resets demo student progress when reset=full is requested', async () => {
+    const response = await POST(
+      new Request('http://localhost/api/users/ensure-demo?reset=full', { method: 'POST' }),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json.ok).toBe(true);
+    expect(json.resetApplied).toBe(true);
+    expect(mockDeleteEq).toHaveBeenCalledWith('user_id', 'new-demo-student-id');
+    expect(mockDeleteEq).toHaveBeenCalledWith('student_id', 'new-demo-student-id');
   });
 });
