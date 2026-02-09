@@ -73,6 +73,31 @@ describe("TeacherDashboardContent", () => {
       screen.getByText(/no students are associated with your organization yet/i),
     ).toBeInTheDocument();
   });
+
+  it("renders details links for each student row", () => {
+    render(
+      <TeacherDashboardContent
+        teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
+        students={sampleStudents}
+      />,
+    );
+
+    const firstStudentLink = screen.getByRole("link", {
+      name: "View demo_student details",
+    });
+    expect(firstStudentLink).toHaveAttribute(
+      "href",
+      "/teacher/students/student-1",
+    );
+
+    const secondStudentLink = screen.getByRole("link", {
+      name: "View quiet_student details",
+    });
+    expect(secondStudentLink).toHaveAttribute(
+      "href",
+      "/teacher/students/student-2",
+    );
+  });
 });
 
 describe("formatLastActive", () => {
