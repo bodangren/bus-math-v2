@@ -1,8 +1,8 @@
 {
   "track_id": "sprint4_competency_20251101",
   "type": "feature",
-  "status": "completed",
+  "status": "planned",
   "created_at": "2025-11-25T00:00:00Z",
-  "updated_at": "2025-12-01T00:00:00Z",
-  "description": "Sprint 4: Competency Engine & Seamless UX"
+  "updated_at": "2026-02-09T00:00:00Z",
+  "description": "Sprint 4: Competency Engine & Lesson Gating"
 }

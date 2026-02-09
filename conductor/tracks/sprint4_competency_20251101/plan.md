@@ -1,36 +1,24 @@
-# Tasks: Sprint 4 - Competency Engine & Seamless UX
+# Plan: Sprint 4 - Competency Engine & Lesson Gating (Rebaseline 2026-02-09)
 
-## Phase 1: Schema & Backend
-- [ ] Task: Create `competency_standards` and `student_competency` tables.
-- [ ] Task: Add relations/FKs to `activities` and `lessons`.
-- [ ] Task: Update `seed.ts` to include basic Accounting standards for Unit 1.
-- [ ] Task: Create RLS policies for new tables (Students read own, Teachers read class).
+## Dependency Gate
+- [ ] Task: Confirm Sprint 3 is complete and competency prerequisite schema/routes are stable.
 
-## Phase 2: Components
-- [ ] Task: Implement `SpreadsheetEvaluator` component.
-    - [ ] Task: Integrate with `react-spreadsheet`.
-    - [ ] Task: Implement validation logic (value and formula checking).
-    - [ ] Task: Add feedback UI (toast or modal).
-- [ ] Task: Update `ActivityRenderer` to handle `onActivityComplete` events.
+## Phase 1: Competency Schema And RLS
+- [ ] Task: Validate `competency_standards` and `student_competency` schema parity against Supabase migrations.
+- [ ] Task: Tighten RLS policies for student self-read and teacher/admin scoped read access.
+- [ ] Task: Add seed coverage for Unit 1 accounting standards and verify idempotency.
 
-## Phase 3: UX & Logic
-- [ ] Task: Create `LessonStepper` component (visual progress indicator).
-- [ ] Task: Refactor `LessonLayout` to support "Locked" navigation state.
-- [ ] Task: Implement "Auto-Capture" hook:
-    - [ ] Task: `usePhaseCompletion` hook to handle API calls on unmount/navigation.
-    - [ ] Task: Connect "Next" button to completion logic for "Read" phases.
-    - [ ] Task: Connect Activity success events to completion logic for "Do" phases.
+## Phase 2: Activity Evaluation Path
+- [ ] Task: Finalize `SpreadsheetEvaluator` validation and submission handling with security-focused tests.
+- [ ] Task: Ensure activity completion events propagate through `ActivityRenderer` with canonical completion API.
+- [ ] Task: Add read-only replay support needed for teacher evidence review.
 
-## Phase 4: Content Authoring
-- [ ] Task: Author **Unit 1, Lesson 1 (v2)** in the database.
-    - [ ] Task: Define Phases 1-6.
-    - [ ] Task: Create `SpreadsheetEvaluator` activity for the practice phase.
-    - [ ] Task: Link to `ACC-1.x` standards.
-- [ ] Task: Verify end-to-end flow: Start Lesson -> Auto-complete Read phases -> Solve Spreadsheet -> Unlock Next -> Competency Recorded.
+## Phase 3: Lesson Navigation And Auto-Capture
+- [ ] Task: Stabilize `LessonStepper` + locked navigation logic under server-authorized access rules.
+- [ ] Task: Harden auto-capture flows for read/activity phases, including offline/retry edge cases.
+- [ ] Task: Remove any duplicate completion triggers and preserve idempotent behavior.
 
-**Acceptance Criteria**
-- Schema successfully migrated.
-- Unit 1 Lesson 1 playable without errors.
-- "Next" button unlocks only after spreadsheet task is solved.
-- `student_competency` table populates correctly upon success.
-- No "Mark Complete" button visible in UI.
+## Phase 4: Unit 1 Delivery Verification
+- [ ] Task: Re-verify Unit 1 Lesson 1 v2 authored content (all six phases + competency links).
+- [ ] Task: Execute end-to-end flow validation for unlock logic and competency recording.
+- [ ] Task: Conductor - User Manual Verification 'Sprint 4 Competency Release' (Protocol in workflow.md).

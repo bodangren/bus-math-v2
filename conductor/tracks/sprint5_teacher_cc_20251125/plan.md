@@ -1,30 +1,25 @@
-# Tasks: Sprint 5 - Teacher Command Center
+# Plan: Sprint 5 - Teacher Command Center (Rebaseline 2026-02-09)
 
-## Phase 1: Bulk Onboarding
-- [~] Task: Create `bulk-create-students` Edge Function (transactional).
-- [ ] Task: Implement `BulkImportDialog` component (Parse/Review/Submit steps).
-- [ ] Task: Implement `CredentialsSheet` component (Print-friendly CSS).
-- [ ] Task: Integration Test: Import 30 names, verify all created.
+## Dependency Gate
+- [ ] Task: Confirm Sprint 3 and Sprint 4 completion checkpoints before teacher workflow expansion.
 
-## Phase 2: Gradebook Grid
-- [ ] Task: Create `GradebookGrid` component using `tanstack-table` or similar.
-- [ ] Task: Implement data fetching (Students + Progress + Standards).
-- [ ] Task: Build `StatusCell` component (visual logic for Green/Yellow/Red).
-- [ ] Task: Optimize performance (virtualization if class > 50 students, though likely fine for now).
+## Phase 1: Bulk Onboarding Pipeline
+- [ ] Task: Finalize transactional `bulk-create-students` edge function with strict role checks and audit-safe responses.
+- [ ] Task: Implement `BulkImportDialog` parse/review/submit flow with robust validation errors.
+- [ ] Task: Implement print-friendly `CredentialsSheet` and verify output for Letter + A4.
+- [ ] Task: Integration test for class-size import scenarios (25-30 students).
 
-## Phase 3: Detail Views
-- [ ] Task: Create `SubmissionDetailModal`.
-- [ ] Task: Update `ActivityRenderer` to support `mode="readonly"` and `initialData={studentData}`.
-    - [ ] Task: Ensure Spreadsheet component can render read-only state.
+## Phase 2: Gradebook And Status Grid
+- [ ] Task: Implement `GradebookGrid` with scalable row rendering and stable sorting/filtering.
+- [ ] Task: Wire student progress + competency data fetch path with org scoping.
+- [ ] Task: Implement status visualization contract (green/yellow/red) with deterministic rules.
 
-## Phase 4: Management Actions
-- [ ] Task: Implement `ResetPasswordDialog`.
-- [ ] Task: Wire up "Reset Password" API (Server Action or Edge Function).
-- [ ] Task: Add "Edit Student" form.
+## Phase 3: Evidence And Intervention Views
+- [ ] Task: Implement `SubmissionDetailModal` and readonly activity playback path.
+- [ ] Task: Support spreadsheet/read-only rendering for teacher review workflows.
+- [ ] Task: Add regression tests for teacher viewing student submissions without mutation capability.
 
-**Acceptance Criteria**
-- Bulk import works for 25+ names.
-- Credentials sheet prints cleanly on A4/Letter paper.
-- Gradebook accurately reflects database state.
-- Clicking a cell shows the correct student's work.
-- Password reset works and allows student login.
+## Phase 4: Account Management Actions
+- [ ] Task: Implement secure reset-password workflow (API/edge + UI) with role gating.
+- [ ] Task: Implement edit-student workflow with validation and audit-friendly change handling.
+- [ ] Task: Conductor - User Manual Verification 'Sprint 5 Teacher Command Center' (Protocol in workflow.md).
