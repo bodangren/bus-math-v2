@@ -6,11 +6,6 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [x] **Track: Sprint 3: Core Platform Completion (Rebaseline)**
-  *Link: [./conductor/tracks/sprint3_core_platform_20251111/](./conductor/tracks/sprint3_core_platform_20251111/)*
-  *Depends on: none (current foundation track)*
-  *Current status (2026-02-09): Completed with Phase 5 checkpoint `5722e1e`; pending merge-to-main and archive move per Conductor workflow.*
-
 - [ ] **Track: Sprint 4: Competency Engine & Lesson Gating**
   *Link: [./conductor/tracks/sprint4_competency_20251101/](./conductor/tracks/sprint4_competency_20251101/)*
   *Depends on: Sprint 3 core platform completion*
@@ -22,6 +17,10 @@ This file is the source of truth for active execution order and archived track h
 ---
 
 ## Archive Ledger
+
+- [x] **Track: Sprint 3: Core Platform Completion (Rebaseline)**
+  *Link: [./conductor/archive/sprint3_core_platform_20251111/](./conductor/archive/sprint3_core_platform_20251111/)*
+  *Checkpoint: `5722e1e` (2026-02-09 closeout)*
 
 - [x] **Track: Sprint 1: Database Foundation**
   *Link: [./conductor/archive/sprint1_database_20251105/](./conductor/archive/sprint1_database_20251105/)*
