@@ -36,3 +36,33 @@
   - Fixed `/api/phases/complete` duplicate-click behavior to return idempotent success (instead of `409`) when a phase is already completed.
   - Fixed student lesson rendering path to mount real `ActivityRenderer` for activity blocks (instead of static Activity ID text), enabling visible interactive spreadsheet activities in lesson phases.
   - Added explicit demo full-reset mode: `POST /api/users/ensure-demo?reset=full` now clears `demo_student` progress/submissions/completions/spreadsheet responses/competency evidence before reseeding lesson content.
+
+### Commit Ledger (latest-first)
+- `b855365` feat(demo): add full reset mode for demo student state
+- `4dc47e0` fix(student): render interactive activity blocks in lesson phases
+- `fcb7305` fix(demo): normalize ensured lesson version and phase sections
+- `f5bf8cd` fix(api): return idempotent success for already-completed phases
+- `1a74dd9` fix(demo): provision spreadsheet activity in ensure-demo lesson
+- `224dada` conductor(plan): mark task 'read-only replay support' complete
+- `27bb1b3` feat(api): add read-only spreadsheet replay for teacher evidence
+- `4a712fe` conductor(plan): mark task 'ActivityRenderer completion propagation' complete
+- `42e6ac3` fix(lesson): propagate submit completion events through ActivityRenderer
+- `e699556` conductor(plan): mark task 'SpreadsheetEvaluator validation hardening' complete
+- `8a4fd4a` fix(api): harden spreadsheet submit against client target tampering
+
+### Open Blocker (must resolve before Phase 3)
+- User runtime still reports:
+  - `curl -X POST "http://localhost:3000/api/users/ensure-demo?reset=full"` -> `{"error":"Failed to ensure demo users"}`
+- This is not reproducible in unit tests; endpoint returns generic `500` wrapper, so next session must inspect live server logs to locate failing sub-operation.
+
+### Next Session Start Sequence (do these first)
+1. Start dev server and capture logs: `npm run dev`
+2. Re-run reset in another shell: `curl -i -X POST "http://localhost:3000/api/users/ensure-demo?reset=full"`
+3. Read server console stack trace and patch failing table/op in `app/api/users/ensure-demo/route.ts`.
+4. Re-run:
+   - `CI=true npm test -- __tests__/app/api/users/ensure-demo/route.test.ts __tests__/components/login-form.test.tsx __tests__/components/student/LessonRenderer.test.tsx __tests__/app/student/lesson/[lessonSlug]/page.test.tsx`
+   - `npm run lint`
+5. Validate manually as `demo_student`:
+   - `/student/lesson/demo-introduction-to-business-math?phase=3` renders spreadsheet evaluator
+   - phase completion does not throw `Phase already completed` error
+6. Only after blocker is green, begin Phase 3 Task 1.

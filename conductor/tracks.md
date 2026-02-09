@@ -9,7 +9,7 @@ This file is the source of truth for active execution order and archived track h
 - [~] **Track: Sprint 4: Competency Engine & Lesson Gating**
   *Link: [./conductor/tracks/sprint4_competency_20251101/](./conductor/tracks/sprint4_competency_20251101/)*
   *Depends on: Sprint 3 core platform completion*
-  *Current status (2026-02-09): In progress on branch `sprint4_competency_20260209`; Phase 1 complete, Phase 2 Task 1 paused mid-implementation with local WIP in spreadsheet submit route + new route tests (see sprint4 plan handoff notes).*
+  *Current status (2026-02-09): In progress on branch `sprint4_competency_20260209`; Phase 1 and Phase 2 are complete. Post-Phase-2 hardening landed for demo lesson provisioning, lesson activity rendering, and phase completion idempotency. Active blocker before Phase 3 start: runtime `POST /api/users/ensure-demo?reset=full` currently returns `500` in user environment and needs server-log diagnosis (see sprint4 plan handoff notes).*
 
 - [ ] **Track: Sprint 5: Teacher Command Center**
   *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
