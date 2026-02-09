@@ -1,0 +1,24 @@
+Task: Tighten competency RLS policies for student self-read + teacher/admin scoped read
+
+Summary:
+- Added migration 20260209104500_tighten_competency_rls_scope.sql.
+- Hardened user_can_view_student helper to:
+  - require authenticated user
+  - require target profile role = student
+  - enforce same-organization scope for teacher/admin
+  - require active teacher enrollment linkage for teacher access
+- Replaced student_competency SELECT policies with explicit role-gated policies:
+  - student self-read requires role='student'
+  - teacher/admin scoped read requires role in ('teacher','admin') plus helper check
+
+Files:
+- supabase/migrations/20260209104500_tighten_competency_rls_scope.sql
+- __tests__/config/competency-rls-scope.test.ts
+
+Verification:
+- CI=true npm test -- __tests__/config/competency-rls-scope.test.ts
+- CI=true node scripts/check-migration-parity.mjs
+- CI=true npm test -- __tests__/config/check-migration-parity-script.test.ts __tests__/config/drizzle-supabase-schema-parity.test.ts __tests__/config/competency-rls-scope.test.ts
+- npx supabase migration up --local
+- npx supabase migration list --local
+- npm run lint
