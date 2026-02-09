@@ -1,0 +1,9 @@
+Task set: Sprint 3 Phase 2 access-alignment updates.
+
+Changes:
+- Updated proxy allowlist to treat /api/test-db and /api/test-supabase as public debug routes.
+- Added proxy tests proving unauthenticated access for these guarded debug routes.
+- Retained deny-by-default behavior tests for private API routes.
+
+Why:
+- Align runtime behavior with docs/security-api-route-matrix.md policy: debug routes are public only when route-level env + optional x-test-api-key guards pass.
