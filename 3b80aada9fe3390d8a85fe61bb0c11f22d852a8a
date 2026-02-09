@@ -1,0 +1,10 @@
+Phase 5 task slice: resolve teacher dead link and add navigation tests.
+
+Changes:
+- Added baseline teacher student detail route at /teacher/students/[studentId] with teacher/admin auth checks, org-scoped student lookup, and progress summary UI.
+- Added route tests for unauthenticated redirect, org-scoped rendering, and notFound behavior for out-of-org students.
+- Added dashboard component coverage that validates per-student View details link targets.
+
+Why:
+- Teacher dashboard linked to a non-existent route, causing a dead-end UX.
+- Coverage now protects details navigation contracts and org-scope guardrails.
