@@ -1,0 +1,9 @@
+Bug fix discovered during Phase 2 verification:
+- Root cause: /api/users/ensure-demo provisioned only a 3-phase text-only lesson, so demo_student could not reach a spreadsheet evaluator activity.
+- Fix: expanded ensure-demo lesson to six phases, added deterministic spreadsheet-evaluator activity seed, and wired an activity section with required=true in guided practice.
+- Added/updated tests to enforce six phases plus activity provisioning contract.
+
+Files:
+- app/api/users/ensure-demo/route.ts
+- __tests__/app/api/users/ensure-demo/route.test.ts
+- conductor/tracks/sprint4_competency_20251101/plan.md
