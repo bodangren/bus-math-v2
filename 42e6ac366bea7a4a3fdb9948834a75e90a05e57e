@@ -1,0 +1,13 @@
+Task: Phase 2 Task 2 - propagate activity completion events through canonical phase API
+
+Summary:
+- Updated ActivityRenderer to treat onSubmit payloads as completion signals when components report completion metadata.
+- Preserved assessment grading flow and now gates completion on successful assessment submission for auto-graded activities.
+- Added regression tests for submit-driven completion (complete payload triggers phase completion; incomplete payload does not).
+
+Files modified:
+- components/lesson/ActivityRenderer.tsx
+- __tests__/components/lesson/ActivityRenderer.test.tsx
+
+Why:
+- Several activities emit completion via onSubmit rather than onComplete; this ensures their completion events still reach /api/phases/complete through usePhaseCompletion.
