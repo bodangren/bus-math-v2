@@ -17,9 +17,15 @@ const targetCellSchema = z.object({
   expectedFormula: z.string().optional(),
 });
 
+const spreadsheetEvaluatorPropsSchema = z.object({
+  templateId: z.string(),
+  instructions: z.string(),
+  targetCells: z.array(targetCellSchema).min(1),
+  initialData: z.array(z.array(z.any())).optional(),
+});
+
 const requestSchema = z.object({
   spreadsheetData: z.array(z.array(z.any())),
-  targetCells: z.array(targetCellSchema).min(1),
 });
 
 type RequestPayload = z.infer<typeof requestSchema>;
@@ -87,10 +93,46 @@ export async function POST(
       );
     }
 
-    // Validate answers using centralized validation utility
+    const activityRows = await db
+      .select({
+        componentKey: activities.componentKey,
+        props: activities.props,
+        standardId: activities.standardId,
+      })
+      .from(activities)
+      .where(eq(activities.id, activityId))
+      .limit(1);
+
+    if (activityRows.length === 0) {
+      return NextResponse.json(
+        { error: 'Activity not found' },
+        { status: 404 }
+      );
+    }
+
+    const activity = activityRows[0];
+    if (activity.componentKey !== 'spreadsheet-evaluator') {
+      return NextResponse.json(
+        { error: 'Activity configuration is not a spreadsheet evaluator' },
+        { status: 422 }
+      );
+    }
+
+    const parsedEvaluatorProps = spreadsheetEvaluatorPropsSchema.safeParse(activity.props);
+    if (!parsedEvaluatorProps.success) {
+      return NextResponse.json(
+        {
+          error: 'Activity configuration is invalid',
+          details: parsedEvaluatorProps.error.flatten().fieldErrors,
+        },
+        { status: 422 }
+      );
+    }
+
+    // SECURITY: Always use server-side target cells, never trust client-provided targets.
     const validationResult = validateSubmission(
       payload.spreadsheetData,
-      payload.targetCells as TargetCell[]
+      parsedEvaluatorProps.data.targetCells as TargetCell[]
     );
 
     // Database transaction: Upsert response and update competency if complete
@@ -138,15 +180,8 @@ export async function POST(
 
       // Update competency if activity is complete
       if (validationResult.isComplete) {
-        // Get activity to find standardId
-        const activity = await tx
-          .select()
-          .from(activities)
-          .where(eq(activities.id, activityId))
-          .limit(1);
-
-        if (activity.length > 0 && activity[0].standardId) {
-          const standardId = activity[0].standardId;
+        if (activity.standardId) {
+          const standardId = activity.standardId;
 
           // Check if competency record exists
           const existingCompetency = await tx
