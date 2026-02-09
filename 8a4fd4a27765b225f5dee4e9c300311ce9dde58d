@@ -1,0 +1,13 @@
+Task: Phase 2 Task 1 - finalize spreadsheet submit validation hardening
+
+Summary:
+- Removed client-provided targetCells from submit payload contract.
+- Added server-side activity config fetch + validator for spreadsheet-evaluator props.
+- Validates against DB-backed targetCells only; returns 404 for missing activity and 422 for invalid evaluator config/component mismatch.
+- Reused fetched standardId for competency update path to avoid duplicate activity lookup.
+
+Files modified:
+- app/api/activities/spreadsheet/[activityId]/submit/route.ts
+
+Why:
+- Prevent answer-key tampering by requiring canonical server configuration during submission evaluation.
