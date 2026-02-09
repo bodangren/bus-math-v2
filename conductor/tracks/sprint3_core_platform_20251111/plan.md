@@ -1,9 +1,9 @@
 # Plan: Sprint 3 - Core Platform Completion (Rebaseline 2026-02-09)
 
 ## Phase 1: Baseline Audit And Scope Lock
-- [x] Task: Audit current implementation against Sprint 3 spec and lock the remaining scope.
-- [x] Task: Create `conductor/tracks/sprint3_core_platform_20251111/gap-audit.md` with pass/fail matrix for auth, middleware, lesson rendering, progress APIs, and teacher baseline.
-- [x] Task: Convert confirmed gaps into ordered implementation tasks and remove stale items from this plan.
+- [x] Task: Audit current implementation against Sprint 3 spec and lock the remaining scope. [1d7c129]
+- [x] Task: Create `conductor/tracks/sprint3_core_platform_20251111/gap-audit.md` with pass/fail matrix for auth, middleware, lesson rendering, progress APIs, and teacher baseline. [1d7c129]
+- [x] Task: Convert confirmed gaps into ordered implementation tasks and remove stale items from this plan. [1d7c129]
 
 ## Phase 2: Auth, Access, And Seed Reliability
 - [ ] Task: Align proxy/API behavior with `docs/security-api-route-matrix.md`, including public debug endpoints (`/api/test-db`, `/api/test-supabase`) guarded by env + optional `x-test-api-key`.
