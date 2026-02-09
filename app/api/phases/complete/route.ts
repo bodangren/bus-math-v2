@@ -297,13 +297,21 @@ export async function POST(request: Request) {
     }
 
     if (existingProgress && existingProgress.idempotency_key && existingProgress.idempotency_key !== idempotencyKey) {
-      // Phase already completed with different idempotency key - reject
+      // Phase already completed with a different idempotency key.
+      // Return a success payload so repeated UI clicks/reloads remain safe.
       return NextResponse.json(
         {
-          error: 'Phase already completed',
-          details: 'This phase has already been completed. Use the original idempotency key to replay.',
+          success: true,
+          nextPhaseUnlocked: await checkNextPhaseExists(
+            supabase,
+            phaseContext.lessonVersionId,
+            phaseNumber,
+          ),
+          message: `Phase ${phaseNumber} was already completed.`,
+          phaseId,
+          completedAt: existingProgress.completed_at,
         },
-        { status: 409 }
+        { status: 200 }
       );
     }
 

@@ -421,7 +421,7 @@ describe('POST /api/phases/complete', () => {
     expect(body.phaseId).toBe('pv-2');
   });
 
-  it('rejects completion when phase was already completed with a different idempotency key', async () => {
+  it('returns success when phase was already completed with a different idempotency key', async () => {
     mockFrom.mockImplementation((table: string) => {
       if (table === 'lesson_versions') {
         return {
@@ -487,8 +487,10 @@ describe('POST /api/phases/complete', () => {
     });
 
     const response = await POST(buildRequest(validPayload));
-    expect(response.status).toBe(409);
+    expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.error).toBe('Phase already completed');
+    expect(body.success).toBe(true);
+    expect(body.message).toContain('already completed');
+    expect(body.phaseId).toBe('pv-2');
   });
 });
