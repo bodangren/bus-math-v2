@@ -7,6 +7,7 @@ import { LessonStepper, type StepperPhase } from '@/components/lesson/LessonStep
 import { usePhaseProgress } from '@/hooks/usePhaseProgress';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ActivityRenderer } from '@/components/lesson/ActivityRenderer';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
 interface Phase {
@@ -187,15 +188,12 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
                     </div>
                   )}
                   {block.type === 'activity' && (
-                    <div className="border rounded p-4 bg-primary/10">
-                      <div className="font-semibold mb-2">Activity</div>
-                      <div className="text-sm text-muted-foreground">
-                        Activity ID: {block.activityId}
-                        {block.required && (
-                          <span className="ml-2 text-primary">(Required)</span>
-                        )}
-                      </div>
-                    </div>
+                    <ActivityRenderer
+                      activityId={block.activityId}
+                      lessonId={lesson.slug}
+                      phaseNumber={currentPhase.phaseNumber}
+                      required={block.required}
+                    />
                   )}
                 </div>
               ))}

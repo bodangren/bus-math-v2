@@ -22,6 +22,21 @@ vi.mock('@/components/lesson/PhaseCompleteButton', () => ({
   PhaseCompleteButton: () => <button type="button">Mock Complete Phase</button>,
 }));
 
+vi.mock('@/components/lesson/ActivityRenderer', () => ({
+  ActivityRenderer: ({
+    activityId,
+    required,
+  }: {
+    activityId: string;
+    required?: boolean;
+  }) => (
+    <div data-testid="activity-renderer">
+      Activity renderer for {activityId}
+      {required ? ' (required)' : ''}
+    </div>
+  ),
+}));
+
 describe('LessonRenderer', () => {
   const mockLesson = {
     id: '123',
@@ -239,9 +254,9 @@ describe('LessonRenderer', () => {
 
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.getByText('Activity')).toBeInTheDocument();
-    expect(screen.getByText(/activity-123/i)).toBeInTheDocument();
-    expect(screen.getByText('(Required)')).toBeInTheDocument();
+    expect(screen.getByTestId('activity-renderer')).toHaveTextContent(
+      /activity renderer for activity-123 \(required\)/i,
+    );
   });
 
   it('renders lesson without description', () => {
