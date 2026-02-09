@@ -1,0 +1,19 @@
+Task: Sprint 4 dependency gate + schema parity validation
+
+Summary of changes:
+- Fixed migration parity extraction to correctly parse quoted CREATE TABLE statements.
+- Added migration lifecycle handling for ALTER TABLE ... RENAME TO and DROP TABLE so deprecated tables do not create false parity failures.
+- Added regression coverage proving quoted DDL and dropped legacy tables are treated as parity-safe.
+
+Files changed:
+- scripts/check-migration-parity.mjs
+- __tests__/config/check-migration-parity-script.test.ts
+
+Verification:
+- CI=true npm test -- __tests__/config/check-migration-parity-script.test.ts
+- CI=true node scripts/check-migration-parity.mjs
+- CI=true npm test -- __tests__/app/api/phases/complete/route.test.ts __tests__/app/api/lessons/[lessonId]/progress/route.test.ts __tests__/proxy.test.ts __tests__/config/check-migration-parity-script.test.ts __tests__/config/drizzle-supabase-schema-parity.test.ts
+- npx supabase migration list --local
+
+Why:
+- Sprint 4 could not advance while dependency checks reported false schema drift. This restores trustworthy parity validation for competency/versioned tables.
