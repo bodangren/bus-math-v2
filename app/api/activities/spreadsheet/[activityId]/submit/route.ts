@@ -29,6 +29,138 @@ const requestSchema = z.object({
 });
 
 type RequestPayload = z.infer<typeof requestSchema>;
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ activityId: string }> }
+) {
+  try {
+    const { activityId } = await params;
+    if (!uuidRegex.test(activityId)) {
+      return NextResponse.json(
+        { error: 'Invalid activity ID format' },
+        { status: 400 }
+      );
+    }
+
+    const requestedStudentId = new URL(request.url).searchParams.get('studentId');
+    if (requestedStudentId && !uuidRegex.test(requestedStudentId)) {
+      return NextResponse.json(
+        { error: 'Invalid student ID format' },
+        { status: 400 }
+      );
+    }
+
+    const supabase = await createClient();
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !authData?.user) {
+      return NextResponse.json(
+        { error: authError?.message ?? 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const requesterId = authData.user.id;
+    const {
+      data: requesterProfile,
+      error: requesterProfileError,
+    } = await supabase
+      .from('profiles')
+      .select('id, role, organization_id')
+      .eq('id', requesterId)
+      .maybeSingle();
+
+    if (requesterProfileError || !requesterProfile?.role) {
+      return NextResponse.json(
+        { error: 'Forbidden' },
+        { status: 403 }
+      );
+    }
+
+    let targetStudentId = requesterId;
+    if (requestedStudentId && requestedStudentId !== requesterId) {
+      if (requesterProfile.role !== 'teacher' && requesterProfile.role !== 'admin') {
+        return NextResponse.json(
+          { error: 'Forbidden' },
+          { status: 403 }
+        );
+      }
+
+      const {
+        data: targetProfile,
+        error: targetProfileError,
+      } = await supabase
+        .from('profiles')
+        .select('id, role, organization_id')
+        .eq('id', requestedStudentId)
+        .maybeSingle();
+
+      if (
+        targetProfileError ||
+        !targetProfile ||
+        targetProfile.role !== 'student' ||
+        targetProfile.organization_id !== requesterProfile.organization_id
+      ) {
+        return NextResponse.json(
+          { error: 'Forbidden' },
+          { status: 403 }
+        );
+      }
+
+      targetStudentId = requestedStudentId;
+    }
+
+    const responseRows = await db
+      .select({
+        studentId: studentSpreadsheetResponses.studentId,
+        spreadsheetData: studentSpreadsheetResponses.spreadsheetData,
+        draftData: studentSpreadsheetResponses.draftData,
+        isCompleted: studentSpreadsheetResponses.isCompleted,
+        attempts: studentSpreadsheetResponses.attempts,
+        lastValidationResult: studentSpreadsheetResponses.lastValidationResult,
+        submittedAt: studentSpreadsheetResponses.submittedAt,
+        updatedAt: studentSpreadsheetResponses.updatedAt,
+      })
+      .from(studentSpreadsheetResponses)
+      .where(
+        and(
+          eq(studentSpreadsheetResponses.studentId, targetStudentId),
+          eq(studentSpreadsheetResponses.activityId, activityId)
+        )
+      )
+      .limit(1);
+
+    if (responseRows.length === 0) {
+      return NextResponse.json(
+        { error: 'Spreadsheet response not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      readOnly: true,
+      activityId,
+      studentId: responseRows[0].studentId,
+      spreadsheetData: responseRows[0].spreadsheetData,
+      draftData: responseRows[0].draftData,
+      isCompleted: responseRows[0].isCompleted,
+      attempts: responseRows[0].attempts,
+      lastValidationResult: responseRows[0].lastValidationResult,
+      submittedAt: responseRows[0].submittedAt,
+      updatedAt: responseRows[0].updatedAt,
+    });
+  } catch (error) {
+    console.error('Spreadsheet replay retrieval error:', error);
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : 'Failed to load spreadsheet replay',
+      },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(
   request: Request,
@@ -39,7 +171,6 @@ export async function POST(
     const { activityId } = await params;
 
     // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(activityId)) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
