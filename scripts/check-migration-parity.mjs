@@ -86,14 +86,40 @@ function extractSupabaseTables(migrations) {
   const tables = new Set();
 
   for (const { contents } of migrations) {
-    const pattern = /^\s*create\s+table\s+(?:if\s+(?:not\s+)?exists\s+)?(?:public\.)?("?)([a-z_][a-z0-9_]*)\1\b/gim;
-    let match = pattern.exec(contents);
-    while (match) {
-      const tableName = match[2];
+    const createPattern =
+      /^\s*create\s+table\s+(?:if\s+(?:not\s+)?exists\s+)?(?:public\.)?(?:"?([a-z_][a-z0-9_]*)"?)\s*(?:\(|as\b)/gim;
+    const renamePattern =
+      /^\s*alter\s+table\s+(?:if\s+exists\s+)?(?:public\.)?(?:"?([a-z_][a-z0-9_]*)"?)\s+rename\s+to\s+(?:"?([a-z_][a-z0-9_]*)"?)\b/gim;
+    const dropPattern =
+      /^\s*drop\s+table\s+(?:if\s+exists\s+)?(?:public\.)?(?:"?([a-z_][a-z0-9_]*)"?)\b/gim;
+
+    let createMatch = createPattern.exec(contents);
+    while (createMatch) {
+      const tableName = createMatch[1];
       if (!/^(if|for)$/i.test(tableName)) {
         tables.add(tableName);
       }
-      match = pattern.exec(contents);
+      createMatch = createPattern.exec(contents);
+    }
+
+    let renameMatch = renamePattern.exec(contents);
+    while (renameMatch) {
+      const oldName = renameMatch[1];
+      const newName = renameMatch[2];
+
+      if (tables.has(oldName)) {
+        tables.delete(oldName);
+        tables.add(newName);
+      }
+
+      renameMatch = renamePattern.exec(contents);
+    }
+
+    let dropMatch = dropPattern.exec(contents);
+    while (dropMatch) {
+      const tableName = dropMatch[1];
+      tables.delete(tableName);
+      dropMatch = dropPattern.exec(contents);
     }
   }
 
