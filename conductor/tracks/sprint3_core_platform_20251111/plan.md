@@ -21,8 +21,8 @@
 - [x] Task: Expand integration coverage for idempotency conflicts, private-route access control, and server-scored assessment response contracts. [37c26f4]
 
 ## Phase 5: Teacher Baseline And Release Gate
-- [ ] Task: Resolve teacher dashboard dead link (`/teacher/students/[studentId]`) by implementing a baseline student detail route or replacing with explicit non-breaking fallback UX.
-- [ ] Task: Add tests for teacher org-scoped roster rendering and details-navigation behavior.
+- [x] Task: Resolve teacher dashboard dead link (`/teacher/students/[studentId]`) by implementing a baseline student detail route or replacing with explicit non-breaking fallback UX. [3b80aad]
+- [x] Task: Add tests for teacher org-scoped roster rendering and details-navigation behavior. [3b80aad]
 - [ ] Task: Run Sprint 3 quality gates (`npm run lint`, targeted Vitest suites, critical E2E smoke checks).
 - [ ] Task: Conductor - User Manual Verification 'Sprint 3 Rebaseline Completion' (Protocol in workflow.md).
 
@@ -37,6 +37,9 @@
   - server-scoring response contract enforcement (client score metadata ignored)
 - Last verification command:
   - `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx __tests__/api/activities-complete.test.ts __tests__/app/api/phases/complete/route.test.ts __tests__/app/api/progress/assessment/route.test.ts`
+- Additional verification command:
+  - `npm run lint && CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx __tests__/api/activities-complete.test.ts __tests__/app/api/phases/complete/route.test.ts __tests__/app/api/progress/assessment/route.test.ts __tests__/app/teacher/students/[studentId]/page.test.tsx __tests__/components/teacher/TeacherDashboardContent.test.tsx __tests__/app/teacher/page.test.tsx`
 - Next session recommended sequence:
-  1. Start Phase 5 by implementing/fixing `/teacher/students/[studentId]` route behavior and adding teacher roster navigation tests.
-  2. Run full Sprint 3 quality gates (`npm run lint` + broader test suites) before Sprint 3 completion protocol.
+  1. Record Phase 5 task commits and replace `[local-uncommitted]` markers.
+  2. Run/record Sprint 3 quality gates (`npm run lint`, targeted Vitest suites, critical E2E smoke checks).
+  3. Execute Sprint 3 manual verification protocol and checkpoint completion.
