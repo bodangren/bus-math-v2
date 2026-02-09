@@ -1,0 +1,8 @@
+Task: Sprint 3 Phase 3 curriculum/home fallback verification.
+
+Changes:
+- Added __tests__/app/page.test.tsx to cover home-page stats behavior for both RPC-success and fallback-count paths.
+- Expanded __tests__/app/curriculum/page.test.tsx to validate preference for latest versioned lesson fields and graceful fallback to lesson shell data when version queries fail.
+
+Why:
+- Lock rendering contracts around versioned-data selection and fallback behavior to prevent regressions during schema/cache transition states.
