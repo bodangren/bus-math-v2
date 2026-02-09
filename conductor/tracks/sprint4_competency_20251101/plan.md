@@ -9,7 +9,7 @@
 - [x] Task: Add seed coverage for Unit 1 accounting standards and verify idempotency. [c89c3f8]
 
 ## Phase 2: Activity Evaluation Path
-- [~] Task: Finalize `SpreadsheetEvaluator` validation and submission handling with security-focused tests.
+- [x] Task: Finalize `SpreadsheetEvaluator` validation and submission handling with security-focused tests. [8a4fd4a]
 - [ ] Task: Ensure activity completion events propagate through `ActivityRenderer` with canonical completion API.
 - [ ] Task: Add read-only replay support needed for teacher evidence review.
 
