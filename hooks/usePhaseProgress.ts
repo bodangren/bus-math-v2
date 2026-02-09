@@ -22,6 +22,36 @@ const STALE_TIME = 60 * 1000; // 60 seconds
 // Simple in-memory cache
 const cache = new Map<string, { data: ProgressData; timestamp: number }>();
 
+function getLessonSlugFromPathname(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  const match = window.location.pathname.match(/^\/student\/lesson\/([^/]+)\/?$/);
+  if (!match?.[1]) return null;
+
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
+type ProgressFetchResult = {
+  ok: boolean;
+  status: number;
+  payload: ProgressData | Record<string, unknown>;
+};
+
+async function fetchProgressByIdentifier(lessonIdentifier: string): Promise<ProgressFetchResult> {
+  const response = await fetch(`/api/lessons/${encodeURIComponent(lessonIdentifier)}/progress`);
+  const payload = await response.json().catch(() => ({}));
+
+  return {
+    ok: response.ok,
+    status: response.status,
+    payload: payload as ProgressData | Record<string, unknown>,
+  };
+}
+
 export function usePhaseProgress(lessonId: string | undefined): UsePhaseProgressResult {
   const [data, setData] = useState<ProgressData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,14 +77,37 @@ export function usePhaseProgress(lessonId: string | undefined): UsePhaseProgress
         return;
       }
 
-      const response = await fetch(`/api/lessons/${lessonId}/progress`);
+      let fetchResult = await fetchProgressByIdentifier(lessonId);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      const errorPayload =
+        (fetchResult.payload && typeof fetchResult.payload === 'object'
+          ? (fetchResult.payload as Record<string, unknown>)
+          : {}) ?? {};
+
+      // Backward-compatible retry: recover when a non-canonical lesson identifier is passed.
+      if (
+        !fetchResult.ok &&
+        fetchResult.status === 404 &&
+        errorPayload.error === 'Lesson not found'
+      ) {
+        const lessonSlug = getLessonSlugFromPathname();
+        if (lessonSlug && lessonSlug !== lessonId) {
+          fetchResult = await fetchProgressByIdentifier(lessonSlug);
+        }
       }
 
-      const progressData: ProgressData = await response.json();
+      if (!fetchResult.ok) {
+        const failedPayload =
+          (fetchResult.payload && typeof fetchResult.payload === 'object'
+            ? (fetchResult.payload as Record<string, unknown>)
+            : {}) ?? {};
+        throw new Error(
+          (typeof failedPayload.error === 'string' && failedPayload.error) ||
+            `HTTP error! status: ${fetchResult.status}`,
+        );
+      }
+
+      const progressData: ProgressData = fetchResult.payload as ProgressData;
 
       // Update cache
       cache.set(lessonId, { data: progressData, timestamp: Date.now() });

@@ -52,6 +52,27 @@ function generateIdempotencyKey(): string {
   return crypto.randomUUID();
 }
 
+function getLessonSlugFromPathname(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  const match = window.location.pathname.match(/^\/student\/lesson\/([^/]+)\/?$/);
+  if (!match?.[1]) return null;
+
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
+function isLessonNotFoundError(error: unknown): error is PhaseCompletionError {
+  return (
+    error instanceof PhaseCompletionError &&
+    error.status === 404 &&
+    /lesson not found/i.test(error.message)
+  );
+}
+
 /**
  * Get the current user ID from localStorage
  */
@@ -193,6 +214,19 @@ async function processQueuedCompletions(userId: string): Promise<void> {
       console.log(`Successfully processed queued completion ${completion.idempotencyKey}`);
       dequeueCompletion(completion.idempotencyKey);
     } catch (error) {
+      const isStaleLessonQueueEntry =
+        error instanceof PhaseCompletionError &&
+        error.status === 404 &&
+        /lesson not found/i.test(error.message);
+
+      if (isStaleLessonQueueEntry) {
+        console.warn(
+          `Dropping stale queued completion ${completion.idempotencyKey}: lesson no longer available`
+        );
+        dequeueCompletion(completion.idempotencyKey);
+        continue;
+      }
+
       console.error(`Failed to process queued completion ${completion.idempotencyKey}:`, error);
 
       // Only retry transient errors
@@ -339,7 +373,27 @@ export function usePhaseCompletion({
       };
 
       try {
-        const response = await completePhaseRequest(payload);
+        let effectivePayload = payload;
+        let response: CompletePhaseResponse;
+
+        try {
+          response = await completePhaseRequest(effectivePayload);
+        } catch (requestError) {
+          if (isLessonNotFoundError(requestError)) {
+            const lessonSlug = getLessonSlugFromPathname();
+            if (lessonSlug && lessonSlug !== effectivePayload.lessonId) {
+              effectivePayload = {
+                ...effectivePayload,
+                lessonId: lessonSlug,
+              };
+              response = await completePhaseRequest(effectivePayload);
+            } else {
+              throw requestError;
+            }
+          } else {
+            throw requestError;
+          }
+        }
 
         // Success - clear the in-memory idempotency key so next completion gets new key
         idempotencyKeyRef.current = null;
@@ -351,6 +405,12 @@ export function usePhaseCompletion({
       } catch (requestError) {
         console.error('Failed to complete phase:', requestError);
 
+        const fallbackLessonSlug = getLessonSlugFromPathname();
+        const queuedLessonId =
+          isLessonNotFoundError(requestError) && fallbackLessonSlug
+            ? fallbackLessonSlug
+            : lessonId;
+
         // Only queue transient errors for retry
         if (
           (requestError instanceof PhaseCompletionError && requestError.transient) ||
@@ -360,7 +420,7 @@ export function usePhaseCompletion({
 
           const queuedCompletion: QueuedCompletion = {
             userId,
-            lessonId,
+            lessonId: queuedLessonId,
             phaseNumber,
             timeSpent,
             idempotencyKey,

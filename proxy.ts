@@ -53,6 +53,7 @@ export async function proxy(request: NextRequest) {
     '/auth',
   ];
   const publicApiRoutes = [
+    '/api/users/ensure-demo',
     '/api/test/seed-e2e',
     '/api/test/cleanup-e2e',
     '/api/test-db',

@@ -24,7 +24,7 @@
 - [x] Task: Resolve teacher dashboard dead link (`/teacher/students/[studentId]`) by implementing a baseline student detail route or replacing with explicit non-breaking fallback UX. [3b80aad]
 - [x] Task: Add tests for teacher org-scoped roster rendering and details-navigation behavior. [3b80aad]
 - [x] Task: Run Sprint 3 quality gates (`npm run lint`, targeted Vitest suites, critical E2E smoke checks). [local-verified]
-- [ ] Task: Conductor - User Manual Verification 'Sprint 3 Rebaseline Completion' (Protocol in workflow.md).
+- [x] Task: Conductor - User Manual Verification 'Sprint 3 Rebaseline Completion' (Protocol in workflow.md). [local-verified-2026-02-09]
 
 ## Session Handoff Notes (2026-02-09)
 
@@ -40,9 +40,16 @@
   - `npm run lint`
   - `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx __tests__/api/activities-complete.test.ts __tests__/app/api/phases/complete/route.test.ts __tests__/app/api/progress/assessment/route.test.ts __tests__/app/teacher/students/[studentId]/page.test.tsx __tests__/components/teacher/TeacherDashboardContent.test.tsx __tests__/app/teacher/page.test.tsx`
   - `CI=true npx playwright test tests/e2e/public-access.spec.ts tests/e2e/protected-routes.spec.ts` (8 passed after Supabase restart)
+- Additional verification/fixes captured after manual QA feedback:
+  - Manual student flow confirmed working after fixes (`OK, works` from user on 2026-02-09)
+  - `CI=true npm test -- __tests__/app/api/lessons/[lessonId]/progress/route.test.ts __tests__/app/api/phases/complete/route.test.ts`
+  - `CI=true npm test -- __tests__/components/student/LessonRenderer.test.tsx __tests__/hooks/usePhaseCompletion.test.ts __tests__/app/api/lessons/[lessonId]/progress/route.test.ts __tests__/app/api/phases/complete/route.test.ts`
+  - Applied pending local Supabase migrations to resolve schema drift:
+    - `npx supabase migration up --local`
+    - Fixed mismatch where `student_progress.phase_id` still referenced legacy `phases(id)` instead of `phase_versions(id)`
 - Environment note:
   - Playwright smoke checks require local Supabase running; if DB is down, `/curriculum` and `/preface` smoke tests fail with `ECONNREFUSED 127.0.0.1:54322`.
 - Next session start sequence:
   1. Ensure local services are up: `npx supabase start`, then `npm run dev` if manual checks are needed.
-  2. Execute final Sprint 3 manual verification protocol (teacher + student flows).
-  3. If verified, mark manual verification task complete, create Phase 5/Sprint 3 checkpoint commit, and update `conductor/tracks.md` for track completion/archive workflow.
+  2. Run `npx supabase migration list --local` and confirm no pending rows remain (migration drift was a blocking cause for phase completion saves).
+  3. Create the pending Phase 5/Sprint 3 checkpoint commit + git note, then update `conductor/tracks.md` for track closeout/archive workflow.

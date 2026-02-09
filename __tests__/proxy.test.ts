@@ -144,6 +144,15 @@ describe('proxy', () => {
       expect(response.status).toBe(200);
     });
 
+    it('allows access to /api/users/ensure-demo without authentication', async () => {
+      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+
+      const request = createRequest('/api/users/ensure-demo');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
     it('allows access to /api/test-db without authentication', async () => {
       mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
 
