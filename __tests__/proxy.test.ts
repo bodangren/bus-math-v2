@@ -143,6 +143,24 @@ describe('proxy', () => {
 
       expect(response.status).toBe(200);
     });
+
+    it('allows access to /api/test-db without authentication', async () => {
+      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+
+      const request = createRequest('/api/test-db');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('allows access to /api/test-supabase without authentication', async () => {
+      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+
+      const request = createRequest('/api/test-supabase');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
   });
 
   describe('Unauthenticated access to protected routes', () => {
