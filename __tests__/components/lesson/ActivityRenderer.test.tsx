@@ -365,4 +365,96 @@ describe('ActivityRenderer', () => {
       }),
     );
   });
+
+  it('triggers phase completion when onSubmit payload marks the activity complete', async () => {
+    const SubmitCompletionComponent = ({
+      onSubmit,
+    }: {
+      onSubmit?: (payload: Record<string, unknown>) => void;
+    }) => (
+      <button
+        onClick={() =>
+          onSubmit?.({
+            activityId: 'test-activity-id',
+            isComplete: true,
+            completedAt: new Date(),
+          })
+        }
+      >
+        Submit complete payload
+      </button>
+    );
+
+    mockGetActivityComponent.mockImplementation((componentKey: string) => {
+      if (componentKey === 'spreadsheet-evaluator') {
+        return SubmitCompletionComponent;
+      }
+      return null;
+    });
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () =>
+        buildActivity({
+          componentKey: 'spreadsheet-evaluator',
+        }),
+    });
+
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /submit complete payload/i })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /submit complete payload/i }));
+
+    await waitFor(() => {
+      expect(mockCompletePhase).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('does not trigger phase completion when onSubmit payload is incomplete', async () => {
+    const SubmitIncompleteComponent = ({
+      onSubmit,
+    }: {
+      onSubmit?: (payload: Record<string, unknown>) => void;
+    }) => (
+      <button
+        onClick={() =>
+          onSubmit?.({
+            activityId: 'test-activity-id',
+            isComplete: false,
+            completedAt: new Date(),
+          })
+        }
+      >
+        Submit incomplete payload
+      </button>
+    );
+
+    mockGetActivityComponent.mockImplementation((componentKey: string) => {
+      if (componentKey === 'spreadsheet-evaluator') {
+        return SubmitIncompleteComponent;
+      }
+      return null;
+    });
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () =>
+        buildActivity({
+          componentKey: 'spreadsheet-evaluator',
+        }),
+    });
+
+    render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /submit incomplete payload/i })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /submit incomplete payload/i }));
+
+    await waitFor(() => {
+      expect(mockCompletePhase).not.toHaveBeenCalled();
+    });
+  });
 });

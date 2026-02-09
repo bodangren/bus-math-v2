@@ -20,6 +20,11 @@ interface ActivityRendererProps {
 
 interface ActivitySubmissionPayload {
   activityId?: string;
+  isComplete?: boolean;
+  completedAt?: Date | string;
+  score?: number;
+  totalQuestions?: number;
+  attempts?: number;
   answers?: Record<string, unknown>;
   responses?: Record<string, unknown>;
   interactionHistory?: unknown[];
@@ -97,9 +102,9 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
   }, [activityId]);
 
   const handleAssessmentSubmit = useCallback(
-    async (payload: ActivitySubmissionPayload) => {
+    async (payload: ActivitySubmissionPayload): Promise<boolean> => {
       if (!activity || !activity.gradingConfig?.autoGrade) {
-        return;
+        return false;
       }
 
       const answers = payload.answers ?? payload.responses;
@@ -111,7 +116,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
       ) {
         setSubmissionError('Please complete the assessment before submitting.');
         setSubmissionResult(null);
-        return;
+        return false;
       }
 
       setSubmitting(true);
@@ -143,6 +148,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
           percentage: data.percentage,
           feedback: data.feedback,
         });
+        return true;
       } catch (submitError) {
         setSubmissionResult(null);
         setSubmissionError(
@@ -150,6 +156,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
             ? submitError.message
             : 'Unable to submit assessment',
         );
+        return false;
       } finally {
         setSubmitting(false);
       }
@@ -171,6 +178,32 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
       await completePhase();
     },
     [activity, completePhase],
+  );
+
+  const didPayloadCompleteActivity = useCallback((payload: ActivitySubmissionPayload): boolean => {
+    if (typeof payload.isComplete === 'boolean') {
+      return payload.isComplete;
+    }
+
+    return payload.completedAt instanceof Date || typeof payload.completedAt === 'string';
+  }, []);
+
+  const handleActivitySubmit = useCallback(
+    async (payload: ActivitySubmissionPayload) => {
+      if (activity?.gradingConfig?.autoGrade) {
+        const assessmentWasRecorded = await handleAssessmentSubmit(payload);
+        if (!assessmentWasRecorded) {
+          return;
+        }
+      }
+
+      if (!didPayloadCompleteActivity(payload)) {
+        return;
+      }
+
+      await handleActivityComplete();
+    },
+    [activity, didPayloadCompleteActivity, handleActivityComplete, handleAssessmentSubmit],
   );
 
   if (loading) {
@@ -225,7 +258,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
       <CardContent className="space-y-4">
         <ActivityComponent
           activity={activity}
-          onSubmit={activity.gradingConfig?.autoGrade ? handleAssessmentSubmit : undefined}
+          onSubmit={handleActivitySubmit}
           onComplete={handleActivityComplete}
         />
         {submitting && (
