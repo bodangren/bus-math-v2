@@ -6,7 +6,7 @@
 ## Phase 1: Competency Schema And RLS
 - [x] Task: Validate `competency_standards` and `student_competency` schema parity against Supabase migrations. [afdf6d3]
 - [x] Task: Tighten RLS policies for student self-read and teacher/admin scoped read access. [bb5744c]
-- [ ] Task: Add seed coverage for Unit 1 accounting standards and verify idempotency.
+- [x] Task: Add seed coverage for Unit 1 accounting standards and verify idempotency. [c89c3f8]
 
 ## Phase 2: Activity Evaluation Path
 - [ ] Task: Finalize `SpreadsheetEvaluator` validation and submission handling with security-focused tests.
