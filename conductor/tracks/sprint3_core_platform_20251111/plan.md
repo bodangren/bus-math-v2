@@ -13,7 +13,7 @@
 ## Phase 3: Data-Driven Lesson Delivery
 - [x] Task: Add coverage for server-rendered lesson behavior: `loading.tsx`, `notFound()`, zero-phase error UI, and RPC access-check failure UI. [e45730a]
 - [x] Task: Add contract tests for phase section -> content block mapping (`callout`, `activity`, `video`, `image`, markdown fallback) and invalid payload fallback safety. [e45730a]
-- [ ] Task: Verify curriculum/home DB-fallback behavior against versioned lesson data and lock expected rendering contracts.
+- [x] Task: Verify curriculum/home DB-fallback behavior against versioned lesson data and lock expected rendering contracts. [97251a5]
 
 ## Phase 4: Progress And Assessment Integrity
 - [ ] Task: Migrate `ActivityRenderer` completion path to canonical `/api/phases/complete` flow (via shared phase-completion client/hook) and preserve UX feedback.
