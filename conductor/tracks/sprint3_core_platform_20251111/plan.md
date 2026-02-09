@@ -1,26 +1,27 @@
 # Plan: Sprint 3 - Core Platform Completion (Rebaseline 2026-02-09)
 
 ## Phase 1: Baseline Audit And Scope Lock
-- [~] Task: Audit current implementation against Sprint 3 spec and lock the remaining scope.
-- [ ] Task: Create `conductor/tracks/sprint3_core_platform_20251111/gap-audit.md` with pass/fail matrix for auth, middleware, lesson rendering, progress APIs, and teacher baseline.
-- [ ] Task: Convert confirmed gaps into ordered implementation tasks and remove stale items from this plan.
+- [x] Task: Audit current implementation against Sprint 3 spec and lock the remaining scope.
+- [x] Task: Create `conductor/tracks/sprint3_core_platform_20251111/gap-audit.md` with pass/fail matrix for auth, middleware, lesson rendering, progress APIs, and teacher baseline.
+- [x] Task: Convert confirmed gaps into ordered implementation tasks and remove stale items from this plan.
 
 ## Phase 2: Auth, Access, And Seed Reliability
-- [ ] Task: Finalize Supabase client patterns (browser/server/admin) and auth provider wiring using test-first updates.
-- [ ] Task: Align route/API authorization behavior with `docs/security-api-route-matrix.md`.
-- [ ] Task: Ensure deterministic demo org/user seeding and document operational runbook.
+- [ ] Task: Align proxy/API behavior with `docs/security-api-route-matrix.md`, including public debug endpoints (`/api/test-db`, `/api/test-supabase`) guarded by env + optional `x-test-api-key`.
+- [ ] Task: Add/update proxy and API tests for debug endpoint allowlist behavior and deny-by-default enforcement on private `/api/**` routes.
+- [ ] Task: Reconcile demo provisioning runbook (`supabase/seed/README.md`) with required org-first seed ordering and login-time `ensure-demo` fallback behavior.
 
 ## Phase 3: Data-Driven Lesson Delivery
-- [ ] Task: Stabilize server-rendered lesson and curriculum page data fetch paths with strict 404/loading behavior.
-- [ ] Task: Complete phase content block rendering contract validation and error boundaries.
-- [ ] Task: Verify activity registry/data payload parity for migrated components used in Units 1-3 lessons.
+- [ ] Task: Add coverage for server-rendered lesson behavior: `loading.tsx`, `notFound()`, zero-phase error UI, and RPC access-check failure UI.
+- [ ] Task: Add contract tests for phase section -> content block mapping (`callout`, `activity`, `video`, `image`, markdown fallback) and invalid payload fallback safety.
+- [ ] Task: Verify curriculum/home DB-fallback behavior against versioned lesson data and lock expected rendering contracts.
 
 ## Phase 4: Progress And Assessment Integrity
-- [ ] Task: Standardize on canonical phase completion flow (`/api/phases/complete`) across all clients.
-- [ ] Task: Enforce server-side assessment scoring and secure submission persistence.
-- [ ] Task: Add integration coverage for completion idempotency, access control, and grading responses.
+- [ ] Task: Migrate `ActivityRenderer` completion path to canonical `/api/phases/complete` flow (via shared phase-completion client/hook) and preserve UX feedback.
+- [ ] Task: Define compatibility strategy for `/api/activities/complete` (shim or deprecation) and enforce with tests.
+- [ ] Task: Expand integration coverage for idempotency conflicts, private-route access control, and server-scored assessment response contracts.
 
 ## Phase 5: Teacher Baseline And Release Gate
-- [ ] Task: Deliver teacher dashboard baseline with organization-scoped progress accuracy.
+- [ ] Task: Resolve teacher dashboard dead link (`/teacher/students/[studentId]`) by implementing a baseline student detail route or replacing with explicit non-breaking fallback UX.
+- [ ] Task: Add tests for teacher org-scoped roster rendering and details-navigation behavior.
 - [ ] Task: Run Sprint 3 quality gates (`npm run lint`, targeted Vitest suites, critical E2E smoke checks).
 - [ ] Task: Conductor - User Manual Verification 'Sprint 3 Rebaseline Completion' (Protocol in workflow.md).
