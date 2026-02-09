@@ -31,7 +31,8 @@
 - Sprint 3 implementation status:
   - Phase 4 checkpoint commit: `37c26f4`
   - Phase 5 teacher detail route + roster link tests: `3b80aad`
-  - Phase 5 plan update commit: `2320a83`
+  - Phase 5 checkpoint commit: `5722e1e`
+  - Phase 5 plan update commit: `3676265`
 - Functional changes now in place:
   - `ActivityRenderer` uses canonical `usePhaseCompletion` (`phaseType: do`)
   - `/api/activities/complete` is a compatibility shim forwarding to `/api/phases/complete` with deprecation metadata
@@ -52,4 +53,4 @@
 - Next session start sequence:
   1. Ensure local services are up: `npx supabase start`, then `npm run dev` if manual checks are needed.
   2. Run `npx supabase migration list --local` and confirm no pending rows remain (migration drift was a blocking cause for phase completion saves).
-  3. Create the pending Phase 5/Sprint 3 checkpoint commit + git note, then update `conductor/tracks.md` for track closeout/archive workflow.
+  3. Complete Sprint 3 release workflow: merge to `main`, archive `conductor/tracks/sprint3_core_platform_20251111/` into `conductor/archive/`, and update `conductor/tracks.md`.
