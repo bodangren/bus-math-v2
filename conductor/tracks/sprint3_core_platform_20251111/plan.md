@@ -20,7 +20,7 @@
 - [x] Task: Define compatibility strategy for `/api/activities/complete` (shim or deprecation) and enforce with tests. [37c26f4]
 - [x] Task: Expand integration coverage for idempotency conflicts, private-route access control, and server-scored assessment response contracts. [37c26f4]
 
-## Phase 5: Teacher Baseline And Release Gate
+## Phase 5: Teacher Baseline And Release Gate [checkpoint: 5722e1e]
 - [x] Task: Resolve teacher dashboard dead link (`/teacher/students/[studentId]`) by implementing a baseline student detail route or replacing with explicit non-breaking fallback UX. [3b80aad]
 - [x] Task: Add tests for teacher org-scoped roster rendering and details-navigation behavior. [3b80aad]
 - [x] Task: Run Sprint 3 quality gates (`npm run lint`, targeted Vitest suites, critical E2E smoke checks). [local-verified]
