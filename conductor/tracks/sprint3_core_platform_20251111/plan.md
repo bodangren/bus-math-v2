@@ -16,7 +16,7 @@
 - [x] Task: Verify curriculum/home DB-fallback behavior against versioned lesson data and lock expected rendering contracts. [97251a5]
 
 ## Phase 4: Progress And Assessment Integrity
-- [ ] Task: Migrate `ActivityRenderer` completion path to canonical `/api/phases/complete` flow (via shared phase-completion client/hook) and preserve UX feedback.
+- [~] Task: Migrate `ActivityRenderer` completion path to canonical `/api/phases/complete` flow (via shared phase-completion client/hook) and preserve UX feedback.
 - [ ] Task: Define compatibility strategy for `/api/activities/complete` (shim or deprecation) and enforce with tests.
 - [ ] Task: Expand integration coverage for idempotency conflicts, private-route access control, and server-scored assessment response contracts.
 
@@ -25,3 +25,14 @@
 - [ ] Task: Add tests for teacher org-scoped roster rendering and details-navigation behavior.
 - [ ] Task: Run Sprint 3 quality gates (`npm run lint`, targeted Vitest suites, critical E2E smoke checks).
 - [ ] Task: Conductor - User Manual Verification 'Sprint 3 Rebaseline Completion' (Protocol in workflow.md).
+
+## Session Handoff Notes (2026-02-09)
+
+- Completed through Phase 3 and all Phase 2 tasks; latest completed plan commit: `b6d0fe5`.
+- Current WIP (not committed): `__tests__/components/lesson/ActivityRenderer.test.tsx` has red-phase additions to assert canonical phase-completion hook usage from `ActivityRenderer`.
+- Interrupted command during red phase:
+  - `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx`
+- Next session recommended sequence:
+  1. Re-run `CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx` to capture/confirm current failing assertions.
+  2. Refactor `components/lesson/ActivityRenderer.tsx` to use `usePhaseCompletion` (phase type `do`) for completion flow instead of direct `/api/activities/complete` calls.
+  3. Define and implement compatibility strategy for `/api/activities/complete` (shim/deprecation), then update tests and plan statuses.
