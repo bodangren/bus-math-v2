@@ -312,6 +312,43 @@ describe('usePhaseCompletion', () => {
         expect(callArgs[1].keepalive).toBe(true);
       });
     });
+
+    it('retries with lesson slug from URL when lesson ID returns 404', async () => {
+      window.history.pushState({}, '', '/student/lesson/demo-introduction-to-business-math');
+
+      (global.fetch as any)
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 404,
+          json: async () => ({ error: 'Lesson not found' }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ success: true, nextPhaseUnlocked: false }),
+        });
+
+      const { result } = renderHook(() => usePhaseCompletion(mockOptions));
+
+      await waitFor(
+        () => {
+          expect(result.current.error).toBeNull();
+        },
+        { timeout: 2000 }
+      );
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      await result.current.completePhase();
+
+      await waitFor(() => {
+        expect(global.fetch).toHaveBeenCalledTimes(2);
+      });
+
+      const retryCall = (global.fetch as any).mock.calls[1];
+      const retryBody = JSON.parse(retryCall[1].body);
+      expect(retryBody.lessonId).toBe('demo-introduction-to-business-math');
+      expect(result.current.error).toBeNull();
+    });
   });
 
   describe('offline queue processing', () => {
@@ -374,6 +411,35 @@ describe('usePhaseCompletion', () => {
       await waitFor(() => {
         const queue = JSON.parse(localStorageMock['completion-queue']);
         expect(queue[0].retryCount).toBe(1);
+      });
+    });
+
+    it('drops stale queued entries when lesson is no longer found', async () => {
+      const queuedCompletion = {
+        userId: mockUser.id,
+        lessonId: 'missing-lesson-slug',
+        phaseNumber: mockOptions.phaseNumber,
+        timeSpent: 100,
+        idempotencyKey: 'queued-missing-lesson-uuid',
+        completedAt: new Date().toISOString(),
+        retryCount: 0,
+      };
+
+      localStorageMock['completion-queue'] = JSON.stringify([queuedCompletion]);
+
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({ error: 'Lesson not found' }),
+      });
+
+      renderHook(() => usePhaseCompletion(mockOptions));
+
+      await waitFor(() => {
+        const queue = localStorageMock['completion-queue']
+          ? JSON.parse(localStorageMock['completion-queue'])
+          : [];
+        expect(queue).toHaveLength(0);
       });
     });
 

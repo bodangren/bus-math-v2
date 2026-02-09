@@ -107,6 +107,23 @@ describe('POST /api/progress/assessment', () => {
     expect(payload.error).toMatch(/unauthorized/i);
   });
 
+  it('returns 401 and does not query tables when auth provider returns an error', async () => {
+    mockGetUser.mockResolvedValue({
+      data: { user: null },
+      error: { message: 'JWT expired' },
+    });
+
+    const response = await POST(buildRequest({
+      activityId: baseActivity.id,
+      answers: { q1: 'Yes' },
+    }));
+
+    expect(response.status).toBe(401);
+    const payload = await response.json();
+    expect(payload.error).toBe('JWT expired');
+    expect(mockFrom).not.toHaveBeenCalled();
+  });
+
   it('validates the incoming payload', async () => {
     const response = await POST(buildRequest({ activityId: 'not-a-uuid', answers: {} }));
 
@@ -152,6 +169,37 @@ describe('POST /api/progress/assessment', () => {
         user_id: 'user-123',
         activity_id: baseActivity.id,
         score: 2,
+        max_score: 2,
+      }),
+    );
+  });
+
+  it('ignores client-provided score metadata and returns canonical score contract fields', async () => {
+    const response = await POST(buildRequest({
+      activityId: baseActivity.id,
+      answers: {
+        q1: 'No',
+        q2: 'wrong',
+      },
+      metadata: {
+        score: 999,
+        maxScore: 999,
+        percentage: 100,
+      },
+    }));
+
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+
+    expect(Object.keys(payload).sort()).toEqual(
+      ['score', 'maxScore', 'percentage', 'feedback'].sort(),
+    );
+    expect(payload.score).toBe(0);
+    expect(payload.maxScore).toBe(2);
+    expect(payload.percentage).toBe(0);
+    expect(mockInsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        score: 0,
         max_score: 2,
       }),
     );

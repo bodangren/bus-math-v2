@@ -1,58 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { POST } from '@/app/api/activities/complete/route';
 import { NextRequest } from 'next/server';
 
-// Mock Supabase
-const mockRpc = vi.fn();
-const mockGetUser = vi.fn();
+const mockCompletePhasePost = vi.fn();
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(async () => ({
-    auth: {
-      getUser: mockGetUser,
-    },
-    rpc: mockRpc,
-  })),
+vi.mock('@/app/api/phases/complete/route', () => ({
+  POST: (request: Request) => mockCompletePhasePost(request),
 }));
+
+const { POST } = await import('@/app/api/activities/complete/route');
+
+const VALID_ACTIVITY_ID = '123e4567-e89b-12d3-a456-426614174000';
+const VALID_LESSON_ID = '123e4567-e89b-12d3-a456-426614174001';
+const VALID_IDEMPOTENCY_KEY = '123e4567-e89b-12d3-a456-426614174002';
 
 describe('POST /api/activities/complete', () => {
   beforeEach(() => {
-    mockRpc.mockReset();
-    mockGetUser.mockReset();
+    mockCompletePhasePost.mockReset();
   });
 
-  it('should return 401 if user is not authenticated', async () => {
-    mockGetUser.mockResolvedValue({
-      data: { user: null },
-      error: new Error('Not authenticated'),
-    });
-
-    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        activityId: '123e4567-e89b-12d3-a456-426614174000',
-        lessonId: '123e4567-e89b-12d3-a456-426614174001',
-        phaseNumber: 1,
-        idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
-      }),
-    });
-
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(401);
-    expect(data.error).toBe('Unauthorized. Please sign in to complete activities.');
-  });
-
-  it('should return 400 if request data is invalid', async () => {
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'user-123' } },
-      error: null,
-    });
-
+  it('returns 400 for invalid request payloads and does not forward', async () => {
     const request = new NextRequest('http://localhost:3000/api/activities/complete', {
       method: 'POST',
       headers: {
@@ -60,9 +26,9 @@ describe('POST /api/activities/complete', () => {
       },
       body: JSON.stringify({
         activityId: 'invalid-uuid',
-        lessonId: '123e4567-e89b-12d3-a456-426614174001',
+        lessonId: VALID_LESSON_ID,
         phaseNumber: 1,
-        idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
+        idempotencyKey: VALID_IDEMPOTENCY_KEY,
       }),
     });
 
@@ -71,46 +37,37 @@ describe('POST /api/activities/complete', () => {
 
     expect(response.status).toBe(400);
     expect(data.error).toBe('Invalid request data');
-    expect(data.details).toBeDefined();
+    expect(data.deprecated).toBe(true);
+    expect(data.replacement).toBe('/api/phases/complete');
+    expect(mockCompletePhasePost).not.toHaveBeenCalled();
   });
 
-  it('should successfully complete an activity', async () => {
-    const mockUser = { id: 'user-123' };
-    const mockRpcResult = {
-      success: true,
-      nextPhaseUnlocked: true,
-      message: 'Activity completed successfully',
-      completionId: 'completion-123',
-      completedAt: '2025-11-26T10:00:00Z',
-      completedPhases: 1,
-      totalPhases: 6,
-    };
-
-    mockGetUser.mockResolvedValue({
-      data: { user: mockUser },
-      error: null,
-    });
-
-    mockRpc.mockResolvedValue({
-      data: mockRpcResult,
-      error: null,
-    });
-
-    const requestBody = {
-      activityId: '123e4567-e89b-12d3-a456-426614174000',
-      lessonId: '123e4567-e89b-12d3-a456-426614174001',
-      phaseNumber: 1,
-      linkedStandardId: '123e4567-e89b-12d3-a456-426614174003',
-      completionData: { score: 100 },
-      idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
-    };
+  it('forwards valid requests to /api/phases/complete and maps success response', async () => {
+    mockCompletePhasePost.mockResolvedValueOnce(
+      Response.json(
+        {
+          success: true,
+          nextPhaseUnlocked: true,
+          message: 'Phase completion recorded',
+          phaseId: 'phase-version-id',
+          completedAt: '2026-02-09T08:00:00.000Z',
+        },
+        { status: 200 },
+      ),
+    );
 
     const request = new NextRequest('http://localhost:3000/api/activities/complete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        activityId: VALID_ACTIVITY_ID,
+        lessonId: VALID_LESSON_ID,
+        phaseNumber: 2,
+        completionData: { timeSpent: 48, score: 100 },
+        idempotencyKey: VALID_IDEMPOTENCY_KEY,
+      }),
     });
 
     const response = await POST(request);
@@ -119,171 +76,124 @@ describe('POST /api/activities/complete', () => {
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
     expect(data.nextPhaseUnlocked).toBe(true);
-    expect(data.message).toBe('Activity completed successfully');
-    expect(data.completionId).toBe('completion-123');
+    expect(data.message).toBe('Phase completion recorded');
+    expect(data.completionId).toBe('phase-version-id');
+    expect(data.deprecated).toBe(true);
+    expect(data.replacement).toBe('/api/phases/complete');
+    expect(response.headers.get('deprecation')).toBe('true');
+    expect(response.headers.get('x-replacement-endpoint')).toBe('/api/phases/complete');
 
-    expect(mockRpc).toHaveBeenCalledWith('complete_activity_atomic', {
-      p_activity_id: requestBody.activityId,
-      p_lesson_id: requestBody.lessonId,
-      p_phase_number: requestBody.phaseNumber,
-      p_linked_standard_id: requestBody.linkedStandardId,
-      p_completion_data: requestBody.completionData,
-      p_idempotency_key: requestBody.idempotencyKey,
+    expect(mockCompletePhasePost).toHaveBeenCalledTimes(1);
+    const forwardedRequest = mockCompletePhasePost.mock.calls[0][0] as Request;
+    const forwardedPayload = await forwardedRequest.json();
+    expect(forwardedPayload).toEqual({
+      lessonId: VALID_LESSON_ID,
+      phaseNumber: 2,
+      timeSpent: 48,
+      idempotencyKey: VALID_IDEMPOTENCY_KEY,
     });
   });
 
-  it('should handle idempotent requests correctly', async () => {
-    const mockUser = { id: 'user-123' };
-    const mockRpcResult = {
-      success: true,
-      nextPhaseUnlocked: false,
-      message: 'Activity already completed (idempotent)',
-      completionId: 'completion-123',
-      completedAt: '2025-11-26T09:00:00Z',
-    };
-
-    mockGetUser.mockResolvedValue({
-      data: { user: mockUser },
-      error: null,
-    });
-
-    mockRpc.mockResolvedValue({
-      data: mockRpcResult,
-      error: null,
-    });
-
-    const requestBody = {
-      activityId: '123e4567-e89b-12d3-a456-426614174000',
-      lessonId: '123e4567-e89b-12d3-a456-426614174001',
-      phaseNumber: 1,
-      idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
-    };
-
-    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(data.success).toBe(true);
-    expect(data.message).toContain('idempotent');
-  });
-
-  it('should return 500 if RPC call fails', async () => {
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'user-123' } },
-      error: null,
-    });
-
-    mockRpc.mockResolvedValue({
-      data: null,
-      error: { message: 'Database connection failed' },
-    });
-
-    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        activityId: '123e4567-e89b-12d3-a456-426614174000',
-        lessonId: '123e4567-e89b-12d3-a456-426614174001',
-        phaseNumber: 1,
-        idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
-      }),
-    });
-
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(500);
-    expect(data.error).toBe('Failed to complete activity');
-  });
-
-  it('should handle RPC function errors gracefully', async () => {
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'user-123' } },
-      error: null,
-    });
-
-    mockRpc.mockResolvedValue({
-      data: {
-        success: false,
-        message: 'Invalid activity ID',
-        errorCode: '23503',
-      },
-      error: null,
-    });
-
-    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        activityId: '123e4567-e89b-12d3-a456-426614174000',
-        lessonId: '123e4567-e89b-12d3-a456-426614174001',
-        phaseNumber: 1,
-        idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
-      }),
-    });
-
-    const response = await POST(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(400);
-    expect(data.error).toBe('Activity completion failed');
-    expect(data.message).toBe('Invalid activity ID');
-  });
-
-  it('should handle null linkedStandardId correctly', async () => {
-    const mockUser = { id: 'user-123' };
-    mockGetUser.mockResolvedValue({
-      data: { user: mockUser },
-      error: null,
-    });
-
-    mockRpc.mockResolvedValue({
-      data: {
+  it('defaults forwarded timeSpent to 0 when completionData is missing or invalid', async () => {
+    mockCompletePhasePost.mockResolvedValueOnce(
+      Response.json({
         success: true,
         nextPhaseUnlocked: false,
-        message: 'Activity completed successfully',
-      },
-      error: null,
-    });
-
-    const requestBody = {
-      activityId: '123e4567-e89b-12d3-a456-426614174000',
-      lessonId: '123e4567-e89b-12d3-a456-426614174001',
-      phaseNumber: 1,
-      linkedStandardId: null,
-      idempotencyKey: '123e4567-e89b-12d3-a456-426614174002',
-    };
+        message: 'Phase already completed (idempotent request)',
+      }),
+    );
 
     const request = new NextRequest('http://localhost:3000/api/activities/complete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        activityId: VALID_ACTIVITY_ID,
+        lessonId: VALID_LESSON_ID,
+        phaseNumber: 1,
+        completionData: { timeSpent: -20 },
+        idempotencyKey: VALID_IDEMPOTENCY_KEY,
+      }),
     });
 
     const response = await POST(request);
-
     expect(response.status).toBe(200);
-    expect(mockRpc).toHaveBeenCalledWith('complete_activity_atomic', {
-      p_activity_id: requestBody.activityId,
-      p_lesson_id: requestBody.lessonId,
-      p_phase_number: requestBody.phaseNumber,
-      p_linked_standard_id: null,
-      p_completion_data: null,
-      p_idempotency_key: requestBody.idempotencyKey,
+    const forwardedRequest = mockCompletePhasePost.mock.calls[0][0] as Request;
+    const forwardedPayload = await forwardedRequest.json();
+    expect(forwardedPayload).toMatchObject({
+      lessonId: VALID_LESSON_ID,
+      phaseNumber: 1,
+      timeSpent: 0,
+      idempotencyKey: VALID_IDEMPOTENCY_KEY,
     });
+  });
+
+  it('passes through canonical endpoint errors with compatibility metadata', async () => {
+    mockCompletePhasePost.mockResolvedValueOnce(
+      Response.json(
+        {
+          error: 'Phase already completed',
+          details: 'This phase has already been completed.',
+        },
+        { status: 409 },
+      ),
+    );
+
+    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        activityId: VALID_ACTIVITY_ID,
+        lessonId: VALID_LESSON_ID,
+        phaseNumber: 1,
+        idempotencyKey: VALID_IDEMPOTENCY_KEY,
+      }),
+    });
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(409);
+    expect(data.error).toBe('Phase already completed');
+    expect(data.message).toBe('Use POST /api/phases/complete.');
+    expect(data.replacement).toBe('/api/phases/complete');
+    expect(data.deprecated).toBe(true);
+    expect(data.details).toBe('This phase has already been completed.');
+    expect(response.headers.get('deprecation')).toBe('true');
+  });
+
+  it('maps canonical unauthorized responses for legacy clients', async () => {
+    mockCompletePhasePost.mockResolvedValueOnce(
+      Response.json(
+        {
+          error: 'Unauthorized. Please sign in to complete phases.',
+        },
+        { status: 401 },
+      ),
+    );
+
+    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        activityId: VALID_ACTIVITY_ID,
+        lessonId: VALID_LESSON_ID,
+        phaseNumber: 1,
+        idempotencyKey: VALID_IDEMPOTENCY_KEY,
+      }),
+    });
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(data.error).toBe('Unauthorized. Please sign in to complete phases.');
+    expect(data.replacement).toBe('/api/phases/complete');
+    expect(data.deprecated).toBe(true);
   });
 });

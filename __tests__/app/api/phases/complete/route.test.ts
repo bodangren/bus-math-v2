@@ -115,6 +115,137 @@ describe('POST /api/phases/complete', () => {
     expect(response.status).toBe(403);
   });
 
+  it('accepts lesson slug identifiers and resolves completion context', async () => {
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lessons') {
+        return {
+          select: () => ({
+            eq: (field: string, value: unknown) => {
+              if (field === 'slug' && value === 'unit-1-lesson-1-accounting-equation') {
+                return {
+                  maybeSingle: () =>
+                    Promise.resolve({
+                      data: { id: validPayload.lessonId },
+                      error: null,
+                    }),
+                };
+              }
+
+              return {
+                maybeSingle: () => Promise.resolve({ data: null, error: null }),
+              };
+            },
+          }),
+        };
+      }
+
+      if (table === 'lesson_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () => ({
+                limit: () =>
+                  Promise.resolve({ data: [{ id: 'lv-1', version: 1, status: 'published' }], error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'phase_versions') {
+        return {
+          select: () => ({
+            eq: (_field: string, value: unknown) => {
+              if (value === 'lv-1') {
+                return {
+                  eq: (_field2: string, phaseNumber: unknown) => ({
+                    maybeSingle: () =>
+                      Promise.resolve({
+                        data: Number(phaseNumber) === 2 ? { id: 'pv-2' } : { id: 'pv-3' },
+                        error: null,
+                      }),
+                  }),
+                };
+              }
+              return {
+                eq: () => ({
+                  maybeSingle: () => Promise.resolve({ data: null, error: null }),
+                }),
+                maybeSingle: () => Promise.resolve({ data: null, error: null }),
+              };
+            },
+          }),
+        };
+      }
+
+      if (table === 'student_progress') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () => Promise.resolve({ data: null, error: null }),
+              }),
+            }),
+          }),
+          upsert: () => Promise.resolve({ error: null }),
+        };
+      }
+
+      return {
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => Promise.resolve({ data: null, error: null }),
+          }),
+        }),
+      };
+    });
+
+    const response = await POST(
+      buildRequest({
+        ...validPayload,
+        lessonId: 'unit-1-lesson-1-accounting-equation',
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.success).toBe(true);
+    expect(body.phaseId).toBe('pv-2');
+  });
+
+  it('returns 404 when lesson slug identifier does not resolve', async () => {
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lessons') {
+        return {
+          select: () => ({
+            eq: () => ({
+              maybeSingle: () => Promise.resolve({ data: null, error: null }),
+            }),
+          }),
+        };
+      }
+
+      return {
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => Promise.resolve({ data: null, error: null }),
+          }),
+        }),
+      };
+    });
+
+    const response = await POST(
+      buildRequest({
+        ...validPayload,
+        lessonId: 'missing-lesson-slug',
+      }),
+    );
+
+    expect(response.status).toBe(404);
+    const body = await response.json();
+    expect(body.error).toBe('Lesson not found');
+  });
+
   it('returns 404 when versioned phase does not exist', async () => {
     mockFrom.mockImplementation((table: string) => {
       if (table === 'lesson_versions') {
@@ -224,5 +355,140 @@ describe('POST /api/phases/complete', () => {
 
     const response = await POST(buildRequest(validPayload));
     expect(response.status).toBe(409);
+  });
+
+  it('returns cached success for idempotent replay on the same phase', async () => {
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lesson_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () => ({
+                limit: () => Promise.resolve({ data: [{ id: 'lv-1', version: 1, status: 'published' }], error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'phase_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () => Promise.resolve({ data: { id: 'pv-2' }, error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'student_progress') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () =>
+                  Promise.resolve({
+                    data: {
+                      id: 'sp-1',
+                      phase_id: 'pv-2',
+                      completed_at: '2026-02-09T08:00:00.000Z',
+                    },
+                    error: null,
+                  }),
+              }),
+            }),
+          }),
+          upsert: () => Promise.resolve({ error: null }),
+        };
+      }
+
+      return {
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => Promise.resolve({ data: null, error: null }),
+          }),
+        }),
+      };
+    });
+
+    const response = await POST(buildRequest(validPayload));
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.success).toBe(true);
+    expect(body.message).toContain('idempotent');
+    expect(body.phaseId).toBe('pv-2');
+  });
+
+  it('rejects completion when phase was already completed with a different idempotency key', async () => {
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lesson_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () => ({
+                limit: () => Promise.resolve({ data: [{ id: 'lv-1', version: 1, status: 'published' }], error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'phase_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () => Promise.resolve({ data: { id: 'pv-2' }, error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+
+      if (table === 'student_progress') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: (field: string) => ({
+                maybeSingle: () => {
+                  if (field === 'idempotency_key') {
+                    return Promise.resolve({ data: null, error: null });
+                  }
+
+                  if (field === 'phase_id') {
+                    return Promise.resolve({
+                      data: {
+                        id: 'sp-1',
+                        idempotency_key: '11111111-1111-1111-1111-111111111111',
+                        completed_at: '2026-02-09T08:00:00.000Z',
+                      },
+                      error: null,
+                    });
+                  }
+
+                  return Promise.resolve({ data: null, error: null });
+                },
+              }),
+            }),
+          }),
+          upsert: () => Promise.resolve({ error: null }),
+        };
+      }
+
+      return {
+        select: () => ({
+          eq: () => ({
+            maybeSingle: () => Promise.resolve({ data: null, error: null }),
+          }),
+        }),
+      };
+    });
+
+    const response = await POST(buildRequest(validPayload));
+    expect(response.status).toBe(409);
+    const body = await response.json();
+    expect(body.error).toBe('Phase already completed');
   });
 });

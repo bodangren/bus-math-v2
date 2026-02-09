@@ -6,6 +6,8 @@ import type { Activity } from '@/lib/db/schema/validators';
 
 const mockFetch = vi.fn();
 global.fetch = mockFetch as unknown as typeof fetch;
+const mockCompletePhase = vi.fn();
+const mockUsePhaseCompletion = vi.fn();
 
 const { mockGetActivityComponent } = vi.hoisted(() => ({
   mockGetActivityComponent: vi.fn(),
@@ -17,12 +19,18 @@ vi.mock('@/lib/activities/registry', () => {
   };
 });
 
+vi.mock('@/hooks/usePhaseCompletion', () => ({
+  usePhaseCompletion: (options: unknown) => mockUsePhaseCompletion(options),
+}));
+
 const MockActivityComponent = ({
   activity,
   onSubmit,
+  onComplete,
 }: {
   activity: Activity;
   onSubmit?: (payload: Record<string, unknown>) => void;
+  onComplete?: (payload?: Record<string, unknown>) => void;
 }) => {
   const props = activity.props as { title?: string; description?: string };
 
@@ -33,6 +41,11 @@ const MockActivityComponent = ({
       {onSubmit && (
         <button onClick={() => onSubmit({ activityId: activity.id, responses: { q1: '4' } })}>
           Submit answers
+        </button>
+      )}
+      {onComplete && (
+        <button onClick={() => onComplete({ completed: true })}>
+          Complete activity
         </button>
       )}
     </div>
@@ -70,6 +83,13 @@ const buildActivity = (overrides?: Partial<Activity>): Activity => ({
 describe('ActivityRenderer', () => {
   beforeEach(() => {
     mockFetch.mockReset();
+    mockCompletePhase.mockReset();
+    mockUsePhaseCompletion.mockReset();
+    mockUsePhaseCompletion.mockImplementation(() => ({
+      completePhase: mockCompletePhase,
+      isCompleting: false,
+      error: null,
+    }));
     mockGetActivityComponent.mockReset();
     mockGetActivityComponent.mockImplementation((componentKey: string) => {
       if (componentKey === 'comprehension-quiz') {
@@ -294,5 +314,55 @@ describe('ActivityRenderer', () => {
     await waitFor(() => {
       expect(screen.getByText(/Unable to save submission/i)).toBeInTheDocument();
     });
+  });
+
+  it('uses phase completion hook for activity completion', async () => {
+    mockUsePhaseCompletion.mockImplementation((options: {
+      onSuccess?: (response: { success: boolean; nextPhaseUnlocked: boolean; message?: string }) => void;
+    }) => ({
+      completePhase: async () => {
+        options.onSuccess?.({
+          success: true,
+          nextPhaseUnlocked: true,
+          message: 'Phase completion recorded',
+        });
+      },
+      isCompleting: false,
+      error: null,
+    }));
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => buildActivity(),
+    });
+
+    render(
+      <ActivityRenderer
+        activityId="test-activity-id"
+        lessonId="123e4567-e89b-12d3-a456-426614174000"
+        phaseNumber={2}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Test Quiz')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /complete activity/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Activity completed!/i)).toBeInTheDocument();
+      expect(screen.getByText(/Phase completion recorded/i)).toBeInTheDocument();
+    });
+
+    expect(mockUsePhaseCompletion).toHaveBeenCalledWith(
+      expect.objectContaining({
+        lessonId: '123e4567-e89b-12d3-a456-426614174000',
+        phaseNumber: 2,
+        phaseType: 'do',
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
   });
 });

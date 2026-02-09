@@ -106,6 +106,109 @@ describe("CurriculumPage", () => {
       screen.getByText(/Curriculum data isn't available yet/i)
     ).toBeInTheDocument();
   });
+
+  it("prefers latest versioned lesson title/description when available", async () => {
+    const { db } = await import("@/lib/db/drizzle");
+
+    const lessonRows = [
+      {
+        id: "lesson-1",
+        unitNumber: 1,
+        title: "Base Lesson 1",
+        slug: "lesson-1",
+        description: "Base description",
+        learningObjectives: ["Understand balance"],
+        orderIndex: 1,
+        metadata: {
+          unitContent: {
+            introduction: {
+              unitTitle: "Balance by Design",
+            },
+          },
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    const versionRows = [
+      {
+        lessonId: "lesson-1",
+        title: "Versioned Lesson 1",
+        description: "Versioned description",
+        version: 2,
+      },
+      {
+        lessonId: "lesson-1",
+        title: "Older Lesson 1",
+        description: "Older description",
+        version: 1,
+      },
+    ];
+
+    vi.mocked(db.select)
+      .mockImplementationOnce(() => ({
+        from: () => ({
+          orderBy: vi.fn().mockResolvedValue(lessonRows),
+        }),
+      }) as never)
+      .mockImplementationOnce(() => ({
+        from: () => ({
+          where: () => ({
+            orderBy: vi.fn().mockResolvedValue(versionRows),
+          }),
+        }),
+      }) as never);
+
+    const page = await CurriculumPage();
+    render(page);
+
+    expect(screen.getByText("Versioned Lesson 1")).toBeInTheDocument();
+  });
+
+  it("falls back to lesson shell data when version lookup fails", async () => {
+    const { db } = await import("@/lib/db/drizzle");
+
+    const lessonRows = [
+      {
+        id: "lesson-1",
+        unitNumber: 1,
+        title: "Base Lesson 1",
+        slug: "lesson-1",
+        description: "Base description",
+        learningObjectives: ["Understand balance"],
+        orderIndex: 1,
+        metadata: {
+          unitContent: {
+            introduction: {
+              unitTitle: "Balance by Design",
+            },
+          },
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    vi.mocked(db.select)
+      .mockImplementationOnce(() => ({
+        from: () => ({
+          orderBy: vi.fn().mockResolvedValue(lessonRows),
+        }),
+      }) as never)
+      .mockImplementationOnce(() => ({
+        from: () => ({
+          where: () => ({
+            orderBy: vi.fn().mockRejectedValue(new Error("version query failed")),
+          }),
+        }),
+      }) as never);
+
+    const page = await CurriculumPage();
+    render(page);
+
+    expect(screen.getByText("Base Lesson 1")).toBeInTheDocument();
+  });
 });
 
 describe("groupLessonsByUnit", () => {

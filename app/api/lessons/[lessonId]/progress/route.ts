@@ -9,8 +9,9 @@ import type {
 } from '@/types/api';
 
 const paramsSchema = z.object({
-  lessonId: z.string().uuid('Invalid lesson ID format'),
+  lessonId: z.string().trim().min(1, 'Lesson identifier is required'),
 });
+const uuidSchema = z.string().uuid();
 
 interface ProgressRow {
   phase_id: string;
@@ -105,6 +106,27 @@ async function fetchVersionedPhaseProgress(
   return phaseProgressList;
 }
 
+async function normalizeLessonId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  lessonIdentifier: string,
+): Promise<string | null> {
+  if (uuidSchema.safeParse(lessonIdentifier).success) {
+    return lessonIdentifier;
+  }
+
+  const { data: lessonBySlug, error: lessonBySlugError } = await supabase
+    .from('lessons')
+    .select('id')
+    .eq('slug', lessonIdentifier)
+    .maybeSingle();
+
+  if (lessonBySlugError || !lessonBySlug) {
+    return null;
+  }
+
+  return lessonBySlug.id;
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ lessonId: string }> }
@@ -142,13 +164,19 @@ export async function GET(
       );
     }
 
-    const { lessonId } = parsed.data;
+    const normalizedLessonId = await normalizeLessonId(supabase, parsed.data.lessonId);
+    if (!normalizedLessonId) {
+      return NextResponse.json(
+        { error: 'Lesson not found' },
+        { status: 404 },
+      );
+    }
 
     // Verify the lesson exists before fetching progress
     const { data: lessonData, error: lessonError } = await supabase
       .from('lessons')
       .select('id')
-      .eq('id', lessonId)
+      .eq('id', normalizedLessonId)
       .single();
 
     if (lessonError || !lessonData) {
@@ -159,7 +187,7 @@ export async function GET(
     }
 
     // Versioned phase model is the canonical runtime source.
-    const versionedPhases = await fetchVersionedPhaseProgress(supabase, lessonId, user.id);
+    const versionedPhases = await fetchVersionedPhaseProgress(supabase, normalizedLessonId, user.id);
     if (versionedPhases && versionedPhases.length > 0) {
       const versionedResponse: LessonProgressResponse = { phases: versionedPhases };
       return NextResponse.json(versionedResponse);

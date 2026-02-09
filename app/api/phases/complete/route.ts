@@ -9,11 +9,12 @@ import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
  * timeSpent is validated and clamped to prevent abuse
  */
 const CompletePhaseSchema = z.object({
-  lessonId: z.string().uuid('Invalid lesson ID format'),
+  lessonId: z.string().trim().min(1, 'Lesson identifier is required'),
   phaseNumber: z.number().int().positive('Phase number must be a positive integer'),
   timeSpent: z.number().int().nonnegative('Time spent must be non-negative').max(86400, 'Time spent cannot exceed 24 hours'),
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
 });
+const uuidSchema = z.string().uuid();
 
 type CompletePhasePayload = z.infer<typeof CompletePhaseSchema> & CompletePhaseRequest;
 
@@ -55,6 +56,27 @@ async function resolveVersionedPhaseContext(
     phaseId: currentPhase.id,
     lessonVersionId,
   };
+}
+
+async function normalizeLessonId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  lessonIdentifier: string,
+): Promise<string | null> {
+  if (uuidSchema.safeParse(lessonIdentifier).success) {
+    return lessonIdentifier;
+  }
+
+  const { data: lessonBySlug, error: lessonBySlugError } = await supabase
+    .from('lessons')
+    .select('id')
+    .eq('slug', lessonIdentifier)
+    .maybeSingle();
+
+  if (lessonBySlugError || !lessonBySlug) {
+    return null;
+  }
+
+  return lessonBySlug.id;
 }
 
 async function checkNextPhaseExists(
@@ -138,11 +160,22 @@ export async function POST(request: Request) {
     }
 
     const {
-      lessonId,
+      lessonId: lessonIdentifier,
       phaseNumber,
       timeSpent,
       idempotencyKey,
     }: CompletePhasePayload = validationResult.data;
+
+    const lessonId = await normalizeLessonId(supabase, lessonIdentifier);
+    if (!lessonId) {
+      return NextResponse.json(
+        {
+          error: 'Lesson not found',
+          details: 'No lesson exists for the provided identifier',
+        },
+        { status: 404 }
+      );
+    }
 
     // Use server timestamp for security - never trust client timestamps
     const serverTimestamp = new Date().toISOString();

@@ -42,7 +42,7 @@ interface LessonRendererProps {
  */
 export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug }: LessonRendererProps) {
   const router = useRouter();
-  const { data: progressData, isLoading, refetch } = usePhaseProgress(lesson.id);
+  const { data: progressData, isLoading, refetch } = usePhaseProgress(lesson.slug);
 
   // Find the current phase
   const currentPhase = phases.find(p => p.phaseNumber === currentPhaseNumber);
@@ -203,7 +203,7 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
 
             <div className="mt-6 flex justify-end">
               <PhaseCompleteButton
-                lessonId={lesson.id}
+                lessonId={lesson.slug}
                 phaseNumber={currentPhase.phaseNumber}
                 initialStatus={isCurrentPhaseCompleted ? 'completed' : 'not_started'}
                 onStatusChange={() => {
