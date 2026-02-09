@@ -1,0 +1,15 @@
+Task: Phase 2 Task 3 - add read-only replay support for teacher evidence review
+
+Summary:
+- Added GET /api/activities/spreadsheet/[activityId]/submit for read-only replay payload retrieval.
+- Supports student self-replay and teacher/admin replay via ?studentId with organization-scoped authorization checks.
+- Preserves POST submission flow while extending route security coverage with new GET tests.
+- Updated API security route matrix to document GET+POST coverage on submit route.
+
+Files modified:
+- app/api/activities/spreadsheet/[activityId]/submit/route.ts
+- __tests__/app/api/activities/spreadsheet/[activityId]/submit/route.test.ts
+- docs/security-api-route-matrix.md
+
+Why:
+- Teachers need auditable, read-only spreadsheet evidence for competency review without exposing write paths or cross-organization access.
