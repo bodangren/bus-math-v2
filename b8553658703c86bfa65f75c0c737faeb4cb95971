@@ -1,0 +1,18 @@
+Feature: add explicit full-reset behavior for demo student data.
+
+Endpoint:
+- POST /api/users/ensure-demo?reset=full
+
+Reset scope for demo_student:
+- student_progress (user_id)
+- activity_submissions (user_id)
+- activity_completions (student_id)
+- student_spreadsheet_responses (student_id)
+- student_competency (student_id)
+
+Also returns resetApplied flag and keeps deterministic lesson/activity reseeding in same request.
+
+Files:
+- app/api/users/ensure-demo/route.ts
+- __tests__/app/api/users/ensure-demo/route.test.ts
+- conductor/tracks/sprint4_competency_20251101/plan.md
