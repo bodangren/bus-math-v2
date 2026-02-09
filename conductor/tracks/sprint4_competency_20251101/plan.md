@@ -11,7 +11,7 @@
 ## Phase 2: Activity Evaluation Path
 - [x] Task: Finalize `SpreadsheetEvaluator` validation and submission handling with security-focused tests. [8a4fd4a]
 - [x] Task: Ensure activity completion events propagate through `ActivityRenderer` with canonical completion API. [42e6ac3]
-- [ ] Task: Add read-only replay support needed for teacher evidence review.
+- [x] Task: Add read-only replay support needed for teacher evidence review. [27bb1b3]
 
 ## Phase 3: Lesson Navigation And Auto-Capture
 - [ ] Task: Stabilize `LessonStepper` + locked navigation logic under server-authorized access rules.
