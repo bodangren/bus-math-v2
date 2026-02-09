@@ -1,0 +1,16 @@
+Phase 4 checkpoint verification report
+
+Automated verification:
+- npm run lint
+- CI=true npm test -- __tests__/components/lesson/ActivityRenderer.test.tsx __tests__/api/activities-complete.test.ts __tests__/app/api/phases/complete/route.test.ts __tests__/app/api/progress/assessment/route.test.ts
+- Result: PASS (30 tests)
+
+Manual verification steps provided:
+1. Start dev server with npm run dev.
+2. Sign in as demo student and open a lesson activity phase.
+3. Complete activity and confirm success UI shows canonical phase completion messaging.
+4. Confirm network traffic uses /api/phases/complete from ActivityRenderer flow.
+5. POST to /api/activities/complete and confirm deprecation metadata + replacement endpoint.
+
+User confirmation:
+- User replied "Yes. Go ahead." on 2026-02-09.
