@@ -29,17 +29,6 @@
   - Dependency gate + schema parity unblocked and completed. [`afdf6d3`]
   - Competency RLS scope hardening migration + tests completed. [`bb5744c`]
   - Unit 1 competency standards seed coverage + idempotency checks completed. [`c89c3f8`]
-- Current in-progress task:
-  - `Phase 2 / Task 1` (`SpreadsheetEvaluator` validation + submission hardening) is still `[~]`.
-- Uncommitted local WIP to resume from:
-  - `app/api/activities/spreadsheet/[activityId]/submit/route.ts`
-  - `__tests__/app/api/activities/spreadsheet/[activityId]/submit/route.test.ts`
-  - `conductor/tracks/sprint4_competency_20251101/plan.md` (status marker only)
-- Current WIP intent:
-  - Server should ignore client-provided `targetCells` and validate against DB activity config (`activities.props.targetCells`).
-  - Route should return `422` when activity config is not valid `spreadsheet-evaluator` schema.
-- Next-session start sequence:
-  1. Run: `CI=true npm test -- __tests__/app/api/activities/spreadsheet/[activityId]/submit/route.test.ts`
-  2. If passing, run: `CI=true npm test -- __tests__/components/SpreadsheetEvaluator.test.tsx __tests__/api/spreadsheet-sanitization.test.ts __tests__/lib/activities/spreadsheet-validation.test.ts`
-  3. Run: `npm run lint`
-  4. Commit task changes + git note, then mark Phase 2 Task 1 complete in this plan.
+- Follow-up updates:
+  - Phase 2 tasks completed and committed (`8a4fd4a`, `42e6ac3`, `27bb1b3`).
+  - Fixed demo provisioning gap: `ensure-demo` now seeds a six-phase lesson with a required `spreadsheet-evaluator` activity so `demo_student` can complete activity phases.

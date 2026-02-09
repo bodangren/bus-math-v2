@@ -21,10 +21,14 @@ const DEMO_USERS = [
 
 const DEMO_LESSON_ID = '10000000-0000-0000-0000-000000000001';
 const DEMO_LESSON_VERSION_ID = '10000000-0000-0000-0000-000000000101';
+const DEMO_SPREADSHEET_ACTIVITY_ID = '10000000-0000-0000-0000-000000000401';
 const DEMO_PHASE_IDS = [
   '10000000-0000-0000-0000-000000000201',
   '10000000-0000-0000-0000-000000000202',
   '10000000-0000-0000-0000-000000000203',
+  '10000000-0000-0000-0000-000000000204',
+  '10000000-0000-0000-0000-000000000205',
+  '10000000-0000-0000-0000-000000000206',
 ] as const;
 
 export async function POST() {
@@ -117,8 +121,8 @@ export async function POST() {
         description: 'Foundational lesson automatically provisioned for demo environments.',
         learning_objectives: [
           'Understand the six-phase lesson flow',
-          'Track progress across lesson phases',
-          'Connect business scenarios to spreadsheet-based decisions',
+          'Use a spreadsheet evaluator to check accounting equation entries',
+          'Track progress across lesson phases and competency evidence',
         ],
         order_index: 1,
         metadata: {
@@ -152,26 +156,78 @@ export async function POST() {
       throw versionError;
     }
 
+    const { error: activityError } = await adminClient.from('activities').upsert(
+      {
+        id: DEMO_SPREADSHEET_ACTIVITY_ID,
+        component_key: 'spreadsheet-evaluator',
+        display_name: 'TechStart Equation Check',
+        description: 'Enter the accounting equation values from Sarah Chen’s startup transactions.',
+        props: {
+          templateId: 'techstart-equation-demo',
+          instructions:
+            'Update A1 with total assets and B1 with owner equity after the sample transaction.',
+          targetCells: [
+            { cell: 'A1', expectedValue: 1200 },
+            { cell: 'B1', expectedValue: 1200 },
+          ],
+          initialData: [
+            [{ value: '' }, { value: '' }],
+            [{ value: 'Assets' }, { value: 'Owner Equity' }],
+          ],
+        },
+        grading_config: {
+          autoGrade: false,
+          partialCredit: false,
+        },
+        updated_at: now,
+      },
+      { onConflict: 'id' }
+    );
+    if (activityError) {
+      throw activityError;
+    }
+
     const phaseRows = [
       {
         id: DEMO_PHASE_IDS[0],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 1,
-        title: 'Hook',
+        title: 'Hook: Why Balance Matters',
         estimated_minutes: 5,
       },
       {
         id: DEMO_PHASE_IDS[1],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 2,
-        title: 'Guided Practice',
+        title: 'Concept: Accounting Equation',
         estimated_minutes: 10,
       },
       {
         id: DEMO_PHASE_IDS[2],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 3,
-        title: 'Closing',
+        title: 'Guided Practice',
+        estimated_minutes: 10,
+      },
+      {
+        id: DEMO_PHASE_IDS[3],
+        lesson_version_id: DEMO_LESSON_VERSION_ID,
+        phase_number: 4,
+        title: 'Independent Practice',
+        estimated_minutes: 10,
+      },
+      {
+        id: DEMO_PHASE_IDS[4],
+        lesson_version_id: DEMO_LESSON_VERSION_ID,
+        phase_number: 5,
+        title: 'Assessment',
+        estimated_minutes: 10,
+      },
+      {
+        id: DEMO_PHASE_IDS[5],
+        lesson_version_id: DEMO_LESSON_VERSION_ID,
+        phase_number: 6,
+        title: 'Reflection',
         estimated_minutes: 5,
       },
     ];
@@ -191,7 +247,7 @@ export async function POST() {
         section_type: 'text',
         content: {
           markdown:
-            'Welcome to Math for Business Operations. This demo lesson confirms curriculum provisioning is working.',
+            'Welcome to TechStart. Sarah Chen needs reliable numbers to make strong business decisions.',
         },
       },
       {
@@ -201,27 +257,57 @@ export async function POST() {
         section_type: 'text',
         content: {
           markdown:
-            'Use this phase to practice identifying revenue, expenses, and profit in a basic startup scenario.',
+            'Every transaction must keep the accounting equation balanced: Assets = Liabilities + Equity.',
         },
       },
       {
         id: '10000000-0000-0000-0000-000000000303',
-        phase_version_id: DEMO_PHASE_IDS[1],
-        sequence_order: 2,
-        section_type: 'callout',
-        content: {
-          variant: 'why-this-matters',
-          markdown: 'Business math helps founders make confident decisions with real data.',
-        },
-      },
-      {
-        id: '10000000-0000-0000-0000-000000000304',
         phase_version_id: DEMO_PHASE_IDS[2],
         sequence_order: 1,
         section_type: 'text',
         content: {
           markdown:
-            'Great work. You can now continue through the platform with a guaranteed starter lesson in place.',
+            'Now practice the equation with a spreadsheet check. Enter the two values and submit your answer.',
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000304',
+        phase_version_id: DEMO_PHASE_IDS[2],
+        sequence_order: 2,
+        section_type: 'activity',
+        content: {
+          activityId: DEMO_SPREADSHEET_ACTIVITY_ID,
+          required: true,
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000305',
+        phase_version_id: DEMO_PHASE_IDS[3],
+        sequence_order: 1,
+        section_type: 'text',
+        content: {
+          markdown:
+            'Phase 4 lets students retry and reinforce spreadsheet evidence before formal assessment.',
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000306',
+        phase_version_id: DEMO_PHASE_IDS[4],
+        sequence_order: 1,
+        section_type: 'callout',
+        content: {
+          variant: 'why-this-matters',
+          markdown: 'Accurate spreadsheet work becomes competency evidence teachers can review.',
+        },
+      },
+      {
+        id: '10000000-0000-0000-0000-000000000307',
+        phase_version_id: DEMO_PHASE_IDS[5],
+        sequence_order: 1,
+        section_type: 'text',
+        content: {
+          markdown:
+            'Reflection: What changed in your confidence using the accounting equation in a spreadsheet?',
         },
       },
     ];

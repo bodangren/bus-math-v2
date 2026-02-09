@@ -38,7 +38,7 @@ describe('POST /api/users/ensure-demo', () => {
     });
   });
 
-  it('creates missing demo users and upserts their profiles', async () => {
+  it('creates missing demo users and provisions a six-phase lesson with spreadsheet activity', async () => {
     const response = await POST();
     const json = await response.json();
 
@@ -53,6 +53,35 @@ describe('POST /api/users/ensure-demo', () => {
     expect(mockFrom).toHaveBeenCalledWith('lesson_versions');
     expect(mockFrom).toHaveBeenCalledWith('phase_versions');
     expect(mockFrom).toHaveBeenCalledWith('phase_sections');
+    expect(mockFrom).toHaveBeenCalledWith('activities');
+
+    const phaseRowsCall = mockUpsert.mock.calls.find(([rows]) =>
+      Array.isArray(rows) && rows.some((row) => typeof row?.phase_number === 'number')
+    );
+    expect(phaseRowsCall).toBeDefined();
+    const phaseRows = phaseRowsCall?.[0] as Array<{ phase_number: number }>;
+    expect(phaseRows).toHaveLength(6);
+    expect(phaseRows.map((row) => row.phase_number)).toEqual([1, 2, 3, 4, 5, 6]);
+
+    const sectionRowsCall = mockUpsert.mock.calls.find(([rows]) =>
+      Array.isArray(rows) && rows.some((row) => typeof row?.section_type === 'string')
+    );
+    expect(sectionRowsCall).toBeDefined();
+    const sectionRows = sectionRowsCall?.[0] as Array<{ section_type: string; content?: { activityId?: string } }>;
+    expect(sectionRows.some((row) => row.section_type === 'activity')).toBe(true);
+    expect(
+      sectionRows.some(
+        (row) => row.section_type === 'activity' && typeof row.content?.activityId === 'string'
+      )
+    ).toBe(true);
+
+    const activityCall = mockUpsert.mock.calls.find(([rows]) =>
+      !Array.isArray(rows) &&
+      typeof rows === 'object' &&
+      rows !== null &&
+      (rows as { component_key?: string }).component_key === 'spreadsheet-evaluator'
+    );
+    expect(activityCall).toBeDefined();
   });
 
   it('resets passwords for existing demo users', async () => {
