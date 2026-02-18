@@ -11,6 +11,10 @@ import {
   type GradebookLesson,
   type GradebookRow,
 } from '@/lib/teacher/gradebook';
+import {
+  SubmissionDetailModal,
+  type SelectedCell,
+} from '@/components/teacher/SubmissionDetailModal';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -43,6 +47,7 @@ type SortDirection = 'asc' | 'desc';
 
 export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps) {
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
+  const [selectedCell, setSelectedCell] = useState<SelectedCell | null>(null);
 
   if (rows.length === 0) {
     return <EmptyState message="No students found in this gradebook." />;
@@ -64,6 +69,7 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
   const unitTestLesson = lessons.find(l => l.isUnitTest);
 
   return (
+    <>
     <div className="overflow-x-auto rounded-md border border-border">
       <table
         className="min-w-full border-collapse text-sm"
@@ -156,10 +162,24 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                   return (
                     <td
                       key={lesson.lessonId}
-                      className={`px-2 py-2 text-center font-medium tabular-nums ${cellBgClass(color)}`}
+                      className={`px-2 py-1 text-center font-medium tabular-nums ${cellBgClass(color)}`}
                       aria-label={`${row.displayName} ${lesson.lessonTitle} — ${colorLabel}`}
                     >
-                      {mastery !== null ? `${mastery}%` : '—'}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedCell({
+                            studentId: row.studentId,
+                            studentName: row.displayName,
+                            lessonId: lesson.lessonId,
+                            lessonTitle: lesson.lessonTitle,
+                          })
+                        }
+                        tabIndex={0}
+                        className="w-full rounded px-1 py-1 hover:ring-2 hover:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {mastery !== null ? `${mastery}%` : '—'}
+                      </button>
                     </td>
                   );
                 })}
@@ -174,10 +194,24 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                   return (
                     <td
                       key={unitTestLesson.lessonId}
-                      className={`border-l-2 border-border px-2 py-2 text-center font-semibold tabular-nums ${cellBgClass(color)}`}
+                      className={`border-l-2 border-border px-2 py-1 text-center font-semibold tabular-nums ${cellBgClass(color)}`}
                       aria-label={`${row.displayName} ${unitTestLesson.lessonTitle} — ${colorLabel}`}
                     >
-                      {mastery !== null ? `${mastery}%` : '—'}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedCell({
+                            studentId: row.studentId,
+                            studentName: row.displayName,
+                            lessonId: unitTestLesson.lessonId,
+                            lessonTitle: unitTestLesson.lessonTitle,
+                          })
+                        }
+                        tabIndex={0}
+                        className="w-full rounded px-1 py-1 hover:ring-2 hover:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {mastery !== null ? `${mastery}%` : '—'}
+                      </button>
                     </td>
                   );
                 })()}
@@ -187,5 +221,13 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
         </tbody>
       </table>
     </div>
+
+    {selectedCell && (
+      <SubmissionDetailModal
+        selected={selectedCell}
+        onClose={() => setSelectedCell(null)}
+      />
+    )}
+    </>
   );
 }
