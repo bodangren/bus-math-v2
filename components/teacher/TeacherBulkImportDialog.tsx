@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  type ChangeEvent,
   useEffect,
   useId,
   useRef,

@@ -49,6 +49,36 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
   // Find the current phase
   const currentPhase = phases.find(p => p.phaseNumber === currentPhaseNumber);
 
+  // Determine if it's a "Read" phase (no required activity).
+  // Computed before hooks so values are stable regardless of early-return path.
+  const hasRequiredActivity = currentPhase?.contentBlocks?.some(
+    block => block.type === 'activity' && block.required
+  );
+  const isReadPhase = !hasRequiredActivity;
+
+  // Get current phase completion status (safe with optional chaining when phase is absent)
+  const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase?.id);
+  const isCurrentPhaseCompleted = currentPhaseProgress?.status === 'completed';
+
+  // Hooks must be called unconditionally — placed before any early return.
+  const { completePhase: autoMarkComplete, isCompleting: isAutoCompleting } = usePhaseCompletion({
+    lessonId: lesson.slug,
+    phaseNumber: currentPhaseNumber,
+    phaseType: isReadPhase ? 'read' : 'do',
+    onSuccess: () => {
+      // Refetch progress to update stepper and navigation
+      refetch();
+    },
+  });
+
+  // Auto-capture for Read phases on navigation
+  useEffect(() => {
+    if (currentPhase && isReadPhase && !isCurrentPhaseCompleted && !isLoading && !isAutoCompleting) {
+      autoMarkComplete();
+    }
+  }, [currentPhase, isReadPhase, isCurrentPhaseCompleted, isLoading, autoMarkComplete, isAutoCompleting]);
+
+  // Early return after all hooks have been called
   if (!currentPhase) {
     return (
       <div className="container mx-auto p-8">
@@ -61,27 +91,6 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
     );
   }
 
-  // Determine if it's a "Read" phase (no required activity)
-  const hasRequiredActivity = currentPhase?.contentBlocks?.some(
-    block => block.type === 'activity' && block.required
-  );
-  const isReadPhase = !hasRequiredActivity;
-
-  // Set up auto-capture hook
-  const { completePhase: autoMarkComplete, isCompleting: isAutoCompleting } = usePhaseCompletion({
-    lessonId: lesson.slug,
-    phaseNumber: currentPhaseNumber,
-    phaseType: isReadPhase ? 'read' : 'do',
-    onSuccess: () => {
-      // Refetch progress to update stepper and navigation
-      refetch();
-    },
-  });
-
-  // Get current phase completion status
-  const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase.id);
-  const isCurrentPhaseCompleted = currentPhaseProgress?.status === 'completed';
-
   // Transform phases data for LessonStepper and navigation logic
   const stepperPhases: StepperPhase[] = phases.map(phase => {
     const phaseProgress = progressData?.phases.find(p => p.phaseId === phase.id);
@@ -92,13 +101,6 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
       status: phaseProgress?.status || 'locked',
     };
   });
-
-  // Auto-capture for Read phases on navigation
-  useEffect(() => {
-    if (isReadPhase && !isCurrentPhaseCompleted && !isLoading && !isAutoCompleting) {
-      autoMarkComplete();
-    }
-  }, [currentPhase.id, isReadPhase, isCurrentPhaseCompleted, isLoading, autoMarkComplete, isAutoCompleting]);
 
   // Handle phase navigation
   const handlePhaseClick = (phaseNumber: number) => {
