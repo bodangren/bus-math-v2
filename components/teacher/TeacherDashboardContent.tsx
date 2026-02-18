@@ -11,6 +11,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
 import { TeacherCreateStudentDialog } from "./TeacherCreateStudentDialog";
+import { TeacherBulkImportDialog } from "./TeacherBulkImportDialog";
 
 export interface StudentDashboardRow {
   id: string;
@@ -126,6 +127,7 @@ export function TeacherDashboardContent({
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
+            <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />
           </div>
