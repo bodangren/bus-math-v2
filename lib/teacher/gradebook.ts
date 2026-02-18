@@ -162,3 +162,146 @@ export function cellColorLabel(color: CellColor): string {
     default:       return 'not started';
   }
 }
+
+// ---------------------------------------------------------------------------
+// Raw row types (used by assembleGradebookRows below)
+// ---------------------------------------------------------------------------
+
+export interface RawLesson {
+  id: string;
+  title: string;
+  orderIndex: number;
+  unitNumber: number;
+}
+
+export interface RawLessonVersion {
+  id: string;
+  lessonId: string;
+}
+
+export interface RawPhaseVersion {
+  id: string;
+  lessonVersionId: string;
+  phaseNumber: number;
+}
+
+export interface RawLessonStandard {
+  lessonVersionId: string;
+  standardId: string;
+  isPrimary: boolean;
+}
+
+export interface RawStudent {
+  id: string;
+  username: string;
+  displayName: string | null;
+}
+
+export interface RawProgressRow {
+  userId: string;
+  phaseId: string;
+  status: PhaseProgressStatus;
+}
+
+export interface RawCompetencyRow {
+  studentId: string;
+  standardId: string;
+  masteryLevel: number;
+}
+
+// ---------------------------------------------------------------------------
+// assembleGradebookRows (pure)
+// ---------------------------------------------------------------------------
+
+/**
+ * Transforms raw query results into typed GradebookRow[] and GradebookLesson[].
+ *
+ * - lessons sorted ascending by orderIndex
+ * - cells within each row sorted to match lesson order
+ * - org-scoping is handled by the caller (only org-scoped students are passed)
+ */
+export function assembleGradebookRows(
+  students: RawStudent[],
+  rawLessons: RawLesson[],
+  rawLessonVersions: RawLessonVersion[],
+  rawPhaseVersions: RawPhaseVersion[],
+  rawPrimaryStandards: RawLessonStandard[],
+  progressRows: RawProgressRow[],
+  competencyRows: RawCompetencyRow[],
+): { rows: GradebookRow[]; lessons: GradebookLesson[] } {
+  const sortedLessons = [...rawLessons].sort((a, b) => a.orderIndex - b.orderIndex);
+
+  // lessonId → first published lessonVersion id
+  const versionByLessonId = new Map<string, string>();
+  for (const lv of rawLessonVersions) {
+    if (!versionByLessonId.has(lv.lessonId)) {
+      versionByLessonId.set(lv.lessonId, lv.id);
+    }
+  }
+
+  // lessonVersionId → phase ids ordered by phaseNumber
+  const phasesByVersion = new Map<string, string[]>();
+  const sortedPhases = [...rawPhaseVersions].sort((a, b) => a.phaseNumber - b.phaseNumber);
+  for (const pv of sortedPhases) {
+    const list = phasesByVersion.get(pv.lessonVersionId) ?? [];
+    list.push(pv.id);
+    phasesByVersion.set(pv.lessonVersionId, list);
+  }
+
+  // lessonVersionId → primary standardId
+  const primaryStandardByVersion = new Map<string, string>();
+  for (const ls of rawPrimaryStandards) {
+    if (ls.isPrimary) {
+      primaryStandardByVersion.set(ls.lessonVersionId, ls.standardId);
+    }
+  }
+
+  // "userId|phaseId" → status
+  const progressIndex = new Map<string, PhaseProgressStatus>();
+  for (const row of progressRows) {
+    progressIndex.set(`${row.userId}|${row.phaseId}`, row.status);
+  }
+
+  // "studentId|standardId" → masteryLevel
+  const competencyIndex = new Map<string, number>();
+  for (const row of competencyRows) {
+    competencyIndex.set(`${row.studentId}|${row.standardId}`, row.masteryLevel);
+  }
+
+  const gradebookLessons: GradebookLesson[] = sortedLessons.map(lesson => ({
+    lessonId: lesson.id,
+    lessonTitle: lesson.title,
+    orderIndex: lesson.orderIndex,
+    isUnitTest: lesson.orderIndex === 11,
+  }));
+
+  const rows: GradebookRow[] = students.map(student => {
+    const cells = gradebookLessons.map(gl => {
+      const lessonVersionId = versionByLessonId.get(gl.lessonId);
+      const phaseIds = lessonVersionId ? (phasesByVersion.get(lessonVersionId) ?? []) : [];
+      const standardId = lessonVersionId
+        ? primaryStandardByVersion.get(lessonVersionId)
+        : undefined;
+
+      const phaseStatuses: PhaseProgressStatus[] = phaseIds.map(
+        phaseId => progressIndex.get(`${student.id}|${phaseId}`) ?? 'not_started',
+      );
+
+      const masteryLevel =
+        standardId != null
+          ? (competencyIndex.get(`${student.id}|${standardId}`) ?? null)
+          : null;
+
+      return buildGradebookCell(gl, phaseStatuses, masteryLevel);
+    });
+
+    return {
+      studentId: student.id,
+      displayName: student.displayName ?? student.username,
+      username: student.username,
+      cells,
+    };
+  });
+
+  return { rows, lessons: gradebookLessons };
+}

@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
-import { and, asc, inArray, eq } from "drizzle-orm";
+import { and, asc, countDistinct, inArray, eq } from "drizzle-orm";
 import { db } from "@/lib/db/drizzle";
-import { organizations, phaseVersions, profiles, studentProgress } from "@/lib/db/schema";
+import { lessons, organizations, phaseVersions, profiles, studentProgress } from "@/lib/db/schema";
 import { createClient } from "@/lib/supabase/server";
 import {
   TeacherDashboardContent,
   type StudentDashboardRow,
+  type UnitSummary,
 } from "@/components/teacher/TeacherDashboardContent";
 
 async function getTeacherProfile(userId: string) {
@@ -138,10 +139,23 @@ export default async function TeacherDashboardPage() {
     redirect("/student/dashboard");
   }
 
-  const [organizationName, students] = await Promise.all([
+  const [organizationName, students, unitRows] = await Promise.all([
     getOrganizationName(teacher.organizationId),
     getStudentsInOrganization(teacher.organizationId),
+    db
+      .select({
+        unitNumber: lessons.unitNumber,
+        lessonCount: countDistinct(lessons.id),
+      })
+      .from(lessons)
+      .groupBy(lessons.unitNumber)
+      .orderBy(asc(lessons.unitNumber)),
   ]);
+
+  const units: UnitSummary[] = unitRows.map(r => ({
+    unitNumber: r.unitNumber,
+    lessonCount: Number(r.lessonCount),
+  }));
 
   const progressSnapshots = await getStudentProgressSnapshots(students.map((student) => student.id));
   const studentsWithProgress = students.map((student) => {
@@ -165,6 +179,7 @@ export default async function TeacherDashboardPage() {
         organizationName,
       }}
       students={studentsWithProgress}
+      units={units}
     />
   );
 }

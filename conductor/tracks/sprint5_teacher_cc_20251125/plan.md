@@ -21,9 +21,9 @@
 - **Next Steps:** Proceed to **Phase 2: Gradebook And Status Grid**.
 
 ## Phase 2: Gradebook And Status Grid
-- [ ] Task: Implement `GradebookGrid` with scalable row rendering and stable sorting/filtering.
-- [ ] Task: Wire student progress + competency data fetch path with org scoping.
-- [ ] Task: Implement status visualization contract (green/yellow/red) with deterministic rules.
+- [x] Task: Implement `GradebookGrid` with scalable row rendering and stable sorting/filtering.
+- [x] Task: Wire student progress + competency data fetch path with org scoping.
+- [x] Task: Implement status visualization contract (green/yellow/red) with deterministic rules.
 
 ## Phase 3: Evidence And Intervention Views
 - [ ] Task: Implement `SubmissionDetailModal` and readonly activity playback path.
