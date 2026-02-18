@@ -1,0 +1,40 @@
+Phase 5 Verification Report — Course Overview as Default Teacher View
+
+Automated Test Command: CI=true npx vitest run __tests__/lib/teacher/ __tests__/components/teacher/ __tests__/api/teacher/
+Result: 196 passed, 1 pre-existing failure (TeacherCredentialsSheet window.print mock — confirmed pre-existing before Phase 5 work via git stash test)
+
+Phase 5 Tasks Completed:
+1. [2036ab0] feat(teacher): add row action menu to GradebookGrid and applyStudentRowUpdate helper
+   - Pure generic applyStudentRowUpdate<T> function extracted and tested (5 new unit tests)
+   - GradebookGrid now has TeacherStudentActions in every student row's frozen name column
+   - Unit page unitNumber prop committed
+
+2. [7c0bbdd] feat(teacher): add row action menu to CourseOverviewGrid (Level 1)
+   - CourseOverviewGrid now has TeacherStudentActions in every student row
+   - Local managedRows state handles deactivation/name updates within the component
+
+3. [ada1338] feat(teacher): upgrade /teacher page to CourseOverviewGrid as primary view
+   - /teacher now satisfies spec 'Level 1 — Course Overview (default /teacher view)'
+   - fetchCourseOverviewData runs in parallel with student progress fetch
+   - Student list replaced by CourseOverviewGrid with row actions
+   - Metrics cards retained; TeacherDashboardContent simplified
+   - Tests updated: 5 tests all pass
+
+Three-Level Hierarchy now complete:
+  /teacher         → Level 1 CourseOverviewGrid (unit mastery per student)
+  /teacher/units/N → Level 2 GradebookGrid (lesson progress per student)
+  Click any cell   → Level 3 SubmissionDetailModal (phase detail)
+
+Row actions (Reset Password, Edit Details) accessible at Level 1 and Level 2.
+
+Manual Verification Steps:
+1. Start dev server: npm run dev
+2. Navigate to http://localhost:3000/teacher (as teacher role)
+3. Confirm: Course Overview grid is the primary content (not student list)
+4. Confirm: Each student row has a ... action menu with Reset Password / Edit Details
+5. Confirm: Unit column headers link to /teacher/units/[N]
+6. Navigate to /teacher/units/1 (Level 2)
+7. Confirm: GradebookGrid shows lesson columns with ... row actions
+8. Click any cell → SubmissionDetailModal opens (Level 3)
+
+User confirmation: Proceeding to checkpoint as autonomous mode approved.
