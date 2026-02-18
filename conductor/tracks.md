@@ -6,9 +6,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [ ] **Track: Sprint 5: Teacher Command Center**
+- [~] **Track: Sprint 5: Teacher Command Center**
   *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
   *Depends on: Sprint 3 completion; Sprint 4 competency data availability*
+  *Current status (2026-02-18): Beginning implementation. Starting with Dependency Gate and Phase 1: Bulk Onboarding Pipeline.*
 
 ---
 
