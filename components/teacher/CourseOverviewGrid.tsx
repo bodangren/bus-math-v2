@@ -3,8 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
-import { cellBgClass, cellColorLabel, sortRowsByName } from '@/lib/teacher/gradebook';
+import { cellBgClass, cellColorLabel, sortRowsByName, applyStudentRowUpdate } from '@/lib/teacher/gradebook';
 import type { CourseOverviewRow, UnitColumn } from '@/lib/teacher/course-overview';
+import {
+  TeacherStudentActions,
+  type StudentAccountUpdate,
+} from '@/components/teacher/TeacherStudentActions';
 
 interface CourseOverviewGridProps {
   rows: CourseOverviewRow[];
@@ -14,9 +18,14 @@ interface CourseOverviewGridProps {
 type SortDirection = 'asc' | 'desc';
 
 export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
+  const [managedRows, setManagedRows] = useState(rows);
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
 
-  if (rows.length === 0) {
+  function handleStudentUpdated(update: StudentAccountUpdate) {
+    setManagedRows(current => applyStudentRowUpdate(current, update));
+  }
+
+  if (managedRows.length === 0) {
     return (
       <div className="rounded-md border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
         No students found in this gradebook.
@@ -33,10 +42,10 @@ export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
   }
 
   // CourseOverviewRow has the same shape as GradebookRow for sorting purposes
-  const sortable = rows.map(r => ({ ...r, cells: [] as never[] }));
+  const sortable = managedRows.map(r => ({ ...r, cells: [] as never[] }));
   const sorted = sortRowsByName(sortable);
   const orderedIds = sortDir === 'asc' ? sorted.map(r => r.studentId) : [...sorted].reverse().map(r => r.studentId);
-  const rowById = new Map(rows.map(r => [r.studentId, r]));
+  const rowById = new Map(managedRows.map(r => [r.studentId, r]));
   const displayRows = orderedIds.map(id => rowById.get(id)!);
 
   return (
@@ -91,13 +100,23 @@ export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
 
             return (
               <tr key={row.studentId} className="bg-background hover:bg-muted/10">
-                {/* Frozen student name */}
+                {/* Frozen student name with row actions */}
                 <th
                   scope="row"
                   className="sticky left-0 z-10 bg-background px-3 py-2 text-left font-medium text-foreground"
                 >
-                  <div>{row.displayName}</div>
-                  <div className="text-xs text-muted-foreground font-normal">@{row.username}</div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <div>{row.displayName}</div>
+                      <div className="text-xs text-muted-foreground font-normal">@{row.username}</div>
+                    </div>
+                    <TeacherStudentActions
+                      studentId={row.studentId}
+                      username={row.username}
+                      displayName={row.displayName}
+                      onStudentUpdated={handleStudentUpdated}
+                    />
+                  </div>
                 </th>
 
                 {/* Unit cells */}
