@@ -17,6 +17,7 @@ interface ActivityRendererProps {
   phaseNumber: number;
   required?: boolean;
   initialStatus?: 'not_started' | 'in_progress' | 'completed';
+  onStatusChange?: () => void;
 }
 
 interface ActivitySubmissionPayload {
@@ -48,7 +49,8 @@ export function ActivityRenderer({
   lessonId, 
   phaseNumber, 
   required = false,
-  initialStatus = 'not_started'
+  initialStatus = 'not_started',
+  onStatusChange
 }: ActivityRendererProps) {
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,6 +78,8 @@ export function ActivityRenderer({
     onSuccess: (response) => {
       setCompletionResult(response);
       setSubmissionError(null);
+      // Notify parent to refresh progress
+      onStatusChange?.();
     },
     onError: (completionError) => {
       setCompletionResult(null);

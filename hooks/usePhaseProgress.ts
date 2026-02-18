@@ -58,7 +58,7 @@ export function usePhaseProgress(lessonId: string | undefined): UsePhaseProgress
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchProgress = useCallback(async () => {
+  const fetchProgress = useCallback(async (bypassCache = false) => {
     if (!lessonId) {
       setIsLoading(false);
       return;
@@ -71,7 +71,7 @@ export function usePhaseProgress(lessonId: string | undefined): UsePhaseProgress
 
       // Check cache first
       const cached = cache.get(lessonId);
-      if (cached && Date.now() - cached.timestamp < STALE_TIME) {
+      if (!bypassCache && cached && Date.now() - cached.timestamp < STALE_TIME) {
         setData(cached.data);
         setIsLoading(false);
         return;
@@ -128,7 +128,7 @@ export function usePhaseProgress(lessonId: string | undefined): UsePhaseProgress
 
     // Refetch on window focus
     const handleFocus = () => {
-      fetchProgress();
+      fetchProgress(true); // Always bypass cache on focus
     };
 
     window.addEventListener('focus', handleFocus);
@@ -143,6 +143,6 @@ export function usePhaseProgress(lessonId: string | undefined): UsePhaseProgress
     isLoading,
     isError,
     error,
-    refetch: fetchProgress,
+    refetch: () => fetchProgress(true),
   };
 }

@@ -223,6 +223,8 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
                       lessonId={lesson.slug}
                       phaseNumber={currentPhase.phaseNumber}
                       required={block.required}
+                      initialStatus={currentPhaseProgress?.status}
+                      onStatusChange={() => refetch()}
                     />
                   )}
                 </div>
