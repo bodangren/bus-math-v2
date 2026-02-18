@@ -20,20 +20,21 @@
 - [checkpoint: 12b3be6]
 
 ## Phase 4: Unit 1 Delivery Verification
-- [ ] Task: Re-verify Unit 1 Lesson 1 v2 authored content (all six phases + competency links).
-- [ ] Task: Execute end-to-end flow validation for unlock logic and competency recording.
-- [ ] Task: Conductor - User Manual Verification 'Sprint 4 Competency Release' (Protocol in workflow.md).
+- [x] Task: Re-verify Unit 1 Lesson 1 v2 authored content (all six phases + competency links). [bc32eb1]
+- [x] Task: Execute end-to-end flow validation for unlock logic and competency recording. [bc32eb1]
+- [x] Task: Conductor - User Manual Verification 'Sprint 4 Competency Release' (Protocol in workflow.md). [bc32eb1]
+- [checkpoint: bc32eb1]
 
 ## Session Handoff Notes (2026-02-18)
 
-- **Blocker Resolved:** Fixed the 500 error in `POST /api/users/ensure-demo?reset=full` by robustly handling unique constraint violations during re-seeding. The endpoint now safely cleans up stale phases/sections before insertion.
-- **Phase 3 Complete:**
-  - **LessonStepper:** Stabilized visual logic to treat 'available' active phases as 'current' (Blue) and verified 'locked' logic via tests.
-  - **Auto-Capture:** Implemented automatic phase completion for "Read" phases upon navigation in `LessonRenderer`. Removed manual "Mark Complete" button.
-  - **Navigation:** Confirmed "Next Phase" button enables correctly for Read phases and completed Do phases.
-  - **Idempotency:** Verified `ActivityRenderer` and API endpoints handle duplicate submissions gracefully without errors.
-- **Checkpoint:** `12b3be6` captures the stable state of Phase 3.
-- **Next Steps:** Proceed to Phase 4 for final end-to-end verification of Unit 1 Lesson 1 content and flow.
+- **Sprint 4 Complete:** All phases verified.
+- **Phase 4 Verification:**
+  - Validated Unit 1 Lesson 1 content flow across all 6 phases.
+  - Confirmed activity completion triggers and cache invalidation logic fix (committed in `bc32eb1`).
+  - Successfully executed end-to-end flow tests (`tests/e2e/sprint4-demo-flow.spec.ts`).
+- **Checkpoint:** `bc32eb1` marks the verified completion of Sprint 4.
+- **Next Steps:** Merge `sprint4_competency_20260209` into `main` and begin Sprint 5.
 
 ### Commit Ledger (latest-first)
+- `bc32eb1` fix(lesson): Fix activity completion state refresh and cache invalidation
 - `12b3be6` feat(lesson): stabilize navigation and harden auto-capture flow
