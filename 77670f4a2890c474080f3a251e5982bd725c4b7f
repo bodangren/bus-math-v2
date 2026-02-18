@@ -1,0 +1,24 @@
+Track: Sprint 5 — Teacher Command Center
+Close-out date: 2026-02-18
+
+## Automated quality gate
+- npm run lint: 0 errors, 0 warnings
+- npx vitest run: 148 files / 885 tests — all passed
+
+## Phases completed
+1. Bulk Onboarding Pipeline — bulk-create-students API route, BulkImportDialog, CredentialsSheet, integration tests
+2. Gradebook And Status Grid — GradebookGrid, progress/competency data fetch, green/yellow/red status contract
+3. Evidence And Intervention Views — SubmissionDetailModal, readonly spreadsheet playback, regression tests
+4. Account Management Actions — reset-password + edit-student APIs and UI with role gating
+5. Course Overview as Default Teacher View — CourseOverviewGrid as Level 1 inline view on /teacher, TeacherStudentActions in both grids
+
+## Close-out cleanup
+- Fixed all pre-existing lint errors (hooks-after-return, unused imports, no-explicit-any)
+- Fixed RLS test session isolation (persistSession: false prevents jsdom localStorage cross-contamination)
+- Made CourseOverviewGrid unit cells into Level 2 links per spec ('clicking a cell OR header navigates to Level 2')
+
+## Key architectural notes
+- bulk-create-students moved from Supabase edge function to Next.js API route (no separate function deployment needed)
+- TeacherCredentialsSheet print uses window.open() self-contained HTML for correct layout isolation
+- Three-level navigation hierarchy: /teacher (L1 CourseOverview) → /teacher/units/[N] (L2 GradebookGrid) → SubmissionDetailModal (L3)
+- All data fetched server-side; no heavy client-side pulls
