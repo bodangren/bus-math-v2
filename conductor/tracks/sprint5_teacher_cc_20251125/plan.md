@@ -1,7 +1,7 @@
 # Plan: Sprint 5 - Teacher Command Center (Rebaseline 2026-02-09)
 
 ## Dependency Gate
-- [ ] Task: Confirm Sprint 3 and Sprint 4 completion checkpoints before teacher workflow expansion.
+- [x] Task: Confirm Sprint 3 and Sprint 4 completion checkpoints before teacher workflow expansion. [b4a3234]
 
 ## Phase 1: Bulk Onboarding Pipeline
 - [ ] Task: Finalize transactional `bulk-create-students` edge function with strict role checks and audit-safe responses.
