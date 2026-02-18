@@ -89,8 +89,8 @@ describe("TeacherDashboardContent", () => {
       screen.getByRole("table", { name: /course overview/i }),
     ).toBeInTheDocument();
     expect(screen.getByText("Demo Student")).toBeInTheDocument();
-    // unit header link
-    expect(screen.getByRole("link", { name: /unit 1/i })).toBeInTheDocument();
+    // unit header link (exact name targets the column header, not cell aria-labels)
+    expect(screen.getByRole("link", { name: "Unit 1" })).toBeInTheDocument();
   });
 
   it("shows CourseOverviewGrid empty state when courseOverview has no data", () => {

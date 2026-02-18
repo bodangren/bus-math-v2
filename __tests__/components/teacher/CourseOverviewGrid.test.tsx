@@ -45,7 +45,9 @@ describe('CourseOverviewGrid rendering', () => {
 
   it('unit column headers are links to the unit gradebook', () => {
     render(<CourseOverviewGrid rows={rows} units={units} />);
-    const link = screen.getByRole('link', { name: /unit 1/i });
+    // Use exact name to target only the column header link (cell links have
+    // aria-labels like "Alice Brown Unit 1 — completed" which also match /unit 1/i)
+    const link = screen.getByRole('link', { name: 'Unit 1' });
     expect(link).toHaveAttribute('href', '/teacher/units/1');
   });
 

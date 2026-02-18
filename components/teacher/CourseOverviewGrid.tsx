@@ -119,7 +119,8 @@ export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
                   </div>
                 </th>
 
-                {/* Unit cells */}
+                {/* Unit cells — each links to the Level 2 unit gradebook (spec: clicking a cell
+                    OR column header navigates to Level 2) */}
                 {units.map(unit => {
                   const cell = cellByUnit.get(unit.unitNumber);
                   const color = cell?.color ?? 'gray';
@@ -128,10 +129,15 @@ export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
                   return (
                     <td
                       key={unit.unitNumber}
-                      className={`px-3 py-2 text-center font-medium tabular-nums ${cellBgClass(color)}`}
-                      aria-label={`${row.displayName} Unit ${unit.unitNumber} — ${cellColorLabel(color)}`}
+                      className={`p-0 text-center font-medium tabular-nums ${cellBgClass(color)}`}
                     >
-                      {mastery !== null ? `${mastery}%` : '—'}
+                      <Link
+                        href={`/teacher/units/${unit.unitNumber}`}
+                        className="block px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                        aria-label={`${row.displayName} Unit ${unit.unitNumber} — ${cellColorLabel(color)}`}
+                      >
+                        {mastery !== null ? `${mastery}%` : '—'}
+                      </Link>
                     </td>
                   );
                 })}
