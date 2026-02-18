@@ -17,6 +17,8 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 | `/api/progress/assessment` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
 | `/api/progress/phase` | `POST` | Deprecated endpoint (`410 Gone`) | Do not use in runtime UI; migrate clients to `/api/phases/complete` | `n/a` |
 | `/api/users/create-student` | `POST` | Auth session required in handler, role enforced downstream | Private, explicit teacher/admin requirement maintained | `teacher`, `admin` |
+| `/api/users/reset-student-password` | `POST` | New teacher workflow route | Private, explicit teacher/admin role + same-organization student check | `teacher`, `admin` |
+| `/api/users/update-student` | `POST` | New teacher workflow route | Private, explicit teacher/admin role + same-organization student check | `teacher`, `admin` |
 | `/api/test/seed-e2e` | `POST` | Non-production guard only | Public test-only endpoint with non-production + optional secret token guard | `public` (guarded by env+secret) |
 | `/api/test/cleanup-e2e` | `POST` | Non-production guard only | Public test-only endpoint with non-production + optional secret token guard | `public` (guarded by env+secret) |
 | `/api/test-db` | `GET` | Public debug endpoint | Non-production + optional secret token guard (or remove from production surface) | `public` (guarded by env+secret) |

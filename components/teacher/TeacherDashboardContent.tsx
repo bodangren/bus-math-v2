@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, LineChart, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +15,10 @@ import { Progress } from "@/components/ui/progress";
 import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
 import { TeacherCreateStudentDialog } from "./TeacherCreateStudentDialog";
 import { TeacherBulkImportDialog } from "./TeacherBulkImportDialog";
+import {
+  TeacherStudentActions,
+  type StudentAccountUpdate,
+} from "./TeacherStudentActions";
 
 export interface StudentDashboardRow {
   id: string;
@@ -109,7 +116,30 @@ export function TeacherDashboardContent({
   teacher,
   students,
 }: TeacherDashboardContentProps) {
-  const metrics = getDashboardMetrics(students);
+  const [managedStudents, setManagedStudents] = useState(students);
+
+  useEffect(() => {
+    setManagedStudents(students);
+  }, [students]);
+
+  function handleStudentUpdated(update: StudentAccountUpdate) {
+    setManagedStudents((currentStudents) => {
+      if (update.deactivated) {
+        return currentStudents.filter((student) => student.id !== update.studentId);
+      }
+
+      return currentStudents.map((student) =>
+        student.id === update.studentId
+          ? {
+              ...student,
+              displayName: update.displayName,
+            }
+          : student,
+      );
+    });
+  }
+
+  const metrics = getDashboardMetrics(managedStudents);
 
   return (
     <main className="min-h-screen bg-muted/10 py-10">
@@ -136,7 +166,7 @@ export function TeacherDashboardContent({
             </Link>
             <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
-            <TeacherCsvExportButton students={students} />
+            <TeacherCsvExportButton students={managedStudents} />
           </div>
         </header>
 
@@ -189,7 +219,7 @@ export function TeacherDashboardContent({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {students.length === 0 ? (
+              {managedStudents.length === 0 ? (
                 <div className="rounded-md border border-dashed border-muted-foreground/30 p-6 text-center text-muted-foreground">
                   No students are associated with your organization yet. Seed demo accounts or create students to populate this table.
                 </div>
@@ -202,11 +232,12 @@ export function TeacherDashboardContent({
                         <th scope="col" className="px-3 py-2 text-left">Progress</th>
                         <th scope="col" className="px-3 py-2 text-left">Completed</th>
                         <th scope="col" className="px-3 py-2 text-left">Last Active</th>
+                        <th scope="col" className="px-3 py-2 text-left">Actions</th>
                         <th scope="col" className="px-3 py-2 text-right">Details</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {students.map((student) => (
+                      {managedStudents.map((student) => (
                         <tr key={student.id} className="bg-background hover:bg-muted/30 focus-within:bg-muted/30">
                           <td className="px-3 py-3 align-top">
                             <div className="font-medium text-foreground">{student.displayName ?? student.username}</div>
@@ -232,6 +263,14 @@ export function TeacherDashboardContent({
                           </td>
                           <td className="px-3 py-3 align-top">
                             <p className="text-foreground">{formatLastActive(student.lastActive)}</p>
+                          </td>
+                          <td className="px-3 py-3 align-top">
+                            <TeacherStudentActions
+                              studentId={student.id}
+                              username={student.username}
+                              displayName={student.displayName ?? student.username}
+                              onStudentUpdated={handleStudentUpdated}
+                            />
                           </td>
                           <td className="px-3 py-3 align-top text-right">
                             <Button

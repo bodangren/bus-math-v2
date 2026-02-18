@@ -25,12 +25,12 @@
 - [x] Task: Wire student progress + competency data fetch path with org scoping. [b4ffcca]
 - [x] Task: Implement status visualization contract (green/yellow/red) with deterministic rules. [b4ffcca]
 
-## Phase 3: Evidence And Intervention Views
-- [ ] Task: Implement `SubmissionDetailModal` and readonly activity playback path.
-- [ ] Task: Support spreadsheet/read-only rendering for teacher review workflows.
-- [ ] Task: Add regression tests for teacher viewing student submissions without mutation capability.
+## Phase 3: Evidence And Intervention Views [checkpoint: 0d20d31]
+- [x] Task: Implement `SubmissionDetailModal` and readonly activity playback path. [0d20d31]
+- [x] Task: Support spreadsheet/read-only rendering for teacher review workflows. [0d20d31]
+- [x] Task: Add regression tests for teacher viewing student submissions without mutation capability. [0d20d31]
 
 ## Phase 4: Account Management Actions
-- [ ] Task: Implement secure reset-password workflow (API/edge + UI) with role gating.
-- [ ] Task: Implement edit-student workflow with validation and audit-friendly change handling.
-- [ ] Task: Conductor - User Manual Verification 'Sprint 5 Teacher Command Center' (Protocol in workflow.md).
+- [x] Task: Implement secure reset-password workflow (API/edge + UI) with role gating.
+- [x] Task: Implement edit-student workflow with validation and audit-friendly change handling.
+- [x] Task: Conductor - User Manual Verification 'Sprint 5 Teacher Command Center' (Protocol in workflow.md). [2026-02-18]
