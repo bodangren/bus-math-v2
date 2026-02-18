@@ -38,4 +38,4 @@
 ## Phase 5: Course Overview as Default Teacher View
 - [x] Task: Add `TeacherStudentActions` row menu to `GradebookGrid` (Level 2) — spec requires row actions in the unit gradebook; currently only available in the main dashboard list. [2036ab0]
 - [x] Task: Add `TeacherStudentActions` row menu to `CourseOverviewGrid` (Level 1) — same requirement at the course-level grid. [7c0bbdd]
-- [ ] Task: Upgrade `/teacher` main page to embed `CourseOverviewGrid` as primary content — replace the "Student Progress" student-list section with the Course Overview Grid (Level 1 per spec); keep metrics summary cards.
+- [x] Task: Upgrade `/teacher` main page to embed `CourseOverviewGrid` as primary content — replace the "Student Progress" student-list section with the Course Overview Grid (Level 1 per spec); keep metrics summary cards. [ada1338]
