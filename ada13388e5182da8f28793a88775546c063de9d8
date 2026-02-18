@@ -1,0 +1,18 @@
+Task: Upgrade /teacher page to embed CourseOverviewGrid (Phase 5, Task 5.3)
+
+Summary of changes:
+- app/teacher/page.tsx: Added fetchCourseOverviewData import; added to Promise.all
+  alongside existing student/org queries; passed courseOverview prop to component
+- components/teacher/TeacherDashboardContent.tsx: Removed managedStudents state and
+  handleStudentUpdated mutation handler (student updates now handled inside CourseOverviewGrid);
+  removed Link import, /teacher/gradebook nav button, and student progress table;
+  added courseOverview prop type, imported CourseOverviewGrid + types, rendered grid
+  inside a 'Course Overview' Card section; kept all three metrics cards intact;
+  kept formatLastActive export for TeacherStudentDetailPage
+- __tests__/components/teacher/TeacherDashboardContent.test.tsx: Updated to pass
+  courseOverview prop, replaced student-list assertions with grid assertions
+
+Why: Spec says 'Level 1 — Course Overview (default /teacher view)'. The main dashboard
+was still showing a flat student list with phase-completion progress bars. Now it shows
+the color-coded unit mastery grid with inline row actions, completing the three-level
+view hierarchy: /teacher (Level 1) → /teacher/units/[N] (Level 2) → SubmissionDetailModal (Level 3).
