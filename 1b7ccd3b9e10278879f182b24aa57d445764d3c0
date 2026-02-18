@@ -1,0 +1,16 @@
+Phase 2 Verification Report — Gradebook And Status Grid
+
+Automated tests:
+  Command: CI=true npx vitest run __tests__/lib/teacher/ __tests__/components/teacher/GradebookGrid.test.tsx __tests__/components/teacher/CourseOverviewGrid.test.tsx
+  Result: 84/84 passed across 5 test files
+
+Manual verification (confirmed by user 2026-02-18):
+  - /teacher dashboard shows single 'Gradebook' button (no per-unit links)
+  - /teacher/gradebook (L1 course overview) loads: rows=students, columns=units, avg mastery cells with color coding
+  - Unit column headers in L1 link to /teacher/units/[N] (L2)
+  - /teacher/units/1 (L2 unit gradebook) renders GradebookGrid with lesson columns
+  - Lesson column headers link to /teacher/units/[N]/lessons/[lessonId] (L3 URL, page forthcoming)
+  - Sort toggle (A→Z / Z→A) works on both grids
+  - Color contract: green/yellow/red/gray applied correctly
+
+User confirmation: 'I have verified it'
