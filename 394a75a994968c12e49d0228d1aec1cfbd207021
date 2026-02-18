@@ -1,0 +1,3 @@
+Task: Integration test for class-size import scenarios (25-30 students)
+Changes: Added an integration test for the API route and a logic test for the username generation edge function logic.
+Why: To verify that the bulk import feature can handle a typical class size.
