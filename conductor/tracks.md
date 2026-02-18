@@ -6,14 +6,15 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [~] **Track: Sprint 5: Teacher Command Center**
-  *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
-  *Depends on: Sprint 3 completion; Sprint 4 competency data availability*
-  *Current status (2026-02-18): Phase 4 account-management actions implemented and manually verified. Reset Password + Edit Details are now available in the Teacher Dashboard Student Progress list (moved from unit gradebook view).*
+*(no active tracks)*
 
 ---
 
 ## Archive Ledger
+
+- [x] **Track: Sprint 5: Teacher Command Center**
+  *Link: [./conductor/archive/sprint5_teacher_cc_20251125/](./conductor/archive/sprint5_teacher_cc_20251125/)*
+  *Checkpoint: `77670f4` (2026-02-18 close-out)*
 
 - [x] **Track: Sprint 4: Competency Engine & Lesson Gating**
   *Link: [./conductor/archive/sprint4_competency_20251101/](./conductor/archive/sprint4_competency_20251101/)*
