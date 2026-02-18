@@ -11,8 +11,14 @@ const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 
 // Clients
-const adminClient = createClient(supabaseUrl, serviceRoleKey) as any;
-const anonClient = createClient(supabaseUrl, anonKey) as any;
+// persistSession: false keeps each client's session in-memory only, preventing
+// cross-client contamination via shared localStorage in the jsdom test environment.
+const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+  auth: { persistSession: false },
+}) as any;
+const anonClient = createClient(supabaseUrl, anonKey, {
+  auth: { persistSession: false },
+}) as any;
 
 // We will create temporary users for testing
 let studentUser: User | null = null;
@@ -46,8 +52,11 @@ async function createTestUser(role: 'student' | 'teacher') {
     organization_id: '00000000-0000-0000-0000-000000000001' // Demo Org
   });
 
-  // Sign in to get a session client
-  const client = createClient(supabaseUrl, anonKey);
+  // Sign in to get a session client (persistSession: false avoids shared-localStorage
+  // contamination between concurrent clients in the jsdom test environment).
+  const client = createClient(supabaseUrl, anonKey, {
+    auth: { persistSession: false },
+  });
   await client.auth.signInWithPassword({ email, password });
   
   return { user: data.user, client };
@@ -115,13 +124,17 @@ describe('RLS Security Policies', () => {
     // If RLS works, this should return empty array or error if using .single()
     // Or returns data if the policy allows it.
     
-    // Let's verify if we can update other student's profile
-    const { error: updateError } = await studentClient
+    // Verify student A cannot update student B's profile.
+    // PostgREST silently returns 0 rows when the USING clause filters out the target row
+    // (rather than raising an error). Chain .select() to get the affected-rows list back.
+    const { data: updatedRows, error: updateError } = await studentClient
       .from('profiles')
       .update({ display_name: 'Hacked' })
-      .eq('id', otherStudentUser.id);
-      
-    expect(updateError).not.toBeNull(); // Should fail
+      .eq('id', otherStudentUser.id)
+      .select();
+
+    expect(updateError).toBeNull();           // no DB error — RLS filters silently
+    expect(updatedRows).toHaveLength(0);      // 0 rows updated = RLS is working
   });
 
   it('Students can read/write their own progress', async () => {
@@ -181,10 +194,16 @@ describe('RLS Security Policies', () => {
   it('Anon users cannot read profiles', async () => {
     if (!setupSucceeded) return;
 
-    const { data } = await anonClient
+    const { data, error } = await anonClient
         .from('profiles')
         .select('*');
 
-    expect(data).toEqual([]);
+    // With REVOKE ALL ON profiles FROM anon, PostgREST returns a permission-denied
+    // error (data: null). We accept either null or [] — both mean "no rows returned".
+    if (error) {
+      expect(data).toBeNull();
+    } else {
+      expect(data).toEqual([]);
+    }
   });
 });

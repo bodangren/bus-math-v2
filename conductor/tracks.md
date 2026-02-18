@@ -9,7 +9,7 @@ This file is the source of truth for active execution order and archived track h
 - [~] **Track: Sprint 5: Teacher Command Center**
   *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
   *Depends on: Sprint 3 completion; Sprint 4 competency data availability*
-  *Current status (2026-02-18): Beginning implementation. Starting with Dependency Gate and Phase 1: Bulk Onboarding Pipeline.*
+  *Current status (2026-02-18): Phase 4 account-management actions implemented and manually verified. Reset Password + Edit Details are now available in the Teacher Dashboard Student Progress list (moved from unit gradebook view).*
 
 ---
 

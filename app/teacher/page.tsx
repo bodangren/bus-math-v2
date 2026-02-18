@@ -7,6 +7,7 @@ import {
   TeacherDashboardContent,
   type StudentDashboardRow,
 } from "@/components/teacher/TeacherDashboardContent";
+import { fetchCourseOverviewData } from "@/lib/teacher/course-overview-data";
 
 async function getTeacherProfile(userId: string) {
   const [teacher] = await db
@@ -138,9 +139,10 @@ export default async function TeacherDashboardPage() {
     redirect("/student/dashboard");
   }
 
-  const [organizationName, students] = await Promise.all([
+  const [organizationName, students, courseOverview] = await Promise.all([
     getOrganizationName(teacher.organizationId),
     getStudentsInOrganization(teacher.organizationId),
+    fetchCourseOverviewData(teacher.organizationId),
   ]);
 
   const progressSnapshots = await getStudentProgressSnapshots(students.map((student) => student.id));
@@ -165,6 +167,7 @@ export default async function TeacherDashboardPage() {
         organizationName,
       }}
       students={studentsWithProgress}
+      courseOverview={courseOverview}
     />
   );
 }

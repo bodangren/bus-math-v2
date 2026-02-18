@@ -56,7 +56,7 @@ test.describe('Teacher Command Center', () => {
     await expect(page.getByText(/password/i)).toBeVisible();
   });
 
-  test('placeholder for bulk import functionality', async ({ page }) => {
+  test('teacher can bulk import students', async ({ page }) => {
     // 1. Login as teacher
     await page.goto('/auth/login');
     await page.getByRole('button', { name: 'Use demo teacher credentials' }).click();
@@ -65,14 +65,40 @@ test.describe('Teacher Command Center', () => {
     // Wait for navigation
     await page.waitForURL(/\/teacher\/dashboard/, { timeout: 30000 });
 
-    // 2. Verify bulk import area (placeholder for future implementation)
-    await expect(page.getByRole('heading', { name: /teacher dashboard/i })).toBeVisible({ timeout: 30000 });
+    // 2. Open bulk import dialog
+    await page.getByRole('button', { name: /bulk import/i }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+
+    // 3. Paste student names
+    const students = [
+      "Ada Lovelace",
+      "Charles Babbage",
+      "Grace Hopper"
+    ].join('\n');
+
+    await page.getByLabel(/student names/i).fill(students);
+    await page.getByRole('button', { name: /next: review/i }).click();
+
+    // 4. Review step
+    await expect(page.getByText(/review and customize/i)).toBeVisible();
+    await expect(page.getByText("Ada Lovelace")).toBeVisible();
+    await expect(page.getByText("Charles Babbage")).toBeVisible();
+    await expect(page.getByText("Grace Hopper")).toBeVisible();
+
+    // 5. Submit
+    await page.getByRole('button', { name: /create 3 accounts/i }).click();
+
+    // 6. Verify success and credentials sheet
+    await expect(page.getByText(/successfully created 3 student accounts/i)).toBeVisible({ timeout: 20000 });
     
-    // This test will be expanded when bulk import functionality is implemented
-    // For now, verify the dashboard structure supports future bulk import UI
-    await expect(page.getByRole('button', { name: /create student/i })).toBeVisible({ timeout: 10000 });
-    
-    // Placeholder assertion for bulk import button (when implemented)
-    // await expect(page.getByRole('button', { name: /bulk import/i })).toBeVisible();
+    await page.getByRole('button', { name: /view credentials sheet/i }).click();
+    await expect(page.getByText(/student credentials sheet/i)).toBeVisible();
+    await expect(page.getByText(/ada.lovelace/i)).toBeVisible();
+    await expect(page.getByText(/charles.babbage/i)).toBeVisible();
+    await expect(page.getByText(/grace.hopper/i)).toBeVisible();
+
+    // 7. Close sheet
+    await page.getByRole('button', { name: /close/i }).click();
+    await expect(page.getByText(/student credentials sheet/i)).not.toBeVisible();
   });
 });

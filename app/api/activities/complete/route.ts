@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     }
 
     const successPayload = isRecord(phaseResult)
-      ? (phaseResult as CompletePhaseResponse)
+      ? (phaseResult as unknown as CompletePhaseResponse)
       : null;
 
     const compatibilityResponse: CompleteActivityResponse & {

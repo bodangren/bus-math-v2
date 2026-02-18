@@ -27,6 +27,26 @@ const sampleStudents: StudentDashboardRow[] = [
   },
 ];
 
+const emptyCourseOverview = { rows: [], units: [] };
+
+const sampleCourseOverview = {
+  rows: [
+    {
+      studentId: "student-1",
+      displayName: "Demo Student",
+      username: "demo_student",
+      cells: [{ unitNumber: 1, avgMastery: 75, color: "yellow" as const }],
+    },
+    {
+      studentId: "student-2",
+      displayName: "quiet_student",
+      username: "quiet_student",
+      cells: [{ unitNumber: 1, avgMastery: 90, color: "green" as const }],
+    },
+  ],
+  units: [{ unitNumber: 1 }],
+};
+
 describe("TeacherDashboardContent", () => {
   beforeAll(() => {
     vi.useFakeTimers();
@@ -37,11 +57,12 @@ describe("TeacherDashboardContent", () => {
     vi.useRealTimers();
   });
 
-  it("renders teacher metadata and student progress table", () => {
+  it("renders teacher metadata and summary metrics", () => {
     render(
       <TeacherDashboardContent
         teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
         students={sampleStudents}
+        courseOverview={sampleCourseOverview}
       />,
     );
 
@@ -49,54 +70,54 @@ describe("TeacherDashboardContent", () => {
       screen.getByText(/Teacher Dashboard — demo_teacher/i),
     ).toBeInTheDocument();
     expect(screen.getByText("Demo School")).toBeInTheDocument();
-    expect(screen.getByText("Demo Student")).toBeInTheDocument();
-    expect(screen.getByText("@quiet_student")).toBeInTheDocument();
-    expect(screen.getByText("12 / 18")).toBeInTheDocument();
-    expect(screen.getByText("18 / 18")).toBeInTheDocument();
     expect(screen.getByText("1 active in the last 7 days")).toBeInTheDocument();
     expect(screen.getByText("Students at 100% completion")).toBeInTheDocument();
-    expect(screen.getAllByRole("progressbar")[0]).toHaveAttribute(
-      "aria-valuenow",
-      "67",
-    );
+    expect(screen.getByText("Course Overview")).toBeInTheDocument();
   });
 
-  it("shows empty state when no students are present", () => {
-    render(
-      <TeacherDashboardContent
-        teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
-        students={[]}
-      />,
-    );
-
-    expect(
-      screen.getByText(/no students are associated with your organization yet/i),
-    ).toBeInTheDocument();
-  });
-
-  it("renders details links for each student row", () => {
+  it("shows the CourseOverviewGrid in the main content area", () => {
     render(
       <TeacherDashboardContent
         teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
         students={sampleStudents}
+        courseOverview={sampleCourseOverview}
       />,
     );
 
-    const firstStudentLink = screen.getByRole("link", {
-      name: "View demo_student details",
-    });
-    expect(firstStudentLink).toHaveAttribute(
-      "href",
-      "/teacher/students/student-1",
+    // Grid should render with student rows from courseOverview (not the student progress list)
+    expect(
+      screen.getByRole("table", { name: /course overview/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Demo Student")).toBeInTheDocument();
+    // unit header link (exact name targets the column header, not cell aria-labels)
+    expect(screen.getByRole("link", { name: "Unit 1" })).toBeInTheDocument();
+  });
+
+  it("shows CourseOverviewGrid empty state when courseOverview has no data", () => {
+    render(
+      <TeacherDashboardContent
+        teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
+        students={[]}
+        courseOverview={emptyCourseOverview}
+      />,
     );
 
-    const secondStudentLink = screen.getByRole("link", {
-      name: "View quiet_student details",
-    });
-    expect(secondStudentLink).toHaveAttribute(
-      "href",
-      "/teacher/students/student-2",
+    expect(
+      screen.getByText(/No students found in this gradebook/i),
+    ).toBeInTheDocument();
+  });
+
+  it("renders action buttons in the header", () => {
+    render(
+      <TeacherDashboardContent
+        teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
+        students={sampleStudents}
+        courseOverview={sampleCourseOverview}
+      />,
     );
+
+    expect(screen.getByRole("button", { name: /bulk import/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /create student/i })).toBeInTheDocument();
   });
 });
 

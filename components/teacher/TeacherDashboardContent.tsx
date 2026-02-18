@@ -1,16 +1,17 @@
-import Link from "next/link";
+"use client";
+
 import { CheckCircle2, LineChart, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
 import { TeacherCreateStudentDialog } from "./TeacherCreateStudentDialog";
+import { TeacherBulkImportDialog } from "./TeacherBulkImportDialog";
+import { CourseOverviewGrid } from "./CourseOverviewGrid";
+import type { CourseOverviewRow, UnitColumn } from "@/lib/teacher/course-overview";
 
 export interface StudentDashboardRow {
   id: string;
@@ -28,6 +29,7 @@ interface TeacherDashboardContentProps {
     organizationName: string;
   };
   students: StudentDashboardRow[];
+  courseOverview: { rows: CourseOverviewRow[]; units: UnitColumn[] };
 }
 
 const percentageFormatter = new Intl.NumberFormat("en-US", {
@@ -107,6 +109,7 @@ function getDashboardMetrics(students: StudentDashboardRow[]) {
 export function TeacherDashboardContent({
   teacher,
   students,
+  courseOverview,
 }: TeacherDashboardContentProps) {
   const metrics = getDashboardMetrics(students);
 
@@ -126,6 +129,7 @@ export function TeacherDashboardContent({
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
+            <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />
           </div>
@@ -170,76 +174,17 @@ export function TeacherDashboardContent({
           </Card>
         </section>
 
-        <section>
+
+        <section aria-label="Course overview">
           <Card>
             <CardHeader>
-              <CardTitle>Student Progress</CardTitle>
-              <CardDescription>
-                Progress only counts phases marked as completed, satisfying Blocker #4 from the spec.
-              </CardDescription>
+              <CardTitle>Course Overview</CardTitle>
             </CardHeader>
-            <CardContent>
-              {students.length === 0 ? (
-                <div className="rounded-md border border-dashed border-muted-foreground/30 p-6 text-center text-muted-foreground">
-                  No students are associated with your organization yet. Seed demo accounts or create students to populate this table.
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-border text-sm" aria-label="Student progress table">
-                    <thead className="bg-muted/40 text-xs uppercase tracking-wide text-muted-foreground">
-                      <tr>
-                        <th scope="col" className="px-3 py-2 text-left">Student</th>
-                        <th scope="col" className="px-3 py-2 text-left">Progress</th>
-                        <th scope="col" className="px-3 py-2 text-left">Completed</th>
-                        <th scope="col" className="px-3 py-2 text-left">Last Active</th>
-                        <th scope="col" className="px-3 py-2 text-right">Details</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {students.map((student) => (
-                        <tr key={student.id} className="bg-background hover:bg-muted/30 focus-within:bg-muted/30">
-                          <td className="px-3 py-3 align-top">
-                            <div className="font-medium text-foreground">{student.displayName ?? student.username}</div>
-                            <p className="text-xs text-muted-foreground">@{student.username}</p>
-                          </td>
-                          <td className="px-3 py-3 align-top w-64">
-                            <div className="flex items-center gap-2">
-                              <Progress
-                                value={clampPercentage(student.progressPercentage)}
-                                aria-label={`${student.username} progress`}
-                                className="bg-muted/60"
-                              />
-                              <span className="text-xs font-medium text-muted-foreground">
-                                {formatPercentage(student.progressPercentage)}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-3 py-3 align-top">
-                            <p className="font-medium text-foreground">
-                              {student.completedPhases} / {student.totalPhases || "—"}
-                            </p>
-                            <p className="text-xs text-muted-foreground">Completed phases</p>
-                          </td>
-                          <td className="px-3 py-3 align-top">
-                            <p className="text-foreground">{formatLastActive(student.lastActive)}</p>
-                          </td>
-                          <td className="px-3 py-3 align-top text-right">
-                            <Button
-                              asChild
-                              variant="link"
-                              className="px-0 text-primary"
-                            >
-                              <Link href={`/teacher/students/${student.id}`} aria-label={`View ${student.username} details`}>
-                                View details
-                              </Link>
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+            <CardContent className="px-3 pb-3">
+              <CourseOverviewGrid
+                rows={courseOverview.rows}
+                units={courseOverview.units}
+              />
             </CardContent>
           </Card>
         </section>

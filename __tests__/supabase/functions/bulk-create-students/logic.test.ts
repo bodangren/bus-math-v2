@@ -36,4 +36,30 @@ describe("bulk-create-students logic", () => {
     expect(buildDisplayName("maria", "chen", "fallback")).toBe("Maria Chen");
     expect(buildDisplayName("", "", "fallback")).toBe("fallback");
   });
+
+  it("handles high collision scenarios in a batch (30 students)", async () => {
+    const baseUsername = "class_student";
+    const batchSize = 30;
+    const reserved = new Set<string>();
+    
+    // Mock exists: always returns false (simulating new usernames)
+    // The collision logic primarily relies on the 'reserved' set for the current batch
+    const exists = async () => false;
+
+    const results: string[] = [];
+
+    for (let i = 0; i < batchSize; i++) {
+      const username = await generateUniqueUsername(
+        { preferredUsername: baseUsername },
+        { exists, reserved }
+      );
+      results.push(username);
+    }
+
+    expect(results).toHaveLength(batchSize);
+    expect(results[0]).toBe("class_student");
+    expect(results[1]).toBe("class_student_02");
+    expect(results[29]).toBe("class_student_30");
+    expect(new Set(results).size).toBe(batchSize);
+  });
 });

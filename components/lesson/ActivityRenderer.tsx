@@ -16,7 +16,7 @@ interface ActivityRendererProps {
   lessonId: string;
   phaseNumber: number;
   required?: boolean;
-  initialStatus?: 'not_started' | 'in_progress' | 'completed';
+  initialStatus?: 'not_started' | 'in_progress' | 'completed' | 'current' | 'available' | 'locked';
   onStatusChange?: () => void;
 }
 
