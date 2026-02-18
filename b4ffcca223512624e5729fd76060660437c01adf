@@ -1,0 +1,10 @@
+Tasks: Wire student progress + competency data fetch (org scoping) + Status visualization contract (green/yellow/red)
+
+Changes:
+- lib/teacher/gradebook.ts: Added assembleGradebookRows (pure assembly from raw DB shapes), RawLesson/RawLessonVersion/RawPhaseVersion/RawLessonStandard/RawStudent/RawProgressRow/RawCompetencyRow types. Pure function keeps test isolation clean.
+- lib/teacher/gradebook-data.ts: fetchGradebookData — 4-batch Drizzle query sequence: (1) unit lessons, (2) published lesson versions, (3) phase_versions+lesson_standards+org_students in parallel, (4) student_progress+student_competency in parallel. inArray for batch scoping; org_id scoping on profiles query.
+- app/teacher/units/[unitNumber]/page.tsx: Level 2 server page. Auth guard (teacher|admin role), notFound() for invalid unitNumber, renders GradebookGrid with fetched data and breadcrumb back to /teacher.
+- app/teacher/page.tsx: countDistinct(lessons.id) grouped by unit_number to build UnitSummary[]; passed to TeacherDashboardContent.
+- components/teacher/TeacherDashboardContent.tsx: Unit gradebook nav links rendered when units prop non-empty; UnitSummary type exported.
+
+Status visualization contract location: computeCellColor in gradebook.ts. Deterministic rules: gray(not_started+null) → green(completed|≥80) → yellow(in_progress|50-79) → red. in_progress always ≥ yellow. Propagated through buildGradebookCell → assembleGradebookRows → GradebookGrid (cellBgClass Tailwind classes).
