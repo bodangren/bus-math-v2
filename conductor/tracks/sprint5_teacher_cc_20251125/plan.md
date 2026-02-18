@@ -31,6 +31,6 @@
 - [x] Task: Add regression tests for teacher viewing student submissions without mutation capability. [0d20d31]
 
 ## Phase 4: Account Management Actions
-- [x] Task: Implement secure reset-password workflow (API/edge + UI) with role gating.
-- [x] Task: Implement edit-student workflow with validation and audit-friendly change handling.
-- [x] Task: Conductor - User Manual Verification 'Sprint 5 Teacher Command Center' (Protocol in workflow.md). [2026-02-18]
+- [x] Task: Implement secure reset-password workflow (API/edge + UI) with role gating. [7842877]
+- [x] Task: Implement edit-student workflow with validation and audit-friendly change handling. [7842877]
+- [x] Task: Conductor - User Manual Verification 'Sprint 5 Teacher Command Center' (Protocol in workflow.md). [7842877]
