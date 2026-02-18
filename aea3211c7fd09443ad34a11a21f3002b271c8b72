@@ -1,0 +1,8 @@
+Task: Implement GradebookGrid with scalable row rendering and stable sorting/filtering
+
+Changes:
+- lib/teacher/gradebook.ts: Pure logic module. computeLessonStatus (6-phase rollup), computeCellColor (green/yellow/red/gray contract), buildGradebookCell, sortRowsByName, cellBgClass/cellColorLabel helpers.
+- components/teacher/GradebookGrid.tsx: Client component. Frozen first column (sticky), sort toggle (asc/desc), color-coded cells via cellBgClass, Unit Test column visually separated with border-l-2, empty states for both rows and lessons, aria-labels on every data cell.
+- 44 tests total (27 unit + 17 component). Color contract: green=completed|mastery≥80, yellow=in_progress|mastery50-79, red=not_started+mastery<50, gray=no data. in_progress beats mastery<50 threshold (yellow, not red).
+
+Why: Core visual contract for Level 2 gradebook view. Pure functions are framework-independent and fully testable; component delegates all color decisions to the library.
