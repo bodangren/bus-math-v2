@@ -24,7 +24,7 @@ import { ComprehensionCheck } from '@/components/exercises/ComprehensionCheck';
 import { PeerCritiqueForm } from '@/components/exercises/PeerCritiqueForm';
 import ReflectionJournal from '@/components/exercises/ReflectionJournal';
 import { SpreadsheetEvaluator } from '@/components/activities/SpreadsheetEvaluator';
-import { SpreadsheetActivity } from '@/components/spreadsheet/SpreadsheetActivity';
+import { SpreadsheetActivityAdapter } from '@/components/spreadsheet/SpreadsheetActivityAdapter';
 import type { ActivityComponentKey } from '@/types/activities';
 
 /**
@@ -63,7 +63,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'chart-builder': FinancialDashboard,
 
   // Spreadsheet + data utilities
-  'spreadsheet': SpreadsheetActivity,
+  'spreadsheet': SpreadsheetActivityAdapter,
   'spreadsheet-evaluator': SpreadsheetEvaluator,
   'data-cleaning': DataCleaningExercise,
 

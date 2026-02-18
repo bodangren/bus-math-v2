@@ -109,7 +109,7 @@ export default function ReflectionJournal({ activity, className = '', onSubmit }
             <div>
               <CardTitle className="text-2xl font-bold">{unitTitle}</CardTitle>
               <CardDescription>
-                Reflect on your learning journey and growth in the CAP framework
+                {activity.props.description ?? 'Reflect on your learning and growth from this lesson.'}
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">

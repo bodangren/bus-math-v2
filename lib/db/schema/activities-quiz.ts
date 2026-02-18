@@ -78,6 +78,7 @@ export const quizActivityPropsSchemas = {
   }),
   'reflection-journal': z.object({
     unitTitle: z.string().default('Learning Reflection'),
+    description: z.string().optional(),
     prompts: z.array(reflectionPromptSchema).min(1),
   }),
   'peer-critique-form': z.object({
