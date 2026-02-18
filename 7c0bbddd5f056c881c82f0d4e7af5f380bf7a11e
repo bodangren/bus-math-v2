@@ -1,0 +1,11 @@
+Task: Add TeacherStudentActions to CourseOverviewGrid (Phase 5, Task 5.2)
+
+Summary of changes:
+- components/teacher/CourseOverviewGrid.tsx: Added managedRows state, handleStudentUpdated
+  callback using applyStudentRowUpdate, and TeacherStudentActions in frozen student-name
+  column for each row. Reused the generic helper already available in lib/teacher/gradebook.
+
+Why: The spec Level 1 Course Overview section shows a grid with students and units.
+Row action menus (Reset Password, Edit Details) should be accessible at every level of
+the teacher view hierarchy so teachers can perform account management without navigating
+between pages.
