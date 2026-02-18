@@ -39,3 +39,7 @@
 - [x] Task: Add `TeacherStudentActions` row menu to `GradebookGrid` (Level 2) — spec requires row actions in the unit gradebook; currently only available in the main dashboard list. [2036ab0]
 - [x] Task: Add `TeacherStudentActions` row menu to `CourseOverviewGrid` (Level 1) — same requirement at the course-level grid. [7c0bbdd]
 - [x] Task: Upgrade `/teacher` main page to embed `CourseOverviewGrid` as primary content — replace the "Student Progress" student-list section with the Course Overview Grid (Level 1 per spec); keep metrics summary cards. [ada1338]
+
+## Track Close-Out (2026-02-18)
+- [x] Task: Fix all pre-existing lint errors (hooks-after-return in LessonRenderer, unused imports, no-explicit-any in test files, session-isolation in RLS tests). [751b011]
+- [x] Task: Make CourseOverviewGrid unit cells into links to Level 2 — spec requires "clicking a unit cell OR column header navigates to Level 2"; previously only headers linked. [0afd539]
