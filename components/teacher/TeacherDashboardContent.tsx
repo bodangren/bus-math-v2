@@ -13,11 +13,6 @@ import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
 import { TeacherCreateStudentDialog } from "./TeacherCreateStudentDialog";
 import { TeacherBulkImportDialog } from "./TeacherBulkImportDialog";
 
-export interface UnitSummary {
-  unitNumber: number;
-  lessonCount: number;
-}
-
 export interface StudentDashboardRow {
   id: string;
   username: string;
@@ -34,7 +29,6 @@ interface TeacherDashboardContentProps {
     organizationName: string;
   };
   students: StudentDashboardRow[];
-  units?: UnitSummary[];
 }
 
 const percentageFormatter = new Intl.NumberFormat("en-US", {
@@ -114,7 +108,6 @@ function getDashboardMetrics(students: StudentDashboardRow[]) {
 export function TeacherDashboardContent({
   teacher,
   students,
-  units = [],
 }: TeacherDashboardContentProps) {
   const metrics = getDashboardMetrics(students);
 
@@ -134,6 +127,13 @@ export function TeacherDashboardContent({
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
+            <Link
+              href="/teacher/gradebook"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <LineChart className="size-4 text-muted-foreground" aria-hidden="true" />
+              Gradebook
+            </Link>
             <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />
@@ -179,25 +179,6 @@ export function TeacherDashboardContent({
           </Card>
         </section>
 
-        {units.length > 0 && (
-          <section aria-label="Unit gradebooks">
-            <div className="flex flex-wrap gap-3">
-              {units.map(unit => (
-                <Link
-                  key={unit.unitNumber}
-                  href={`/teacher/units/${unit.unitNumber}`}
-                  className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-sm hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <LineChart className="size-4 text-muted-foreground" aria-hidden="true" />
-                  Unit {unit.unitNumber} Gradebook
-                  <span className="text-xs text-muted-foreground">
-                    ({unit.lessonCount} lesson{unit.lessonCount !== 1 ? 's' : ''})
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
 
         <section>
           <Card>

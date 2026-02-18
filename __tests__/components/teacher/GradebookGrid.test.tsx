@@ -54,13 +54,13 @@ const twoStudents: GradebookRow[] = [
 
 describe('GradebookGrid rendering', () => {
   it('renders student names', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     expect(screen.getByText('Alice Brown')).toBeInTheDocument();
     expect(screen.getByText('Zara Ahmed')).toBeInTheDocument();
   });
 
   it('renders a column header for each lesson', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     // L1–L10
     for (let i = 1; i <= 10; i++) {
       expect(screen.getByText(`L${i}`)).toBeInTheDocument();
@@ -68,30 +68,30 @@ describe('GradebookGrid rendering', () => {
   });
 
   it('renders the unit test column header distinctly', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     expect(screen.getByText('Unit Test')).toBeInTheDocument();
   });
 
   it('shows mastery percentage in a cell when available', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     expect(screen.getByText('90%')).toBeInTheDocument();
     expect(screen.getByText('60%')).toBeInTheDocument();
   });
 
   it('shows an em-dash when no mastery data', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     // Several cells have null mastery; there should be multiple em-dashes
     const dashes = screen.getAllByText('—');
     expect(dashes.length).toBeGreaterThan(0);
   });
 
   it('shows empty state when no rows are provided', () => {
-    render(<GradebookGrid rows={[]} lessons={lessons} />);
+    render(<GradebookGrid rows={[]} lessons={lessons} unitNumber={1} />);
     expect(screen.getByText(/no students/i)).toBeInTheDocument();
   });
 
   it('shows empty state when lessons array is empty', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={[]} />);
+    render(<GradebookGrid rows={twoStudents} lessons={[]} unitNumber={1} />);
     expect(screen.getByText(/no lessons/i)).toBeInTheDocument();
   });
 });
@@ -105,7 +105,7 @@ describe('GradebookGrid color contract', () => {
     const rows = [
       makeRow('s1', 'Alice', 'alice', [makeCell(1, 'green', 90, 'completed')]),
     ];
-    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} />);
+    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} unitNumber={1} />);
     const cell = screen.getByRole('cell', { name: /lesson 1.*completed/i });
     expect(cell).toHaveClass('bg-green-100');
   });
@@ -114,7 +114,7 @@ describe('GradebookGrid color contract', () => {
     const rows = [
       makeRow('s1', 'Alice', 'alice', [makeCell(1, 'yellow', 60, 'in_progress')]),
     ];
-    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} />);
+    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} unitNumber={1} />);
     const cell = screen.getByRole('cell', { name: /lesson 1.*in progress/i });
     expect(cell).toHaveClass('bg-yellow-100');
   });
@@ -123,7 +123,7 @@ describe('GradebookGrid color contract', () => {
     const rows = [
       makeRow('s1', 'Alice', 'alice', [makeCell(1, 'red', 30, 'not_started')]),
     ];
-    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} />);
+    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} unitNumber={1} />);
     const cell = screen.getByRole('cell', { name: /lesson 1.*needs attention/i });
     expect(cell).toHaveClass('bg-red-100');
   });
@@ -132,7 +132,7 @@ describe('GradebookGrid color contract', () => {
     const rows = [
       makeRow('s1', 'Alice', 'alice', [makeCell(1, 'gray', null, 'not_started')]),
     ];
-    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} />);
+    render(<GradebookGrid rows={rows} lessons={[makeLesson(1)]} unitNumber={1} />);
     const cell = screen.getByRole('cell', { name: /lesson 1.*not started/i });
     expect(cell).toHaveClass('bg-muted/30');
   });
@@ -153,7 +153,7 @@ describe('GradebookGrid sorting', () => {
   ];
 
   it('renders students sorted by display name by default', () => {
-    render(<GradebookGrid rows={unsortedRows} lessons={oneLesson} />);
+    render(<GradebookGrid rows={unsortedRows} lessons={oneLesson} unitNumber={1} />);
     const names = screen.getAllByRole('rowheader').map(th => th.textContent?.trim());
     expect(names[0]).toContain('Alice Brown');
     expect(names[1]).toContain('Mike Chen');
@@ -162,7 +162,7 @@ describe('GradebookGrid sorting', () => {
 
   it('toggles sort direction when name header is clicked', async () => {
     const user = userEvent.setup();
-    render(<GradebookGrid rows={unsortedRows} lessons={oneLesson} />);
+    render(<GradebookGrid rows={unsortedRows} lessons={oneLesson} unitNumber={1} />);
 
     const sortBtn = screen.getByRole('button', { name: /sort by student name/i });
     await user.click(sortBtn);
@@ -179,25 +179,25 @@ describe('GradebookGrid sorting', () => {
 
 describe('GradebookGrid accessibility', () => {
   it('has an accessible table label', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     expect(screen.getByRole('table', { name: /gradebook/i })).toBeInTheDocument();
   });
 
   it('uses th scope="row" for student name cells', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     const rowHeaders = screen.getAllByRole('rowheader');
     expect(rowHeaders.length).toBe(twoStudents.length);
   });
 
   it('uses th scope="col" for lesson column headers', () => {
-    render(<GradebookGrid rows={twoStudents} lessons={lessons} />);
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     const colHeaders = screen.getAllByRole('columnheader');
     // Student name header + 11 lesson headers
     expect(colHeaders.length).toBe(12);
   });
 
   it('each data cell has an aria-label describing student and lesson', () => {
-    render(<GradebookGrid rows={[twoStudents[0]]} lessons={[makeLesson(1)]} />);
+    render(<GradebookGrid rows={[twoStudents[0]]} lessons={[makeLesson(1)]} unitNumber={1} />);
     const cell = screen.getByRole('cell', { name: /alice brown.*lesson 1/i });
     expect(cell).toBeInTheDocument();
   });

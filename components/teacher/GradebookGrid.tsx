@@ -1,7 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+// ArrowUp/ArrowDown used inline in column header button; ArrowUpDown used as default icon
 import {
   cellBgClass,
   cellColorLabel,
@@ -17,6 +19,8 @@ import {
 interface GradebookGridProps {
   rows: GradebookRow[];
   lessons: GradebookLesson[];
+  /** Used to build lesson header links: /teacher/units/[unitNumber]/lessons/[lessonId] */
+  unitNumber: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -37,7 +41,7 @@ function EmptyState({ message }: { message: string }) {
 
 type SortDirection = 'asc' | 'desc';
 
-export function GradebookGrid({ rows, lessons }: GradebookGridProps) {
+export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps) {
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
 
   if (rows.length === 0) {
@@ -55,14 +59,9 @@ export function GradebookGrid({ rows, lessons }: GradebookGridProps) {
     setSortDir(d => (d === 'asc' ? 'desc' : 'asc'));
   }
 
-  const SortIcon = sortDir === 'asc' ? ArrowUp : ArrowDown;
-
   // Separate regular lessons from the unit test (L11) for visual distinction
   const regularLessons = lessons.filter(l => !l.isUnitTest);
   const unitTestLesson = lessons.find(l => l.isUnitTest);
-  const orderedLessons = unitTestLesson
-    ? [...regularLessons, unitTestLesson]
-    : regularLessons;
 
   return (
     <div className="overflow-x-auto rounded-md border border-border">
@@ -94,15 +93,20 @@ export function GradebookGrid({ rows, lessons }: GradebookGridProps) {
               </button>
             </th>
 
-            {/* Regular lesson headers L1–L10 */}
+            {/* Regular lesson headers L1–L10 — link to lesson view */}
             {regularLessons.map(lesson => (
               <th
                 key={lesson.lessonId}
                 scope="col"
                 className="px-2 py-2 text-center font-medium"
-                title={lesson.lessonTitle}
               >
-                L{lesson.orderIndex}
+                <Link
+                  href={`/teacher/units/${unitNumber}/lessons/${lesson.lessonId}`}
+                  title={lesson.lessonTitle}
+                  className="hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  L{lesson.orderIndex}
+                </Link>
               </th>
             ))}
 
@@ -111,9 +115,14 @@ export function GradebookGrid({ rows, lessons }: GradebookGridProps) {
               <th
                 scope="col"
                 className="border-l-2 border-border px-2 py-2 text-center font-semibold text-foreground"
-                title={unitTestLesson.lessonTitle}
               >
-                Unit Test
+                <Link
+                  href={`/teacher/units/${unitNumber}/lessons/${unitTestLesson.lessonId}`}
+                  title={unitTestLesson.lessonTitle}
+                  className="hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Unit Test
+                </Link>
               </th>
             )}
           </tr>
