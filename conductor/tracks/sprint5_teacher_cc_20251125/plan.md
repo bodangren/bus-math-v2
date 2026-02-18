@@ -20,7 +20,7 @@
   - Unit and integration tests updated to mock `createAdminClient` instead of `global.fetch`.
 - **Next Steps:** Proceed to **Phase 2: Gradebook And Status Grid**.
 
-## Phase 2: Gradebook And Status Grid
+## Phase 2: Gradebook And Status Grid [checkpoint: 1b7ccd3]
 - [x] Task: Implement `GradebookGrid` with scalable row rendering and stable sorting/filtering. [aea3211]
 - [x] Task: Wire student progress + competency data fetch path with org scoping. [b4ffcca]
 - [x] Task: Implement status visualization contract (green/yellow/red) with deterministic rules. [b4ffcca]
