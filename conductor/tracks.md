@@ -6,11 +6,6 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [~] **Track: Sprint 4: Competency Engine & Lesson Gating**
-  *Link: [./conductor/tracks/sprint4_competency_20251101/](./conductor/tracks/sprint4_competency_20251101/)*
-  *Depends on: Sprint 3 core platform completion*
-  *Current status (2026-02-09): In progress on branch `sprint4_competency_20260209`; Phase 1 and Phase 2 are complete. Post-Phase-2 hardening landed for demo lesson provisioning, lesson activity rendering, and phase completion idempotency. Active blocker before Phase 3 start: runtime `POST /api/users/ensure-demo?reset=full` currently returns `500` in user environment and needs server-log diagnosis (see sprint4 plan handoff notes).*
-
 - [ ] **Track: Sprint 5: Teacher Command Center**
   *Link: [./conductor/tracks/sprint5_teacher_cc_20251125/](./conductor/tracks/sprint5_teacher_cc_20251125/)*
   *Depends on: Sprint 3 completion; Sprint 4 competency data availability*
@@ -18,6 +13,10 @@ This file is the source of truth for active execution order and archived track h
 ---
 
 ## Archive Ledger
+
+- [x] **Track: Sprint 4: Competency Engine & Lesson Gating**
+  *Link: [./conductor/archive/sprint4_competency_20251101/](./conductor/archive/sprint4_competency_20251101/)*
+  *Checkpoint: `b801c9c` (2026-02-18 closeout)*
 
 - [x] **Track: Sprint 3: Core Platform Completion (Rebaseline)**
   *Link: [./conductor/archive/sprint3_core_platform_20251111/](./conductor/archive/sprint3_core_platform_20251111/)*
