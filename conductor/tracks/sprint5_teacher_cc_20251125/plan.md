@@ -7,7 +7,7 @@
 - [x] Task: Finalize transactional `bulk-create-students` edge function with strict role checks and audit-safe responses. [252174b]
 - [x] Task: Implement `BulkImportDialog` parse/review/submit flow with robust validation errors. [252174b]
 - [x] Task: Implement print-friendly `CredentialsSheet` and verify output for Letter + A4. [252174b]
-- [ ] Task: Integration test for class-size import scenarios (25-30 students).
+- [x] Task: Integration test for class-size import scenarios (25-30 students). [394a75a]
 
 ## Session Handoff Notes (2026-02-18)
 
