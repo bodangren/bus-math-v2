@@ -1,0 +1,16 @@
+Task: Add TeacherStudentActions to GradebookGrid (Phase 5, Task 5.1)
+
+Summary of changes:
+- lib/teacher/gradebook.ts: Added applyStudentRowUpdate<T> pure generic function
+  that filters out deactivated students and updates displayName for edited students
+- components/teacher/GradebookGrid.tsx: Replaced direct use of rows prop with
+  managedRows state; added handleStudentUpdated callback; embedded TeacherStudentActions
+  in frozen student-name column; imported applyStudentRowUpdate
+- app/teacher/units/[unitNumber]/page.tsx: Committed pending unitNumber prop pass-through
+  to GradebookGrid (needed for lesson header links)
+- __tests__/lib/teacher/gradebook.test.ts: 5 new tests for applyStudentRowUpdate covering
+  deactivation, name update, no-mutation guarantee, unknown studentId, and empty-result cases
+
+Why: The spec (Level 2 GradebookGrid interaction section) requires 'Row action menu →
+Reset Password, Edit Details'. Previously these actions were only in the main dashboard
+student list. Now teachers can manage accounts directly from the unit gradebook view.
