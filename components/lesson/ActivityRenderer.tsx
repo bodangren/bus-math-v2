@@ -16,6 +16,7 @@ interface ActivityRendererProps {
   lessonId: string;
   phaseNumber: number;
   required?: boolean;
+  initialStatus?: 'not_started' | 'in_progress' | 'completed';
 }
 
 interface ActivitySubmissionPayload {
@@ -42,14 +43,31 @@ interface AssessmentResponse {
  * ActivityRenderer fetches an activity from the database by ID
  * and renders it using the activity registry.
  */
-export function ActivityRenderer({ activityId, lessonId, phaseNumber, required = false }: ActivityRendererProps) {
+export function ActivityRenderer({ 
+  activityId, 
+  lessonId, 
+  phaseNumber, 
+  required = false,
+  initialStatus = 'not_started'
+}: ActivityRendererProps) {
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submissionResult, setSubmissionResult] = useState<AssessmentResponse | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [completionResult, setCompletionResult] = useState<CompletePhaseResponse | null>(null);
+  
+  const [completionResult, setCompletionResult] = useState<CompletePhaseResponse | null>(() => {
+    if (initialStatus === 'completed') {
+      return {
+        success: true,
+        nextPhaseUnlocked: true,
+        message: 'Activity already completed',
+        phaseId: '',
+      };
+    }
+    return null;
+  });
 
   const { completePhase, isCompleting } = usePhaseCompletion({
     lessonId,
@@ -68,6 +86,17 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
       );
     },
   });
+
+  useEffect(() => {
+    if (initialStatus === 'completed' && !completionResult) {
+      setCompletionResult({
+        success: true,
+        nextPhaseUnlocked: true,
+        message: 'Activity already completed',
+        phaseId: '',
+      });
+    }
+  }, [initialStatus, completionResult]);
 
   useEffect(() => {
     async function fetchActivity() {
@@ -169,7 +198,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
    */
   const handleActivityComplete = useCallback(
     async () => {
-      if (!activity) {
+      if (!activity || completionResult?.success) {
         return;
       }
 
@@ -177,7 +206,7 @@ export function ActivityRenderer({ activityId, lessonId, phaseNumber, required =
       setCompletionResult(null);
       await completePhase();
     },
-    [activity, completePhase],
+    [activity, completePhase, completionResult],
   );
 
   const didPayloadCompleteActivity = useCallback((payload: ActivitySubmissionPayload): boolean => {

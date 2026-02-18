@@ -6,6 +6,7 @@ const mockUpdateUserById = vi.fn();
 const mockCreateUser = vi.fn();
 const mockFrom = vi.fn();
 const mockUpsert = vi.fn();
+const mockInsert = vi.fn();
 const mockDelete = vi.fn();
 const mockIn = vi.fn();
 const mockDeleteEq = vi.fn();
@@ -60,10 +61,11 @@ describe('POST /api/users/ensure-demo', () => {
         };
       }
 
-      return { upsert: mockUpsert, delete: mockDelete };
+      return { upsert: mockUpsert, insert: mockInsert, delete: mockDelete };
     });
 
     mockUpsert.mockResolvedValue({ error: null });
+    mockInsert.mockResolvedValue({ error: null });
     mockDelete.mockReturnValue({ in: mockIn, eq: mockDeleteEq });
     mockIn.mockResolvedValue({ error: null });
     mockDeleteEq.mockResolvedValue({ error: null });
@@ -116,7 +118,7 @@ describe('POST /api/users/ensure-demo', () => {
     expect(phaseRows).toHaveLength(6);
     expect(phaseRows.map((row) => row.phase_number)).toEqual([1, 2, 3, 4, 5, 6]);
 
-    const sectionRowsCall = mockUpsert.mock.calls.find(([rows]) =>
+    const sectionRowsCall = mockInsert.mock.calls.find(([rows]) =>
       Array.isArray(rows) && rows.some((row) => typeof row?.section_type === 'string')
     );
     expect(sectionRowsCall).toBeDefined();

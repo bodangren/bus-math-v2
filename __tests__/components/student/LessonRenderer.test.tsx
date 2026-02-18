@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { LessonRenderer } from '../../../components/student/LessonRenderer';
+import { usePhaseProgress } from '../../../hooks/usePhaseProgress';
+import { usePhaseCompletion } from '../../../hooks/usePhaseCompletion';
 import type { ContentBlock } from '@/types/curriculum';
 
 vi.mock('next/navigation', () => ({
@@ -18,8 +20,13 @@ vi.mock('@/hooks/usePhaseProgress', () => ({
   })),
 }));
 
-vi.mock('@/components/lesson/PhaseCompleteButton', () => ({
-  PhaseCompleteButton: () => <button type="button">Mock Complete Phase</button>,
+// Mock usePhaseCompletion hook
+vi.mock('@/hooks/usePhaseCompletion', () => ({
+  usePhaseCompletion: vi.fn(() => ({
+    completePhase: vi.fn(),
+    isCompleting: false,
+    error: null,
+  })),
 }));
 
 vi.mock('@/components/lesson/ActivityRenderer', () => ({
@@ -282,14 +289,83 @@ describe('LessonRenderer', () => {
     expect(screen.queryByText('Learn the basics of financial statements')).not.toBeInTheDocument();
   });
 
-  it('renders lesson without learning objectives', () => {
-    const lessonWithoutObjectives = {
-      ...mockLesson,
-      learningObjectives: null,
-    };
+  it('automatically triggers completion for Read phases', () => {
+    const mockPhases = [
+      {
+        id: 'phase-1',
+        phaseNumber: 1,
+        title: 'Introduction',
+        contentBlocks: [],
+      },
+    ];
+    const mockCompletePhase = vi.fn();
+    vi.mocked(usePhaseCompletion).mockReturnValue({
+      completePhase: mockCompletePhase,
+      isCompleting: false,
+      error: null,
+    } as any);
 
-    render(<LessonRenderer lesson={lessonWithoutObjectives} phases={[]} {...defaultProps} />);
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.queryByText('Learning Objectives')).not.toBeInTheDocument();
+    expect(mockCompletePhase).toHaveBeenCalled();
+  });
+
+  it('disables Next Phase button when the current Do phase is not completed', () => {
+    const mockPhases = [
+      { 
+        id: 'p1', 
+        phaseNumber: 1, 
+        title: 'P1',
+        contentBlocks: [{ id: 'b1', type: 'activity' as const, activityId: 'act1', required: true }]
+      },
+      { id: 'p2', phaseNumber: 2, title: 'P2' },
+    ];
+    // Mock progress showing phase 1 is NOT completed
+    vi.mocked(usePhaseProgress).mockReturnValue({
+      data: { phases: [{ phaseId: 'p1', status: 'available' }] } as any,
+      isLoading: false,
+      refetch: vi.fn(),
+    } as any);
+
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} currentPhaseNumber={1} lessonSlug="slug" />);
+
+    const nextButton = screen.getByRole('button', { name: /next phase/i });
+    expect(nextButton).toBeDisabled();
+  });
+
+  it('enables Next Phase button when the current phase is completed', () => {
+    const mockPhases = [
+      { id: 'p1', phaseNumber: 1, title: 'P1' },
+      { id: 'p2', phaseNumber: 2, title: 'P2' },
+    ];
+    // Mock progress showing phase 1 IS completed
+    vi.mocked(usePhaseProgress).mockReturnValue({
+      data: { phases: [{ phaseId: 'p1', status: 'completed' }, { phaseId: 'p2', status: 'available' }] } as any,
+      isLoading: false,
+      refetch: vi.fn(),
+    } as any);
+
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} currentPhaseNumber={1} lessonSlug="slug" />);
+
+    const nextButton = screen.getByRole('button', { name: /next phase/i });
+    expect(nextButton).not.toBeDisabled();
+  });
+
+  it('enables Next Phase button for Read phases even if not completed in DB', () => {
+    const mockPhases = [
+      { id: 'p1', phaseNumber: 1, title: 'P1', contentBlocks: [] }, // Read phase
+      { id: 'p2', phaseNumber: 2, title: 'P2' },
+    ];
+    // Mock progress showing phase 1 is available (not yet completed)
+    vi.mocked(usePhaseProgress).mockReturnValue({
+      data: { phases: [{ phaseId: 'p1', status: 'available' }] } as any,
+      isLoading: false,
+      refetch: vi.fn(),
+    } as any);
+
+    render(<LessonRenderer lesson={mockLesson} phases={mockPhases} currentPhaseNumber={1} lessonSlug="slug" />);
+
+    const nextButton = screen.getByRole('button', { name: /next phase/i });
+    expect(nextButton).not.toBeDisabled();
   });
 });

@@ -1,10 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { PhaseCompleteButton } from '@/components/lesson/PhaseCompleteButton';
+import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { LessonStepper, type StepperPhase } from '@/components/lesson/LessonStepper';
 import { usePhaseProgress } from '@/hooks/usePhaseProgress';
+import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ActivityRenderer } from '@/components/lesson/ActivityRenderer';
@@ -60,7 +61,28 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
     );
   }
 
-  // Transform phases data for LessonStepper
+  // Determine if it's a "Read" phase (no required activity)
+  const hasRequiredActivity = currentPhase?.contentBlocks?.some(
+    block => block.type === 'activity' && block.required
+  );
+  const isReadPhase = !hasRequiredActivity;
+
+  // Set up auto-capture hook
+  const { completePhase: autoMarkComplete, isCompleting: isAutoCompleting } = usePhaseCompletion({
+    lessonId: lesson.slug,
+    phaseNumber: currentPhaseNumber,
+    phaseType: isReadPhase ? 'read' : 'do',
+    onSuccess: () => {
+      // Refetch progress to update stepper and navigation
+      refetch();
+    },
+  });
+
+  // Get current phase completion status
+  const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase.id);
+  const isCurrentPhaseCompleted = currentPhaseProgress?.status === 'completed';
+
+  // Transform phases data for LessonStepper and navigation logic
   const stepperPhases: StepperPhase[] = phases.map(phase => {
     const phaseProgress = progressData?.phases.find(p => p.phaseId === phase.id);
     return {
@@ -71,6 +93,13 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
     };
   });
 
+  // Auto-capture for Read phases on navigation
+  useEffect(() => {
+    if (isReadPhase && !isCurrentPhaseCompleted && !isLoading && !isAutoCompleting) {
+      autoMarkComplete();
+    }
+  }, [currentPhase.id, isReadPhase, isCurrentPhaseCompleted, isLoading, autoMarkComplete, isAutoCompleting]);
+
   // Handle phase navigation
   const handlePhaseClick = (phaseNumber: number) => {
     router.push(`/student/lesson/${lessonSlug}?phase=${phaseNumber}`);
@@ -80,13 +109,14 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
   const canGoPrevious = currentPhaseNumber > 1;
   const canGoNext = currentPhaseNumber < phases.length;
 
-  // Get current phase completion status
-  const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase.id);
-  const isCurrentPhaseCompleted = currentPhaseProgress?.status === 'completed';
-
-  // Check if next phase is unlocked (either already unlocked OR current phase is completed)
+  // Check if next phase is unlocked (either already unlocked OR current phase is completed/read-only)
   const nextPhaseStatus = stepperPhases.find(p => p.phaseNumber === currentPhaseNumber + 1)?.status;
-  const isNextPhaseUnlocked = isCurrentPhaseCompleted || nextPhaseStatus === 'available' || nextPhaseStatus === 'current' || nextPhaseStatus === 'completed';
+  const isNextPhaseUnlocked = 
+    isCurrentPhaseCompleted || 
+    isReadPhase || 
+    nextPhaseStatus === 'available' || 
+    nextPhaseStatus === 'current' || 
+    nextPhaseStatus === 'completed';
 
   const handlePrevious = () => {
     if (canGoPrevious) {
@@ -200,15 +230,17 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
             </div>
 
             <div className="mt-6 flex justify-end">
-              <PhaseCompleteButton
-                lessonId={lesson.slug}
-                phaseNumber={currentPhase.phaseNumber}
-                initialStatus={isCurrentPhaseCompleted ? 'completed' : 'not_started'}
-                onStatusChange={() => {
-                  // Refetch progress to update button states and stepper
-                  refetch();
-                }}
-              />
+              {isReadPhase && !isCurrentPhaseCompleted && (
+                <div className="text-sm text-muted-foreground animate-pulse">
+                  Recording progress...
+                </div>
+              )}
+              {isReadPhase && isCurrentPhaseCompleted && (
+                <div className="text-sm text-green-600 flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Phase complete
+                </div>
+              )}
             </div>
           </div>
         </div>

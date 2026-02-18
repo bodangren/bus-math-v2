@@ -23,14 +23,6 @@ const DEMO_LESSON_ID = '10000000-0000-0000-0000-000000000001';
 const DEMO_LESSON_VERSION_ID = '10000000-0000-0000-0000-000000000101';
 const DEMO_LESSON_VERSION_NUMBER = 999;
 const DEMO_SPREADSHEET_ACTIVITY_ID = '10000000-0000-0000-0000-000000000401';
-const DEMO_PHASE_IDS = [
-  '10000000-0000-0000-0000-000000000201',
-  '10000000-0000-0000-0000-000000000202',
-  '10000000-0000-0000-0000-000000000203',
-  '10000000-0000-0000-0000-000000000204',
-  '10000000-0000-0000-0000-000000000205',
-  '10000000-0000-0000-0000-000000000206',
-] as const;
 
 export async function POST(request?: Request) {
   try {
@@ -119,6 +111,31 @@ export async function POST(request?: Request) {
       }
     }
 
+    if (shouldResetFull) {
+      const demoStudentId = demoUserIds.get('demo_student');
+      if (!demoStudentId) {
+        throw new Error('Unable to resolve demo_student ID for reset');
+      }
+
+      const resetTargets: Array<{ table: string; column: string }> = [
+        { table: 'student_progress', column: 'user_id' },
+        { table: 'activity_submissions', column: 'user_id' },
+        { table: 'activity_completions', column: 'student_id' },
+        { table: 'student_spreadsheet_responses', column: 'student_id' },
+        { table: 'student_competency', column: 'student_id' },
+      ];
+
+      for (const target of resetTargets) {
+        const { error: resetError } = await adminClient
+          .from(target.table)
+          .delete()
+          .eq(target.column, demoStudentId);
+        if (resetError) {
+          throw resetError;
+        }
+      }
+    }
+
     const now = new Date().toISOString();
 
     const { error: lessonError } = await adminClient.from('lessons').upsert(
@@ -159,7 +176,7 @@ export async function POST(request?: Request) {
         description: 'Foundational lesson automatically provisioned for demo environments.',
         status: 'published',
       },
-      { onConflict: 'lesson_id,version' }
+      { onConflict: 'id' }
     );
     if (versionError) {
       throw versionError;
@@ -220,42 +237,36 @@ export async function POST(request?: Request) {
 
     const phaseRows = [
       {
-        id: DEMO_PHASE_IDS[0],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 1,
         title: 'Hook: Why Balance Matters',
         estimated_minutes: 5,
       },
       {
-        id: DEMO_PHASE_IDS[1],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 2,
         title: 'Concept: Accounting Equation',
         estimated_minutes: 10,
       },
       {
-        id: DEMO_PHASE_IDS[2],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 3,
         title: 'Guided Practice',
         estimated_minutes: 10,
       },
       {
-        id: DEMO_PHASE_IDS[3],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 4,
         title: 'Independent Practice',
         estimated_minutes: 10,
       },
       {
-        id: DEMO_PHASE_IDS[4],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 5,
         title: 'Assessment',
         estimated_minutes: 10,
       },
       {
-        id: DEMO_PHASE_IDS[5],
         lesson_version_id: DEMO_LESSON_VERSION_ID,
         phase_number: 6,
         title: 'Reflection',
@@ -293,9 +304,20 @@ export async function POST(request?: Request) {
       return phaseId;
     };
 
+    // Cleanup existing sections for these phases to ensure true idempotency and avoid sequence conflicts
+    const phaseIds = Array.from(phaseIdByNumber.values());
+    if (phaseIds.length > 0) {
+      const { error: deleteSectionsError } = await adminClient
+        .from('phase_sections')
+        .delete()
+        .in('phase_version_id', phaseIds);
+      if (deleteSectionsError) {
+        throw deleteSectionsError;
+      }
+    }
+
     const sectionRows = [
       {
-        id: '10000000-0000-0000-0000-000000000301',
         phase_version_id: getPhaseId(1),
         sequence_order: 1,
         section_type: 'text',
@@ -305,7 +327,6 @@ export async function POST(request?: Request) {
         },
       },
       {
-        id: '10000000-0000-0000-0000-000000000302',
         phase_version_id: getPhaseId(2),
         sequence_order: 1,
         section_type: 'text',
@@ -315,7 +336,6 @@ export async function POST(request?: Request) {
         },
       },
       {
-        id: '10000000-0000-0000-0000-000000000303',
         phase_version_id: getPhaseId(3),
         sequence_order: 1,
         section_type: 'text',
@@ -325,7 +345,6 @@ export async function POST(request?: Request) {
         },
       },
       {
-        id: '10000000-0000-0000-0000-000000000304',
         phase_version_id: getPhaseId(3),
         sequence_order: 2,
         section_type: 'activity',
@@ -335,7 +354,6 @@ export async function POST(request?: Request) {
         },
       },
       {
-        id: '10000000-0000-0000-0000-000000000305',
         phase_version_id: getPhaseId(4),
         sequence_order: 1,
         section_type: 'text',
@@ -345,7 +363,6 @@ export async function POST(request?: Request) {
         },
       },
       {
-        id: '10000000-0000-0000-0000-000000000306',
         phase_version_id: getPhaseId(5),
         sequence_order: 1,
         section_type: 'callout',
@@ -355,7 +372,6 @@ export async function POST(request?: Request) {
         },
       },
       {
-        id: '10000000-0000-0000-0000-000000000307',
         phase_version_id: getPhaseId(6),
         sequence_order: 1,
         section_type: 'text',
@@ -366,36 +382,10 @@ export async function POST(request?: Request) {
       },
     ];
 
-    const { error: sectionError } = await adminClient.from('phase_sections').upsert(sectionRows, {
-      onConflict: 'phase_version_id,sequence_order',
-    });
+    const { error: sectionError } = await adminClient.from('phase_sections').insert(sectionRows);
+
     if (sectionError) {
       throw sectionError;
-    }
-
-    if (shouldResetFull) {
-      const demoStudentId = demoUserIds.get('demo_student');
-      if (!demoStudentId) {
-        throw new Error('Unable to resolve demo_student ID for reset');
-      }
-
-      const resetTargets: Array<{ table: string; column: string }> = [
-        { table: 'student_progress', column: 'user_id' },
-        { table: 'activity_submissions', column: 'user_id' },
-        { table: 'activity_completions', column: 'student_id' },
-        { table: 'student_spreadsheet_responses', column: 'student_id' },
-        { table: 'student_competency', column: 'student_id' },
-      ];
-
-      for (const target of resetTargets) {
-        const { error: resetError } = await adminClient
-          .from(target.table)
-          .delete()
-          .eq(target.column, demoStudentId);
-        if (resetError) {
-          throw resetError;
-        }
-      }
     }
 
     return NextResponse.json({ ok: true, resetApplied: shouldResetFull });

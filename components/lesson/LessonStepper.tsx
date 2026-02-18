@@ -82,6 +82,9 @@ function StepButton({ phase, isCurrent, onClick, compact = false }: StepButtonPr
   const isClickable = phase.status === 'completed' || phase.status === 'current' || phase.status === 'available';
   const isLocked = phase.status === 'locked';
 
+  // Treat 'available' as 'current' visually if it is the active phase
+  const effectiveStatus = isCurrent && phase.status === 'available' ? 'current' : phase.status;
+
   const statusColors = {
     completed: 'bg-green-600 text-white border-green-600',
     current: 'bg-blue-600 text-white border-blue-600',
@@ -94,7 +97,7 @@ function StepButton({ phase, isCurrent, onClick, compact = false }: StepButtonPr
     : phase.title;
 
   const StepIcon = () => {
-    switch (phase.status) {
+    switch (effectiveStatus) {
       case 'completed':
         return <Check className="h-4 w-4" aria-hidden="true" />;
       case 'current':
@@ -118,7 +121,7 @@ function StepButton({ phase, isCurrent, onClick, compact = false }: StepButtonPr
         'flex items-center justify-center rounded-full border-2 transition-all',
         'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
         compact ? 'h-10 w-10' : 'h-12 w-12',
-        statusColors[phase.status],
+        statusColors[effectiveStatus],
         isClickable && !isLocked && 'hover:scale-110',
       )}
     >

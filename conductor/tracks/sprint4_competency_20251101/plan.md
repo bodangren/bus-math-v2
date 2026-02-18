@@ -14,9 +14,9 @@
 - [x] Task: Add read-only replay support needed for teacher evidence review. [27bb1b3]
 
 ## Phase 3: Lesson Navigation And Auto-Capture
-- [ ] Task: Stabilize `LessonStepper` + locked navigation logic under server-authorized access rules.
-- [ ] Task: Harden auto-capture flows for read/activity phases, including offline/retry edge cases.
-- [ ] Task: Remove any duplicate completion triggers and preserve idempotent behavior.
+- [x] Task: Stabilize `LessonStepper` + locked navigation logic under server-authorized access rules. [fba7c2d]
+- [x] Task: Harden auto-capture flows for read/activity phases, including offline/retry edge cases. [4dc47e0]
+- [~] Task: Remove any duplicate completion triggers and preserve idempotent behavior.
 
 ## Phase 4: Unit 1 Delivery Verification
 - [ ] Task: Re-verify Unit 1 Lesson 1 v2 authored content (all six phases + competency links).
