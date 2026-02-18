@@ -8,6 +8,7 @@ import {
   cellBgClass,
   cellColorLabel,
   sortRowsByName,
+  applyStudentRowUpdate,
   type GradebookLesson,
   type GradebookRow,
 } from '@/lib/teacher/gradebook';
@@ -15,6 +16,10 @@ import {
   SubmissionDetailModal,
   type SelectedCell,
 } from '@/components/teacher/SubmissionDetailModal';
+import {
+  TeacherStudentActions,
+  type StudentAccountUpdate,
+} from '@/components/teacher/TeacherStudentActions';
 
 // ---------------------------------------------------------------------------
 // Props
@@ -46,10 +51,15 @@ function EmptyState({ message }: { message: string }) {
 type SortDirection = 'asc' | 'desc';
 
 export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps) {
+  const [managedRows, setManagedRows] = useState(rows);
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
   const [selectedCell, setSelectedCell] = useState<SelectedCell | null>(null);
 
-  if (rows.length === 0) {
+  function handleStudentUpdated(update: StudentAccountUpdate) {
+    setManagedRows(current => applyStudentRowUpdate(current, update));
+  }
+
+  if (managedRows.length === 0) {
     return <EmptyState message="No students found in this gradebook." />;
   }
 
@@ -57,7 +67,7 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
     return <EmptyState message="No lessons configured for this unit." />;
   }
 
-  const sorted = sortRowsByName(rows);
+  const sorted = sortRowsByName(managedRows);
   const displayRows = sortDir === 'asc' ? sorted : [...sorted].reverse();
 
   function toggleSort() {
@@ -141,14 +151,24 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
 
             return (
               <tr key={row.studentId} className="bg-background hover:bg-muted/10">
-                {/* Frozen student name cell */}
+                {/* Frozen student name cell with row actions */}
                 <th
                   scope="row"
                   className="sticky left-0 z-10 bg-background px-3 py-2 text-left font-medium text-foreground"
                 >
-                  <div>{row.displayName}</div>
-                  <div className="text-xs text-muted-foreground font-normal">
-                    @{row.username}
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <div>{row.displayName}</div>
+                      <div className="text-xs text-muted-foreground font-normal">
+                        @{row.username}
+                      </div>
+                    </div>
+                    <TeacherStudentActions
+                      studentId={row.studentId}
+                      username={row.username}
+                      displayName={row.displayName}
+                      onStudentUpdated={handleStudentUpdated}
+                    />
                   </div>
                 </th>
 

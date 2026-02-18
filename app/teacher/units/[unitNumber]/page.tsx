@@ -71,7 +71,7 @@ export default async function UnitGradebookPage({ params }: PageProps) {
         </header>
 
         <section aria-label={`Unit ${unitNumber} gradebook`}>
-          <GradebookGrid rows={rows} lessons={lessons} />
+          <GradebookGrid rows={rows} lessons={lessons} unitNumber={unitNumber} />
         </section>
       </div>
     </main>

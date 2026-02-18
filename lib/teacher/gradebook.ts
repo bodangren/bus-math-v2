@@ -164,6 +164,31 @@ export function cellColorLabel(color: CellColor): string {
 }
 
 // ---------------------------------------------------------------------------
+// applyStudentRowUpdate (pure)
+// ---------------------------------------------------------------------------
+
+/**
+ * Applies a student account update (name change or deactivation) to a row array.
+ *
+ * - deactivated: true  → removes the student's row entirely
+ * - deactivated: false → updates the row's displayName in place
+ *
+ * Works with any row shape that has `studentId` and `displayName` fields.
+ * Does not mutate the original array.
+ */
+export function applyStudentRowUpdate<T extends { studentId: string; displayName: string }>(
+  rows: T[],
+  update: { studentId: string; displayName: string; deactivated: boolean },
+): T[] {
+  if (update.deactivated) {
+    return rows.filter(r => r.studentId !== update.studentId);
+  }
+  return rows.map(r =>
+    r.studentId === update.studentId ? { ...r, displayName: update.displayName } : r,
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Raw row types (used by assembleGradebookRows below)
 // ---------------------------------------------------------------------------
 

@@ -4,6 +4,7 @@ import {
   computeCellColor,
   sortRowsByName,
   buildGradebookCell,
+  applyStudentRowUpdate,
   type GradebookRow,
 } from '@/lib/teacher/gradebook';
 
@@ -213,5 +214,52 @@ describe('buildGradebookCell', () => {
   it('passes mastery level through to the cell', () => {
     const cell = buildGradebookCell(lesson, [], 73);
     expect(cell.masteryLevel).toBe(73);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// applyStudentRowUpdate
+// ---------------------------------------------------------------------------
+describe('applyStudentRowUpdate', () => {
+  const makeRow = (studentId: string, displayName: string): GradebookRow => ({
+    studentId,
+    displayName,
+    username: studentId,
+    cells: [],
+  });
+
+  it('removes the student row when deactivated is true', () => {
+    const rows = [makeRow('s1', 'Alice'), makeRow('s2', 'Bob')];
+    const result = applyStudentRowUpdate(rows, { studentId: 's1', displayName: 'Alice', deactivated: true });
+    expect(result).toHaveLength(1);
+    expect(result[0].studentId).toBe('s2');
+  });
+
+  it('updates displayName when deactivated is false', () => {
+    const rows = [makeRow('s1', 'Alice'), makeRow('s2', 'Bob')];
+    const result = applyStudentRowUpdate(rows, { studentId: 's1', displayName: 'Alice Updated', deactivated: false });
+    expect(result).toHaveLength(2);
+    expect(result[0].displayName).toBe('Alice Updated');
+    expect(result[1].displayName).toBe('Bob');
+  });
+
+  it('does not mutate the original array', () => {
+    const rows = [makeRow('s1', 'Alice')];
+    applyStudentRowUpdate(rows, { studentId: 's1', displayName: 'New', deactivated: false });
+    expect(rows[0].displayName).toBe('Alice');
+  });
+
+  it('returns unchanged array when studentId does not match', () => {
+    const rows = [makeRow('s1', 'Alice'), makeRow('s2', 'Bob')];
+    const result = applyStudentRowUpdate(rows, { studentId: 'unknown', displayName: 'X', deactivated: false });
+    expect(result).toHaveLength(2);
+    expect(result[0].displayName).toBe('Alice');
+    expect(result[1].displayName).toBe('Bob');
+  });
+
+  it('returns empty array when only student is deactivated', () => {
+    const rows = [makeRow('s1', 'Alice')];
+    const result = applyStudentRowUpdate(rows, { studentId: 's1', displayName: 'Alice', deactivated: true });
+    expect(result).toHaveLength(0);
   });
 });
