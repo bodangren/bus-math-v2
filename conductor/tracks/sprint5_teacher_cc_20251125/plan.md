@@ -34,3 +34,8 @@
 - [x] Task: Implement secure reset-password workflow (API/edge + UI) with role gating. [7842877]
 - [x] Task: Implement edit-student workflow with validation and audit-friendly change handling. [7842877]
 - [x] Task: Conductor - User Manual Verification 'Sprint 5 Teacher Command Center' (Protocol in workflow.md). [7842877]
+
+## Phase 5: Course Overview as Default Teacher View
+- [x] Task: Add `TeacherStudentActions` row menu to `GradebookGrid` (Level 2) — spec requires row actions in the unit gradebook; currently only available in the main dashboard list. [2036ab0]
+- [~] Task: Add `TeacherStudentActions` row menu to `CourseOverviewGrid` (Level 1) — same requirement at the course-level grid.
+- [ ] Task: Upgrade `/teacher` main page to embed `CourseOverviewGrid` as primary content — replace the "Student Progress" student-list section with the Course Overview Grid (Level 1 per spec); keep metrics summary cards.
