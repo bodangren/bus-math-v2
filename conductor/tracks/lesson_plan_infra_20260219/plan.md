@@ -39,6 +39,6 @@ Generate the project sprint and final assessment files.
 ## Phase 5: Quality Assurance
 Final verification of naming conventions and schema compliance.
 
-- [ ] Task: Audit all 11 Unit 1 files for YAML frontmatter validity and Sarah Chen narrative inclusion.
-- [ ] Task: Verify file naming convention `UXXLXX_{type}.md` is consistent across all files.
+- [x] Task: Audit all 11 Unit 1 files for YAML frontmatter validity and Sarah Chen narrative inclusion. 14cd787
+- [x] Task: Verify file naming convention `UXXLXX_{type}.md` is consistent across all files. ec78321
 - [ ] Task: Conductor - User Manual Verification 'Quality Assurance' (Protocol in workflow.md)
