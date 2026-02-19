@@ -52,13 +52,13 @@
     - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
     - [x] All 9 tests pass
 
-- [ ] Task: Seed Lesson 3 — Apply A/L/E to Business Events (ACC-1.4)
-    - [ ] Write integration test: lesson `unit-1-lesson-3` returns 6 phases
-    - [ ] Create `supabase/seed/unit1/lesson-03.ts` with full content (5–7 business event scenarios, A/L/E equation-check concept)
-    - [ ] Include `comprehension-quiz` activity: identify how 5 events change A/L/E
-    - [ ] Seed `lesson_standards` link: lesson → ACC-1.4
-    - [ ] Run seed, verify idempotency
-    - [ ] Pass integration test
+- [x] Task: Seed Lesson 3 — Apply A/L/E to Business Events (ACC-1.4)
+    - [x] Write integration test: `__tests__/seed/unit1/lesson-03.test.ts` — 10 tests (6 phases, sections, hook callout, Sarah narrative, assessment activity, standard, slug, namespace, no placeholders, ≥5 quiz questions)
+    - [x] Created `supabase/seed/unit1/lesson-03.ts` with 7 TechStart event scenarios, dual-impact concept, SUMIF verification
+    - [x] Assessment (5) has required `comprehension-quiz` exit ticket (5 questions tracing event effects on A/L/E)
+    - [x] Standards linked: ACC-1.4 (primary)
+    - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
+    - [x] All 10 tests pass
 
 - [ ] Task: Seed Lesson 4 — Build the Balance Sheet (ACC-1.3)
     - [ ] Write integration test: lesson `unit-1-lesson-4` returns 6 phases
