@@ -12,4 +12,9 @@ describe('Curriculum Infrastructure', () => {
     const unit01Path = path.resolve(process.cwd(), 'docs/curriculum/units/unit_01');
     expect(fs.existsSync(unit01Path)).toBe(true);
   });
+
+  it('should have the launch template', () => {
+    const launchPath = path.resolve(process.cwd(), 'docs/curriculum/templates/launch.md');
+    expect(fs.existsSync(launchPath)).toBe(true);
+  });
 });
