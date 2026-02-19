@@ -16,8 +16,8 @@ Establish the directory structure and standardized Markdown templates.
 ## Phase 2: Unit 1 Manifest
 Define the sequence and high-level goals for the first unit.
 
-- [ ] Task: Draft `docs/curriculum/units/unit_01/manifest.md` based on the Unit 1 Matrix.
-- [ ] Task: Verify manifest correctly links to the 11 planned lesson IDs.
+- [x] Task: Draft `docs/curriculum/units/unit_01/manifest.md` based on the Unit 1 Matrix. 6f33167
+- [x] Task: Verify manifest correctly links to the 11 planned lesson IDs. 6f33167
 - [ ] Task: Conductor - User Manual Verification 'Unit 1 Manifest' (Protocol in workflow.md)
 
 ## Phase 3: Unit 1 Lessons (Category A: L1-7)
