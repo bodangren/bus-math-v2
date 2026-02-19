@@ -1,0 +1,36 @@
+ERRORS DISCOVERED IN REVIEW — Phase 2 lesson seed work (L1–L4)
+
+Stopped at product owner direction on 2026-02-19 after review revealed
+content was authored without sufficient specification. Full details:
+
+ERROR 1: L1 Phase 1 missing unit-launch conventions
+  Unit-launch lessons (L1 of every unit) require three elements that
+  were not present in the authored seed:
+    (a) Launch video section (videoUrl, duration, transcript)
+    (b) Business simulation activity
+    (c) Turn-and-talk discussion prompts
+  The seed has text + callout + text only. The old placeholder seed
+  (03-unit-1-lesson-1-v2.ts) had a video section; it was dropped when
+  the new seed was authored.
+
+ERROR 2: L2–L4 Phase 1 content unverified
+  Phase 1 content for L2, L3, and L4 was inferred from the single-cell
+  "Entry/Launch" descriptions in unit_01_lesson_matrix.md. No detailed
+  per-lesson plan document was used. Content may not match teacher intent.
+
+ERROR 3: L8–L10 phase count wrong in original plan
+  Plan tasks said L8–L10 "each return 6 phases". Correct: 1 phase each
+  (project day — group work + checkpoint only).
+
+ERROR 4: L11 phase count wrong in original plan
+  Plan tasks said L11 returns "6 phases". Correct: 1 phase (summative
+  assessment only).
+
+ROOT CAUSE: No detailed per-lesson plan documents exist in the repo.
+  docs/curriculum/ contains only high-level matrix tables (one row per
+  phase concept). These are insufficient content specs for authoring seeds.
+  Matrix cells like "Quick case warm-up" or "Scenario hook" do not define
+  video URLs, simulation parameters, or discussion prompt text.
+
+RESOLUTION: Halted at user direction. Next step is to obtain or author
+  detailed per-lesson plans before correcting L1–L4 or seeding L5–L11.
