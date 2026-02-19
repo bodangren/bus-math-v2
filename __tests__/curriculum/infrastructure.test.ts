@@ -93,6 +93,34 @@ describe('Curriculum Infrastructure', () => {
     });
   });
 
+  it('should audit all 11 Unit 1 files for frontmatter and Sarah Chen narrative', () => {
+    const lessons = [
+      'U01L01_launch.md', 'U01L02_accounting.md', 'U01L03_accounting.md',
+      'U01L04_accounting.md', 'U01L05_excel.md', 'U01L06_excel.md',
+      'U01L07_excel.md', 'U01L08_project.md', 'U01L09_project.md',
+      'U01L10_project.md', 'U01L11_assessment.md'
+    ];
+    
+    lessons.forEach(lesson => {
+      const lessonPath = path.resolve(process.cwd(), `docs/curriculum/units/unit_01/${lesson}`);
+      const content = fs.readFileSync(lessonPath, 'utf8');
+      
+      // Check for YAML frontmatter
+      expect(content.startsWith('---')).toBe(true);
+      const parts = content.split('---');
+      expect(parts.length).toBeGreaterThanOrEqual(3);
+      const frontmatter = parts[1];
+      
+      expect(frontmatter).toContain('lesson_id:');
+      expect(frontmatter).toContain('type:');
+      expect(frontmatter).toContain('objectives:');
+      expect(frontmatter).toContain('narrative_hook:');
+      
+      // Check for Sarah Chen mention (case insensitive)
+      expect(content.toLowerCase()).toContain('sarah');
+    });
+  });
+
   it('should have implemented project sprint lessons U01L08 to U01L10', () => {
     const lessons = ['U01L08_project.md', 'U01L09_project.md', 'U01L10_project.md'];
     lessons.forEach(lesson => {
