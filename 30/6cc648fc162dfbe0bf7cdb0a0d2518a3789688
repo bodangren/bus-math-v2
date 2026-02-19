@@ -1,0 +1,8 @@
+Verification Report for Phase 4: Unit 1 Lessons (Category B & C)
+Automated Test Command: npm test __tests__/curriculum/infrastructure.test.ts
+Manual Verification Steps:
+1. Navigate to the Unit 1 directory: ls docs/curriculum/units/unit_01/
+2. Verify lessons U01L08 through U01L11 exist.
+3. Inspect U01L08_project.md for Sprint structure.
+4. Inspect U01L11_assessment.md for Assessment structure and auto_grade YAML.
+User Confirmation: Yes
