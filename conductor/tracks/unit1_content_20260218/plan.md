@@ -60,13 +60,14 @@
     - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
     - [x] All 10 tests pass
 
-- [ ] Task: Seed Lesson 4 — Build the Balance Sheet (ACC-1.3)
-    - [ ] Write integration test: lesson `unit-1-lesson-4` returns 6 phases
-    - [ ] Create `supabase/seed/unit1/lesson-04.ts` with full content (BS skeleton structure, sections and subtotals)
-    - [ ] Include `spreadsheet` activity in Independent Practice: draft mini Balance Sheet with ≥ 6 accounts
-    - [ ] Seed `lesson_standards` link: lesson → ACC-1.3
-    - [ ] Run seed, verify idempotency
-    - [ ] Pass integration test
+- [x] Task: Seed Lesson 4 — Build the Balance Sheet (ACC-1.3)
+    - [x] Write integration test: `__tests__/seed/unit1/lesson-04.test.ts` — 10 tests (6 phases, sections, hook callout, spreadsheet activity in phase 4, comprehension-quiz in phase 5, standard, slug, namespace, no placeholders, balance-sheet template)
+    - [x] Created `supabase/seed/unit1/lesson-04.ts` with BS skeleton structure, Current/Non-Current sections, subtotals walkthrough
+    - [x] Independent Practice (4) has required `spreadsheet` activity (balance-sheet template, ≥6 accounts)
+    - [x] Assessment (5) has required `comprehension-quiz` exit ticket (5 questions on BS structure)
+    - [x] Standards linked: ACC-1.3 (primary)
+    - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
+    - [x] All 10 tests pass
 
 - [ ] Task: Conductor — User Manual Verification 'Phase 2: Lesson Seeds L1–L4' (Protocol in workflow.md)
 
