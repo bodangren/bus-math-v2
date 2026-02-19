@@ -1,6 +1,6 @@
 # Implementation Plan: Unit 1 Curriculum Content — Balance by Design
 
-## Phase 1: Competency Wiring Audit & Adaptation [checkpoint: TBD]
+## Phase 1: Competency Wiring Audit & Adaptation [checkpoint: 520f54c]
 
 - [x] Task: Audit `lesson_standards` schema and existing linkages
     - [x] Read migration files to find `lesson_standards` table structure and FK columns
@@ -28,7 +28,7 @@
     - [x] Write unit test covering the prop forwarding
     - [x] Pass tests
 
-- [ ] Task: Conductor — User Manual Verification 'Phase 1: Competency Wiring Audit & Adaptation' (Protocol in workflow.md)
+- [x] Task: Conductor — User Manual Verification 'Phase 1: Competency Wiring Audit & Adaptation' (Protocol in workflow.md) [520f54c]
 
 ---
 
