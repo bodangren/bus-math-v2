@@ -1,0 +1,4 @@
+Task: Create curriculum directory structure
+Summary: Created the necessary directory structure for the new curriculum infrastructure.
+Files: docs/curriculum/templates/, docs/curriculum/units/unit_01/, __tests__/curriculum/infrastructure.test.ts
+Why: To support the transition to granular, file-per-lesson curriculum plans.
