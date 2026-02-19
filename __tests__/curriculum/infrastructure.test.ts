@@ -100,4 +100,9 @@ describe('Curriculum Infrastructure', () => {
       expect(fs.existsSync(lessonPath)).toBe(true);
     });
   });
+
+  it('should have implemented assessment lesson U01L11_assessment.md', () => {
+    const lessonPath = path.resolve(process.cwd(), 'docs/curriculum/units/unit_01/U01L11_assessment.md');
+    expect(fs.existsSync(lessonPath)).toBe(true);
+  });
 });
