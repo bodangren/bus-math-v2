@@ -14,4 +14,5 @@
 
 ## Interaction Patterns
 - **Guided Progress**: Interaction patterns should support the six-phase learning model, clearly indicating the student's current position and next steps.
+- **Instructional Diversity**: Support three distinct lesson formats (Six-Phase, Project Sprint, and Summative Assessment) to provide a varied and engaging learning experience.
 - **Consistent Feedback**: Provide immediate and clear feedback for student actions in interactive activities to reinforce learning.

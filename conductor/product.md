@@ -15,7 +15,10 @@ An interactive, Supabase-backed digital textbook for teaching business mathemati
 - **Role-Based Experience**: Tailored interfaces for students and teachers to maximize usability for each group.
 
 ## Key Features
-- **Curriculum Delivery**: Structured "8 Units + Capstone" curriculum, featuring a six-phase learning model.
+- **Curriculum Delivery**: Structured "8 Units + Capstone" curriculum, utilizing granular, file-per-lesson infrastructure with three core instructional formats:
+    - **Six-Phase Learning Model**: Foundational and application lessons (Entry to Reflection).
+    - **Project Sprint Format**: Three-day immersive project build phases.
+    - **Summative Assessment**: Unit-level mastery checks with auto-graded components.
 - **Business Simulations**: Interactive scenarios for cash flow, inventory management, and pitch presentations.
 - **Spreadsheet Integration**: Built-in spreadsheet tools for financial modeling and accounting exercises.
 - **Progress Analytics**: Dashboards for tracking completion and mastery of learning objectives.
