@@ -22,4 +22,9 @@ describe('Curriculum Infrastructure', () => {
     const accountingPath = path.resolve(process.cwd(), 'docs/curriculum/templates/accounting.md');
     expect(fs.existsSync(accountingPath)).toBe(true);
   });
+
+  it('should have the excel template', () => {
+    const excelPath = path.resolve(process.cwd(), 'docs/curriculum/templates/excel.md');
+    expect(fs.existsSync(excelPath)).toBe(true);
+  });
 });
