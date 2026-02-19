@@ -92,4 +92,12 @@ describe('Curriculum Infrastructure', () => {
       expect(reflectionIndex).toBeGreaterThan(checkpointIndex);
     });
   });
+
+  it('should have implemented project sprint lessons U01L08 to U01L10', () => {
+    const lessons = ['U01L08_project.md', 'U01L09_project.md', 'U01L10_project.md'];
+    lessons.forEach(lesson => {
+      const lessonPath = path.resolve(process.cwd(), `docs/curriculum/units/unit_01/${lesson}`);
+      expect(fs.existsSync(lessonPath)).toBe(true);
+    });
+  });
 });
