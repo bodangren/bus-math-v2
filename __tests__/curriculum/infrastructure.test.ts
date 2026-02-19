@@ -53,4 +53,12 @@ describe('Curriculum Infrastructure', () => {
     const lessonPath = path.resolve(process.cwd(), 'docs/curriculum/units/unit_01/U01L01_launch.md');
     expect(fs.existsSync(lessonPath)).toBe(true);
   });
+
+  it('should have implemented accounting lessons U01L02 to U01L04', () => {
+    const lessons = ['U01L02_accounting.md', 'U01L03_accounting.md', 'U01L04_accounting.md'];
+    lessons.forEach(lesson => {
+      const lessonPath = path.resolve(process.cwd(), `docs/curriculum/units/unit_01/${lesson}`);
+      expect(fs.existsSync(lessonPath)).toBe(true);
+    });
+  });
 });
