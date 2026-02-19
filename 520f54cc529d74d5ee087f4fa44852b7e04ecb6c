@@ -1,0 +1,34 @@
+Phase Completion Verification Report — Phase 1: Competency Wiring Audit & Adaptation
+Track: unit1_content_20260218
+Date: 2026-02-19
+
+== Automated Test Command ==
+CI=true npx vitest run
+
+== Test Results ==
+Test Files: 148 passed, 1 failed (149 total)
+Tests: 889 passed, 2 failed (891 total)
+The 2 failures are in __tests__/app/teacher/students/[studentId]/page.test.tsx and are
+pre-existing ordering flakes — they pass when run in isolation and are unrelated to
+Phase 1 changes. Confirmed with: CI=true npx vitest run '__tests__/app/teacher/students/[studentId]/page.test.tsx' → 3/3 pass.
+
+New tests added this phase:
+- __tests__/app/api/phases/complete/route.test.ts: 10/10 pass (1 new test: upserts student_competency when linkedStandardId is provided)
+- __tests__/components/lesson/ActivityRenderer.test.tsx: 14/14 pass (1 new test: forwards linkedStandardId to usePhaseCompletion)
+
+== Changes Delivered ==
+1. lesson_standards schema documented: id, lesson_version_id, standard_id, is_primary, created_at; UNIQUE(lesson_version_id, standard_id)
+2. student_progress has NO metadata column; student_competency table used for standard recording
+3. CompletePhaseRequest extended with linkedStandardId?: string (types/api.ts)
+4. /api/phases/complete: Zod schema + route upsert student_competency when linkedStandardId present
+5. activity ContentBlock schema: linkedStandardId?: string (lib/db/schema/phase-content.ts)
+6. PhaseRenderer: forwards block.linkedStandardId to ActivityRenderer
+7. ActivityRenderer: accepts linkedStandardId, passes to usePhaseCompletion
+8. usePhaseCompletion: includes linkedStandardId in CompletePhaseRequest payload
+
+== Manual Verification ==
+Verified app loads normally. Full end-to-end competency path will fire in Phase 2+ once
+lesson seeds store linkedStandardId in activity content blocks.
+
+== User Confirmation ==
+'Commit with note according to the Conductor Framework, then continue.'
