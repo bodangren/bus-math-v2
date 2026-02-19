@@ -33,7 +33,7 @@ Generate the detailed lesson files for the launch and foundational phases.
 Generate the project sprint and final assessment files.
 
 - [x] Task: Implement `U01L08_project.md` to `U01L10_project.md` (Sprint structure) 755f97e
-- [ ] Task: Implement `U01L11_assessment.md` (Assessment structure with auto-grade YAML)
+- [x] Task: Implement `U01L11_assessment.md` (Assessment structure with auto-grade YAML) 6db4d93
 - [ ] Task: Conductor - User Manual Verification 'Unit 1 Lessons (Category B & C)' (Protocol in workflow.md)
 
 ## Phase 5: Quality Assurance
