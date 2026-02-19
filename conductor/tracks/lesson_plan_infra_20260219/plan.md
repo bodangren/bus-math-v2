@@ -10,7 +10,7 @@ Establish the directory structure and standardized Markdown templates.
 - [x] Task: Create `docs/curriculum/templates/accounting.md` (6-Phase: Entry -> Reflection) ca69adc
 - [x] Task: Create `docs/curriculum/templates/excel.md` (6-Phase: Entry -> Reflection) 2d464af
 - [x] Task: Create `docs/curriculum/templates/project.md` (Sprint structure) a1b45d3
-- [ ] Task: Create `docs/curriculum/templates/assessment.md` (Assessment structure)
+- [x] Task: Create `docs/curriculum/templates/assessment.md` (Assessment structure) 8be4836
 - [ ] Task: Conductor - User Manual Verification 'Infrastructure & Templates' (Protocol in workflow.md)
 
 ## Phase 2: Unit 1 Manifest
