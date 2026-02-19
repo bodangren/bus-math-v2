@@ -37,4 +37,15 @@ describe('Curriculum Infrastructure', () => {
     const assessmentPath = path.resolve(process.cwd(), 'docs/curriculum/templates/assessment.md');
     expect(fs.existsSync(assessmentPath)).toBe(true);
   });
+
+  it('should have a valid manifest for unit 01', () => {
+    const manifestPath = path.resolve(process.cwd(), 'docs/curriculum/units/unit_01/manifest.md');
+    expect(fs.existsSync(manifestPath)).toBe(true);
+    
+    const content = fs.readFileSync(manifestPath, 'utf8');
+    for (let i = 1; i <= 11; i++) {
+      const lessonId = `U01L${i.toString().padStart(2, '0')}`;
+      expect(content).toContain(lessonId);
+    }
+  });
 });
