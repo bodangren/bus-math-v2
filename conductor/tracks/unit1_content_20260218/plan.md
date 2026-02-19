@@ -2,27 +2,31 @@
 
 ## Phase 1: Competency Wiring Audit & Adaptation [checkpoint: TBD]
 
-- [ ] Task: Audit `lesson_standards` schema and existing linkages
-    - [ ] Read migration files to find `lesson_standards` table structure and FK columns
-    - [ ] Check if any `lesson_standards` rows exist in existing seeds
-    - [ ] Document table columns, FK relationships, and any unique constraints
+- [x] Task: Audit `lesson_standards` schema and existing linkages
+    - [x] Read migration files to find `lesson_standards` table structure and FK columns
+    - [x] Check if any `lesson_standards` rows exist in existing seeds
+    - [x] Document table columns, FK relationships, and any unique constraints
+    <!-- Findings: lesson_standards(id, lesson_version_id→lesson_versions, standard_id→competency_standards, is_primary bool, created_at); UNIQUE(lesson_version_id, standard_id). L1 seed already seeds two lesson_standards rows. -->
 
-- [ ] Task: Audit `complete_activity_atomic` RPC and `student_progress` for standard-code recording
-    - [ ] Read the `complete_activity_atomic` migration SQL to understand its parameters and what it writes
-    - [ ] Determine whether `student_progress.metadata` JSONB already carries or can carry `standardCodes: string[]`
-    - [ ] Write failing test: completing an activity via the RPC stores a `standardCodes` array in the resulting progress row
+- [~] Task: Audit `complete_activity_atomic` RPC and `student_progress` for standard-code recording
+    - [x] Read the `complete_activity_atomic` migration SQL to understand its parameters and what it writes
+    - [x] Determine whether `student_progress.metadata` JSONB already carries or can carry `standardCodes: string[]`
+    - [x] Write failing test: completing an activity via the RPC stores a `standardCodes` array in the resulting progress row
+    <!-- Findings: student_progress has NO metadata column. RPC writes to student_competency (not student_progress). /api/phases/complete does NOT record standard codes. Approach: add linkedStandardId to CompletePhaseRequest and have route upsert student_competency. -->
 
-- [ ] Task: Extend phase completion to carry standard codes (Green phase)
-    - [ ] If `student_progress.metadata` supports arbitrary JSONB: update `usePhaseCompletion` hook (or its API route) to accept and persist `standardCodes`
-    - [ ] If a schema migration is required: write migration, update TypeScript types, update seeds README
-    - [ ] Pass the failing test from the previous task
+- [x] Task: Extend phase completion to carry standard codes (Green phase) [8cc9454]
+    - [x] student_progress.metadata not available; used student_competency table approach (no migration needed)
+    - [x] Added linkedStandardId?: string to CompletePhaseRequest type and Zod schema
+    - [x] /api/phases/complete upserts student_competency when linkedStandardId is provided
+    - [x] Pass the failing test from the previous task
 
-- [ ] Task: Update `ActivityRenderer` to forward standard codes
-    - [ ] Add an optional `standardCodes?: string[]` prop to `ActivityRenderer`
-    - [ ] Pass `standardCodes` through to the `completePhase` call
-    - [ ] Update `LessonRenderer` / `PhaseRenderer` to supply `standardCodes` when rendering a required activity block (derived from the lesson's `lesson_standards` rows)
-    - [ ] Write unit test covering the prop forwarding
-    - [ ] Pass tests
+- [x] Task: Update `ActivityRenderer` to forward standard codes [8cc9454]
+    - [x] Added linkedStandardId?: string to activity content block schema (phase-content.ts)
+    - [x] PhaseRenderer forwards block.linkedStandardId to ActivityRenderer
+    - [x] ActivityRenderer accepts linkedStandardId and passes it to usePhaseCompletion
+    - [x] usePhaseCompletion includes it in CompletePhaseRequest payload
+    - [x] Write unit test covering the prop forwarding
+    - [x] Pass tests
 
 - [ ] Task: Conductor — User Manual Verification 'Phase 1: Competency Wiring Audit & Adaptation' (Protocol in workflow.md)
 
