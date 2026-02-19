@@ -48,4 +48,9 @@ describe('Curriculum Infrastructure', () => {
       expect(content).toContain(lessonId);
     }
   });
+
+  it('should have implemented U01L01_launch.md', () => {
+    const lessonPath = path.resolve(process.cwd(), 'docs/curriculum/units/unit_01/U01L01_launch.md');
+    expect(fs.existsSync(lessonPath)).toBe(true);
+  });
 });
