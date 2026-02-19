@@ -36,9 +36,9 @@ Generate the project sprint and final assessment files.
 - [x] Task: Implement `U01L11_assessment.md` (Assessment structure with auto-grade YAML) 6db4d93
 - [x] Task: Conductor - User Manual Verification 'Unit 1 Lessons (Category B & C)' (Protocol in workflow.md) 306cc64
 
-## Phase 5: Quality Assurance
+## Phase 5: Quality Assurance [checkpoint: b1a2257]
 Final verification of naming conventions and schema compliance.
 
 - [x] Task: Audit all 11 Unit 1 files for YAML frontmatter validity and Sarah Chen narrative inclusion. 14cd787
 - [x] Task: Verify file naming convention `UXXLXX_{type}.md` is consistent across all files. ec78321
-- [ ] Task: Conductor - User Manual Verification 'Quality Assurance' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Quality Assurance' (Protocol in workflow.md) b1a2257
