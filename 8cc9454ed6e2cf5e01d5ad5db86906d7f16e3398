@@ -1,0 +1,25 @@
+Task: Phase 1 Tasks 2–4 — Competency Wiring (unit1_content_20260218)
+
+Audit findings:
+- lesson_standards table: id, lesson_version_id→lesson_versions, standard_id→competency_standards, is_primary, created_at; UNIQUE(lesson_version_id, standard_id)
+- complete_activity_atomic RPC: writes to student_competency via p_linked_standard_id; student_progress has NO metadata column
+- /api/phases/complete: did not previously record standard codes
+
+Implementation (no schema migration required):
+- CompletePhaseRequest.linkedStandardId?: string (types/api.ts)
+- Zod schema updated (app/api/phases/complete/route.ts)
+- Route upserts student_competency on new phase completions when linkedStandardId present
+- ContentBlock activity type: linkedStandardId?: string (lib/db/schema/phase-content.ts)
+- PhaseRenderer: forwards block.linkedStandardId to ActivityRenderer
+- ActivityRenderer: accepts and passes linkedStandardId to usePhaseCompletion
+- usePhaseCompletion: includes linkedStandardId in CompletePhaseRequest payload
+
+Files changed:
+- types/api.ts
+- app/api/phases/complete/route.ts
+- lib/db/schema/phase-content.ts
+- hooks/usePhaseCompletion.ts
+- components/lesson/ActivityRenderer.tsx
+- components/lesson/PhaseRenderer.tsx
+- __tests__/app/api/phases/complete/route.test.ts (10 tests passing)
+- __tests__/components/lesson/ActivityRenderer.test.tsx (14 tests passing)
