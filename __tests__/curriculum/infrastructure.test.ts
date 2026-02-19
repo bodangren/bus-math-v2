@@ -61,4 +61,12 @@ describe('Curriculum Infrastructure', () => {
       expect(fs.existsSync(lessonPath)).toBe(true);
     });
   });
+
+  it('should have implemented excel lessons U01L05 to U01L07', () => {
+    const lessons = ['U01L05_excel.md', 'U01L06_excel.md', 'U01L07_excel.md'];
+    lessons.forEach(lesson => {
+      const lessonPath = path.resolve(process.cwd(), `docs/curriculum/units/unit_01/${lesson}`);
+      expect(fs.existsSync(lessonPath)).toBe(true);
+    });
+  });
 });
