@@ -6,7 +6,7 @@ This plan outlines the creation of a granular curriculum structure and the pilot
 Establish the directory structure and standardized Markdown templates.
 
 - [x] Task: Create curriculum directory structure (`docs/curriculum/templates/`, `docs/curriculum/units/unit_01/`) 22e4b2a
-- [ ] Task: Create `docs/curriculum/templates/launch.md` (6-Phase: Entry -> Reflection)
+- [x] Task: Create `docs/curriculum/templates/launch.md` (6-Phase: Entry -> Reflection) da6f957
 - [ ] Task: Create `docs/curriculum/templates/accounting.md` (6-Phase: Entry -> Reflection)
 - [ ] Task: Create `docs/curriculum/templates/excel.md` (6-Phase: Entry -> Reflection)
 - [ ] Task: Create `docs/curriculum/templates/project.md` (Sprint structure)
