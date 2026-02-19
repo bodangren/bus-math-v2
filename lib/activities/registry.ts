@@ -1,30 +1,30 @@
 import { ComponentType } from 'react';
 
-import { FinancialDashboard } from '@/components/charts/FinancialDashboard';
-import { FinancialStatementMatching } from '@/components/drag-drop-exercises/FinancialStatementMatching';
-import { TrialBalanceSorting } from '@/components/drag-drop-exercises/TrialBalanceSorting';
-import { CashFlowChallenge } from '@/components/business-simulations/CashFlowChallenge';
-import { BudgetBalancer } from '@/components/business-simulations/BudgetBalancer';
-import { InventoryManager } from '@/components/business-simulations/InventoryManager';
-import { LemonadeStand } from '@/components/business-simulations/LemonadeStand';
-import { PitchPresentationBuilder } from '@/components/business-simulations/PitchPresentationBuilder';
-import { StartupJourney } from '@/components/business-simulations/StartupJourney';
-import DataCleaningExercise from '@/components/data-cleaning/DataCleaningExercise';
-import { BreakEvenComponents } from '@/components/drag-drop-exercises/BreakEvenComponents';
-import { BudgetCategorySort } from '@/components/drag-drop-exercises/BudgetCategorySort';
-import { CashFlowTimeline } from '@/components/drag-drop-exercises/CashFlowTimeline';
-import { InventoryFlowDiagram } from '@/components/drag-drop-exercises/InventoryFlowDiagram';
-import { PercentageCalculationSorting } from '@/components/drag-drop-exercises/PercentageCalculationSorting';
-import { RatioMatching } from '@/components/drag-drop-exercises/RatioMatching';
-import { AccountCategorization } from '@/components/drag-drop-exercises/AccountCategorization';
-import { DragAndDrop } from '@/components/exercises/DragAndDrop';
-import { FillInTheBlank } from '@/components/exercises/FillInTheBlank';
-import { JournalEntryBuilding } from '@/components/exercises/JournalEntryBuilding';
-import { ComprehensionCheck } from '@/components/exercises/ComprehensionCheck';
-import { PeerCritiqueForm } from '@/components/exercises/PeerCritiqueForm';
-import ReflectionJournal from '@/components/exercises/ReflectionJournal';
-import { SpreadsheetEvaluator } from '@/components/activities/SpreadsheetEvaluator';
-import { SpreadsheetActivityAdapter } from '@/components/spreadsheet/SpreadsheetActivityAdapter';
+import { FinancialDashboard } from '@/components/activities/charts/FinancialDashboard';
+import { FinancialStatementMatching } from '@/components/activities/drag-drop/FinancialStatementMatching';
+import { TrialBalanceSorting } from '@/components/activities/drag-drop/TrialBalanceSorting';
+import { CashFlowChallenge } from '@/components/activities/simulations/CashFlowChallenge';
+import { BudgetBalancer } from '@/components/activities/simulations/BudgetBalancer';
+import { InventoryManager } from '@/components/activities/simulations/InventoryManager';
+import { LemonadeStand } from '@/components/activities/simulations/LemonadeStand';
+import { PitchPresentationBuilder } from '@/components/activities/simulations/PitchPresentationBuilder';
+import { StartupJourney } from '@/components/activities/simulations/StartupJourney';
+import DataCleaningActivity from '@/components/activities/spreadsheet/DataCleaningActivity';
+import { BreakEvenComponents } from '@/components/activities/drag-drop/BreakEvenComponents';
+import { BudgetCategorySort } from '@/components/activities/drag-drop/BudgetCategorySort';
+import { CashFlowTimeline } from '@/components/activities/drag-drop/CashFlowTimeline';
+import { InventoryFlowDiagram } from '@/components/activities/drag-drop/InventoryFlowDiagram';
+import { PercentageCalculationSorting } from '@/components/activities/drag-drop/PercentageCalculationSorting';
+import { RatioMatching } from '@/components/activities/drag-drop/RatioMatching';
+import { AccountCategorization } from '@/components/activities/drag-drop/AccountCategorization';
+import { GeneralDragAndDrop } from '@/components/activities/drag-drop/GeneralDragAndDrop';
+import { FillInTheBlank } from '@/components/activities/quiz/FillInTheBlank';
+import { JournalEntryActivity } from '@/components/activities/accounting/JournalEntryActivity';
+import { ComprehensionCheck } from '@/components/activities/quiz/ComprehensionCheck';
+import { PeerCritiqueForm } from '@/components/activities/quiz/PeerCritiqueForm';
+import ReflectionJournal from '@/components/activities/quiz/ReflectionJournal';
+import { SpreadsheetEvaluator } from '@/components/activities/spreadsheet/SpreadsheetEvaluator';
+import { SpreadsheetActivityAdapter } from '@/components/activities/spreadsheet/SpreadsheetActivityAdapter';
 import type { ActivityComponentKey } from '@/types/activities';
 
 /**
@@ -34,7 +34,7 @@ import type { ActivityComponentKey } from '@/types/activities';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> = {
   'comprehension-quiz': ComprehensionCheck,
-  'drag-and-drop': DragAndDrop,
+  'drag-and-drop': GeneralDragAndDrop,
   'account-categorization': AccountCategorization,
   'budget-category-sort': BudgetCategorySort,
   'percentage-calculation-sorting': PercentageCalculationSorting,
@@ -45,7 +45,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'financial-statement-matching': FinancialStatementMatching,
   'trial-balance-sorting': TrialBalanceSorting,
   'fill-in-the-blank': FillInTheBlank,
-  'journal-entry-building': JournalEntryBuilding,
+  'journal-entry-building': JournalEntryActivity,
   'reflection-journal': ReflectionJournal,
   'peer-critique-form': PeerCritiqueForm,
 
@@ -65,7 +65,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   // Spreadsheet + data utilities
   'spreadsheet': SpreadsheetActivityAdapter,
   'spreadsheet-evaluator': SpreadsheetEvaluator,
-  'data-cleaning': DataCleaningExercise,
+  'data-cleaning': DataCleaningActivity,
 
   // Placeholder for remaining activity types - to be implemented
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -6,7 +6,7 @@
  * Import and use this component in any React page or component:
  * 
  * ```tsx
- * import { LemonadeStand } from '@/components/business-simulations/LemonadeStand'
+ * import { LemonadeStand } from '@/components/activities/simulations/LemonadeStand'
  * 
  * export default function MyPage() {
  *   return (

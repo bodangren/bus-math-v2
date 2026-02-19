@@ -9,7 +9,7 @@
  * must be validated on the server using these utilities.
  */
 
-import type { SpreadsheetData } from '@/components/spreadsheet';
+import type { SpreadsheetData } from '@/components/activities/spreadsheet';
 
 /**
  * Whitelist of allowed spreadsheet formula functions.

@@ -4,10 +4,10 @@ import { BookOpen, CalendarDays, School, Target, Users, CheckCircle2, Lightbulb 
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ComprehensionCheck, type ComprehensionCheckActivity } from '@/components/exercises/ComprehensionCheck';
-import { FillInTheBlank, type FillInTheBlankActivity } from '@/components/exercises/FillInTheBlank';
-import ReflectionJournal from '@/components/exercises/ReflectionJournal';
-import { CashFlowChallenge } from '@/components/business-simulations/CashFlowChallenge';
+import { ComprehensionCheck, type ComprehensionCheckActivity } from '@/components/activities/quiz/ComprehensionCheck';
+import { FillInTheBlank, type FillInTheBlankActivity } from '@/components/activities/quiz/FillInTheBlank';
+import ReflectionJournal from '@/components/activities/quiz/ReflectionJournal';
+import { CashFlowChallenge } from '@/components/activities/simulations/CashFlowChallenge';
 import { db } from '@/lib/db/drizzle';
 import { lessonVersions, lessons } from '@/lib/db/schema';
 import type {

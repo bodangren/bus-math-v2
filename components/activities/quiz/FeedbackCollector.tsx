@@ -6,7 +6,7 @@
  * Import and use this component in any React page or component:
  *
  * ```tsx
- * import FeedbackCollector from '@/components/exercises/FeedbackCollector'
+ * import FeedbackCollector from '@/components/activities/quiz/FeedbackCollector'
  *
  * export default function MyPage() {
  *   return (

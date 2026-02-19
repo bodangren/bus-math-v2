@@ -13,7 +13,7 @@ import {
   type SpreadsheetData,
   type SpreadsheetCell,
   a1ToCoordinates,
-} from '@/components/spreadsheet';
+} from '@/components/activities/spreadsheet';
 import type { Activity } from '@/lib/db/schema/validators';
 
 // Target cell validation schema

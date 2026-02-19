@@ -39,6 +39,14 @@ const activityPropsSchema = z.union([
   activityPropsSchemas['cash-flow-challenge'],
   activityPropsSchemas['inventory-manager'],
   activityPropsSchemas['pitch-presentation-builder'],
+  activityPropsSchemas['pay-structure-lab'],
+  activityPropsSchemas['notebook-organizer'],
+  activityPropsSchemas['ledger-hero'],
+  activityPropsSchemas['growth-puzzle'],
+  activityPropsSchemas['asset-time-machine'],
+  activityPropsSchemas['cafe-supply-chaos'],
+  activityPropsSchemas['capital-negotiation'],
+  activityPropsSchemas['business-stress-test'],
   activityPropsSchemas['spreadsheet']
 ]);
 

@@ -1,17 +1,17 @@
 /**
- * JournalEntryBuilding Component
+ * JournalEntryActivity Component
  * 
  * DEVELOPER USAGE:
  * ================
  * Import and use this component in any React page or component:
  * 
  * ```tsx
- * import { JournalEntryBuilding } from '@/components/exercises/JournalEntryBuilding'
+ * import { JournalEntryActivity } from '@/components/activities/quiz/JournalEntryActivity'
  * 
  * export default function MyPage() {
  *   return (
  *     <div>
- *       <JournalEntryBuilding />
+ *       <JournalEntryActivity />
  *     </div>
  *   )
  * }
@@ -116,13 +116,13 @@ interface ExerciseState {
   completed: boolean
 }
 
-export type JournalEntryActivity = Omit<Activity, 'componentKey' | 'props'> & {
+export type JournalEntryActivityData = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'journal-entry-building'
   props: JournalEntryActivityProps
 }
 
-interface JournalEntryBuildingProps {
-  activity: JournalEntryActivity
+interface JournalEntryComponentProps {
+  activity: JournalEntryActivityData
   onSubmit?: (payload: {
     activityId: string
     scenarioId: string
@@ -204,7 +204,7 @@ const DEFAULT_SCENARIOS: Scenario[] = [
   }
 ]
 
-export function JournalEntryBuilding({ activity, onSubmit }: JournalEntryBuildingProps) {
+export function JournalEntryActivity({ activity, onSubmit }: JournalEntryComponentProps) {
   const {
     props: {
       title: activityTitle,
@@ -792,4 +792,4 @@ export function JournalEntryBuilding({ activity, onSubmit }: JournalEntryBuildin
   )
 }
 
-export default JournalEntryBuilding
+export default JournalEntryActivity

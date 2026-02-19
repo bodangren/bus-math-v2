@@ -1,0 +1,76 @@
+# Activity Components - Student Experience Reference
+# Format: component-key: "Detailed description based on actual component implementation"
+
+# Quiz & Reflection
+comprehension-quiz: "Students answer shuffled multiple-choice questions with stable-hashed scoring to verify content mastery before proceeding."
+fill-in-the-blank: "Students drag or type terms into contextual sentences; system provides immediate feedback on accuracy and conceptual fit."
+reflection-journal: "Students compose structured prose responses to business prompts; system saves 'Journal Entry' drafts for later portfolio review."
+peer-critique-form: "Students apply a standardized rubric to evaluate peer work, practice giving constructive feedback, and identify key performance indicators."
+feedback-collector: "Students use a multi-step form to rate their confidence and learning experience, providing qualitative data for instructor review."
+
+# Accounting & Financials
+journal-entry-activity: "Students record double-entry transactions by dragging account names and inputting balanced debit/credit values with real-time balance checking."
+journal-entry: "A focused widget for recording single business transactions, helping students practice the fundamental 'Left for Debit, Right for Credit' rule."
+account-categorization: "A drag-and-drop sorting task where students classify accounts into Assets, Liabilities, Equity, Revenue, or Expenses buckets."
+trial-balance-sorting: "Students organize account balances into Debit and Credit columns, calculating net differences to ensure the ledger is in balance."
+trial-balance: "A reference view of the trial balance that helps students understand the final output of the ledger before financial statements are prepared."
+transaction-journal: "A chronological record-keeping exercise where students review business events and verify they were recorded accurately in the general journal."
+t-account-simple: "Students practice the T-format by entering transactions on the correct side (Debit/Credit) to calculate a running account balance."
+t-account-detailed: "A more complex ledger interaction where students enter dates, descriptions, and reference IDs for each account change."
+t-accounts-visualization: "An interactive map showing how a single journal entry 'posts' to multiple T-accounts simultaneously across the accounting equation."
+
+# Financial Reports
+income-statement-simple: "Students calculate Net Income by subtracting total expenses from total revenue in a clean, high-level summary view."
+income-statement-detailed: "A classified report where students distinguish between Gross Profit, Operating Income, and Net Income for in-depth analysis."
+balance-sheet-simple: "Students verify the accounting equation (A = L + E) using a basic report of current assets and liabilities."
+balance-sheet-detailed: "Students explore a fully classified balance sheet including Net Receivables, Accumulated Depreciation, and Retained Earnings."
+cash-flow-statement-simple: "Students track 'Cash In' vs 'Cash Out' over time, learning the difference between profit and actual cash on hand."
+cash-flow-statement-detailed: "A report organized by Operating, Investing, and Financing activities to show exactly how cash moves through a business."
+
+# Business Simulations
+notebook-organizer: "An intuitive sorting game where students categorize messy financial notes into Assets, Liabilities, and Equity to discover the fundamental accounting equation."
+ledger-hero: "A narrative-driven categorization game where students identify the 'Double Impact' of business events to build intuition for the DEA LER accounting logic."
+growth-puzzle: "An allocation laboratory where students decide how to use monthly profit for business reinvestment (Equity) vs. personal distributions."
+pay-structure-lab: "Students step through realistic hiring scenarios to choose between hourly, salary, and commission pay structures while seeing the real-time impact on payroll taxes and net pay."
+asset-time-machine: "A 5-year timeline simulation where students decide when to repair or upgrade equipment, observing the impact of value loss (Depreciation) over time."
+cafe-supply-chaos: "An inventory laboratory where students fulfill orders during periods of price inflation to see how FIFO vs. LIFO choices impact the profit story."
+capital-negotiation: "A deal-analysis simulation where students compare bank loans vs. equity partners, experiencing the trade-offs between control and monthly cash obligations."
+business-stress-test: "A high-stakes dashboard where students pull management levers (Price, Volume, Staffing) to keep a business solvent through simulated market disasters."
+lemonade-stand: "A day-by-day simulation where students manage recipe (lemons/sugar), pricing, and marketing spend against a weather forecast."
+startup-journey: "A multi-stage narrative where students manage a $10,000 budget and make decisions on funding, hiring, and product-market fit."
+budget-balancer: "Students allocate limited funds across competing categories and respond to 'Random Events' that force budget reallocations."
+cash-flow-challenge: "Students navigate a 12-month timeline, making choices to keep the cash balance positive while facing variable accounts receivable cycles."
+inventory-manager: "Students manage stock for technology products (Smartphones, Laptops) using demand history and lead-time calculations."
+pitch-presentation-builder: "Students select data points from their simulation performance to build a persuasive 'Slide Deck' for potential investors."
+pay-structure-lab: "Students step through realistic hiring scenarios to choose between hourly, salary, and commission pay structures while seeing the real-time impact on payroll taxes and net pay."
+
+# Spreadsheet & Data Tools
+spreadsheet-activity: "A full-featured grid where students write formulas (e.g., =SUM, =A1*B1) and format cells to solve business problems."
+spreadsheet-evaluator: "A goal-oriented spreadsheet task where the system validates specific cell values and formula logic against a hidden 'Answer Key'."
+data-cleaning-activity: "Students identify and fix 'Messy Data' (duplicates, formatting errors) to prepare a dataset for accurate reporting."
+spreadsheet-wrapper: "The underlying interactive engine that powers all grid-based activities, supporting cell references and basic math functions."
+spreadsheet-templates: "Pre-built spreadsheet models (e.g., Payroll, Tax, Break-Even) that students fill out to learn standard industry workflows."
+spreadsheet-adapter: "A technical bridge that ensures student spreadsheet data is correctly saved to the Supabase database for teacher grading."
+
+# Charts & Visualization
+financial-dashboard: "An interactive cockpit displaying KPIs (Revenue, Growth, Margin) alongside Bar, Line, and Pie charts of business data."
+bar-chart: "An interactive visualization used to compare discrete categories, such as sales performance across different product lines."
+pie-chart: "A visualization showing part-to-whole relationships, commonly used to analyze expense breakdowns or market share."
+line-chart: "A trend-tracking tool used to visualize business growth or seasonal fluctuations over a continuous period."
+doughnut-chart: "A variation of the pie chart focused on key center metrics, often used for goal tracking (e.g., % of budget spent)."
+break-even-chart: "A dynamic graph where students see the 'Break-Even Point' move visually as they adjust fixed vs variable cost sliders."
+
+# Drag & Drop Exercises
+general-drag-and-drop: "A generic matching interface used for varied conceptual exercises like matching business terms to their definitions."
+financial-statement-matching: "Students drag account names (e.g., 'Cash') to the correct financial statement where they belong (e.g., 'Balance Sheet')."
+break-even-components: "Students sort business costs into 'Fixed' and 'Variable' columns to build an accurate cost-volume-profit model."
+ratio-matching: "Students calculate ratios (e.g., Current Ratio) and match the numerical result to its qualitative business interpretation."
+percentage-calculation-sorting: "Students calculate % changes or proportions and rank scenarios from highest to lowest impact."
+inventory-flow-diagram: "Students sequence the steps of the inventory cycle from purchase order to final sale and COGS recording."
+cash-flow-timeline: "Students place cash receipts and disbursements on a linear calendar to identify potential liquidity shortages."
+budget-category-sort: "A classification task where students organize expenses into operational categories like Rent, Payroll, and Marketing."
+
+# Financial Calculations
+break-even-calculator: "A tool featuring 'Goal Seek' and sensitivity analysis, allowing students to see how price changes impact the break-even point."
+depreciation-builder: "Students build full multi-year depreciation schedules using Straight-Line, Double-Declining, or Units-of-Production methods."
+interest-builder: "A calculator for exploring simple vs compound interest, showing the exponential impact of time and rates on loan balances."

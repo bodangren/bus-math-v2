@@ -6,7 +6,7 @@
  * Import and use this component in any React page or component:
  * 
  * ```tsx
- * import { StartupJourney } from '@/components/business-simulations/StartupJourney'
+ * import { StartupJourney } from '@/components/activities/simulations/StartupJourney'
  * 
  * export default function MyPage() {
  *   return (

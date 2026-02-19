@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { SpreadsheetWrapper, type SpreadsheetData } from '@/components/spreadsheet/SpreadsheetWrapper';
+import { SpreadsheetWrapper, type SpreadsheetData } from '@/components/activities/spreadsheet/SpreadsheetWrapper';
 import { CheckCircle, RotateCcw, Lightbulb, ArrowRight } from 'lucide-react';
 
-interface DataCleaningExerciseProps {
+interface DataCleaningActivityProps {
   title: string;
   description: string;
   messyData: SpreadsheetData;
@@ -16,14 +16,14 @@ interface DataCleaningExerciseProps {
   onComplete?: () => void;
 }
 
-export default function DataCleaningExercise({
+export default function DataCleaningActivity({
   title,
   description,
   messyData,
   cleanData,
   cleaningSteps,
   onComplete
-}: DataCleaningExerciseProps) {
+}: DataCleaningActivityProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [showClean, setShowClean] = useState(false);
   const [userProgress, setUserProgress] = useState<boolean[]>(new Array(cleaningSteps.length).fill(false));

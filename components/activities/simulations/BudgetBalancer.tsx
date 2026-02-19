@@ -6,7 +6,7 @@
  * Import and use this component in any React page or component:
  * 
  * ```tsx
- * import { BudgetBalancer } from '@/components/business-simulations/BudgetBalancer'
+ * import { BudgetBalancer } from '@/components/activities/simulations/BudgetBalancer'
  * 
  * export default function MyPage() {
  *   return (

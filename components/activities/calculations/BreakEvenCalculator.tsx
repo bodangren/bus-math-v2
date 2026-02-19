@@ -6,7 +6,7 @@
  * Import and use this component in any React page or component:
  *
  * ```tsx
- * import { BreakEvenAnalysisCalculator } from '@/components/financial-calculations/BreakEvenAnalysisCalculator'
+ * import { BreakEvenAnalysisCalculator } from '@/components/activities/calculations/BreakEvenAnalysisCalculator'
  *
  * export default function MyPage() {
  *   return (

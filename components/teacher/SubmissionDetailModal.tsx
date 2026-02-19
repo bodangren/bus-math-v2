@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { X, CheckCircle2, Clock, Circle, Loader2 } from 'lucide-react';
-import { SpreadsheetWrapper } from '@/components/spreadsheet/SpreadsheetWrapper';
+import { SpreadsheetWrapper } from '@/components/activities/spreadsheet/SpreadsheetWrapper';
 import type { PhaseDetail, PhaseStatus, SubmissionDetail } from '@/lib/teacher/submission-detail';
 
 // ---------------------------------------------------------------------------

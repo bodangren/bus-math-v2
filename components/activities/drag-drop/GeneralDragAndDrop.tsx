@@ -35,7 +35,7 @@ export type DragAndDropActivity = Omit<Activity, 'componentKey' | 'props'> & {
   props: DragAndDropActivityProps;
 };
 
-interface DragAndDropProps {
+interface GeneralDragAndDropProps {
   activity: DragAndDropActivity;
   onSubmit?: (payload: {
     activityId: string;
@@ -76,7 +76,7 @@ const buildColumns = (items: MatchingItem[]) => {
   return { left, right };
 };
 
-export function DragAndDrop({ activity, onSubmit }: DragAndDropProps) {
+export function GeneralDragAndDrop({ activity, onSubmit }: GeneralDragAndDropProps) {
   const { items, leftColumnTitle, rightColumnTitle, showHints, shuffleItems } = activity.props;
 
   const { left, right } = useMemo(() => buildColumns(items as MatchingItem[]), [items]);
@@ -331,3 +331,4 @@ export function DragAndDrop({ activity, onSubmit }: DragAndDropProps) {
     </Card>
   );
 }
+export default GeneralDragAndDrop;
