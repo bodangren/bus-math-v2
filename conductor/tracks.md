@@ -11,7 +11,7 @@ This file is the source of truth for active execution order and archived track h
 
 ---
 
-- [~] **Track: Establish granular lesson plan infrastructure (one file per lesson) and implement Unit 1 pilot.**
+- [x] **Track: Establish granular lesson plan infrastructure (one file per lesson) and implement Unit 1 pilot.**
   *Link: [./conductor/tracks/lesson_plan_infra_20260219/](./conductor/tracks/lesson_plan_infra_20260219/)*
 
 ---
