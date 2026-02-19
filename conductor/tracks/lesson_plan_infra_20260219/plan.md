@@ -29,12 +29,12 @@ Generate the detailed lesson files for the launch and foundational phases.
 - [x] Task: Verify 6-phase sequence (Reflection *after* Checkpoint) in all files. 7beb037
 - [x] Task: Conductor - User Manual Verification 'Unit 1 Lessons (Category A)' (Protocol in workflow.md) f3844a0
 
-## Phase 4: Unit 1 Lessons (Category B & C: L8-11)
+## Phase 4: Unit 1 Lessons (Category B & C: L8-11) [checkpoint: 306cc64]
 Generate the project sprint and final assessment files.
 
 - [x] Task: Implement `U01L08_project.md` to `U01L10_project.md` (Sprint structure) 755f97e
 - [x] Task: Implement `U01L11_assessment.md` (Assessment structure with auto-grade YAML) 6db4d93
-- [ ] Task: Conductor - User Manual Verification 'Unit 1 Lessons (Category B & C)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Unit 1 Lessons (Category B & C)' (Protocol in workflow.md) 306cc64
 
 ## Phase 5: Quality Assurance
 Final verification of naming conventions and schema compliance.
