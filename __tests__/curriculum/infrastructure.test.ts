@@ -69,4 +69,27 @@ describe('Curriculum Infrastructure', () => {
       expect(fs.existsSync(lessonPath)).toBe(true);
     });
   });
+
+  it('should have the correct 6-phase sequence (Reflection after Checkpoint) in L1-L7', () => {
+    const lessons = [
+      'U01L01_launch.md',
+      'U01L02_accounting.md',
+      'U01L03_accounting.md',
+      'U01L04_accounting.md',
+      'U01L05_excel.md',
+      'U01L06_excel.md',
+      'U01L07_excel.md'
+    ];
+    lessons.forEach(lesson => {
+      const lessonPath = path.resolve(process.cwd(), `docs/curriculum/units/unit_01/${lesson}`);
+      const content = fs.readFileSync(lessonPath, 'utf8');
+      
+      const checkpointIndex = content.indexOf('Phase 5: Checkpoint');
+      const reflectionIndex = content.indexOf('Phase 6: Reflection');
+      
+      expect(checkpointIndex).toBeGreaterThan(-1);
+      expect(reflectionIndex).toBeGreaterThan(-1);
+      expect(reflectionIndex).toBeGreaterThan(checkpointIndex);
+    });
+  });
 });
