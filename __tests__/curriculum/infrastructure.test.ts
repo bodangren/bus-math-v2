@@ -121,6 +121,17 @@ describe('Curriculum Infrastructure', () => {
     });
   });
 
+  it('should follow the file naming convention UXXLXX_{type}.md in unit_01', () => {
+    const unit01Path = path.resolve(process.cwd(), 'docs/curriculum/units/unit_01');
+    const files = fs.readdirSync(unit01Path).filter(f => f.endsWith('.md') && f !== 'manifest.md');
+    
+    files.forEach(file => {
+      // Pattern: U followed by 2 digits, L followed by 2 digits, underscore, type, .md
+      const regex = /^U\d{2}L\d{2}_(launch|accounting|excel|project|assessment)\.md$/;
+      expect(file).toMatch(regex);
+    });
+  });
+
   it('should have implemented project sprint lessons U01L08 to U01L10', () => {
     const lessons = ['U01L08_project.md', 'U01L09_project.md', 'U01L10_project.md'];
     lessons.forEach(lesson => {
