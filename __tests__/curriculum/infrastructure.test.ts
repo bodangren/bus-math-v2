@@ -27,4 +27,9 @@ describe('Curriculum Infrastructure', () => {
     const excelPath = path.resolve(process.cwd(), 'docs/curriculum/templates/excel.md');
     expect(fs.existsSync(excelPath)).toBe(true);
   });
+
+  it('should have the project template', () => {
+    const projectPath = path.resolve(process.cwd(), 'docs/curriculum/templates/project.md');
+    expect(fs.existsSync(projectPath)).toBe(true);
+  });
 });
