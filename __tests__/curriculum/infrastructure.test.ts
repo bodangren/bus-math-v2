@@ -17,4 +17,9 @@ describe('Curriculum Infrastructure', () => {
     const launchPath = path.resolve(process.cwd(), 'docs/curriculum/templates/launch.md');
     expect(fs.existsSync(launchPath)).toBe(true);
   });
+
+  it('should have the accounting template', () => {
+    const accountingPath = path.resolve(process.cwd(), 'docs/curriculum/templates/accounting.md');
+    expect(fs.existsSync(accountingPath)).toBe(true);
+  });
 });
