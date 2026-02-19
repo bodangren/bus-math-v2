@@ -13,6 +13,7 @@ const CompletePhaseSchema = z.object({
   phaseNumber: z.number().int().positive('Phase number must be a positive integer'),
   timeSpent: z.number().int().nonnegative('Time spent must be non-negative').max(86400, 'Time spent cannot exceed 24 hours'),
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
+  linkedStandardId: z.string().uuid('Invalid standard ID format').optional(),
 });
 const uuidSchema = z.string().uuid();
 
@@ -164,6 +165,7 @@ export async function POST(request: Request) {
       phaseNumber,
       timeSpent,
       idempotencyKey,
+      linkedStandardId,
     }: CompletePhasePayload = validationResult.data;
 
     const lessonId = await normalizeLessonId(supabase, lessonIdentifier);
@@ -344,13 +346,35 @@ export async function POST(request: Request) {
       );
     }
 
+    // Step 6: Credit competency standard when a linked standard ID is provided
+    if (linkedStandardId) {
+      const { error: competencyError } = await supabase
+        .from('student_competency')
+        .upsert(
+          {
+            student_id: user.id,
+            standard_id: linkedStandardId,
+            mastery_level: 10,
+            evidence_activity_id: null,
+            last_updated: serverTimestamp,
+            updated_by: user.id,
+          },
+          { onConflict: 'student_id,standard_id' },
+        );
+
+      if (competencyError) {
+        // Non-fatal: log but don't block the phase completion response
+        console.error('Failed to record competency standard:', competencyError);
+      }
+    }
+
     const nextPhaseUnlocked = await checkNextPhaseExists(
       supabase,
       phaseContext.lessonVersionId,
       phaseNumber,
     );
 
-    // Step 6: Return success response
+    // Step 7: Return success response
     const response: CompletePhaseResponse = {
       success: true,
       nextPhaseUnlocked,

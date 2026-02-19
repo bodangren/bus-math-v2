@@ -105,6 +105,7 @@ function ContentBlockRenderer({
           lessonId={lessonId}
           phaseNumber={phaseNumber}
           required={block.required}
+          linkedStandardId={block.linkedStandardId}
         />
       );
 

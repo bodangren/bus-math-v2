@@ -30,6 +30,8 @@ interface UsePhaseCompletionOptions {
   phaseType: 'read' | 'do';
   onSuccess?: (response: CompletePhaseResponse) => void;
   onError?: (error: Error) => void;
+  /** Optional standard UUID to credit in student_competency when the phase completes */
+  linkedStandardId?: string;
 }
 
 /**
@@ -286,6 +288,7 @@ export function usePhaseCompletion({
   phaseType: _phaseType, // eslint-disable-line @typescript-eslint/no-unused-vars
   onSuccess,
   onError,
+  linkedStandardId,
 }: UsePhaseCompletionOptions): UsePhaseCompletionResult {
   const [isCompleting, setIsCompleting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -370,6 +373,7 @@ export function usePhaseCompletion({
         phaseNumber,
         timeSpent,
         idempotencyKey,
+        ...(linkedStandardId ? { linkedStandardId } : {}),
       };
 
       try {
@@ -452,7 +456,7 @@ export function usePhaseCompletion({
     } finally {
       setIsCompleting(false);
     }
-  }, [lessonId, phaseNumber, userId, onSuccess, onError, isCompleting]);
+  }, [lessonId, phaseNumber, userId, onSuccess, onError, isCompleting, linkedStandardId]);
 
   return {
     completePhase,

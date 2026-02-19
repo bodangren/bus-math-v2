@@ -493,4 +493,70 @@ describe('POST /api/phases/complete', () => {
     expect(body.message).toContain('already completed');
     expect(body.phaseId).toBe('pv-2');
   });
+
+  it('upserts student_competency when linkedStandardId is provided', async () => {
+    const upsertSpy = vi.fn().mockResolvedValue({ error: null });
+
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'lesson_versions') {
+        return {
+          select: () => ({
+            eq: () => ({
+              order: () => ({
+                limit: () =>
+                  Promise.resolve({ data: [{ id: 'lv-1', version: 1, status: 'published' }], error: null }),
+              }),
+            }),
+          }),
+        };
+      }
+      if (table === 'phase_versions') {
+        return {
+          select: () => ({
+            eq: (_field: string, value: unknown) => {
+              if (value === 'lv-1') {
+                return {
+                  eq: () => ({
+                    maybeSingle: () => Promise.resolve({ data: { id: 'pv-2' }, error: null }),
+                  }),
+                };
+              }
+              return { eq: () => ({ maybeSingle: () => Promise.resolve({ data: null, error: null }) }) };
+            },
+          }),
+        };
+      }
+      if (table === 'student_progress') {
+        return {
+          select: () => ({
+            eq: () => ({
+              eq: () => ({
+                maybeSingle: () => Promise.resolve({ data: null, error: null }),
+              }),
+            }),
+          }),
+          upsert: () => Promise.resolve({ error: null }),
+        };
+      }
+      if (table === 'student_competency') {
+        return { upsert: upsertSpy };
+      }
+      return {
+        select: () => ({ eq: () => ({ maybeSingle: () => Promise.resolve({ data: null, error: null }) }) }),
+      };
+    });
+
+    const standardId = 'd6b57545-65f6-4c39-80d5-aabb00000001'; // RFC 4122-compliant v4 UUID
+    const response = await POST(
+      buildRequest({ ...validPayload, linkedStandardId: standardId }),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.success).toBe(true);
+    expect(upsertSpy).toHaveBeenCalledOnce();
+    const [rows, opts] = upsertSpy.mock.calls[0];
+    expect(rows).toMatchObject({ standard_id: standardId, mastery_level: expect.any(Number) });
+    expect(opts).toMatchObject({ onConflict: expect.stringContaining('student_id') });
+  });
 });

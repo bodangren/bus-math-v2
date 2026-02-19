@@ -412,6 +412,32 @@ describe('ActivityRenderer', () => {
     });
   });
 
+  it('forwards linkedStandardId to usePhaseCompletion when provided', async () => {
+    const standardId = 'd6b57545-65f6-4c39-80d5-aabb00000001';
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => buildActivity(),
+    });
+
+    render(
+      <ActivityRenderer
+        activityId="test-activity-id"
+        lessonId="test-lesson-id"
+        phaseNumber={1}
+        linkedStandardId={standardId}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('mock-activity')).toBeInTheDocument();
+    });
+
+    expect(mockUsePhaseCompletion).toHaveBeenCalledWith(
+      expect.objectContaining({ linkedStandardId: standardId }),
+    );
+  });
+
   it('does not trigger phase completion when onSubmit payload is incomplete', async () => {
     const SubmitIncompleteComponent = ({
       onSubmit,

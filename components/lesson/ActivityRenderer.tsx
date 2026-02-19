@@ -18,6 +18,8 @@ interface ActivityRendererProps {
   required?: boolean;
   initialStatus?: 'not_started' | 'in_progress' | 'completed' | 'current' | 'available' | 'locked';
   onStatusChange?: () => void;
+  /** Standard UUID to credit in student_competency when this activity is completed */
+  linkedStandardId?: string;
 }
 
 interface ActivitySubmissionPayload {
@@ -44,13 +46,14 @@ interface AssessmentResponse {
  * ActivityRenderer fetches an activity from the database by ID
  * and renders it using the activity registry.
  */
-export function ActivityRenderer({ 
-  activityId, 
-  lessonId, 
-  phaseNumber, 
+export function ActivityRenderer({
+  activityId,
+  lessonId,
+  phaseNumber,
   required = false,
   initialStatus = 'not_started',
-  onStatusChange
+  onStatusChange,
+  linkedStandardId,
 }: ActivityRendererProps) {
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +78,7 @@ export function ActivityRenderer({
     lessonId,
     phaseNumber,
     phaseType: 'do',
+    linkedStandardId,
     onSuccess: (response) => {
       setCompletionResult(response);
       setSubmissionError(null);

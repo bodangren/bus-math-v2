@@ -25,6 +25,8 @@ export interface CompletePhaseRequest {
   phaseNumber: number;
   timeSpent: number;
   idempotencyKey: string;
+  /** Optional standard UUID to credit in student_competency when this phase completes via a required activity */
+  linkedStandardId?: string;
 }
 
 export interface CompletePhaseResponse {
