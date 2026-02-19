@@ -24,7 +24,7 @@ Define the sequence and high-level goals for the first unit.
 Generate the detailed lesson files for the launch and foundational phases.
 
 - [x] Task: Implement `U01L01_launch.md` (Video/Sim focus) 9adee36
-- [ ] Task: Implement `U01L02_accounting.md` to `U01L04_accounting.md` (Foundation depth)
+- [x] Task: Implement `U01L02_accounting.md` to `U01L04_accounting.md` (Foundation depth) d397c2d
 - [ ] Task: Implement `U01L05_excel.md` to `U01L07_excel.md` (Excel application depth)
 - [ ] Task: Verify 6-phase sequence (Reflection *after* Checkpoint) in all files.
 - [ ] Task: Conductor - User Manual Verification 'Unit 1 Lessons (Category A)' (Protocol in workflow.md)
