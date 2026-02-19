@@ -2,7 +2,7 @@
 
 This plan outlines the creation of a granular curriculum structure and the pilot implementation for Unit 1.
 
-## Phase 1: Infrastructure & Templates
+## Phase 1: Infrastructure & Templates [checkpoint: b203a92]
 Establish the directory structure and standardized Markdown templates.
 
 - [x] Task: Create curriculum directory structure (`docs/curriculum/templates/`, `docs/curriculum/units/unit_01/`) 22e4b2a
@@ -11,7 +11,7 @@ Establish the directory structure and standardized Markdown templates.
 - [x] Task: Create `docs/curriculum/templates/excel.md` (6-Phase: Entry -> Reflection) 2d464af
 - [x] Task: Create `docs/curriculum/templates/project.md` (Sprint structure) a1b45d3
 - [x] Task: Create `docs/curriculum/templates/assessment.md` (Assessment structure) 8be4836
-- [ ] Task: Conductor - User Manual Verification 'Infrastructure & Templates' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Infrastructure & Templates' (Protocol in workflow.md) b203a92
 
 ## Phase 2: Unit 1 Manifest
 Define the sequence and high-level goals for the first unit.
