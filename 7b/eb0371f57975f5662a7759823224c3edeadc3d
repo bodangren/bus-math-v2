@@ -1,0 +1,4 @@
+Task: Verify 6-phase sequence (Reflection after Checkpoint) in all files.
+Summary: Verified that all Category A lessons (L1-L7) correctly follow the mandatory 6-phase sequence.
+Files: __tests__/curriculum/infrastructure.test.ts
+Why: To ensure consistency and pedagogical alignment across the new lesson structure.
