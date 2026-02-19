@@ -1,0 +1,4 @@
+Task: Verify file naming convention UXXLXX_{type}.md is consistent across all files.
+Summary: Verified that all lesson files in Unit 1 follow the mandated naming convention.
+Files: __tests__/curriculum/infrastructure.test.ts
+Why: To ensure file-system consistency and support automated curriculum loading.
