@@ -34,7 +34,39 @@
 
 ## Phase 2: Lesson Seeds L1–L4 [checkpoint: TBD]
 
-- [x] Task: Seed Lesson 1 — Launch Unit: A=L+E (ACC-1.1)
+<!-- ⚠️ ERRORS DISCOVERED (2026-02-19) — Seeds L1–L4 require correction before Phase 2 can close.
+
+Root cause: Seeds were authored using only `docs/curriculum/unit_01_lesson_matrix.md` (one-cell-per-phase
+summaries). No detailed per-lesson plans exist in the repo. The following errors were identified in review:
+
+ERROR 1 — L1 Phase 1 (Hook) missing unit-launch structure:
+  Unit-launch lessons (L1 of every unit) must contain three specific elements that were omitted:
+    (a) Launch video
+    (b) Business simulation activity
+    (c) Turn-and-talk discussion prompts
+  What was authored instead: text block + why-this-matters callout + text block.
+
+ERROR 2 — L2–L4 Phase 1 content unverified:
+  Phase 1 content for L2–L4 was inferred from single-cell "Entry/Launch" matrix descriptions
+  ("Quick case warm-up", "Scenario hook", "Prompt with sample BS"). No detailed lesson plan
+  was consulted. Content may not match teacher intent.
+
+ERROR 3 — L8–L10 phase count wrong in plan (see Phase 4 below):
+  Plan tasks say L8–L10 "each return 6 phases". Correct structure: L8–L10 are project days
+  with 1 phase each (group work + checkpoint).
+
+ERROR 4 — L11 phase count wrong in plan (see Phase 4 below):
+  Plan tasks say L11 returns "6 phases". Correct structure: L11 is the summative assessment
+  lesson with 1 phase.
+
+BLOCKER: Detailed per-lesson plans do not exist in docs/curriculum/. The matrix tables are
+insufficient as content specs for seeding. Per-lesson plans must be authored or provided
+before L1–L4 can be corrected and before L5–L11 can be seeded.
+
+Resolution: Stopped at user direction on 2026-02-19. Awaiting per-lesson plan docs.
+-->
+
+- [x] Task: Seed Lesson 1 — Launch Unit: A=L+E (ACC-1.1) ⚠️ NEEDS CORRECTION — see errors above
     - [x] Write integration test: `__tests__/seed/unit1/lesson-01.test.ts` — 9 tests covering 6 phases, ≥2 sections, hook callout, narrative, standard, activity, idempotency
     - [x] Authored `supabase/seed/unit1/lesson-01.ts` with full 6-phase content from L1 matrix row
     - [x] Phase 1 (Hook) has `why-this-matters` callout and Sarah Chen narrative
@@ -42,8 +74,9 @@
     - [x] Assessment phase has required `comprehension-quiz` exit ticket (5 questions, 80% pass)
     - [ ] Run seed script against DB and confirm idempotency (deferred to Phase 5 E2E run)
     - [x] Pass integration test (all 9 tests pass)
+    - [ ] ⚠️ CORRECTION NEEDED: Add launch video, business simulation, and turn-and-talk to Phase 1
 
-- [x] Task: Seed Lesson 2 — Classify Accounts into A/L/E (ACC-1.2)
+- [x] Task: Seed Lesson 2 — Classify Accounts into A/L/E (ACC-1.2) ⚠️ PHASE 1 UNVERIFIED
     - [x] Write integration test: `__tests__/seed/unit1/lesson-02.test.ts` — 9 tests (6 phases, sections, hook callout, activities, standard, slug, namespace, no placeholders)
     - [x] Created `supabase/seed/unit1/lesson-02.ts` with full 6-phase authored content from L2 matrix row
     - [x] Guided Practice (3) has required `account-categorization` activity (11 TechStart accounts drag-sort)
@@ -51,16 +84,18 @@
     - [x] Standards linked: ACC-1.2 (primary)
     - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
     - [x] All 9 tests pass
+    - [ ] ⚠️ CORRECTION NEEDED: Verify Phase 1 content against detailed lesson plan when available
 
-- [x] Task: Seed Lesson 3 — Apply A/L/E to Business Events (ACC-1.4)
+- [x] Task: Seed Lesson 3 — Apply A/L/E to Business Events (ACC-1.4) ⚠️ PHASE 1 UNVERIFIED
     - [x] Write integration test: `__tests__/seed/unit1/lesson-03.test.ts` — 10 tests (6 phases, sections, hook callout, Sarah narrative, assessment activity, standard, slug, namespace, no placeholders, ≥5 quiz questions)
     - [x] Created `supabase/seed/unit1/lesson-03.ts` with 7 TechStart event scenarios, dual-impact concept, SUMIF verification
     - [x] Assessment (5) has required `comprehension-quiz` exit ticket (5 questions tracing event effects on A/L/E)
     - [x] Standards linked: ACC-1.4 (primary)
     - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
     - [x] All 10 tests pass
+    - [ ] ⚠️ CORRECTION NEEDED: Verify Phase 1 content against detailed lesson plan when available
 
-- [x] Task: Seed Lesson 4 — Build the Balance Sheet (ACC-1.3)
+- [x] Task: Seed Lesson 4 — Build the Balance Sheet (ACC-1.3) ⚠️ PHASE 1 UNVERIFIED
     - [x] Write integration test: `__tests__/seed/unit1/lesson-04.test.ts` — 10 tests (6 phases, sections, hook callout, spreadsheet activity in phase 4, comprehension-quiz in phase 5, standard, slug, namespace, no placeholders, balance-sheet template)
     - [x] Created `supabase/seed/unit1/lesson-04.ts` with BS skeleton structure, Current/Non-Current sections, subtotals walkthrough
     - [x] Independent Practice (4) has required `spreadsheet` activity (balance-sheet template, ≥6 accounts)
@@ -68,12 +103,16 @@
     - [x] Standards linked: ACC-1.3 (primary)
     - [ ] Run seed against DB and verify idempotency (deferred to Phase 5 E2E run)
     - [x] All 10 tests pass
+    - [ ] ⚠️ CORRECTION NEEDED: Verify Phase 1 content against detailed lesson plan when available
 
 - [ ] Task: Conductor — User Manual Verification 'Phase 2: Lesson Seeds L1–L4' (Protocol in workflow.md)
 
 ---
 
 ## Phase 3: Lesson Seeds L5–L7 [checkpoint: TBD]
+
+<!-- BLOCKER: Do not begin L5–L7 seeds until detailed per-lesson plans are provided.
+     Matrix table descriptions are insufficient content specs. -->
 
 - [ ] Task: Seed Lesson 5 — Detect and Fix Ledger Errors (ACC-1.5)
     - [ ] Write integration test: lesson `unit-1-lesson-5` returns 6 phases
@@ -106,22 +145,26 @@
 
 ## Phase 4: Lesson Seeds L8–L11 [checkpoint: TBD]
 
+<!-- ⚠️ PLAN CORRECTED (2026-02-19): Original plan had wrong phase counts for L8–L11.
+     Correct structure per product owner:
+       L8–L10: Project days — 1 phase each (group work + checkpoint), NOT 6 phases
+       L11: Summative assessment day — 1 phase, NOT 6 phases
+     Tasks below updated to reflect correct structure. -->
+
 - [ ] Task: Seed Lessons 8–10 — Group Project Days
-    - [ ] Write integration test: lessons `unit-1-lesson-8`, `unit-1-lesson-9`, `unit-1-lesson-10` each return 6 phases
-    - [ ] Create `supabase/seed/unit1/lessons-08-10.ts` (simplified phases: group work instructions, peer review, polish)
-    - [ ] L8 phases: Group ledger refinement instructions + `peer-critique-form` activity
-    - [ ] L9 phases: Visual polish instructions + `reflection-journal` on audience expectations
-    - [ ] L10 phases: Final submission checklist markdown + `reflection-journal` (personal checklist)
-    - [ ] Milestone ② note in L10 Assessment phase: "Final Mini Balance Sheet submitted"
+    - [ ] Write integration test: lessons `unit-1-lesson-8`, `unit-1-lesson-9`, `unit-1-lesson-10` each return exactly 1 phase
+    - [ ] Create `supabase/seed/unit1/lessons-08-10.ts` (1 phase each: group work instructions + checkpoint activity)
+    - [ ] L8 (1 phase): Group ledger refinement instructions + `peer-critique-form` activity
+    - [ ] L9 (1 phase): Visual polish instructions + `reflection-journal` on audience expectations
+    - [ ] L10 (1 phase): Final submission checklist markdown + `reflection-journal` (personal checklist); Milestone ② note
     - [ ] No primary standard for L8–L10 (project integration days)
     - [ ] Run seed, verify idempotency
     - [ ] Pass integration test
 
 - [ ] Task: Seed Lesson 11 — Individual Assessment (ACC-1.1–ACC-1.7)
-    - [ ] Write integration test: lesson `unit-1-lesson-11` returns 6 phases; Assessment phase has a required activity
+    - [ ] Write integration test: lesson `unit-1-lesson-11` returns exactly 1 phase with a required activity
     - [ ] Create `supabase/seed/unit1/lesson-11.ts`
-    - [ ] Assessment phase: summative `comprehension-quiz` with 7 questions (one per ACC-1.x standard), auto-graded
-    - [ ] Closing phase: `reflection-journal` prompt
+    - [ ] 1 phase: summative `comprehension-quiz` with 7 questions (one per ACC-1.x standard), auto-graded
     - [ ] Seed `lesson_standards` links: lesson → ACC-1.1 through ACC-1.7 (all 7 standards)
     - [ ] Run seed, verify idempotency
     - [ ] Pass integration test
@@ -136,7 +179,9 @@
 
 - [ ] Task: Browser walkthrough — all 11 lessons navigable
     - [ ] Use Chrome MCP to navigate to each `/student/lesson/unit-1-lesson-N` (N = 1–11)
-    - [ ] Verify all 6 phases render with substantive content and no "Content coming soon" placeholders
+    - [ ] L1–L7: Verify all 6 phases render with substantive content and no "Content coming soon" placeholders
+    - [ ] L8–L10: Verify 1 phase each renders correctly (project day structure)
+    - [ ] L11: Verify 1 phase renders correctly (summative assessment)
     - [ ] Verify activities load and UI is functional
 
 - [ ] Task: Competency recording integration test
