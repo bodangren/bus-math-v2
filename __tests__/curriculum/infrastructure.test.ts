@@ -32,4 +32,9 @@ describe('Curriculum Infrastructure', () => {
     const projectPath = path.resolve(process.cwd(), 'docs/curriculum/templates/project.md');
     expect(fs.existsSync(projectPath)).toBe(true);
   });
+
+  it('should have the assessment template', () => {
+    const assessmentPath = path.resolve(process.cwd(), 'docs/curriculum/templates/assessment.md');
+    expect(fs.existsSync(assessmentPath)).toBe(true);
+  });
 });
