@@ -5,7 +5,7 @@ This plan outlines the creation of a granular curriculum structure and the pilot
 ## Phase 1: Infrastructure & Templates
 Establish the directory structure and standardized Markdown templates.
 
-- [ ] Task: Create curriculum directory structure (`docs/curriculum/templates/`, `docs/curriculum/units/unit_01/`)
+- [x] Task: Create curriculum directory structure (`docs/curriculum/templates/`, `docs/curriculum/units/unit_01/`) 22e4b2a
 - [ ] Task: Create `docs/curriculum/templates/launch.md` (6-Phase: Entry -> Reflection)
 - [ ] Task: Create `docs/curriculum/templates/accounting.md` (6-Phase: Entry -> Reflection)
 - [ ] Task: Create `docs/curriculum/templates/excel.md` (6-Phase: Entry -> Reflection)
