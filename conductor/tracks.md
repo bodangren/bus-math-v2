@@ -9,14 +9,11 @@ This file is the source of truth for active execution order and archived track h
 - [ ] **Track: Unit 1 Curriculum Content — Balance by Design**
   *Link: [./conductor/tracks/unit1_content_20260218/](./conductor/tracks/unit1_content_20260218/)*
 
----
+## Archive Ledger
 
 - [x] **Track: Component Reorganization & Simulation Placeholders**
-  *Link: [./conductor/tracks/component_reorganization_20260220/](./conductor/tracks/component_reorganization_20260220/)*
-
----
-
-## Archive Ledger
+  *Link: [./conductor/archive/component_reorganization_20260220/](./conductor/archive/component_reorganization_20260220/)*
+  *Checkpoint: `4fd4571` (2026-02-20 closeout)*
 
 - [x] **Track: Establish granular lesson plan infrastructure (one file per lesson) and implement Unit 1 pilot.**
   *Link: [./conductor/archive/lesson_plan_infra_20260219/](./conductor/archive/lesson_plan_infra_20260219/)*
