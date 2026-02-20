@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   BalanceSheetSimple,
   type BalanceSheetSimpleData
-} from '../../../components/financial-reports/BalanceSheetSimple';
+} from '../../../components/activities/reports/BalanceSheetSimple';
 
 const balancedSheet: BalanceSheetSimpleData = {
   asOfDate: 'As of December 31, 2024',

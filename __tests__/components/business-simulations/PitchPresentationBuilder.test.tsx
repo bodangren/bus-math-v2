@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { PitchPresentationBuilder } from '../../../components/business-simulations/PitchPresentationBuilder'
+import { PitchPresentationBuilder } from '../../../components/activities/simulations/PitchPresentationBuilder'
 import type { PitchPresentationBuilderActivityProps } from '@/types/activities'
 
 const mockActivity: PitchPresentationBuilderActivityProps = {

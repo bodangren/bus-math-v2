@@ -4,11 +4,11 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { BudgetCategorySort, type BudgetCategorySortActivity } from '../../../components/drag-drop-exercises/BudgetCategorySort';
+import { BudgetCategorySort, type BudgetCategorySortActivity } from '../../../components/activities/drag-drop/BudgetCategorySort';
 import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
-} from '../../../components/drag-drop-exercises/useCategorizationExercise';
+} from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { BudgetCategorySortActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<BudgetCategorySortActivityProps> = {}): BudgetCategorySortActivity => ({

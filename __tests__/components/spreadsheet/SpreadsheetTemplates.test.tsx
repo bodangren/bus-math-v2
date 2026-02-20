@@ -12,7 +12,7 @@ import {
   getTemplateByKey,
   getTemplateByUnit,
   type SpreadsheetTemplate
-} from '../../../components/spreadsheet/SpreadsheetTemplates';
+} from '../../../components/activities/spreadsheet/SpreadsheetTemplates';
 
 function cell(data: SpreadsheetTemplate['data'], row: number, col: number) {
   const rowData = data[row];

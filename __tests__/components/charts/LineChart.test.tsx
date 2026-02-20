@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { LineChart } from '../../../components/charts/LineChart';
+import { LineChart } from '../../../components/activities/charts/LineChart';
 
 const sampleData = [
   { month: 'Jan', revenue: 12000, expenses: 8000 },

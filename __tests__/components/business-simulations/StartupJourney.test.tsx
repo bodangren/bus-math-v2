@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { StartupJourney, type StartupJourneyActivity, type StartupJourneyState } from '../../../components/business-simulations/StartupJourney'
+import { StartupJourney, type StartupJourneyActivity, type StartupJourneyState } from '../../../components/activities/simulations/StartupJourney'
 import type { StartupJourneyActivityProps } from '@/types/activities'
 
 const defaultStartupProps: StartupJourneyActivityProps = {

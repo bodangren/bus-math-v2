@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { DoughnutChart } from '../../../components/charts/DoughnutChart';
+import { DoughnutChart } from '../../../components/activities/charts/DoughnutChart';
 
 const doughnutSegments = [
   { id: 'cash', label: 'Cash', value: 3200 },

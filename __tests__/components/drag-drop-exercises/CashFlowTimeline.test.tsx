@@ -4,8 +4,8 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { CashFlowTimeline, type CashFlowTimelineActivity } from '../../../components/drag-drop-exercises/CashFlowTimeline';
-import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
+import { CashFlowTimeline, type CashFlowTimelineActivity } from '../../../components/activities/drag-drop/CashFlowTimeline';
+import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { CashFlowTimelineActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<CashFlowTimelineActivityProps> = {}): CashFlowTimelineActivity => ({

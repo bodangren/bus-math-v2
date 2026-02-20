@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import DepreciationMethodBuilder from '../../../components/financial-calculations/DepreciationMethodBuilder'
+import DepreciationMethodBuilder from '../../../components/activities/calculations/DepreciationBuilder'
 
 describe('DepreciationMethodBuilder', () => {
   it('renders the component with header', () => {

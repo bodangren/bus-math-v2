@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { PieChart } from '../../../components/charts/PieChart';
+import { PieChart } from '../../../components/activities/charts/PieChart';
 
 const segments = [
   { id: 'cash', label: 'Cash', value: 4200 },

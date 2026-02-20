@@ -4,11 +4,11 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { AccountCategorization, type AccountCategorizationActivity } from '../../../components/drag-drop-exercises/AccountCategorization';
+import { AccountCategorization, type AccountCategorizationActivity } from '../../../components/activities/drag-drop/AccountCategorization';
 import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
-} from '../../../components/drag-drop-exercises/useCategorizationExercise';
+} from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { AccountCategorizationActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<AccountCategorizationActivityProps> = {}): AccountCategorizationActivity => ({

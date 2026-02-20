@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   IncomeStatementDetailed,
   type IncomeStatementDetailedData
-} from '../../../components/financial-reports/IncomeStatementDetailed';
+} from '../../../components/activities/reports/IncomeStatementDetailed';
 
 const detailedStatement: IncomeStatementDetailedData = {
   period: 'For the Year Ended December 31, 2024',

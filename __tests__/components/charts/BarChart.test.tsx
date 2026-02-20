@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import { BarChart } from '../../../components/charts/BarChart';
+import { BarChart } from '../../../components/activities/charts/BarChart';
 
 const barData = [
   { unit: 'Unit 1', completed: 20, assigned: 25 },

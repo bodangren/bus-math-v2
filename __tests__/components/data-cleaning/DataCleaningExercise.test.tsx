@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import DataCleaningExercise from '../../../components/data-cleaning/DataCleaningExercise'
-import type { SpreadsheetData } from '@/components/spreadsheet/SpreadsheetWrapper'
+import DataCleaningExercise from '../../../components/activities/spreadsheet/DataCleaningActivity'
+import type { SpreadsheetData } from '@/components/activities/spreadsheet/SpreadsheetWrapper'
 
 // Mock SpreadsheetWrapper
-vi.mock('@/components/spreadsheet/SpreadsheetWrapper', () => ({
+vi.mock('@/components/activities/spreadsheet/SpreadsheetWrapper', () => ({
   SpreadsheetWrapper: ({ initialData, readOnly, className }: { initialData: SpreadsheetData; readOnly: boolean; className?: string }) => (
     <div data-testid="spreadsheet-wrapper" data-readonly={readOnly} className={className}>
       Mock Spreadsheet: {initialData.length} rows

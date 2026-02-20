@@ -7,11 +7,11 @@ import type { DropResult } from '@hello-pangea/dnd';
 import {
   PercentageCalculationSorting,
   type PercentageCalculationSortingActivity
-} from '../../../components/drag-drop-exercises/PercentageCalculationSorting';
+} from '../../../components/activities/drag-drop/PercentageCalculationSorting';
 import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
-} from '../../../components/drag-drop-exercises/useCategorizationExercise';
+} from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { PercentageCalculationSortingActivityProps } from '@/types/activities';
 
 const buildActivity = (

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { TAccountsVisualization, type TAccount } from '../../../components/accounting/TAccountsVisualization';
+import { TAccountsVisualization, type TAccount } from '../../../components/activities/accounting/TAccountsVisualization';
 
 const buildAccounts = (): TAccount[] => [
   {

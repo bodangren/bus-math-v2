@@ -4,8 +4,8 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { TrialBalanceSorting, type TrialBalanceSortingActivity } from '../../../components/drag-drop-exercises/TrialBalanceSorting';
-import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
+import { TrialBalanceSorting, type TrialBalanceSortingActivity } from '../../../components/activities/drag-drop/TrialBalanceSorting';
+import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { TrialBalanceSortingActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<TrialBalanceSortingActivityProps> = {}): TrialBalanceSortingActivity => ({

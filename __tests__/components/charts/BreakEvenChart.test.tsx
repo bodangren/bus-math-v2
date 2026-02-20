@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { BreakEvenChart } from '../../../components/charts/BreakEvenChart';
+import { BreakEvenChart } from '../../../components/activities/charts/BreakEvenChart';
 
 describe('BreakEvenChart', () => {
   it('recalculates break-even units when inputs change', async () => {

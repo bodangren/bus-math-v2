@@ -8,7 +8,7 @@ import {
   validateSubmission,
   type TargetCell,
 } from '@/lib/activities/spreadsheet-validation';
-import type { SpreadsheetData } from '@/components/spreadsheet';
+import type { SpreadsheetData } from '@/components/activities/spreadsheet';
 
 describe('sanitizeFormula', () => {
   describe('safe formulas', () => {

@@ -4,11 +4,11 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { RatioMatching, type RatioMatchingActivity } from '../../../components/drag-drop-exercises/RatioMatching';
+import { RatioMatching, type RatioMatchingActivity } from '../../../components/activities/drag-drop/RatioMatching';
 import {
   AVAILABLE_ITEMS_DROPPABLE,
   getZoneDroppableId
-} from '../../../components/drag-drop-exercises/useCategorizationExercise';
+} from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { RatioMatchingActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<RatioMatchingActivityProps> = {}): RatioMatchingActivity => ({

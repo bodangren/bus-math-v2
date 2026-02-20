@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { JournalEntry } from '../../../components/accounting/JournalEntry';
-import type { JournalEntryLine } from '../../../components/accounting/accounting-types';
+import { JournalEntry } from '../../../components/activities/accounting/JournalEntry';
+import type { JournalEntryLine } from '../../../components/activities/accounting/accounting-types';
 
 const balancedLines: JournalEntryLine[] = [
   {

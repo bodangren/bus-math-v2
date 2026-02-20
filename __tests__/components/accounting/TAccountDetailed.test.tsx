@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { TAccountDetailed } from '../../../components/accounting/TAccountDetailed';
-import type { AccountingTransaction } from '../../../components/accounting/accounting-types';
+import { TAccountDetailed } from '../../../components/activities/accounting/TAccountDetailed';
+import type { AccountingTransaction } from '../../../components/activities/accounting/accounting-types';
 
 const debitTransaction: AccountingTransaction = {
   id: 'debit-1',

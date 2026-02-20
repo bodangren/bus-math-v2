@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { BudgetBalancer, type BudgetBalancerActivity, type BudgetBalancerState } from '../../../components/business-simulations/BudgetBalancer'
+import { BudgetBalancer, type BudgetBalancerActivity, type BudgetBalancerState } from '../../../components/activities/simulations/BudgetBalancer'
 import type { BudgetBalancerActivityProps } from '@/types/activities'
 
 const defaultBudgetProps: BudgetBalancerActivityProps = {

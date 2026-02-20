@@ -4,8 +4,8 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { FinancialStatementMatching, type FinancialStatementMatchingActivity } from '../../../components/drag-drop-exercises/FinancialStatementMatching';
-import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
+import { FinancialStatementMatching, type FinancialStatementMatchingActivity } from '../../../components/activities/drag-drop/FinancialStatementMatching';
+import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { FinancialStatementMatchingActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<FinancialStatementMatchingActivityProps> = {}): FinancialStatementMatchingActivity => ({

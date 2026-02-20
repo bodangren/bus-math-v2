@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { ComprehensionCheck, type ComprehensionCheckActivity } from '../../../components/exercises/ComprehensionCheck'
+import { ComprehensionCheck, type ComprehensionCheckActivity } from '../../../components/activities/quiz/ComprehensionCheck'
 import type { ComprehensionQuizActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<ComprehensionQuizActivityProps> = {}): ComprehensionCheckActivity => ({

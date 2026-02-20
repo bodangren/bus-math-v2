@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import InterestCalculationBuilder from '../../../components/financial-calculations/InterestCalculationBuilder'
+import InterestCalculationBuilder from '../../../components/activities/calculations/InterestBuilder'
 
 describe('InterestCalculationBuilder', () => {
   it('renders the component with header', () => {

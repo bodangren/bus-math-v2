@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   BalanceSheetDetailed,
   type BalanceSheetDetailedData
-} from '../../../components/financial-reports/BalanceSheetDetailed';
+} from '../../../components/activities/reports/BalanceSheetDetailed';
 
 const detailedSheet: BalanceSheetDetailedData = {
   asOfDate: 'As of December 31, 2024',

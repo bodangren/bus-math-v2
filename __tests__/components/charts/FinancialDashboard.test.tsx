@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { FinancialDashboard } from '../../../components/charts/FinancialDashboard';
+import { FinancialDashboard } from '../../../components/activities/charts/FinancialDashboard';
 
 describe('FinancialDashboard', () => {
   it('calls refresh and export handlers', async () => {

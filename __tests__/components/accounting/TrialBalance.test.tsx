@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { TrialBalance } from '../../../components/accounting/TrialBalance';
-import type { TrialBalanceAccount } from '../../../components/accounting/accounting-types';
+import { TrialBalance } from '../../../components/activities/accounting/TrialBalance';
+import type { TrialBalanceAccount } from '../../../components/activities/accounting/accounting-types';
 
 const accounts: TrialBalanceAccount[] = [
   {

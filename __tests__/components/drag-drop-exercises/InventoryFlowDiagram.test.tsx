@@ -9,7 +9,7 @@ import {
   INVENTORY_ARRANGEMENT_DROPPABLE,
   INVENTORY_AVAILABLE_DROPPABLE,
   type InventoryFlowDiagramActivity
-} from '../../../components/drag-drop-exercises/InventoryFlowDiagram';
+} from '../../../components/activities/drag-drop/InventoryFlowDiagram';
 import type { InventoryFlowDiagramActivityProps } from '@/types/activities';
 
 const buildActivity = (

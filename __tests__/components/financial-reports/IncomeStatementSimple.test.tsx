@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   IncomeStatementSimple,
   type IncomeStatementSimpleData
-} from '../../../components/financial-reports/IncomeStatementSimple';
+} from '../../../components/activities/reports/IncomeStatementSimple';
 
 const profitableStatement: IncomeStatementSimpleData = {
   period: 'For the Year Ended December 31, 2024',

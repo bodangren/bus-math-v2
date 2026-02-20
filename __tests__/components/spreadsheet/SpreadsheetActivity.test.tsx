@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SpreadsheetActivity } from '../../../components/spreadsheet/SpreadsheetActivity';
+import { SpreadsheetActivity } from '../../../components/activities/spreadsheet/SpreadsheetActivity';
 import type { SpreadsheetActivityProps } from '@/types/activities';
 
 // Mock react-spreadsheet
@@ -31,8 +31,8 @@ vi.mock('react-spreadsheet', () => ({
 }));
 
 // Mock SpreadsheetTemplates
-vi.mock('../../../components/spreadsheet/SpreadsheetTemplates', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../components/spreadsheet/SpreadsheetTemplates')>();
+vi.mock('../../../components/activities/spreadsheet/SpreadsheetTemplates', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../components/activities/spreadsheet/SpreadsheetTemplates')>();
   return {
     ...actual,
     getTemplateByKey: vi.fn((key: string) => {

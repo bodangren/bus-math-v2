@@ -4,8 +4,8 @@ import { act } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { DropResult } from '@hello-pangea/dnd';
 
-import { BreakEvenComponents, type BreakEvenComponentsActivity } from '../../../components/drag-drop-exercises/BreakEvenComponents';
-import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/drag-drop-exercises/useCategorizationExercise';
+import { BreakEvenComponents, type BreakEvenComponentsActivity } from '../../../components/activities/drag-drop/BreakEvenComponents';
+import { AVAILABLE_ITEMS_DROPPABLE, getZoneDroppableId } from '../../../components/activities/drag-drop/useCategorizationExercise';
 import type { BreakEvenComponentsActivityProps } from '@/types/activities';
 
 const buildActivity = (overrides: Partial<BreakEvenComponentsActivityProps> = {}): BreakEvenComponentsActivity => ({

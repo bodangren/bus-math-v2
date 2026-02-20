@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { PeerCritiqueForm, type PeerCritiqueActivity } from '../../../components/exercises/PeerCritiqueForm'
+import { PeerCritiqueForm, type PeerCritiqueActivity } from '../../../components/activities/quiz/PeerCritiqueForm'
 import type { PeerCritiqueActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<PeerCritiqueActivityProps> = {}): PeerCritiqueActivity => ({

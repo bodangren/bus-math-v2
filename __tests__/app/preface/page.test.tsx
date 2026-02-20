@@ -13,19 +13,19 @@ vi.mock('@/lib/db/drizzle', () => ({
   },
 }));
 
-vi.mock('@/components/exercises/ComprehensionCheck', () => ({
+vi.mock('@/components/activities/quiz/ComprehensionCheck', () => ({
   ComprehensionCheck: () => <div data-testid="comprehension-check" />,
 }));
 
-vi.mock('@/components/exercises/FillInTheBlank', () => ({
+vi.mock('@/components/activities/quiz/FillInTheBlank', () => ({
   FillInTheBlank: () => <div data-testid="fill-in-the-blank" />,
 }));
 
-vi.mock('@/components/exercises/ReflectionJournal', () => ({
+vi.mock('@/components/activities/quiz/ReflectionJournal', () => ({
   default: () => <div data-testid="reflection-journal" />,
 }));
 
-vi.mock('@/components/business-simulations/CashFlowChallenge', () => ({
+vi.mock('@/components/activities/simulations/CashFlowChallenge', () => ({
   CashFlowChallenge: () => <div data-testid="cash-flow-challenge" />,
 }));
 

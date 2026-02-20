@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { CashFlowChallenge } from '../../../components/business-simulations/CashFlowChallenge'
+import { CashFlowChallenge } from '../../../components/activities/simulations/CashFlowChallenge'
 import type { CashFlowChallengeActivityProps } from '@/types/activities'
 
 const mockActivity: CashFlowChallengeActivityProps = {

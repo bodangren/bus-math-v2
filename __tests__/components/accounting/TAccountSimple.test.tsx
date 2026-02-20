@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { TAccountSimple } from '../../../components/accounting/TAccountSimple';
-import type { AccountingTransaction } from '../../../components/accounting/accounting-types';
+import { TAccountSimple } from '../../../components/activities/accounting/TAccountSimple';
+import type { AccountingTransaction } from '../../../components/activities/accounting/accounting-types';
 
 const debitTransactions: AccountingTransaction[] = [
   {

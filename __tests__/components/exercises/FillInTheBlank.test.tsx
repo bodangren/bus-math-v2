@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { FillInTheBlank, type FillInTheBlankActivity } from '../../../components/exercises/FillInTheBlank'
+import { FillInTheBlank, type FillInTheBlankActivity } from '../../../components/activities/quiz/FillInTheBlank'
 import type { FillInTheBlankActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<FillInTheBlankActivityProps> = {}): FillInTheBlankActivity => ({

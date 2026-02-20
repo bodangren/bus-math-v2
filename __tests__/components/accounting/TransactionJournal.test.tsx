@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import { TransactionJournal, type TransactionEntry } from '../../../components/accounting/TransactionJournal';
-import type { JournalEntryLine } from '../../../components/accounting/accounting-types';
+import { TransactionJournal, type TransactionEntry } from '../../../components/activities/accounting/TransactionJournal';
+import type { JournalEntryLine } from '../../../components/activities/accounting/accounting-types';
 
 const balancedLines: JournalEntryLine[] = [
   { id: 'l1', account: 'Cash', accountType: 'asset', debit: 3000 },

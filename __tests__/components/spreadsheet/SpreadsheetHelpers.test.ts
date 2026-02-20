@@ -14,7 +14,7 @@ import {
   generateColumnLabels,
   generateRowLabels,
   type SpreadsheetData
-} from '../../../components/spreadsheet/SpreadsheetHelpers';
+} from '../../../components/activities/spreadsheet/SpreadsheetHelpers';
 
 describe('SpreadsheetHelpers', () => {
   describe('validateFormula', () => {

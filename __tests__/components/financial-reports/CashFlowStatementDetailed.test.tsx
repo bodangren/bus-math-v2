@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CashFlowStatementDetailed,
   type DetailedCashFlowData
-} from '../../../components/financial-reports/CashFlowStatementDetailed';
+} from '../../../components/activities/reports/CashFlowStatementDetailed';
 
 const detailedCashFlow: DetailedCashFlowData = {
   period: 'For the Year Ended December 31, 2024',
