@@ -14,4 +14,4 @@ The aforementioned component shifts resulted in broken import paths in the `__te
 
 - [x] Task: Determine new component mappings.
 - [x] Task: Execute an automated script to update import statements across all 50 failing files in `__tests__/`.
-- [~] Task: Verify test suit succeeds with 0 failing test files regarding imports.
+- [x] Task: Verify test suit succeeds with 0 failing test files regarding imports. [0187adc]
