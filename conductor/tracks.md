@@ -11,12 +11,16 @@ This file is the source of truth for active execution order and archived track h
 
 ---
 
-- [x] **Track: Establish granular lesson plan infrastructure (one file per lesson) and implement Unit 1 pilot.**
-  *Link: [./conductor/tracks/lesson_plan_infra_20260219/](./conductor/tracks/lesson_plan_infra_20260219/)*
+- [x] **Track: Component Reorganization & Simulation Placeholders**
+  *Link: [./conductor/tracks/component_reorganization_20260220/](./conductor/tracks/component_reorganization_20260220/)*
 
 ---
 
 ## Archive Ledger
+
+- [x] **Track: Establish granular lesson plan infrastructure (one file per lesson) and implement Unit 1 pilot.**
+  *Link: [./conductor/archive/lesson_plan_infra_20260219/](./conductor/archive/lesson_plan_infra_20260219/)*
+  *Checkpoint: `836d18d` (2026-02-20 closeout)*
 
 - [x] **Track: Sprint 5: Teacher Command Center**
   *Link: [./conductor/archive/sprint5_teacher_cc_20251125/](./conductor/archive/sprint5_teacher_cc_20251125/)*
