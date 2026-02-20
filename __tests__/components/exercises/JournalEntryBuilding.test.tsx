@@ -2,9 +2,9 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { JournalEntryBuilding } from '../../../components/exercises/JournalEntryBuilding'
+import { JournalEntryActivity as JournalEntryBuilding } from '../../../components/activities/accounting/JournalEntryActivity'
 import type { JournalEntryActivityProps } from '@/types/activities'
-import type { JournalEntryActivity } from '../../../components/exercises/JournalEntryBuilding'
+import type { JournalEntryActivityData as JournalEntryActivity } from '../../../components/activities/accounting/JournalEntryActivity'
 
 const buildActivity = (overrides: Partial<JournalEntryActivityProps> = {}): JournalEntryActivity => ({
   id: 'activity-journal',

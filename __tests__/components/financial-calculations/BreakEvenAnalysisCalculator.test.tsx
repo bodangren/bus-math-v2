@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { BreakEvenAnalysisCalculator } from '../../../components/activities/calculations/BreakEvenAnalysisCalculator'
+import { BreakEvenAnalysisCalculator } from '../../../components/activities/calculations/BreakEvenCalculator'
 
 describe('BreakEvenAnalysisCalculator', () => {
   it('renders the component with header', () => {

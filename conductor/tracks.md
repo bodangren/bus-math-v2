@@ -11,7 +11,7 @@ This file is the source of truth for active execution order and archived track h
 
 ---
 
-- [x] **Track: Component Reorganization & Simulation Placeholders**
+- [~] **Track: Component Reorganization & Simulation Placeholders**
   *Link: [./conductor/tracks/component_reorganization_20260220/](./conductor/tracks/component_reorganization_20260220/)*
 
 ---

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import FeedbackCollector from '../../../components/exercises/FeedbackCollector'
+import FeedbackCollector from '../../../components/activities/quiz/FeedbackCollector'
 
 describe('FeedbackCollector', () => {
   it('renders the component with title', () => {

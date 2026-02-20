@@ -71,27 +71,15 @@ describe('Teacher student detail page', () => {
       const result = dbCallPlan[call] ?? [];
       call += 1;
 
-      if (call <= 3) {
-        return {
-          from: () => ({
-            where: () => ({
-              limit: () => Promise.resolve(result),
-            }),
-          }),
-        } as never;
-      }
-
-      if (call === 4) {
-        return {
-          from: () => Promise.resolve(result),
-        } as never;
-      }
-
-      return {
-        from: () => ({
-          where: () => Promise.resolve(result),
-        }),
-      } as never;
+      const chain = {
+        from: () => chain,
+        where: () => chain,
+        limit: () => chain,
+        then: (onfulfilled: any) => Promise.resolve(onfulfilled(result)),
+        catch: () => chain,
+        finally: () => chain,
+      };
+      return chain as never;
     });
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();
@@ -127,27 +115,15 @@ describe('Teacher student detail page', () => {
       const result = dbCallPlan[call] ?? [];
       call += 1;
 
-      if (call <= 3) {
-        return {
-          from: () => ({
-            where: () => ({
-              limit: () => Promise.resolve(result),
-            }),
-          }),
-        } as never;
-      }
-
-      if (call === 4) {
-        return {
-          from: () => Promise.resolve(result),
-        } as never;
-      }
-
-      return {
-        from: () => ({
-          where: () => Promise.resolve(result),
-        }),
-      } as never;
+      const chain = {
+        from: () => chain,
+        where: () => chain,
+        limit: () => chain,
+        then: (onfulfilled: any) => Promise.resolve(onfulfilled(result)),
+        catch: () => chain,
+        finally: () => chain,
+      };
+      return chain as never;
     });
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();

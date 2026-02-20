@@ -5,8 +5,8 @@ import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';
 import {
   SpreadsheetEvaluator,
   type SpreadsheetEvaluatorActivity,
-} from '@/components/activities/SpreadsheetEvaluator';
-import type { SpreadsheetEvaluatorConfig } from '@/components/activities/SpreadsheetEvaluator';
+} from '@/components/activities/spreadsheet/SpreadsheetEvaluator';
+import type { SpreadsheetEvaluatorConfig } from '@/components/activities/spreadsheet/SpreadsheetEvaluator';
 
 // Mock fetch globally
 global.fetch = vi.fn() as Mock;

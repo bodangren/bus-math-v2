@@ -4,7 +4,7 @@ import { act } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import type { DropResult } from '@hello-pangea/dnd'
 
-import { DragAndDrop, type DragAndDropActivity } from '../../../components/exercises/DragAndDrop'
+import { GeneralDragAndDrop as DragAndDrop, type DragAndDropActivity } from '../../../components/activities/drag-drop/GeneralDragAndDrop'
 import type { DragAndDropActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<DragAndDropActivityProps> = {}): DragAndDropActivity => ({

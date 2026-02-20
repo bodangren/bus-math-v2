@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { FinancialDashboard } from '../../../components/activities/charts/FinancialDashboard';
@@ -11,10 +11,14 @@ describe('FinancialDashboard', () => {
     render(<FinancialDashboard onRefresh={onRefresh} onExport={onExport} />);
 
     fireEvent.click(screen.getByRole('button', { name: /refresh data/i }));
-    expect(onRefresh).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(onRefresh).toHaveBeenCalledTimes(1);
+    });
 
     fireEvent.click(screen.getByRole('button', { name: /export csv/i }));
-    expect(onExport).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(onExport).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('shows KPI values from props', () => {
