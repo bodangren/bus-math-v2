@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import SpreadsheetWrapper, { type SpreadsheetData } from "@/components/activities/spreadsheet/SpreadsheetWrapper"
+import { SpreadsheetWrapper, type SpreadsheetData } from "@/components/activities/spreadsheet/SpreadsheetWrapper"
 import { ArrowLeft, ArrowRight, CheckCircle2, Info, ShieldCheck, Target } from "lucide-react"
 
 type ScenarioId = "service" | "product" | "sales"
@@ -317,7 +317,15 @@ const commissionSheet = (
   ],
 ]
 
-export function PayStructureDecisionLab() {
+export interface PayStructureDecisionLabProps {
+  activity?: {
+    title?: string
+    description?: string
+  }
+  onComplete?: (results: any) => void
+}
+
+export function PayStructureDecisionLab({ activity, onComplete }: PayStructureDecisionLabProps) {
   const [current, setCurrent] = useState(0)
   const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(initialHourly)
   const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(initialSalary)

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import ReflectionJournal from '../../../components/activities/quiz/ReflectionJournal'
+import { ReflectionJournal } from '../../../components/activities/quiz/ReflectionJournal'
 import type { ReflectionJournalActivityProps } from '@/types/activities'
 import type { Activity } from '@/lib/db/schema/validators'
 

@@ -59,7 +59,7 @@ const defaultPrompts: ReflectionPrompt[] = [
  * the Grade 12 Business Operations curriculum. Students reflect on their learning
  * journey and develop metacognitive awareness.
  */
-export default function ReflectionJournal({ activity, className = '', onSubmit }: ReflectionJournalProps) {
+export function ReflectionJournal({ activity, className = '', onSubmit }: ReflectionJournalProps) {
   const prompts = activity.props.prompts.length ? activity.props.prompts : defaultPrompts
   const unitTitle = activity.props.unitTitle ?? activity.displayName ?? 'Learning Reflection'
   const [responses, setResponses] = useState<Record<string, string>>({});

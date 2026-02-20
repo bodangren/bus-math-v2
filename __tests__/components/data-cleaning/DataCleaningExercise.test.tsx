@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import DataCleaningExercise from '../../../components/activities/spreadsheet/DataCleaningActivity'
+import { DataCleaningActivity as DataCleaningExercise } from '../../../components/activities/spreadsheet/DataCleaningActivity'
 import type { SpreadsheetData } from '@/components/activities/spreadsheet/SpreadsheetWrapper'
 
 // Mock SpreadsheetWrapper

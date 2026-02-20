@@ -16,7 +16,7 @@ interface DataCleaningActivityProps {
   onComplete?: () => void;
 }
 
-export default function DataCleaningActivity({
+export function DataCleaningActivity({
   title,
   description,
   messyData,

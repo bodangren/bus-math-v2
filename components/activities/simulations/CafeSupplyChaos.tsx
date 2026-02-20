@@ -14,7 +14,9 @@ import {
   TrendingUp,
   AlertCircle,
   Truck,
-  DollarSign
+  DollarSign,
+  History,
+  CheckCircle
 } from 'lucide-react'
 
 export interface InventoryBatch {
@@ -22,6 +24,14 @@ export interface InventoryBatch {
   quantity: number
   costPerUnit: number
   dayArrived: number
+}
+
+export interface CafeSupplyChaosResult {
+  day: number
+  revenue: number
+  cogs: number
+  profit: number
+  stockouts: number
 }
 
 export interface CafeSupplyChaosProps {
@@ -34,7 +44,7 @@ export interface CafeSupplyChaosProps {
       orders: { day: number; quantity: number; pricePerUnit: number }[]
     }
   }
-  onComplete?: (results: any) => void
+  onComplete?: (results: { method: 'FIFO' | 'LIFO'; sales: CafeSupplyChaosResult[] }) => void
 }
 
 export function CafeSupplyChaos({ activity, onComplete }: CafeSupplyChaosProps) {
@@ -42,7 +52,7 @@ export function CafeSupplyChaos({ activity, onComplete }: CafeSupplyChaosProps) 
   const [currentDay, setCurrentDay] = useState(1)
   const [inventory, setInventory] = useState<InventoryBatch[]>([])
   const [method, setMethod] = useState<'FIFO' | 'LIFO' | null>(null)
-  const [sales, setSales] = useState<any[]>([])
+  const [sales, setSales] = useState<CafeSupplyChaosResult[]>([])
   const [isComplete, setIsComplete] = useState(false)
 
   // Start the simulation by picking a method

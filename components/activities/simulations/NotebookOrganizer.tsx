@@ -43,7 +43,10 @@ export interface NotebookOrganizerProps {
       successMessage?: string
     }
   }
-  onComplete?: (results: any) => void
+  onComplete?: (results: {
+    totals: { asset: number; liability: number; equity: number }
+    items: Record<string, string>
+  }) => void
 }
 
 const ITEM_ICONS: Record<string, LucideIcon> = {
@@ -286,7 +289,7 @@ export function NotebookOrganizer({ activity, onComplete }: NotebookOrganizerPro
         <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
           {renderFolder('asset', 'What We Have', 'border-blue-200 bg-blue-50/30 text-blue-900', Briefcase)}
           {renderFolder('liability', 'What We Owe', 'border-red-200 bg-red-50/30 text-red-900', CreditCard)}
-          {renderFolder('equity', 'Sarah's Stake', 'border-purple-200 bg-purple-50/30 text-purple-900', User)}
+          {renderFolder('equity', "Sarah's Stake", 'border-purple-200 bg-purple-50/30 text-purple-900', User)}
         </div>
       </div>
 

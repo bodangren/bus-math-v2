@@ -9,7 +9,7 @@ import { InventoryManager } from '@/components/activities/simulations/InventoryM
 import { LemonadeStand } from '@/components/activities/simulations/LemonadeStand';
 import { PitchPresentationBuilder } from '@/components/activities/simulations/PitchPresentationBuilder';
 import { StartupJourney } from '@/components/activities/simulations/StartupJourney';
-import DataCleaningActivity from '@/components/activities/spreadsheet/DataCleaningActivity';
+import { DataCleaningActivity } from '@/components/activities/spreadsheet/DataCleaningActivity';
 import { BreakEvenComponents } from '@/components/activities/drag-drop/BreakEvenComponents';
 import { BudgetCategorySort } from '@/components/activities/drag-drop/BudgetCategorySort';
 import { CashFlowTimeline } from '@/components/activities/drag-drop/CashFlowTimeline';
@@ -22,9 +22,20 @@ import { FillInTheBlank } from '@/components/activities/quiz/FillInTheBlank';
 import { JournalEntryActivity } from '@/components/activities/accounting/JournalEntryActivity';
 import { ComprehensionCheck } from '@/components/activities/quiz/ComprehensionCheck';
 import { PeerCritiqueForm } from '@/components/activities/quiz/PeerCritiqueForm';
-import ReflectionJournal from '@/components/activities/quiz/ReflectionJournal';
+import { ReflectionJournal } from '@/components/activities/quiz/ReflectionJournal';
 import { SpreadsheetEvaluator } from '@/components/activities/spreadsheet/SpreadsheetEvaluator';
 import { SpreadsheetActivityAdapter } from '@/components/activities/spreadsheet/SpreadsheetActivityAdapter';
+
+// New simulations
+import { CafeSupplyChaos } from '@/components/activities/simulations/CafeSupplyChaos';
+import { NotebookOrganizer } from '@/components/activities/simulations/NotebookOrganizer';
+import { LedgerHero } from '@/components/activities/simulations/LedgerHero';
+import { GrowthPuzzle } from '@/components/activities/simulations/GrowthPuzzle';
+import { AssetTimeMachine } from '@/components/activities/simulations/AssetTimeMachine';
+import { CapitalNegotiation } from '@/components/activities/simulations/CapitalNegotiation';
+import { BusinessStressTest } from '@/components/activities/simulations/BusinessStressTest';
+import { PayStructureDecisionLab } from '@/components/activities/simulations/PayStructureDecisionLab';
+
 import type { ActivityComponentKey } from '@/types/activities';
 
 /**
@@ -57,6 +68,14 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'inventory-manager': InventoryManager,
   'pitch-presentation-builder': PitchPresentationBuilder,
   'pitch': PitchPresentationBuilder, // Alias for pitch-presentation-builder
+  'cafe-supply-chaos': CafeSupplyChaos,
+  'notebook-organizer': NotebookOrganizer,
+  'ledger-hero': LedgerHero,
+  'growth-puzzle': GrowthPuzzle,
+  'asset-time-machine': AssetTimeMachine,
+  'capital-negotiation': CapitalNegotiation,
+  'business-stress-test': BusinessStressTest,
+  'pay-structure-lab': PayStructureDecisionLab,
 
   // Charting components
   'financial-dashboard': FinancialDashboard,
