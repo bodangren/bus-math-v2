@@ -53,10 +53,10 @@ const sortOptionsDeterministically = (questionId: string, options: string[]) =>
     })
     .map((entry) => entry.option);
 
-const normalizeAnswer = (value: string | string[]) =>
+const normalizeAnswer = (value: string | number | boolean | string[] | number[]) =>
   Array.isArray(value)
-    ? value.map((entry) => entry.trim().toLowerCase()).sort().join('|')
-    : value.trim().toLowerCase();
+    ? value.map((entry) => String(entry).trim().toLowerCase()).sort().join('|')
+    : String(value).trim().toLowerCase();
 
 export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});

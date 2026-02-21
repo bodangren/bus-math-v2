@@ -103,6 +103,53 @@ describe('ComprehensionCheck', () => {
     )
   })
 
+  it('does not crash when correctAnswer is a number (numeric-entry question)', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      questions: [
+        {
+          id: 'ne1',
+          text: 'How many units are in the order?',
+          type: 'numeric-entry',
+          correctAnswer: 42,
+          explanation: 'There are 42 units.'
+        }
+      ]
+    })
+
+    render(<ComprehensionCheck activity={activity} onSubmit={onSubmit} />)
+
+    await user.type(screen.getByPlaceholderText(/type your answer/i), '42')
+    await user.click(screen.getByRole('button', { name: /submit answers/i }))
+
+    expect(await screen.findByText(/1\/1 correct/i)).toBeInTheDocument()
+  })
+
+  it('does not crash when correctAnswer is a boolean true', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      questions: [
+        {
+          id: 'tf1',
+          text: 'Assets equal liabilities plus equity.',
+          type: 'true-false',
+          correctAnswer: true,
+          explanation: 'Fundamental accounting equation.'
+        }
+      ]
+    })
+
+    render(<ComprehensionCheck activity={activity} onSubmit={onSubmit} />)
+
+    await user.click(screen.getByRole('button', { name: /^true$/i }))
+    await user.click(screen.getByRole('button', { name: /submit answers/i }))
+
+    // Should render score without throwing "trim is not a function"
+    expect(await screen.findByText(/1\/1 correct/i)).toBeInTheDocument()
+  })
+
   it('keeps multiple-choice option order stable across rerenders', () => {
     const activity = buildActivity({
       questions: [
