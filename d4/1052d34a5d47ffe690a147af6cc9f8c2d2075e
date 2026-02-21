@@ -1,0 +1,4 @@
+Phase 2: Fix tiered-assessment scoring for numeric/boolean correctAnswer
+Summary: scoring.ts local questionSchema rejected number/boolean correctAnswer with a ZodError → 422. Broadened to match activities-quiz.ts schema. Also added tiered-assessment to activityPropsSchema union in validators.ts.
+Files: lib/assessments/scoring.ts, lib/db/schema/validators.ts, __tests__/lib/db/schema/validators.test.ts, __tests__/app/api/progress/assessment/route.test.ts
+Why: Tiered-assessment submissions with numeric questions failed scoring server-side, blocking lesson progression.
