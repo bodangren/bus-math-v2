@@ -6,8 +6,11 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [ ] **Track: Unit 1 Curriculum Content — Balance by Design**
+- [~] **Track: Unit 1 Curriculum Content — Balance by Design**
   *Link: [./conductor/tracks/unit1_content_20260218/](./conductor/tracks/unit1_content_20260218/)*
+
+- [ ] **Track: Curriculum Quality Standards & Unit 1 Remediation**
+  *Link: [./conductor/tracks/curriculum_rigor_20260221/](./conductor/tracks/curriculum_rigor_20260221/)*
 
 ## Archive Ledger
 
