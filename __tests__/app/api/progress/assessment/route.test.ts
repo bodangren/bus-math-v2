@@ -205,6 +205,41 @@ describe('POST /api/progress/assessment', () => {
     );
   });
 
+  it('scores a tiered-assessment with numeric correctAnswer (not 422)', async () => {
+    const tieredActivity = {
+      ...baseActivity,
+      componentKey: 'tiered-assessment',
+      props: {
+        title: 'Tiered Assessment',
+        description: 'Test numeric scoring',
+        showExplanations: false,
+        allowRetry: true,
+        tier: 'application',
+        questions: [
+          {
+            id: 'q1',
+            text: 'How many units are needed to break even at $500 fixed cost and $5 margin?',
+            type: 'numeric-entry',
+            correctAnswer: 100,
+          },
+        ],
+      },
+    };
+
+    mockSingle.mockResolvedValue({ data: tieredActivity, error: null });
+
+    const response = await POST(buildRequest({
+      activityId: baseActivity.id,
+      answers: { q1: '100' },
+    }));
+
+    // Should score successfully — not 422 (cannot score submission)
+    expect(response.status).toBe(200);
+    const payload = await response.json();
+    expect(payload.score).toBe(1);
+    expect(payload.maxScore).toBe(1);
+  });
+
   it('returns 422 when the activity is not auto-gradable', async () => {
     mockSingle.mockResolvedValue({
       data: {

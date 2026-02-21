@@ -6,7 +6,13 @@ const DEFAULT_PASSING_SCORE = 70;
 
 const questionSchema = z.object({
   id: z.string(),
-  correctAnswer: z.union([z.string(), z.array(z.string())]),
+  correctAnswer: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.array(z.string()),
+    z.array(z.number()),
+  ]),
 });
 
 const sentenceSchema = z.object({

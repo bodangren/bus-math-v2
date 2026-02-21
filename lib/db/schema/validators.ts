@@ -17,6 +17,7 @@ import { studentProgress } from './student-progress';
 
 const activityPropsSchema = z.union([
   activityPropsSchemas['comprehension-quiz'],
+  activityPropsSchemas['tiered-assessment'],
   activityPropsSchemas['drag-and-drop'],
   activityPropsSchemas['account-categorization'],
   activityPropsSchemas['budget-category-sort'],
