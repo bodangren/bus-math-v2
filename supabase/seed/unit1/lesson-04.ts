@@ -281,6 +281,7 @@ Once you've completed the mapping table:
 - Use **Accounting** number format for all dollar values
 - Use **bold** for section headers and totals
 - Use **double underline** for grand totals (Format → Cells → Border)`),
+        activity(IDS.ACTIVITY_SPREADSHEET, true),
       ],
     },
     {
@@ -381,6 +382,21 @@ In **Lesson 5**, you'll learn to:
         title: "TechStart Solutions — Balance Sheet Draft",
         description: "Organize TechStart's accounts into a structured Balance Sheet. Use the template to add sections, subtotals, and verify Total Assets = Total Liabilities + Equity.",
         template: 'balance-sheet' as const,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 9000, max: 18000, step: 100 },
+            liabilities: { min: 3000, max: 9000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Build a balance sheet where assets are {{assets}} and liabilities are {{liabilities}}.',
+          cellExpectations: [
+            { cellRef: 'B15', expectedFormula: 'assets', tolerance: 1 },
+            { cellRef: 'C15', expectedFormula: 'liabilities', tolerance: 1 },
+            { cellRef: 'D15', expectedFormula: 'assets - liabilities', tolerance: 1 },
+          ],
+          tolerance: 1,
+        },
         allowFormulaEntry: true,
         showColumnLabels: true,
         showRowLabels: true,
@@ -389,7 +405,7 @@ In **Lesson 5**, you'll learn to:
       },
       gradingConfig: {
         autoGrade: false,
-        passingScore: 0,
+        passingScore: 60,
         partialCredit: false,
       },
     },
@@ -403,6 +419,16 @@ In **Lesson 5**, you'll learn to:
         description: 'Answer each question about the Balance Sheet structure. Score 4/5 to unlock Lesson 5.',
         showExplanations: true,
         allowRetry: true,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 10000, max: 22000, step: 100 },
+            liabilities: { min: 2000, max: 12000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Given assets {{assets}} and liabilities {{liabilities}}, compute equity.',
+          tolerance: 1,
+        },
         questions: [
           {
             id: 'q1',
