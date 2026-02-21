@@ -34,12 +34,17 @@ export const IDS = {
     6: 'd6b57545-65f6-4c39-80d5-000100000600',
   },
   ACTIVITY_EXIT_TICKET: 'd6b57545-65f6-4c39-80d5-000100001001',
+  ACTIVITY_NOTEBOOK_SIM: 'd6b57545-65f6-4c39-80d5-000100001002',
 } as const;
 
 // ─── Section helpers ──────────────────────────────────────────────────────────
 
 function text(markdown: string) {
   return { sectionType: 'text' as const, content: { markdown } };
+}
+
+function video(videoUrl: string, duration: number, transcript: string) {
+  return { sectionType: 'video' as const, content: { videoUrl, duration, transcript } };
 }
 
 function callout(variant: 'why-this-matters' | 'tip' | 'warning' | 'example', content: string) {
@@ -86,24 +91,19 @@ export const LESSON_01_SEED_DATA = {
       title: "Hook: Sarah's Messy Notebook",
       estimatedMinutes: 10,
       sections: [
-        text(`## The Problem with TechStart's Books
+        text(`## The Messy Notebook Challenge
 
 Sarah Chen opened her laptop and stared at her screen. TechStart Solutions had just completed its best month ever — three new clients, two hardware orders, and a server upgrade. But her accounting notebook was a mess.
 
 "Laptop purchase: $2,400." "Client deposit: $1,500." "Internet bill: $89." "Owner's investment: $5,000."
 
-Nothing was organized. Was TechStart making money? Did she owe more than she owned? She had no idea.
-
-Sound familiar? Every business — from a lemonade stand to a Fortune 500 company — faces this problem. The solution has existed for over 500 years.`),
+Nothing was organized. Every business — from a lemonade stand to a Fortune 500 company — faces this problem. The solution has existed for over 500 years.`),
+        text(`### Turn-and-Talk
+If you were Sarah, how would you figure out if you're actually **"ahead"** or **"behind"** right now? Share your idea with a partner.`),
         callout(
           'why-this-matters',
           'The accounting equation **A = L + E** is the foundation of every financial statement ever made. Banks use it to decide whether to give loans. Investors use it to decide whether to buy stock. You will use it to run TechStart. Once you understand it, you can read any company\'s financial health at a glance.',
         ),
-        text(`## Today's Mission
-
-By the end of this lesson, you will understand the three building blocks of the accounting equation and explain why they must always balance.
-
-Let's fix Sarah's books — starting with the most powerful idea in accounting.`),
       ],
     },
     {
@@ -112,6 +112,25 @@ Let's fix Sarah's books — starting with the most powerful idea in accounting.`
       title: 'Introduction: What Is A = L + E?',
       estimatedMinutes: 15,
       sections: [
+        video(
+          'https://www.youtube.com/watch?v=IN4MBaOdLRY',
+          5,
+          `Welcome to Unit 1 of Math for Business Operations. I'm excited to introduce you to the most important idea in all of accounting: the accounting equation.
+
+Every business — no matter how big or small — keeps track of three things. First: everything it owns. Second: everything it owes. Third: everything that belongs to the owner. These three buckets have names. Assets, Liabilities, and Equity.
+
+Here's the rule that connects them, and it never breaks: Assets equal Liabilities plus Equity.
+
+Let's think about TechStart Solutions, the company we'll follow all year. When Sarah Chen started TechStart, she put in five thousand dollars of her own money. That five thousand is an Asset because TechStart now has cash. It's also Equity because it's Sarah's own investment. Assets equal Equity. The equation balances.
+
+Then Sarah borrowed three thousand dollars from a bank to buy equipment. Now TechStart has eight thousand dollars in Assets. But three thousand of that came from the bank — that's a Liability. And five thousand still belongs to Sarah — that's Equity. Eight thousand equals three thousand plus five thousand. The equation still balances.
+
+Every single transaction in TechStart's history follows this pattern. Something changes on the left side, something changes on the right side, and the equation always stays balanced.
+
+In this unit, you'll learn to classify every account as an Asset, a Liability, or Equity. You'll trace how business events move money between these categories. And you'll build TechStart's first real Balance Sheet.
+
+The accounting equation isn't just a formula to memorize. It's a lens for understanding every financial decision a business makes. Let's get started.`,
+        ),
         text(`## The Three Building Blocks
 
 Every dollar in a business belongs to one of three categories:
@@ -131,27 +150,6 @@ Every dollar in a business belongs to one of three categories:
 > (What you own) = (What you owe) + (Owner's share)
 
 Think of it this way: everything TechStart owns was paid for either by borrowing money (Liabilities) or by Sarah's own contributions (Equity). There is no third option. This is why the equation *always* balances.`),
-        text(`## TechStart's First Day
-
-Sarah invests **$5,000** of her own money to start TechStart:
-
-| Change | Amount |
-|--------|--------|
-| Assets (Cash) | +$5,000 |
-| Equity (Sarah's Investment) | +$5,000 |
-
-**Check:** $5,000 (Assets) = $0 (Liabilities) + $5,000 (Equity) ✅
-
-Next, she borrows **$2,000** from the bank to buy equipment:
-
-| Change | Amount |
-|--------|--------|
-| Assets (Equipment) | +$2,000 |
-| Liabilities (Bank Loan) | +$2,000 |
-
-**Check:** $7,000 (Assets) = $2,000 (Liabilities) + $5,000 (Equity) ✅
-
-Notice: the equation balances after *every single transaction*, no matter what.`),
       ],
     },
     {
@@ -160,42 +158,16 @@ Notice: the equation balances after *every single transaction*, no matter what.`
       title: 'Guided Practice: Sort It Out',
       estimatedMinutes: 20,
       sections: [
-        text(`## Card Sort Activity
+        text(`## The Notebook Organizer
 
-Below is a list of items from TechStart's records. Work with a partner to sort each item into the correct category: **Asset**, **Liability**, or **Equity**.
+Sarah has dozens of scraps of paper representing different parts of TechStart. Before we can build a proper spreadsheet, we need to sort these "buckets."
 
-Write your answers in the table before revealing the correct category.
+Open the simulation below and help Sarah categorize her records into **Assets**, **Liabilities**, and **Equity**.`),
+        activity(IDS.ACTIVITY_NOTEBOOK_SIM, true),
+        text(`## Why did it stay balanced?
+As you sorted the items, did you notice how every "Asset" Sarah had was either something she bought with a loan (Liability) or something she provided herself (Equity)? 
 
-| Item | Your Category | Correct Category |
-|------|--------------|-----------------|
-| Cash in TechStart's bank account | ? | Asset |
-| Laptop purchased for client work | ? | Asset |
-| $3,000 bank loan | ? | Liability |
-| Unpaid electricity bill ($120) | ? | Liability |
-| Sarah's $5,000 startup investment | ? | Equity |
-| Last month's profit kept in the business | ? | Equity |
-| Accounts receivable from Client A | ? | Asset |
-| Credit card balance ($450) | ? | Liability |
-
-**Goal:** Get all 8 correct before moving on.`),
-        callout('example', `**Walking Through Two Examples**
-
-**Cash ($4,200 in the bank):**
-Does TechStart *own* it? Yes. Does it have value? Yes. → **Asset**
-
-**Bank Loan ($3,000):**
-Does TechStart *owe* this to someone? Yes (the bank). → **Liability**
-
-Same logic applies to every item. Ask: "Does TechStart own it, owe it, or is it the owner's share?"`),
-        text(`## Making It Stick
-
-A simple memory trick for the three categories:
-
-- **Asset** → "A" for **"Aces"** — things that *help* the business win
-- **Liability** → "L" for **"Load"** — things that *weigh* the business down
-- **Equity** → "E" for **"Earned"** — what the owner has *earned* through investment and profit
-
-When in doubt, ask yourself: "Who has a claim on this item — the business itself (Asset), a creditor (Liability), or the owner (Equity)?"`),
+If Sarah buys a new laptop using $2,000 from her bank account, her total Assets stay the same (Cash goes down, Equipment goes up). If she buys it on credit, her Assets go up and her Liabilities go up. **The equation always stays in balance.**`),
       ],
     },
     {
@@ -246,7 +218,7 @@ Time to show what you know. This exit ticket has five questions covering today's
 Answer each question on your own — no notes, no partners. Your goal is to score at least 4 out of 5 before moving on to Lesson 2.
 
 You can retry once if you don't hit the target. Each retry randomizes the answer order, so read carefully.`),
-        activity(IDS.ACTIVITY_EXIT_TICKET, true, IDS.LESSON),
+        activity(IDS.ACTIVITY_EXIT_TICKET, true),
       ],
     },
     {
@@ -278,6 +250,31 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
     },
   ],
   activities: [
+    {
+      id: IDS.ACTIVITY_NOTEBOOK_SIM,
+      componentKey: 'notebook-organizer',
+      displayName: 'The Notebook Organizer',
+      description: "Help Sarah sort her messy desk into 'What she has' vs 'What she owes'.",
+      props: {
+        title: 'The Notebook Organizer',
+        description: "Sort Sarah's scraps of paper into the correct accounting buckets.",
+        initialMessage: "Sarah's desk is a mess! Help her sort these items so she can see if her business is in balance.",
+        successMessage: "Great job! Sarah's records are now organized. Now we can see the A = L + E equation in action.",
+        items: [
+          { id: 'item1', label: 'Cash in Bank', amount: 4200, category: 'asset', description: 'Money available for business use.', icon: 'cash' },
+          { id: 'item2', label: 'New Laptop', amount: 1200, category: 'asset', description: 'Computer used for client server work.', icon: 'equipment' },
+          { id: 'item3', label: 'Bank Loan', amount: 3000, category: 'liability', description: 'Money borrowed to buy equipment.', icon: 'bill' },
+          { id: 'item4', label: 'Sarah\'s Investment', amount: 5000, category: 'equity', description: 'Personal savings put into the business.', icon: 'owner' },
+          { id: 'item5', label: 'Client Unpaid Invoice', amount: 1500, category: 'asset', description: 'Money a client owes TechStart.', icon: 'receivable' },
+          { id: 'item6', label: 'Credit Card Bill', amount: 450, category: 'liability', description: 'Unpaid balance for office supplies.', icon: 'bill' },
+        ],
+      },
+      gradingConfig: {
+        autoGrade: true,
+        passingScore: 100,
+        partialCredit: false,
+      },
+    },
     {
       id: IDS.ACTIVITY_EXIT_TICKET,
       componentKey: 'comprehension-quiz',

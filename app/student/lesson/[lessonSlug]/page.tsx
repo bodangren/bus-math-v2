@@ -68,11 +68,13 @@ function toContentBlock(
       variantRaw === 'example'
         ? variantRaw
         : 'tip';
+    // Callout seeds store their text in content.content, not content.markdown
+    const calloutContent = typeof obj?.content === 'string' ? obj.content : '';
     return {
       id: blockId,
       type: 'callout',
       variant,
-      content: contentToText(section.content) || 'Callout content',
+      content: calloutContent || 'Callout content',
     };
   }
 
@@ -80,11 +82,14 @@ function toContentBlock(
     const activityId = obj?.activityId;
     const required = obj?.required;
     if (typeof activityId === 'string') {
+      const linkedStandardId =
+        typeof obj?.linkedStandardId === 'string' ? obj.linkedStandardId : undefined;
       return {
         id: blockId,
         type: 'activity',
         activityId,
         required: required === true,
+        ...(linkedStandardId ? { linkedStandardId } : {}),
       };
     }
   }

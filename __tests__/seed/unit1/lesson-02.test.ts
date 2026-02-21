@@ -20,6 +20,27 @@ describe('Lesson 02 seed data — Classify Accounts (ACC-1.2)', () => {
     expect(callout).toBeDefined();
   });
 
+  it('phase 2 (Intro) contains a text intro covering the three-question classification test', () => {
+    const intro = LESSON_02_SEED_DATA.phases.find(p => p.phaseNumber === 2);
+    expect(intro).toBeDefined();
+    const textSections = intro!.sections.filter(s => s.sectionType === 'text');
+    expect(textSections.length, 'at least 2 text sections in Phase 2').toBeGreaterThanOrEqual(2);
+    const hasClassificationContent = textSections.some(s =>
+      ((s.content as Record<string, unknown>).markdown as string).match(/Asset|Liability|Equity/),
+    );
+    expect(hasClassificationContent, 'Phase 2 intro covers A/L/E classification').toBe(true);
+  });
+
+  it('phase 1 contains an activator question about Sarah\'s Uncle', () => {
+    const hook = LESSON_02_SEED_DATA.phases.find(p => p.phaseNumber === 1);
+    const textSections = hook!.sections.filter(s => s.sectionType === 'text');
+    const hasQuestion = textSections.some(s => {
+      const md = (s.content as Record<string, unknown>).markdown as string;
+      return md.includes('Uncle') && (md.includes('OWNS') || md.includes('OWES'));
+    });
+    expect(hasQuestion, 'activator question in Phase 1').toBe(true);
+  });
+
   it('Guided Practice phase (3) has a required account-categorization activity', () => {
     const guided = LESSON_02_SEED_DATA.phases.find(p => p.phaseNumber === 3);
     const activitySection = guided!.sections.find(s => s.sectionType === 'activity');

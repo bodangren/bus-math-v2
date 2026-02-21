@@ -21,6 +21,28 @@ describe('Lesson 03 seed data — Apply A/L/E to Business Events (ACC-1.4)', () 
     expect(callout, 'why-this-matters callout in hook phase').toBeDefined();
   });
 
+  it('phase 2 (Intro) has no video section and contains text explaining the dual-impact principle', () => {
+    const intro = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 2);
+    expect(intro).toBeDefined();
+    expect(intro!.sections.find(s => s.sectionType === 'video')).toBeUndefined();
+    const textSections = intro!.sections.filter(s => s.sectionType === 'text');
+    expect(textSections.length, 'at least 2 text sections in Phase 2').toBeGreaterThanOrEqual(2);
+    const hasDualImpact = textSections.some(s =>
+      ((s.content as Record<string, unknown>).markdown as string).match(/dual.impact|transaction|equation/i),
+    );
+    expect(hasDualImpact, 'Phase 2 intro covers dual-impact principle').toBe(true);
+  });
+
+  it('phase 1 contains an activator question about coffee beans', () => {
+    const hook = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 1);
+    const textSections = hook!.sections.filter(s => s.sectionType === 'text');
+    const hasQuestion = textSections.some(s => {
+      const md = (s.content as Record<string, unknown>).markdown as string;
+      return md.includes('coffee beans') && (md.includes('up') || md.includes('down') || md.includes('same'));
+    });
+    expect(hasQuestion, 'activator question in Phase 1').toBe(true);
+  });
+
   it('phase 1 includes Sarah Chen narrative in text content', () => {
     const hook = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 1);
     const textSection = hook!.sections.find(s => s.sectionType === 'text');

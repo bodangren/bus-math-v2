@@ -11,7 +11,6 @@
  *   npx tsx supabase/seed/unit1/lesson-03.ts
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -100,6 +99,11 @@ At the end of the week, Sarah's bookkeeper asks: "Did the accounting equation st
 
 Sarah thinks for a moment. "I have no idea," she admits.
 
+### Quick Case: The Coffee Bean Swap
+If Sarah spends **$100** of her cash to buy **$100** worth of coffee beans, did her total Assets go **up**, **down**, or **stay the same**?
+
+*Discuss with your partner. Does the "Equation Check" still pass?*
+
 That's what this lesson fixes. By the end of today, you'll be able to trace exactly how each of these five events moves money between Assets, Liabilities, and Equity — and verify that the equation never breaks.`),
         callout(
           'why-this-matters',
@@ -123,6 +127,13 @@ The equation stays balanced because every change on one side is matched by a cha
       title: 'Introduction: The Dual-Impact Concept',
       estimatedMinutes: 15,
       sections: [
+        text(`## Introduction: The Dual-Impact Principle
+
+Every business transaction changes at least two accounts in the accounting equation — this is the dual-impact principle, and it's why **A = L + E** always stays balanced.
+
+Four patterns cover nearly every transaction you'll see: (1) one asset trades for another (rearranges A), (2) both A and L grow together (borrowing), (3) both A and L shrink together (paying off debt), (4) A and E grow together (earning revenue). The trickiest pattern: receiving an unpaid bill — L increases and E decreases, but A is unchanged. This is the **accrual principle**: expenses are recognized when incurred, not when cash is paid.
+
+Today you'll trace five of TechStart's Week-2 transactions and verify that the equation stays balanced after every single one.`),
         text(`## How Events Move the Equation
 
 When analyzing any business event, ask two questions:

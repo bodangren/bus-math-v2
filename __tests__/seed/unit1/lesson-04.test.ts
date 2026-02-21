@@ -21,6 +21,28 @@ describe('Lesson 04 seed data — Build the Balance Sheet (ACC-1.3)', () => {
     expect(callout, 'why-this-matters callout in hook phase').toBeDefined();
   });
 
+  it('phase 2 (Intro) has no video section and contains Balance Sheet structure reference text', () => {
+    const intro = LESSON_04_SEED_DATA.phases.find(p => p.phaseNumber === 2);
+    expect(intro).toBeDefined();
+    expect(intro!.sections.find(s => s.sectionType === 'video')).toBeUndefined();
+    const textSections = intro!.sections.filter(s => s.sectionType === 'text');
+    expect(textSections.length, 'at least 2 text sections in Phase 2').toBeGreaterThanOrEqual(2);
+    const hasStructureContent = textSections.some(s =>
+      ((s.content as Record<string, unknown>).markdown as string).match(/Current Assets|Non-Current|Balance Sheet/i),
+    );
+    expect(hasStructureContent, 'Phase 2 covers Balance Sheet sections').toBe(true);
+  });
+
+  it('phase 1 contains an activator question about a professional Balance Sheet', () => {
+    const hook = LESSON_04_SEED_DATA.phases.find(p => p.phaseNumber === 1);
+    const textSections = hook!.sections.filter(s => s.sectionType === 'text');
+    const hasQuestion = textSections.some(s => {
+      const md = (s.content as Record<string, unknown>).markdown as string;
+      return md.includes('notice') && md.includes('different') && md.includes('transaction list');
+    });
+    expect(hasQuestion, 'activator question in Phase 1').toBe(true);
+  });
+
   it('Independent Practice phase (4) has a required spreadsheet activity', () => {
     const indep = LESSON_04_SEED_DATA.phases.find(p => p.phaseNumber === 4);
     expect(indep).toBeDefined();

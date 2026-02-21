@@ -11,7 +11,6 @@
  *   npx tsx supabase/seed/unit1/lesson-02.ts
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -113,6 +112,11 @@ By the end of this lesson, you will be able to look at any business account and 
 
 You'll also learn to handle the tricky "gray zone" accounts that trip up even experienced bookkeepers.
 
+### Quick Case: The Uncle's Loan
+Sarah's Uncle lent her **$5,000** to start TechStart. Is this $5,000 something Sarah **OWNS** or something she **OWES**? 
+
+*Discuss with your neighbor: how does this affect the accounting equation?*
+
 Let's fix Sarah's books — and your future ones.`),
       ],
     },
@@ -122,6 +126,15 @@ Let's fix Sarah's books — and your future ones.`),
       title: 'Introduction: What Belongs in Each Bucket?',
       estimatedMinutes: 15,
       sections: [
+        text(`## Introduction: The Three-Question Classification Test
+
+Every account in TechStart's ledger belongs to exactly one of three categories. Apply these three questions in order — the first "yes" determines the category:
+
+1. Does TechStart **own or control it** with future economic value? → **Asset**
+2. Does TechStart **owe it** to someone else? → **Liability**
+3. Is it the **owner's stake** — original investment or accumulated profit? → **Equity**
+
+The trickiest accounts are "gray zone" accounts that seem to fit two categories. **Prepaid Insurance** is an Asset because TechStart still owns unused coverage. **Deferred Revenue** is a Liability because TechStart owes the client a future service. The rule: ask *who has a claim* — if TechStart can use it freely, it's an Asset; if someone else can demand it back or demand delivery, it's a Liability.`),
         text(`## The Classification Test
 
 Before you can sort accounts, you need a reliable test. Use these three questions in order:

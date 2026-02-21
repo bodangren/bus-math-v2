@@ -11,7 +11,6 @@
  *   npx tsx supabase/seed/unit1/lesson-04.ts
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
@@ -100,6 +99,10 @@ Sarah had the data — three weeks of careful account tracking, all classified, 
 This lesson is about turning numbers into a document. A Balance Sheet is not just a list of accounts — it's a structured statement with labeled sections, subtotals, and a clear story: here's what TechStart owns, here's what it owes, and here's what belongs to Sarah.
 
 By the end of today, you'll build TechStart's first real Balance Sheet from the accounts you've been tracking.`),
+        text(`### Quick Case: The Snapshot
+Take a look at a professional Balance Sheet. **What's the first thing you notice?** How is it **different from the transaction list** we've been using in Excel?
+
+*Discuss with your partner. Why do investors prefer this layout?*`),
         callout(
           'why-this-matters',
           'A Balance Sheet is one of three financial statements every lender, investor, and regulator asks for. It shows the financial position of a business at a specific point in time. Knowing how to read one — and build one — is a skill that applies to every business, every industry, and every career that touches money. This is not a classroom exercise. This is a real skill.',

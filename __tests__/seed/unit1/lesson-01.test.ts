@@ -28,6 +28,40 @@ describe('Lesson 01 seed data — Launch Unit: A=L+E', () => {
     expect(markdown).toMatch(/Sarah/i);
   });
 
+  it('phase 1 contains a turn-and-talk activator question', () => {
+    const hook = LESSON_01_SEED_DATA.phases.find(p => p.phaseNumber === 1);
+    const textSections = hook!.sections.filter(s => s.sectionType === 'text');
+    const hasQuestion = textSections.some(s => {
+      const md = (s.content as Record<string, unknown>).markdown as string;
+      return md.includes('ahead') || md.includes('behind');
+    });
+    expect(hasQuestion, 'turn-and-talk activator question in Phase 1').toBe(true);
+  });
+
+  it('phase 2 (Intro) contains a launch video section with YouTube URL, duration, and transcript', () => {
+    const intro = LESSON_01_SEED_DATA.phases.find(p => p.phaseNumber === 2);
+    expect(intro).toBeDefined();
+    const videoSection = intro!.sections.find(s => s.sectionType === 'video');
+    expect(videoSection, 'video section in Phase 2').toBeDefined();
+    const content = videoSection!.content as Record<string, unknown>;
+    expect(typeof content.videoUrl).toBe('string');
+    expect((content.videoUrl as string)).toMatch(/youtube\.com\/watch\?v=/);
+    expect(typeof content.duration).toBe('number');
+    expect((content.duration as number)).toBeGreaterThan(0);
+    expect(typeof content.transcript).toBe('string');
+    expect((content.transcript as string).length).toBeGreaterThan(100);
+  });
+
+  it('phase 3 (Guided) contains a notebook-organizer simulation', () => {
+    const guided = LESSON_01_SEED_DATA.phases.find(p => p.phaseNumber === 3);
+    expect(guided).toBeDefined();
+    const activitySection = guided!.sections.find(s => s.sectionType === 'activity');
+    expect(activitySection, 'activity section in Phase 3').toBeDefined();
+    const content = activitySection!.content as Record<string, unknown>;
+    const activity = LESSON_01_SEED_DATA.activities.find(a => a.id === content.activityId);
+    expect(activity?.componentKey).toBe('notebook-organizer');
+  });
+
   it('links ACC-1.1 as primary standard', () => {
     const primary = LESSON_01_SEED_DATA.standards.find(s => s.isPrimary);
     expect(primary?.code).toBe('ACC-1.1');
