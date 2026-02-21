@@ -1,0 +1,4 @@
+Task 1.1+1.2: Fix normalizeAnswer in ComprehensionCheck
+Summary: normalizeAnswer assumed string | string[] but correctAnswer schema allows number | boolean | number[]. Coerced to String() before trim()/toLowerCase().
+Files: components/activities/quiz/ComprehensionCheck.tsx, __tests__/components/exercises/ComprehensionCheck.test.tsx
+Why: Tiered/numeric-entry questions crashed client-side before submission could complete (trim is not a function).
