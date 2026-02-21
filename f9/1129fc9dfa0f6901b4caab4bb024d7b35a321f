@@ -1,0 +1,4 @@
+Phase 3: Revert spreadsheet draft autoGrade to false
+Summary: Lesson 4 spreadsheet draft had autoGrade:true but the spreadsheet adapter only submits completion metadata. ActivityRenderer required a successful assessment API call before marking autoGrade activities complete, so students were stuck.
+Files: supabase/seed/unit1/lesson-04.ts
+Why: Students could not complete the required Lesson 4 Phase 5 spreadsheet activity.
