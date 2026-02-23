@@ -21,6 +21,7 @@ import { GeneralDragAndDrop } from '@/components/activities/drag-drop/GeneralDra
 import { FillInTheBlank } from '@/components/activities/quiz/FillInTheBlank';
 import { JournalEntryActivity } from '@/components/activities/accounting/JournalEntryActivity';
 import { ComprehensionCheck } from '@/components/activities/quiz/ComprehensionCheck';
+import { TieredAssessment } from '@/components/activities/quiz/TieredAssessment';
 import { PeerCritiqueForm } from '@/components/activities/quiz/PeerCritiqueForm';
 import { ReflectionJournal } from '@/components/activities/quiz/ReflectionJournal';
 import { SpreadsheetEvaluator } from '@/components/activities/spreadsheet/SpreadsheetEvaluator';
@@ -45,6 +46,7 @@ import type { ActivityComponentKey } from '@/types/activities';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> = {
   'comprehension-quiz': ComprehensionCheck,
+  'tiered-assessment': TieredAssessment,
   'drag-and-drop': GeneralDragAndDrop,
   'account-categorization': AccountCategorization,
   'budget-category-sort': BudgetCategorySort,
