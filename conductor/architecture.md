@@ -19,6 +19,8 @@ This is the canonical architecture reference for the v2 system.
 - App code primarily uses Supabase clients for auth/session-aware operations.
 - Drizzle is retained for query ergonomics and type-safe modeling where helpful, not as schema truth.
 - Edge functions handle privileged transactional operations (for example, teacher-managed account creation).
+- Curriculum quality enforcement runs in test-only validation suites over exported seed constants (`__tests__/curriculum/`) with no database dependency.
+- Algorithmic problem generation lives in `lib/curriculum/` (`problem-template`, `formula-evaluator`, `problem-generator`, `cell-validator`) and supports deterministic seeded retesting.
 
 ### Schema Change Workflow (Supabase First)
 1. Create or update SQL in `supabase/migrations/` as the canonical schema change.

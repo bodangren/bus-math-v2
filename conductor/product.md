@@ -24,6 +24,13 @@ An interactive, Supabase-backed digital textbook for teaching business mathemati
 - **Progress Analytics**: Dashboards for tracking completion and mastery of learning objectives.
 - **Multi-tenant Architecture**: Organization-based data isolation and access control.
 
+## Curriculum Quality Standards
+
+- Curriculum seeds are authored against enforceable lesson-type rules (accounting, excel, project, assessment).
+- Auto-graded activities must include algorithmic `problemTemplate` definitions for deterministic regeneration and retesting.
+- Unit summative assessments follow a tiered model (knowledge, understanding, application) mapped directly to unit standards.
+- Project-day lessons must publish explicit deliverables for classroom accountability.
+
 ## System Boundaries & Responsibilities
 - **Client UI (`app/`, `components/`)**: Renders lesson and dashboard experiences, captures user input, and displays server-validated results.
 - **Application Server (Next.js routes/actions)**: Enforces session and role checks, orchestrates Supabase calls, and keeps service-role access on the server side only.

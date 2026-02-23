@@ -2,37 +2,64 @@
 lesson_id: "UXXLXX"
 type: "assessment"
 objectives:
-  - "Mastery Objective 1"
-  - "Mastery Objective 2"
-narrative_hook: "Sarah Chen's context for the final unit mastery check..."
-auto_grade:
-  knowledge_check: []
-  understanding_check: []
-  application_check:
-    spreadsheet_id: "mock_spreadsheet_id"
-    requirements: []
+  - "Standard 1"
+  - "Standard 2"
+narrative_hook: "Sarah Chen's summative checkpoint context"
+standards:
+  primary: "ACC-X.1"
+  secondary:
+    - "ACC-X.2"
+    - "ACC-X.3"
+quality_rules:
+  required_phases:
+    - instructions
+    - knowledge
+    - understanding
+    - application
+  questions_per_standard: 3
+  application_problems_per_standard: 1
+  passing_score: 70
+  all_items_auto_graded: true
+  all_items_require_problem_template: true
 ---
 
 # Summative Assessment: {{lesson_title}}
 
 ## Phase 1: Instructions
-- **Goal:** Set expectations and provide instructions for the assessment.
-- **Activity:** [Placeholder for assessment instructions]
+- **Goal:** Explain timing, attempts, and tier structure.
+- **Required:** Include standards-to-question coverage map.
 
-## Phase 2: Knowledge Check (MCQ/Fill)
-- **Goal:** Verify recall of key accounting and business math terms.
-- **Auto-Grade:** {{auto_grade.knowledge_check}}
+## Phase 2: Knowledge Tier
+- **Goal:** Recall-level checks (non-MCQ preferred).
+- **Required:** One question per standard with algorithmic support.
 
-## Phase 3: Understanding Check (Forms)
-- **Goal:** Verify conceptual understanding through scenario-based questions.
-- **Auto-Grade:** {{auto_grade.understanding_check}}
+## Phase 3: Understanding Tier
+- **Goal:** Scenario-based conceptual reasoning.
+- **Required:** One question per standard with algorithmic support.
 
-## Phase 4: Application Check (Mock Spreadsheet)
-- **Goal:** Verify the ability to apply skills in a realistic business spreadsheet.
-- **Activity:** Complete tasks in spreadsheet {{auto_grade.application_check.spreadsheet_id}}.
+## Phase 4: Application Tier
+- **Goal:** Procedural solving and transfer.
+- **Required:**
+  - One application-tier question per standard
+  - One application problem per standard
+  - Cell-value validation for spreadsheet-style problems when applicable
 
 ---
 
-## Teacher Notes
-- **Pedagogy:** Ensure a quiet and focused environment.
-- **Grading:** Review auto-grade results and provide feedback on the application check.
+## Activity Contract
+
+```yaml
+componentKey: tiered-assessment
+gradingConfig:
+  autoGrade: true
+  passingScore: 70
+props:
+  tier: application
+  questions: []
+  applicationProblems: []
+  problemTemplate: {}
+```
+
+## Question Type Guidance
+- Favor `true-false`, `fill-in-the-blank`, `numeric-entry`, `categorization`, and `equation-solver`.
+- Avoid all-MCQ assessments for summative tiers.

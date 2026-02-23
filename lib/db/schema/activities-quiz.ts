@@ -1,5 +1,31 @@
 import { z } from 'zod';
 
+const parameterDefSchema = z
+  .object({
+    min: z.number(),
+    max: z.number(),
+    step: z.number().positive(),
+  })
+  .refine((parameter) => parameter.max >= parameter.min, {
+    message: 'max must be greater than or equal to min',
+  });
+
+const problemTemplateSchema = z.object({
+  parameters: z.record(z.string(), parameterDefSchema),
+  answerFormula: z.string().min(1),
+  questionTemplate: z.string().min(1),
+  tolerance: z.number().nonnegative().optional(),
+  cellExpectations: z
+    .array(
+      z.object({
+        cellRef: z.string().regex(/^[A-Z]+[0-9]+$/),
+        expectedFormula: z.string().min(1),
+        tolerance: z.number().nonnegative().optional(),
+      }),
+    )
+    .optional(),
+});
+
 const blankSentenceSchema = z.object({
   id: z.string(),
   text: z.string(),
@@ -42,24 +68,56 @@ const peerCritiqueCategorySchema = z.object({
   ratingLabel: z.string().optional(),
 });
 
+const questionSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  type: z.enum([
+    'multiple-choice',
+    'true-false',
+    'short-answer',
+    'matching',
+    'fill-in-the-blank',
+    'numeric-entry',
+    'categorization',
+    'equation-solver',
+  ]),
+  options: z.array(z.string()).optional(),
+  correctAnswer: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.array(z.string()),
+    z.array(z.number()),
+  ]),
+  explanation: z.string().optional(),
+  tier: z.enum(['knowledge', 'understanding', 'application']).optional(),
+  standardCode: z.string().optional(),
+  problemTemplate: problemTemplateSchema.optional(),
+});
+
+const applicationProblemSchema = z.object({
+  id: z.string(),
+  prompt: z.string(),
+  standardCode: z.string(),
+  problemTemplate: problemTemplateSchema,
+  rubricCriteria: z.array(z.string()).optional(),
+});
+
+const baseAssessmentSchema = z.object({
+  title: z.string().default('Comprehension Check'),
+  description: z.string().default('Test your understanding of the lesson.'),
+  showExplanations: z.boolean().default(true),
+  allowRetry: z.boolean().default(true),
+  maxAttempts: z.number().int().positive().optional(),
+  problemTemplate: problemTemplateSchema.optional(),
+  questions: z.array(questionSchema).min(1),
+  applicationProblems: z.array(applicationProblemSchema).optional(),
+});
+
 export const quizActivityPropsSchemas = {
-  'comprehension-quiz': z.object({
-    title: z.string().default('Comprehension Check'),
-    description: z.string().default('Test your understanding of the lesson.'),
-    showExplanations: z.boolean().default(true),
-    allowRetry: z.boolean().default(true),
-    questions: z
-      .array(
-        z.object({
-          id: z.string(),
-          text: z.string(),
-          type: z.enum(['multiple-choice', 'true-false', 'short-answer']),
-          options: z.array(z.string()).optional(),
-          correctAnswer: z.union([z.string(), z.array(z.string())]),
-          explanation: z.string().optional(),
-        }),
-      )
-      .min(1),
+  'comprehension-quiz': baseAssessmentSchema,
+  'tiered-assessment': baseAssessmentSchema.extend({
+    tier: z.enum(['knowledge', 'understanding', 'application']),
   }),
   'fill-in-the-blank': z.object({
     title: z.string(),

@@ -115,6 +115,7 @@ export type FillInTheBlankActivityProps = z.infer<typeof activityPropsSchemas['f
 export type JournalEntryActivityProps = z.infer<typeof activityPropsSchemas['journal-entry-building']>;
 export type ReflectionJournalActivityProps = z.infer<typeof activityPropsSchemas['reflection-journal']>;
 export type PeerCritiqueActivityProps = z.infer<typeof activityPropsSchemas['peer-critique-form']>;
+export type TieredAssessmentActivityProps = z.infer<typeof activityPropsSchemas['tiered-assessment']>;
 export type LemonadeStandActivityProps = z.infer<typeof activityPropsSchemas['lemonade-stand']>;
 export type StartupJourneyActivityProps = z.infer<typeof activityPropsSchemas['startup-journey']>;
 export type BudgetBalancerActivityProps = z.infer<typeof activityPropsSchemas['budget-balancer']>;

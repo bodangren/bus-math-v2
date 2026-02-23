@@ -4,32 +4,44 @@ type: "project"
 objectives:
   - "Objective 1"
   - "Objective 2"
-narrative_hook: "Sarah Chen's context regarding this project sprint phase..."
+narrative_hook: "Sarah Chen's project sprint context"
 assets:
   project_brief: "project_brief_url"
   resource_folder: "resource_folder_url"
+quality_rules:
+  one_phase_per_day: true
+  auto_grade_allowed: false
+  deliverables_required: true
 ---
 
-# Project Sprint: {{lesson_title}}
+# Project Day: {{lesson_title}}
 
-## Phase 1: Goal Setting
-- **Goal:** Define daily milestones and plan work.
-- **Activity:** [Placeholder for goal setting task]
+## Structure Rule
+- Project lessons run as three single-phase days across consecutive lessons:
+1. **Day 1 - Scaffolding**
+2. **Day 2 - Build**
+3. **Day 3 - Present**
 
-## Phase 2: Workshop / Studio Time
-- **Goal:** Dedicated time for students to build their projects.
-- **Activity:** [Placeholder for project build activities]
+## Required Phase Contents
+- **Project brief** with success criteria.
+- **Team workflow instructions** appropriate to the day.
+- **Deliverables array** listing concrete student outputs.
+- **Ungraded activity** (`autoGrade: false`) for reflection, checklist, or peer critique.
 
-## Phase 3: Milestone Checkpoint
-- **Goal:** Verify progress against the day's goals.
-- **Activity:** [Placeholder for milestone verification]
+## Deliverables Example
 
-## Phase 4: Peer Feedback & Reflection
-- **Goal:** Get input from peers and reflect on the day's work.
-- **Activity:** [Placeholder for peer review and reflection]
+```yaml
+deliverables:
+  - "Team roster with roles"
+  - "Workbook checkpoint screenshot"
+  - "Presentation script with peer feedback"
+```
 
----
+## Day-Specific Expectations
+- **Scaffolding:** Team formation, scope decisions, checklist setup.
+- **Build:** Workbook construction and checkpoint evidence.
+- **Present:** Rehearsal, live presentation, and feedback capture.
 
 ## Teacher Notes
-- **Pedagogy:** Act as a consultant/mentor during studio time.
-- **Setup:** Ensure all project resources and data are available.
+- Use milestone checklists and rubric language students can act on immediately.
+- Keep project outputs explicit so assessment evidence is auditable.

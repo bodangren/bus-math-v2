@@ -30,5 +30,6 @@ export type {
   SpreadsheetActivityProps,
   SpreadsheetEvaluatorActivityProps,
   StartupJourneyActivityProps,
+  TieredAssessmentActivityProps,
   TrialBalanceSortingActivityProps,
 } from '@/lib/db/schema/activities';

@@ -4,41 +4,60 @@ type: "excel"
 objectives:
   - "Objective 1"
   - "Objective 2"
-narrative_hook: "Sarah Chen's context regarding this Excel skill..."
+narrative_hook: "Sarah Chen's context for this Excel workflow"
+standards:
+  primary: "ACC-X.X"
 assets:
   starter_sheet: "starter_sheet_url"
-auto_grade:
-  questions: []
+quality_rules:
+  guided_phase_requires_activity: true
+  independent_phase_requires_teacher_submission: true
+  checkpoint_min_passing_score: 80
+  checkpoint_requires_problem_template: true
 ---
 
 # Lesson: {{lesson_title}}
 
-## Phase 1: Entry
-- **Goal:** Brief hook or activator.
-- **Activity:** [Placeholder for entry task]
+## Phase 1: Hook
+- **Goal:** Frame an operational spreadsheet problem students must solve.
 
 ## Phase 2: Intro
-- **Goal:** Introduce the Excel skill within the narrative.
-- **Narrative:** {{narrative_hook}}
+- **Goal:** Demonstrate the Excel workflow and quality criteria.
 
-## Phase 3: Guided
-- **Goal:** Teacher-led walk-through of the Excel skill using the spreadsheet component.
-- **Activity:** [Placeholder for teacher-led instruction]
+## Phase 3: Guided Practice (Interactive Required)
+- **Goal:** Build the skill with live teacher facilitation.
+- **Required Activity Types:** `spreadsheet`, `fill-in-the-blank`, or equivalent interactive format.
 
-## Phase 4: Independent
-- **Goal:** Students apply the skill to build or modify a spreadsheet.
-- **Activity:** [Placeholder for independent practice]
+## Phase 4: Independent Practice (Teacher Submission Required)
+- **Goal:** Students complete real work in desktop Excel and submit deliverables.
+- **Required Section Type:** `teacher-submission`.
+- **Required Deliverable Fields:**
+  - deliverable description
+  - rubric criteria array
+  - explicit submission artifact(s) (workbook, screenshot, or PDF)
 
-## Phase 5: Checkpoint
-- **Goal:** Exit ticket to verify mastery of the Excel skill.
-- **Auto-Grade:** {{auto_grade.questions}}
+## Phase 5: Checkpoint Assessment
+- **Goal:** Auto-graded checkpoint with minimum `passingScore: 80`.
+- **Required:** Include `problemTemplate` for algorithmic retest support.
 
 ## Phase 6: Reflection
-- **Goal:** Connect the Excel skill to business efficiency and accuracy.
-- **Activity:** [Placeholder for reflection question]
+- **Goal:** Explain how spreadsheet discipline affects business decisions.
 
 ---
 
+## Teacher Submission Pattern
+
+```yaml
+sectionType: teacher-submission
+content:
+  submissionType: teacher-submission
+  deliverable: "Submit workbook and evidence screenshot"
+  rubricCriteria:
+    - "Accuracy"
+    - "Formatting quality"
+    - "Explanation clarity"
+```
+
 ## Teacher Notes
-- **Pedagogy:** Focus on best practices for spreadsheet design and formula accuracy.
-- **Technical Setup:** Ensure students have access to the starter sheet.
+- Independent phase is intentionally not auto-graded in-app.
+- Keep rubric language explicit and classroom-operable.
