@@ -61,6 +61,30 @@ describe('Lesson 03 seed data — Apply A/L/E to Business Events (ACC-1.4)', () 
     expect(act?.componentKey).toBe('comprehension-quiz');
   });
 
+  it('keeps the exit ticket only in phase 5 (not guided/independent phases)', () => {
+    const guided = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 3);
+    const independent = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 4);
+    const assessment = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 5);
+
+    const hasExitTicket = (phaseNumber: number) => {
+      const phase = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === phaseNumber);
+      if (!phase) return false;
+
+      return phase.sections.some((section) => {
+        if (section.sectionType !== 'activity') return false;
+        const content = section.content as Record<string, unknown>;
+        return content.activityId === LESSON_03_SEED_DATA.activities[0]?.id;
+      });
+    };
+
+    expect(guided).toBeDefined();
+    expect(independent).toBeDefined();
+    expect(assessment).toBeDefined();
+    expect(hasExitTicket(3)).toBe(false);
+    expect(hasExitTicket(4)).toBe(false);
+    expect(hasExitTicket(5)).toBe(true);
+  });
+
   it('links ACC-1.4 as primary standard', () => {
     const primary = LESSON_03_SEED_DATA.standards.find(s => s.isPrimary);
     expect(primary?.code).toBe('ACC-1.4');

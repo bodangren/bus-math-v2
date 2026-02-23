@@ -326,6 +326,16 @@ You'll learn:
         description: 'Trace the dual-impact of each event. Score 4/5 to unlock Lesson 4.',
         showExplanations: true,
         allowRetry: true,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 5000, max: 15000, step: 100 },
+            liabilities: { min: 1200, max: 9000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'TechStart has assets {{assets}} and liabilities {{liabilities}}. Determine equity.',
+          tolerance: 1,
+        },
         questions: [
           {
             id: 'q1',

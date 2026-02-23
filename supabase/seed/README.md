@@ -60,6 +60,36 @@ Each seed script:
 - Exports a `LESSON_XX_SEED_DATA` constant used directly by unit tests in `__tests__/seed/unit1/`.
 - Requires `DIRECT_URL` to be set in `.env.local`.
 
+### Curriculum Rigor Rules (Unit 1 baseline)
+
+- Accounting lessons (L1-L4):
+  - 6 phases
+  - interactive guided phase
+  - independent practice includes auto-graded activity (`passingScore >= 60`)
+  - auto-graded content includes `problemTemplate`
+- Excel lessons (L5-L7):
+  - 6 phases
+  - interactive guided phase
+  - independent practice includes `teacher-submission` section with deliverable + rubric
+  - phase 5 checkpoint is auto-graded (`passingScore >= 80`) and algorithmic-ready
+- Project lessons (L8-L10):
+  - single-phase day lessons with explicit `deliverables` arrays
+  - ungraded project activities (`autoGrade: false`)
+- Summative lesson (L11):
+  - multi-phase structure (instructions + knowledge + understanding + application)
+  - 21 tiered questions plus 7 application problems across ACC-1.1 through ACC-1.7
+  - `passingScore: 70` and algorithmic templates for retest support
+
+### Validation Commands
+
+```bash
+# Curriculum quality enforcement + algorithmic engine tests
+CI=true npm test -- __tests__/curriculum
+
+# Unit 1 seed regression checks
+CI=true npm test -- __tests__/seed/unit1
+```
+
 ## Data Files
 
 - `standards/unit-1-accounting.json` - Accounting standards for Unit 1

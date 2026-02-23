@@ -284,6 +284,7 @@ After you finish:
 > Assets: $8,760 | Liabilities: $5,150 | Equity: $3,800 (note: does not balance — Sarah's Drawings must reduce Equity, not be classified as an Asset)
 
 If your equation doesn't balance, trace through the classification test for each account one more time.`),
+        activity(IDS.ACTIVITY_CARD_SORT, true),
       ],
     },
     {
@@ -341,6 +342,16 @@ In **Lesson 3**, TechStart has five new transactions — and for each one, you'l
       props: {
         title: 'Classify TechStart\'s Accounts',
         description: "Drag each account into the correct bucket. Use the classification test: own it (Asset), owe it (Liability), or owner's stake (Equity).",
+        problemTemplate: {
+          parameters: {
+            assets: { min: 3500, max: 11000, step: 100 },
+            liabilities: { min: 1200, max: 7000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'With assets {{assets}} and liabilities {{liabilities}}, compute equity.',
+          tolerance: 1,
+        },
         categories: [
           {
             id: 'assets',
@@ -459,6 +470,16 @@ In **Lesson 3**, TechStart has five new transactions — and for each one, you'l
         description: 'Classify each account correctly. Score 4/5 to move on to Lesson 3.',
         showExplanations: true,
         allowRetry: true,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 3000, max: 12000, step: 100 },
+            liabilities: { min: 800, max: 7000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Given assets {{assets}} and liabilities {{liabilities}}, what is equity?',
+          tolerance: 1,
+        },
         questions: [
           {
             id: 'q1',

@@ -11,8 +11,6 @@
  *   npx tsx supabase/seed/unit1/lesson-01.ts
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { config } from 'dotenv';
@@ -194,6 +192,7 @@ Sarah has compiled her complete account list for Month 1. Work individually to c
 **Step 1:** Classify each account individually (2 minutes).
 **Step 2:** Compare with your partner. Discuss any differences.
 **Step 3:** Calculate the total for each category. Does A = L + E?`),
+        activity(IDS.ACTIVITY_NOTEBOOK_SIM, true),
         text(`## Share-Out Preparation
 
 After you finish the sort, prepare to share one insight with the class:
@@ -258,6 +257,16 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
       props: {
         title: 'The Notebook Organizer',
         description: "Sort Sarah's scraps of paper into the correct accounting buckets.",
+        problemTemplate: {
+          parameters: {
+            assets: { min: 3000, max: 9000, step: 100 },
+            liabilities: { min: 1000, max: 5000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Given assets {{assets}} and liabilities {{liabilities}}, compute equity.',
+          tolerance: 1,
+        },
         initialMessage: "Sarah's desk is a mess! Help her sort these items so she can see if her business is in balance.",
         successMessage: "Great job! Sarah's records are now organized. Now we can see the A = L + E equation in action.",
         items: [
@@ -271,7 +280,7 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
       },
       gradingConfig: {
         autoGrade: true,
-        passingScore: 100,
+        passingScore: 83,
         partialCredit: false,
       },
     },
@@ -285,6 +294,16 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
         description: 'Answer each question on your own. Score 4/5 to unlock Lesson 2.',
         showExplanations: true,
         allowRetry: true,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 4000, max: 12000, step: 100 },
+            liabilities: { min: 1000, max: 6000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'TechStart has assets {{assets}} and liabilities {{liabilities}}. Find equity.',
+          tolerance: 1,
+        },
         questions: [
           {
             id: 'q1',
