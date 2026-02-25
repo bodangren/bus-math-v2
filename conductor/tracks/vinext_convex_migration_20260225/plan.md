@@ -9,7 +9,7 @@
 
 ## Phase 2: Convex Setup and Schema Migration
 - [x] Task 1: Install `convex` dependency and run `npx convex dev` to initialize the project. [a2319ca]
-- [ ] Task 2: Translate Supabase SQL schemas (found in `supabase/migrations/`) into Convex's TypeScript schema (`convex/schema.ts`).
+- [x] Task 2: Translate Supabase SQL schemas (found in `supabase/migrations/`) into Convex's TypeScript schema (`convex/schema.ts`). [6cf838b]
   - For example, you define a table with `defineTable({ column: v.string() })`.
 - [ ] Task 3: Replace Supabase middleware with Convex equivalent if necessary.
 
