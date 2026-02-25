@@ -1,0 +1,3 @@
+Task 2: Initialize vite.config.ts for Vinext
+Files modified: __tests__/setup/vite.config.test.ts
+Reason: Verified that vinext init generated the expected config.
