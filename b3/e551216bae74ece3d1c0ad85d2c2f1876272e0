@@ -1,0 +1,3 @@
+Task 2: Migrate unauthenticated landing pages
+Files modified: app/curriculum/page.tsx, __tests__/app/curriculum/page.test.tsx, convex/public.ts
+Reason: Replaced the Drizzle/Supabase data fetch logic for the curriculum directory with the Convex api.public.getCurriculum backend query as requested by the user.
