@@ -1,0 +1,3 @@
+Task 2: Migrate unauthenticated landing pages
+Files modified: app/page.tsx, __tests__/app/page.test.tsx, convex/public.ts
+Reason: Replaced the Drizzle/Supabase data fetch logic for the course catalog and curriculum stats with a public Convex backend query as requested by the user.
