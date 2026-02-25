@@ -4,7 +4,7 @@
 - [x] Task 1: Install `vinext` and `vite` dependencies. [7d1515b]
 - [x] Task 2: Initialize `vite.config.ts` for Vinext. [86705a8]
 - [x] Task 3: Replace standard `next dev` and `next build` scripts with `vinext` equivalents. [8951c6f]
-- [ ] Task 4: Verify local development works on Vinext.
+- [x] Task 4: Verify local development works on Vinext. [skipped-per-user-approval]
 - [ ] Task 5: Setup `vitest` for tests, moving away from other test runners if applicable.
 
 ## Phase 2: Convex Setup and Schema Migration
