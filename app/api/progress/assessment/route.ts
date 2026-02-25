@@ -5,6 +5,7 @@ import { calculateScore } from '@/lib/assessments/scoring';
 import { submissionDataSchema } from '@/lib/db/schema/activity-submissions';
 import { selectActivitySchema } from '@/lib/db/schema/validators';
 import { createClient } from '@/lib/supabase/server';
+import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 
 const requestSchema = z.object({
   activityId: z.string().uuid(),
@@ -60,30 +61,12 @@ export async function POST(request: Request) {
       return buildBadRequest('answers must include at least one entry.');
     }
 
-    const {
-      data: activityRecord,
-      error: activityError,
-    } = await supabase
-      .from('activities')
-      .select(
-        `
-          id,
-          componentKey:component_key,
-          displayName:display_name,
-          description,
-          props,
-          gradingConfig:grading_config,
-          createdAt:created_at,
-          updatedAt:updated_at
-        `,
-      )
-      .eq('id', payload.activityId)
-      .single();
+    const activityRecord = await fetchQuery(api.activities.getActivityById, {
+      activityId: payload.activityId as any,
+    });
 
-    if (activityError || !activityRecord) {
-      const status = activityError?.code === 'PGRST116' ? 404 : 500;
-      const message = status === 404 ? 'Activity not found' : activityError?.message ?? 'Unable to load activity';
-      return NextResponse.json({ error: message }, { status });
+    if (!activityRecord) {
+      return NextResponse.json({ error: 'Activity not found' }, { status: 404 });
     }
 
     let activity;
@@ -112,27 +95,14 @@ export async function POST(request: Request) {
       metadata: payload.metadata,
     });
 
-    const now = new Date().toISOString();
-
-    const { error: insertError } = await supabase
-      .from('activity_submissions')
-      .insert({
-        user_id: data.user.id,
-        activity_id: payload.activityId,
-        submission_data: submissionData,
-        score: score.score,
-        max_score: score.maxScore,
-        feedback: score.feedback,
-        submitted_at: now,
-        graded_at: now,
-      });
-
-    if (insertError) {
-      return NextResponse.json(
-        { error: insertError.message ?? 'Unable to save submission' },
-        { status: 500 },
-      );
-    }
+    await fetchMutation(api.activities.submitAssessment, {
+      userId: data.user.id as any,
+      activityId: payload.activityId as any,
+      submissionData,
+      score: score.score,
+      maxScore: score.maxScore,
+      feedback: score.feedback,
+    });
 
     return NextResponse.json({
       score: score.score,

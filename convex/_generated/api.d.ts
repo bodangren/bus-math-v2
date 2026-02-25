@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as activities from "../activities.js";
+import type * as api_ from "../api.js";
 import type * as public_ from "../public.js";
 import type * as student from "../student.js";
 import type * as teacher from "../teacher.js";
@@ -19,6 +21,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  activities: typeof activities;
+  api: typeof api_;
   public: typeof public_;
   student: typeof student;
   teacher: typeof teacher;

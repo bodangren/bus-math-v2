@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { db } from '@/lib/db/drizzle';
-import { studentSpreadsheetResponses, studentCompetency, activities } from '@/lib/db/schema';
 import { createClient } from '@/lib/supabase/server';
-import { eq, and } from 'drizzle-orm';
+import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 import {
   validateSpreadsheetData,
   validateSubmission,
   type TargetCell,
 } from '@/lib/activities/spreadsheet-validation';
 
-// Request validation schema
 const targetCellSchema = z.object({
   cell: z.string().regex(/^[A-Z]+[0-9]+$/),
   expectedValue: z.union([z.string(), z.number()]),
@@ -31,13 +28,17 @@ const requestSchema = z.object({
 type RequestPayload = z.infer<typeof requestSchema>;
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+function isValidConvexId(id: string): boolean {
+  return uuidRegex.test(id);
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ activityId: string }> }
 ) {
   try {
     const { activityId } = await params;
-    if (!uuidRegex.test(activityId)) {
+    if (!isValidConvexId(activityId)) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
@@ -45,7 +46,7 @@ export async function GET(
     }
 
     const requestedStudentId = new URL(request.url).searchParams.get('studentId');
-    if (requestedStudentId && !uuidRegex.test(requestedStudentId)) {
+    if (requestedStudentId && !isValidConvexId(requestedStudentId)) {
       return NextResponse.json(
         { error: 'Invalid student ID format' },
         { status: 400 }
@@ -63,16 +64,12 @@ export async function GET(
     }
 
     const requesterId = authData.user.id;
-    const {
-      data: requesterProfile,
-      error: requesterProfileError,
-    } = await supabase
-      .from('profiles')
-      .select('id, role, organization_id')
-      .eq('id', requesterId)
-      .maybeSingle();
 
-    if (requesterProfileError || !requesterProfile?.role) {
+    const requesterProfile = await fetchQuery(api.activities.getProfileByUserId, {
+      userId: requesterId as any,
+    });
+
+    if (!requesterProfile?.role) {
       return NextResponse.json(
         { error: 'Forbidden' },
         { status: 403 }
@@ -88,20 +85,14 @@ export async function GET(
         );
       }
 
-      const {
-        data: targetProfile,
-        error: targetProfileError,
-      } = await supabase
-        .from('profiles')
-        .select('id, role, organization_id')
-        .eq('id', requestedStudentId)
-        .maybeSingle();
+      const targetProfile = await fetchQuery(api.activities.getProfileById, {
+        profileId: requestedStudentId as any,
+      });
 
       if (
-        targetProfileError ||
         !targetProfile ||
         targetProfile.role !== 'student' ||
-        targetProfile.organization_id !== requesterProfile.organization_id
+        targetProfile.organizationId !== requesterProfile.organizationId
       ) {
         return NextResponse.json(
           { error: 'Forbidden' },
@@ -112,27 +103,12 @@ export async function GET(
       targetStudentId = requestedStudentId;
     }
 
-    const responseRows = await db
-      .select({
-        studentId: studentSpreadsheetResponses.studentId,
-        spreadsheetData: studentSpreadsheetResponses.spreadsheetData,
-        draftData: studentSpreadsheetResponses.draftData,
-        isCompleted: studentSpreadsheetResponses.isCompleted,
-        attempts: studentSpreadsheetResponses.attempts,
-        lastValidationResult: studentSpreadsheetResponses.lastValidationResult,
-        submittedAt: studentSpreadsheetResponses.submittedAt,
-        updatedAt: studentSpreadsheetResponses.updatedAt,
-      })
-      .from(studentSpreadsheetResponses)
-      .where(
-        and(
-          eq(studentSpreadsheetResponses.studentId, targetStudentId),
-          eq(studentSpreadsheetResponses.activityId, activityId)
-        )
-      )
-      .limit(1);
+    const response = await fetchQuery(api.activities.getSpreadsheetResponse, {
+      studentId: targetStudentId as any,
+      activityId: activityId as any,
+    });
 
-    if (responseRows.length === 0) {
+    if (!response) {
       return NextResponse.json(
         { error: 'Spreadsheet response not found' },
         { status: 404 }
@@ -142,14 +118,14 @@ export async function GET(
     return NextResponse.json({
       readOnly: true,
       activityId,
-      studentId: responseRows[0].studentId,
-      spreadsheetData: responseRows[0].spreadsheetData,
-      draftData: responseRows[0].draftData,
-      isCompleted: responseRows[0].isCompleted,
-      attempts: responseRows[0].attempts,
-      lastValidationResult: responseRows[0].lastValidationResult,
-      submittedAt: responseRows[0].submittedAt,
-      updatedAt: responseRows[0].updatedAt,
+      studentId: response.studentId,
+      spreadsheetData: response.spreadsheetData,
+      draftData: response.draftData,
+      isCompleted: response.isCompleted,
+      attempts: response.attempts,
+      lastValidationResult: response.lastValidationResult,
+      submittedAt: response.submittedAt,
+      updatedAt: response.updatedAt,
     });
   } catch (error) {
     console.error('Spreadsheet replay retrieval error:', error);
@@ -167,18 +143,15 @@ export async function POST(
   { params }: { params: Promise<{ activityId: string }> }
 ) {
   try {
-    // Extract activityId from params
     const { activityId } = await params;
 
-    // Validate UUID format
-    if (!uuidRegex.test(activityId)) {
+    if (!isValidConvexId(activityId)) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
       );
     }
 
-    // Authenticate user
     const supabase = await createClient();
     const { data: authData, error: authError } = await supabase.auth.getUser();
 
@@ -191,7 +164,6 @@ export async function POST(
 
     const userId = authData.user.id;
 
-    // Parse and validate request body
     let payload: RequestPayload;
     try {
       const body = await request.json();
@@ -215,7 +187,6 @@ export async function POST(
       );
     }
 
-    // SECURITY: Validate spreadsheet data for dangerous content
     const sanitizationResult = validateSpreadsheetData(payload.spreadsheetData);
     if (!sanitizationResult.isValid) {
       return NextResponse.json(
@@ -224,24 +195,17 @@ export async function POST(
       );
     }
 
-    const activityRows = await db
-      .select({
-        componentKey: activities.componentKey,
-        props: activities.props,
-        standardId: activities.standardId,
-      })
-      .from(activities)
-      .where(eq(activities.id, activityId))
-      .limit(1);
+    const activity = await fetchQuery(api.activities.getActivityForValidation, {
+      activityId: activityId as any,
+    });
 
-    if (activityRows.length === 0) {
+    if (!activity) {
       return NextResponse.json(
         { error: 'Activity not found' },
         { status: 404 }
       );
     }
 
-    const activity = activityRows[0];
     if (activity.componentKey !== 'spreadsheet-evaluator') {
       return NextResponse.json(
         { error: 'Activity configuration is not a spreadsheet evaluator' },
@@ -260,104 +224,36 @@ export async function POST(
       );
     }
 
-    // SECURITY: Always use server-side target cells, never trust client-provided targets.
     const validationResult = validateSubmission(
       payload.spreadsheetData,
       parsedEvaluatorProps.data.targetCells as TargetCell[]
     );
 
-    // Database transaction: Upsert response and update competency if complete
-    await db.transaction(async (tx) => {
-      const now = new Date();
-
-      // Upsert spreadsheet response
-      const existingResponse = await tx
-        .select()
-        .from(studentSpreadsheetResponses)
-        .where(
-          and(
-            eq(studentSpreadsheetResponses.studentId, userId),
-            eq(studentSpreadsheetResponses.activityId, activityId)
-          )
-        )
-        .limit(1);
-
-      if (existingResponse.length > 0) {
-        // Update existing response
-        await tx
-          .update(studentSpreadsheetResponses)
-          .set({
-            spreadsheetData: payload.spreadsheetData,
-            isCompleted: validationResult.isComplete,
-            attempts: existingResponse[0].attempts + 1,
-            lastValidationResult: validationResult,
-            submittedAt: validationResult.isComplete ? now : existingResponse[0].submittedAt,
-            updatedAt: now,
-          })
-          .where(eq(studentSpreadsheetResponses.id, existingResponse[0].id));
-      } else {
-        // Insert new response
-        await tx.insert(studentSpreadsheetResponses).values({
-          studentId: userId,
-          activityId,
-          spreadsheetData: payload.spreadsheetData,
-          isCompleted: validationResult.isComplete,
-          attempts: 1,
-          lastValidationResult: validationResult,
-          submittedAt: validationResult.isComplete ? now : null,
-          updatedAt: now,
-        });
-      }
-
-      // Update competency if activity is complete
-      if (validationResult.isComplete) {
-        if (activity.standardId) {
-          const standardId = activity.standardId;
-
-          // Check if competency record exists
-          const existingCompetency = await tx
-            .select()
-            .from(studentCompetency)
-            .where(
-              and(
-                eq(studentCompetency.studentId, userId),
-                eq(studentCompetency.standardId, standardId)
-              )
-            )
-            .limit(1);
-
-          if (existingCompetency.length > 0) {
-            // Increment mastery level (max 100)
-            const newLevel = Math.min(existingCompetency[0].masteryLevel + 10, 100);
-            await tx
-              .update(studentCompetency)
-              .set({
-                masteryLevel: newLevel,
-                evidenceActivityId: activityId,
-                lastUpdated: now,
-                updatedBy: userId,
-              })
-              .where(eq(studentCompetency.id, existingCompetency[0].id));
-          } else {
-            // Create new competency record
-            await tx.insert(studentCompetency).values({
-              studentId: userId,
-              standardId,
-              masteryLevel: 10,
-              evidenceActivityId: activityId,
-              lastUpdated: now,
-              updatedBy: userId,
-            });
-          }
-        }
-      }
+    await fetchMutation(api.activities.submitSpreadsheet, {
+      userId: userId as any,
+      activityId: activityId as any,
+      spreadsheetData: payload.spreadsheetData,
+      isCompleted: validationResult.isComplete,
+      validationResult,
     });
+
+    let masteryUpdate: { newLevel: number } | undefined;
+
+    if (validationResult.isComplete && activity.standardId) {
+      const competencyResult = await fetchMutation(api.activities.updateCompetency, {
+        studentId: userId as any,
+        standardId: activity.standardId,
+        activityId: activityId as any,
+        masteryIncrement: 10,
+      });
+      masteryUpdate = { newLevel: competencyResult.newLevel };
+    }
 
     return NextResponse.json({
       success: true,
       isComplete: validationResult.isComplete,
       feedback: validationResult.feedback,
-      masteryUpdate: validationResult.isComplete ? { newLevel: 10 } : undefined,
+      masteryUpdate,
     });
   } catch (error) {
     console.error('Spreadsheet submission error:', error);

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import vinext from "vinext";
 import { defineConfig } from "vite";
 

@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { db } from '@/lib/db/drizzle';
-import { studentSpreadsheetResponses } from '@/lib/db/schema';
 import { createClient } from '@/lib/supabase/server';
-import { eq, and } from 'drizzle-orm';
+import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 
 const draftSchema = z.object({
   draftData: z.array(z.array(z.any())),
 });
 
-// GET: Retrieve draft data
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidConvexId(id: string): boolean {
+  return uuidRegex.test(id);
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ activityId: string }> }
@@ -17,16 +20,13 @@ export async function GET(
   try {
     const { activityId } = await params;
 
-    // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(activityId)) {
+    if (!isValidConvexId(activityId)) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
       );
     }
 
-    // Authenticate user
     const supabase = await createClient();
     const { data: authData, error: authError } = await supabase.auth.getUser();
 
@@ -39,28 +39,18 @@ export async function GET(
 
     const userId = authData.user.id;
 
-    // Fetch draft data
-    const response = await db
-      .select({
-        draftData: studentSpreadsheetResponses.draftData,
-        updatedAt: studentSpreadsheetResponses.updatedAt,
-      })
-      .from(studentSpreadsheetResponses)
-      .where(
-        and(
-          eq(studentSpreadsheetResponses.studentId, userId),
-          eq(studentSpreadsheetResponses.activityId, activityId)
-        )
-      )
-      .limit(1);
+    const response = await fetchQuery(api.activities.getSpreadsheetDraft, {
+      userId: userId as any,
+      activityId: activityId as any,
+    });
 
-    if (response.length === 0 || !response[0].draftData) {
+    if (!response?.draftData) {
       return NextResponse.json({ draftData: null });
     }
 
     return NextResponse.json({
-      draftData: response[0].draftData,
-      updatedAt: response[0].updatedAt,
+      draftData: response.draftData,
+      updatedAt: response.updatedAt,
     });
   } catch (error) {
     console.error('Draft retrieval error:', error);
@@ -73,7 +63,6 @@ export async function GET(
   }
 }
 
-// POST: Save draft data
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ activityId: string }> }
@@ -81,16 +70,13 @@ export async function POST(
   try {
     const { activityId } = await params;
 
-    // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(activityId)) {
+    if (!isValidConvexId(activityId)) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
       );
     }
 
-    // Authenticate user
     const supabase = await createClient();
     const { data: authData, error: authError } = await supabase.auth.getUser();
 
@@ -103,7 +89,6 @@ export async function POST(
 
     const userId = authData.user.id;
 
-    // Parse and validate request body
     let payload: z.infer<typeof draftSchema>;
     try {
       const body = await request.json();
@@ -127,45 +112,15 @@ export async function POST(
       );
     }
 
-    const now = new Date();
-
-    // Check if response already exists
-    const existingResponse = await db
-      .select()
-      .from(studentSpreadsheetResponses)
-      .where(
-        and(
-          eq(studentSpreadsheetResponses.studentId, userId),
-          eq(studentSpreadsheetResponses.activityId, activityId)
-        )
-      )
-      .limit(1);
-
-    if (existingResponse.length > 0) {
-      // Update existing response with draft data
-      await db
-        .update(studentSpreadsheetResponses)
-        .set({
-          draftData: payload.draftData,
-          updatedAt: now,
-        })
-        .where(eq(studentSpreadsheetResponses.id, existingResponse[0].id));
-    } else {
-      // Create new response with draft data
-      await db.insert(studentSpreadsheetResponses).values({
-        studentId: userId,
-        activityId,
-        spreadsheetData: payload.draftData, // Also save to main data field
-        draftData: payload.draftData,
-        isCompleted: false,
-        attempts: 0,
-        updatedAt: now,
-      });
-    }
+    const result = await fetchMutation(api.activities.saveSpreadsheetDraft, {
+      userId: userId as any,
+      activityId: activityId as any,
+      draftData: payload.draftData,
+    });
 
     return NextResponse.json({
       success: true,
-      updatedAt: now,
+      updatedAt: result.updatedAt,
     });
   } catch (error) {
     console.error('Draft save error:', error);

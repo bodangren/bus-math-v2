@@ -1,46 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db/drizzle';
-import { activities } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
-import { createClient } from '@/lib/supabase/server';
+import { fetchQuery, api } from '@/lib/convex/server';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const apiAny = api as any;
 
-/**
- * GET /api/activities/[activityId]
- * Fetch a single activity by ID from the database
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ activityId: string }> }
 ) {
   try {
-    const supabase = await createClient();
-    const {
-      data: authData,
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !authData?.user) {
+    const userId = request.headers.get('x-user-id');
+    if (!userId) {
       return NextResponse.json(
-        { error: authError?.message ?? 'Unauthorized' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const {
-      data: profile,
-      error: profileError,
-    } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', authData.user.id)
-      .maybeSingle();
+    const profile = await fetchQuery(apiAny.api.getProfile, {
+      userId: userId,
+    });
 
-    if (profileError || !profile?.role) {
+    if (!profile?.role) {
       return NextResponse.json(
         { error: 'Forbidden' },
         { status: 403 }
       );
     }
+
     if (profile.role !== 'student' && profile.role !== 'teacher' && profile.role !== 'admin') {
       return NextResponse.json(
         { error: 'Forbidden' },
@@ -50,7 +36,6 @@ export async function GET(
 
     const { activityId } = await params;
 
-    // Validate activityId format (UUID)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(activityId)) {
       return NextResponse.json(
@@ -59,21 +44,16 @@ export async function GET(
       );
     }
 
-    // Fetch activity from database
-    const result = await db
-      .select()
-      .from(activities)
-      .where(eq(activities.id, activityId))
-      .limit(1);
+    const activity = await fetchQuery(apiAny.api.getActivity, {
+      activityId: activityId,
+    });
 
-    if (result.length === 0) {
+    if (!activity) {
       return NextResponse.json(
         { error: 'Activity not found' },
         { status: 404 }
       );
     }
-
-    const activity = result[0];
 
     const responsePayload =
       profile.role === 'student' ? buildStudentSafeActivity(activity) : activity;

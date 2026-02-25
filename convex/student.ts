@@ -1,5 +1,6 @@
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 
 export const getDashboardData = query({
   args: { userId: v.id("profiles") },
@@ -26,7 +27,7 @@ export const getDashboardData = query({
     const completedPhaseIds = new Set(userProgress.map((entry) => entry.phaseId));
 
     // 3. Fetch latest version for each lesson
-    const latestVersionByLessonId = new Map<string, any>();
+    const latestVersionByLessonId = new Map<Id<"lessons">, any>();
     for (const lessonId of lessonIds) {
       // Find all versions for this lesson
       const versions = await ctx.db
@@ -42,7 +43,7 @@ export const getDashboardData = query({
     }
 
     // 4. Fetch phase versions for the latest lesson versions
-    const versionedPhaseIdsByLessonId = new Map<string, string[]>();
+    const versionedPhaseIdsByLessonId = new Map<Id<"lessons">, Id<"phase_versions">[]>();
     for (const [lessonId, version] of latestVersionByLessonId.entries()) {
       const phases = await ctx.db
         .query("phase_versions")

@@ -21,6 +21,11 @@ import { Hero } from "@/components/hero";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 
+function getConvexClient() {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL || "http://127.0.0.1:3210";
+  return new ConvexHttpClient(url);
+}
+
 const features = [
   {
     icon: BookOpen,
@@ -70,8 +75,7 @@ const formatDifficulty = (difficulty: string) => {
 };
 
 export default async function Home() {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = getConvexClient();
 
   // Fetch concurrently from Convex
   const [stats, units] = await Promise.all([
