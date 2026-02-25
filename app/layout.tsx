@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { HeaderSimple } from "@/components/header-simple";
 import { Footer } from "@/components/footer";
+import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -27,20 +26,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`antialiased min-h-screen flex flex-col font-sans`}
       >
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <HeaderSimple />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </ThemeProvider>
-        </AuthProvider>
+        <ConvexClientProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <HeaderSimple />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </ThemeProvider>
+          </AuthProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );
