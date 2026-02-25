@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
 import { Hero } from "@/components/hero";
-import { createClient } from "@/lib/supabase/server";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
 
 const features = [
   {
@@ -47,7 +48,6 @@ const features = [
     title: "Progress Tracking",
     description: "Monitor your learning journey and identify areas to review.",
   },
-
 ];
 
 const getDifficultyColor = (difficulty: string) => {
@@ -69,85 +69,15 @@ const formatDifficulty = (difficulty: string) => {
   return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
 };
 
-interface CurriculumStats {
-  unitCount: number;
-  lessonCount: number;
-  activityCount: number;
-}
-
-interface LessonMetadata {
-  duration?: string;
-  difficulty?: string;
-  tags?: string[];
-}
-
-interface Lesson {
-  id: string;
-  unit_number: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  learning_objectives: string[] | null;
-  order_index: number;
-  metadata: LessonMetadata | null;
-  created_at: string;
-  updated_at: string;
-}
-
-async function getCurriculumStats(): Promise<CurriculumStats> {
-  const supabase = await createClient();
-
-  // Try using the RPC function first
-  const { data, error } = await supabase.rpc("get_curriculum_stats");
-
-  if (error) {
-    // If RPC fails, fall back to manual counting
-    // This can happen if PostgREST schema cache hasn't refreshed yet
-    try {
-      const [lessonsResult, activitiesResult] = await Promise.all([
-        supabase.from("lessons").select("*", { count: "exact", head: true }),
-        supabase.from("activities").select("*", { count: "exact", head: true }),
-      ]);
-
-      // Get distinct unit count by querying all lessons and counting unique unit_numbers
-      const { data: lessons } = await supabase.from("lessons").select("unit_number");
-      const uniqueUnits = new Set(lessons?.map(l => l.unit_number) || []);
-
-      return {
-        unitCount: uniqueUnits.size,
-        lessonCount: lessonsResult.count || 0,
-        activityCount: activitiesResult.count || 0,
-      };
-    } catch (fallbackError) {
-      console.error("Error fetching curriculum stats (fallback):", fallbackError);
-      return { unitCount: 0, lessonCount: 0, activityCount: 0 };
-    }
-  }
-
-  return data as CurriculumStats;
-}
-
-async function getUnits() {
-  const supabase = await createClient();
-
-  // Fetch first lesson of each unit (order_index = 1) to represent the unit
-  const { data: lessons, error } = await supabase
-    .from("lessons")
-    .select("*")
-    .eq("order_index", 1)
-    .order("unit_number", { ascending: true });
-
-  if (error) {
-    console.error("Error fetching units:", error);
-    return [];
-  }
-
-  return lessons as Lesson[];
-}
-
 export default async function Home() {
-  const stats = await getCurriculumStats();
-  const units = await getUnits();
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  const convex = new ConvexHttpClient(convexUrl!);
+
+  // Fetch concurrently from Convex
+  const [stats, units] = await Promise.all([
+    convex.query(api.public.getCurriculumStats),
+    convex.query(api.public.getUnits)
+  ]);
 
   return (
     <>
@@ -197,7 +127,7 @@ export default async function Home() {
 
           {/* Desktop grid view */}
           <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {units.map((unit) => (
+            {units.map((unit: any) => (
               <Link
                 key={unit.id}
                 href={`/student/lesson/${unit.slug}`}
@@ -242,7 +172,7 @@ export default async function Home() {
               className="max-w-md mx-auto"
               gap="gap-4"
             >
-              {units.map((unit) => (
+              {units.map((unit: any) => (
                 <Link
                   key={unit.id}
                   href={`/student/lesson/${unit.slug}`}
