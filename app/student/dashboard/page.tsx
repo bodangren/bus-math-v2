@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { asc, desc, eq, inArray } from "drizzle-orm";
-import { db } from "@/lib/db/drizzle";
-import { lessonVersions, lessons, phaseVersions, studentProgress } from "@/lib/db/schema";
 import { createClient } from "@/lib/supabase/server";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import {
   Card,
   CardContent,
@@ -16,143 +16,8 @@ import { Progress } from "@/components/ui/progress";
 
 export const dynamic = 'force-dynamic';
 
-interface LessonProgress {
-  id: string;
-  unitNumber: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  totalPhases: number;
-  completedPhases: number;
-  progressPercentage: number;
-}
-
-interface UnitOverview {
-  unitNumber: number;
-  unitTitle: string;
-  lessons: LessonProgress[];
-}
-
-function deriveUnitTitle(lesson: typeof lessons.$inferSelect) {
-  return (
-    lesson.metadata?.unitContent?.introduction?.unitTitle ??
-    lesson.metadata?.unitContent?.introduction?.unitNumber ??
-    `Unit ${lesson.unitNumber}`
-  );
-}
-
-type DashboardLessonRow = typeof lessons.$inferSelect;
-
-export async function getStudentDashboardData(userId: string) {
-  const lessonRows = await db
-    .select()
-    .from(lessons)
-    .orderBy(asc(lessons.unitNumber), asc(lessons.orderIndex));
-
-  if (lessonRows.length === 0) {
-    return [];
-  }
-
-  const lessonIds = lessonRows.map((lesson) => lesson.id);
-
-  const userProgressEntries = await db.query.studentProgress.findMany({
-    where: eq(studentProgress.userId, userId),
-  });
-  const completedPhaseIds = new Set(
-    userProgressEntries
-      .filter((entry) => entry.status === "completed")
-      .map((entry) => entry.phaseId),
-  );
-
-  const latestVersionByLessonId = new Map<string, { id: string; title: string | null; description: string | null }>();
-  const versionRows = await db
-    .select({
-      id: lessonVersions.id,
-      lessonId: lessonVersions.lessonId,
-      title: lessonVersions.title,
-      description: lessonVersions.description,
-      version: lessonVersions.version,
-    })
-    .from(lessonVersions)
-    .where(inArray(lessonVersions.lessonId, lessonIds))
-    .orderBy(asc(lessonVersions.lessonId), desc(lessonVersions.version));
-
-  for (const versionRow of versionRows) {
-    if (!latestVersionByLessonId.has(versionRow.lessonId)) {
-      latestVersionByLessonId.set(versionRow.lessonId, {
-        id: versionRow.id,
-        title: versionRow.title ?? null,
-        description: versionRow.description ?? null,
-      });
-    }
-  }
-
-  const versionIds = Array.from(latestVersionByLessonId.values()).map((row) => row.id);
-  const versionedPhaseIdsByLessonId = new Map<string, string[]>();
-  if (versionIds.length > 0) {
-    const versionedPhaseRows = await db
-      .select({
-        id: phaseVersions.id,
-        lessonVersionId: phaseVersions.lessonVersionId,
-      })
-      .from(phaseVersions)
-      .where(inArray(phaseVersions.lessonVersionId, versionIds));
-
-    const lessonIdByVersionId = new Map<string, string>();
-    for (const [lessonId, version] of latestVersionByLessonId.entries()) {
-      lessonIdByVersionId.set(version.id, lessonId);
-    }
-
-    for (const phaseRow of versionedPhaseRows) {
-      const lessonId = lessonIdByVersionId.get(phaseRow.lessonVersionId);
-      if (!lessonId) continue;
-      const current = versionedPhaseIdsByLessonId.get(lessonId) ?? [];
-      current.push(phaseRow.id);
-      versionedPhaseIdsByLessonId.set(lessonId, current);
-    }
-  }
-
-  const unitsMap = new Map<number, UnitOverview>();
-  for (const lessonRow of lessonRows) {
-    const versionedInfo = latestVersionByLessonId.get(lessonRow.id);
-    const effectiveLesson: DashboardLessonRow = {
-      ...lessonRow,
-      title: versionedInfo?.title ?? lessonRow.title,
-      description: versionedInfo?.description ?? lessonRow.description,
-    };
-
-    const versionedPhaseIds = versionedPhaseIdsByLessonId.get(lessonRow.id) ?? [];
-
-    const totalPhases = versionedPhaseIds.length;
-    const completedVersioned = versionedPhaseIds.filter((phaseId) => completedPhaseIds.has(phaseId)).length;
-    const completedPhases = completedVersioned;
-
-    const progressPercentage = totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
-
-    if (!unitsMap.has(effectiveLesson.unitNumber)) {
-      unitsMap.set(effectiveLesson.unitNumber, {
-        unitNumber: effectiveLesson.unitNumber,
-        unitTitle: deriveUnitTitle(effectiveLesson),
-        lessons: [],
-      });
-    }
-
-    unitsMap.get(effectiveLesson.unitNumber)?.lessons.push({
-      id: effectiveLesson.id,
-      unitNumber: effectiveLesson.unitNumber,
-      title: effectiveLesson.title,
-      slug: effectiveLesson.slug,
-      description: effectiveLesson.description,
-      totalPhases,
-      completedPhases,
-      progressPercentage,
-    });
-  }
-
-  return Array.from(unitsMap.values()).sort((a, b) => a.unitNumber - b.unitNumber);
-}
-
 export default async function StudentDashboard() {
+  // Temporary: we still use Supabase for Auth until Task 4
   const supabase = await createClient();
   const {
     data: { user },
@@ -162,7 +27,14 @@ export default async function StudentDashboard() {
     redirect("/auth/login");
   }
 
-  const studentUnits = await getStudentDashboardData(user.id);
+  // Use Convex HTTP client for server-side fetching
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  const convex = new ConvexHttpClient(convexUrl!);
+
+  // Fetch the dashboard data from Convex
+  const studentUnits = await convex.query(api.student.getDashboardData, {
+    userId: user.id as Id<"profiles">,
+  });
 
   return (
     <div className="container mx-auto p-8">
@@ -178,11 +50,11 @@ export default async function StudentDashboard() {
           </div>
         ) : (
           <div className="space-y-8">
-            {studentUnits.map((unit) => (
+            {studentUnits.map((unit: any) => (
               <div key={unit.unitNumber}>
                 <h2 className="text-3xl font-semibold mb-4">{unit.unitTitle}</h2>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {unit.lessons.map((lesson) => (
+                  {unit.lessons.map((lesson: any) => (
                     <Card key={lesson.id} className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <Badge variant="secondary" className="w-fit mb-2">
