@@ -14,7 +14,7 @@
 - [x] Task 3: Replace Supabase middleware with Convex equivalent if necessary. [12a8461]
 
 ## Phase 3: Data Access Migration
-- [ ] Task 1: Set up the `ConvexProvider` in the Next.js `app/layout.tsx`.
+- [x] Task 1: Set up the `ConvexProvider` in the Next.js `app/layout.tsx`. [d3661ce]
 - [ ] Task 2: Map over all `lib/supabase` database client calls and replace them with Convex queries (`useQuery`) and mutations (`useMutation`).
 - [ ] Task 3: Refactor server actions to use Convex `fetchMutation` or `fetchQuery`.
 
