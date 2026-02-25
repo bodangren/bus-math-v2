@@ -1,0 +1,3 @@
+Task 2: Map over all lib/supabase database client calls and replace them with Convex queries.
+Files modified: app/student/dashboard/page.tsx, __tests__/app/student/dashboard/page.test.tsx, convex/student.ts
+Reason: Migrated the student dashboard from Drizzle ORM (Postgres) to a NoSQL Convex query via ConvexHttpClient. This establishes the pattern for migrating the remaining 76 Supabase references.
