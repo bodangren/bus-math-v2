@@ -37,3 +37,117 @@ export const getUnits = query({
     }));
   },
 });
+
+export const getUnitSummaries = query({
+  args: {},
+  handler: async (ctx) => {
+    const allLessons = await ctx.db.query("lessons").collect();
+
+    // Sort by unitNumber ascending, orderIndex ascending
+    allLessons.sort((a, b) => {
+      if (a.unitNumber !== b.unitNumber) return a.unitNumber - b.unitNumber;
+      return a.orderIndex - b.orderIndex;
+    });
+
+    const units = new Map<number, any>();
+
+    for (const lesson of allLessons) {
+      if (!units.has(lesson.unitNumber)) {
+        // Fetch latest version
+        const versions = await ctx.db
+          .query("lesson_versions")
+          .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
+          .collect();
+
+        versions.sort((a, b) => b.version - a.version);
+        const latestVersion = versions.length > 0 ? versions[0] : null;
+
+        const rawTitle =
+          lesson.metadata?.unitContent?.introduction?.unitTitle ??
+          lesson.metadata?.unitContent?.introduction?.unitNumber ??
+          null;
+
+        const effectiveTitle = latestVersion?.title ?? rawTitle ?? `Unit ${lesson.unitNumber}`;
+        const effectiveSummary =
+          lesson.metadata?.unitContent?.drivingQuestion?.question ??
+          lesson.metadata?.unitContent?.introduction?.projectOverview?.scenario ??
+          latestVersion?.description ??
+          lesson.description ??
+          'Explore authentic business scenarios with spreadsheet-first problem solving.';
+
+        units.set(lesson.unitNumber, {
+          unitNumber: lesson.unitNumber,
+          title: effectiveTitle,
+          summary: effectiveSummary,
+        });
+      }
+    }
+
+    return Array.from(units.values()).slice(0, 8);
+  },
+});
+
+export const getCurriculum = query({
+  args: {},
+  handler: async (ctx) => {
+    const lessonRows = await ctx.db.query("lessons").collect();
+    
+    lessonRows.sort((a, b) => {
+      if (a.unitNumber !== b.unitNumber) return a.unitNumber - b.unitNumber;
+      return a.orderIndex - b.orderIndex;
+    });
+
+    const units = new Map<number, any>();
+
+    for (const lesson of lessonRows) {
+      const versions = await ctx.db
+        .query("lesson_versions")
+        .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
+        .collect();
+
+      versions.sort((a, b) => b.version - a.version);
+      const latestVersion = versions.length > 0 ? versions[0] : null;
+
+      const effectiveTitle = latestVersion?.title ?? lesson.title;
+      const effectiveDescription = latestVersion?.description ?? lesson.description;
+
+      if (!units.has(lesson.unitNumber)) {
+        const rawTitle =
+          lesson.metadata?.unitContent?.introduction?.unitTitle ??
+          lesson.metadata?.unitContent?.introduction?.unitNumber ??
+          null;
+
+        const unitTitle = rawTitle ?? `Unit ${lesson.unitNumber}`;
+        const unitDesc =
+          lesson.metadata?.unitContent?.drivingQuestion?.question ??
+          lesson.metadata?.unitContent?.introduction?.projectOverview?.scenario ??
+          effectiveDescription ??
+          "Explore core accounting and Excel skills through real classroom projects.";
+
+        const objectives = 
+          lesson.metadata?.unitContent?.objectives?.content ?? 
+          lesson.learningObjectives ?? 
+          [];
+
+        units.set(lesson.unitNumber, {
+          unitNumber: lesson.unitNumber,
+          title: unitTitle,
+          description: unitDesc,
+          objectives,
+          lessons: [],
+        });
+      }
+
+      units.get(lesson.unitNumber).lessons.push({
+        id: lesson._id,
+        title: effectiveTitle,
+        slug: lesson.slug,
+        description: effectiveDescription,
+        orderIndex: lesson.orderIndex,
+      });
+    }
+
+    return Array.from(units.values());
+  },
+});
+

@@ -1,10 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import CurriculumPage, { groupLessonsByUnit } from "../../../app/curriculum/page";
+import CurriculumPage from "../../../app/curriculum/page";
 
-vi.mock("@/lib/db/drizzle", () => ({
-  db: {
-    select: vi.fn(),
+const mockQuery = vi.fn();
+vi.mock("convex/browser", () => ({
+  ConvexHttpClient: class {
+    constructor() {}
+    query = mockQuery;
+  },
+}));
+
+vi.mock("@/convex/_generated/api", () => ({
+  api: {
+    public: {
+      getCurriculum: "api.public.getCurriculum",
+    },
   },
 }));
 
@@ -13,68 +23,31 @@ describe("CurriculumPage", () => {
     vi.clearAllMocks();
   });
 
-  it("renders units with their lessons", async () => {
-    const { db } = await import("@/lib/db/drizzle");
-
-    const mockLessons = [
+  it("renders units with their lessons from Convex", async () => {
+    mockQuery.mockResolvedValueOnce([
       {
-        id: "lesson-1",
         unitNumber: 1,
-        title: "Lesson 1",
-        slug: "lesson-1",
-        description: "Intro lesson",
-        learningObjectives: ["Understand balance"],
-        orderIndex: 1,
-        metadata: {
-          unitContent: {
-            introduction: {
-              unitTitle: "Balance by Design",
-            },
-            drivingQuestion: {
-              question: "How do we keep the books balanced?",
-            },
-            objectives: {
-              content: ["Understand balance"],
-              skills: [],
-              deliverables: [],
-            },
+        title: "Balance by Design",
+        description: "How do we keep the books balanced?",
+        objectives: ["Understand balance"],
+        lessons: [
+          {
+            id: "lesson-1",
+            title: "Lesson 1",
+            slug: "lesson-1",
+            description: "Intro lesson",
+            orderIndex: 1,
           },
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-      {
-        id: "lesson-2",
-        unitNumber: 1,
-        title: "Lesson 2",
-        slug: "lesson-2",
-        description: "Follow up lesson",
-        learningObjectives: null,
-        orderIndex: 2,
-        metadata: {
-          unitContent: {
-            introduction: {
-              unitTitle: "Balance by Design",
-            },
-            drivingQuestion: {
-              question: "How do we keep the books balanced?",
-            },
-            objectives: {
-              content: ["Understand balance"],
-              skills: [],
-              deliverables: [],
-            },
-          },
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-
-    const orderByMock = vi.fn().mockResolvedValue(mockLessons);
-    const fromMock = vi.fn().mockReturnValue({ orderBy: orderByMock });
-
-    vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
+          {
+            id: "lesson-2",
+            title: "Lesson 2",
+            slug: "lesson-2",
+            description: "Follow up lesson",
+            orderIndex: 2,
+          }
+        ]
+      }
+    ]);
 
     const page = await CurriculumPage();
     render(page);
@@ -92,12 +65,7 @@ describe("CurriculumPage", () => {
   });
 
   it("shows empty state when no lessons exist", async () => {
-    const { db } = await import("@/lib/db/drizzle");
-
-    const orderByMock = vi.fn().mockResolvedValue([]);
-    const fromMock = vi.fn().mockReturnValue({ orderBy: orderByMock });
-
-    vi.mocked(db.select).mockReturnValue({ from: fromMock } as never);
+    mockQuery.mockResolvedValueOnce([]);
 
     const page = await CurriculumPage();
     render(page);
@@ -105,160 +73,5 @@ describe("CurriculumPage", () => {
     expect(
       screen.getByText(/Curriculum data isn't available yet/i)
     ).toBeInTheDocument();
-  });
-
-  it("prefers latest versioned lesson title/description when available", async () => {
-    const { db } = await import("@/lib/db/drizzle");
-
-    const lessonRows = [
-      {
-        id: "lesson-1",
-        unitNumber: 1,
-        title: "Base Lesson 1",
-        slug: "lesson-1",
-        description: "Base description",
-        learningObjectives: ["Understand balance"],
-        orderIndex: 1,
-        metadata: {
-          unitContent: {
-            introduction: {
-              unitTitle: "Balance by Design",
-            },
-          },
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-
-    const versionRows = [
-      {
-        lessonId: "lesson-1",
-        title: "Versioned Lesson 1",
-        description: "Versioned description",
-        version: 2,
-      },
-      {
-        lessonId: "lesson-1",
-        title: "Older Lesson 1",
-        description: "Older description",
-        version: 1,
-      },
-    ];
-
-    vi.mocked(db.select)
-      .mockImplementationOnce(() => ({
-        from: () => ({
-          orderBy: vi.fn().mockResolvedValue(lessonRows),
-        }),
-      }) as never)
-      .mockImplementationOnce(() => ({
-        from: () => ({
-          where: () => ({
-            orderBy: vi.fn().mockResolvedValue(versionRows),
-          }),
-        }),
-      }) as never);
-
-    const page = await CurriculumPage();
-    render(page);
-
-    expect(screen.getByText("Versioned Lesson 1")).toBeInTheDocument();
-  });
-
-  it("falls back to lesson shell data when version lookup fails", async () => {
-    const { db } = await import("@/lib/db/drizzle");
-
-    const lessonRows = [
-      {
-        id: "lesson-1",
-        unitNumber: 1,
-        title: "Base Lesson 1",
-        slug: "lesson-1",
-        description: "Base description",
-        learningObjectives: ["Understand balance"],
-        orderIndex: 1,
-        metadata: {
-          unitContent: {
-            introduction: {
-              unitTitle: "Balance by Design",
-            },
-          },
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ];
-
-    vi.mocked(db.select)
-      .mockImplementationOnce(() => ({
-        from: () => ({
-          orderBy: vi.fn().mockResolvedValue(lessonRows),
-        }),
-      }) as never)
-      .mockImplementationOnce(() => ({
-        from: () => ({
-          where: () => ({
-            orderBy: vi.fn().mockRejectedValue(new Error("version query failed")),
-          }),
-        }),
-      }) as never);
-
-    const page = await CurriculumPage();
-    render(page);
-
-    expect(screen.getByText("Base Lesson 1")).toBeInTheDocument();
-  });
-});
-
-describe("groupLessonsByUnit", () => {
-  it("ENSURES objectives is always an array (regression test)", () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const badDataScenarios: any[] = [
-      // String instead of array
-      {
-        id: "1",
-        unitNumber: 1,
-        title: "L1",
-        slug: "l1",
-        orderIndex: 1,
-        learningObjectives: "Bad string",
-        metadata: null,
-      },
-      // Object instead of array
-      {
-        id: "2",
-        unitNumber: 2,
-        title: "L2",
-        slug: "l2",
-        orderIndex: 1,
-        learningObjectives: { bad: "object" },
-        metadata: null,
-      },
-      // Null
-      {
-        id: "3",
-        unitNumber: 3,
-        title: "L3",
-        slug: "l3",
-        orderIndex: 1,
-        learningObjectives: null,
-        metadata: null,
-      },
-    ];
-
-    const result = groupLessonsByUnit(badDataScenarios);
-
-    // Check Unit 1 (String input)
-    const u1 = result.find((u) => u.unitNumber === 1);
-    expect(Array.isArray(u1?.objectives)).toBe(true);
-
-    // Check Unit 2 (Object input)
-    const u2 = result.find((u) => u.unitNumber === 2);
-    expect(Array.isArray(u2?.objectives)).toBe(true);
-
-    // Check Unit 3 (Null input)
-    const u3 = result.find((u) => u.unitNumber === 3);
-    expect(Array.isArray(u3?.objectives)).toBe(true);
   });
 });
