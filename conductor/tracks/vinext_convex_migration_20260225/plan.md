@@ -1,11 +1,11 @@
 # Implementation Plan: Vinext and Convex Migration
 
-## Phase 1: Setup and Vinext (and Vitest) Integration
+## Phase 1: Setup and Vinext (and Vitest) Integration [checkpoint: ebc4da1]
 - [x] Task 1: Install `vinext` and `vite` dependencies. [7d1515b]
 - [x] Task 2: Initialize `vite.config.ts` for Vinext. [86705a8]
 - [x] Task 3: Replace standard `next dev` and `next build` scripts with `vinext` equivalents. [8951c6f]
 - [x] Task 4: Verify local development works on Vinext. [skipped-per-user-approval]
-- [ ] Task 5: Setup `vitest` for tests, moving away from other test runners if applicable.
+- [~] Task 5: Setup `vitest` for tests, moving away from other test runners if applicable.
 
 ## Phase 2: Convex Setup and Schema Migration
 - [ ] Task 1: Install `convex` dependency and run `npx convex dev` to initialize the project.
