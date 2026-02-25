@@ -1,0 +1,3 @@
+Task 2: Map over all lib/supabase database client calls and replace them with Convex queries.
+Files modified: app/teacher/page.tsx, __tests__/app/teacher/page.test.tsx, convex/teacher.ts
+Reason: Migrated the Teacher Dashboard data fetching from Drizzle/Supabase to a NoSQL Convex query via ConvexHttpClient.
