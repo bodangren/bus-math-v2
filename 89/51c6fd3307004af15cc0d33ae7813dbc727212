@@ -1,0 +1,3 @@
+Task 3: Replace standard next dev and next build scripts with vinext equivalents
+Files modified: package.json, __tests__/setup/scripts.test.ts
+Reason: Updated package.json scripts to use vinext instead of next commands, finalizing the frontend tooling setup.
