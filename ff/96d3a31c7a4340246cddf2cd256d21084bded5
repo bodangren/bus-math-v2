@@ -1,0 +1,8 @@
+Phase 2: Convex Setup and Schema Migration
+Automated Test Command: CI=true npm run test -- __tests__/setup/
+Test Results: 6 passed, 0 failed
+Manual Verification Steps:
+1. Start the local server with npx convex dev --local
+2. Open the Convex dashboard at http://127.0.0.1:6790/?d=anonymous-bus-math-v2-experimental
+3. Confirm all 21 tables are registered in the schema view.
+User Confirmation: Yes
