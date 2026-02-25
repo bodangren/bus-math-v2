@@ -1,0 +1,3 @@
+Task 2: Migrate unauthenticated landing pages
+Files modified: app/preface/page.tsx, __tests__/app/preface/page.test.tsx
+Reason: Replaced the massive Drizzle query logic in the preface with the Convex api.public.getUnitSummaries backend query.
