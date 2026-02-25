@@ -203,8 +203,8 @@ const cashFlowChallengeActivity: CashFlowChallengeActivityProps = {
 };
 
 export default async function PrefacePage() {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  const convex = new ConvexHttpClient(convexUrl!);
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
+  const convex = new ConvexHttpClient(convexUrl);
 
   let units: UnitSummary[] = [];
   try {

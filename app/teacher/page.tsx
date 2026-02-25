@@ -20,8 +20,8 @@ export default async function TeacherDashboardPage() {
   }
 
   // Use Convex HTTP client for server-side fetching
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  const convex = new ConvexHttpClient(convexUrl!);
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
+  const convex = new ConvexHttpClient(convexUrl);
 
   // Fetch all teacher dashboard metrics from Convex
   const data = await convex.query(api.teacher.getTeacherDashboardData, {

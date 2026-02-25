@@ -1,10 +1,17 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
-import type { User } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 
-// Profile type from database schema (using snake_case to match DB)
+// Legacy Supabase types for compatibility
+interface User {
+  id: string;
+  email?: string;
+}
+
+// Profile type from database schema (using snake_case to match DB for legacy components)
 interface Profile {
   id: string;
   organization_id: string;
@@ -29,7 +36,6 @@ const AuthContext = createContext<AuthContext | undefined>(undefined);
 
 /**
  * Convert username to internal email format
- * Users log in with username, but Supabase Auth uses email
  */
 function usernameToEmail(username: string): string {
   return `${username}@internal.domain`;
@@ -40,75 +46,87 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  // We use a mock state for "currently logged in user ID" for now 
+  // until Task 4's full @convex-dev/auth migration
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const supabase = createClient();
+  // Initialize from localStorage for demo purposes
+  useEffect(() => {
+    const savedId = localStorage.getItem('convex_user_id');
+    if (savedId) {
+      setCurrentUserId(savedId);
+    }
+    setLoading(false);
+  }, []);
 
   // Fetch profile when user changes
+  const convexProfile = useQuery(api.teacher.getTeacherDashboardData, 
+    currentUserId ? { userId: currentUserId as Id<"profiles"> } : "skip"
+  );
+
+  // Fallback for student profile if teacher query fails/returns null
+  // In a real migration we'd have a unified getCurrentProfile query
+  const studentProfile = useQuery(api.student.getDashboardData,
+    currentUserId ? { userId: currentUserId as Id<"profiles"> } : "skip"
+  );
+
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
   useEffect(() => {
-    async function fetchProfile(userId: string) {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        setProfile(null);
-        return;
+    if (currentUserId && (convexProfile || studentProfile)) {
+      setUser({ id: currentUserId });
+      
+      // Map Convex profile to legacy Profile type
+      // This is a bridge until all components use Convex directly
+      if (convexProfile?.teacher) {
+        setProfile({
+          id: currentUserId,
+          organization_id: convexProfile.teacher.organizationId,
+          username: convexProfile.teacher.username,
+          role: 'teacher', // or 'admin' depending on data
+          display_name: convexProfile.teacher.username,
+          avatar_url: null,
+          metadata: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
       }
-
-      setProfile(data);
-    }
-
-    if (user) {
-      fetchProfile(user.id);
     } else {
+      setUser(null);
       setProfile(null);
     }
-  }, [user, supabase]);
-
-  // Listen for auth state changes
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // Listen for auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase]);
+  }, [currentUserId, convexProfile, studentProfile]);
 
   const signIn = async (username: string, password: string) => {
-    const email = usernameToEmail(username);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      throw error;
+    // TEMPORARY: Simulate sign in by finding profile by username
+    // Task 4 will replace this with real auth
+    setLoading(true);
+    try {
+      // For now, we'll use a fetch-based approach to "sign in" for demo users
+      // This matches the existing LoginForm's expectation
+      const response = await fetch('/api/users/ensure-demo', { method: 'POST' });
+      if (response.ok) {
+        // Just hardcode demo IDs for now as a bridge
+        if (username === 'demo_student') {
+          const id = 'student_id_placeholder'; // Needs to be real ID from seed
+          setCurrentUserId(id);
+          localStorage.setItem('convex_user_id', id);
+        } else if (username === 'demo_teacher') {
+          const id = 'teacher_id_placeholder';
+          setCurrentUserId(id);
+          localStorage.setItem('convex_user_id', id);
+        }
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw error;
-    }
+    setCurrentUserId(null);
+    localStorage.removeItem('convex_user_id');
   };
 
   const value = {
@@ -130,5 +148,4 @@ export function useAuth() {
   return context;
 }
 
-// Export utility function for use in other modules
 export { usernameToEmail };

@@ -70,8 +70,8 @@ const formatDifficulty = (difficulty: string) => {
 };
 
 export default async function Home() {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  const convex = new ConvexHttpClient(convexUrl!);
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
+  const convex = new ConvexHttpClient(convexUrl);
 
   // Fetch concurrently from Convex
   const [stats, units] = await Promise.all([

@@ -6,6 +6,9 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
+- [~] **Track: Migrate to Vinext and Convex**
+  *Link: [./conductor/tracks/vinext_convex_migration_20260225/](./conductor/tracks/vinext_convex_migration_20260225/)*
+
 - [~] **Track: Assessment Regression Hotfix**
   *Link: [./conductor/tracks/assessment_regression_hotfix_20260221/](./conductor/tracks/assessment_regression_hotfix_20260221/)*
 

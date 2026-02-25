@@ -28,8 +28,8 @@ export default async function StudentDashboard() {
   }
 
   // Use Convex HTTP client for server-side fetching
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  const convex = new ConvexHttpClient(convexUrl!);
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
+  const convex = new ConvexHttpClient(convexUrl);
 
   // Fetch the dashboard data from Convex
   const studentUnits = await convex.query(api.student.getDashboardData, {

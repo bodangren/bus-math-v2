@@ -9,8 +9,8 @@ import type { UnitCurriculum } from "./types";
 export const dynamic = 'force-dynamic';
 
 export default async function CurriculumPage() {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-  const convex = new ConvexHttpClient(convexUrl!);
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
+  const convex = new ConvexHttpClient(convexUrl);
 
   let units: UnitCurriculum[] = [];
   try {

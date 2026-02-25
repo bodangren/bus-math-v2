@@ -15,7 +15,7 @@
 
 ## Phase 3: Data Access Migration
 - [x] Task 1: Set up the `ConvexProvider` in the Next.js `app/layout.tsx`. [d3661ce]
-- [ ] Task 2: Map over all `lib/supabase` database client calls and replace them with Convex queries (`useQuery`) and mutations (`useMutation`).
+- [~] Task 2: Map over all `lib/supabase` database client calls and replace them with Convex queries (`useQuery`) and mutations (`useMutation`).
 - [ ] Task 3: Refactor server actions to use Convex `fetchMutation` or `fetchQuery`.
 
 ## Phase 4: Authentication Migration
