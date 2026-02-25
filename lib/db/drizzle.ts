@@ -21,10 +21,9 @@ import postgres from 'postgres';
 import * as schema from './schema';
 
 if (!process.env.DATABASE_URL) {
-  throw new Error(
-    'DATABASE_URL is not defined. Please add it to your .env.local file.\n' +
-    'Format: postgresql://postgres.PROJECT_REF:[password]@aws-0-[region].pooler.supabase.com:6543/postgres'
-  );
+  // Temporary workaround during Convex migration to stop Vinext dev server from crashing
+  console.warn("DATABASE_URL is not defined. Using dummy URL during migration.");
+  process.env.DATABASE_URL = "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 }
 
 /**
