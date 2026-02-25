@@ -7,7 +7,7 @@
 - [x] Task 4: Verify local development works on Vinext. [skipped-per-user-approval]
 - [~] Task 5: Setup `vitest` for tests, moving away from other test runners if applicable.
 
-## Phase 2: Convex Setup and Schema Migration
+## Phase 2: Convex Setup and Schema Migration [checkpoint: ff96d3a]
 - [x] Task 1: Install `convex` dependency and run `npx convex dev` to initialize the project. [a2319ca]
 - [x] Task 2: Translate Supabase SQL schemas (found in `supabase/migrations/`) into Convex's TypeScript schema (`convex/schema.ts`). [6cf838b]
   - For example, you define a table with `defineTable({ column: v.string() })`.
