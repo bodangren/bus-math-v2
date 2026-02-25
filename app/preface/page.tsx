@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { asc, desc, inArray, type InferSelectModel } from 'drizzle-orm';
 import { BookOpen, CalendarDays, School, Target, Users, CheckCircle2, Lightbulb } from 'lucide-react';
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,8 +9,6 @@ import { ComprehensionCheck, type ComprehensionCheckActivity } from '@/component
 import { FillInTheBlank, type FillInTheBlankActivity } from '@/components/activities/quiz/FillInTheBlank';
 import ReflectionJournal from '@/components/activities/quiz/ReflectionJournal';
 import { CashFlowChallenge } from '@/components/activities/simulations/CashFlowChallenge';
-import { db } from '@/lib/db/drizzle';
-import { lessonVersions, lessons } from '@/lib/db/schema';
 import type {
   CashFlowChallengeActivityProps,
   ReflectionJournalActivityProps,
@@ -17,8 +16,6 @@ import type {
 import type { Activity } from '@/lib/db/schema/validators';
 
 export const dynamic = 'force-dynamic';
-
-type LessonRow = InferSelectModel<typeof lessons>;
 
 interface UnitSummary {
   unitNumber: number;
@@ -36,119 +33,6 @@ const DEFAULT_UNIT_SUMMARIES: UnitSummary[] = [
   { unitNumber: 7, title: 'Financing the Future', summary: 'Compare funding structures and map repayment scenarios in Excel.' },
   { unitNumber: 8, title: 'Integrated Model Sprint', summary: 'Link assumptions to 3-statement forecasts and stress-test decisions.' },
 ];
-
-function sanitizeUnitTitle(rawTitle: string | undefined | null, unitNumber: number) {
-  if (!rawTitle) return `Unit ${unitNumber}`;
-
-  let value = rawTitle.trim();
-  const lowerValue = value.toLowerCase();
-  const targetPrefix = `unit ${unitNumber}`;
-
-  if (lowerValue.startsWith(targetPrefix)) {
-    value = value.slice(targetPrefix.length);
-  }
-
-  value = removeLeadingDelimiters(value);
-
-  if (value.length > 0) {
-    return value;
-  }
-
-  const fallback = removeLeadingDelimiters(rawTitle);
-  return fallback.length > 0 ? fallback : `Unit ${unitNumber}`;
-}
-
-function removeLeadingDelimiters(input: string) {
-  let result = input;
-  while (result.length > 0) {
-    const char = result[0];
-    if (char === ' ' || char === ':' || char === '-' || char === '\t' || char === '\n') {
-      result = result.slice(1);
-      continue;
-    }
-    break;
-  }
-  return result.trim();
-}
-
-function deriveUnitTitle(metadata: LessonRow['metadata'], unitNumber: number) {
-  const rawTitle =
-    metadata?.unitContent?.introduction?.unitTitle ??
-    metadata?.unitContent?.introduction?.unitNumber ??
-    undefined;
-
-  return sanitizeUnitTitle(rawTitle, unitNumber);
-}
-
-function deriveUnitSummary(row: LessonRow) {
-  return (
-    row.metadata?.unitContent?.drivingQuestion?.question ??
-    row.metadata?.unitContent?.introduction?.projectOverview?.scenario ??
-    row.description ??
-    'Explore authentic business scenarios with spreadsheet-first problem solving.'
-  );
-}
-
-async function getUnitSummaries() {
-  const lessonRows = await db
-    .select()
-    .from(lessons)
-    .orderBy(asc(lessons.unitNumber), asc(lessons.orderIndex));
-
-  let effectiveRows = lessonRows;
-  if (lessonRows.length > 0) {
-    try {
-      const lessonIds = lessonRows.map((row) => row.id);
-      const versionRows = await db
-        .select({
-          lessonId: lessonVersions.lessonId,
-          title: lessonVersions.title,
-          description: lessonVersions.description,
-          version: lessonVersions.version,
-        })
-        .from(lessonVersions)
-        .where(inArray(lessonVersions.lessonId, lessonIds))
-        .orderBy(asc(lessonVersions.lessonId), desc(lessonVersions.version));
-
-      const latestVersionByLessonId = new Map<string, { title: string | null; description: string | null }>();
-      for (const row of versionRows) {
-        if (!latestVersionByLessonId.has(row.lessonId)) {
-          latestVersionByLessonId.set(row.lessonId, {
-            title: row.title ?? null,
-            description: row.description ?? null,
-          });
-        }
-      }
-
-      effectiveRows = lessonRows.map((row) => {
-        const latestVersion = latestVersionByLessonId.get(row.id);
-        if (!latestVersion) return row;
-        return {
-          ...row,
-          title: latestVersion.title ?? row.title,
-          description: latestVersion.description ?? row.description,
-        };
-      });
-    } catch {
-      // Fallback to legacy lesson shell fields during migration.
-      effectiveRows = lessonRows;
-    }
-  }
-
-  const units = new Map<number, UnitSummary>();
-
-  effectiveRows.forEach((row) => {
-    if (!units.has(row.unitNumber)) {
-      units.set(row.unitNumber, {
-        unitNumber: row.unitNumber,
-        title: deriveUnitTitle(row.metadata, row.unitNumber),
-        summary: deriveUnitSummary(row),
-      });
-    }
-  });
-
-  return Array.from(units.values()).slice(0, 8);
-}
 
 const lessonPhases = [
   { n: 1, name: 'Hook', icon: '▶' },
@@ -319,7 +203,21 @@ const cashFlowChallengeActivity: CashFlowChallengeActivityProps = {
 };
 
 export default async function PrefacePage() {
-  const units = await getUnitSummaries();
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  const convex = new ConvexHttpClient(convexUrl!);
+
+  let units: UnitSummary[] = [];
+  try {
+    const fetchedUnits = await convex.query(api.public.getUnitSummaries);
+    units = fetchedUnits.map(u => ({
+      unitNumber: u.unitNumber,
+      title: u.title,
+      summary: u.summary
+    }));
+  } catch (err) {
+    console.error("Error fetching unit summaries from Convex", err);
+  }
+
   const displayUnits = units.length > 0 ? units : DEFAULT_UNIT_SUMMARIES;
   const unitGroups = [
     {

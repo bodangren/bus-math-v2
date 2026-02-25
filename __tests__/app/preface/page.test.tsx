@@ -1,15 +1,21 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 import PrefacePage from '../../../app/preface/page';
 
-vi.mock('@/lib/db/drizzle', () => ({
-  db: {
-    select: vi.fn(() => ({
-      from: vi.fn(() => ({
-        orderBy: vi.fn().mockResolvedValue([]),
-      })),
-    })),
+const mockQuery = vi.fn();
+vi.mock("convex/browser", () => ({
+  ConvexHttpClient: class {
+    constructor() {}
+    query = mockQuery;
+  },
+}));
+
+vi.mock("@/convex/_generated/api", () => ({
+  api: {
+    public: {
+      getUnitSummaries: "api.public.getUnitSummaries",
+    },
   },
 }));
 
@@ -30,7 +36,14 @@ vi.mock('@/components/activities/simulations/CashFlowChallenge', () => ({
 }));
 
 describe('PrefacePage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders fallback unit summaries when seeded lessons are missing', async () => {
+    // Return empty array to trigger fallback behavior
+    mockQuery.mockResolvedValueOnce([]);
+
     const result = await PrefacePage();
     render(result);
 
