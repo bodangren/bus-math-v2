@@ -8,7 +8,7 @@
 - [~] Task 5: Setup `vitest` for tests, moving away from other test runners if applicable.
 
 ## Phase 2: Convex Setup and Schema Migration
-- [ ] Task 1: Install `convex` dependency and run `npx convex dev` to initialize the project.
+- [x] Task 1: Install `convex` dependency and run `npx convex dev` to initialize the project. [a2319ca]
 - [ ] Task 2: Translate Supabase SQL schemas (found in `supabase/migrations/`) into Convex's TypeScript schema (`convex/schema.ts`).
   - For example, you define a table with `defineTable({ column: v.string() })`.
 - [ ] Task 3: Replace Supabase middleware with Convex equivalent if necessary.
