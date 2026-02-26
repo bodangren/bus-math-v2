@@ -1,0 +1,27 @@
+Checkpoint commit to fully clean worktree before session handoff.
+
+Commit scope:
+- Captures all remaining staged and unstaged modifications/deletions/untracked files present in the branch after prior auth-slice commit.
+- Includes broader vinext/convex migration work across app routes, auth flows, middleware, tests, conductor track artifacts, convex schema/functions, and generated dist build artifacts.
+- Includes removal of .claude/.opencode agent/skill files that were already deleted in the working tree.
+
+Notable content groups:
+1) Auth migration completion artifacts
+   - Added server auth utilities: lib/auth/{constants,server,session}.ts
+   - Added auth API routes: app/api/auth/{login,logout,session}/route.ts
+   - Added convex/auth.ts and schema/API updates.
+2) App/API migration updates
+   - Multiple app/api and app page auth gate conversions to JWT/Convex flow.
+3) Test suite migration updates
+   - Extensive updates for route/page/auth tests.
+   - Added draft route test and auth session tests.
+4) Conductor docs updates
+   - Updated vinext_convex_migration track metadata/spec/plan.
+5) Build output snapshot
+   - Added dist/ client/server artifacts present in worktree.
+
+Reason:
+- User requested committing all remaining work so repository state is fully clean and ready for a fresh session.
+
+Post-commit status:
+- git status clean (no pending tracked or untracked files).
