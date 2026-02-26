@@ -1,0 +1,30 @@
+Task: Vinext/Convex migration auth slice hardening (internal Convex credential path + test realignment)
+
+Summary of changes:
+- Switched login credential lookup and demo credential provisioning to the internal Convex auth path.
+- Added explicit server-side env documentation for CONVEX_DEPLOY_KEY and AUTH_JWT_SECRET.
+- Added controlled 500 handling for internal auth lookup failure in login route.
+- Rewrote proxy tests for JWT middleware behavior (no Supabase route guard assumptions).
+- Rewrote usePhaseCompletion hook tests for current useAuth + Convex mutation + offline queue design.
+- Updated Convex schema test expectations after auth_credentials table addition.
+- Updated conductor track plan with pass 6/7 progress notes.
+
+Files included:
+- .env.example
+- README.md
+- app/api/auth/login/route.ts
+- app/api/users/ensure-demo/route.ts
+- lib/convex/server.ts
+- __tests__/app/api/auth/login/route.test.ts
+- __tests__/app/api/users/ensure-demo/route.test.ts
+- __tests__/proxy.test.ts
+- __tests__/hooks/usePhaseCompletion.test.ts
+- __tests__/setup/convex-schema.test.ts
+- conductor/tracks/vinext_convex_migration_20260225/plan.md
+
+Validation run in this slice:
+- CI=true npm test -- __tests__/proxy.test.ts __tests__/hooks/usePhaseCompletion.test.ts __tests__/setup/convex-schema.test.ts __tests__/app/api/auth/login/route.test.ts __tests__/app/api/users/ensure-demo/route.test.ts  (PASS)
+- npx eslint app/api/auth/login/route.ts app/api/users/ensure-demo/route.ts lib/convex/server.ts __tests__/app/api/auth/login/route.test.ts __tests__/app/api/users/ensure-demo/route.test.ts  (PASS)
+
+Outstanding known state:
+- Full suite parity was still in-progress globally; historical failures were concentrated in curriculum-content parity tests before this commit context cutoff.
