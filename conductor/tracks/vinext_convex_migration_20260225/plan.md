@@ -113,6 +113,27 @@
 - [ ] Task 2: Deploy to Cloudflare using `npx vinext deploy`.
 - [ ] Task 3: Configure Convex production instance.
 
+### Deployment Readiness Policy (updated 2026-02-26)
+- Deployment is explicitly deferred until the system is end-to-end working in local production mode.
+- Phase 5 Task 2 (Cloudflare deploy) and Task 3 (Convex production config) remain blocked until the gate below passes.
+
+### Pre-Deploy Working System Gate
+- [ ] `npm run build` succeeds without SSR/runtime import failures.
+- [ ] `npx vinext start` boots successfully after build.
+- [ ] Auth works for all roles (student, teacher, admin) via Convex/JWT flow.
+- [ ] Critical learning + teacher flows pass manual smoke test:
+  - lesson open
+  - phase completion
+  - assessment/submission
+  - teacher review/detail
+- [ ] `CI=true npm test` remains fully passing.
+
+### Next Implementation Order Before Any Deploy
+1. Resolve Vinext SSR/CJS interop failure (`fast-formula-parser` / spreadsheet dependency path).
+2. Remove remaining Supabase-dependent runtime paths where Convex equivalents are pending.
+3. Verify full working-system gate above.
+4. Revisit Phase 5 Task 2 only after steps 1-3 are complete.
+
 ## Known Issues / Tech Debt (captured 2026-02-26 from manual verification)
 - `npm run build` + `npx vinext start` fails at server boot:
   - SSR bundle imports `DepParser` as a named export from `fast-formula-parser`, but package is CommonJS in runtime context.
