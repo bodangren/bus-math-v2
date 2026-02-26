@@ -109,7 +109,7 @@
   - TODO: remove remaining Supabase dependency usage in legacy data-access helpers/page flows where Convex equivalents are pending.
 
 ## Phase 5: Testing and Deployment
-- [ ] Task 1: Run all Vitest tests to ensure parity.
+- [x] Task 1: Run all Vitest tests to ensure parity. [d4611e1]
 - [ ] Task 2: Deploy to Cloudflare using `npx vinext deploy`.
 - [ ] Task 3: Configure Convex production instance.
 
