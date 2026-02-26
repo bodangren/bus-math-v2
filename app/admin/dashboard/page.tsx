@@ -1,13 +1,9 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getServerSessionClaims } from "@/lib/auth/server";
 
 export default async function AdminDashboard() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect("/auth/login");
   }
 
@@ -31,7 +27,7 @@ export default async function AdminDashboard() {
           <div className="border rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-2">Your Account</h3>
             <p className="text-sm text-muted-foreground">
-              User ID: {user.id}
+              User ID: {claims.sub}
             </p>
           </div>
         </div>

@@ -155,24 +155,6 @@ afterEach(() => {
     });
   });
 
-  it('retries demo login with legacy password when default demo password fails', async () => {
-    const user = userEvent.setup();
-    mockSignIn
-      .mockRejectedValueOnce(new Error('Invalid login credentials'))
-      .mockResolvedValueOnce(undefined);
-
-    render(<LoginForm />);
-
-    await user.type(screen.getByLabelText(/username/i), 'demo_student');
-    await user.type(screen.getByLabelText(/password/i), 'demo123');
-    await user.click(screen.getByRole('button', { name: /login/i }));
-
-    await waitFor(() => {
-      expect(mockSignIn).toHaveBeenNthCalledWith(1, 'demo_student', 'demo123');
-      expect(mockSignIn).toHaveBeenNthCalledWith(2, 'demo_student', 'demo123');
-    });
-  });
-
   it('attempts auto-provisioning for demo credentials before login', async () => {
     const user = userEvent.setup();
     mockSignIn.mockResolvedValue(undefined);

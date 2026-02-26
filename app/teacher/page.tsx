@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getServerSessionClaims } from "@/lib/auth/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -10,12 +10,9 @@ import {
 import { fetchCourseOverviewData } from "@/lib/teacher/course-overview-data";
 
 export default async function TeacherDashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const claims = await getServerSessionClaims();
 
-  if (!user) {
+  if (!claims) {
     redirect("/auth/login?redirect=/teacher");
   }
 
@@ -23,9 +20,11 @@ export default async function TeacherDashboardPage() {
   const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
   const convex = new ConvexHttpClient(convexUrl);
 
+  const profileId = claims.sub;
+
   // Fetch all teacher dashboard metrics from Convex
   const data = await convex.query(api.teacher.getTeacherDashboardData, {
-    userId: user.id as Id<"profiles">,
+    userId: profileId as Id<"profiles">,
   });
 
   if (!data) {

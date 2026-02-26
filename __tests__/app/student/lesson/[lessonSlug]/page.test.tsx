@@ -4,9 +4,17 @@ import { notFound, redirect } from 'next/navigation';
 
 import LessonPage from '../../../../../app/student/lesson/[lessonSlug]/page';
 
+const { mockGetServerSessionClaims } = vi.hoisted(() => ({
+  mockGetServerSessionClaims: vi.fn(),
+}));
+
 vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
   redirect: vi.fn(),
+}));
+
+vi.mock('@/lib/auth/server', () => ({
+  getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
 vi.mock('@/lib/db/drizzle', () => ({
@@ -111,14 +119,16 @@ describe('LessonPage', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
 
+    mockGetServerSessionClaims.mockResolvedValue({
+      sub: 'user-123',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
     const { createClient } = await import('@/lib/supabase/server');
     vi.mocked(createClient).mockResolvedValue({
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
       rpc: vi.fn().mockResolvedValue({ data: true, error: null }),
       from: vi.fn().mockReturnValue({
         select: vi.fn().mockReturnValue({
@@ -145,10 +155,7 @@ describe('LessonPage', () => {
   });
 
   it('redirects unauthenticated users to login', async () => {
-    const { createClient } = await import('@/lib/supabase/server');
-    vi.mocked(createClient).mockResolvedValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }) },
-    } as never);
+    mockGetServerSessionClaims.mockResolvedValue(null);
 
     try {
       await LessonPage({
@@ -279,12 +286,6 @@ describe('LessonPage', () => {
   it('shows access error page when RPC fails', async () => {
     const { createClient } = await import('@/lib/supabase/server');
     vi.mocked(createClient).mockResolvedValue({
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'test@example.com' } },
-          error: null,
-        }),
-      },
       rpc: vi.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } }),
       from: vi.fn().mockReturnValue({
         select: vi.fn().mockReturnValue({
@@ -307,12 +308,6 @@ describe('LessonPage', () => {
     const { createClient } = await import('@/lib/supabase/server');
     const rpc = vi.fn();
     vi.mocked(createClient).mockResolvedValue({
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: 'user-123', email: 'teacher@example.com' } },
-          error: null,
-        }),
-      },
       rpc,
       from: vi.fn().mockReturnValue({
         select: vi.fn().mockReturnValue({

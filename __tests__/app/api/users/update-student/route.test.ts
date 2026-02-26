@@ -1,13 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockGetUser = vi.fn();
+const mockGetRequestSessionClaims = vi.fn();
 const mockFrom = vi.fn();
 const mockUpdateUserById = vi.fn();
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn().mockResolvedValue({
-    auth: { getUser: mockGetUser },
-  }),
+vi.mock('@/lib/auth/server', () => ({
+  getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
 vi.mock('@/lib/supabase/admin', () => ({
@@ -42,10 +40,17 @@ function makeRequest(body: unknown) {
 describe('POST /api/users/update-student', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'teacher-1',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
   });
 
   it('returns 401 when unauthenticated', async () => {
-    mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+    mockGetRequestSessionClaims.mockResolvedValue(null);
 
     const response = await POST(
       makeRequest({
@@ -60,10 +65,9 @@ describe('POST /api/users/update-student', () => {
   });
 
   it('returns 403 when caller is not teacher/admin', async () => {
-    mockGetUser.mockResolvedValue({ data: { user: { id: 'student-1' } }, error: null });
     mockFrom.mockReturnValueOnce(
       makeQueryBuilder({
-        data: { id: 'student-1', role: 'student', organization_id: 'org-1' },
+        data: { id: 'teacher-1', role: 'student', organization_id: 'org-1' },
         error: null,
       }),
     );
@@ -81,7 +85,6 @@ describe('POST /api/users/update-student', () => {
   });
 
   it('updates display name for org-scoped student', async () => {
-    mockGetUser.mockResolvedValue({ data: { user: { id: 'teacher-1' } }, error: null });
     mockFrom.mockReturnValueOnce(
       makeQueryBuilder({
         data: { id: 'teacher-1', role: 'teacher', organization_id: 'org-1' },
@@ -118,7 +121,6 @@ describe('POST /api/users/update-student', () => {
   });
 
   it('deactivates student account and applies auth ban', async () => {
-    mockGetUser.mockResolvedValue({ data: { user: { id: 'teacher-1' } }, error: null });
     mockFrom.mockReturnValueOnce(
       makeQueryBuilder({
         data: { id: 'teacher-1', role: 'teacher', organization_id: 'org-1' },

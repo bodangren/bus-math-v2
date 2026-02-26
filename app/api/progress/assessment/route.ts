@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { calculateScore } from '@/lib/assessments/scoring';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { submissionDataSchema } from '@/lib/db/schema/activity-submissions';
 import { selectActivitySchema } from '@/lib/db/schema/validators';
-import { createClient } from '@/lib/supabase/server';
 import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 
 const requestSchema = z.object({
-  activityId: z.string().uuid(),
+  activityId: z.string().trim().min(1),
   answers: z.record(z.string(), z.unknown()),
   interactionHistory: z.array(z.unknown()).optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
@@ -30,17 +30,9 @@ function buildBadRequest(details: Record<string, unknown> | string) {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data,
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !data?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? 'Unauthorized' },
-        { status: 401 },
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     let payload: RequestPayload;
@@ -62,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     const activityRecord = await fetchQuery(api.activities.getActivityById, {
-      activityId: payload.activityId as any,
+      activityId: payload.activityId as never,
     });
 
     if (!activityRecord) {
@@ -95,9 +87,11 @@ export async function POST(request: Request) {
       metadata: payload.metadata,
     });
 
+    const userId = claims.sub;
+
     await fetchMutation(api.activities.submitAssessment, {
-      userId: data.user.id as any,
-      activityId: payload.activityId as any,
+      userId: userId as never,
+      activityId: payload.activityId as never,
       submissionData,
       score: score.score,
       maxScore: score.maxScore,

@@ -6,9 +6,9 @@ import { formatLastActive } from '@/components/teacher/TeacherDashboardContent';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { getServerSessionClaims } from '@/lib/auth/server';
 import { db } from '@/lib/db/drizzle';
 import { organizations, phaseVersions, profiles, studentProgress } from '@/lib/db/schema';
-import { createClient } from '@/lib/supabase/server';
 
 interface TeacherProfile {
   id: string;
@@ -156,16 +156,12 @@ export default async function TeacherStudentDetailPage({
 }: TeacherStudentDetailPageProps) {
   const { studentId } = await params;
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect(`/auth/login?redirect=/teacher/students/${studentId}`);
   }
 
-  const teacher = await getTeacherProfile(user.id);
+  const teacher = await getTeacherProfile(claims.sub);
   if (!teacher) {
     redirect('/auth/login?redirect=/teacher');
   }

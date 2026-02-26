@@ -23,6 +23,21 @@ export default defineSchema({
     .index("by_organization", ["organizationId"])
     .index("by_username", ["username"]),
 
+  auth_credentials: defineTable({
+    profileId: v.id("profiles"),
+    username: v.string(),
+    role: v.union(v.literal("student"), v.literal("teacher"), v.literal("admin")),
+    organizationId: v.id("organizations"),
+    passwordHash: v.string(),
+    passwordSalt: v.string(),
+    passwordHashIterations: v.number(),
+    isActive: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_username", ["username"])
+    .index("by_profile", ["profileId"]),
+
   classes: defineTable({
     teacherId: v.id("profiles"),
     name: v.string(),

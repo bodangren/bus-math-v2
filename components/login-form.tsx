@@ -49,24 +49,7 @@ export function LoginForm({
       }
     }
 
-    try {
-      await signIn(loginUsername, loginPassword);
-      return;
-    } catch (primaryError) {
-      if (!isDemoLogin) {
-        throw primaryError;
-      }
-
-      try {
-        await ensureDemoUsers();
-        await signIn(loginUsername, loginPassword);
-        return;
-      } catch {
-        // Legacy fallback for environments where demo accounts were seeded with an older password.
-      }
-
-      await signIn(loginUsername, 'password123');
-    }
+    await signIn(loginUsername, loginPassword);
   };
 
   const handleLogin = async (e: React.FormEvent) => {

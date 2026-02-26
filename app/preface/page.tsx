@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ComprehensionCheck, type ComprehensionCheckActivity } from '@/components/activities/quiz/ComprehensionCheck';
 import { FillInTheBlank, type FillInTheBlankActivity } from '@/components/activities/quiz/FillInTheBlank';
-import ReflectionJournal from '@/components/activities/quiz/ReflectionJournal';
+import { ReflectionJournal } from '@/components/activities/quiz/ReflectionJournal';
 import { CashFlowChallenge } from '@/components/activities/simulations/CashFlowChallenge';
 import type {
   CashFlowChallengeActivityProps,

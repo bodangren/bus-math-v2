@@ -1,17 +1,11 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 
 const draftSchema = z.object({
   draftData: z.array(z.array(z.any())),
 });
-
-const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-function isValidConvexId(id: string): boolean {
-  return uuidRegex.test(id);
-}
 
 export async function GET(
   request: Request,
@@ -20,28 +14,23 @@ export async function GET(
   try {
     const { activityId } = await params;
 
-    if (!isValidConvexId(activityId)) {
+    if (!activityId?.trim()) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
       );
     }
 
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? 'Unauthorized' },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = authData.user.id;
+    const userId = claims.sub;
 
     const response = await fetchQuery(api.activities.getSpreadsheetDraft, {
-      userId: userId as any,
-      activityId: activityId as any,
+      userId: userId as never,
+      activityId: activityId as never,
     });
 
     if (!response?.draftData) {
@@ -70,24 +59,19 @@ export async function POST(
   try {
     const { activityId } = await params;
 
-    if (!isValidConvexId(activityId)) {
+    if (!activityId?.trim()) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
       );
     }
 
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? 'Unauthorized' },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = authData.user.id;
+    const userId = claims.sub;
 
     let payload: z.infer<typeof draftSchema>;
     try {
@@ -113,8 +97,8 @@ export async function POST(
     }
 
     const result = await fetchMutation(api.activities.saveSpreadsheetDraft, {
-      userId: userId as any,
-      activityId: activityId as any,
+      userId: userId as never,
+      activityId: activityId as never,
       draftData: payload.draftData,
     });
 

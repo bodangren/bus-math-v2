@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchQuery, api } from '@/lib/convex/server';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const apiAny = api as any;
@@ -8,13 +9,12 @@ export async function GET(
   { params }: { params: Promise<{ activityId: string }> }
 ) {
   try {
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const userId = claims.sub;
 
     const profile = await fetchQuery(apiAny.api.getProfile, {
       userId: userId,
@@ -35,13 +35,8 @@ export async function GET(
     }
 
     const { activityId } = await params;
-
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(activityId)) {
-      return NextResponse.json(
-        { error: 'Invalid activity ID format' },
-        { status: 400 }
-      );
+    if (!activityId?.trim()) {
+      return NextResponse.json({ error: 'Invalid activity ID format' }, { status: 400 });
     }
 
     const activity = await fetchQuery(apiAny.api.getActivity, {

@@ -214,6 +214,28 @@ export const getProfileByUserId = query({
   },
 });
 
+export const getProfileByUsername = query({
+  args: {
+    username: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_username", (q) => q.eq("username", args.username))
+      .unique();
+
+    if (!profile) return null;
+
+    return {
+      id: profile._id,
+      role: profile.role,
+      organizationId: profile.organizationId,
+      username: profile.username,
+      displayName: profile.displayName,
+    };
+  },
+});
+
 export const getProfileById = query({
   args: {
     profileId: v.id("profiles"),
@@ -226,6 +248,8 @@ export const getProfileById = query({
       id: profile._id,
       role: profile.role,
       organizationId: profile.organizationId,
+      username: profile.username,
+      displayName: profile.displayName,
     };
   },
 });

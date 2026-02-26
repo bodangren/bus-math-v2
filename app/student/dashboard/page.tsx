@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getServerSessionClaims } from "@/lib/auth/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -16,14 +16,27 @@ import { Progress } from "@/components/ui/progress";
 
 export const dynamic = 'force-dynamic';
 
-export default async function StudentDashboard() {
-  // Temporary: we still use Supabase for Auth until Task 4
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+interface StudentDashboardLesson {
+  id: string;
+  unitNumber: number;
+  title: string;
+  slug: string;
+  description?: string | null;
+  completedPhases: number;
+  totalPhases: number;
+  progressPercentage: number;
+}
 
-  if (!user) {
+interface StudentDashboardUnit {
+  unitNumber: number;
+  unitTitle: string;
+  lessons: StudentDashboardLesson[];
+}
+
+export default async function StudentDashboard() {
+  const claims = await getServerSessionClaims();
+
+  if (!claims) {
     redirect("/auth/login");
   }
 
@@ -31,17 +44,19 @@ export default async function StudentDashboard() {
   const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
   const convex = new ConvexHttpClient(convexUrl);
 
+  const profileId = claims.sub;
+
   // Fetch the dashboard data from Convex
   const studentUnits = await convex.query(api.student.getDashboardData, {
-    userId: user.id as Id<"profiles">,
-  });
+    userId: profileId as Id<"profiles">,
+  }) as StudentDashboardUnit[];
 
   return (
     <div className="container mx-auto p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-4">Student Dashboard</h1>
         <p className="text-muted-foreground mb-8">
-          Welcome back to your learning journey, {user.user_metadata?.username || user.email}!
+          Welcome back to your learning journey, {claims.username}!
         </p>
 
         {studentUnits.length === 0 ? (
@@ -50,11 +65,11 @@ export default async function StudentDashboard() {
           </div>
         ) : (
           <div className="space-y-8">
-            {studentUnits.map((unit: any) => (
+            {studentUnits.map((unit) => (
               <div key={unit.unitNumber}>
                 <h2 className="text-3xl font-semibold mb-4">{unit.unitTitle}</h2>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {unit.lessons.map((lesson: any) => (
+                  {unit.lessons.map((lesson) => (
                     <Card key={lesson.id} className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <Badge variant="secondary" className="w-fit mb-2">

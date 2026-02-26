@@ -1,13 +1,9 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
-// ── mocks ────────────────────────────────────────────────────────────────────
+const mockGetRequestSessionClaims = vi.fn();
 
-const mockGetUser = vi.fn();
-
-vi.mock("@/lib/supabase/server", () => ({
-  createClient: vi.fn().mockResolvedValue({
-    auth: { getUser: mockGetUser },
-  }),
+vi.mock("@/lib/auth/server", () => ({
+  getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
 const mockFrom = vi.fn();
@@ -23,13 +19,9 @@ vi.mock("@/lib/supabase/admin", () => ({
 
 const { POST } = await import("../../../../../app/api/users/bulk-create-students/route");
 
-// ── helpers ───────────────────────────────────────────────────────────────────
-
 const TEACHER_PROFILE = { id: "teacher-1", role: "teacher", organization_id: "org-1" };
 const STUDENT_USER = { user: { id: "student-uid-1" } };
 
-/** Returns a Supabase-style query builder that resolves to `value` when awaited
- *  and also supports `.maybeSingle()` and `.insert()`. */
 function makeQueryBuilder(value: unknown) {
   const self: Record<string, unknown> = {
     select: vi.fn(() => self),
@@ -43,8 +35,8 @@ function makeQueryBuilder(value: unknown) {
   return self;
 }
 
-function sessionWith(userId = "teacher-1") {
-  return { data: { user: { id: userId } }, error: null };
+function claimsWith(sub = "teacher-1") {
+  return { sub, username: "teacher", role: "teacher", iat: 1, exp: 2 };
 }
 
 function makeRequest(body: unknown) {
@@ -57,13 +49,12 @@ function makeRequest(body: unknown) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockGetRequestSessionClaims.mockResolvedValue(claimsWith());
 });
-
-// ── tests ────────────────────────────────────────────────────────────────────
 
 describe("POST /api/users/bulk-create-students", () => {
   it("returns 401 when there is no active session", async () => {
-    mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+    mockGetRequestSessionClaims.mockResolvedValue(null);
 
     const response = await POST(makeRequest({ students: [{ firstName: "Ada" }] }));
     const json = await response.json();
@@ -74,8 +65,6 @@ describe("POST /api/users/bulk-create-students", () => {
   });
 
   it("returns 400 for an empty students array", async () => {
-    mockGetUser.mockResolvedValue(sessionWith());
-
     const response = await POST(makeRequest({ students: [] }));
     const json = await response.json();
 
@@ -84,8 +73,6 @@ describe("POST /api/users/bulk-create-students", () => {
   });
 
   it("returns 400 when batch exceeds 100 students", async () => {
-    mockGetUser.mockResolvedValue(sessionWith());
-
     const response = await POST(makeRequest({ students: new Array(101).fill({ firstName: "X" }) }));
     const json = await response.json();
 
@@ -94,7 +81,6 @@ describe("POST /api/users/bulk-create-students", () => {
   });
 
   it("returns 403 when teacher profile is not found", async () => {
-    mockGetUser.mockResolvedValue(sessionWith());
     mockFrom.mockReturnValue(makeQueryBuilder({ data: null, error: null }));
 
     const response = await POST(makeRequest({ students: [{ firstName: "Ada" }] }));
@@ -105,7 +91,6 @@ describe("POST /api/users/bulk-create-students", () => {
   });
 
   it("returns 403 when the caller is not a teacher or admin", async () => {
-    mockGetUser.mockResolvedValue(sessionWith());
     mockFrom.mockReturnValue(
       makeQueryBuilder({ data: { ...TEACHER_PROFILE, role: "student" }, error: null }),
     );
@@ -118,13 +103,8 @@ describe("POST /api/users/bulk-create-students", () => {
   });
 
   it("returns 201 and creates the student account", async () => {
-    mockGetUser.mockResolvedValue(sessionWith());
-
-    // First from() call → teacher profile lookup
     mockFrom.mockReturnValueOnce(makeQueryBuilder({ data: TEACHER_PROFILE, error: null }));
-    // Second from() call → username existence check (count: 0 = username free)
     mockFrom.mockReturnValueOnce(makeQueryBuilder({ count: 0, error: null }));
-    // Third from() call → profile insert
     mockFrom.mockReturnValueOnce(makeQueryBuilder({ error: null }));
 
     mockCreateUser.mockResolvedValue({ data: STUDENT_USER, error: null });
@@ -140,11 +120,8 @@ describe("POST /api/users/bulk-create-students", () => {
   });
 
   it("rolls back created users and returns 500 when a profile insert fails", async () => {
-    mockGetUser.mockResolvedValue(sessionWith());
-
     mockFrom.mockReturnValueOnce(makeQueryBuilder({ data: TEACHER_PROFILE, error: null }));
     mockFrom.mockReturnValueOnce(makeQueryBuilder({ count: 0, error: null }));
-    // Profile insert fails
     mockFrom.mockReturnValueOnce(makeQueryBuilder({ error: { message: "insert failed" } }));
 
     mockCreateUser.mockResolvedValue({ data: STUDENT_USER, error: null });

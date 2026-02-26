@@ -1,69 +1,73 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { redirect } from 'next/navigation';
 
-import TeacherDashboardPage from "../../../app/teacher/page";
+const mockGetServerSessionClaims = vi.fn();
 
-vi.mock("@/lib/supabase/server", () => ({
-  createClient: () => ({
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: { id: "user-1", email: "teacher@example.com" } },
-      }),
-    },
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(() => {
+    throw new Error('NEXT_REDIRECT');
   }),
 }));
 
+vi.mock('@/lib/auth/server', () => ({
+  getServerSessionClaims: mockGetServerSessionClaims,
+}));
+
 const mockQuery = vi.fn();
-vi.mock("convex/browser", () => ({
+vi.mock('convex/browser', () => ({
   ConvexHttpClient: class {
-    constructor() {}
     query = mockQuery;
   },
 }));
 
-vi.mock("@/convex/_generated/api", () => ({
+vi.mock('@/convex/_generated/api', () => ({
   api: {
     teacher: {
-      getTeacherDashboardData: "api.teacher.getTeacherDashboardData",
+      getTeacherDashboardData: 'api.teacher.getTeacherDashboardData',
     },
   },
 }));
 
-vi.mock("@/lib/teacher/course-overview-data", () => ({
+vi.mock('@/lib/teacher/course-overview-data', () => ({
   fetchCourseOverviewData: vi.fn().mockResolvedValue([]),
 }));
 
-describe("TeacherDashboardPage", () => {
+const { default: TeacherDashboardPage } = await import('../../../app/teacher/page');
+
+describe('TeacherDashboardPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetServerSessionClaims.mockResolvedValue({
+      sub: 'teacher_profile_1',
+      username: 'teacher_one',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
   });
 
-  it("fetches dashboard data from Convex and renders content", async () => {
-    mockQuery.mockResolvedValueOnce({
+  it('redirects unauthenticated users to login', async () => {
+    mockGetServerSessionClaims.mockResolvedValue(null);
+
+    await expect(TeacherDashboardPage()).rejects.toThrow('NEXT_REDIRECT');
+    expect(redirect).toHaveBeenCalledWith('/auth/login?redirect=/teacher');
+  });
+
+  it('loads teacher dashboard using profile id from session claims', async () => {
+    mockQuery.mockResolvedValue({
       teacher: {
-        username: "teacher_smith",
-        organizationName: "Test High School",
-        organizationId: "org-1",
+        username: 'teacher_one',
+        organizationName: 'Test School',
+        organizationId: 'org_1',
       },
-      students: [
-        {
-          id: "student-1",
-          username: "student_a",
-          displayName: "Alice",
-          completedPhases: 5,
-          totalPhases: 10,
-          progressPercentage: 50,
-          lastActive: "2025-01-01T10:00:00.000Z",
-        },
-      ],
+      students: [],
     });
 
     const jsx = await TeacherDashboardPage();
-    
+
     expect(jsx).toBeDefined();
-    
-    // Verify Convex was called with the correct user ID
-    expect(mockQuery).toHaveBeenCalledWith("api.teacher.getTeacherDashboardData", {
-      userId: "user-1",
+    expect(mockQuery).toHaveBeenCalledWith('api.teacher.getTeacherDashboardData', {
+      userId: 'teacher_profile_1',
     });
   });
 });

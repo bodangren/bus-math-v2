@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchQuery, api } from '@/lib/convex/server';
 import type {
   LessonProgressResponse,
@@ -15,10 +16,12 @@ export async function GET(
   { params }: { params: Promise<{ lessonId: string }> }
 ) {
   try {
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const userId = claims.sub;
 
     const resolvedParams = await params;
     const parsed = paramsSchema.safeParse(resolvedParams);

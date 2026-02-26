@@ -1,21 +1,37 @@
-import { createClient } from "@/lib/supabase/server";
+import { getRequestSessionClaims } from "@/lib/auth/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const EDGE_FUNCTION_PATH = "/functions/v1/create-student";
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const admin = createAdminClient();
+    const { data: teacherProfile, error: teacherError } = await admin
+      .from("profiles")
+      .select("id, role, organization_id")
+      .eq("id", claims.sub)
+      .maybeSingle();
+
+    if (teacherError || !teacherProfile) {
+      return Response.json({ error: "Teacher profile not found" }, { status: 403 });
+    }
+
+    if (teacherProfile.role !== "teacher" && teacherProfile.role !== "admin") {
+      return Response.json({ error: "Only teachers can create students" }, { status: 403 });
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!supabaseUrl) {
       return Response.json({ error: "Supabase URL is not configured" }, { status: 500 });
+    }
+    if (!supabaseServiceRoleKey) {
+      return Response.json({ error: "Supabase service role key is not configured" }, { status: 500 });
     }
 
     let body: unknown;
@@ -28,7 +44,7 @@ export async function POST(request: Request) {
     const response = await fetch(`${supabaseUrl}${EDGE_FUNCTION_PATH}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${supabaseServiceRoleKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body ?? {}),

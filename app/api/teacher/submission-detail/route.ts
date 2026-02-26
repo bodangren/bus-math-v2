@@ -1,20 +1,18 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { createClient } from '@/lib/supabase/server';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchQuery, api } from '@/lib/convex/server';
 
 const querySchema = z.object({
-  studentId: z.string().uuid('studentId must be a valid UUID'),
-  lessonId: z.string().uuid('lessonId must be a valid UUID'),
+  studentId: z.string().trim().min(1, 'studentId is required'),
+  lessonId: z.string().trim().min(1, 'lessonId is required'),
 });
 
 export async function GET(request: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -34,7 +32,7 @@ export async function GET(request: Request) {
     const { studentId, lessonId } = parsed.data;
 
     const teacher = await fetchQuery(api.teacher.getProfileWithOrg, {
-      userId: user.id as any,
+      userId: claims.sub,
     });
 
     if (!teacher || (teacher.role !== 'teacher' && teacher.role !== 'admin')) {
@@ -42,7 +40,7 @@ export async function GET(request: Request) {
     }
 
     const student = await fetchQuery(api.activities.getProfileById, {
-      profileId: studentId as any,
+      profileId: studentId,
     });
 
     if (!student || student.role !== 'student' || student.organizationId !== teacher.organizationId) {
@@ -52,8 +50,8 @@ export async function GET(request: Request) {
     const studentName = student.displayName ?? student.username ?? 'Unknown';
 
     const detail = await fetchQuery(api.teacher.getSubmissionDetail, {
-      studentId: studentId as any,
-      lessonId: lessonId as any,
+      studentId,
+      lessonId,
       studentName,
     });
 

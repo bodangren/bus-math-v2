@@ -28,7 +28,7 @@ vi.mock('@/components/activities/quiz/FillInTheBlank', () => ({
 }));
 
 vi.mock('@/components/activities/quiz/ReflectionJournal', () => ({
-  default: () => <div data-testid="reflection-journal" />,
+  ReflectionJournal: () => <div data-testid="reflection-journal" />,
 }));
 
 vi.mock('@/components/activities/simulations/CashFlowChallenge', () => ({

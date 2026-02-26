@@ -7,7 +7,7 @@ const mockRedirect = vi.fn((path: string) => {
 const mockNotFound = vi.fn(() => {
   throw new Error('notFound');
 });
-const mockGetUser = vi.fn();
+const mockGetServerSessionClaims = vi.fn();
 const mockSelect = vi.fn();
 
 vi.mock('next/navigation', () => ({
@@ -15,14 +15,8 @@ vi.mock('next/navigation', () => ({
   notFound: () => mockNotFound(),
 }));
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() =>
-    Promise.resolve({
-      auth: {
-        getUser: mockGetUser,
-      },
-    }),
-  ),
+vi.mock('@/lib/auth/server', () => ({
+  getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
 vi.mock('@/lib/db/drizzle', () => ({
@@ -36,17 +30,17 @@ const StudentDetailPageImport = () => import('../../../../../app/teacher/student
 describe('Teacher student detail page', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'teacher-1' } },
-      error: null,
+    mockGetServerSessionClaims.mockResolvedValue({
+      sub: 'teacher-1',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
     });
   });
 
   it('redirects unauthenticated users to login', async () => {
-    mockGetUser.mockResolvedValue({
-      data: { user: null },
-      error: null,
-    });
+    mockGetServerSessionClaims.mockResolvedValue(null);
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();
 
@@ -75,7 +69,8 @@ describe('Teacher student detail page', () => {
         from: () => chain,
         where: () => chain,
         limit: () => chain,
-        then: (onfulfilled: any) => Promise.resolve(onfulfilled(result)),
+        then: <T,>(onfulfilled: (value: unknown[]) => T) =>
+          Promise.resolve(onfulfilled(result)),
         catch: () => chain,
         finally: () => chain,
       };
@@ -119,7 +114,8 @@ describe('Teacher student detail page', () => {
         from: () => chain,
         where: () => chain,
         limit: () => chain,
-        then: (onfulfilled: any) => Promise.resolve(onfulfilled(result)),
+        then: <T,>(onfulfilled: (value: unknown[]) => T) =>
+          Promise.resolve(onfulfilled(result)),
         catch: () => chain,
         finally: () => chain,
       };

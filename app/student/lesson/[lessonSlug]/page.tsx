@@ -3,6 +3,7 @@ import { eq, inArray } from 'drizzle-orm';
 import { db } from '@/lib/db/drizzle';
 import { lessonVersions, lessons, phaseSections, phaseVersions, profiles } from '@/lib/db/schema';
 import { LessonRenderer } from '@/components/student/LessonRenderer';
+import { getServerSessionClaims } from '@/lib/auth/server';
 import { createClient } from '@/lib/supabase/server';
 import type { ContentBlock } from '@/types/curriculum';
 
@@ -337,13 +338,14 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   const { lessonSlug } = await params;
   const { phase: phaseParam } = await searchParams;
 
-  // Create Supabase client and verify authentication
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect('/auth/login');
   }
+
+  // Supabase client remains for lesson-progress reads and RPC access checks.
+  const supabase = await createClient();
+  const userId = claims.sub;
 
   // Fetch lesson and phases
   const data = await getLessonWithPhases(lessonSlug);
@@ -370,7 +372,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   }
 
   // Fetch user profile to check role
-  const userProfile = await getUserProfile(user.id);
+  const userProfile = await getUserProfile(userId);
 
   // Teachers and admins can access any phase without restrictions
   const isBypassRole = userProfile?.role === 'teacher' || userProfile?.role === 'admin';
@@ -391,7 +393,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
       const { data: progressResponse } = await supabase
         .from('student_progress')
         .select('phase_id, status')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .in('phase_id', lessonPhases.map(p => p.id));
 
       // Create a map of completed phases

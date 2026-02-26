@@ -1,36 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 
-const mockGetUser = vi.fn();
-const mockSelect = vi.fn();
-const mockFrom = vi.fn();
-const mockWhere = vi.fn();
-const mockLimit = vi.fn();
+const mockGetRequestSessionClaims = vi.fn();
+const mockFetchQuery = vi.fn();
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(() =>
-    Promise.resolve({
-      auth: {
-        getUser: mockGetUser,
-      },
-      from: mockFrom,
-    }),
-  ),
+vi.mock('@/lib/auth/server', () => ({
+  getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
-vi.mock('@/lib/db/drizzle', () => ({
-  db: {
-    select: mockSelect,
+vi.mock('@/lib/convex/server', () => ({
+  fetchQuery: mockFetchQuery,
+  api: {
+    api: {
+      getProfile: 'api.getProfile',
+      getActivity: 'api.getActivity',
+    },
   },
 }));
-
-vi.mock('drizzle-orm', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('drizzle-orm')>();
-  return {
-    ...actual,
-    eq: vi.fn(() => ({ _tag: 'eq' })),
-  };
-});
 
 const { GET } = await import('../../../../../app/api/activities/[activityId]/route');
 
@@ -47,15 +33,11 @@ function buildRequest(url: string) {
 const fullActivity = {
   id: '7a0bfc56-4b5a-4c41-a90e-0e5cc2e7319b',
   componentKey: 'comprehension-quiz',
-  displayName: 'Quick Check',
-  description: 'Assess understanding',
   props: {
     questions: [
       {
         id: 'q1',
         text: 'Choose one',
-        type: 'multiple-choice',
-        options: ['A', 'B'],
         correctAnswer: 'A',
       },
     ],
@@ -70,32 +52,21 @@ describe('GET /api/activities/[activityId]', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: 'student-123' } },
-      error: null,
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'profile_123',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
     });
 
-    mockFrom.mockImplementation((table: string) => {
-      if (table === 'profiles') {
-        return {
-          select: vi.fn(() => ({
-            eq: vi.fn(() => ({
-              maybeSingle: vi.fn(() => Promise.resolve({ data: { role: 'student' }, error: null })),
-            })),
-          })),
-        };
-      }
-
-      throw new Error(`Unexpected table ${table}`);
-    });
-
-    mockLimit.mockResolvedValue([fullActivity]);
-    mockWhere.mockReturnValue({ limit: mockLimit });
-    mockSelect.mockReturnValue({ from: () => ({ where: mockWhere }) });
+    mockFetchQuery
+      .mockResolvedValueOnce({ role: 'student' })
+      .mockResolvedValueOnce(fullActivity);
   });
 
   it('returns 401 when unauthenticated', async () => {
-    mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+    mockGetRequestSessionClaims.mockResolvedValue(null);
 
     const response = await GET(
       buildRequest('http://localhost/api/activities/7a0bfc56-4b5a-4c41-a90e-0e5cc2e7319b'),
@@ -116,5 +87,6 @@ describe('GET /api/activities/[activityId]', () => {
 
     expect(payload.gradingConfig).toBeNull();
     expect(payload.props.questions[0]).not.toHaveProperty('correctAnswer');
+    expect(mockFetchQuery).toHaveBeenNthCalledWith(1, 'api.getProfile', { userId: 'profile_123' });
   });
 });

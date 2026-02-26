@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 import {
   validateSpreadsheetData,
@@ -26,11 +26,6 @@ const requestSchema = z.object({
 });
 
 type RequestPayload = z.infer<typeof requestSchema>;
-const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-function isValidConvexId(id: string): boolean {
-  return uuidRegex.test(id);
-}
 
 export async function GET(
   request: Request,
@@ -38,7 +33,7 @@ export async function GET(
 ) {
   try {
     const { activityId } = await params;
-    if (!isValidConvexId(activityId)) {
+    if (!activityId?.trim()) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
@@ -46,27 +41,22 @@ export async function GET(
     }
 
     const requestedStudentId = new URL(request.url).searchParams.get('studentId');
-    if (requestedStudentId && !isValidConvexId(requestedStudentId)) {
+    if (requestedStudentId !== null && requestedStudentId.trim().length === 0) {
       return NextResponse.json(
         { error: 'Invalid student ID format' },
         { status: 400 }
       );
     }
 
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? 'Unauthorized' },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const requesterId = authData.user.id;
+    const requesterId = claims.sub;
 
     const requesterProfile = await fetchQuery(api.activities.getProfileByUserId, {
-      userId: requesterId as any,
+      userId: requesterId as never,
     });
 
     if (!requesterProfile?.role) {
@@ -86,7 +76,7 @@ export async function GET(
       }
 
       const targetProfile = await fetchQuery(api.activities.getProfileById, {
-        profileId: requestedStudentId as any,
+        profileId: requestedStudentId as never,
       });
 
       if (
@@ -104,8 +94,8 @@ export async function GET(
     }
 
     const response = await fetchQuery(api.activities.getSpreadsheetResponse, {
-      studentId: targetStudentId as any,
-      activityId: activityId as any,
+      studentId: targetStudentId as never,
+      activityId: activityId as never,
     });
 
     if (!response) {
@@ -145,24 +135,19 @@ export async function POST(
   try {
     const { activityId } = await params;
 
-    if (!isValidConvexId(activityId)) {
+    if (!activityId?.trim()) {
       return NextResponse.json(
         { error: 'Invalid activity ID format' },
         { status: 400 }
       );
     }
 
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? 'Unauthorized' },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const userId = authData.user.id;
+    const userId = claims.sub;
 
     let payload: RequestPayload;
     try {
@@ -196,7 +181,7 @@ export async function POST(
     }
 
     const activity = await fetchQuery(api.activities.getActivityForValidation, {
-      activityId: activityId as any,
+      activityId: activityId as never,
     });
 
     if (!activity) {
@@ -230,8 +215,8 @@ export async function POST(
     );
 
     await fetchMutation(api.activities.submitSpreadsheet, {
-      userId: userId as any,
-      activityId: activityId as any,
+      userId: userId as never,
+      activityId: activityId as never,
       spreadsheetData: payload.spreadsheetData,
       isCompleted: validationResult.isComplete,
       validationResult,
@@ -241,9 +226,9 @@ export async function POST(
 
     if (validationResult.isComplete && activity.standardId) {
       const competencyResult = await fetchMutation(api.activities.updateCompetency, {
-        studentId: userId as any,
+        studentId: userId as never,
         standardId: activity.standardId,
-        activityId: activityId as any,
+        activityId: activityId as never,
         masteryIncrement: 10,
       });
       masteryUpdate = { newLevel: competencyResult.newLevel };

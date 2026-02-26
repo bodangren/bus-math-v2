@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
 import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
@@ -18,6 +19,16 @@ type CompletePhasePayload = z.infer<typeof CompletePhaseSchema> & CompletePhaseR
 
 export async function POST(request: Request) {
   try {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Please sign in to complete phases.' },
+        { status: 401 }
+      );
+    }
+
+    const userId = claims.sub;
+
     const body = await request.json();
     const validationResult = CompletePhaseSchema.safeParse(body);
 
@@ -38,14 +49,6 @@ export async function POST(request: Request) {
       idempotencyKey,
       linkedStandardId,
     }: CompletePhasePayload = validationResult.data;
-
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Please sign in to complete phases.' },
-        { status: 401 }
-      );
-    }
 
     const serverTimestamp = new Date().toISOString();
 

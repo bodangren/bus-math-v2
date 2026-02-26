@@ -2,7 +2,7 @@ import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { eq } from 'drizzle-orm';
-import { createClient } from '@/lib/supabase/server';
+import { getServerSessionClaims } from '@/lib/auth/server';
 import { db } from '@/lib/db/drizzle';
 import { profiles } from '@/lib/db/schema';
 import { fetchGradebookData } from '@/lib/teacher/gradebook-data';
@@ -21,10 +21,8 @@ export default async function UnitGradebookPage({ params }: PageProps) {
   }
 
   // Auth
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect(`/auth/login?redirect=/teacher/units/${unitNumber}`);
   }
 
@@ -36,7 +34,7 @@ export default async function UnitGradebookPage({ params }: PageProps) {
       organizationId: profiles.organizationId,
     })
     .from(profiles)
-    .where(eq(profiles.id, user.id))
+    .where(eq(profiles.id, claims.sub))
     .limit(1);
 
   if (!teacher) {

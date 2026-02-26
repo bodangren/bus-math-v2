@@ -1,49 +1,12 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { SESSION_COOKIE_NAME, getAuthJwtSecret } from "@/lib/auth/constants";
+import { verifySessionToken } from "@/lib/auth/session";
+
 export async function proxy(request: NextRequest) {
-  // Debug logging to verify proxy execution
-  console.log(`[Proxy] Processing request: ${request.nextUrl.pathname}`);
-
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
-
-  // Create Supabase server client for proxy
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
-          );
-        },
-      },
-    },
-  );
-
-  // Refresh session with error handling
-  let user = null;
-  try {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  } catch (error) {
-    console.error('[Proxy] Auth error:', error);
-    // Treat fetch errors as unauthenticated to prevent 502 crashes
-  }
-
   const path = request.nextUrl.pathname;
+
+  const response = NextResponse.next({ request });
 
   const publicPageRoutes = [
     '/',
@@ -69,37 +32,26 @@ export async function proxy(request: NextRequest) {
 
   // Allow access to public routes without authentication
   if (isPublicPageRoute || isPublicApiRoute) {
-    return supabaseResponse;
+    return response;
   }
 
+  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  const claims = token ? await verifySessionToken(token, getAuthJwtSecret()) : null;
+
   // Redirect unauthenticated users to login
-  if (!user) {
+  if (!claims) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/auth/login';
     redirectUrl.searchParams.set('redirect', path);
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Fetch user profile to check role
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  if (!profile) {
-    // User has no profile, redirect to login
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/auth/login';
-    return NextResponse.redirect(redirectUrl);
-  }
-
   // Role-based route protection
   if (path.startsWith('/teacher')) {
     // Teacher routes require teacher role
-    if (profile.role !== 'teacher' && profile.role !== 'admin') {
+    if (claims.role !== 'teacher' && claims.role !== 'admin') {
       // Students trying to access teacher routes get redirected to student area
-      if (profile.role === 'student') {
+      if (claims.role === 'student') {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.pathname = '/student/dashboard';
         return NextResponse.redirect(redirectUrl);
@@ -113,14 +65,14 @@ export async function proxy(request: NextRequest) {
 
   if (path.startsWith('/student')) {
     // Student routes require student or teacher role
-    if (profile.role !== 'student' && profile.role !== 'teacher' && profile.role !== 'admin') {
+    if (claims.role !== 'student' && claims.role !== 'teacher' && claims.role !== 'admin') {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth/login';
       return NextResponse.redirect(redirectUrl);
     }
   }
 
-  return supabaseResponse;
+  return response;
 }
 
 export const config = {

@@ -2,22 +2,20 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { eq } from 'drizzle-orm';
-import { createClient } from '@/lib/supabase/server';
+import { getServerSessionClaims } from '@/lib/auth/server';
 import { db } from '@/lib/db/drizzle';
 import { profiles } from '@/lib/db/schema';
 import { fetchCourseOverviewData } from '@/lib/teacher/course-overview-data';
 import { CourseOverviewGrid } from '@/components/teacher/CourseOverviewGrid';
 
 export default async function CourseGradebookPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) redirect('/auth/login?redirect=/teacher/gradebook');
+  const claims = await getServerSessionClaims();
+  if (!claims) redirect('/auth/login?redirect=/teacher/gradebook');
 
   const [teacher] = await db
     .select({ id: profiles.id, username: profiles.username, role: profiles.role, organizationId: profiles.organizationId })
     .from(profiles)
-    .where(eq(profiles.id, user.id))
+    .where(eq(profiles.id, claims.sub))
     .limit(1);
 
   if (!teacher) redirect('/auth/login');

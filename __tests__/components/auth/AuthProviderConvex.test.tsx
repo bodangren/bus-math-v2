@@ -2,24 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { AuthProvider, useAuth } from '../../../components/auth/AuthProvider';
 
-// Mock Convex
-vi.mock('convex/react', () => ({
-  useQuery: vi.fn(),
-  useMutation: vi.fn(),
-  ConvexProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
-
-vi.mock('@/convex/_generated/api', () => ({
-  api: {
-    profiles: {
-      getProfileByUsername: 'profiles:getProfileByUsername',
-    },
-    auth: {
-      signIn: 'auth:signIn',
-      signOut: 'auth:signOut',
-    },
-  },
-}));
+const mockFetch = vi.fn();
 
 // Test component that uses the auth context
 function TestComponent() {
@@ -40,15 +23,13 @@ function TestComponent() {
 describe('components/auth/AuthProvider (Convex Migration)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('fetch', mockFetch);
+    mockFetch.mockResolvedValue(
+      new Response(JSON.stringify({ authenticated: false }), { status: 200 }),
+    );
   });
 
-  it('provides auth context using Convex', async () => {
-    const { useQuery } = await import('convex/react');
-    const { api } = await import('@/convex/_generated/api');
-
-    // Mock no user
-    (useQuery as any).mockReturnValue(null);
-
+  it('loads unauthenticated state from session endpoint', async () => {
     render(
       <AuthProvider>
         <TestComponent />
@@ -62,18 +43,27 @@ describe('components/auth/AuthProvider (Convex Migration)', () => {
     });
   });
 
-  it('provides profile when user is found in Convex', async () => {
-    const { useQuery } = await import('convex/react');
-    
-    const mockProfile = {
-      _id: 'user-123',
-      username: 'demo_student',
-      role: 'student',
-      displayName: 'Demo Student',
-    };
-
-    // Mock user found (this logic might change based on how we track "current user" in Convex)
-    (useQuery as any).mockReturnValue(mockProfile);
+  it('loads authenticated user from session endpoint', async () => {
+    mockFetch.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          authenticated: true,
+          user: { id: 'user-123', username: 'demo_student' },
+          profile: {
+            id: 'user-123',
+            organization_id: 'org-123',
+            username: 'demo_student',
+            role: 'student',
+            display_name: 'Demo Student',
+            avatar_url: null,
+            metadata: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+        }),
+        { status: 200 },
+      ),
+    );
 
     render(
       <AuthProvider>

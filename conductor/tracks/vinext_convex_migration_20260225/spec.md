@@ -10,7 +10,12 @@ Migrate the `bus-math-v2` Next.js frontend to use the Cloudflare Vinext plugin (
 2. **Backend Migration:**
    - Define Convex schema based on existing Supabase SQL schemas.
    - Create Convex queries and mutations to replace Supabase API calls.
-   - Migrate authentication from Supabase Auth to Convex Auth (`@convex-dev/auth`).
+   - Migrate authentication from Supabase Auth to Convex-backed username/password auth.
+   - Authentication model constraints:
+     - username/password only (no self-registration)
+     - no email verification / reset-link / OTP / MFA flows
+     - accounts are teacher/admin provisioned
+     - middleware-guarded private routes with JWT role claims
 3. **Data Migration:**
    - Export existing data from Supabase and import to Convex via Convex's import tools or custom scripts.
 

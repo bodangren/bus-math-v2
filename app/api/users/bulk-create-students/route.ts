@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { getRequestSessionClaims } from "@/lib/auth/server";
 
 // ── helpers (ported from supabase/functions/bulk-create-students/logic.ts) ──
 
@@ -69,13 +69,8 @@ interface StudentInput {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -99,7 +94,7 @@ export async function POST(request: Request) {
     const { data: teacherProfile, error: teacherProfileError } = await admin
       .from("profiles")
       .select("id, role, organization_id")
-      .eq("id", user.id)
+      .eq("id", claims.sub)
       .maybeSingle();
 
     if (teacherProfileError || !teacherProfile) {

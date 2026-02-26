@@ -1,26 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { redirect } from 'next/navigation';
 
-import StudentDashboard from '../../../../app/student/dashboard/page';
+const mockGetServerSessionClaims = vi.fn();
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: () => ({
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: { id: 'user-1', email: 'test@example.com' } },
-      }),
-    },
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(() => {
+    throw new Error('NEXT_REDIRECT');
   }),
+}));
+
+vi.mock('@/lib/auth/server', () => ({
+  getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
 const mockQuery = vi.fn();
 vi.mock('convex/browser', () => ({
   ConvexHttpClient: class {
-    constructor() {}
     query = mockQuery;
   },
 }));
 
-// Provide minimal mocked Convex APIs
 vi.mock('@/convex/_generated/api', () => ({
   api: {
     student: {
@@ -29,62 +28,35 @@ vi.mock('@/convex/_generated/api', () => ({
   },
 }));
 
+const { default: StudentDashboard } = await import('../../../../app/student/dashboard/page');
+
 describe('StudentDashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  it('uses versioned phase counts for progress calculations via Convex', async () => {
-    mockQuery.mockResolvedValueOnce([
-      {
-        unitNumber: 1,
-        unitTitle: 'Unit 1',
-        lessons: [
-          {
-            id: 'lesson-1',
-            unitNumber: 1,
-            title: 'Versioned Lesson',
-            slug: 'legacy-lesson',
-            description: 'Versioned description',
-            totalPhases: 2,
-            completedPhases: 1,
-            progressPercentage: 50,
-          },
-        ],
-      },
-    ]);
-
-    const jsx = await StudentDashboard();
-    expect(jsx).toBeDefined();
-    
-    // Ensure the Convex query was called with the right user ID
-    expect(mockQuery).toHaveBeenCalledWith('api.student.getDashboardData', {
-      userId: 'user-1',
+    mockGetServerSessionClaims.mockResolvedValue({
+      sub: 'profile_1',
+      username: 'student_one',
+      role: 'student',
+      iat: 1,
+      exp: 2,
     });
   });
 
-  it('returns zero-phase progress when no lesson versions exist', async () => {
-    mockQuery.mockResolvedValueOnce([
-      {
-        unitNumber: 1,
-        unitTitle: 'Unit 1',
-        lessons: [
-          {
-            id: 'lesson-1',
-            unitNumber: 1,
-            title: 'Legacy Lesson',
-            slug: 'legacy-lesson',
-            description: 'Legacy description',
-            totalPhases: 0,
-            completedPhases: 0,
-            progressPercentage: 0,
-          },
-        ],
-      },
-    ]);
+  it('redirects unauthenticated users to login', async () => {
+    mockGetServerSessionClaims.mockResolvedValue(null);
+
+    await expect(StudentDashboard()).rejects.toThrow('NEXT_REDIRECT');
+    expect(redirect).toHaveBeenCalledWith('/auth/login');
+  });
+
+  it('queries dashboard data with profile id from session claims', async () => {
+    mockQuery.mockResolvedValue([]);
 
     const jsx = await StudentDashboard();
+
     expect(jsx).toBeDefined();
-    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQuery).toHaveBeenCalledWith('api.student.getDashboardData', {
+      userId: 'profile_1',
+    });
   });
 });
