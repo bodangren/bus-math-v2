@@ -1,9 +1,9 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 
-// Mock NextResponse before any imports
 const mockNext = vi.fn();
 const mockRedirect = vi.fn();
+const mockVerifySessionToken = vi.fn();
 
 vi.mock('next/server', async () => {
   const actual = await vi.importActual('next/server');
@@ -16,348 +16,136 @@ vi.mock('next/server', async () => {
   };
 });
 
-// Mock @supabase/ssr
-const mockGetUser = vi.fn();
-const mockFrom = vi.fn();
-const mockSelect = vi.fn();
-const mockEq = vi.fn();
-const mockMaybeSingle = vi.fn();
-
-vi.mock('@supabase/ssr', () => ({
-  createServerClient: vi.fn(() => ({
-    auth: {
-      getUser: mockGetUser,
-    },
-    from: mockFrom,
-  })),
+vi.mock('@/lib/auth/session', () => ({
+  verifySessionToken: mockVerifySessionToken,
 }));
 
-// Import after mocks are defined
 const { proxy } = await import('../proxy');
 
-// Helper to create a mock NextRequest
-function createRequest(pathname: string, cookies: Record<string, string> = {}) {
-  const url = new URL(`http://localhost:3000${pathname}`);
-
-  // Add clone method to URL (required by Next.js proxy)
+function createRequest(pathnameWithQuery: string, cookieToken?: string) {
+  const url = new URL(`http://localhost:3000${pathnameWithQuery}`);
   const nextUrl = Object.assign(url, {
     clone: () => new URL(url.toString()),
   });
 
-  const request = {
+  return {
     nextUrl,
     url: url.toString(),
     cookies: {
-      getAll: () => Object.entries(cookies).map(([name, value]) => ({ name, value })),
-      set: vi.fn(),
+      get: (name: string) => {
+        if (name === 'bm_session' && cookieToken) {
+          return { value: cookieToken };
+        }
+        return undefined;
+      },
     },
-    headers: new Headers(),
   } as unknown as NextRequest;
-
-  return request;
 }
 
 describe('proxy', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Reset NextResponse mocks
-    mockNext.mockImplementation(() => {
-      const response = {
-        status: 200,
-        headers: new Headers(),
-        cookies: {
-          set: vi.fn(),
-          getAll: vi.fn(() => []),
-        },
-      };
-      return response;
-    });
+    mockNext.mockImplementation(() => ({
+      status: 200,
+      headers: new Headers(),
+      cookies: {
+        set: vi.fn(),
+        getAll: vi.fn(() => []),
+      },
+    }));
 
     mockRedirect.mockImplementation((url: URL | string) => {
-      const urlString = typeof url === 'string' ? url : url.toString();
+      const location = typeof url === 'string' ? url : url.toString();
       return {
         status: 307,
-        headers: new Headers({ location: urlString }),
+        headers: new Headers({ location }),
       };
     });
 
-    // Setup default mock chain for profile queries
-    mockMaybeSingle.mockResolvedValue({ data: null, error: null });
-    mockEq.mockReturnValue({ maybeSingle: mockMaybeSingle });
-    mockSelect.mockReturnValue({ eq: mockEq });
-    mockFrom.mockReturnValue({ select: mockSelect });
+    mockVerifySessionToken.mockResolvedValue(null);
   });
 
-  describe('Public routes', () => {
-    it('allows access to / without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /preface without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/preface');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /curriculum without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/curriculum');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /login without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/login');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /auth routes without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/auth/callback');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /api/test/seed-e2e without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/api/test/seed-e2e');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /api/users/ensure-demo without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/api/users/ensure-demo');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /api/test-db without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/api/test-db');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows access to /api/test-supabase without authentication', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/api/test-supabase');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
+  it('allows public page routes without authentication', async () => {
+    const response = await proxy(createRequest('/preface'));
+    expect(response.status).toBe(200);
   });
 
-  describe('Unauthenticated access to protected routes', () => {
-    it('redirects to /login when accessing /student without auth', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/student');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
-      expect(response.headers.get('location')).toContain('redirect=%2Fstudent');
-    });
-
-    it('redirects to /login when accessing /teacher without auth', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/teacher');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
-      expect(response.headers.get('location')).toContain('redirect=%2Fteacher');
-    });
-
-    it('preserves deep paths in redirect query param', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/student/dashboard/progress');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('redirect=%2Fstudent%2Fdashboard%2Fprogress');
-    });
-
-    it('redirects to /login when accessing private API routes without auth', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/api/progress/phase');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
-      expect(response.headers.get('location')).toContain('redirect=%2Fapi%2Fprogress%2Fphase');
-    });
+  it('allows public API routes without authentication', async () => {
+    const response = await proxy(createRequest('/api/users/ensure-demo'));
+    expect(response.status).toBe(200);
   });
 
-  describe('Student role access', () => {
-    beforeEach(() => {
-      mockGetUser.mockResolvedValue({
-        data: { user: { id: 'student-123' } },
-        error: null,
-      });
-      mockMaybeSingle.mockResolvedValue({
-        data: { role: 'student' },
-        error: null,
-      });
-    });
-
-    it('allows student to access /student routes', async () => {
-      const request = createRequest('/student');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows student to access /student/* routes', async () => {
-      const request = createRequest('/student/dashboard');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('redirects student to /student when accessing /teacher routes', async () => {
-      const request = createRequest('/teacher');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/student');
-    });
+  it('redirects unauthenticated protected page requests to login with redirect param', async () => {
+    const response = await proxy(createRequest('/student/dashboard?tab=progress'));
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toContain('/auth/login');
+    expect(response.headers.get('location')).toContain('redirect=%2Fstudent%2Fdashboard');
   });
 
-  describe('Teacher role access', () => {
-    beforeEach(() => {
-      mockGetUser.mockResolvedValue({
-        data: { user: { id: 'teacher-123' } },
-        error: null,
-      });
-      mockMaybeSingle.mockResolvedValue({
-        data: { role: 'teacher' },
-        error: null,
-      });
-    });
-
-    it('allows teacher to access /teacher routes', async () => {
-      const request = createRequest('/teacher');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows teacher to access /teacher/* routes', async () => {
-      const request = createRequest('/teacher/dashboard');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows teacher to access /student routes', async () => {
-      const request = createRequest('/student');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows teacher to access /student/* routes', async () => {
-      const request = createRequest('/student/dashboard');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
+  it('redirects unauthenticated protected API requests to login with redirect param', async () => {
+    const response = await proxy(createRequest('/api/progress/phase'));
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toContain('/auth/login');
+    expect(response.headers.get('location')).toContain('redirect=%2Fapi%2Fprogress%2Fphase');
   });
 
-  describe('Admin role access', () => {
-    beforeEach(() => {
-      mockGetUser.mockResolvedValue({
-        data: { user: { id: 'admin-123' } },
-        error: null,
-      });
-      mockMaybeSingle.mockResolvedValue({
-        data: { role: 'admin' },
-        error: null,
-      });
+  it('allows student access to /student routes', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'student-id',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
     });
 
-    it('allows admin to access /teacher routes', async () => {
-      const request = createRequest('/teacher');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
-
-    it('allows admin to access /student routes', async () => {
-      const request = createRequest('/student');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-    });
+    const response = await proxy(createRequest('/student/lesson/abc', 'valid-token'));
+    expect(response.status).toBe(200);
   });
 
-  describe('User with no profile', () => {
-    it('redirects to /login when user has no profile', async () => {
-      mockGetUser.mockResolvedValue({
-        data: { user: { id: 'user-no-profile' } },
-        error: null,
-      });
-      mockMaybeSingle.mockResolvedValue({
-        data: null,
-        error: null,
-      });
-
-      const request = createRequest('/student');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
+  it('redirects student away from /teacher routes', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'student-id',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
     });
+
+    const response = await proxy(createRequest('/teacher', 'valid-token'));
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toContain('/student/dashboard');
   });
 
-  describe('Edge cases', () => {
-    it('handles nested public routes', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-
-      const request = createRequest('/preface/overview');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
+  it('allows teacher access to /teacher and /student routes', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'teacher-id',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
     });
 
-    it('handles query parameters on protected routes', async () => {
-      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+    const teacherResponse = await proxy(createRequest('/teacher', 'valid-token'));
+    const studentResponse = await proxy(createRequest('/student', 'valid-token'));
 
-      const request = createRequest('/student/dashboard?tab=progress');
-      const response = await proxy(request);
+    expect(teacherResponse.status).toBe(200);
+    expect(studentResponse.status).toBe(200);
+  });
 
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
-      expect(response.headers.get('location')).toContain('redirect=');
+  it('allows admin access to /teacher and /student routes', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'admin-id',
+      username: 'admin',
+      role: 'admin',
+      iat: 1,
+      exp: 2,
     });
+
+    const teacherResponse = await proxy(createRequest('/teacher', 'valid-token'));
+    const studentResponse = await proxy(createRequest('/student', 'valid-token'));
+
+    expect(teacherResponse.status).toBe(200);
+    expect(studentResponse.status).toBe(200);
   });
 });

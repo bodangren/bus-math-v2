@@ -80,9 +80,13 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
 SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
 DATABASE_URL=<your-database-url>
 DIRECT_URL=<your-direct-database-url>
+NEXT_PUBLIC_CONVEX_URL=<your-convex-url>
+CONVEX_DEPLOY_KEY=<server-only deploy key for internal Convex calls>
+AUTH_JWT_SECRET=<server-only JWT secret for session cookies>
 ```
 
 For local development, these are pre-configured in `.env.local` to use local Supabase.
+Keep `CONVEX_DEPLOY_KEY` and `AUTH_JWT_SECRET` server-only and never expose them via `NEXT_PUBLIC_*`.
 
 ## Project Structure
 
