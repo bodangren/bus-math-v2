@@ -32,6 +32,7 @@ export const IDS = {
     5: 'd6b57545-65f6-4c39-80d5-000300000500',
     6: 'd6b57545-65f6-4c39-80d5-000300000600',
   },
+  ACTIVITY_GUIDED_PRACTICE: 'd6b57545-65f6-4c39-80d5-000300001002',
   ACTIVITY_EXIT_TICKET: 'd6b57545-65f6-4c39-80d5-000300001001',
 } as const;
 
@@ -204,6 +205,7 @@ To sum all Equity: \`=SUMIF(CategoryColumn,"E",BalanceColumn)\`
 Then create an equation-check cell: \`=B_Assets - (B_Liabilities + B_Equity)\`
 
 If this cell shows **0**, your equation balances. If it shows anything else, there's a misclassification or missing entry.`),
+        activity(IDS.ACTIVITY_GUIDED_PRACTICE, true),
         text(`## Discussion Questions
 
 After you've traced all five events:
@@ -316,6 +318,66 @@ You'll learn:
     },
   ],
   activities: [
+    {
+      id: IDS.ACTIVITY_GUIDED_PRACTICE,
+      componentKey: 'fill-in-the-blank',
+      displayName: 'Guided Practice: Event Effects Check (L3)',
+      description: 'Complete key statements about how each event changes Assets, Liabilities, and Equity.',
+      props: {
+        title: 'Guided Practice: Trace Event Effects',
+        description: 'Fill in each blank to verify the dual-impact pattern before the exit ticket.',
+        showExplanations: true,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 6000, max: 15000, step: 100 },
+            liabilities: { min: 2000, max: 9000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'If assets are {{assets}} and liabilities are {{liabilities}}, compute equity.',
+          tolerance: 1,
+        },
+        sentences: [
+          {
+            id: 'gp-1',
+            text: 'When TechStart receives an unpaid utility bill, Accounts Payable increases and {blank} decreases.',
+            answer: 'Equity',
+            alternativeAnswers: ['equity', 'owner equity'],
+            hint: 'Think about which side absorbs expenses.',
+            explanation: 'An unpaid expense raises a liability and reduces equity at the same time.',
+          },
+          {
+            id: 'gp-2',
+            text: 'When a client pays an old Accounts Receivable balance, {blank} increases and Accounts Receivable decreases.',
+            answer: 'Cash',
+            alternativeAnswers: ['cash'],
+            hint: 'The customer is paying now.',
+            explanation: 'This event swaps one asset for another, so total assets stay the same.',
+          },
+          {
+            id: 'gp-3',
+            text: 'Paying bank loan principal decreases Cash and {blank}.',
+            answer: 'Bank Loan',
+            alternativeAnswers: ['bank loan', 'liabilities', 'liability'],
+            hint: 'A debt account is being reduced.',
+            explanation: 'Principal payments reduce both an asset and a liability.',
+          },
+          {
+            id: 'gp-4',
+            text: 'Buying equipment with cash keeps total Assets {blank} because one asset rises while another falls.',
+            answer: 'unchanged',
+            alternativeAnswers: ['the same', 'constant', 'equal'],
+            hint: 'No net gain or loss in assets.',
+            explanation: 'This is an asset rearrangement event.',
+          },
+        ],
+      },
+      gradingConfig: {
+        autoGrade: false,
+        passingScore: 70,
+        partialCredit: true,
+      },
+    },
     {
       id: IDS.ACTIVITY_EXIT_TICKET,
       componentKey: 'comprehension-quiz',

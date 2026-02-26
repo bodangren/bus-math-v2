@@ -65,6 +65,8 @@ describe('Lesson 03 seed data — Apply A/L/E to Business Events (ACC-1.4)', () 
     const guided = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 3);
     const independent = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 4);
     const assessment = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 5);
+    const assessmentActivitySection = assessment?.sections.find(s => s.sectionType === 'activity');
+    const exitTicketActivityId = (assessmentActivitySection?.content as Record<string, unknown> | undefined)?.activityId;
 
     const hasExitTicket = (phaseNumber: number) => {
       const phase = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === phaseNumber);
@@ -73,7 +75,7 @@ describe('Lesson 03 seed data — Apply A/L/E to Business Events (ACC-1.4)', () 
       return phase.sections.some((section) => {
         if (section.sectionType !== 'activity') return false;
         const content = section.content as Record<string, unknown>;
-        return content.activityId === LESSON_03_SEED_DATA.activities[0]?.id;
+        return content.activityId === exitTicketActivityId;
       });
     };
 

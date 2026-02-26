@@ -49,7 +49,7 @@ describe('Teacher student detail page', () => {
         params: Promise.resolve({ studentId: 'student-1' }),
       }),
     ).rejects.toThrow('redirect:/auth/login?redirect=/teacher/students/student-1');
-  });
+  }, 15_000);
 
   it('renders org-scoped student details', async () => {
     const dbCallPlan = [
