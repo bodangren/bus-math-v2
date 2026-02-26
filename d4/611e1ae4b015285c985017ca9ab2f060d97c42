@@ -1,0 +1,18 @@
+Task: Phase 5 / Task 1 - Run all Vitest tests to ensure parity
+
+Summary:
+- Ran full Vitest suite and identified parity blockers in curriculum seed/test expectations and flaky timeout in teacher student detail page suite.
+- Added a guided-practice activity section + activity definition to Unit 1 Lesson 3 seed data so accounting phase 3 has required interactive activity coverage.
+- Hardened Lesson 3 seed test to derive exit-ticket activity from phase 5 content rather than relying on array index ordering.
+- Stabilized teacher student detail page unauth redirect test by increasing per-test timeout to account for module-load overhead under full suite execution.
+
+Files changed:
+- supabase/seed/unit1/lesson-03.ts
+- __tests__/seed/unit1/lesson-03.test.ts
+- __tests__/app/teacher/students/[studentId]/page.test.tsx
+
+Verification:
+- CI=true npx vitest run __tests__/curriculum/activity-completeness.test.ts __tests__/curriculum/grading-config.test.ts __tests__/seed/unit1/lesson-03.test.ts
+- CI=true npx vitest run __tests__/app/teacher/students/[studentId]/page.test.tsx
+- CI=true npm test (186 files, 1031 tests passed)
+- CI=true npm run lint (fails repository-wide with pre-existing violations including generated dist artifacts)
