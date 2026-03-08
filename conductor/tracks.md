@@ -6,9 +6,6 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [~] **Track: Convex Authorization Hardening & Server Boundary Cleanup**
-  *Link: [./conductor/tracks/convex_authz_hardening_20260309/](./conductor/tracks/convex_authz_hardening_20260309/)*
-
 - [~] **Track: Migrate to Vinext and Convex**
   *Link: [./conductor/tracks/vinext_convex_migration_20260225/](./conductor/tracks/vinext_convex_migration_20260225/)*
 
@@ -22,6 +19,10 @@ This file is the source of truth for active execution order and archived track h
   *Link: [./conductor/tracks/curriculum_rigor_20260221/](./conductor/tracks/curriculum_rigor_20260221/)*
 
 ## Archive Ledger
+
+- [x] **Track: Convex Authorization Hardening & Server Boundary Cleanup**
+  *Link: [./conductor/archive/convex_authz_hardening_20260309/](./conductor/archive/convex_authz_hardening_20260309/)*
+  *Checkpoint: `2d104a0` (2026-03-09 closeout)*
 
 - [x] **Track: Convex Runtime Parity & Auth Resilience**
   *Link: [./conductor/archive/convex_runtime_auth_cleanup_20260308/](./conductor/archive/convex_runtime_auth_cleanup_20260308/)*
