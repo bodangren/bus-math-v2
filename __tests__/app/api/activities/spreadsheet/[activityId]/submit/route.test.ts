@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFetchQuery = vi.fn();
-const mockFetchMutation = vi.fn();
+const mockFetchInternalQuery = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 const mockValidateSpreadsheetData = vi.fn();
 const mockValidateSubmission = vi.fn();
 
@@ -10,20 +10,26 @@ vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
-vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
-  fetchMutation: mockFetchMutation,
-  api: {
-    activities: {
-      getProfileByUserId: 'api.activities.getProfileByUserId',
-      getProfileById: 'api.activities.getProfileById',
-      getSpreadsheetResponse: 'api.activities.getSpreadsheetResponse',
-      getActivityForValidation: 'api.activities.getActivityForValidation',
-      submitSpreadsheet: 'api.activities.submitSpreadsheet',
-      updateCompetency: 'api.activities.updateCompetency',
+vi.mock('@/lib/convex/server', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/convex/server')>(
+    '@/lib/convex/server',
+  );
+  return {
+    ...actual,
+    fetchInternalQuery: mockFetchInternalQuery,
+    fetchInternalMutation: mockFetchInternalMutation,
+    internal: {
+      activities: {
+        getProfileByUserId: 'internal.activities.getProfileByUserId',
+        getProfileById: 'internal.activities.getProfileById',
+        getSpreadsheetResponse: 'internal.activities.getSpreadsheetResponse',
+        getActivityForValidation: 'internal.activities.getActivityForValidation',
+        submitSpreadsheet: 'internal.activities.submitSpreadsheet',
+        updateCompetency: 'internal.activities.updateCompetency',
+      },
     },
-  },
-}));
+  };
+});
 
 vi.mock('@/lib/activities/spreadsheet-validation', () => ({
   validateSpreadsheetData: mockValidateSpreadsheetData,
@@ -57,15 +63,15 @@ function buildGetRequest(studentId?: string) {
 }
 
 function setDefaultFetchQueryMocks() {
-  mockFetchQuery.mockImplementation(async (name: string) => {
-    if (name === 'api.activities.getProfileByUserId') {
+  mockFetchInternalQuery.mockImplementation(async (name: string) => {
+    if (name === 'internal.activities.getProfileByUserId') {
       return {
         role: 'student',
         organizationId: 'org_1',
       };
     }
 
-    if (name === 'api.activities.getSpreadsheetResponse') {
+    if (name === 'internal.activities.getSpreadsheetResponse') {
       return {
         studentId: 'profile_student',
         spreadsheetData: [[{ value: 100 }]],
@@ -78,7 +84,7 @@ function setDefaultFetchQueryMocks() {
       };
     }
 
-    if (name === 'api.activities.getActivityForValidation') {
+    if (name === 'internal.activities.getActivityForValidation') {
       return {
         componentKey: 'spreadsheet-evaluator',
         standardId: null,
@@ -90,7 +96,7 @@ function setDefaultFetchQueryMocks() {
       };
     }
 
-    if (name === 'api.activities.getProfileById') {
+    if (name === 'internal.activities.getProfileById') {
       return {
         role: 'student',
         organizationId: 'org_1',
@@ -115,7 +121,7 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
 
     setDefaultFetchQueryMocks();
 
-    mockFetchMutation.mockResolvedValue({});
+    mockFetchInternalMutation.mockResolvedValue({});
 
     mockValidateSpreadsheetData.mockReturnValue({ isValid: true });
     mockValidateSubmission.mockReturnValue({
@@ -142,7 +148,7 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
     );
 
     expect(response.status).toBe(401);
-    expect(mockFetchQuery).not.toHaveBeenCalled();
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
   });
 
   it('uses server-side target cells and stores submission for claims subject', async () => {
@@ -162,8 +168,8 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
       [{ cell: 'A1', expectedValue: 100 }],
     );
 
-    expect(mockFetchMutation).toHaveBeenCalledWith(
-      'api.activities.submitSpreadsheet',
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith(
+      'internal.activities.submitSpreadsheet',
       expect.objectContaining({
         userId: 'profile_student',
         activityId: 'activity_123',
@@ -172,8 +178,8 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
   });
 
   it('returns 422 when server activity config is missing target cells', async () => {
-    mockFetchQuery.mockImplementation(async (name: string) => {
-      if (name === 'api.activities.getActivityForValidation') {
+    mockFetchInternalQuery.mockImplementation(async (name: string) => {
+      if (name === 'internal.activities.getActivityForValidation') {
         return {
           componentKey: 'spreadsheet-evaluator',
           standardId: null,
@@ -234,22 +240,22 @@ describe('GET /api/activities/spreadsheet/[activityId]/submit', () => {
       exp: 2,
     });
 
-    mockFetchQuery.mockImplementation(async (name: string) => {
-      if (name === 'api.activities.getProfileByUserId') {
+    mockFetchInternalQuery.mockImplementation(async (name: string) => {
+      if (name === 'internal.activities.getProfileByUserId') {
         return {
           role: 'teacher',
           organizationId: 'org_1',
         };
       }
 
-      if (name === 'api.activities.getProfileById') {
+      if (name === 'internal.activities.getProfileById') {
         return {
           role: 'student',
           organizationId: 'org_1',
         };
       }
 
-      if (name === 'api.activities.getSpreadsheetResponse') {
+      if (name === 'internal.activities.getSpreadsheetResponse') {
         return {
           studentId: 'profile_student_2',
           spreadsheetData: [[{ value: 55 }]],
@@ -282,15 +288,15 @@ describe('GET /api/activities/spreadsheet/[activityId]/submit', () => {
       exp: 2,
     });
 
-    mockFetchQuery.mockImplementation(async (name: string) => {
-      if (name === 'api.activities.getProfileByUserId') {
+    mockFetchInternalQuery.mockImplementation(async (name: string) => {
+      if (name === 'internal.activities.getProfileByUserId') {
         return {
           role: 'teacher',
           organizationId: 'org_1',
         };
       }
 
-      if (name === 'api.activities.getProfileById') {
+      if (name === 'internal.activities.getProfileById') {
         return {
           role: 'student',
           organizationId: 'org_2',

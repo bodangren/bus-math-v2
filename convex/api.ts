@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
@@ -10,7 +10,7 @@ export const getActivity = query({
   },
 });
 
-export const getProfile = query({
+export const getProfile = internalQuery({
   args: { userId: v.id("profiles") },
   handler: async (ctx, args) => {
     const profile = await ctx.db.get(args.userId);
@@ -50,7 +50,7 @@ export const getLessonBySlugOrId = query({
   },
 });
 
-export const checkNextPhaseExists = query({
+export const checkNextPhaseExists = internalQuery({
   args: {
     lessonVersionId: v.id("lesson_versions"),
     phaseNumber: v.number(),
@@ -66,7 +66,7 @@ export const checkNextPhaseExists = query({
   },
 });
 
-export const getPhaseContext = query({
+export const getPhaseContext = internalQuery({
   args: {
     lessonId: v.id("lessons"),
     phaseNumber: v.number(),
@@ -98,7 +98,7 @@ export const getPhaseContext = query({
   },
 });
 
-export const getStudentProgressByPhase = query({
+export const getStudentProgressByPhase = internalQuery({
   args: {
     userId: v.id("profiles"),
     phaseId: v.id("phase_versions"),
@@ -114,7 +114,7 @@ export const getStudentProgressByPhase = query({
   },
 });
 
-export const getStudentProgressByIdempotencyKey = query({
+export const getStudentProgressByIdempotencyKey = internalQuery({
   args: {
     userId: v.id("profiles"),
     idempotencyKey: v.string(),
@@ -129,7 +129,7 @@ export const getStudentProgressByIdempotencyKey = query({
   },
 });
 
-export const completePhaseMutation = mutation({
+export const completePhaseMutation = internalMutation({
   args: {
     userId: v.id("profiles"),
     phaseId: v.id("phase_versions"),
@@ -267,7 +267,7 @@ export const getFirstLessonSlug = query({
   },
 });
 
-export const canAccessPhase = query({
+export const canAccessPhase = internalQuery({
   args: {
     userId: v.id("profiles"),
     lessonId: v.id("lessons"),

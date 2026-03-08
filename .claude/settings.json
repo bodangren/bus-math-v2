@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": "npx eslint --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "command": "echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.env(\\..*)?$' && echo 'BLOCKED: Do not edit .env files directly — ask the user to update secrets manually.' && exit 1 || exit 0"
+      }
+    ]
+  }
+}

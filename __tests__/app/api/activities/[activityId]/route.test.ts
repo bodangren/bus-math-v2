@@ -2,18 +2,18 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { NextRequest } from 'next/server';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFetchQuery = vi.fn();
+const mockFetchInternalQuery = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
-  api: {
+  fetchInternalQuery: mockFetchInternalQuery,
+  internal: {
     api: {
-      getProfile: 'api.getProfile',
-      getActivity: 'api.getActivity',
+      getProfile: 'internal.api.getProfile',
+      getActivity: 'internal.api.getActivity',
     },
   },
 }));
@@ -60,7 +60,7 @@ describe('GET /api/activities/[activityId]', () => {
       exp: 2,
     });
 
-    mockFetchQuery
+    mockFetchInternalQuery
       .mockResolvedValueOnce({ role: 'student' })
       .mockResolvedValueOnce(fullActivity);
   });
@@ -87,6 +87,6 @@ describe('GET /api/activities/[activityId]', () => {
 
     expect(payload.gradingConfig).toBeNull();
     expect(payload.props.questions[0]).not.toHaveProperty('correctAnswer');
-    expect(mockFetchQuery).toHaveBeenNthCalledWith(1, 'api.getProfile', { userId: 'profile_123' });
+    expect(mockFetchInternalQuery).toHaveBeenNthCalledWith(1, 'internal.api.getProfile', { userId: 'profile_123' });
   });
 });

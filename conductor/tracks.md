@@ -6,6 +6,9 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
+- [~] **Track: Convex Authorization Hardening & Server Boundary Cleanup**
+  *Link: [./conductor/tracks/convex_authz_hardening_20260309/](./conductor/tracks/convex_authz_hardening_20260309/)*
+
 - [~] **Track: Migrate to Vinext and Convex**
   *Link: [./conductor/tracks/vinext_convex_migration_20260225/](./conductor/tracks/vinext_convex_migration_20260225/)*
 

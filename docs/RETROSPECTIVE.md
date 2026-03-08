@@ -149,3 +149,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Converting curriculum requirements into executable tests (`__tests__/curriculum/`) created a durable quality gate for seed authoring. This caught structural gaps quickly (missing teacher submissions, non-tiered summative layout, missing deliverables) and provided a repeatable check for future units.
 - **Lesson:** Auto-graded seed content should always include an explicit `problemTemplate` contract; without it, retest behavior and algorithmic regeneration become inconsistent. Pairing seed updates with a dedicated engine (`formula-evaluator`, `problem-generator`, `cell-validator`) keeps curriculum quality enforceable and testable without database access.
+
+### #teacher-provisioning-cleanup-2026-03-09 - Teacher Provisioning Cleanup & Demo Access Hardening
+
+- **Went well:** Pulling teacher-only checks and student-account preparation into shared helpers reduced duplicated route logic quickly while keeping Convex as the final authorization layer. Matching the bulk-import username preview to the server normalization rules removed a real teacher trust gap in the credentials workflow.
+- **Lesson:** Demo bootstrap endpoints that mint known credentials must be environment-gated even if they only call internal functions. Route-level teacher/admin checks are still worth adding when downstream mutations already enforce authorization because they prevent avoidable privileged calls and make failures clearer in tests and logs.

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
+import { isDemoProvisioningEnabled } from '@/lib/auth/demo-provisioning';
 import { generatePasswordSalt, hashPassword } from '@/lib/auth/session';
 import { fetchInternalMutation, internal } from '@/lib/convex/server';
 
@@ -12,6 +13,13 @@ const DEMO_USERS = [
 
 export async function POST() {
   try {
+    if (!isDemoProvisioningEnabled()) {
+      return NextResponse.json(
+        { error: 'Demo provisioning is unavailable in this environment' },
+        { status: 403 },
+      );
+    }
+
     const results = [] as Array<{ username: string; status: string }>;
 
     for (const user of DEMO_USERS) {

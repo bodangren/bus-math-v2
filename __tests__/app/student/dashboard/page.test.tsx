@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { redirect } from 'next/navigation';
 
-const mockGetServerSessionClaims = vi.fn();
+const { mockGetServerSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
+  mockGetServerSessionClaims: vi.fn(),
+  mockFetchInternalQuery: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(() => {
@@ -13,20 +16,20 @@ vi.mock('@/lib/auth/server', () => ({
   getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
-const mockQuery = vi.fn();
-vi.mock('convex/browser', () => ({
-  ConvexHttpClient: class {
-    query = mockQuery;
-  },
-}));
-
-vi.mock('@/convex/_generated/api', () => ({
-  api: {
-    student: {
-      getDashboardData: 'api.student.getDashboardData',
+vi.mock('@/lib/convex/server', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/convex/server')>(
+    '@/lib/convex/server',
+  );
+  return {
+    ...actual,
+    fetchInternalQuery: mockFetchInternalQuery,
+    internal: {
+      student: {
+        getDashboardData: 'internal.student.getDashboardData',
+      },
     },
-  },
-}));
+  };
+});
 
 const { default: StudentDashboard } = await import('../../../../app/student/dashboard/page');
 
@@ -50,12 +53,12 @@ describe('StudentDashboard', () => {
   });
 
   it('queries dashboard data with profile id from session claims', async () => {
-    mockQuery.mockResolvedValue([]);
+    mockFetchInternalQuery.mockResolvedValue([]);
 
     const jsx = await StudentDashboard();
 
     expect(jsx).toBeDefined();
-    expect(mockQuery).toHaveBeenCalledWith('api.student.getDashboardData', {
+    expect(mockFetchInternalQuery).toHaveBeenCalledWith('internal.student.getDashboardData', {
       userId: 'profile_1',
     });
   });

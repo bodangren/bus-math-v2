@@ -1,10 +1,14 @@
 import { z } from 'zod';
 
-import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { generatePasswordSalt, generateRandomPassword, hashPassword } from '@/lib/auth/session';
 import { fetchInternalMutation, internal } from '@/lib/convex/server';
-import type { Id } from '@/convex/_generated/dataModel';
+import {
+  getTeacherProfileId,
+  prepareStudentAccounts,
+  requireTeacherClaims,
+  toCreatedStudentResponses,
+  toStudentMutationPayloads,
+} from '@/lib/teacher/student-accounts';
 
 const studentSchema = z.object({
   firstName: z.string().trim().max(50).optional(),
@@ -22,6 +26,13 @@ export async function POST(request: Request) {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      'Only teachers can create students',
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     let body: unknown;
@@ -52,36 +63,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const preparedStudents = await Promise.all(
-      parsedBody.data.students.map(async (student) => {
-        const password = generateRandomPassword();
-        const passwordSalt = generatePasswordSalt();
-        const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
-        return {
-          firstName: student.firstName,
-          lastName: student.lastName,
-          displayName: student.displayName,
-          preferredUsername: student.username,
-          password,
-          passwordHash,
-          passwordSalt,
-          passwordHashIterations: PASSWORD_HASH_ITERATIONS,
-        };
-      }),
-    );
+    const preparedStudents = await prepareStudentAccounts(parsedBody.data.students);
 
     const result = await fetchInternalMutation(internal.auth.bulkCreateStudentAccounts, {
-      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
-      teacherProfileId: claims.sub as Id<'profiles'>,
-      students: preparedStudents.map((student) => ({
-        firstName: student.firstName,
-        lastName: student.lastName,
-        displayName: student.displayName,
-        preferredUsername: student.preferredUsername,
-        passwordHash: student.passwordHash,
-        passwordSalt: student.passwordSalt,
-        passwordHashIterations: student.passwordHashIterations,
-      })),
+      teacherProfileId: getTeacherProfileId(claims),
+      students: toStudentMutationPayloads(preparedStudents),
     });
 
     if (!result.ok) {
@@ -100,14 +86,7 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Failed to create students' }, { status: 500 });
     }
 
-    const students = result.students.map((student, index) => ({
-      studentId: student.studentId,
-      username: student.username,
-      // preparedStudents and result.students are always the same length (1:1 per input)
-      password: preparedStudents[index]!.password,
-      displayName: student.displayName,
-      email: student.email,
-    }));
+    const students = toCreatedStudentResponses(result.students, preparedStudents);
 
     return Response.json(
       {

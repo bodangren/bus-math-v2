@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
+import { fetchInternalQuery, fetchInternalMutation, internal } from '@/lib/convex/server';
 import {
   validateSpreadsheetData,
   validateSubmission,
@@ -55,7 +55,7 @@ export async function GET(
 
     const requesterId = claims.sub;
 
-    const requesterProfile = await fetchQuery(api.activities.getProfileByUserId, {
+    const requesterProfile = await fetchInternalQuery(internal.activities.getProfileByUserId, {
       userId: requesterId as never,
     });
 
@@ -75,7 +75,7 @@ export async function GET(
         );
       }
 
-      const targetProfile = await fetchQuery(api.activities.getProfileById, {
+      const targetProfile = await fetchInternalQuery(internal.activities.getProfileById, {
         profileId: requestedStudentId as never,
       });
 
@@ -93,7 +93,7 @@ export async function GET(
       targetStudentId = requestedStudentId;
     }
 
-    const response = await fetchQuery(api.activities.getSpreadsheetResponse, {
+    const response = await fetchInternalQuery(internal.activities.getSpreadsheetResponse, {
       studentId: targetStudentId as never,
       activityId: activityId as never,
     });
@@ -180,7 +180,7 @@ export async function POST(
       );
     }
 
-    const activity = await fetchQuery(api.activities.getActivityForValidation, {
+    const activity = await fetchInternalQuery(internal.activities.getActivityForValidation, {
       activityId: activityId as never,
     });
 
@@ -214,7 +214,7 @@ export async function POST(
       parsedEvaluatorProps.data.targetCells as TargetCell[]
     );
 
-    await fetchMutation(api.activities.submitSpreadsheet, {
+    await fetchInternalMutation(internal.activities.submitSpreadsheet, {
       userId: userId as never,
       activityId: activityId as never,
       spreadsheetData: payload.spreadsheetData,
@@ -225,7 +225,7 @@ export async function POST(
     let masteryUpdate: { newLevel: number } | undefined;
 
     if (validationResult.isComplete && activity.standardId) {
-      const competencyResult = await fetchMutation(api.activities.updateCompetency, {
+      const competencyResult = await fetchInternalMutation(internal.activities.updateCompetency, {
         studentId: userId as never,
         standardId: activity.standardId,
         activityId: activityId as never,

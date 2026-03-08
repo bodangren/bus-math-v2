@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -156,16 +156,15 @@ describe('PitchPresentationBuilder', () => {
   })
 
   it('allows editing section content', async () => {
-    const user = userEvent.setup()
     render(<PitchPresentationBuilder activity={mockActivity} />)
 
     // Find the main content textarea
     const contentTextarea = screen.getByPlaceholderText(/Describe your problem in detail/i)
-    await user.type(contentTextarea, 'This is a major market problem that needs solving.')
-
-    await waitFor(() => {
-      expect(contentTextarea).toHaveValue('This is a major market problem that needs solving.')
+    fireEvent.change(contentTextarea, {
+      target: { value: 'This is a major market problem that needs solving.' },
     })
+
+    expect(contentTextarea).toHaveValue('This is a major market problem that needs solving.')
   })
 
   it('allows editing business name', async () => {

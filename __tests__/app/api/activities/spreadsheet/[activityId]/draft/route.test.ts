@@ -1,20 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFetchQuery = vi.fn();
-const mockFetchMutation = vi.fn();
+const mockFetchInternalQuery = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
-  fetchMutation: mockFetchMutation,
-  api: {
+  fetchInternalQuery: mockFetchInternalQuery,
+  fetchInternalMutation: mockFetchInternalMutation,
+  internal: {
     activities: {
-      getSpreadsheetDraft: 'api.activities.getSpreadsheetDraft',
-      saveSpreadsheetDraft: 'api.activities.saveSpreadsheetDraft',
+      getSpreadsheetDraft: 'internal.activities.getSpreadsheetDraft',
+      saveSpreadsheetDraft: 'internal.activities.saveSpreadsheetDraft',
     },
   },
 }));
@@ -49,7 +49,7 @@ describe('GET /api/activities/spreadsheet/[activityId]/draft', () => {
       exp: 2,
     });
 
-    mockFetchQuery.mockResolvedValue({
+    mockFetchInternalQuery.mockResolvedValue({
       draftData: [[{ value: 100 }]],
       updatedAt: '2026-02-26T10:00:00.000Z',
     });
@@ -66,7 +66,7 @@ describe('GET /api/activities/spreadsheet/[activityId]/draft', () => {
     );
 
     expect(response.status).toBe(401);
-    expect(mockFetchQuery).not.toHaveBeenCalled();
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
   });
 
   it('returns draft for claims subject', async () => {
@@ -81,7 +81,7 @@ describe('GET /api/activities/spreadsheet/[activityId]/draft', () => {
     const body = await response.json();
     expect(body.draftData).toEqual([[{ value: 100 }]]);
 
-    expect(mockFetchQuery).toHaveBeenCalledWith('api.activities.getSpreadsheetDraft', {
+    expect(mockFetchInternalQuery).toHaveBeenCalledWith('internal.activities.getSpreadsheetDraft', {
       userId: 'profile_student',
       activityId: 'activity_123',
     });
@@ -100,7 +100,7 @@ describe('POST /api/activities/spreadsheet/[activityId]/draft', () => {
       exp: 2,
     });
 
-    mockFetchMutation.mockResolvedValue({
+    mockFetchInternalMutation.mockResolvedValue({
       updatedAt: '2026-02-26T10:00:00.000Z',
     });
   });
@@ -126,7 +126,7 @@ describe('POST /api/activities/spreadsheet/[activityId]/draft', () => {
     const body = await response.json();
     expect(body.success).toBe(true);
 
-    expect(mockFetchMutation).toHaveBeenCalledWith('api.activities.saveSpreadsheetDraft', {
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith('internal.activities.saveSpreadsheetDraft', {
       userId: 'profile_student',
       activityId: 'activity_123',
       draftData: [[{ value: 200 }]],

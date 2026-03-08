@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, api } from '@/lib/convex/server';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import type {
   LessonProgressResponse,
   PhaseProgressResponse,
@@ -36,7 +36,7 @@ export async function GET(
       );
     }
 
-    const progress = await fetchQuery(api.student.getLessonProgress, {
+    const progress = await fetchInternalQuery(internal.student.getLessonProgress, {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       userId: userId as any,
       lessonIdentifier: parsed.data.lessonId,

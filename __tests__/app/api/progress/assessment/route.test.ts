@@ -1,20 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFetchQuery = vi.fn();
-const mockFetchMutation = vi.fn();
+const mockFetchInternalQuery = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
-  fetchMutation: mockFetchMutation,
-  api: {
+  fetchInternalQuery: mockFetchInternalQuery,
+  fetchInternalMutation: mockFetchInternalMutation,
+  internal: {
     activities: {
-      getActivityById: 'api.activities.getActivityById',
-      submitAssessment: 'api.activities.submitAssessment',
+      getActivityById: 'internal.activities.getActivityById',
+      submitAssessment: 'internal.activities.submitAssessment',
     },
   },
 }));
@@ -79,8 +79,8 @@ describe('POST /api/progress/assessment', () => {
       exp: 2,
     });
 
-    mockFetchQuery.mockResolvedValue(baseActivity);
-    mockFetchMutation.mockResolvedValue(undefined);
+    mockFetchInternalQuery.mockResolvedValue(baseActivity);
+    mockFetchInternalMutation.mockResolvedValue(undefined);
   });
 
   it('returns 401 when user is not authenticated', async () => {
@@ -96,7 +96,7 @@ describe('POST /api/progress/assessment', () => {
     expect(response.status).toBe(401);
     const payload = await response.json();
     expect(payload.error).toMatch(/unauthorized/i);
-    expect(mockFetchQuery).not.toHaveBeenCalled();
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
   });
 
   it('validates the incoming payload schema', async () => {
@@ -121,7 +121,7 @@ describe('POST /api/progress/assessment', () => {
   });
 
   it('returns 404 when the activity cannot be found', async () => {
-    mockFetchQuery.mockResolvedValue(null);
+    mockFetchInternalQuery.mockResolvedValue(null);
 
     const response = await POST(
       buildRequest({
@@ -152,8 +152,8 @@ describe('POST /api/progress/assessment', () => {
     expect(payload.maxScore).toBe(2);
     expect(payload.percentage).toBe(100);
 
-    expect(mockFetchMutation).toHaveBeenCalledWith(
-      'api.activities.submitAssessment',
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith(
+      'internal.activities.submitAssessment',
       expect.objectContaining({
         userId: 'profile_123',
         activityId: baseActivity.id,
@@ -191,7 +191,7 @@ describe('POST /api/progress/assessment', () => {
   });
 
   it('returns 422 when activity grading config is not auto-gradable', async () => {
-    mockFetchQuery.mockResolvedValue({
+    mockFetchInternalQuery.mockResolvedValue({
       ...baseActivity,
       gradingConfig: {
         ...baseActivity.gradingConfig,

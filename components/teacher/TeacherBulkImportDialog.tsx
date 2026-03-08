@@ -11,6 +11,7 @@ import { Users, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { buildUsernamePreview } from "@/lib/teacher/student-usernames";
 import { TeacherCredentialsSheet } from "./TeacherCredentialsSheet";
 
 interface StudentImport {
@@ -104,7 +105,7 @@ export function TeacherBulkImportDialog() {
 
   const handleParse = () => {
     const lines = inputText.split("\n").filter((line) => line.trim().length > 0);
-    const parsed: StudentImport[] = lines.map((line) => {
+    const parsed = lines.map((line) => {
       // Try comma first, then space
       let parts = line.split(",").map((p) => p.trim());
       if (parts.length < 2) {
@@ -113,17 +114,11 @@ export function TeacherBulkImportDialog() {
 
       const firstName = parts[0] || "";
       const lastName = parts.slice(1).join(" ") || "";
-      
-      // Generate a suggested username: first.last (lowercase, alphanumeric)
-      const suggestedUsername = `${firstName}.${lastName}`
-        .toLowerCase()
-        .replace(/[^a-z0-9.]/g, "")
-        .replace(/^\.+|\.+$/g, "");
 
       return {
         firstName,
         lastName,
-        username: suggestedUsername,
+        username: "",
       };
     });
 
@@ -132,7 +127,11 @@ export function TeacherBulkImportDialog() {
       return;
     }
 
-    setStudents(parsed);
+    const usernames = buildUsernamePreview(parsed);
+    setStudents(parsed.map((student, index) => ({
+      ...student,
+      username: usernames[index] ?? "student",
+    })));
     setStep("review");
     setError(null);
   };
@@ -168,9 +167,16 @@ export function TeacherBulkImportDialog() {
   };
 
   const handleUsernameChange = (index: number, newUsername: string) => {
-    const updated = [...students];
-    updated[index].username = newUsername;
-    setStudents(updated);
+    const updated = students.map((student, studentIndex) => ({
+      ...student,
+      username: studentIndex === index ? newUsername : student.username,
+    }));
+    const normalizedUsernames = buildUsernamePreview(updated);
+
+    setStudents(updated.map((student, studentIndex) => ({
+      ...student,
+      username: normalizedUsernames[studentIndex] ?? "student",
+    })));
   };
 
   if (!isMounted) return null;
@@ -246,6 +252,9 @@ export function TeacherBulkImportDialog() {
 
                 {step === "review" && (
                   <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Usernames are normalized before account creation. Existing roster conflicts may still add a numeric suffix.
+                    </p>
                     <div className="max-h-[300px] overflow-y-auto border rounded-md">
                       <table className="w-full text-sm">
                         <thead className="sticky top-0 bg-muted border-b">

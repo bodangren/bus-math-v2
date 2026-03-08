@@ -1,10 +1,9 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-import { api } from '@/convex/_generated/api';
 import { SESSION_COOKIE_NAME, getAuthJwtSecret } from '@/lib/auth/constants';
 import { verifySessionToken } from '@/lib/auth/session';
-import { fetchQuery } from '@/lib/convex/server';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -26,7 +25,7 @@ export async function GET() {
     return NextResponse.json({ authenticated: false });
   }
 
-  const profile = await fetchQuery(api.activities.getProfileById, {
+  const profile = await fetchInternalQuery(internal.activities.getProfileById, {
     profileId: claims.sub,
   });
 

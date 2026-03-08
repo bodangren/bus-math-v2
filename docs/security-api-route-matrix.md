@@ -16,6 +16,7 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 | `/api/phases/complete` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
 | `/api/progress/assessment` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
 | `/api/progress/phase` | `POST` | Deprecated endpoint (`410 Gone`) | Do not use in runtime UI; migrate clients to `/api/phases/complete` | `n/a` |
+| `/api/users/ensure-demo` | `POST` | Public demo bootstrap endpoint | Public only for local/preview demo provisioning; explicit `403` in production-style environments | `public` (env-gated) |
 | `/api/users/create-student` | `POST` | Auth session required in handler, role enforced downstream | Private, explicit teacher/admin requirement maintained | `teacher`, `admin` |
 | `/api/users/reset-student-password` | `POST` | New teacher workflow route | Private, explicit teacher/admin role + same-organization student check | `teacher`, `admin` |
 | `/api/users/update-student` | `POST` | New teacher workflow route | Private, explicit teacher/admin role + same-organization student check | `teacher`, `admin` |
@@ -30,6 +31,7 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 - All lesson/progress/activity/student-management APIs are private unless explicitly listed otherwise.
 - Student-facing activity responses must never include answer keys (`correctAnswer`) or grading internals.
 - Test/debug endpoints must be unusable in production and optionally require `x-test-api-key` in non-production.
+- Demo bootstrap endpoints with known credentials must be explicitly environment-gated and covered by production-denial tests.
 
 ## Debug Endpoint Disposition
 - Keep and environment-gate:

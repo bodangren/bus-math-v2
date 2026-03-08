@@ -1,0 +1,9 @@
+Implemented the cleanup track and archived it. The core change is a shared Convex runtime path with server-only admin auth fallback in [config.ts](/home/daniel-bo/Desktop/bus-math-v2-experimental/lib/convex/config.ts), [admin.ts](/home/daniel-bo/Desktop/bus-math-v2-experimental/lib/convex/admin.ts), and [server.ts](/home/daniel-bo/Desktop/bus-math-v2-experimental/lib/convex/server.ts), then wiring the affected pages/providers onto the canonical URL source. I also refreshed the runtime/docs story in [README.md](/home/daniel-bo/Desktop/bus-math-v2-experimental/README.md), [product.md](/home/daniel-bo/Desktop/bus-math-v2-experimental/conductor/product.md), and [tech-stack.md](/home/daniel-bo/Desktop/bus-math-v2-experimental/conductor/tech-stack.md), and completed the archived Conductor record under [conductor/archive/convex_runtime_auth_cleanup_20260308/spec.md](/home/daniel-bo/Desktop/bus-math-v2-experimental/conductor/archive/convex_runtime_auth_cleanup_20260308/spec.md).
+
+Verification passed end to end: `npm run lint`, `CI=true npm test` with 188 files / 1041 tests passing, and `npm run build`. I also had to clean a set of pre-existing source lint failures and exclude generated/build output from ESLint so the required repo-wide lint gate could actually pass.
+
+Pushed to `origin/experimental-rewrite`. Commits:
+`36fcadb` `feat(runtime): harden Convex runtime parity and docs [model: GPT-5 Codex]`
+`cc43652` `chore(conductor): archive track 'Convex Runtime Parity & Auth Resilience' [model: GPT-5 Codex]`
+
+Unrelated local changes remain untouched in `conductor/autonomous_prompt.md` and untracked `conductor/codex-cron.log`.

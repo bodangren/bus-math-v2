@@ -43,7 +43,28 @@ describe("TeacherBulkImportDialog", () => {
     await waitFor(() => {
       expect(screen.getByText("John Doe")).toBeInTheDocument();
       expect(screen.getByText("Jane Smith")).toBeInTheDocument();
-      expect(screen.getByDisplayValue("john.doe")).toBeInTheDocument(); // Suggested username
+      expect(screen.getByDisplayValue("john_doe")).toBeInTheDocument();
+    });
+  });
+
+  it("normalizes duplicate and invalid usernames in the review step", async () => {
+    render(<TeacherBulkImportDialog />);
+    fireEvent.click(screen.getByRole("button", { name: /bulk import/i }));
+
+    const textarea = screen.getByLabelText(/student names/i);
+    fireEvent.change(textarea, {
+      target: { value: "John Doe\nJohn Doe\nPrince" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /next: review/i }));
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("john_doe")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("john_doe_02")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("prince")).toBeInTheDocument();
+      expect(
+        screen.getByText(/usernames are normalized before account creation/i),
+      ).toBeInTheDocument();
     });
   });
 

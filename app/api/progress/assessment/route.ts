@@ -5,7 +5,7 @@ import { calculateScore } from '@/lib/assessments/scoring';
 import { getRequestSessionClaims } from '@/lib/auth/server';
 import { submissionDataSchema } from '@/lib/db/schema/activity-submissions';
 import { selectActivitySchema } from '@/lib/db/schema/validators';
-import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
+import { fetchInternalQuery, fetchInternalMutation, internal } from '@/lib/convex/server';
 
 const requestSchema = z.object({
   activityId: z.string().trim().min(1),
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       return buildBadRequest('answers must include at least one entry.');
     }
 
-    const activityRecord = await fetchQuery(api.activities.getActivityById, {
+    const activityRecord = await fetchInternalQuery(internal.activities.getActivityById, {
       activityId: payload.activityId as never,
     });
 
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
 
     const userId = claims.sub;
 
-    await fetchMutation(api.activities.submitAssessment, {
+    await fetchInternalMutation(internal.activities.submitAssessment, {
       userId: userId as never,
       activityId: payload.activityId as never,
       submissionData,

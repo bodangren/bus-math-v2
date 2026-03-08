@@ -1,9 +1,8 @@
 import { cookies } from 'next/headers';
 
-import { api } from '@/convex/_generated/api';
 import { SESSION_COOKIE_NAME, getAuthJwtSecret } from '@/lib/auth/constants';
 import { verifySessionToken } from '@/lib/auth/session';
-import { fetchQuery } from '@/lib/convex/server';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 
 type SupabaseLikeUser = {
   id: string;
@@ -95,7 +94,9 @@ export async function createClient() {
               return { data: null, error: { message: `Unsupported where column: ${column}` } };
             }
 
-            const profile = await fetchQuery(api.activities.getProfileById, { profileId: value });
+            const profile = await fetchInternalQuery(internal.activities.getProfileById, {
+              profileId: value,
+            });
             if (!profile) {
               return { data: null, error: null };
             }

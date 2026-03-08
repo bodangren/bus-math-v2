@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
+import { fetchInternalQuery, fetchInternalMutation, fetchQuery, api, internal } from '@/lib/convex/server';
 import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const canAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+    const canAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
       userId: userId,
       lessonId: lesson._id,
       phaseNumber,
@@ -80,7 +80,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const phaseContext = await fetchQuery(apiAny.api.getPhaseContext, {
+    const phaseContext = await fetchInternalQuery(internal.api.getPhaseContext, {
       lessonId: lesson._id,
       phaseNumber,
     });
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
 
     const { phaseId, lessonVersionId } = phaseContext;
 
-    const existingWithKey = await fetchQuery(apiAny.api.getStudentProgressByIdempotencyKey, {
+    const existingWithKey = await fetchInternalQuery(internal.api.getStudentProgressByIdempotencyKey, {
       userId: userId,
       idempotencyKey,
     });
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
         );
       }
 
-      const nextPhaseExists = await fetchQuery(apiAny.api.checkNextPhaseExists, {
+      const nextPhaseExists = await fetchInternalQuery(internal.api.checkNextPhaseExists, {
         lessonVersionId,
         phaseNumber,
       });
@@ -127,13 +127,13 @@ export async function POST(request: Request) {
       });
     }
 
-    const existingProgress = await fetchQuery(apiAny.api.getStudentProgressByPhase, {
+    const existingProgress = await fetchInternalQuery(internal.api.getStudentProgressByPhase, {
       userId: userId,
       phaseId,
     });
 
     if (existingProgress && existingProgress.idempotencyKey && existingProgress.idempotencyKey !== idempotencyKey) {
-      const nextPhaseExists = await fetchQuery(apiAny.api.checkNextPhaseExists, {
+      const nextPhaseExists = await fetchInternalQuery(internal.api.checkNextPhaseExists, {
         lessonVersionId,
         phaseNumber,
       });
@@ -150,7 +150,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await fetchMutation(apiAny.api.completePhaseMutation, {
+    const result = await fetchInternalMutation(internal.api.completePhaseMutation, {
       userId: userId,
       phaseId,
       timeSpent,
@@ -158,7 +158,7 @@ export async function POST(request: Request) {
       linkedStandardId,
     });
 
-    const nextPhaseUnlocked = await fetchQuery(apiAny.api.checkNextPhaseExists, {
+    const nextPhaseUnlocked = await fetchInternalQuery(internal.api.checkNextPhaseExists, {
       lessonVersionId,
       phaseNumber,
     });

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { getRequestSessionClaims } from '@/lib/auth/server';
 import { fetchInternalMutation, internal } from '@/lib/convex/server';
+import { getTeacherProfileId, requireTeacherClaims } from '@/lib/teacher/student-accounts';
 import type { Id } from '@/convex/_generated/dataModel';
 
 const requestSchema = z
@@ -22,6 +23,13 @@ export async function POST(request: Request) {
     if (!claims) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      'Only teachers can manage students',
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
 
     let body: unknown;
     try {
@@ -39,8 +47,7 @@ export async function POST(request: Request) {
     }
 
     const result = await fetchInternalMutation(internal.auth.updateStudentAccount, {
-      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
-      teacherProfileId: claims.sub as Id<'profiles'>,
+      teacherProfileId: getTeacherProfileId(claims),
       studentProfileId: parsedBody.data.studentId as Id<'profiles'>,
       displayName: parsedBody.data.displayName,
       deactivate: parsedBody.data.deactivate,

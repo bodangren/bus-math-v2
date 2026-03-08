@@ -86,7 +86,7 @@ export async function resolveConvexProfileIdFromSupabaseUser(
   const username = extractUsername(user);
   if (!username) return null;
 
-  const profile = await fetchQuery(api.activities.getProfileByUsername, { username });
+  const profile = await fetchInternalQuery(internal.activities.getProfileByUsername, { username });
   return profile?.id ?? null;
 }
 

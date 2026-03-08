@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, api } from '@/lib/convex/server';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 
 const querySchema = z.object({
   studentId: z.string().trim().min(1, 'studentId is required'),
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
     const { studentId, lessonId } = parsed.data;
 
-    const teacher = await fetchQuery(api.teacher.getProfileWithOrg, {
+    const teacher = await fetchInternalQuery(internal.teacher.getProfileWithOrg, {
       userId: claims.sub,
     });
 
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const student = await fetchQuery(api.activities.getProfileById, {
+    const student = await fetchInternalQuery(internal.activities.getProfileById, {
       profileId: studentId,
     });
 
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
 
     const studentName = student.displayName ?? student.username ?? 'Unknown';
 
-    const detail = await fetchQuery(api.teacher.getSubmissionDetail, {
+    const detail = await fetchInternalQuery(internal.teacher.getSubmissionDetail, {
       studentId,
       lessonId,
       studentName,

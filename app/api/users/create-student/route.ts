@@ -1,10 +1,14 @@
 import { z } from 'zod';
 
-import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { generatePasswordSalt, generateRandomPassword, hashPassword } from '@/lib/auth/session';
 import { fetchInternalMutation, internal } from '@/lib/convex/server';
-import type { Id } from '@/convex/_generated/dataModel';
+import {
+  getTeacherProfileId,
+  prepareStudentAccounts,
+  requireTeacherClaims,
+  toCreatedStudentResponses,
+  toStudentMutationPayloads,
+} from '@/lib/teacher/student-accounts';
 
 const requestSchema = z.object({
   firstName: z.string().trim().max(50).optional(),
@@ -18,6 +22,13 @@ export async function POST(request: Request) {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      'Only teachers can create students',
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     let body: unknown;
@@ -35,22 +46,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const password = generateRandomPassword(12);
-    const passwordSalt = generatePasswordSalt();
-    const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
+    const [preparedStudent] = await prepareStudentAccounts([parsedBody.data]);
+    const [studentPayload] = toStudentMutationPayloads([preparedStudent!]);
 
     const result = await fetchInternalMutation(internal.auth.createStudentAccount, {
-      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
-      teacherProfileId: claims.sub as Id<'profiles'>,
-      student: {
-        preferredUsername: parsedBody.data.username,
-        firstName: parsedBody.data.firstName,
-        lastName: parsedBody.data.lastName,
-        displayName: parsedBody.data.displayName,
-        passwordHash,
-        passwordSalt,
-        passwordHashIterations: PASSWORD_HASH_ITERATIONS,
-      },
+      teacherProfileId: getTeacherProfileId(claims),
+      student: studentPayload!,
     });
 
     if (!result.ok) {
@@ -65,14 +66,19 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Failed to create student' }, { status: 500 });
     }
 
+    const [createdStudent] = toCreatedStudentResponses(
+      [
+        {
+          studentId: result.studentId,
+          username: result.username,
+          displayName: result.displayName,
+        },
+      ],
+      [preparedStudent!],
+    );
+
     return Response.json(
-      {
-        studentId: result.studentId,
-        username: result.username,
-        password,
-        displayName: result.displayName,
-        email: `${result.username}@internal.domain`,
-      },
+      createdStudent,
       { status: 201 },
     );
   } catch (error) {

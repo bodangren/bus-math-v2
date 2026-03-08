@@ -17008,9 +17008,6 @@ async function getInternalConvexClient() {
 async function fetchQuery(ref, args) {
   return getConvexClient$1().query(ref, args);
 }
-async function fetchMutation(ref, args) {
-  return getConvexClient$1().mutation(ref, args);
-}
 async function fetchInternalQuery(ref, args) {
   const client2 = await getInternalConvexClient();
   return client2.query(ref, args);
@@ -17019,7 +17016,7 @@ async function fetchInternalMutation(ref, args) {
   const client2 = await getInternalConvexClient();
   return client2.mutation(ref, args);
 }
-const apiAny$2 = api;
+const apiAny$1 = api;
 const CompletePhaseSchema = z.object({
   lessonId: z.string().trim().min(1, "Lesson identifier is required"),
   phaseNumber: z.number().int().positive("Phase number must be a positive integer"),
@@ -17056,7 +17053,7 @@ async function POST$e(request) {
       linkedStandardId
     } = validationResult.data;
     const serverTimestamp = (/* @__PURE__ */ new Date()).toISOString();
-    const lesson = await fetchQuery(apiAny$2.api.getLessonBySlugOrId, { identifier: lessonIdentifier });
+    const lesson = await fetchQuery(apiAny$1.api.getLessonBySlugOrId, { identifier: lessonIdentifier });
     if (!lesson) {
       return NextResponse.json(
         {
@@ -17066,7 +17063,7 @@ async function POST$e(request) {
         { status: 404 }
       );
     }
-    const canAccess = await fetchQuery(apiAny$2.api.canAccessPhase, {
+    const canAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
       userId,
       lessonId: lesson._id,
       phaseNumber
@@ -17081,7 +17078,7 @@ async function POST$e(request) {
         { status: 403 }
       );
     }
-    const phaseContext = await fetchQuery(apiAny$2.api.getPhaseContext, {
+    const phaseContext = await fetchInternalQuery(internal.api.getPhaseContext, {
       lessonId: lesson._id,
       phaseNumber
     });
@@ -17095,7 +17092,7 @@ async function POST$e(request) {
       );
     }
     const { phaseId, lessonVersionId } = phaseContext;
-    const existingWithKey = await fetchQuery(apiAny$2.api.getStudentProgressByIdempotencyKey, {
+    const existingWithKey = await fetchInternalQuery(internal.api.getStudentProgressByIdempotencyKey, {
       userId,
       idempotencyKey
     });
@@ -17109,7 +17106,7 @@ async function POST$e(request) {
           { status: 409 }
         );
       }
-      const nextPhaseExists = await fetchQuery(apiAny$2.api.checkNextPhaseExists, {
+      const nextPhaseExists = await fetchInternalQuery(internal.api.checkNextPhaseExists, {
         lessonVersionId,
         phaseNumber
       });
@@ -17121,12 +17118,12 @@ async function POST$e(request) {
         completedAt: existingWithKey.completedAt ? new Date(existingWithKey.completedAt).toISOString() : serverTimestamp
       });
     }
-    const existingProgress = await fetchQuery(apiAny$2.api.getStudentProgressByPhase, {
+    const existingProgress = await fetchInternalQuery(internal.api.getStudentProgressByPhase, {
       userId,
       phaseId
     });
     if (existingProgress && existingProgress.idempotencyKey && existingProgress.idempotencyKey !== idempotencyKey) {
-      const nextPhaseExists = await fetchQuery(apiAny$2.api.checkNextPhaseExists, {
+      const nextPhaseExists = await fetchInternalQuery(internal.api.checkNextPhaseExists, {
         lessonVersionId,
         phaseNumber
       });
@@ -17141,14 +17138,14 @@ async function POST$e(request) {
         { status: 200 }
       );
     }
-    const result = await fetchMutation(apiAny$2.api.completePhaseMutation, {
+    const result = await fetchInternalMutation(internal.api.completePhaseMutation, {
       userId,
       phaseId,
       timeSpent,
       idempotencyKey,
       linkedStandardId
     });
-    const nextPhaseUnlocked = await fetchQuery(apiAny$2.api.checkNextPhaseExists, {
+    const nextPhaseUnlocked = await fetchInternalQuery(internal.api.checkNextPhaseExists, {
       lessonVersionId,
       phaseNumber
     });
@@ -17723,7 +17720,7 @@ async function GET$8() {
     });
     return NextResponse.json({ authenticated: false });
   }
-  const profile = await fetchQuery(api.activities.getProfileById, {
+  const profile = await fetchInternalQuery(internal.activities.getProfileById, {
     profileId: claims.sub
   });
   if (!profile) {
@@ -20176,7 +20173,7 @@ async function POST$a(request) {
     if (Object.keys(payload.answers).length === 0) {
       return buildBadRequest("answers must include at least one entry.");
     }
-    const activityRecord = await fetchQuery(api.activities.getActivityById, {
+    const activityRecord = await fetchInternalQuery(internal.activities.getActivityById, {
       activityId: payload.activityId
     });
     if (!activityRecord) {
@@ -20206,7 +20203,7 @@ async function POST$a(request) {
       metadata: payload.metadata
     });
     const userId = claims.sub;
-    await fetchMutation(api.activities.submitAssessment, {
+    await fetchInternalMutation(internal.activities.submitAssessment, {
       userId,
       activityId: payload.activityId,
       submissionData,
@@ -20269,20 +20266,20 @@ async function GET$7(request) {
       );
     }
     const { studentId, lessonId } = parsed.data;
-    const teacher = await fetchQuery(api.teacher.getProfileWithOrg, {
+    const teacher = await fetchInternalQuery(internal.teacher.getProfileWithOrg, {
       userId: claims.sub
     });
     if (!teacher || teacher.role !== "teacher" && teacher.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-    const student = await fetchQuery(api.activities.getProfileById, {
+    const student = await fetchInternalQuery(internal.activities.getProfileById, {
       profileId: studentId
     });
     if (!student || student.role !== "student" || student.organizationId !== teacher.organizationId) {
       return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
     const studentName = student.displayName ?? student.username ?? "Unknown";
-    const detail = await fetchQuery(api.teacher.getSubmissionDetail, {
+    const detail = await fetchInternalQuery(internal.teacher.getSubmissionDetail, {
       studentId,
       lessonId,
       studentName
@@ -20922,6 +20919,64 @@ const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST: POST$7,
   dynamic: dynamic$3
 }, Symbol.toStringTag, { value: "Module" }));
+function isTeacherOrAdminRole(role) {
+  return role === "teacher" || role === "admin";
+}
+function requireTeacherClaims(claims, message) {
+  if (isTeacherOrAdminRole(claims.role)) {
+    return null;
+  }
+  return Response.json({ error: message }, { status: 403 });
+}
+function getTeacherProfileId(claims) {
+  return claims.sub;
+}
+async function prepareStudentAccounts(students) {
+  return Promise.all(
+    students.map(async (student) => {
+      const password = generateRandomPassword(12);
+      const passwordSalt = generatePasswordSalt();
+      const passwordHash = await hashPassword(
+        password,
+        passwordSalt,
+        PASSWORD_HASH_ITERATIONS
+      );
+      return {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        displayName: student.displayName,
+        preferredUsername: student.username,
+        password,
+        passwordHash,
+        passwordSalt,
+        passwordHashIterations: PASSWORD_HASH_ITERATIONS
+      };
+    })
+  );
+}
+function toStudentMutationPayloads(students) {
+  return students.map((student) => ({
+    firstName: student.firstName,
+    lastName: student.lastName,
+    displayName: student.displayName,
+    preferredUsername: student.preferredUsername,
+    passwordHash: student.passwordHash,
+    passwordSalt: student.passwordSalt,
+    passwordHashIterations: student.passwordHashIterations
+  }));
+}
+function formatStudentEmail(username) {
+  return `${username}@internal.domain`;
+}
+function toCreatedStudentResponses(createdStudents, preparedStudents) {
+  return createdStudents.map((student, index2) => ({
+    studentId: student.studentId,
+    username: student.username,
+    password: preparedStudents[index2].password,
+    displayName: student.displayName,
+    email: student.email ?? formatStudentEmail(student.username)
+  }));
+}
 const studentSchema = z.object({
   firstName: z.string().trim().max(50).optional(),
   lastName: z.string().trim().max(50).optional(),
@@ -20936,6 +20991,13 @@ async function POST$6(request) {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      "Only teachers can create students"
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
     let body;
     try {
@@ -20957,35 +21019,10 @@ async function POST$6(request) {
         { status: 400 }
       );
     }
-    const preparedStudents = await Promise.all(
-      parsedBody.data.students.map(async (student) => {
-        const password = generateRandomPassword();
-        const passwordSalt = generatePasswordSalt();
-        const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
-        return {
-          firstName: student.firstName,
-          lastName: student.lastName,
-          displayName: student.displayName,
-          preferredUsername: student.username,
-          password,
-          passwordHash,
-          passwordSalt,
-          passwordHashIterations: PASSWORD_HASH_ITERATIONS
-        };
-      })
-    );
+    const preparedStudents = await prepareStudentAccounts(parsedBody.data.students);
     const result = await fetchInternalMutation(internal.auth.bulkCreateStudentAccounts, {
-      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
-      teacherProfileId: claims.sub,
-      students: preparedStudents.map((student) => ({
-        firstName: student.firstName,
-        lastName: student.lastName,
-        displayName: student.displayName,
-        preferredUsername: student.preferredUsername,
-        passwordHash: student.passwordHash,
-        passwordSalt: student.passwordSalt,
-        passwordHashIterations: student.passwordHashIterations
-      }))
+      teacherProfileId: getTeacherProfileId(claims),
+      students: toStudentMutationPayloads(preparedStudents)
     });
     if (!result.ok) {
       if (result.reason === "teacher_not_found") {
@@ -20999,14 +21036,7 @@ async function POST$6(request) {
       }
       return Response.json({ error: "Failed to create students" }, { status: 500 });
     }
-    const students = result.students.map((student, index2) => ({
-      studentId: student.studentId,
-      username: student.username,
-      // preparedStudents and result.students are always the same length (1:1 per input)
-      password: preparedStudents[index2].password,
-      displayName: student.displayName,
-      email: student.email
-    }));
+    const students = toCreatedStudentResponses(result.students, preparedStudents);
     return Response.json(
       {
         totalCreated: result.totalCreated,
@@ -21036,6 +21066,13 @@ async function POST$5(request) {
     if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      "Only teachers can create students"
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
     let body;
     try {
       body = await request.json();
@@ -21049,21 +21086,11 @@ async function POST$5(request) {
         { status: 400 }
       );
     }
-    const password = generateRandomPassword(12);
-    const passwordSalt = generatePasswordSalt();
-    const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
+    const [preparedStudent] = await prepareStudentAccounts([parsedBody.data]);
+    const [studentPayload] = toStudentMutationPayloads([preparedStudent]);
     const result = await fetchInternalMutation(internal.auth.createStudentAccount, {
-      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
-      teacherProfileId: claims.sub,
-      student: {
-        preferredUsername: parsedBody.data.username,
-        firstName: parsedBody.data.firstName,
-        lastName: parsedBody.data.lastName,
-        displayName: parsedBody.data.displayName,
-        passwordHash,
-        passwordSalt,
-        passwordHashIterations: PASSWORD_HASH_ITERATIONS
-      }
+      teacherProfileId: getTeacherProfileId(claims),
+      student: studentPayload
     });
     if (!result.ok) {
       if (result.reason === "teacher_not_found") {
@@ -21074,14 +21101,18 @@ async function POST$5(request) {
       }
       return Response.json({ error: "Failed to create student" }, { status: 500 });
     }
+    const [createdStudent] = toCreatedStudentResponses(
+      [
+        {
+          studentId: result.studentId,
+          username: result.username,
+          displayName: result.displayName
+        }
+      ],
+      [preparedStudent]
+    );
     return Response.json(
-      {
-        studentId: result.studentId,
-        username: result.username,
-        password,
-        displayName: result.displayName,
-        email: `${result.username}@internal.domain`
-      },
+      createdStudent,
       { status: 201 }
     );
   } catch (error) {
@@ -21093,6 +21124,13 @@ const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   POST: POST$5
 }, Symbol.toStringTag, { value: "Module" }));
+function isDemoProvisioningEnabled(env = process.env) {
+  const vercelEnv = env.VERCEL_ENV?.trim();
+  if (vercelEnv === "preview") {
+    return true;
+  }
+  return env.NODE_ENV !== "production";
+}
 const DEMO_USERS = [
   { username: "demo_teacher", role: "teacher", password: "demo123" },
   { username: "demo_student", role: "student", password: "demo123" },
@@ -21100,6 +21138,12 @@ const DEMO_USERS = [
 ];
 async function POST$4() {
   try {
+    if (!isDemoProvisioningEnabled()) {
+      return NextResponse.json(
+        { error: "Demo provisioning is unavailable in this environment" },
+        { status: 403 }
+      );
+    }
     const results = [];
     for (const user of DEMO_USERS) {
       const profileResult = await fetchInternalMutation(internal.auth.ensureProfileByUsername, {
@@ -21145,6 +21189,13 @@ async function POST$3(request) {
     if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      "Only teachers can reset student passwords"
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
     let body;
     try {
       body = await request.json();
@@ -21162,8 +21213,7 @@ async function POST$3(request) {
     const passwordSalt = generatePasswordSalt();
     const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
     const result = await fetchInternalMutation(internal.auth.resetStudentPassword, {
-      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
-      teacherProfileId: claims.sub,
+      teacherProfileId: getTeacherProfileId(claims),
       studentProfileId: parsedBody.data.studentId,
       passwordHash,
       passwordSalt,
@@ -21211,6 +21261,13 @@ async function POST$2(request) {
     if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      "Only teachers can manage students"
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
+    }
     let body;
     try {
       body = await request.json();
@@ -21225,8 +21282,7 @@ async function POST$2(request) {
       );
     }
     const result = await fetchInternalMutation(internal.auth.updateStudentAccount, {
-      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
-      teacherProfileId: claims.sub,
+      teacherProfileId: getTeacherProfileId(claims),
       studentProfileId: parsedBody.data.studentId,
       displayName: parsedBody.data.displayName,
       deactivate: parsedBody.data.deactivate
@@ -21278,7 +21334,7 @@ async function GET$6(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = claims.sub;
-    const response = await fetchQuery(api.activities.getSpreadsheetDraft, {
+    const response = await fetchInternalQuery(internal.activities.getSpreadsheetDraft, {
       userId,
       activityId
     });
@@ -21335,7 +21391,7 @@ async function POST$1(request, { params }) {
         { status: 400 }
       );
     }
-    const result = await fetchMutation(api.activities.saveSpreadsheetDraft, {
+    const result = await fetchInternalMutation(internal.activities.saveSpreadsheetDraft, {
       userId,
       activityId,
       draftData: payload.draftData
@@ -21526,7 +21582,7 @@ async function GET$5(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const requesterId = claims.sub;
-    const requesterProfile = await fetchQuery(api.activities.getProfileByUserId, {
+    const requesterProfile = await fetchInternalQuery(internal.activities.getProfileByUserId, {
       userId: requesterId
     });
     if (!requesterProfile?.role) {
@@ -21543,7 +21599,7 @@ async function GET$5(request, { params }) {
           { status: 403 }
         );
       }
-      const targetProfile = await fetchQuery(api.activities.getProfileById, {
+      const targetProfile = await fetchInternalQuery(internal.activities.getProfileById, {
         profileId: requestedStudentId
       });
       if (!targetProfile || targetProfile.role !== "student" || targetProfile.organizationId !== requesterProfile.organizationId) {
@@ -21554,7 +21610,7 @@ async function GET$5(request, { params }) {
       }
       targetStudentId = requestedStudentId;
     }
-    const response = await fetchQuery(api.activities.getSpreadsheetResponse, {
+    const response = await fetchInternalQuery(internal.activities.getSpreadsheetResponse, {
       studentId: targetStudentId,
       activityId
     });
@@ -21629,7 +21685,7 @@ async function POST(request, { params }) {
         { status: 400 }
       );
     }
-    const activity = await fetchQuery(api.activities.getActivityForValidation, {
+    const activity = await fetchInternalQuery(internal.activities.getActivityForValidation, {
       activityId
     });
     if (!activity) {
@@ -21658,7 +21714,7 @@ async function POST(request, { params }) {
       payload.spreadsheetData,
       parsedEvaluatorProps.data.targetCells
     );
-    await fetchMutation(api.activities.submitSpreadsheet, {
+    await fetchInternalMutation(internal.activities.submitSpreadsheet, {
       userId,
       activityId,
       spreadsheetData: payload.spreadsheetData,
@@ -21667,7 +21723,7 @@ async function POST(request, { params }) {
     });
     let masteryUpdate;
     if (validationResult.isComplete && activity.standardId) {
-      const competencyResult = await fetchMutation(api.activities.updateCompetency, {
+      const competencyResult = await fetchInternalMutation(internal.activities.updateCompetency, {
         studentId: userId,
         standardId: activity.standardId,
         activityId,
@@ -22301,10 +22357,8 @@ async function StudentDashboard() {
   if (!claims) {
     redirect("/auth/login");
   }
-  const convex = new ConvexHttpClient(getConvexUrl());
-  const profileId = claims.sub;
-  const studentUnits = await convex.query(api.student.getDashboardData, {
-    userId: profileId
+  const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
+    userId: claims.sub
   });
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto p-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "max-w-4xl mx-auto", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-4xl font-bold mb-4", children: "Student Dashboard" }),
@@ -22524,10 +22578,8 @@ async function TeacherDashboardPage() {
   if (!claims) {
     redirect("/auth/login?redirect=/teacher");
   }
-  const convex = new ConvexHttpClient(getConvexUrl());
-  const profileId = claims.sub;
-  const data = await convex.query(api.teacher.getTeacherDashboardData, {
-    userId: profileId
+  const data = await fetchInternalQuery(internal.teacher.getTeacherDashboardData, {
+    userId: claims.sub
   });
   if (!data) {
     redirect("/student/dashboard");
@@ -22588,7 +22640,7 @@ const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: CourseGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
-const apiAny$1 = api;
+const internalAny = internal;
 async function GET$1(request, { params }) {
   try {
     const claims = await getRequestSessionClaims(request);
@@ -22596,7 +22648,7 @@ async function GET$1(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = claims.sub;
-    const profile = await fetchQuery(apiAny$1.api.getProfile, {
+    const profile = await fetchInternalQuery(internalAny.api.getProfile, {
       userId
     });
     if (!profile?.role) {
@@ -22615,7 +22667,7 @@ async function GET$1(request, { params }) {
     if (!activityId?.trim()) {
       return NextResponse.json({ error: "Invalid activity ID format" }, { status: 400 });
     }
-    const activity = await fetchQuery(apiAny$1.api.getActivity, {
+    const activity = await fetchInternalQuery(internalAny.api.getActivity, {
       activityId
     });
     if (!activity) {
@@ -22682,7 +22734,7 @@ async function GET(request, { params }) {
         { status: 400 }
       );
     }
-    const progress = await fetchQuery(api.student.getLessonProgress, {
+    const progress = await fetchInternalQuery(internal.student.getLessonProgress, {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       userId,
       lessonIdentifier: parsed.data.lessonId
@@ -22890,7 +22942,7 @@ async function LessonPage({ params, searchParams }) {
   );
   let userProfile = null;
   try {
-    userProfile = await fetchQuery(apiAny.activities.getProfileById, { profileId: userId });
+    userProfile = await fetchInternalQuery(internal.activities.getProfileById, { profileId: userId });
   } catch (profileError) {
     console.error("Error loading user profile from Convex:", profileError);
   }
@@ -22915,7 +22967,7 @@ async function LessonPage({ params, searchParams }) {
     }
     if (!phaseParam) {
       try {
-        const progressResponse = await fetchQuery(apiAny.student.getLessonProgress, {
+        const progressResponse = await fetchInternalQuery(internal.student.getLessonProgress, {
           userId,
           lessonIdentifier: lesson.slug
         });
@@ -22936,7 +22988,7 @@ async function LessonPage({ params, searchParams }) {
     }
     let canAccess = false;
     try {
-      canAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+      canAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
         userId,
         lessonId: convexLesson._id,
         phaseNumber: requestedPhaseNumber
@@ -22949,7 +23001,7 @@ async function LessonPage({ params, searchParams }) {
       let latestAccessiblePhase = 1;
       for (let i = lessonPhases2.length; i >= 1; i--) {
         try {
-          const phaseAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+          const phaseAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
             userId,
             lessonId: convexLesson._id,
             phaseNumber: i

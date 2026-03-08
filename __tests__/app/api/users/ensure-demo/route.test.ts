@@ -24,9 +24,24 @@ const { POST } = await import('../../../../../app/api/users/ensure-demo/route');
 describe('POST /api/users/ensure-demo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  it('returns 403 when demo provisioning is disabled in production', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    delete process.env.VERCEL_ENV;
+
+    const response = await POST();
+    const json = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(json).toEqual({ error: 'Demo provisioning is unavailable in this environment' });
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
   });
 
   it('ensures demo profiles and provisions credentials', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+
     mockFetchInternalMutation
       // teacher
       .mockResolvedValueOnce({ ok: true, created: false, profileId: 'teacher-id' })
@@ -114,6 +129,8 @@ describe('POST /api/users/ensure-demo', () => {
   });
 
   it('records profile ensure failures without attempting credential writes for that user', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+
     mockFetchInternalMutation
       // teacher ensure -> fail
       .mockResolvedValueOnce({ ok: false, reason: 'organization_not_found' })
@@ -146,6 +163,7 @@ describe('POST /api/users/ensure-demo', () => {
   });
 
   it('returns 500 when credential provisioning fails', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     mockFetchInternalMutation.mockRejectedValue(new Error('boom'));

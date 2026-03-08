@@ -1,13 +1,10 @@
 import { redirect } from "next/navigation";
 import { getServerSessionClaims } from "@/lib/auth/server";
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { getConvexUrl } from "@/lib/convex/config";
 import {
   TeacherDashboardContent,
   type StudentDashboardRow,
 } from "@/components/teacher/TeacherDashboardContent";
+import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import { fetchCourseOverviewData } from "@/lib/teacher/course-overview-data";
 
 export default async function TeacherDashboardPage() {
@@ -17,14 +14,8 @@ export default async function TeacherDashboardPage() {
     redirect("/auth/login?redirect=/teacher");
   }
 
-  // Use Convex HTTP client for server-side fetching
-  const convex = new ConvexHttpClient(getConvexUrl());
-
-  const profileId = claims.sub;
-
-  // Fetch all teacher dashboard metrics from Convex
-  const data = await convex.query(api.teacher.getTeacherDashboardData, {
-    userId: profileId as Id<"profiles">,
+  const data = await fetchInternalQuery(internal.teacher.getTeacherDashboardData, {
+    userId: claims.sub as never,
   });
 
   if (!data) {

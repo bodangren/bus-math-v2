@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
@@ -23,7 +23,7 @@ interface StudentDashboardUnitRow {
   }>;
 }
 
-export const getDashboardData = query({
+export const getDashboardData = internalQuery({
   args: { userId: v.id("profiles") },
   handler: async (ctx, args) => {
     // 1. Fetch all lessons
@@ -110,7 +110,7 @@ export const getDashboardData = query({
   },
 });
 
-export const getLessonProgress = query({
+export const getLessonProgress = internalQuery({
   args: { 
     userId: v.id("profiles"),
     lessonIdentifier: v.string() // slug or id
@@ -196,7 +196,7 @@ export const getLessonProgress = query({
   }
 });
 
-export const completePhase = mutation({
+export const completePhase = internalMutation({
   args: {
     userId: v.id("profiles"),
     lessonId: v.string(), // slug or id

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, api } from '@/lib/convex/server';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const apiAny = api as any;
+const internalAny = internal as any;
 
 export async function GET(
   request: NextRequest,
@@ -16,7 +16,7 @@ export async function GET(
 
     const userId = claims.sub;
 
-    const profile = await fetchQuery(apiAny.api.getProfile, {
+    const profile = await fetchInternalQuery(internalAny.api.getProfile, {
       userId: userId,
     });
 
@@ -39,7 +39,7 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid activity ID format' }, { status: 400 });
     }
 
-    const activity = await fetchQuery(apiAny.api.getActivity, {
+    const activity = await fetchInternalQuery(internalAny.api.getActivity, {
       activityId: activityId,
     });
 

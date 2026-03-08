@@ -4,6 +4,7 @@ import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
 import { getRequestSessionClaims } from '@/lib/auth/server';
 import { generatePasswordSalt, generateRandomPassword, hashPassword } from '@/lib/auth/session';
 import { fetchInternalMutation, internal } from '@/lib/convex/server';
+import { getTeacherProfileId, requireTeacherClaims } from '@/lib/teacher/student-accounts';
 import type { Id } from '@/convex/_generated/dataModel';
 
 const requestSchema = z.object({
@@ -16,6 +17,13 @@ export async function POST(request: Request) {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const forbiddenResponse = requireTeacherClaims(
+      claims,
+      'Only teachers can reset student passwords',
+    );
+    if (forbiddenResponse) {
+      return forbiddenResponse;
     }
 
     let body: unknown;
@@ -38,8 +46,7 @@ export async function POST(request: Request) {
     const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
 
     const result = await fetchInternalMutation(internal.auth.resetStudentPassword, {
-      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
-      teacherProfileId: claims.sub as Id<'profiles'>,
+      teacherProfileId: getTeacherProfileId(claims),
       studentProfileId: parsedBody.data.studentId as Id<'profiles'>,
       passwordHash,
       passwordSalt,

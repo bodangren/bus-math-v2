@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { LessonRenderer } from '@/components/student/LessonRenderer';
 import { getServerSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, api } from '@/lib/convex/server';
+import { fetchInternalQuery, fetchQuery, api, internal } from '@/lib/convex/server';
 import type { ContentBlock } from '@/types/curriculum';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -238,7 +238,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   // Fetch user profile from Convex to check role
   let userProfile: { role?: string } | null = null;
   try {
-    userProfile = await fetchQuery(apiAny.activities.getProfileById, { profileId: userId });
+    userProfile = await fetchInternalQuery(internal.activities.getProfileById, { profileId: userId });
   } catch (profileError) {
     console.error('Error loading user profile from Convex:', profileError);
   }
@@ -269,7 +269,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
 
     if (!phaseParam) {
       try {
-        const progressResponse = await fetchQuery(apiAny.student.getLessonProgress, {
+        const progressResponse = await fetchInternalQuery(internal.student.getLessonProgress, {
           userId,
           lessonIdentifier: lesson.slug,
         });
@@ -296,7 +296,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
 
     let canAccess = false;
     try {
-      canAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+      canAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
         userId,
         lessonId: convexLesson._id,
         phaseNumber: requestedPhaseNumber,
@@ -311,7 +311,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
 
       for (let i = lessonPhases.length; i >= 1; i--) {
         try {
-          const phaseAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+          const phaseAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
             userId,
             lessonId: convexLesson._id,
             phaseNumber: i,

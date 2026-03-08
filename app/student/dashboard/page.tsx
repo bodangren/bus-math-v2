@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSessionClaims } from "@/lib/auth/server";
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { getConvexUrl } from "@/lib/convex/config";
+import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import {
   Card,
   CardContent,
@@ -41,14 +38,8 @@ export default async function StudentDashboard() {
     redirect("/auth/login");
   }
 
-  // Use Convex HTTP client for server-side fetching
-  const convex = new ConvexHttpClient(getConvexUrl());
-
-  const profileId = claims.sub;
-
-  // Fetch the dashboard data from Convex
-  const studentUnits = await convex.query(api.student.getDashboardData, {
-    userId: profileId as Id<"profiles">,
+  const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
+    userId: claims.sub as never,
   }) as StudentDashboardUnit[];
 
   return (

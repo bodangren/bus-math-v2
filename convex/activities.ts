@@ -1,7 +1,7 @@
-import { query, mutation } from "./_generated/server";
+import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
-export const getSpreadsheetDraft = query({
+export const getSpreadsheetDraft = internalQuery({
   args: {
     userId: v.id("profiles"),
     activityId: v.id("activities"),
@@ -25,7 +25,7 @@ export const getSpreadsheetDraft = query({
   },
 });
 
-export const saveSpreadsheetDraft = mutation({
+export const saveSpreadsheetDraft = internalMutation({
   args: {
     userId: v.id("profiles"),
     activityId: v.id("activities"),
@@ -63,7 +63,7 @@ export const saveSpreadsheetDraft = mutation({
   },
 });
 
-export const getSpreadsheetResponse = query({
+export const getSpreadsheetResponse = internalQuery({
   args: {
     studentId: v.id("profiles"),
     activityId: v.id("activities"),
@@ -93,7 +93,7 @@ export const getSpreadsheetResponse = query({
   },
 });
 
-export const getActivityForValidation = query({
+export const getActivityForValidation = internalQuery({
   args: {
     activityId: v.id("activities"),
   },
@@ -112,7 +112,7 @@ export const getActivityForValidation = query({
   },
 });
 
-export const submitSpreadsheet = mutation({
+export const submitSpreadsheet = internalMutation({
   args: {
     userId: v.id("profiles"),
     activityId: v.id("activities"),
@@ -157,7 +157,7 @@ export const submitSpreadsheet = mutation({
   },
 });
 
-export const updateCompetency = mutation({
+export const updateCompetency = internalMutation({
   args: {
     studentId: v.id("profiles"),
     standardId: v.id("competency_standards"),
@@ -198,7 +198,7 @@ export const updateCompetency = mutation({
   },
 });
 
-export const getProfileByUserId = query({
+export const getProfileByUserId = internalQuery({
   args: {
     userId: v.id("profiles"),
   },
@@ -214,7 +214,7 @@ export const getProfileByUserId = query({
   },
 });
 
-export const getProfileByUsername = query({
+export const getProfileByUsername = internalQuery({
   args: {
     username: v.string(),
   },
@@ -236,7 +236,7 @@ export const getProfileByUsername = query({
   },
 });
 
-export const getProfileById = query({
+export const getProfileById = internalQuery({
   args: {
     profileId: v.id("profiles"),
   },
@@ -254,7 +254,7 @@ export const getProfileById = query({
   },
 });
 
-export const getActivityById = query({
+export const getActivityById = internalQuery({
   args: {
     activityId: v.id("activities"),
   },
@@ -276,7 +276,7 @@ export const getActivityById = query({
   },
 });
 
-export const submitAssessment = mutation({
+export const submitAssessment = internalMutation({
   args: {
     userId: v.id("profiles"),
     activityId: v.id("activities"),

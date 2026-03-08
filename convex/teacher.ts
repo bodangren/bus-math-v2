@@ -1,4 +1,4 @@
-import { query } from "./_generated/server";
+import { internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
 interface TeacherProgressSnapshot {
@@ -21,7 +21,7 @@ const DEFAULT_PHASE_NAMES: Record<number, string> = {
   6: 'Closing',
 };
 
-export const getTeacherDashboardData = query({
+export const getTeacherDashboardData = internalQuery({
   args: { userId: v.id("profiles") },
   handler: async (ctx, args) => {
     // 1. Get teacher profile
@@ -113,7 +113,7 @@ export const getTeacherDashboardData = query({
   },
 });
 
-export const getSubmissionDetail = query({
+export const getSubmissionDetail = internalQuery({
   args: {
     studentId: v.id("profiles"),
     lessonId: v.id("lessons"),
@@ -212,7 +212,7 @@ export const getSubmissionDetail = query({
   },
 });
 
-export const getProfileWithOrg = query({
+export const getProfileWithOrg = internalQuery({
   args: {
     userId: v.id("profiles"),
   },

@@ -63,6 +63,23 @@ describe('POST /api/users/create-student', () => {
   });
 
   it('returns 403 when caller is not allowed to create students', async () => {
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'student-1',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
+    const response = await POST(makeRequest({ firstName: 'Ada', lastName: 'Lovelace' }));
+    const json = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(json.error).toMatch(/only teachers/i);
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
+  });
+
+  it('surfaces forbidden responses returned by the mutation', async () => {
     mockFetchInternalMutation.mockResolvedValue({ ok: false, reason: 'forbidden' });
 
     const response = await POST(makeRequest({ firstName: 'Ada', lastName: 'Lovelace' }));

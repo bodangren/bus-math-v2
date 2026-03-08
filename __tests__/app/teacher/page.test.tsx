@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { redirect } from 'next/navigation';
 
-const mockGetServerSessionClaims = vi.fn();
+const { mockGetServerSessionClaims, mockFetchInternalQuery, mockFetchCourseOverviewData } =
+  vi.hoisted(() => ({
+    mockGetServerSessionClaims: vi.fn(),
+    mockFetchInternalQuery: vi.fn(),
+    mockFetchCourseOverviewData: vi.fn(),
+  }));
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(() => {
@@ -13,23 +18,23 @@ vi.mock('@/lib/auth/server', () => ({
   getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
-const mockQuery = vi.fn();
-vi.mock('convex/browser', () => ({
-  ConvexHttpClient: class {
-    query = mockQuery;
-  },
-}));
-
-vi.mock('@/convex/_generated/api', () => ({
-  api: {
-    teacher: {
-      getTeacherDashboardData: 'api.teacher.getTeacherDashboardData',
+vi.mock('@/lib/convex/server', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/convex/server')>(
+    '@/lib/convex/server',
+  );
+  return {
+    ...actual,
+    fetchInternalQuery: mockFetchInternalQuery,
+    internal: {
+      teacher: {
+        getTeacherDashboardData: 'internal.teacher.getTeacherDashboardData',
+      },
     },
-  },
-}));
+  };
+});
 
 vi.mock('@/lib/teacher/course-overview-data', () => ({
-  fetchCourseOverviewData: vi.fn().mockResolvedValue([]),
+  fetchCourseOverviewData: mockFetchCourseOverviewData,
 }));
 
 const { default: TeacherDashboardPage } = await import('../../../app/teacher/page');
@@ -37,6 +42,7 @@ const { default: TeacherDashboardPage } = await import('../../../app/teacher/pag
 describe('TeacherDashboardPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFetchCourseOverviewData.mockResolvedValue({ rows: [], units: [] });
     mockGetServerSessionClaims.mockResolvedValue({
       sub: 'teacher_profile_1',
       username: 'teacher_one',
@@ -54,7 +60,7 @@ describe('TeacherDashboardPage', () => {
   });
 
   it('loads teacher dashboard using profile id from session claims', async () => {
-    mockQuery.mockResolvedValue({
+    mockFetchInternalQuery.mockResolvedValue({
       teacher: {
         username: 'teacher_one',
         organizationName: 'Test School',
@@ -66,7 +72,7 @@ describe('TeacherDashboardPage', () => {
     const jsx = await TeacherDashboardPage();
 
     expect(jsx).toBeDefined();
-    expect(mockQuery).toHaveBeenCalledWith('api.teacher.getTeacherDashboardData', {
+    expect(mockFetchInternalQuery).toHaveBeenCalledWith('internal.teacher.getTeacherDashboardData', {
       userId: 'teacher_profile_1',
     });
   });

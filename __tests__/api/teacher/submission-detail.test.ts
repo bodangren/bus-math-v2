@@ -1,21 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFetchQuery = vi.fn();
+const mockFetchInternalQuery = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
-  api: {
+  fetchInternalQuery: mockFetchInternalQuery,
+  internal: {
     teacher: {
-      getProfileWithOrg: 'teacher.getProfileWithOrg',
-      getSubmissionDetail: 'teacher.getSubmissionDetail',
+      getProfileWithOrg: 'internal.teacher.getProfileWithOrg',
+      getSubmissionDetail: 'internal.teacher.getSubmissionDetail',
     },
     activities: {
-      getProfileById: 'activities.getProfileById',
+      getProfileById: 'internal.activities.getProfileById',
     },
   },
 }));
@@ -64,7 +64,7 @@ describe('GET /api/teacher/submission-detail', () => {
   });
 
   it('returns 403 when caller is not teacher/admin', async () => {
-    mockFetchQuery.mockResolvedValueOnce({
+    mockFetchInternalQuery.mockResolvedValueOnce({
       id: 'teacher_profile_1',
       role: 'student',
       organizationId: 'org_1',
@@ -81,7 +81,7 @@ describe('GET /api/teacher/submission-detail', () => {
   });
 
   it('returns 404 when student is not in teacher organization', async () => {
-    mockFetchQuery
+    mockFetchInternalQuery
       .mockResolvedValueOnce({
         id: 'teacher_profile_1',
         role: 'teacher',
@@ -104,7 +104,7 @@ describe('GET /api/teacher/submission-detail', () => {
   });
 
   it('returns submission detail for same-org student', async () => {
-    mockFetchQuery
+    mockFetchInternalQuery
       .mockResolvedValueOnce({
         id: 'teacher_profile_1',
         role: 'teacher',
@@ -133,7 +133,7 @@ describe('GET /api/teacher/submission-detail', () => {
     expect(response.status).toBe(200);
     const payload = await response.json();
     expect(payload.lessonTitle).toBe('Lesson 1');
-    expect(mockFetchQuery).toHaveBeenLastCalledWith('teacher.getSubmissionDetail', {
+    expect(mockFetchInternalQuery).toHaveBeenLastCalledWith('internal.teacher.getSubmissionDetail', {
       studentId: 'student_profile_1',
       lessonId: 'lesson_1',
       studentName: 'Alice',

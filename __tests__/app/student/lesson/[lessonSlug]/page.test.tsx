@@ -10,6 +10,9 @@ const { mockGetServerSessionClaims } = vi.hoisted(() => ({
 const { mockFetchQuery } = vi.hoisted(() => ({
   mockFetchQuery: vi.fn(),
 }));
+const { mockFetchInternalQuery } = vi.hoisted(() => ({
+  mockFetchInternalQuery: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
@@ -20,23 +23,34 @@ vi.mock('@/lib/auth/server', () => ({
   getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
-vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
-  api: {
+vi.mock('@/lib/convex/server', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/convex/server')>(
+    '@/lib/convex/server',
+  );
+  return {
+    ...actual,
+    fetchQuery: mockFetchQuery,
+    fetchInternalQuery: mockFetchInternalQuery,
     api: {
-      getLessonWithContent: 'api.api.getLessonWithContent',
-      getFirstLessonSlug: 'api.api.getFirstLessonSlug',
-      getLessonBySlugOrId: 'api.api.getLessonBySlugOrId',
-      canAccessPhase: 'api.api.canAccessPhase',
+      api: {
+        getLessonWithContent: 'api.api.getLessonWithContent',
+        getFirstLessonSlug: 'api.api.getFirstLessonSlug',
+        getLessonBySlugOrId: 'api.api.getLessonBySlugOrId',
+      },
     },
-    activities: {
-      getProfileById: 'api.activities.getProfileById',
+    internal: {
+      api: {
+        canAccessPhase: 'internal.api.canAccessPhase',
+      },
+      activities: {
+        getProfileById: 'internal.activities.getProfileById',
+      },
+      student: {
+        getLessonProgress: 'internal.student.getLessonProgress',
+      },
     },
-    student: {
-      getLessonProgress: 'api.student.getLessonProgress',
-    },
-  },
-}));
+  };
+});
 
 vi.mock('@/components/student/LessonRenderer', () => ({
   LessonRenderer: ({
@@ -125,16 +139,20 @@ function setupDefaultMocks() {
     if (name === 'api.api.getLessonWithContent') {
       return makeConvexContent();
     }
-    if (name === 'api.activities.getProfileById') {
-      return { _id: 'user-123', role: 'student' };
-    }
     if (name === 'api.api.getLessonBySlugOrId') {
       return { _id: 'cvx-lesson-1' };
     }
-    if (name === 'api.api.canAccessPhase') {
+    return null;
+  });
+
+  mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+    if (name === 'internal.activities.getProfileById') {
+      return { _id: 'user-123', role: 'student' };
+    }
+    if (name === 'internal.api.canAccessPhase') {
       return true;
     }
-    if (name === 'api.student.getLessonProgress') {
+    if (name === 'internal.student.getLessonProgress') {
       return { phases: [] };
     }
     return null;
@@ -241,10 +259,13 @@ describe('LessonPage', () => {
           ],
         };
       }
-      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
       if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
-      if (name === 'api.api.canAccessPhase') return true;
-      if (name === 'api.student.getLessonProgress') return { phases: [] };
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'internal.api.canAccessPhase') return true;
+      if (name === 'internal.student.getLessonProgress') return { phases: [] };
       return null;
     });
 
@@ -292,10 +313,13 @@ describe('LessonPage', () => {
           ],
         };
       }
-      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
       if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
-      if (name === 'api.api.canAccessPhase') return true;
-      if (name === 'api.student.getLessonProgress') return { phases: [] };
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'internal.api.canAccessPhase') return true;
+      if (name === 'internal.student.getLessonProgress') return { phases: [] };
       return null;
     });
 
@@ -315,9 +339,12 @@ describe('LessonPage', () => {
   it('shows access error page when Convex access check throws', async () => {
     mockFetchQuery.mockImplementation(async (name: unknown) => {
       if (name === 'api.api.getLessonWithContent') return makeConvexContent();
-      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
       if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
-      if (name === 'api.api.canAccessPhase') throw new Error('Database error');
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'internal.api.canAccessPhase') throw new Error('Database error');
       return null;
     });
 
@@ -332,7 +359,10 @@ describe('LessonPage', () => {
   it('allows teacher role to bypass phase locking', async () => {
     mockFetchQuery.mockImplementation(async (name: unknown) => {
       if (name === 'api.api.getLessonWithContent') return makeConvexContent();
-      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'teacher' };
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'teacher' };
       return null;
     });
 
@@ -343,15 +373,19 @@ describe('LessonPage', () => {
     render(page);
     expect(screen.getByTestId('current-phase')).toHaveTextContent('3');
     // Only getLessonWithContent + getProfileById called (no access checks for teachers)
-    expect(mockFetchQuery).toHaveBeenCalledTimes(2);
+    expect(mockFetchQuery).toHaveBeenCalledTimes(1);
+    expect(mockFetchInternalQuery).toHaveBeenCalledTimes(1);
   });
 
   it('redirects to the first incomplete phase using Convex lesson progress', async () => {
     mockFetchQuery.mockImplementation(async (name: unknown) => {
       if (name === 'api.api.getLessonWithContent') return makeConvexContent();
-      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
       if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
-      if (name === 'api.student.getLessonProgress') {
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'internal.student.getLessonProgress') {
         return {
           phases: [
             { phaseNumber: 1, status: 'completed' },
@@ -360,7 +394,7 @@ describe('LessonPage', () => {
           ],
         };
       }
-      if (name === 'api.api.canAccessPhase') return true;
+      if (name === 'internal.api.canAccessPhase') return true;
       return null;
     });
 

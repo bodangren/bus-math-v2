@@ -66,6 +66,8 @@ Both accounts are automatically seeded with the demo organization.
    npx convex run seed:seedUnit1Lesson1
    ```
 
+   Automatic demo-account provisioning through `POST /api/users/ensure-demo` is only enabled in local development and preview-style environments. Production deployments should seed demo users ahead of time instead of exposing runtime reprovisioning.
+
    For cloud-hosted server-side internal Convex calls, also set:
    ```env
    CONVEX_DEPLOY_KEY=<server-only deploy key>
@@ -140,7 +142,9 @@ bus-math-v2/
 
 - `npx convex dev` creates local runtime state under `.convex/local/`.
 - Server-side internal Convex calls use `CONVEX_DEPLOY_KEY` in cloud environments and the local Convex CLI `adminKey` in development.
-- Demo credentials can also be provisioned through `POST /api/users/ensure-demo`.
+- Identity-sensitive dashboard, progress, profile, and submission flows now run through server-only internal Convex helpers. Public page data can remain queryable, but authenticated server routes/pages should not call those sensitive functions through the public API surface.
+- Demo credentials can be reprovisioned through `POST /api/users/ensure-demo` only when demo provisioning is enabled for the current environment.
+- Teacher bulk import normalizes usernames before account creation and may add numeric suffixes to avoid collisions.
 
 ## Testing
 

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { fetchQuery, fetchMutation, api } from '@/lib/convex/server';
+import { fetchInternalQuery, fetchInternalMutation, internal } from '@/lib/convex/server';
 
 const draftSchema = z.object({
   draftData: z.array(z.array(z.any())),
@@ -28,7 +28,7 @@ export async function GET(
 
     const userId = claims.sub;
 
-    const response = await fetchQuery(api.activities.getSpreadsheetDraft, {
+    const response = await fetchInternalQuery(internal.activities.getSpreadsheetDraft, {
       userId: userId as never,
       activityId: activityId as never,
     });
@@ -96,7 +96,7 @@ export async function POST(
       );
     }
 
-    const result = await fetchMutation(api.activities.saveSpreadsheetDraft, {
+    const result = await fetchInternalMutation(internal.activities.saveSpreadsheetDraft, {
       userId: userId as never,
       activityId: activityId as never,
       draftData: payload.draftData,
