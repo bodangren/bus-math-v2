@@ -1,7 +1,7 @@
 # Tech Stack: Math for Business Operations v2
 
 ## Core Framework & Language
-- **Next.js (React 19)**: Utilizing the App Router for modern, server-centric routing and performance.
+- **Vinext (React 19 App Router runtime)**: Next-compatible routing and production builds powered by Vite/Vinext.
 - **TypeScript**: Ensuring type safety and robust developer experience across the codebase.
 
 ## Frontend & Styling
@@ -11,9 +11,9 @@
 - **Recharts**: Responsive charting library for student progress and financial data visualization.
 
 ## Backend & Database
-- **Supabase (PostgreSQL)**: Scalable relational database with built-in Auth, Realtime, and Storage features.
-- **Drizzle ORM**: Type-safe ORM for interactive database schema management and querying.
-- **Postgres.js**: High-performance PostgreSQL client.
+- **Convex**: Source of truth for curriculum, progress, teacher/student data, realtime queries, and internal functions.
+- **Custom JWT Session Auth**: Username/password credentials stored in Convex with middleware-enforced role claims.
+- **Legacy Supabase/Drizzle Assets**: Historical migration/reference material only, not the active production data path.
 
 ## Testing & Quality Assurance
 - **Vitest**: Fast, modern unit and component testing framework.

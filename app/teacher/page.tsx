@@ -3,6 +3,7 @@ import { getServerSessionClaims } from "@/lib/auth/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { getConvexUrl } from "@/lib/convex/config";
 import {
   TeacherDashboardContent,
   type StudentDashboardRow,
@@ -17,8 +18,7 @@ export default async function TeacherDashboardPage() {
   }
 
   // Use Convex HTTP client for server-side fetching
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
 
   const profileId = claims.sub;
 

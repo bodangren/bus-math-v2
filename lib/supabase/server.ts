@@ -88,7 +88,7 @@ export async function createClient() {
     }
 
     return {
-      select: (_columns: string) => ({
+      select: () => ({
         eq: (column: string, value: string) => ({
           maybeSingle: async () => {
             if (column !== 'id') {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,12 +9,10 @@ import {
   Clock,
   Wrench,
   TrendingDown,
-  ArrowRight,
   AlertTriangle,
   History,
   CheckCircle,
-  Zap,
-  DollarSign
+  Zap
 } from 'lucide-react'
 
 export interface AssetYearScenario {
@@ -36,7 +34,20 @@ export interface AssetTimeMachineProps {
       scenarios: AssetYearScenario[]
     }
   }
-  onComplete?: (results: any) => void
+  onComplete?: (results: AssetTimeMachineResult) => void
+}
+
+interface AssetHistoryEntry {
+  year: number
+  action: 'repair' | 'upgrade' | 'ignore'
+  cost: number
+  value: number
+}
+
+interface AssetTimeMachineResult {
+  totalExpenses: number
+  finalValue: number
+  history: AssetHistoryEntry[]
 }
 
 export function AssetTimeMachine({ activity, onComplete }: AssetTimeMachineProps) {
@@ -45,7 +56,7 @@ export function AssetTimeMachine({ activity, onComplete }: AssetTimeMachineProps
   const [currentValue, setCurrentValue] = useState(initialCost)
   const [totalExpenses, setTotalExpenses] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
-  const [history, setHistory] = useState<any[]>([])
+  const [history, setHistory] = useState<AssetHistoryEntry[]>([])
 
   const currentScenario = scenarios.find(s => s.year === currentYear + 1)
 

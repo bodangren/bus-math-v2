@@ -1,22 +1,19 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import {
   AlertTriangle,
   Zap,
   TrendingDown,
   TrendingUp,
   RotateCcw,
-  CheckCircle,
   Skull,
   Activity,
   DollarSign,
-  ShieldCheck,
-  ArrowRight
+  ShieldCheck
 } from 'lucide-react'
 
 export interface Disaster {
@@ -43,7 +40,7 @@ export interface BusinessStressTestProps {
       disasters: Disaster[]
     }
   }
-  onComplete?: (results: any) => void
+  onComplete?: (results: { finalCash: number; roundsSurvived: number }) => void
 }
 
 export function BusinessStressTest({ activity, onComplete }: BusinessStressTestProps) {

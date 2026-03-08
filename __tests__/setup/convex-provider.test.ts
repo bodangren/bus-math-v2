@@ -20,5 +20,6 @@ describe('ConvexProvider Integration', () => {
     expect(providerContent).toContain('"use client"');
     expect(providerContent).toContain('ConvexProvider');
     expect(providerContent).toContain('ConvexReactClient');
+    expect(providerContent).toContain('getConvexUrl');
   });
 });

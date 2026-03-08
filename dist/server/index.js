@@ -15013,6 +15013,7 @@ function MetadataHead({ metadata: metadata2 }) {
 const SESSION_COOKIE_NAME = "bm_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 12;
 const PASSWORD_HASH_ITERATIONS = 12e4;
+const PASSWORD_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 function getAuthJwtSecret() {
   const envSecret = process.env.AUTH_JWT_SECRET;
   if (envSecret && envSecret.trim().length > 0) {
@@ -15139,6 +15140,10 @@ async function verifyPassword(password, credential) {
   const a = encoder.encode(candidate);
   const b = encoder.encode(credential.passwordHash);
   return timingSafeEquals(a, b);
+}
+function generateRandomPassword(length = 12) {
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]).join("");
 }
 function generatePasswordSalt(bytes = 16) {
   const values = crypto.getRandomValues(new Uint8Array(bytes));
@@ -16919,25 +16924,85 @@ const componentsGeneric = () => createChildComponents("components", []);
 const api = anyApi;
 const internal = anyApi;
 componentsGeneric();
+function isProductionRuntime(env) {
+  return env.NODE_ENV === "production" || env.VERCEL_ENV === "production";
+}
+async function readLocalConvexAdminKey(cwd) {
+  const fs = await import("node:fs/promises");
+  const path = await import("node:path");
+  const localRoot = path.join(cwd, ".convex", "local");
+  let directoryEntries;
+  try {
+    directoryEntries = await fs.readdir(localRoot, { withFileTypes: true });
+  } catch {
+    return null;
+  }
+  const configPaths = directoryEntries.filter((entry) => entry.isDirectory()).map((entry) => path.join(localRoot, entry.name, "config.json")).sort((left, right) => left.localeCompare(right));
+  for (const configPath of configPaths) {
+    try {
+      const rawConfig = await fs.readFile(configPath, "utf8");
+      const parsedConfig = JSON.parse(rawConfig);
+      if (typeof parsedConfig.adminKey === "string" && parsedConfig.adminKey.trim().length > 0) {
+        return parsedConfig.adminKey.trim();
+      }
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+async function resolveConvexAdminAuth(options = {}) {
+  const env = options.env ?? process.env;
+  const deployKey = env.CONVEX_DEPLOY_KEY?.trim();
+  if (deployKey) {
+    return {
+      source: "deploy-key",
+      token: deployKey
+    };
+  }
+  if (isProductionRuntime(env)) {
+    throw new Error(
+      "Missing Convex admin auth. Set CONVEX_DEPLOY_KEY for production server-side internal function calls."
+    );
+  }
+  const localAdminKey = await readLocalConvexAdminKey(options.cwd ?? process.cwd());
+  if (localAdminKey) {
+    return {
+      source: "local-admin-key",
+      token: localAdminKey
+    };
+  }
+  throw new Error(
+    "Missing Convex admin auth. Start `npx convex dev` locally or set CONVEX_DEPLOY_KEY for server-side internal function calls."
+  );
+}
+const DEFAULT_LOCAL_CONVEX_HOST = "127.0.0.1";
+const DEFAULT_LOCAL_CONVEX_PORT = "3210";
+const DEFAULT_LOCAL_CONVEX_URL = `http://${DEFAULT_LOCAL_CONVEX_HOST}:${DEFAULT_LOCAL_CONVEX_PORT}`;
+function normalizeUrl(url) {
+  return url.trim().replace(/\/+$/, "");
+}
+function getConfiguredConvexUrl(env) {
+  const configuredUrl = env.CONVEX_URL?.trim() || env.NEXT_PUBLIC_CONVEX_URL?.trim();
+  return configuredUrl ? normalizeUrl(configuredUrl) : null;
+}
+function getConvexUrl(env = process.env) {
+  return getConfiguredConvexUrl(env) ?? DEFAULT_LOCAL_CONVEX_URL;
+}
 let convexClient = null;
 let internalConvexClient = null;
 function getConvexClient$1() {
   if (!convexClient) {
-    const url = "http://127.0.0.1:3210";
-    convexClient = new ConvexHttpClient(url);
+    convexClient = new ConvexHttpClient(getConvexUrl());
   }
   return convexClient;
 }
-function getInternalConvexClient() {
+async function getInternalConvexClient() {
   if (!internalConvexClient) {
-    const url = "http://127.0.0.1:3210";
-    internalConvexClient = new ConvexHttpClient(url);
+    internalConvexClient = new ConvexHttpClient(getConvexUrl());
   }
-  const deployKey = process.env.CONVEX_DEPLOY_KEY;
-  if (!deployKey) {
-    throw new Error("Missing CONVEX_DEPLOY_KEY for internal Convex calls");
-  }
-  internalConvexClient.setAdminAuth(deployKey);
+  const adminAuth = await resolveConvexAdminAuth();
+  internalConvexClient.setAdminAuth(adminAuth.token);
   return internalConvexClient;
 }
 async function fetchQuery(ref, args) {
@@ -16947,10 +17012,12 @@ async function fetchMutation(ref, args) {
   return getConvexClient$1().mutation(ref, args);
 }
 async function fetchInternalQuery(ref, args) {
-  return getInternalConvexClient().query(ref, args);
+  const client2 = await getInternalConvexClient();
+  return client2.query(ref, args);
 }
 async function fetchInternalMutation(ref, args) {
-  return getInternalConvexClient().mutation(ref, args);
+  const client2 = await getInternalConvexClient();
+  return client2.mutation(ref, args);
 }
 const apiAny$2 = api;
 const CompletePhaseSchema = z.object({
@@ -20855,7 +20922,6 @@ const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST: POST$7,
   dynamic: dynamic$3
 }, Symbol.toStringTag, { value: "Module" }));
-const PASSWORD_ALPHABET$2 = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 const studentSchema = z.object({
   firstName: z.string().trim().max(50).optional(),
   lastName: z.string().trim().max(50).optional(),
@@ -20865,10 +20931,6 @@ const studentSchema = z.object({
 const requestSchema$4 = z.object({
   students: z.array(studentSchema).min(1).max(100)
 });
-function generateRandomPassword$2(length = 8) {
-  const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return Array.from(bytes, (byte) => PASSWORD_ALPHABET$2[byte % PASSWORD_ALPHABET$2.length]).join("");
-}
 async function POST$6(request) {
   try {
     const claims = await getRequestSessionClaims(request);
@@ -20897,7 +20959,7 @@ async function POST$6(request) {
     }
     const preparedStudents = await Promise.all(
       parsedBody.data.students.map(async (student) => {
-        const password = generateRandomPassword$2();
+        const password = generateRandomPassword();
         const passwordSalt = generatePasswordSalt();
         const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
         return {
@@ -20913,6 +20975,7 @@ async function POST$6(request) {
       })
     );
     const result = await fetchInternalMutation(internal.auth.bulkCreateStudentAccounts, {
+      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
       teacherProfileId: claims.sub,
       students: preparedStudents.map((student) => ({
         firstName: student.firstName,
@@ -20939,7 +21002,8 @@ async function POST$6(request) {
     const students = result.students.map((student, index2) => ({
       studentId: student.studentId,
       username: student.username,
-      password: preparedStudents[index2]?.password ?? generateRandomPassword$2(),
+      // preparedStudents and result.students are always the same length (1:1 per input)
+      password: preparedStudents[index2].password,
       displayName: student.displayName,
       email: student.email
     }));
@@ -20960,17 +21024,12 @@ const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   POST: POST$6
 }, Symbol.toStringTag, { value: "Module" }));
-const PASSWORD_ALPHABET$1 = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 const requestSchema$3 = z.object({
   firstName: z.string().trim().max(50).optional(),
   lastName: z.string().trim().max(50).optional(),
   displayName: z.string().trim().max(80).optional(),
   username: z.string().trim().max(50).optional()
 });
-function generateRandomPassword$1(length = 12) {
-  const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return Array.from(bytes, (byte) => PASSWORD_ALPHABET$1[byte % PASSWORD_ALPHABET$1.length]).join("");
-}
 async function POST$5(request) {
   try {
     const claims = await getRequestSessionClaims(request);
@@ -20990,10 +21049,11 @@ async function POST$5(request) {
         { status: 400 }
       );
     }
-    const password = generateRandomPassword$1(12);
+    const password = generateRandomPassword(12);
     const passwordSalt = generatePasswordSalt();
     const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
     const result = await fetchInternalMutation(internal.auth.createStudentAccount, {
+      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
       teacherProfileId: claims.sub,
       student: {
         preferredUsername: parsedBody.data.username,
@@ -21075,14 +21135,10 @@ const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   POST: POST$4
 }, Symbol.toStringTag, { value: "Module" }));
-const PASSWORD_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 const requestSchema$2 = z.object({
+  // Convex IDs are opaque alphanumeric strings, not UUIDs — uuid() validation would reject them
   studentId: z.string().trim().min(1, "studentId is required")
 });
-function generateRandomPassword(length = 12) {
-  const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return Array.from(bytes, (byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]).join("");
-}
 async function POST$3(request) {
   try {
     const claims = await getRequestSessionClaims(request);
@@ -21106,6 +21162,7 @@ async function POST$3(request) {
     const passwordSalt = generatePasswordSalt();
     const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
     const result = await fetchInternalMutation(internal.auth.resetStudentPassword, {
+      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
       teacherProfileId: claims.sub,
       studentProfileId: parsedBody.data.studentId,
       passwordHash,
@@ -21140,6 +21197,7 @@ const mod_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST: POST$3
 }, Symbol.toStringTag, { value: "Module" }));
 const requestSchema$1 = z.object({
+  // Convex IDs are opaque alphanumeric strings, not UUIDs — uuid() validation would reject them
   studentId: z.string().trim().min(1, "studentId is required"),
   displayName: z.string().trim().min(1).max(80).optional(),
   deactivate: z.boolean().optional()
@@ -21167,6 +21225,7 @@ async function POST$2(request) {
       );
     }
     const result = await fetchInternalMutation(internal.auth.updateStudentAccount, {
+      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
       teacherProfileId: claims.sub,
       studentProfileId: parsedBody.data.studentId,
       displayName: parsedBody.data.displayName,
@@ -22242,8 +22301,7 @@ async function StudentDashboard() {
   if (!claims) {
     redirect("/auth/login");
   }
-  const convexUrl = "http://127.0.0.1:3210";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
   const profileId = claims.sub;
   const studentUnits = await convex.query(api.student.getDashboardData, {
     userId: profileId
@@ -22466,8 +22524,7 @@ async function TeacherDashboardPage() {
   if (!claims) {
     redirect("/auth/login?redirect=/teacher");
   }
-  const convexUrl = "http://127.0.0.1:3210";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
   const profileId = claims.sub;
   const data = await convex.query(api.teacher.getTeacherDashboardData, {
     userId: profileId
@@ -22692,7 +22749,7 @@ function contentToText(content) {
 }
 function toContentBlock(section, fallbackOrder) {
   const obj = asRecord(section.content);
-  const blockId = section.id || `section-${fallbackOrder}`;
+  const blockId = section._id || `section-${fallbackOrder}`;
   if (section.sectionType === "callout") {
     const variantRaw = obj?.variant;
     const variant = variantRaw === "why-this-matters" || variantRaw === "tip" || variantRaw === "warning" || variantRaw === "example" ? variantRaw : "tip";
@@ -22793,90 +22850,6 @@ function AccessCheckError({ lessonTitle }) {
     )
   ] }) });
 }
-async function getLessonWithPhases(slug) {
-  const [lesson] = await db.select().from(lessons).where(eq(lessons.slug, slug)).limit(1);
-  if (!lesson) {
-    return null;
-  }
-  const queryApi = db.query;
-  const lessonVersionRows = queryApi?.lessonVersions?.findMany ? await queryApi.lessonVersions.findMany({
-    where: eq(lessonVersions.lessonId, lesson.id)
-  }) : [];
-  const normalizedLessonVersionRows = Array.isArray(lessonVersionRows) ? lessonVersionRows : [];
-  const latestVersion = [...normalizedLessonVersionRows].sort((a, b) => b.version - a.version)[0];
-  if (!latestVersion || !queryApi?.phaseVersions?.findMany) {
-    return {
-      lesson,
-      phases: []
-    };
-  }
-  const versionedPhaseRows = await queryApi.phaseVersions.findMany({
-    where: eq(phaseVersions.lessonVersionId, latestVersion.id)
-  });
-  const normalizedVersionedPhases = Array.isArray(versionedPhaseRows) ? versionedPhaseRows : [];
-  const versionedPhases = [...normalizedVersionedPhases].sort((a, b) => a.phaseNumber - b.phaseNumber);
-  if (versionedPhases.length === 0) {
-    return {
-      lesson: {
-        ...lesson,
-        title: latestVersion.title ?? lesson.title,
-        description: latestVersion.description ?? lesson.description
-      },
-      phases: []
-    };
-  }
-  let sections = [];
-  const phaseVersionIds = versionedPhases.map((phase) => phase.id);
-  if (phaseVersionIds.length > 0 && queryApi?.phaseSections?.findMany) {
-    const sectionRows = await queryApi.phaseSections.findMany({
-      where: inArray(phaseSections.phaseVersionId, phaseVersionIds)
-    });
-    sections = Array.isArray(sectionRows) ? sectionRows : [];
-    sections.sort((a, b) => {
-      if (a.phaseVersionId === b.phaseVersionId) {
-        return a.sequenceOrder - b.sequenceOrder;
-      }
-      return a.phaseVersionId.localeCompare(b.phaseVersionId);
-    });
-  }
-  const sectionsByPhaseId = /* @__PURE__ */ new Map();
-  for (const section of sections) {
-    const current = sectionsByPhaseId.get(section.phaseVersionId) ?? [];
-    current.push(section);
-    sectionsByPhaseId.set(section.phaseVersionId, current);
-  }
-  const mappedPhases = versionedPhases.map((phase) => {
-    const phaseSectionsForPhase = sectionsByPhaseId.get(phase.id) ?? [];
-    const contentBlocks = phaseSectionsForPhase.map(
-      (section, index2) => toContentBlock(section, index2 + 1)
-    );
-    return {
-      id: phase.id,
-      lessonId: lesson.id,
-      phaseNumber: phase.phaseNumber,
-      title: phase.title ?? fallbackPhaseTitle(phase.phaseNumber),
-      contentBlocks,
-      estimatedMinutes: phase.estimatedMinutes,
-      metadata: {
-        phaseType: PHASE_TYPE_BY_NUMBER[phase.phaseNumber]
-      },
-      createdAt: phase.createdAt,
-      updatedAt: lesson.updatedAt
-    };
-  });
-  return {
-    lesson: {
-      ...lesson,
-      title: latestVersion.title ?? lesson.title,
-      description: latestVersion.description ?? lesson.description
-    },
-    phases: mappedPhases
-  };
-}
-async function getFirstLessonSlug() {
-  const [firstLesson] = await db.select({ slug: lessons.slug }).from(lessons).orderBy(lessons.unitNumber, lessons.orderIndex).limit(1);
-  return firstLesson?.slug ?? null;
-}
 async function LessonPage({ params, searchParams }) {
   const { lessonSlug } = await params;
   const { phase: phaseParam } = await searchParams;
@@ -22885,26 +22858,39 @@ async function LessonPage({ params, searchParams }) {
     redirect("/auth/login");
   }
   const userId = claims.sub;
-  const data = await getLessonWithPhases(lessonSlug);
+  const data = await fetchQuery(apiAny.api.getLessonWithContent, { slug: lessonSlug });
   if (!data && /^unit\d{2}-lesson\d{2}$/i.test(lessonSlug)) {
-    const firstLessonSlug = await getFirstLessonSlug();
-    if (firstLessonSlug) {
-      return redirect(`/student/lesson/${firstLessonSlug}?phase=1`);
+    const firstSlug = await fetchQuery(apiAny.api.getFirstLessonSlug, {});
+    if (firstSlug) {
+      return redirect(`/student/lesson/${firstSlug}?phase=1`);
     }
     return redirect("/preface");
   }
   if (!data) {
     notFound();
   }
-  const { lesson, phases: lessonPhases2 } = data;
-  if (lessonPhases2.length === 0) {
+  const { lesson, phases: rawPhases } = data;
+  if (rawPhases.length === 0) {
     return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(NoPhaseError, { lessonTitle: lesson.title });
   }
+  const lessonPhases2 = rawPhases.map(
+    (phase) => ({
+      id: phase._id,
+      lessonId: lesson._id,
+      phaseNumber: phase.phaseNumber,
+      title: phase.title ?? fallbackPhaseTitle(phase.phaseNumber),
+      contentBlocks: phase.sections.map((s, idx) => toContentBlock(s, idx + 1)),
+      estimatedMinutes: phase.estimatedMinutes,
+      metadata: {
+        phaseType: PHASE_TYPE_BY_NUMBER[phase.phaseNumber]
+      },
+      createdAt: new Date(phase.createdAt),
+      updatedAt: new Date(lesson.updatedAt)
+    })
+  );
   let userProfile = null;
   try {
-    userProfile = await fetchQuery(apiAny.activities.getProfileById, {
-      profileId: userId
-    });
+    userProfile = await fetchQuery(apiAny.activities.getProfileById, { profileId: userId });
   } catch (profileError) {
     console.error("Error loading user profile from Convex:", profileError);
   }
@@ -23676,8 +23662,7 @@ const CurriculumUnitCard = /* @__PURE__ */ registerClientReference(() => {
 }, "6d41c11c5f74", "CurriculumUnitCard");
 const dynamic$1 = "force-dynamic";
 async function CurriculumPage() {
-  const convexUrl = "http://127.0.0.1:3210";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
   let units = [];
   try {
     const fetchedUnits = await convex.query(api.public.getCurriculum);
@@ -23884,8 +23869,7 @@ const cashFlowChallengeActivity = {
   }
 };
 async function PrefacePage() {
-  const convexUrl = "http://127.0.0.1:3210";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
   let units = [];
   try {
     const fetchedUnits = await convex.query(api.public.getUnitSummaries);
@@ -24649,8 +24633,7 @@ function Hero({ stats }) {
   ] }) }) });
 }
 function getConvexClient() {
-  const url = "http://127.0.0.1:3210";
-  return new ConvexHttpClient(url);
+  return new ConvexHttpClient(getConvexUrl());
 }
 const features = [
   {
@@ -24702,6 +24685,7 @@ async function Home() {
     convex.query(api.public.getCurriculumStats),
     convex.query(api.public.getUnits)
   ]);
+  const landingUnits = units;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Hero, { stats }),
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-labelledby": "search-heading", className: "py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4", children: [
@@ -24736,7 +24720,7 @@ async function Home() {
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { id: "course-structure-heading", className: "text-3xl md:text-4xl font-bold mb-6 text-foreground", children: "Course Structure" }),
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xl text-muted-foreground", children: "8 Units + Capstone" })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6", children: units.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6", children: landingUnits.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
         Link,
         {
           href: `/student/lesson/${unit.slug}`,
@@ -24779,7 +24763,7 @@ async function Home() {
           itemsPerView: 1,
           className: "max-w-md mx-auto",
           gap: "gap-4",
-          children: units.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          children: landingUnits.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
             Link,
             {
               href: `/student/lesson/${unit.slug}`,

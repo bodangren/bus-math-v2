@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -322,10 +322,10 @@ export interface PayStructureDecisionLabProps {
     title?: string
     description?: string
   }
-  onComplete?: (results: any) => void
+  onComplete?: (results: { score: number; scenarioId: string }) => void
 }
 
-export function PayStructureDecisionLab({ activity, onComplete }: PayStructureDecisionLabProps) {
+export function PayStructureDecisionLab({}: PayStructureDecisionLabProps) {
   const [current, setCurrent] = useState(0)
   const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(initialHourly)
   const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(initialSalary)
@@ -336,11 +336,6 @@ export function PayStructureDecisionLab({ activity, onComplete }: PayStructureDe
   const hourlyResult = computeHourly(hourlyInputs)
   const salaryResult = computeSalary(salaryInputs)
   const commissionResult = computeCommission(commissionInputs)
-
-  const completion = useMemo(() => ({
-    done: current + 1,
-    total: scenarios.length,
-  }), [current])
 
   const onNumericChange = <T extends object>(setter: React.Dispatch<React.SetStateAction<T>>, field: keyof T) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {

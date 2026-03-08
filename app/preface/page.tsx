@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BookOpen, CalendarDays, School, Target, Users, CheckCircle2, Lightbulb } from 'lucide-react';
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { getConvexUrl } from '@/lib/convex/config';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -203,8 +204,7 @@ const cashFlowChallengeActivity: CashFlowChallengeActivityProps = {
 };
 
 export default async function PrefacePage() {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
 
   let units: UnitSummary[] = [];
   try {

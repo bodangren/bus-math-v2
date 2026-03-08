@@ -1,20 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import {
   Coffee,
   Package,
   ArrowRight,
-  RefreshCw,
   ShoppingBag,
   TrendingUp,
   AlertCircle,
   Truck,
-  DollarSign,
   History,
   CheckCircle
 } from 'lucide-react'
@@ -74,7 +71,7 @@ export function CafeSupplyChaos({ activity, onComplete }: CafeSupplyChaosProps) 
     const dayOrder = orders.find(o => o.day === currentDay)
     let remainingToFill = dayOrder?.quantity || 0
     let costOfGoodsSold = 0
-    let tempInventory = [...inventory]
+    const tempInventory = [...inventory]
 
     // Process order based on method
     if (method === 'FIFO') {

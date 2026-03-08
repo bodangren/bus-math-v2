@@ -1,22 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import {
-  type LucideIcon,
   Zap,
   ArrowRight,
   CheckCircle,
   AlertCircle,
   HelpCircle,
-  ChevronDown,
-  ChevronUp,
-  RefreshCw,
   Plus,
-  Minus,
+  RefreshCw,
   TrendingUp,
   TrendingDown,
   ArrowLeftRight
@@ -46,15 +41,7 @@ export interface LedgerHeroProps {
       scenarios: LedgerScenario[]
     }
   }
-  onComplete?: (results: any) => void
-}
-
-const CATEGORY_COLORS: Record<string, string> = {
-  asset: 'bg-blue-500',
-  liability: 'bg-red-500',
-  equity: 'bg-purple-500',
-  revenue: 'bg-green-500',
-  expense: 'bg-orange-500'
+  onComplete?: (results: { score: number }) => void
 }
 
 export function LedgerHero({ activity, onComplete }: LedgerHeroProps) {

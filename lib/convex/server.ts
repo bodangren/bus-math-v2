@@ -1,5 +1,7 @@
 import { ConvexHttpClient } from "convex/browser";
 import { api, internal } from "@/convex/_generated/api";
+import { resolveConvexAdminAuth } from "@/lib/convex/admin";
+import { getConvexUrl } from "@/lib/convex/config";
 
 let convexClient: ConvexHttpClient | null = null;
 let internalConvexClient: ConvexHttpClient | null = null;
@@ -10,24 +12,18 @@ interface ConvexHttpClientWithAdminAuth extends ConvexHttpClient {
 
 function getConvexClient(): ConvexHttpClient {
   if (!convexClient) {
-    const url = process.env.NEXT_PUBLIC_CONVEX_URL || "http://127.0.0.1:3210";
-    convexClient = new ConvexHttpClient(url);
+    convexClient = new ConvexHttpClient(getConvexUrl());
   }
   return convexClient;
 }
 
-function getInternalConvexClient(): ConvexHttpClient {
+async function getInternalConvexClient(): Promise<ConvexHttpClient> {
   if (!internalConvexClient) {
-    const url = process.env.NEXT_PUBLIC_CONVEX_URL || "http://127.0.0.1:3210";
-    internalConvexClient = new ConvexHttpClient(url);
+    internalConvexClient = new ConvexHttpClient(getConvexUrl());
   }
 
-  const deployKey = process.env.CONVEX_DEPLOY_KEY;
-  if (!deployKey) {
-    throw new Error("Missing CONVEX_DEPLOY_KEY for internal Convex calls");
-  }
-
-  (internalConvexClient as ConvexHttpClientWithAdminAuth).setAdminAuth(deployKey);
+  const adminAuth = await resolveConvexAdminAuth();
+  (internalConvexClient as ConvexHttpClientWithAdminAuth).setAdminAuth(adminAuth.token);
   return internalConvexClient;
 }
 
@@ -43,12 +39,14 @@ export async function fetchMutation(ref: any, args: Record<string, unknown>): Pr
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchInternalQuery(ref: any, args: Record<string, unknown>): Promise<any> {
-  return getInternalConvexClient().query(ref, args);
+  const client = await getInternalConvexClient();
+  return client.query(ref, args);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchInternalMutation(ref: any, args: Record<string, unknown>): Promise<any> {
-  return getInternalConvexClient().mutation(ref, args);
+  const client = await getInternalConvexClient();
+  return client.mutation(ref, args);
 }
 
 interface SupabaseUserLike {

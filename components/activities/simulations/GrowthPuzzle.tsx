@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -44,7 +44,7 @@ export interface GrowthPuzzleProps {
       successMessage?: string
     }
   }
-  onComplete?: (results: any) => void
+  onComplete?: (results: { selections: string[]; stats: { reinvestment: number; distribution: number } }) => void
 }
 
 const ICON_MAP: Record<string, LucideIcon> = {

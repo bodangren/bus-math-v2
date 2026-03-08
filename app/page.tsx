@@ -20,10 +20,22 @@ import { Carousel } from "@/components/ui/carousel";
 import { Hero } from "@/components/hero";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { getConvexUrl } from "@/lib/convex/config";
+
+interface LandingUnit {
+  id: string;
+  unit_number: number;
+  title: string;
+  slug: string;
+  description?: string | null;
+  metadata?: {
+    duration?: string;
+    difficulty?: string;
+  } | null;
+}
 
 function getConvexClient() {
-  const url = process.env.NEXT_PUBLIC_CONVEX_URL || "http://127.0.0.1:3210";
-  return new ConvexHttpClient(url);
+  return new ConvexHttpClient(getConvexUrl());
 }
 
 const features = [
@@ -82,6 +94,7 @@ export default async function Home() {
     convex.query(api.public.getCurriculumStats),
     convex.query(api.public.getUnits)
   ]);
+  const landingUnits = units as LandingUnit[];
 
   return (
     <>
@@ -131,7 +144,7 @@ export default async function Home() {
 
           {/* Desktop grid view */}
           <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {units.map((unit: any) => (
+            {landingUnits.map((unit) => (
               <Link
                 key={unit.id}
                 href={`/student/lesson/${unit.slug}`}
@@ -176,7 +189,7 @@ export default async function Home() {
               className="max-w-md mx-auto"
               gap="gap-4"
             >
-              {units.map((unit: any) => (
+              {landingUnits.map((unit) => (
                 <Link
                   key={unit.id}
                   href={`/student/lesson/${unit.slug}`}

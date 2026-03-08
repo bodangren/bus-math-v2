@@ -1,5 +1,27 @@
 import { query } from "./_generated/server";
 
+interface PublicUnitSummary {
+  unitNumber: number;
+  title: string;
+  summary: string;
+}
+
+interface PublicCurriculumLesson {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  orderIndex: number;
+}
+
+interface PublicCurriculumUnit {
+  unitNumber: number;
+  title: string;
+  description: string;
+  objectives: string[];
+  lessons: PublicCurriculumLesson[];
+}
+
 export const getCurriculumStats = query({
   args: {},
   handler: async (ctx) => {
@@ -49,7 +71,7 @@ export const getUnitSummaries = query({
       return a.orderIndex - b.orderIndex;
     });
 
-    const units = new Map<number, any>();
+    const units = new Map<number, PublicUnitSummary>();
 
     for (const lesson of allLessons) {
       if (!units.has(lesson.unitNumber)) {
@@ -97,7 +119,7 @@ export const getCurriculum = query({
       return a.orderIndex - b.orderIndex;
     });
 
-    const units = new Map<number, any>();
+    const units = new Map<number, PublicCurriculumUnit>();
 
     for (const lesson of lessonRows) {
       const versions = await ctx.db
@@ -138,7 +160,7 @@ export const getCurriculum = query({
         });
       }
 
-      units.get(lesson.unitNumber).lessons.push({
+      units.get(lesson.unitNumber)?.lessons.push({
         id: lesson._id,
         title: effectiveTitle,
         slug: lesson.slug,
@@ -150,4 +172,3 @@ export const getCurriculum = query({
     return Array.from(units.values());
   },
 });
-

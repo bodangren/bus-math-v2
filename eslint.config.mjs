@@ -13,7 +13,10 @@ const eslintConfig = [
   {
     ignores: [
       "**/.next/**",
-      "node_modules/**"
+      "node_modules/**",
+      "dist/**",
+      "convex/_generated/**",
+      "playwright-report/**"
     ]
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),

@@ -3,14 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
+import { getConvexUrl } from "@/lib/convex/config";
 import { CurriculumUnitCard } from "./CurriculumUnitCard";
 import type { UnitCurriculum } from "./types";
 
 export const dynamic = 'force-dynamic';
 
 export default async function CurriculumPage() {
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
-  const convex = new ConvexHttpClient(convexUrl);
+  const convex = new ConvexHttpClient(getConvexUrl());
 
   let units: UnitCurriculum[] = [];
   try {

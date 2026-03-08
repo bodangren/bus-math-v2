@@ -1,6 +1,6 @@
 # Math for Business Operations v2
 
-An interactive, Supabase-backed digital textbook for teaching business mathematics to high school students. This Next.js application provides a comprehensive curriculum covering accounting fundamentals, financial analysis, and practical business calculations.
+An interactive, Convex-backed digital textbook for teaching business mathematics to high school students. The app runs on Vinext/App Router, uses custom JWT username/password auth, and stores curriculum, activity, and progress data in Convex.
 
 ## Features
 
@@ -28,8 +28,8 @@ Both accounts are automatically seeded with the demo organization.
 ### Prerequisites
 
 - Node.js 20+
-- npm or yarn
-- Supabase CLI (installed as dev dependency)
+- npm
+- Local Convex runtime access via `npx convex ...`
 
 ### Local Development
 
@@ -44,55 +44,60 @@ Both accounts are automatically seeded with the demo organization.
    npm install
    ```
 
-3. Start local Supabase:
+3. Start Convex locally:
    ```bash
-   npx supabase start
+   npx convex dev --once
    ```
 
-4. Run database migrations:
+4. Copy the environment template:
    ```bash
-   npx supabase db reset
+   cp .env.example .env.local
    ```
 
-5. Seed demo data:
-   ```bash
-   # Seed organization
-   npx supabase db execute -f supabase/seed/00-demo-org.sql
-
-   # Seed demo users
-   npx tsx supabase/seed/01-demo-users.ts
+5. Configure `.env.local` with at least:
+   ```env
+   NEXT_PUBLIC_CONVEX_URL=http://127.0.0.1:3210
+   AUTH_JWT_SECRET=<long-random-secret>
    ```
 
-6. Start the development server:
+6. Seed demo accounts and lesson data as needed:
+   ```bash
+   npx convex run seed:seedDemoAccounts
+   npx convex run seed:seedUnit1Lesson1
+   ```
+
+   For cloud-hosted server-side internal Convex calls, also set:
+   ```env
+   CONVEX_DEPLOY_KEY=<server-only deploy key>
+   ```
+
+   Local development does not require `CONVEX_DEPLOY_KEY` when `.convex/local/*/config.json` exists from `npx convex dev`.
+
+7. Start the development server:
    ```bash
    npm run dev
    ```
 
-7. Open [http://localhost:3000](http://localhost:3000) in your browser.
+8. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Environment Variables
 
-Copy `.env.local` and configure the following variables:
+Configure the following variables:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
-SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
-DATABASE_URL=<your-database-url>
-DIRECT_URL=<your-direct-database-url>
 NEXT_PUBLIC_CONVEX_URL=<your-convex-url>
-CONVEX_DEPLOY_KEY=<server-only deploy key for internal Convex calls>
+CONVEX_DEPLOY_KEY=<server-only deploy key for cloud internal Convex calls>
 AUTH_JWT_SECRET=<server-only JWT secret for session cookies>
 ```
 
-For local development, these are pre-configured in `.env.local` to use local Supabase.
 Keep `CONVEX_DEPLOY_KEY` and `AUTH_JWT_SECRET` server-only and never expose them via `NEXT_PUBLIC_*`.
+When `CONVEX_DEPLOY_KEY` is unset in local development, the app falls back to the local Convex CLI admin key stored in `.convex/local/*/config.json`.
 
 ## Project Structure
 
 ```
 bus-math-v2/
-├── app/              # Next.js 15 app directory (routes, pages)
+├── app/              # App Router pages and API routes
 ├── components/       # React components
 │   ├── accounting/   # T-accounts, journal entries
 │   ├── auth/         # Authentication components
@@ -101,11 +106,11 @@ bus-math-v2/
 │   ├── spreadsheet/  # Excel-like activities
 │   └── teacher/      # Teacher-specific components
 ├── lib/
-│   ├── db/           # Drizzle ORM schema and types
-│   └── supabase/     # Supabase client configurations
-├── supabase/
-│   ├── migrations/   # Database schema migrations
-│   └── seed/         # Seed data scripts
+│   ├── auth/         # JWT session helpers and claim resolution
+│   ├── convex/       # Convex runtime configuration and server helpers
+│   └── db/           # Legacy/reference schema types
+├── convex/           # Convex schema, queries, mutations, and seeds
+├── supabase/         # Historical migration and seed references
 ├── docs/             # Project documentation
 └── public/           # Static assets
 
@@ -113,10 +118,9 @@ bus-math-v2/
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
-- **Database**: Supabase (PostgreSQL)
-- **ORM**: Drizzle ORM
-- **Authentication**: Supabase Auth (username-based)
+- **Framework**: Vinext + React 19 App Router
+- **Backend / Database**: Convex
+- **Authentication**: Convex-backed username/password + JWT session cookies
 - **UI Components**: shadcn/ui + Radix UI
 - **Styling**: Tailwind CSS
 - **Charts**: Recharts
@@ -125,39 +129,18 @@ bus-math-v2/
 
 ## Scripts
 
-- `npm run dev` - Start development server with Turbopack
+- `npm run dev` - Start the Vinext development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm test` - Run unit tests
+- `npm run lint` - Run ESLint through Vinext
+- `npm test` - Run the non-watch Vitest suite
 - `npm run test:watch` - Run tests in watch mode
 
-## Database Seeding
+## Convex Notes
 
-### Organizations
-
-The demo organization is seeded via SQL:
-
-```bash
-npx supabase db execute -f supabase/seed/00-demo-org.sql
-```
-
-This creates a demo organization with ID `00000000-0000-0000-0000-000000000001`.
-
-### Demo Users
-
-Demo users are seeded via TypeScript using the Auth Admin API:
-
-```bash
-npx tsx supabase/seed/01-demo-users.ts
-```
-
-This creates:
-- A teacher account with role `teacher`
-- A student account with role `student`
-- Corresponding profile records linked to the demo organization
-
-The TypeScript approach ensures compatibility with Supabase Cloud, where direct SQL inserts to `auth.users` are not supported.
+- `npx convex dev` creates local runtime state under `.convex/local/`.
+- Server-side internal Convex calls use `CONVEX_DEPLOY_KEY` in cloud environments and the local Convex CLI `adminKey` in development.
+- Demo credentials can also be provisioned through `POST /api/users/ensure-demo`.
 
 ## Testing
 
@@ -175,13 +158,12 @@ npm run test:watch
 
 ## Deployment
 
-This project is configured for deployment on Vercel with Supabase Cloud.
+This project currently builds for production with Vinext. Cloud deployment requires:
 
-1. Create a Supabase project at [supabase.com](https://supabase.com)
-2. Run migrations: `npx supabase db push`
-3. Run seed scripts to populate initial data
-4. Deploy to Vercel and configure environment variables
-5. Ensure Row Level Security (RLS) policies are enabled
+1. A reachable Convex deployment URL
+2. `CONVEX_DEPLOY_KEY` for server-side internal Convex calls
+3. `AUTH_JWT_SECRET` configured in the application runtime
+4. Seeded Convex data for demo auth and curriculum flows
 
 ## Documentation
 

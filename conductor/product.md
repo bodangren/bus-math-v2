@@ -1,7 +1,7 @@
 # Product Guide: Math for Business Operations v2
 
 ## Initial Concept
-An interactive, Supabase-backed digital textbook for teaching business mathematics to high school students. This Next.js application provides a comprehensive curriculum covering accounting fundamentals, financial analysis, and practical business calculations.
+An interactive, Convex-backed digital textbook for teaching business mathematics to high school students. This App Router application provides a comprehensive curriculum covering accounting fundamentals, financial analysis, and practical business calculations.
 
 ## Target Audience
 - **High School Students**: The primary learners engaging with the curriculum, activities, and simulations.
@@ -33,13 +33,13 @@ An interactive, Supabase-backed digital textbook for teaching business mathemati
 
 ## System Boundaries & Responsibilities
 - **Client UI (`app/`, `components/`)**: Renders lesson and dashboard experiences, captures user input, and displays server-validated results.
-- **Application Server (Next.js routes/actions)**: Enforces session and role checks, orchestrates Supabase calls, and keeps service-role access on the server side only.
-- **Supabase Platform**: Owns auth, persistence, row-level security, storage, and edge functions for privileged operations.
+- **Application Server (App Router routes/actions)**: Enforces session and role checks, orchestrates Convex queries/mutations, and keeps internal-function admin auth on the server side only.
+- **Convex Platform**: Owns credential records, curriculum/activity data, progress state, realtime queries, and privileged internal functions.
 - **Conductor Planning Layer (`conductor/`)**: Owns implementation workflow, architectural guidance, and track execution status.
 
 ## Data Flow Overview
 1. User interaction starts in a client component or server-rendered page.
-2. Request is sent to a Next.js API route/server action with authenticated session context.
-3. Server validates role/permissions, then queries Supabase tables or invokes edge functions.
-4. Supabase enforces RLS and returns scoped data or mutation outcomes.
+2. Request is sent to an App Router route/server action with authenticated session context.
+3. Server validates role/permissions, then queries Convex or invokes internal Convex functions.
+4. Convex enforces function-level validation and returns scoped data or mutation outcomes.
 5. Server returns normalized payload to the UI for render/update, preserving least-privilege access.

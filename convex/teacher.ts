@@ -1,6 +1,17 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
 
+interface TeacherProgressSnapshot {
+  completedPhases: number;
+  totalPhases: number;
+  progressPercentage: number;
+  lastActive: string | null;
+}
+
+interface SpreadsheetSubmission {
+  spreadsheetData?: unknown;
+}
+
 const DEFAULT_PHASE_NAMES: Record<number, string> = {
   1: 'Hook',
   2: 'Introduction',
@@ -41,7 +52,7 @@ export const getTeacherDashboardData = query({
     const totalPhases = activePhaseIds.size;
 
     // 5. Get student progress snapshots
-    const snapshots = new Map<string, any>();
+    const snapshots = new Map<string, TeacherProgressSnapshot>();
     for (const studentId of studentIds) {
       snapshots.set(studentId, {
         completedPhases: 0,
@@ -143,7 +154,7 @@ export const getSubmissionDetail = query({
       .filter((q) => q.eq(q.field("lessonId"), args.lessonId))
       .collect();
 
-    const spreadsheetByPhaseNumber = new Map<number, any>();
+    const spreadsheetByPhaseNumber = new Map<number, unknown>();
 
     if (completionRows.length > 0) {
       const activityIds = completionRows.map((c) => c.activityId);
@@ -161,13 +172,14 @@ export const getSubmissionDetail = query({
 
       for (const row of spreadsheetRows) {
         const phaseNum = phaseByActivityId.get(row.activityId);
-        if (phaseNum !== undefined && row.spreadsheetData) {
-          spreadsheetByPhaseNumber.set(phaseNum, row.spreadsheetData);
+        const spreadsheetRow = row as SpreadsheetSubmission;
+        if (phaseNum !== undefined && spreadsheetRow.spreadsheetData) {
+          spreadsheetByPhaseNumber.set(phaseNum, spreadsheetRow.spreadsheetData);
         }
       }
     }
 
-    const progressByPhaseId = new Map<string, any>();
+    const progressByPhaseId = new Map<string, (typeof progressRows)[number]>();
     for (const row of progressRows) {
       progressByPhaseId.set(row.phaseId, row);
     }

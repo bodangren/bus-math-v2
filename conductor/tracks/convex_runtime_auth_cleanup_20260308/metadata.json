@@ -1,0 +1,11 @@
+{
+  "track_id": "convex_runtime_auth_cleanup_20260308",
+  "type": "refactor",
+  "status": "completed",
+  "created_at": "2026-03-08T00:00:00Z",
+  "updated_at": "2026-03-08T07:30:00Z",
+  "description": "Refactor Convex runtime configuration to remove duplicated URL logic, restore local internal-function auth parity, harden auth bootstrap errors, and refresh product-facing documentation.",
+  "estimated_tasks": 7,
+  "actual_tasks": 14,
+  "deviation_notes": "The unattended run completed all implementation and automated verification tasks, but the workflow's manual verification pauses were replaced with documented automated-only verification. Repo-wide lint cleanup also expanded slightly to resolve pre-existing source-level failures blocking the required final lint gate."
+}

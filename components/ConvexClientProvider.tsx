@@ -2,9 +2,9 @@
 
 import { ReactNode } from "react";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { getConvexUrl } from "@/lib/convex/config";
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:6790/";
-const convex = new ConvexReactClient(convexUrl);
+const convex = new ConvexReactClient(getConvexUrl());
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
   return <ConvexProvider client={convex}>{children}</ConvexProvider>;

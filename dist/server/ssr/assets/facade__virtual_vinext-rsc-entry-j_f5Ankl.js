@@ -6666,8 +6666,20 @@ function assertNotAccidentalArgument(value) {
     );
   }
 }
-const convexUrl = "http://127.0.0.1:3210";
-const convex = new ConvexReactClient(convexUrl);
+const DEFAULT_LOCAL_CONVEX_HOST = "127.0.0.1";
+const DEFAULT_LOCAL_CONVEX_PORT = "3210";
+const DEFAULT_LOCAL_CONVEX_URL = `http://${DEFAULT_LOCAL_CONVEX_HOST}:${DEFAULT_LOCAL_CONVEX_PORT}`;
+function normalizeUrl(url) {
+  return url.trim().replace(/\/+$/, "");
+}
+function getConfiguredConvexUrl(env) {
+  const configuredUrl = env.CONVEX_URL?.trim() || env.NEXT_PUBLIC_CONVEX_URL?.trim();
+  return configuredUrl ? normalizeUrl(configuredUrl) : null;
+}
+function getConvexUrl(env = process.env) {
+  return getConfiguredConvexUrl(env) ?? DEFAULT_LOCAL_CONVEX_URL;
+}
+const convex = new ConvexReactClient(getConvexUrl());
 function ConvexClientProvider({ children }) {
   return /* @__PURE__ */ jsx(ConvexProvider, { client: convex, children });
 }
@@ -11316,9 +11328,9 @@ function saveCompletionQueue(queue) {
     console.error("Failed to save completion queue:", error2);
   }
 }
-function enqueueCompletion(completion) {
+function enqueueCompletion(completion2) {
   const queue = getCompletionQueue();
-  queue.push(completion);
+  queue.push(completion2);
   saveCompletionQueue(queue);
 }
 function dequeueCompletion(idempotencyKey) {
@@ -11356,30 +11368,30 @@ function usePhaseCompletion({
       const queue = getCompletionQueue(userId);
       if (queue.length === 0) return;
       console.log(`Processing ${queue.length} queued completion(s) for user ${userId}`);
-      for (const completion of queue) {
-        if (completion.userId !== userId) {
-          dequeueCompletion(completion.idempotencyKey);
+      for (const completion2 of queue) {
+        if (completion2.userId !== userId) {
+          dequeueCompletion(completion2.idempotencyKey);
           continue;
         }
-        if (completion.retryCount >= MAX_RETRY_COUNT) {
-          console.warn(`Max retries exceeded for completion ${completion.idempotencyKey}`);
-          dequeueCompletion(completion.idempotencyKey);
+        if (completion2.retryCount >= MAX_RETRY_COUNT) {
+          console.warn(`Max retries exceeded for completion ${completion2.idempotencyKey}`);
+          dequeueCompletion(completion2.idempotencyKey);
           continue;
         }
         try {
           await completePhaseMutation({
-            userId: completion.userId,
-            lessonId: completion.lessonId,
-            phaseNumber: completion.phaseNumber,
-            timeSpent: completion.timeSpent,
-            idempotencyKey: completion.idempotencyKey
+            userId: completion2.userId,
+            lessonId: completion2.lessonId,
+            phaseNumber: completion2.phaseNumber,
+            timeSpent: completion2.timeSpent,
+            idempotencyKey: completion2.idempotencyKey
           });
-          console.log(`Successfully processed queued completion ${completion.idempotencyKey}`);
-          dequeueCompletion(completion.idempotencyKey);
+          console.log(`Successfully processed queued completion ${completion2.idempotencyKey}`);
+          dequeueCompletion(completion2.idempotencyKey);
         } catch (err) {
-          console.error(`Failed to process queued completion ${completion.idempotencyKey}:`, err);
+          console.error(`Failed to process queued completion ${completion2.idempotencyKey}:`, err);
           const updatedQueue = getCompletionQueue().map(
-            (c) => c.idempotencyKey === completion.idempotencyKey ? { ...c, retryCount: c.retryCount + 1 } : c
+            (c) => c.idempotencyKey === completion2.idempotencyKey ? { ...c, retryCount: c.retryCount + 1 } : c
           );
           saveCompletionQueue(updatedQueue);
         }
@@ -54178,7 +54190,7 @@ function CafeSupplyChaos({ activity, onComplete }) {
     const dayOrder = orders.find((o) => o.day === currentDay);
     let remainingToFill = dayOrder?.quantity || 0;
     let costOfGoodsSold = 0;
-    let tempInventory = [...inventory];
+    const tempInventory = [...inventory];
     if (method === "FIFO") {
       while (remainingToFill > 0 && tempInventory.length > 0) {
         const batch = tempInventory[0];
@@ -54450,7 +54462,7 @@ const ITEM_ICONS = {
   receivable: FileText
 };
 function NotebookOrganizer({ activity, onComplete }) {
-  const { items, initialMessage, successMessage } = activity.props;
+  const { items, successMessage } = activity.props;
   const [placedItems, setPlacedItems] = useState({});
   const [showInstructions, setShowInstructions] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -55857,7 +55869,7 @@ const commissionSheet = (inputs, result) => [
     { value: "'=MIN(Gross, Cap - YTD)" }
   ]
 ];
-function PayStructureDecisionLab({ activity, onComplete }) {
+function PayStructureDecisionLab({}) {
   const [current2, setCurrent] = useState(0);
   const [hourlyInputs, setHourlyInputs] = useState(initialHourly);
   const [salaryInputs, setSalaryInputs] = useState(initialSalary);
@@ -55866,10 +55878,6 @@ function PayStructureDecisionLab({ activity, onComplete }) {
   const hourlyResult = computeHourly(hourlyInputs);
   const salaryResult = computeSalary(salaryInputs);
   const commissionResult = computeCommission(commissionInputs);
-  const completion = useMemo$1(() => ({
-    done: current2 + 1,
-    total: scenarios.length
-  }), [current2]);
   const onNumericChange = (setter, field) => (e) => {
     const value = parseFloat(e.target.value) || 0;
     setter((prev) => ({ ...prev, [field]: value }));

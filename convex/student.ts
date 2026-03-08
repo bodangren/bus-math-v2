@@ -2,6 +2,27 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
+interface LessonVersionSnapshot {
+  _id: Id<"lesson_versions">;
+  title?: string | null;
+  description?: string | null;
+}
+
+interface StudentDashboardUnitRow {
+  unitNumber: number;
+  unitTitle: string;
+  lessons: Array<{
+    id: Id<"lessons">;
+    unitNumber: number;
+    title: string;
+    slug: string;
+    description: string | null;
+    totalPhases: number;
+    completedPhases: number;
+    progressPercentage: number;
+  }>;
+}
+
 export const getDashboardData = query({
   args: { userId: v.id("profiles") },
   handler: async (ctx, args) => {
@@ -27,7 +48,7 @@ export const getDashboardData = query({
     const completedPhaseIds = new Set(userProgress.map((entry) => entry.phaseId));
 
     // 3. Fetch latest version for each lesson
-    const latestVersionByLessonId = new Map<Id<"lessons">, any>();
+    const latestVersionByLessonId = new Map<Id<"lessons">, LessonVersionSnapshot>();
     for (const lessonId of lessonIds) {
       // Find all versions for this lesson
       const versions = await ctx.db
@@ -54,7 +75,7 @@ export const getDashboardData = query({
     }
 
     // 5. Assemble the final data structure
-    const unitsMap = new Map<number, any>();
+    const unitsMap = new Map<number, StudentDashboardUnitRow>();
     for (const lesson of allLessons) {
       const versionedInfo = latestVersionByLessonId.get(lesson._id);
       const effectiveTitle = versionedInfo?.title ?? lesson.title;

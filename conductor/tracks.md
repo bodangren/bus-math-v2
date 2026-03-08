@@ -6,6 +6,9 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
+- [x] **Track: Convex Runtime Parity & Auth Resilience**
+  *Link: [./conductor/tracks/convex_runtime_auth_cleanup_20260308/](./conductor/tracks/convex_runtime_auth_cleanup_20260308/)*
+
 - [~] **Track: Migrate to Vinext and Convex**
   *Link: [./conductor/tracks/vinext_convex_migration_20260225/](./conductor/tracks/vinext_convex_migration_20260225/)*
 

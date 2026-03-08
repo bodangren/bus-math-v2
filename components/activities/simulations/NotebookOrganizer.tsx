@@ -1,9 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import {
   type LucideIcon,
@@ -13,15 +12,12 @@ import {
   ChevronUp,
   RefreshCw,
   CheckCircle,
-  AlertCircle,
   FileText,
   CreditCard,
   Briefcase,
   User,
   Scale
 } from 'lucide-react'
-
-import type { Activity } from '@/lib/db/schema/validators'
 
 // Types for the simulation
 export interface NotebookItem {
@@ -58,7 +54,7 @@ const ITEM_ICONS: Record<string, LucideIcon> = {
 }
 
 export function NotebookOrganizer({ activity, onComplete }: NotebookOrganizerProps) {
-  const { items, initialMessage, successMessage } = activity.props
+  const { items, successMessage } = activity.props
   const [placedItems, setPlacedItems] = useState<Record<string, string>>({})
   const [showInstructions, setShowInstructions] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
