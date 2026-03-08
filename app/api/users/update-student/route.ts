@@ -1,10 +1,13 @@
 import { z } from 'zod';
+
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { fetchInternalMutation, internal } from '@/lib/convex/server';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const requestSchema = z
   .object({
-    studentId: z.string().uuid('studentId must be a valid UUID'),
+    // Convex IDs are opaque alphanumeric strings, not UUIDs — uuid() validation would reject them
+    studentId: z.string().trim().min(1, 'studentId is required'),
     displayName: z.string().trim().min(1).max(80).optional(),
     deactivate: z.boolean().optional(),
   })
@@ -12,10 +15,6 @@ const requestSchema = z
     message: 'Provide displayName and/or deactivate',
     path: ['displayName'],
   });
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
 
 export async function POST(request: Request) {
   try {
@@ -39,90 +38,39 @@ export async function POST(request: Request) {
       );
     }
 
-    const admin = createAdminClient();
+    const result = await fetchInternalMutation(internal.auth.updateStudentAccount, {
+      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
+      teacherProfileId: claims.sub as Id<'profiles'>,
+      studentProfileId: parsedBody.data.studentId as Id<'profiles'>,
+      displayName: parsedBody.data.displayName,
+      deactivate: parsedBody.data.deactivate,
+    });
 
-    const { data: teacherProfile, error: teacherError } = await admin
-      .from('profiles')
-      .select('id, role, organization_id')
-      .eq('id', claims.sub)
-      .maybeSingle();
-
-    if (teacherError || !teacherProfile) {
-      return Response.json({ error: 'Teacher profile not found' }, { status: 403 });
-    }
-
-    if (teacherProfile.role !== 'teacher' && teacherProfile.role !== 'admin') {
-      return Response.json({ error: 'Only teachers can manage students' }, { status: 403 });
-    }
-
-    const { data: studentProfile, error: studentError } = await admin
-      .from('profiles')
-      .select('id, role, organization_id, username, display_name, metadata')
-      .eq('id', parsedBody.data.studentId)
-      .maybeSingle();
-
-    if (
-      studentError ||
-      !studentProfile ||
-      studentProfile.role !== 'student' ||
-      studentProfile.organization_id !== teacherProfile.organization_id
-    ) {
-      return Response.json({ error: 'Student not found' }, { status: 404 });
-    }
-
-    const nextDisplayName = parsedBody.data.displayName ?? studentProfile.display_name ?? studentProfile.username;
-    const existingMetadata = isRecord(studentProfile.metadata) ? studentProfile.metadata : {};
-    const nowIso = new Date().toISOString();
-    const deactivated =
-      parsedBody.data.deactivate !== undefined
-        ? parsedBody.data.deactivate
-        : Boolean(existingMetadata.isDeactivated);
-
-    if (parsedBody.data.deactivate !== undefined) {
-      const { error: authUpdateError } = await admin.auth.admin.updateUserById(studentProfile.id, {
-        ban_duration: parsedBody.data.deactivate ? '876000h' : 'none',
-      });
-
-      if (authUpdateError) {
-        return Response.json({ error: 'Failed to update student auth status' }, { status: 500 });
+    if (!result.ok) {
+      if (result.reason === 'teacher_not_found') {
+        return Response.json({ error: 'Teacher profile not found' }, { status: 403 });
       }
-    }
 
-    const nextMetadata: Record<string, unknown> = {
-      ...existingMetadata,
-      isDeactivated: deactivated,
-      accountStatus: deactivated ? 'deactivated' : 'active',
-      lastStudentProfileUpdateAt: nowIso,
-      lastStudentProfileUpdateBy: teacherProfile.id,
-    };
+      if (result.reason === 'forbidden') {
+        return Response.json({ error: 'Only teachers can manage students' }, { status: 403 });
+      }
 
-    if (parsedBody.data.deactivate === true) {
-      nextMetadata.deactivatedAt = nowIso;
-      nextMetadata.deactivatedBy = teacherProfile.id;
-    }
+      if (result.reason === 'student_not_found') {
+        return Response.json({ error: 'Student not found' }, { status: 404 });
+      }
 
-    if (parsedBody.data.deactivate === false) {
-      nextMetadata.reactivatedAt = nowIso;
-      nextMetadata.reactivatedBy = teacherProfile.id;
-    }
+      if (result.reason === 'invalid_input') {
+        return Response.json({ error: 'Invalid request payload' }, { status: 400 });
+      }
 
-    const { error: updateError } = await admin
-      .from('profiles')
-      .update({
-        display_name: nextDisplayName,
-        metadata: nextMetadata,
-      })
-      .eq('id', studentProfile.id);
-
-    if (updateError) {
       return Response.json({ error: 'Failed to update student profile' }, { status: 500 });
     }
 
     return Response.json({
-      studentId: studentProfile.id,
-      username: studentProfile.username,
-      displayName: nextDisplayName,
-      deactivated,
+      studentId: result.studentId,
+      username: result.username,
+      displayName: result.displayName,
+      deactivated: result.deactivated,
     });
   } catch (error) {
     console.error('Unexpected error in update-student', error);

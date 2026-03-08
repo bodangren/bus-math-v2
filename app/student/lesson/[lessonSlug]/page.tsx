@@ -1,11 +1,11 @@
 import { notFound, redirect } from 'next/navigation';
-import { eq, inArray } from 'drizzle-orm';
-import { db } from '@/lib/db/drizzle';
-import { lessonVersions, lessons, phaseSections, phaseVersions, profiles } from '@/lib/db/schema';
 import { LessonRenderer } from '@/components/student/LessonRenderer';
 import { getServerSessionClaims } from '@/lib/auth/server';
-import { createClient } from '@/lib/supabase/server';
+import { fetchQuery, api } from '@/lib/convex/server';
 import type { ContentBlock } from '@/types/curriculum';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const apiAny = api as any;
 
 interface LessonPageProps {
   params: Promise<{
@@ -34,7 +34,6 @@ function fallbackPhaseTitle(phaseNumber: number): string {
     5: 'Assessment',
     6: 'Closing',
   };
-
   return labels[phaseNumber] ?? `Phase ${phaseNumber}`;
 }
 
@@ -54,11 +53,11 @@ function contentToText(content: unknown): string {
 }
 
 function toContentBlock(
-  section: { id: string; sectionType: string; content: unknown },
+  section: { _id: string; sectionType: string; content: unknown },
   fallbackOrder: number,
 ): ContentBlock {
   const obj = asRecord(section.content);
-  const blockId = section.id || `section-${fallbackOrder}`;
+  const blockId = section._id || `section-${fallbackOrder}`;
 
   if (section.sectionType === 'callout') {
     const variantRaw = obj?.variant;
@@ -69,7 +68,6 @@ function toContentBlock(
       variantRaw === 'example'
         ? variantRaw
         : 'tip';
-    // Callout seeds store their text in content.content, not content.markdown
     const calloutContent = typeof obj?.content === 'string' ? obj.content : '';
     return {
       id: blockId,
@@ -136,18 +134,14 @@ function toContentBlock(
   };
 }
 
-/**
- * Error component for lessons with no phases
- */
 function NoPhaseError({ lessonTitle }: { lessonTitle: string }) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-red-900 mb-4">
-          Lesson Not Available
-        </h1>
+        <h1 className="text-2xl font-bold text-red-900 mb-4">Lesson Not Available</h1>
         <p className="text-red-700 mb-4">
-          The lesson &ldquo;{lessonTitle}&rdquo; does not have any phases configured. Please contact your instructor.
+          The lesson &ldquo;{lessonTitle}&rdquo; does not have any phases configured. Please
+          contact your instructor.
         </p>
         <a
           href="/student/dashboard"
@@ -160,19 +154,14 @@ function NoPhaseError({ lessonTitle }: { lessonTitle: string }) {
   );
 }
 
-/**
- * Error component for RPC failures
- */
 function AccessCheckError({ lessonTitle }: { lessonTitle: string }) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-red-900 mb-4">
-          Unable to Verify Access
-        </h1>
+        <h1 className="text-2xl font-bold text-red-900 mb-4">Unable to Verify Access</h1>
         <p className="text-red-700 mb-4">
-          We encountered an error while checking your access to &ldquo;{lessonTitle}&rdquo;.
-          This may be due to a temporary server issue.
+          We encountered an error while checking your access to &ldquo;{lessonTitle}&rdquo;. This
+          may be due to a temporary server issue.
         </p>
         <p className="text-red-700 mb-4">
           Please try again in a few moments. If the problem persists, contact your instructor.
@@ -188,152 +177,6 @@ function AccessCheckError({ lessonTitle }: { lessonTitle: string }) {
   );
 }
 
-/**
- * Fetch user profile with role information
- */
-async function getUserProfile(userId: string) {
-  const [profile] = await db
-    .select({
-      id: profiles.id,
-      role: profiles.role,
-    })
-    .from(profiles)
-    .where(eq(profiles.id, userId))
-    .limit(1);
-
-  return profile ?? null;
-}
-
-/**
- * Fetch lesson and associated phases from database
- */
-async function getLessonWithPhases(slug: string) {
-  // Query lesson by slug
-  const [lesson] = await db
-    .select()
-    .from(lessons)
-    .where(eq(lessons.slug, slug))
-    .limit(1);
-
-  if (!lesson) {
-    return null;
-  }
-
-  const queryApi = (
-    db as {
-      query?: {
-        lessonVersions?: {
-          findMany?: (args: unknown) => Promise<Array<typeof lessonVersions.$inferSelect>>;
-        };
-        phaseVersions?: {
-          findMany?: (args: unknown) => Promise<Array<typeof phaseVersions.$inferSelect>>;
-        };
-        phaseSections?: {
-          findMany?: (args: unknown) => Promise<Array<typeof phaseSections.$inferSelect>>;
-        };
-      };
-    }
-  ).query;
-
-  const lessonVersionRows = queryApi?.lessonVersions?.findMany
-    ? await queryApi.lessonVersions.findMany({
-        where: eq(lessonVersions.lessonId, lesson.id),
-      })
-    : [];
-
-  const normalizedLessonVersionRows = Array.isArray(lessonVersionRows) ? lessonVersionRows : [];
-  const latestVersion = [...normalizedLessonVersionRows].sort((a, b) => b.version - a.version)[0];
-  if (!latestVersion || !queryApi?.phaseVersions?.findMany) {
-    return {
-      lesson,
-      phases: [],
-    };
-  }
-
-  const versionedPhaseRows = await queryApi.phaseVersions.findMany({
-    where: eq(phaseVersions.lessonVersionId, latestVersion.id),
-  });
-  const normalizedVersionedPhases = Array.isArray(versionedPhaseRows) ? versionedPhaseRows : [];
-  const versionedPhases = [...normalizedVersionedPhases].sort((a, b) => a.phaseNumber - b.phaseNumber);
-
-  if (versionedPhases.length === 0) {
-    return {
-      lesson: {
-        ...lesson,
-        title: latestVersion.title ?? lesson.title,
-        description: latestVersion.description ?? lesson.description,
-      },
-      phases: [],
-    };
-  }
-
-  let sections: Array<typeof phaseSections.$inferSelect> = [];
-  const phaseVersionIds = versionedPhases.map((phase) => phase.id);
-  if (phaseVersionIds.length > 0 && queryApi?.phaseSections?.findMany) {
-    const sectionRows = await queryApi.phaseSections.findMany({
-      where: inArray(phaseSections.phaseVersionId, phaseVersionIds),
-    });
-    sections = Array.isArray(sectionRows) ? sectionRows : [];
-    sections.sort((a, b) => {
-      if (a.phaseVersionId === b.phaseVersionId) {
-        return a.sequenceOrder - b.sequenceOrder;
-      }
-      return a.phaseVersionId.localeCompare(b.phaseVersionId);
-    });
-  }
-
-  const sectionsByPhaseId = new Map<string, Array<typeof phaseSections.$inferSelect>>();
-  for (const section of sections) {
-    const current = sectionsByPhaseId.get(section.phaseVersionId) ?? [];
-    current.push(section);
-    sectionsByPhaseId.set(section.phaseVersionId, current);
-  }
-
-  const mappedPhases = versionedPhases.map((phase) => {
-    const phaseSectionsForPhase = sectionsByPhaseId.get(phase.id) ?? [];
-    const contentBlocks = phaseSectionsForPhase.map((section, index) =>
-      toContentBlock(section, index + 1),
-    );
-
-    return {
-      id: phase.id,
-      lessonId: lesson.id,
-      phaseNumber: phase.phaseNumber,
-      title: phase.title ?? fallbackPhaseTitle(phase.phaseNumber),
-      contentBlocks,
-      estimatedMinutes: phase.estimatedMinutes,
-      metadata: {
-        phaseType: PHASE_TYPE_BY_NUMBER[phase.phaseNumber as keyof typeof PHASE_TYPE_BY_NUMBER],
-      },
-      createdAt: phase.createdAt,
-      updatedAt: lesson.updatedAt,
-    };
-  });
-
-  return {
-    lesson: {
-      ...lesson,
-      title: latestVersion.title ?? lesson.title,
-      description: latestVersion.description ?? lesson.description,
-    },
-    phases: mappedPhases,
-  };
-}
-
-async function getFirstLessonSlug() {
-  const [firstLesson] = await db
-    .select({ slug: lessons.slug })
-    .from(lessons)
-    .orderBy(lessons.unitNumber, lessons.orderIndex)
-    .limit(1);
-
-  return firstLesson?.slug ?? null;
-}
-
-/**
- * Lesson page - displays a single lesson with a single phase
- * Server component that fetches data and enforces server-side phase locking
- */
 export default async function LessonPage({ params, searchParams }: LessonPageProps) {
   const { lessonSlug } = await params;
   const { phase: phaseParam } = await searchParams;
@@ -343,106 +186,147 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
     redirect('/auth/login');
   }
 
-  // Supabase client remains for lesson-progress reads and RPC access checks.
-  const supabase = await createClient();
   const userId = claims.sub;
 
-  // Fetch lesson and phases
-  const data = await getLessonWithPhases(lessonSlug);
+  // Fetch full lesson content (lesson + phases + sections) from Convex
+  const data = await fetchQuery(apiAny.api.getLessonWithContent, { slug: lessonSlug });
 
   // Legacy URLs like unit01-lesson01 may not match current seeded slugs.
   if (!data && /^unit\d{2}-lesson\d{2}$/i.test(lessonSlug)) {
-    const firstLessonSlug = await getFirstLessonSlug();
-    if (firstLessonSlug) {
-      return redirect(`/student/lesson/${firstLessonSlug}?phase=1`);
+    const firstSlug: string | null = await fetchQuery(apiAny.api.getFirstLessonSlug, {});
+    if (firstSlug) {
+      return redirect(`/student/lesson/${firstSlug}?phase=1`);
     }
     return redirect('/preface');
   }
 
-  // Show 404 if lesson not found
   if (!data) {
     notFound();
   }
 
-  const { lesson, phases: lessonPhases } = data;
+  const { lesson, phases: rawPhases } = data;
 
-  // FIX #1: Check if lesson has zero phases - show error instead of redirecting
-  if (lessonPhases.length === 0) {
+  if (rawPhases.length === 0) {
     return <NoPhaseError lessonTitle={lesson.title} />;
   }
 
-  // Fetch user profile to check role
-  const userProfile = await getUserProfile(userId);
+  // Map raw Convex sections into typed ContentBlock arrays
+  const lessonPhases = rawPhases.map(
+    (phase: {
+      _id: string;
+      phaseNumber: number;
+      title?: string;
+      estimatedMinutes?: number;
+      createdAt: number;
+      sections: Array<{ _id: string; sectionType: string; content: unknown }>;
+    }) => ({
+      id: phase._id,
+      lessonId: lesson._id,
+      phaseNumber: phase.phaseNumber,
+      title: phase.title ?? fallbackPhaseTitle(phase.phaseNumber),
+      contentBlocks: phase.sections.map((s, idx) => toContentBlock(s, idx + 1)) as ContentBlock[],
+      estimatedMinutes: phase.estimatedMinutes,
+      metadata: {
+        phaseType:
+          PHASE_TYPE_BY_NUMBER[phase.phaseNumber as keyof typeof PHASE_TYPE_BY_NUMBER],
+      },
+      createdAt: new Date(phase.createdAt),
+      updatedAt: new Date(lesson.updatedAt),
+    }),
+  );
 
-  // Teachers and admins can access any phase without restrictions
+  // Fetch user profile from Convex to check role
+  let userProfile: { role?: string } | null = null;
+  try {
+    userProfile = await fetchQuery(apiAny.activities.getProfileById, { profileId: userId });
+  } catch (profileError) {
+    console.error('Error loading user profile from Convex:', profileError);
+  }
+
   const isBypassRole = userProfile?.role === 'teacher' || userProfile?.role === 'admin';
 
-  // Determine requested phase number (default to 1)
   const requestedPhaseNumber = phaseParam ? parseInt(phaseParam, 10) : 1;
 
-  // Validate phase number - if invalid, redirect to phase 1 (only if phases exist)
   if (isNaN(requestedPhaseNumber) || requestedPhaseNumber < 1 || requestedPhaseNumber > lessonPhases.length) {
     redirect(`/student/lesson/${lessonSlug}?phase=1`);
   }
 
-  // Skip access checks for teachers and admins
   if (!isBypassRole) {
-    // If no phase specified (default to 1), redirect to first incomplete phase
-    if (!phaseParam) {
-      // Fetch user's progress to find first incomplete phase
-      const { data: progressResponse } = await supabase
-        .from('student_progress')
-        .select('phase_id, status')
-        .eq('user_id', userId)
-        .in('phase_id', lessonPhases.map(p => p.id));
-
-      // Create a map of completed phases
-      const completedPhaseIds = new Set(
-        progressResponse
-          ?.filter(p => p.status === 'completed')
-          ?.map(p => p.phase_id) || []
-      );
-
-      // Find first incomplete phase
-      const firstIncompletePhase = lessonPhases.find(p => !completedPhaseIds.has(p.id));
-      const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
-
-      // Redirect to first incomplete phase
-      if (targetPhaseNumber !== requestedPhaseNumber) {
-        redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
-      }
-    }
-
-    // Check if user can access this phase using RPC function
-    const { data: canAccess, error: rpcError } = await supabase.rpc('can_access_phase', {
-      p_lesson_id: lesson.id,
-      p_phase_number: requestedPhaseNumber,
-    });
-
-    // FIX #2: On RPC error, show error page instead of redirecting
-    if (rpcError) {
-      console.error('Error checking phase access:', rpcError);
+    let convexLesson: { _id: string } | null = null;
+    try {
+      convexLesson = await fetchQuery(apiAny.api.getLessonBySlugOrId, {
+        identifier: lesson.slug,
+      });
+    } catch (convexLessonError) {
+      console.error('Error resolving lesson in Convex:', convexLessonError);
       return <AccessCheckError lessonTitle={lesson.title} />;
     }
 
-    // If user cannot access this phase, find the latest accessible phase
+    if (!convexLesson) {
+      console.error('Lesson was not found in Convex for slug:', lesson.slug);
+      return <AccessCheckError lessonTitle={lesson.title} />;
+    }
+
+    if (!phaseParam) {
+      try {
+        const progressResponse = await fetchQuery(apiAny.student.getLessonProgress, {
+          userId,
+          lessonIdentifier: lesson.slug,
+        });
+
+        const completedPhaseNumbers = new Set<number>(
+          (progressResponse?.phases ?? [])
+            .filter((phase: { status?: string }) => phase.status === 'completed')
+            .map((phase: { phaseNumber: number }) => phase.phaseNumber),
+        );
+
+        const firstIncompletePhase = lessonPhases.find(
+          (phase: { phaseNumber: number }) => !completedPhaseNumbers.has(phase.phaseNumber),
+        );
+        const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
+
+        if (targetPhaseNumber !== requestedPhaseNumber) {
+          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        }
+      } catch (progressError) {
+        console.error('Error loading lesson progress from Convex:', progressError);
+        return <AccessCheckError lessonTitle={lesson.title} />;
+      }
+    }
+
+    let canAccess = false;
+    try {
+      canAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+        userId,
+        lessonId: convexLesson._id,
+        phaseNumber: requestedPhaseNumber,
+      });
+    } catch (accessError) {
+      console.error('Error checking phase access:', accessError);
+      return <AccessCheckError lessonTitle={lesson.title} />;
+    }
+
     if (!canAccess) {
-      // Find the latest unlocked phase
       let latestAccessiblePhase = 1;
 
       for (let i = lessonPhases.length; i >= 1; i--) {
-        const { data: phaseAccess } = await supabase.rpc('can_access_phase', {
-          p_lesson_id: lesson.id,
-          p_phase_number: i,
-        });
+        try {
+          const phaseAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+            userId,
+            lessonId: convexLesson._id,
+            phaseNumber: i,
+          });
 
-        if (phaseAccess) {
-          latestAccessiblePhase = i;
-          break;
+          if (phaseAccess) {
+            latestAccessiblePhase = i;
+            break;
+          }
+        } catch (phaseAccessError) {
+          console.error('Error checking latest accessible phase:', phaseAccessError);
+          return <AccessCheckError lessonTitle={lesson.title} />;
         }
       }
 
-      // Redirect to the latest accessible phase
       redirect(`/student/lesson/${lessonSlug}?phase=${latestAccessiblePhase}`);
     }
   }

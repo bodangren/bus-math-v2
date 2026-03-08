@@ -1,67 +1,82 @@
-import { getRequestSessionClaims } from "@/lib/auth/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { z } from 'zod';
 
-const EDGE_FUNCTION_PATH = "/functions/v1/create-student";
+import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
+import { getRequestSessionClaims } from '@/lib/auth/server';
+import { generatePasswordSalt, generateRandomPassword, hashPassword } from '@/lib/auth/session';
+import { fetchInternalMutation, internal } from '@/lib/convex/server';
+import type { Id } from '@/convex/_generated/dataModel';
+
+const requestSchema = z.object({
+  firstName: z.string().trim().max(50).optional(),
+  lastName: z.string().trim().max(50).optional(),
+  displayName: z.string().trim().max(80).optional(),
+  username: z.string().trim().max(50).optional(),
+});
 
 export async function POST(request: Request) {
   try {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const admin = createAdminClient();
-    const { data: teacherProfile, error: teacherError } = await admin
-      .from("profiles")
-      .select("id, role, organization_id")
-      .eq("id", claims.sub)
-      .maybeSingle();
-
-    if (teacherError || !teacherProfile) {
-      return Response.json({ error: "Teacher profile not found" }, { status: 403 });
-    }
-
-    if (teacherProfile.role !== "teacher" && teacherProfile.role !== "admin") {
-      return Response.json({ error: "Only teachers can create students" }, { status: 403 });
-    }
-
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!supabaseUrl) {
-      return Response.json({ error: "Supabase URL is not configured" }, { status: 500 });
-    }
-    if (!supabaseServiceRoleKey) {
-      return Response.json({ error: "Supabase service role key is not configured" }, { status: 500 });
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     let body: unknown;
     try {
       body = await request.json();
     } catch {
-      return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+      return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const response = await fetch(`${supabaseUrl}${EDGE_FUNCTION_PATH}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${supabaseServiceRoleKey}`,
-        "Content-Type": "application/json",
+    const parsedBody = requestSchema.safeParse(body ?? {});
+    if (!parsedBody.success) {
+      return Response.json(
+        { error: 'Invalid request payload', details: parsedBody.error.flatten().fieldErrors },
+        { status: 400 },
+      );
+    }
+
+    const password = generateRandomPassword(12);
+    const passwordSalt = generatePasswordSalt();
+    const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
+
+    const result = await fetchInternalMutation(internal.auth.createStudentAccount, {
+      // claims.sub is a Convex profile ID stored as a string in the JWT; cast is safe
+      teacherProfileId: claims.sub as Id<'profiles'>,
+      student: {
+        preferredUsername: parsedBody.data.username,
+        firstName: parsedBody.data.firstName,
+        lastName: parsedBody.data.lastName,
+        displayName: parsedBody.data.displayName,
+        passwordHash,
+        passwordSalt,
+        passwordHashIterations: PASSWORD_HASH_ITERATIONS,
       },
-      body: JSON.stringify(body ?? {}),
     });
 
-    const payload = await safeParseJson(response);
-    return Response.json(payload, { status: response.status });
-  } catch (error) {
-    console.error("Failed to invoke create-student edge function", error);
-    return Response.json({ error: "Unexpected error" }, { status: 500 });
-  }
-}
+    if (!result.ok) {
+      if (result.reason === 'teacher_not_found') {
+        return Response.json({ error: 'Teacher profile not found' }, { status: 403 });
+      }
 
-async function safeParseJson(response: Response) {
-  try {
-    return await response.json();
-  } catch {
-    return { error: "Unexpected response from edge function" };
+      if (result.reason === 'forbidden') {
+        return Response.json({ error: 'Only teachers can create students' }, { status: 403 });
+      }
+
+      return Response.json({ error: 'Failed to create student' }, { status: 500 });
+    }
+
+    return Response.json(
+      {
+        studentId: result.studentId,
+        username: result.username,
+        password,
+        displayName: result.displayName,
+        email: `${result.username}@internal.domain`,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('Unexpected error in create-student', error);
+    return Response.json({ error: 'Unexpected error' }, { status: 500 });
   }
 }

@@ -1,6 +1,8 @@
 export const SESSION_COOKIE_NAME = 'bm_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 12;
 export const PASSWORD_HASH_ITERATIONS = 120000;
+// Unambiguous alphabet: omits O/0, I/l/1 to avoid transcription errors
+export const PASSWORD_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
 
 export function getAuthJwtSecret(): string {
   const envSecret = process.env.AUTH_JWT_SECRET;

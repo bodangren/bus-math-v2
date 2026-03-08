@@ -16,6 +16,12 @@ Migrate the `bus-math-v2` Next.js frontend to use the Cloudflare Vinext plugin (
      - no email verification / reset-link / OTP / MFA flows
      - accounts are teacher/admin provisioned
      - middleware-guarded private routes with JWT role claims
+   - Convex runtime compatibility constraints:
+     - one code path must work for both local Convex (`npx convex dev`) and cloud Convex deployments
+     - no dashboard deploy key requirement for local development
+     - internal Convex auth/profile functions remain internal (not made public for convenience)
+     - Convex endpoint and admin auth are resolved in one shared server adapter, not per-route fallbacks
+     - startup/runtime must fail fast with explicit errors when Convex admin auth cannot be resolved
 3. **Data Migration:**
    - Export existing data from Supabase and import to Convex via Convex's import tools or custom scripts.
 

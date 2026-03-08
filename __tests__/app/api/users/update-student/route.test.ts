@@ -1,33 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFrom = vi.fn();
-const mockUpdateUserById = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
-vi.mock('@/lib/supabase/admin', () => ({
-  createAdminClient: vi.fn(() => ({
-    from: mockFrom,
-    auth: { admin: { updateUserById: mockUpdateUserById } },
-  })),
+vi.mock('@/lib/convex/server', () => ({
+  fetchInternalMutation: mockFetchInternalMutation,
+  internal: {
+    auth: {
+      updateStudentAccount: 'internal.auth.updateStudentAccount',
+    },
+  },
 }));
 
 const { POST } = await import('../../../../../app/api/users/update-student/route');
-
-function makeQueryBuilder(value: unknown) {
-  const self: Record<string, unknown> = {
-    select: vi.fn(() => self),
-    eq: vi.fn(() => self),
-    maybeSingle: vi.fn().mockResolvedValue(value),
-    update: vi.fn(() => self),
-    then: (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) =>
-      Promise.resolve(value).then(resolve, reject),
-  };
-  return self;
-}
 
 function makeRequest(body: unknown) {
   return new Request('http://localhost/api/users/update-student', {
@@ -52,111 +41,63 @@ describe('POST /api/users/update-student', () => {
   it('returns 401 when unauthenticated', async () => {
     mockGetRequestSessionClaims.mockResolvedValue(null);
 
-    const response = await POST(
-      makeRequest({
-        studentId: '5d86f8f9-03b5-4a1e-96ec-b543e26f412b',
-        displayName: 'New Name',
-      }),
-    );
+    const response = await POST(makeRequest({ studentId: 'student-1', displayName: 'New Name' }));
     const json = await response.json();
 
     expect(response.status).toBe(401);
     expect(json.error).toBe('Unauthorized');
   });
 
-  it('returns 403 when caller is not teacher/admin', async () => {
-    mockFrom.mockReturnValueOnce(
-      makeQueryBuilder({
-        data: { id: 'teacher-1', role: 'student', organization_id: 'org-1' },
-        error: null,
-      }),
-    );
+  it('returns 400 when payload does not include an update', async () => {
+    const response = await POST(makeRequest({ studentId: 'student-1' }));
+    const json = await response.json();
 
-    const response = await POST(
-      makeRequest({
-        studentId: '5d86f8f9-03b5-4a1e-96ec-b543e26f412b',
-        displayName: 'New Name',
-      }),
-    );
+    expect(response.status).toBe(400);
+    expect(json.error).toMatch(/invalid request payload/i);
+  });
+
+  it('returns 403 when caller is not allowed to manage students', async () => {
+    mockFetchInternalMutation.mockResolvedValue({ ok: false, reason: 'forbidden' });
+
+    const response = await POST(makeRequest({ studentId: 'student-1', deactivate: true }));
     const json = await response.json();
 
     expect(response.status).toBe(403);
     expect(json.error).toMatch(/only teachers/i);
   });
 
-  it('updates display name for org-scoped student', async () => {
-    mockFrom.mockReturnValueOnce(
-      makeQueryBuilder({
-        data: { id: 'teacher-1', role: 'teacher', organization_id: 'org-1' },
-        error: null,
-      }),
-    );
-    mockFrom.mockReturnValueOnce(
-      makeQueryBuilder({
-        data: {
-          id: 'student-1',
-          role: 'student',
-          organization_id: 'org-1',
-          username: 'demo_student',
-          display_name: 'Old Name',
-          metadata: {},
-        },
-        error: null,
-      }),
-    );
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ error: null }));
+  it('returns 404 when target student does not exist in the teacher org', async () => {
+    mockFetchInternalMutation.mockResolvedValue({ ok: false, reason: 'student_not_found' });
 
-    const response = await POST(
-      makeRequest({
-        studentId: '5d86f8f9-03b5-4a1e-96ec-b543e26f412b',
-        displayName: 'New Name',
-      }),
-    );
+    const response = await POST(makeRequest({ studentId: 'missing-student', displayName: 'Name' }));
+    const json = await response.json();
+
+    expect(response.status).toBe(404);
+    expect(json.error).toMatch(/student not found/i);
+  });
+
+  it('returns updated student account details', async () => {
+    mockFetchInternalMutation.mockResolvedValue({
+      ok: true,
+      studentId: 'student-1',
+      username: 'demo_student',
+      displayName: 'New Name',
+      deactivated: false,
+    });
+
+    const response = await POST(makeRequest({ studentId: 'student-1', displayName: 'New Name' }));
     const json = await response.json();
 
     expect(response.status).toBe(200);
     expect(json.studentId).toBe('student-1');
     expect(json.displayName).toBe('New Name');
     expect(json.deactivated).toBe(false);
-  });
-
-  it('deactivates student account and applies auth ban', async () => {
-    mockFrom.mockReturnValueOnce(
-      makeQueryBuilder({
-        data: { id: 'teacher-1', role: 'teacher', organization_id: 'org-1' },
-        error: null,
-      }),
-    );
-    mockFrom.mockReturnValueOnce(
-      makeQueryBuilder({
-        data: {
-          id: 'student-1',
-          role: 'student',
-          organization_id: 'org-1',
-          username: 'demo_student',
-          display_name: 'Old Name',
-          metadata: {},
-        },
-        error: null,
-      }),
-    );
-    mockUpdateUserById.mockResolvedValue({ data: { user: { id: 'student-1' } }, error: null });
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ error: null }));
-
-    const response = await POST(
-      makeRequest({
-        studentId: '5d86f8f9-03b5-4a1e-96ec-b543e26f412b',
-        deactivate: true,
-      }),
-    );
-    const json = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(json.deactivated).toBe(true);
-    expect(mockUpdateUserById).toHaveBeenCalledWith(
-      'student-1',
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith(
+      'internal.auth.updateStudentAccount',
       expect.objectContaining({
-        ban_duration: expect.any(String),
+        teacherProfileId: 'teacher-1',
+        studentProfileId: 'student-1',
+        displayName: 'New Name',
       }),
     );
   });

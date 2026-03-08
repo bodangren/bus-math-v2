@@ -1,21 +1,15 @@
 import { z } from 'zod';
+
+import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
 import { getRequestSessionClaims } from '@/lib/auth/server';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { generatePasswordSalt, generateRandomPassword, hashPassword } from '@/lib/auth/session';
+import { fetchInternalMutation, internal } from '@/lib/convex/server';
+import type { Id } from '@/convex/_generated/dataModel';
 
 const requestSchema = z.object({
-  studentId: z.string().uuid('studentId must be a valid UUID'),
+  // Convex IDs are opaque alphanumeric strings, not UUIDs — uuid() validation would reject them
+  studentId: z.string().trim().min(1, 'studentId is required'),
 });
-
-const PASSWORD_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function generateRandomPassword(length = 12): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return Array.from(bytes, (byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]).join('');
-}
 
 export async function POST(request: Request) {
   try {
@@ -39,69 +33,40 @@ export async function POST(request: Request) {
       );
     }
 
-    const admin = createAdminClient();
+    const password = generateRandomPassword(12);
+    const passwordSalt = generatePasswordSalt();
+    const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
 
-    const { data: teacherProfile, error: teacherError } = await admin
-      .from('profiles')
-      .select('id, role, organization_id')
-      .eq('id', claims.sub)
-      .maybeSingle();
-
-    if (teacherError || !teacherProfile) {
-      return Response.json({ error: 'Teacher profile not found' }, { status: 403 });
-    }
-
-    if (teacherProfile.role !== 'teacher' && teacherProfile.role !== 'admin') {
-      return Response.json({ error: 'Only teachers can reset student passwords' }, { status: 403 });
-    }
-
-    const { data: studentProfile, error: studentError } = await admin
-      .from('profiles')
-      .select('id, role, organization_id, username, display_name, metadata')
-      .eq('id', parsedBody.data.studentId)
-      .maybeSingle();
-
-    if (
-      studentError ||
-      !studentProfile ||
-      studentProfile.role !== 'student' ||
-      studentProfile.organization_id !== teacherProfile.organization_id
-    ) {
-      return Response.json({ error: 'Student not found' }, { status: 404 });
-    }
-
-    const nextPassword = generateRandomPassword(12);
-    const { error: updateAuthError } = await admin.auth.admin.updateUserById(studentProfile.id, {
-      password: nextPassword,
+    const result = await fetchInternalMutation(internal.auth.resetStudentPassword, {
+      // claims.sub / studentId are Convex profile IDs stored as strings; casts are safe
+      teacherProfileId: claims.sub as Id<'profiles'>,
+      studentProfileId: parsedBody.data.studentId as Id<'profiles'>,
+      passwordHash,
+      passwordSalt,
+      passwordHashIterations: PASSWORD_HASH_ITERATIONS,
     });
 
-    if (updateAuthError) {
+    if (!result.ok) {
+      if (result.reason === 'teacher_not_found') {
+        return Response.json({ error: 'Teacher profile not found' }, { status: 403 });
+      }
+
+      if (result.reason === 'forbidden') {
+        return Response.json({ error: 'Only teachers can reset student passwords' }, { status: 403 });
+      }
+
+      if (result.reason === 'student_not_found') {
+        return Response.json({ error: 'Student not found' }, { status: 404 });
+      }
+
       return Response.json({ error: 'Failed to reset student password' }, { status: 500 });
     }
 
-    const existingMetadata = isRecord(studentProfile.metadata) ? studentProfile.metadata : {};
-    const nextMetadata = {
-      ...existingMetadata,
-      lastPasswordResetAt: new Date().toISOString(),
-      lastPasswordResetBy: teacherProfile.id,
-    };
-
-    const { error: metadataError } = await admin
-      .from('profiles')
-      .update({
-        metadata: nextMetadata,
-      })
-      .eq('id', studentProfile.id);
-
-    if (metadataError) {
-      return Response.json({ error: 'Password reset succeeded but audit metadata failed to save' }, { status: 500 });
-    }
-
     return Response.json({
-      studentId: studentProfile.id,
-      username: studentProfile.username,
-      displayName: studentProfile.display_name ?? studentProfile.username,
-      password: nextPassword,
+      studentId: result.studentId,
+      username: result.username,
+      displayName: result.displayName,
+      password,
     });
   } catch (error) {
     console.error('Unexpected error in reset-student-password', error);

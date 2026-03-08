@@ -1,70 +1,55 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 
-vi.mock("@/lib/auth/server", () => ({
+vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
-const mockFrom = vi.fn();
-const mockCreateUser = vi.fn();
-const mockDeleteUser = vi.fn();
-
-vi.mock("@/lib/supabase/admin", () => ({
-  createAdminClient: vi.fn(() => ({
-    from: mockFrom,
-    auth: { admin: { createUser: mockCreateUser, deleteUser: mockDeleteUser } },
-  })),
+vi.mock('@/lib/convex/server', () => ({
+  fetchInternalMutation: mockFetchInternalMutation,
+  internal: {
+    auth: {
+      bulkCreateStudentAccounts: 'internal.auth.bulkCreateStudentAccounts',
+    },
+  },
 }));
 
-const { POST } = await import("../../../../../app/api/users/bulk-create-students/route");
-
-const TEACHER_PROFILE = { id: "teacher-1", role: "teacher", organization_id: "org-1" };
-const STUDENT_USER = { user: { id: "student-uid-1" } };
-
-function makeQueryBuilder(value: unknown) {
-  const self: Record<string, unknown> = {
-    select: vi.fn(() => self),
-    eq: vi.fn(() => self),
-    maybeSingle: vi.fn().mockResolvedValue(value),
-    insert: vi.fn().mockResolvedValue(value),
-    upsert: vi.fn().mockResolvedValue(value),
-    then: (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) =>
-      Promise.resolve(value).then(resolve, reject),
-  };
-  return self;
-}
-
-function claimsWith(sub = "teacher-1") {
-  return { sub, username: "teacher", role: "teacher", iat: 1, exp: 2 };
-}
+const { POST } = await import('../../../../../app/api/users/bulk-create-students/route');
 
 function makeRequest(body: unknown) {
-  return new Request("http://localhost/api/users/bulk-create-students", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  return new Request('http://localhost/api/users/bulk-create-students', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
 }
 
-beforeEach(() => {
-  vi.clearAllMocks();
-  mockGetRequestSessionClaims.mockResolvedValue(claimsWith());
-});
+describe('POST /api/users/bulk-create-students', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'teacher-1',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
+  });
 
-describe("POST /api/users/bulk-create-students", () => {
-  it("returns 401 when there is no active session", async () => {
+  it('returns 401 when unauthenticated', async () => {
     mockGetRequestSessionClaims.mockResolvedValue(null);
 
-    const response = await POST(makeRequest({ students: [{ firstName: "Ada" }] }));
+    const response = await POST(makeRequest({ students: [{ firstName: 'Ada' }] }));
     const json = await response.json();
 
     expect(response.status).toBe(401);
-    expect(json.error).toBe("Unauthorized");
-    expect(mockFrom).not.toHaveBeenCalled();
+    expect(json.error).toBe('Unauthorized');
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
   });
 
-  it("returns 400 for an empty students array", async () => {
+  it('returns 400 when students array is missing or empty', async () => {
     const response = await POST(makeRequest({ students: [] }));
     const json = await response.json();
 
@@ -72,66 +57,74 @@ describe("POST /api/users/bulk-create-students", () => {
     expect(json.error).toMatch(/non-empty/i);
   });
 
-  it("returns 400 when batch exceeds 100 students", async () => {
-    const response = await POST(makeRequest({ students: new Array(101).fill({ firstName: "X" }) }));
+  it('returns 400 when students batch exceeds 100', async () => {
+    const response = await POST(makeRequest({ students: new Array(101).fill({ firstName: 'X' }) }));
     const json = await response.json();
 
     expect(response.status).toBe(400);
     expect(json.error).toMatch(/maximum batch size/i);
   });
 
-  it("returns 403 when teacher profile is not found", async () => {
-    mockFrom.mockReturnValue(makeQueryBuilder({ data: null, error: null }));
+  it('returns 403 when caller is not allowed to create students', async () => {
+    mockFetchInternalMutation.mockResolvedValue({ ok: false, reason: 'forbidden' });
 
-    const response = await POST(makeRequest({ students: [{ firstName: "Ada" }] }));
-    const json = await response.json();
-
-    expect(response.status).toBe(403);
-    expect(json.error).toMatch(/teacher profile not found/i);
-  });
-
-  it("returns 403 when the caller is not a teacher or admin", async () => {
-    mockFrom.mockReturnValue(
-      makeQueryBuilder({ data: { ...TEACHER_PROFILE, role: "student" }, error: null }),
-    );
-
-    const response = await POST(makeRequest({ students: [{ firstName: "Ada" }] }));
+    const response = await POST(makeRequest({ students: [{ firstName: 'Ada' }] }));
     const json = await response.json();
 
     expect(response.status).toBe(403);
     expect(json.error).toMatch(/only teachers/i);
   });
 
-  it("returns 201 and creates the student account", async () => {
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ data: TEACHER_PROFILE, error: null }));
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ count: 0, error: null }));
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ error: null }));
+  it('returns 201 and response payload for created students', async () => {
+    mockFetchInternalMutation.mockResolvedValue({
+      ok: true,
+      totalCreated: 2,
+      organizationId: 'org-1',
+      students: [
+        { studentId: 'student-1', username: 'ada_lovelace', displayName: 'Ada Lovelace', email: 'ada_lovelace@internal.domain' },
+        { studentId: 'student-2', username: 'grace_hopper', displayName: 'Grace Hopper', email: 'grace_hopper@internal.domain' },
+      ],
+    });
 
-    mockCreateUser.mockResolvedValue({ data: STUDENT_USER, error: null });
-
-    const response = await POST(makeRequest({ students: [{ firstName: "Ada", lastName: "Lovelace" }] }));
+    const response = await POST(
+      makeRequest({
+        students: [
+          { firstName: 'Ada', lastName: 'Lovelace' },
+          { firstName: 'Grace', lastName: 'Hopper' },
+        ],
+      }),
+    );
     const json = await response.json();
 
     expect(response.status).toBe(201);
-    expect(json.totalCreated).toBe(1);
-    expect(json.students[0].username).toBe("ada_lovelace");
-    expect(json.students[0]).toHaveProperty("password");
-    expect(mockCreateUser).toHaveBeenCalledOnce();
+    expect(json.totalCreated).toBe(2);
+    expect(json.students[0].username).toBe('ada_lovelace');
+    expect(json.students[0]).toHaveProperty('password');
+    expect(json.students[1]).toHaveProperty('password');
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith(
+      'internal.auth.bulkCreateStudentAccounts',
+      expect.objectContaining({
+        teacherProfileId: 'teacher-1',
+        students: expect.arrayContaining([
+          expect.objectContaining({
+            firstName: 'Ada',
+            lastName: 'Lovelace',
+            passwordHash: expect.any(String),
+            passwordSalt: expect.any(String),
+            passwordHashIterations: expect.any(Number),
+          }),
+        ]),
+      }),
+    );
   });
 
-  it("rolls back created users and returns 500 when a profile insert fails", async () => {
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ data: TEACHER_PROFILE, error: null }));
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ count: 0, error: null }));
-    mockFrom.mockReturnValueOnce(makeQueryBuilder({ error: { message: "insert failed" } }));
+  it('returns 500 for unexpected mutation failures', async () => {
+    mockFetchInternalMutation.mockRejectedValue(new Error('mutation failed'));
 
-    mockCreateUser.mockResolvedValue({ data: STUDENT_USER, error: null });
-    mockDeleteUser.mockResolvedValue({ error: null });
-
-    const response = await POST(makeRequest({ students: [{ firstName: "Ada" }] }));
+    const response = await POST(makeRequest({ students: [{ firstName: 'Ada' }] }));
     const json = await response.json();
 
     expect(response.status).toBe(500);
-    expect(json.error).toMatch(/no accounts were created/i);
-    expect(mockDeleteUser).toHaveBeenCalledWith("student-uid-1");
+    expect(json.error).toMatch(/unexpected error/i);
   });
 });

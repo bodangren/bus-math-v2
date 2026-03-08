@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server';
 
 import { PASSWORD_HASH_ITERATIONS } from '@/lib/auth/constants';
 import { generatePasswordSalt, hashPassword } from '@/lib/auth/session';
-import { api, fetchInternalMutation, fetchQuery, internal } from '@/lib/convex/server';
+import { fetchInternalMutation, internal } from '@/lib/convex/server';
 
 const DEMO_USERS = [
   { username: 'demo_teacher', role: 'teacher' as const, password: 'demo123' },
   { username: 'demo_student', role: 'student' as const, password: 'demo123' },
+  { username: 'demo_admin', role: 'admin' as const, password: 'demo123' },
 ];
 
 export async function POST() {
@@ -14,12 +15,13 @@ export async function POST() {
     const results = [] as Array<{ username: string; status: string }>;
 
     for (const user of DEMO_USERS) {
-      const profile = await fetchQuery(api.activities.getProfileByUsername, {
+      const profileResult = await fetchInternalMutation(internal.auth.ensureProfileByUsername, {
         username: user.username,
+        role: user.role,
       });
 
-      if (!profile) {
-        results.push({ username: user.username, status: 'profile_not_found' });
+      if (!profileResult.ok) {
+        results.push({ username: user.username, status: profileResult.reason });
         continue;
       }
 

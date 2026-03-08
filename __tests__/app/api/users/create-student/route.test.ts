@@ -1,155 +1,113 @@
-import { describe, expect, it, vi, beforeEach, afterAll, beforeAll } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
-const mockFrom = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 
-vi.mock("@/lib/auth/server", () => ({
+vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
 }));
 
-vi.mock("@/lib/supabase/admin", () => ({
-  createAdminClient: vi.fn(() => ({
-    from: mockFrom,
-  })),
+vi.mock('@/lib/convex/server', () => ({
+  fetchInternalMutation: mockFetchInternalMutation,
+  internal: {
+    auth: {
+      createStudentAccount: 'internal.auth.createStudentAccount',
+    },
+  },
 }));
 
-const originalSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const originalServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const { POST } = await import("../../../../../app/api/users/create-student/route");
+const { POST } = await import('../../../../../app/api/users/create-student/route');
 
-const originalFetch = global.fetch;
-
-beforeAll(() => {
-  global.fetch = vi.fn() as unknown as typeof fetch;
-});
-
-afterAll(() => {
-  global.fetch = originalFetch;
-  if (originalSupabaseUrl) {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = originalSupabaseUrl;
-  } else {
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-  }
-
-  if (originalServiceRoleKey) {
-    process.env.SUPABASE_SERVICE_ROLE_KEY = originalServiceRoleKey;
-  } else {
-    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
-  }
-});
-
-function makeQueryBuilder(value: unknown) {
-  const self: Record<string, unknown> = {
-    select: vi.fn(() => self),
-    eq: vi.fn(() => self),
-    maybeSingle: vi.fn().mockResolvedValue(value),
-    then: (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) =>
-      Promise.resolve(value).then(resolve, reject),
-  };
-  return self;
+function makeRequest(body: unknown) {
+  return new Request('http://localhost/api/users/create-student', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
 }
 
-beforeEach(() => {
-  vi.clearAllMocks();
-  mockGetRequestSessionClaims.mockResolvedValue({
-    sub: "teacher-1",
-    username: "teacher",
-    role: "teacher",
-    iat: 1,
-    exp: 2,
+describe('POST /api/users/create-student', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'teacher-1',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
   });
-  mockFrom.mockReturnValue(
-    makeQueryBuilder({
-      data: { id: "teacher-1", role: "teacher", organization_id: "org-1" },
-      error: null,
-    }),
-  );
-});
 
-describe("POST /api/users/create-student", () => {
-  it("returns 401 when no active session exists", async () => {
+  it('returns 401 when unauthenticated', async () => {
     mockGetRequestSessionClaims.mockResolvedValue(null);
 
-    const request = new Request("http://localhost/api/users/create-student", {
-      method: "POST",
-      body: JSON.stringify({ firstName: "Ada" }),
+    const response = await POST(makeRequest({ firstName: 'Ada' }));
+    const json = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(json.error).toBe('Unauthorized');
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 when request body is invalid JSON', async () => {
+    const request = new Request('http://localhost/api/users/create-student', {
+      method: 'POST',
+      body: '{not-valid-json',
     });
 
     const response = await POST(request);
     const json = await response.json();
 
-    expect(response.status).toBe(401);
-    expect(json.error).toBe("Unauthorized");
-    expect(global.fetch).not.toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    expect(json.error).toMatch(/invalid json/i);
   });
 
-  it("returns 403 when requester is not teacher/admin", async () => {
-    mockFrom.mockReturnValue(
-      makeQueryBuilder({ data: { id: "teacher-1", role: "student", organization_id: "org-1" }, error: null }),
-    );
+  it('returns 403 when caller is not allowed to create students', async () => {
+    mockFetchInternalMutation.mockResolvedValue({ ok: false, reason: 'forbidden' });
 
-    const request = new Request("http://localhost/api/users/create-student", {
-      method: "POST",
-      body: JSON.stringify({ firstName: "Ada" }),
-    });
-
-    const response = await POST(request);
+    const response = await POST(makeRequest({ firstName: 'Ada', lastName: 'Lovelace' }));
     const json = await response.json();
 
     expect(response.status).toBe(403);
     expect(json.error).toMatch(/only teachers/i);
   });
 
-  it("forwards payload to edge function and surfaces success", async () => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://demo.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
-
-    const edgeResponse = new Response(
-      JSON.stringify({ username: "ada_l", password: "pass1234" }),
-      { status: 201 },
-    );
-    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(edgeResponse);
-
-    const request = new Request("http://localhost/api/users/create-student", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName: "Ada", lastName: "L" }),
+  it('creates a student account and returns one-time credentials', async () => {
+    mockFetchInternalMutation.mockResolvedValue({
+      ok: true,
+      studentId: 'student-1',
+      username: 'ada_lovelace',
+      displayName: 'Ada Lovelace',
+      organizationId: 'org-1',
     });
 
-    const response = await POST(request);
+    const response = await POST(
+      makeRequest({
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        displayName: 'Ada Lovelace',
+      }),
+    );
     const json = await response.json();
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      "https://demo.supabase.co/functions/v1/create-student",
+    expect(response.status).toBe(201);
+    expect(json.username).toBe('ada_lovelace');
+    expect(json.displayName).toBe('Ada Lovelace');
+    expect(json.email).toBe('ada_lovelace@internal.domain');
+    expect(json.password.length).toBeGreaterThanOrEqual(8);
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith(
+      'internal.auth.createStudentAccount',
       expect.objectContaining({
-        method: "POST",
-        headers: expect.objectContaining({
-          Authorization: "Bearer service-role-key",
-          "Content-Type": "application/json",
+        teacherProfileId: 'teacher-1',
+        student: expect.objectContaining({
+          firstName: 'Ada',
+          lastName: 'Lovelace',
+          displayName: 'Ada Lovelace',
+          passwordHash: expect.any(String),
+          passwordSalt: expect.any(String),
+          passwordHashIterations: expect.any(Number),
         }),
       }),
     );
-
-    expect(response.status).toBe(201);
-    expect(json.username).toBe("ada_l");
-  });
-
-  it("propagates edge function errors", async () => {
-    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://demo.supabase.co";
-    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
-
-    const edgeResponse = new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
-    (global.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(edgeResponse);
-
-    const request = new Request("http://localhost/api/users/create-student", {
-      method: "POST",
-      body: JSON.stringify({}),
-    });
-
-    const response = await POST(request);
-    const json = await response.json();
-
-    expect(response.status).toBe(403);
-    expect(json.error).toBe("Forbidden");
   });
 });

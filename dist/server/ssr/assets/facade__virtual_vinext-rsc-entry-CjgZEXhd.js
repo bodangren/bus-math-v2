@@ -34,11 +34,17 @@ import { withScroll, getBox, expand, createBox, getRect, offset as offset$2, cal
 import rafSchd from "raf-schd";
 import _extends$t from "@babel/runtime/helpers/esm/extends";
 import classNames from "classnames";
-import FormulaParser, { FormulaError, DepParser } from "fast-formula-parser";
+import require$$3 from "bahttext";
+import require$$3$1 from "bessel";
+import require$$4 from "jstat";
+import require$$0 from "chevrotain";
 import { unstable_runWithPriority, unstable_NormalPriority } from "scheduler";
 import { z as z$1 } from "zod";
 import "../__vite_rsc_assets_manifest.js";
 import "react-dom/server.edge";
+function getDefaultExportFromCjs(x2) {
+  return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
+}
 const LinkStatusContext = createContext$1({ pending: false });
 function resolveHref(href) {
   if (typeof href === "string")
@@ -3670,8 +3676,8 @@ class RequestManager {
 }
 const functionName = /* @__PURE__ */ Symbol.for("functionName");
 const toReferencePath = /* @__PURE__ */ Symbol.for("toReferencePath");
-function extractReferencePath(reference) {
-  return reference[toReferencePath] ?? null;
+function extractReferencePath(reference2) {
+  return reference2[toReferencePath] ?? null;
 }
 function isFunctionHandle(s) {
   return s.startsWith("function://");
@@ -20145,16 +20151,16 @@ var SPAN_STYLE = {
   whiteSpace: "pre"
 };
 var MEASUREMENT_SPAN_ID = "recharts_measurement_span";
-function createCacheKey(text, style2) {
+function createCacheKey(text2, style2) {
   var fontSize = style2.fontSize || "";
   var fontFamily = style2.fontFamily || "";
   var fontWeight = style2.fontWeight || "";
   var fontStyle = style2.fontStyle || "";
   var letterSpacing = style2.letterSpacing || "";
   var textTransform = style2.textTransform || "";
-  return "".concat(text, "|").concat(fontSize, "|").concat(fontFamily, "|").concat(fontWeight, "|").concat(fontStyle, "|").concat(letterSpacing, "|").concat(textTransform);
+  return "".concat(text2, "|").concat(fontSize, "|").concat(fontFamily, "|").concat(fontWeight, "|").concat(fontStyle, "|").concat(letterSpacing, "|").concat(textTransform);
 }
-var measureTextWithDOM = (text, style2) => {
+var measureTextWithDOM = (text2, style2) => {
   try {
     var measurementSpan = document.getElementById(MEASUREMENT_SPAN_ID);
     if (!measurementSpan) {
@@ -20164,7 +20170,7 @@ var measureTextWithDOM = (text, style2) => {
       document.body.appendChild(measurementSpan);
     }
     Object.assign(measurementSpan.style, SPAN_STYLE, style2);
-    measurementSpan.textContent = "".concat(text);
+    measurementSpan.textContent = "".concat(text2);
     var rect = measurementSpan.getBoundingClientRect();
     return {
       width: rect.width,
@@ -20177,23 +20183,23 @@ var measureTextWithDOM = (text, style2) => {
     };
   }
 };
-var getStringSize = function getStringSize2(text) {
+var getStringSize = function getStringSize2(text2) {
   var style2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-  if (text === void 0 || text === null || Global.isSsr) {
+  if (text2 === void 0 || text2 === null || Global.isSsr) {
     return {
       width: 0,
       height: 0
     };
   }
   if (!currentConfig.enableCache) {
-    return measureTextWithDOM(text, style2);
+    return measureTextWithDOM(text2, style2);
   }
-  var cacheKey = createCacheKey(text, style2);
+  var cacheKey = createCacheKey(text2, style2);
   var cachedResult = stringCache.get(cacheKey);
   if (cachedResult) {
     return cachedResult;
   }
-  var result = measureTextWithDOM(text, style2);
+  var result = measureTextWithDOM(text2, style2);
   stringCache.set(cacheKey, result);
   return result;
 };
@@ -20393,7 +20399,7 @@ var calculateWordsByLines = (_ref2, initialWordsWithComputedWith, spaceWidth, li
     breakAll
   } = _ref2;
   var shouldLimitLines = isNumber(maxLines);
-  var text = children;
+  var text2 = children;
   var calculate = function calculate2() {
     var words = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
     return words.reduce((result2, _ref3) => {
@@ -20426,7 +20432,7 @@ var calculateWordsByLines = (_ref2, initialWordsWithComputedWith, spaceWidth, li
   }
   var suffix2 = "…";
   var checkOverflow = (index2) => {
-    var tempText = text.slice(0, index2);
+    var tempText = text2.slice(0, index2);
     var words = calculateWordWidths({
       breakAll,
       style: style2,
@@ -20437,10 +20443,10 @@ var calculateWordsByLines = (_ref2, initialWordsWithComputedWith, spaceWidth, li
     return [doesOverflow, result2];
   };
   var start2 = 0;
-  var end2 = text.length - 1;
+  var end2 = text2.length - 1;
   var iterations = 0;
   var trimmedResult;
-  while (start2 <= end2 && iterations <= text.length - 1) {
+  while (start2 <= end2 && iterations <= text2.length - 1) {
     var middle = Math.floor((start2 + end2) / 2);
     var prev = middle - 1;
     var [doesPrevOverflow, result] = checkOverflow(prev);
@@ -29211,7 +29217,7 @@ function log(type, message) {
   console[type](...getFormattedMessage(message));
 }
 const warning = log.bind(null, "warn");
-const error = log.bind(null, "error");
+const error$1 = log.bind(null, "error");
 function noop$2() {
 }
 function getOptions(shared2, fromBinding) {
@@ -29266,7 +29272,7 @@ let ErrorBoundary$1 = class ErrorBoundary extends React__default.Component {
       if (err instanceof RbdInvariant) {
         event.preventDefault();
         if (process.env.NODE_ENV !== "production") {
-          error(err.message);
+          error$1(err.message);
         }
       }
     };
@@ -29289,7 +29295,7 @@ let ErrorBoundary$1 = class ErrorBoundary extends React__default.Component {
   componentDidCatch(err) {
     if (err instanceof RbdInvariant) {
       if (process.env.NODE_ENV !== "production") {
-        error(err.message);
+        error$1(err.message);
       }
       this.setState({});
       return;
@@ -32641,7 +32647,7 @@ function shouldPublishUpdate(registry, dragging, entry) {
   return true;
 }
 var createDimensionMarshal = (registry, callbacks) => {
-  let collection = null;
+  let collection2 = null;
   const publisher = createPublisher({
     callbacks: {
       publish: callbacks.publishWhileDragging,
@@ -32651,7 +32657,7 @@ var createDimensionMarshal = (registry, callbacks) => {
   });
   const updateDroppableIsEnabled2 = (id, isEnabled) => {
     !registry.droppable.exists(id) ? process.env.NODE_ENV !== "production" ? invariant(false, `Cannot update is enabled flag of Droppable ${id} as it is not registered`) : invariant() : void 0;
-    if (!collection) {
+    if (!collection2) {
       return;
     }
     callbacks.updateDroppableIsEnabled({
@@ -32660,7 +32666,7 @@ var createDimensionMarshal = (registry, callbacks) => {
     });
   };
   const updateDroppableIsCombineEnabled2 = (id, isCombineEnabled) => {
-    if (!collection) {
+    if (!collection2) {
       return;
     }
     !registry.droppable.exists(id) ? process.env.NODE_ENV !== "production" ? invariant(false, `Cannot update isCombineEnabled flag of Droppable ${id} as it is not registered`) : invariant() : void 0;
@@ -32670,7 +32676,7 @@ var createDimensionMarshal = (registry, callbacks) => {
     });
   };
   const updateDroppableScroll2 = (id, newScroll) => {
-    if (!collection) {
+    if (!collection2) {
       return;
     }
     !registry.droppable.exists(id) ? process.env.NODE_ENV !== "production" ? invariant(false, `Cannot update the scroll on Droppable ${id} as it is not registered`) : invariant() : void 0;
@@ -32680,24 +32686,24 @@ var createDimensionMarshal = (registry, callbacks) => {
     });
   };
   const scrollDroppable2 = (id, change) => {
-    if (!collection) {
+    if (!collection2) {
       return;
     }
     registry.droppable.getById(id).callbacks.scroll(change);
   };
   const stopPublishing = () => {
-    if (!collection) {
+    if (!collection2) {
       return;
     }
     publisher.stop();
-    const home2 = collection.critical.droppable;
+    const home2 = collection2.critical.droppable;
     registry.droppable.getAllByType(home2.type).forEach((entry) => entry.callbacks.dragStopped());
-    collection.unsubscribe();
-    collection = null;
+    collection2.unsubscribe();
+    collection2 = null;
   };
   const subscriber = (event) => {
-    !collection ? process.env.NODE_ENV !== "production" ? invariant(false, "Should only be subscribed when a collection is occurring") : invariant() : void 0;
-    const dragging = collection.critical.draggable;
+    !collection2 ? process.env.NODE_ENV !== "production" ? invariant(false, "Should only be subscribed when a collection is occurring") : invariant() : void 0;
+    const dragging = collection2.critical.draggable;
     if (event.type === "ADDITION") {
       if (shouldPublishUpdate(registry, dragging, event.value)) {
         publisher.add(event.value);
@@ -32710,7 +32716,7 @@ var createDimensionMarshal = (registry, callbacks) => {
     }
   };
   const startPublishing = (request) => {
-    !!collection ? process.env.NODE_ENV !== "production" ? invariant(false, "Cannot start capturing critical dimensions as there is already a collection") : invariant() : void 0;
+    !!collection2 ? process.env.NODE_ENV !== "production" ? invariant(false, "Cannot start capturing critical dimensions as there is already a collection") : invariant() : void 0;
     const entry = registry.draggable.getById(request.draggableId);
     const home2 = registry.droppable.getById(entry.descriptor.droppableId);
     const critical = {
@@ -32718,7 +32724,7 @@ var createDimensionMarshal = (registry, callbacks) => {
       droppable: home2.descriptor
     };
     const unsubscribe = registry.subscribe(subscriber);
-    collection = {
+    collection2 = {
       critical,
       unsubscribe
     };
@@ -33793,7 +33799,7 @@ function getElementId({
 }
 function useHiddenTextElement({
   contextId,
-  text
+  text: text2
 }) {
   const uniqueId2 = useUniqueId("hidden-text", {
     separator: "-"
@@ -33805,7 +33811,7 @@ function useHiddenTextElement({
   useEffect(function mount() {
     const el = document.createElement("div");
     el.id = id;
-    el.textContent = text;
+    el.textContent = text2;
     el.style.display = "none";
     getBodyElement().appendChild(el);
     return function unmount() {
@@ -33814,7 +33820,7 @@ function useHiddenTextElement({
         body.removeChild(el);
       }
     };
-  }, [id, text]);
+  }, [id, text2]);
   return id;
 }
 var AppContext = React__default.createContext(null);
@@ -33906,7 +33912,7 @@ function useDevSetupWarning(fn, inputs) {
       try {
         fn();
       } catch (e) {
-        error(`
+        error$1(`
           A setup problem was encountered.
 
           > ${e.message}
@@ -39888,6 +39894,7283 @@ function StartupJourney({ activity, initialState: initialState2, onStateChange }
             `, children: /* @__PURE__ */ jsx(CardContent, { className: "p-3", children: /* @__PURE__ */ jsx("p", { className: `text-sm font-medium ${notification.type === "success" ? "text-green-800" : notification.type === "warning" ? "text-yellow-800" : notification.type === "error" ? "text-red-800" : "text-blue-800"}`, children: notification.message }) }) }, notification.id)) })
   ] });
 }
+var collection;
+var hasRequiredCollection;
+function requireCollection() {
+  if (hasRequiredCollection) return collection;
+  hasRequiredCollection = 1;
+  class Collection2 {
+    constructor(data, refs) {
+      if (data == null && refs == null) {
+        this._data = [];
+        this._refs = [];
+      } else {
+        if (data.length !== refs.length)
+          throw Error("Collection: data length should match references length.");
+        this._data = data;
+        this._refs = refs;
+      }
+    }
+    get data() {
+      return this._data;
+    }
+    get refs() {
+      return this._refs;
+    }
+    get length() {
+      return this._data.length;
+    }
+    /**
+     * Add data and references to this collection.
+     * @param {{}} obj - data
+     * @param {{}} ref - reference
+     */
+    add(obj, ref2) {
+      this._data.push(obj);
+      this._refs.push(ref2);
+    }
+  }
+  collection = Collection2;
+  return collection;
+}
+var helpers;
+var hasRequiredHelpers;
+function requireHelpers() {
+  if (hasRequiredHelpers) return helpers;
+  hasRequiredHelpers = 1;
+  const FormulaError = requireError();
+  const Collection2 = requireCollection();
+  const Types = {
+    NUMBER: 0,
+    ARRAY: 1,
+    BOOLEAN: 2,
+    STRING: 3,
+    RANGE_REF: 4,
+    // can be 'A:C' or '1:4', not only 'A1:C3'
+    CELL_REF: 5,
+    COLLECTIONS: 6,
+    // Unions of references
+    NUMBER_NO_BOOLEAN: 10
+  };
+  const Factorials = [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600, 6227020800, 87178291200, 1307674368e3, 20922789888e3, 355687428096e3, 6402373705728e3, 121645100408832e3, 243290200817664e4, 5109094217170944e4, 11240007277776077e5, 2585201673888498e7, 6204484017332394e8, 15511210043330986e9, 40329146112660565e10, 10888869450418352e12, 30488834461171387e13, 8841761993739702e15, 26525285981219107e16, 8222838654177922e18, 2631308369336935e20, 8683317618811886e21, 29523279903960416e22, 10333147966386145e24, 37199332678990125e25, 13763753091226346e27, 5230226174666011e29, 20397882081197444e30, 8159152832478977e32, 3345252661316381e34, 140500611775288e37, 6041526306337383e37, 2658271574788449e39, 11962222086548019e40, 5502622159812089e42, 25862324151116818e43, 12413915592536073e45, 6082818640342675e47, 30414093201713376e48, 15511187532873822e50, 8065817517094388e52, 42748832840600255e53, 2308436973392414e56, 12696403353658276e57, 7109985878048635e59, 40526919504877214e60, 23505613312828785e62, 13868311854568984e64, 832098711274139e67, 5075802138772248e68, 3146997326038794e70, 198260831540444e73, 12688693218588417e73, 8247650592082472e75, 5443449390774431e77, 3647111091818868e79, 24800355424368305e80, 1711224524281413e83, 11978571669969892e84, 8504785885678623e86, 61234458376886085e87, 44701154615126844e89, 3307885441519386e92, 248091408113954e95, 18854947016660504e95, 14518309202828587e97, 11324281178206297e99, 8946182130782976e101, 7156945704626381e103, 5797126020747368e105, 4753643337012842e107, 3945523969720659e109, 3314240134565353e111, 281710411438055e114, 24227095383672734e114, 2107757298379528e117, 18548264225739844e118, 1650795516090846e121, 14857159644817615e122, 1352001527678403e125, 12438414054641308e126, 11567725070816416e128, 1087366156656743e131, 1032997848823906e133, 9916779348709496e134, 9619275968248212e136, 9426890448883248e138, 9332621544394415e140, 9332621544394415e142];
+  const ReversedTypes = {};
+  Object.keys(Types).forEach((key) => {
+    ReversedTypes[Types[key]] = key;
+  });
+  class FormulaHelpers {
+    constructor() {
+      this.Types = Types;
+      this.type2Number = {
+        number: Types.NUMBER,
+        boolean: Types.BOOLEAN,
+        string: Types.STRING,
+        object: -1
+      };
+    }
+    checkFunctionResult(result) {
+      const type = typeof result;
+      if (type === "number") {
+        if (isNaN(result)) {
+          return FormulaError.VALUE;
+        } else if (!isFinite(result)) {
+          return FormulaError.NUM;
+        }
+      }
+      if (result === void 0 || result === null)
+        return FormulaError.NULL;
+      return result;
+    }
+    /**
+     * Flatten an array
+     * @param {Array} arr1
+     * @returns {*}
+     */
+    flattenDeep(arr1) {
+      return arr1.reduce((acc, val) => Array.isArray(val) ? acc.concat(this.flattenDeep(val)) : acc.concat(val), []);
+    }
+    /**
+     *
+     * @param obj
+     * @param isArray - if it is an array: [1,2,3], will extract the first element
+     * @param allowBoolean - Allow parse boolean into number
+     * @returns {number|FormulaError}
+     */
+    acceptNumber(obj, isArray = true, allowBoolean = true) {
+      if (obj instanceof FormulaError)
+        return obj;
+      let number;
+      if (typeof obj === "number")
+        number = obj;
+      else if (typeof obj === "boolean") {
+        if (allowBoolean) {
+          number = Number(obj);
+        } else {
+          throw FormulaError.VALUE;
+        }
+      } else if (typeof obj === "string") {
+        if (obj.length === 0) {
+          throw FormulaError.VALUE;
+        }
+        number = Number(obj);
+        if (number !== number) {
+          throw FormulaError.VALUE;
+        }
+      } else if (Array.isArray(obj)) {
+        if (!isArray) {
+          if (obj[0].length === 1) {
+            number = this.acceptNumber(obj[0][0]);
+          } else {
+            throw FormulaError.VALUE;
+          }
+        } else {
+          number = this.acceptNumber(obj[0][0]);
+        }
+      } else {
+        throw Error("Unknown type in FormulaHelpers.acceptNumber");
+      }
+      return number;
+    }
+    /**
+     * Flatten parameters to 1D array.
+     * @see {@link FormulaHelpers.accept}
+     * @param {Array} params - Parameter that needs to flatten.
+     * @param {Types|null} valueType - The type each item should be,
+     *                          null if allows any type. This only applies to literals.
+     * @param {boolean} allowUnion - Allow union, e.g. (A1:C1, E4:F3)
+     * @param {function} hook - Invoked after parsing each item.
+     *                         of the array.
+     * @param {*} [defValue=null] - The value if an param is omitted. i.e. SUM(1,2,,,,,)
+     * @param {number} [minSize=1] - The minimum size of the parameters
+     */
+    flattenParams(params, valueType, allowUnion, hook, defValue = null, minSize = 1) {
+      if (params.length < minSize)
+        throw FormulaError.ARG_MISSING([valueType]);
+      if (defValue == null) {
+        defValue = valueType === Types.NUMBER ? 0 : valueType == null ? null : "";
+      }
+      params.forEach((param) => {
+        const { isCellRef, isRangeRef, isArray } = param;
+        const isUnion = param.value instanceof Collection2;
+        const isLiteral = !isCellRef && !isRangeRef && !isArray && !isUnion;
+        const info = { isLiteral, isCellRef, isRangeRef, isArray, isUnion };
+        if (isLiteral) {
+          if (param.omitted)
+            param = defValue;
+          else
+            param = this.accept(param, valueType, defValue);
+          hook(param, info);
+        } else if (isCellRef) {
+          hook(param.value, info);
+        } else if (isUnion) {
+          if (!allowUnion) throw FormulaError.VALUE;
+          param = param.value.data;
+          param = this.flattenDeep(param);
+          param.forEach((item) => {
+            hook(item, info);
+          });
+        } else if (isRangeRef || isArray) {
+          param = this.flattenDeep(param.value);
+          param.forEach((item) => {
+            hook(item, info);
+          });
+        }
+      });
+    }
+    /**
+     * Check if the param valid, return the parsed param.
+     * If type is not given, return the un-parsed param.
+     * @param {*} param
+     * @param {number|null} [type] - The expected type
+     *           NUMBER: Expect a single number,
+     *           ARRAY: Expect an flatten array,
+     *           BOOLEAN: Expect a single boolean,
+     *           STRING: Expect a single string,
+     *           COLLECTIONS: Expect an Array of the above types
+     *           null: Do not parse the value, return it directly.
+     *           The collection is not a flatted array.
+     * @param {*} [defValue] - Default value if the param is not given.
+     *               if undefined, this param is required, a Error will throw if not given.
+     *               if null, and param is undefined, null will be returned.
+     * @param {boolean} [flat=true] - If the array should be flattened,
+     *                      only applicable when type is ARRAY.
+     *                      If false, collection is disallowed.
+     * @param {boolean} allowSingleValue - If pack single value into 2d array,
+     *                     only applicable when type is ARRAY.
+     * @return {string|number|boolean|{}|Array}
+     */
+    accept(param, type = null, defValue, flat = true, allowSingleValue = false) {
+      if (Array.isArray(type))
+        type = type[0];
+      if (param == null && defValue === void 0) {
+        throw FormulaError.ARG_MISSING([type]);
+      } else if (param == null)
+        return defValue;
+      if (typeof param !== "object" || Array.isArray(param))
+        return param;
+      const isArray = param.isArray;
+      if (param.value != null) param = param.value;
+      if (type == null)
+        return param;
+      if (param instanceof FormulaError)
+        throw param;
+      if (type === Types.ARRAY) {
+        if (Array.isArray(param)) {
+          return flat ? this.flattenDeep(param) : param;
+        } else if (param instanceof Collection2) {
+          throw FormulaError.VALUE;
+        } else if (allowSingleValue) {
+          return flat ? [param] : [[param]];
+        }
+        throw FormulaError.VALUE;
+      } else if (type === Types.COLLECTIONS) {
+        return param;
+      }
+      if (isArray) {
+        param = param[0][0];
+      }
+      const paramType = this.type(param);
+      if (type === Types.STRING) {
+        if (paramType === Types.BOOLEAN)
+          param = param ? "TRUE" : "FALSE";
+        else
+          param = `${param}`;
+      } else if (type === Types.BOOLEAN) {
+        if (paramType === Types.STRING)
+          throw FormulaError.VALUE;
+        if (paramType === Types.NUMBER)
+          param = Boolean(param);
+      } else if (type === Types.NUMBER) {
+        param = this.acceptNumber(param, false);
+      } else if (type === Types.NUMBER_NO_BOOLEAN) {
+        param = this.acceptNumber(param, false, false);
+      } else {
+        throw FormulaError.VALUE;
+      }
+      return param;
+    }
+    type(variable) {
+      let type = this.type2Number[typeof variable];
+      if (type === -1) {
+        if (Array.isArray(variable))
+          type = Types.ARRAY;
+        else if (variable.ref) {
+          if (variable.ref.from) {
+            type = Types.RANGE_REF;
+          } else {
+            type = Types.CELL_REF;
+          }
+        } else if (variable instanceof Collection2)
+          type = Types.COLLECTIONS;
+      }
+      return type;
+    }
+    isRangeRef(param) {
+      return param.ref && param.ref.from;
+    }
+    isCellRef(param) {
+      return param.ref && !param.ref.from;
+    }
+    /**
+     * Helper function for SUMIF, AVERAGEIF,...
+     * @param context
+     * @param range1
+     * @param range2
+     */
+    retrieveRanges(context2, range1, range2) {
+      range2 = Address.extend(range1, range2);
+      range1 = this.retrieveArg(context2, range1);
+      range1 = H2.accept(range1, Types.ARRAY, void 0, false, true);
+      if (range2 !== range1) {
+        range2 = this.retrieveArg(context2, range2);
+        range2 = H2.accept(range2, Types.ARRAY, void 0, false, true);
+      } else
+        range2 = range1;
+      return [range1, range2];
+    }
+    retrieveArg(context2, arg) {
+      if (arg === null)
+        return { value: 0, isArray: false, omitted: true };
+      const res = context2.utils.extractRefValue(arg);
+      return { value: res.val, isArray: res.isArray, ref: arg.ref };
+    }
+  }
+  const H2 = new FormulaHelpers();
+  const WildCard = {
+    /**
+     * @param {string|*} obj
+     * @returns {*}
+     */
+    isWildCard: (obj) => {
+      if (typeof obj === "string")
+        return /[*?]/.test(obj);
+      return false;
+    },
+    toRegex: (lookupText, flags) => {
+      return RegExp(lookupText.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/([^~]??)[?]/g, "$1.").replace(/([^~]??)[*]/g, "$1.*").replace(/~([?*])/g, "$1"), flags);
+    }
+  };
+  const Criteria = {
+    /**
+     * Parse criteria, support comparison and wild card match.
+     * @param {string|number} criteria
+     * @return {{op: string, value: string|number|boolean|RegExp, match: boolean|undefined}} - The parsed criteria.
+     */
+    parse: (criteria) => {
+      const type = typeof criteria;
+      if (type === "string") {
+        const upper = criteria.toUpperCase();
+        if (upper === "TRUE" || upper === "FALSE") {
+          return { op: "=", value: upper === "TRUE" };
+        }
+        const res = criteria.match(/(<>|>=|<=|>|<|=)(.*)/);
+        if (res) {
+          let op = res[1], value;
+          if (isNaN(res[2])) {
+            const upper2 = res[2].toUpperCase();
+            if (upper2 === "TRUE" || upper2 === "FALSE") {
+              value = upper2 === "TRUE";
+            } else if (/#NULL!|#DIV\/0!|#VALUE!|#NAME\?|#NUM!|#N\/A|#REF!/.test(res[2])) {
+              value = new FormulaError(res[2]);
+            } else {
+              value = res[2];
+              if (WildCard.isWildCard(value)) {
+                return { op: "wc", value: WildCard.toRegex(value), match: op === "=" };
+              }
+            }
+          } else {
+            value = Number(res[2]);
+          }
+          return { op, value };
+        } else if (WildCard.isWildCard(criteria)) {
+          return { op: "wc", value: WildCard.toRegex(criteria), match: true };
+        } else {
+          return { op: "=", value: criteria };
+        }
+      } else if (type === "boolean" || type === "number" || (Array.isArray(criteria) || criteria instanceof FormulaError)) {
+        return { op: "=", value: criteria };
+      } else {
+        throw Error(`Criteria.parse: type ${typeof criteria} not support`);
+      }
+    }
+  };
+  const Address = {
+    columnNumberToName: (number) => {
+      let dividend = number;
+      let name = "";
+      let modulo = 0;
+      while (dividend > 0) {
+        modulo = (dividend - 1) % 26;
+        name = String.fromCharCode("A".charCodeAt(0) + modulo) + name;
+        dividend = Math.floor((dividend - modulo) / 26);
+      }
+      return name;
+    },
+    columnNameToNumber: (columnName) => {
+      columnName = columnName.toUpperCase();
+      const len = columnName.length;
+      let number = 0;
+      for (let i = 0; i < len; i++) {
+        const code2 = columnName.charCodeAt(i);
+        if (!isNaN(code2)) {
+          number += (code2 - 64) * 26 ** (len - i - 1);
+        }
+      }
+      return number;
+    },
+    /**
+     * Extend range2 to match with the dimension in range1.
+     * @param {{ref: {}}} range1
+     * @param {{ref: {}}} [range2]
+     */
+    extend: (range1, range2) => {
+      if (range2 == null) {
+        return range1;
+      }
+      let rowOffset, colOffset;
+      if (H2.isCellRef(range1)) {
+        rowOffset = 0;
+        colOffset = 0;
+      } else if (H2.isRangeRef(range1)) {
+        rowOffset = range1.ref.to.row - range1.ref.from.row;
+        colOffset = range1.ref.to.col - range1.ref.from.col;
+      } else throw Error("Address.extend should not reach here.");
+      if (H2.isCellRef(range2)) {
+        if (rowOffset > 0 || colOffset > 0)
+          range2 = {
+            ref: {
+              from: { col: range2.ref.col, row: range2.ref.row },
+              to: { row: range2.ref.row + rowOffset, col: range2.ref.col + colOffset }
+            }
+          };
+      } else {
+        range2.ref.to.row = range2.ref.from.row + rowOffset;
+        range2.ref.to.col = range2.ref.from.col + colOffset;
+      }
+      return range2;
+    }
+  };
+  helpers = {
+    FormulaHelpers: H2,
+    Types,
+    ReversedTypes,
+    Factorials,
+    WildCard,
+    Criteria,
+    Address
+  };
+  return helpers;
+}
+var error;
+var hasRequiredError;
+function requireError() {
+  if (hasRequiredError) return error;
+  hasRequiredError = 1;
+  class FormulaError extends Error {
+    /**
+     * @param {string} error - error code, i.e. #NUM!
+     * @param {string} [msg] - detailed error message
+     * @param {object|Error} [details]
+     * @returns {FormulaError}
+     */
+    constructor(error2, msg, details) {
+      super(msg);
+      if (msg == null && details == null && FormulaError.errorMap.has(error2))
+        return FormulaError.errorMap.get(error2);
+      else if (msg == null && details == null) {
+        this._error = error2;
+        FormulaError.errorMap.set(error2, this);
+      } else {
+        this._error = error2;
+      }
+      this.details = details;
+    }
+    /**
+     * Get the error name.
+     * @returns {string} formula error
+     */
+    get error() {
+      return this._error;
+    }
+    get name() {
+      return this._error;
+    }
+    /**
+     * Return true if two errors are same.
+     * @param {FormulaError} err
+     * @returns {boolean} if two errors are same.
+     */
+    equals(err) {
+      return err instanceof FormulaError && err._error === this._error;
+    }
+    /**
+     * Return the formula error in string representation.
+     * @returns {string} the formula error in string representation.
+     */
+    toString() {
+      return this._error;
+    }
+  }
+  FormulaError.errorMap = /* @__PURE__ */ new Map();
+  FormulaError.DIV0 = new FormulaError("#DIV/0!");
+  FormulaError.NA = new FormulaError("#N/A");
+  FormulaError.NAME = new FormulaError("#NAME?");
+  FormulaError.NULL = new FormulaError("#NULL!");
+  FormulaError.NUM = new FormulaError("#NUM!");
+  FormulaError.REF = new FormulaError("#REF!");
+  FormulaError.VALUE = new FormulaError("#VALUE!");
+  FormulaError.NOT_IMPLEMENTED = (functionName2) => {
+    return new FormulaError("#NAME?", `Function ${functionName2} is not implemented.`);
+  };
+  FormulaError.TOO_MANY_ARGS = (functionName2) => {
+    return new FormulaError("#N/A", `Function ${functionName2} has too many arguments.`);
+  };
+  FormulaError.ARG_MISSING = (args) => {
+    const { Types } = requireHelpers();
+    return new FormulaError("#N/A", `Argument type ${args.map((arg) => Types[arg]).join(", ")} is missing.`);
+  };
+  FormulaError.ERROR = (msg, details) => {
+    return new FormulaError("#ERROR!", msg, details);
+  };
+  error = FormulaError;
+  return error;
+}
+var ssf;
+var hasRequiredSsf;
+function requireSsf() {
+  if (hasRequiredSsf) return ssf;
+  hasRequiredSsf = 1;
+  class SSF {
+  }
+  SSF.version = "0.10.3";
+  function _strrev(x2) {
+    let o = "", i = x2.length - 1;
+    while (i >= 0) o += x2.charAt(i--);
+    return o;
+  }
+  function fill(c, l) {
+    let o = "";
+    while (o.length < l) o += c;
+    return o;
+  }
+  function pad0(v, d) {
+    let t = "" + v;
+    return t.length >= d ? t : fill("0", d - t.length) + t;
+  }
+  function pad_(v, d) {
+    let t = "" + v;
+    return t.length >= d ? t : fill(" ", d - t.length) + t;
+  }
+  function rpad_(v, d) {
+    let t = "" + v;
+    return t.length >= d ? t : t + fill(" ", d - t.length);
+  }
+  function pad0r1(v, d) {
+    let t = "" + Math.round(v);
+    return t.length >= d ? t : fill("0", d - t.length) + t;
+  }
+  function pad0r2(v, d) {
+    let t = "" + v;
+    return t.length >= d ? t : fill("0", d - t.length) + t;
+  }
+  const p2_32 = Math.pow(2, 32);
+  function pad0r(v, d) {
+    if (v > p2_32 || v < -p2_32) return pad0r1(v, d);
+    const i = Math.round(v);
+    return pad0r2(i, d);
+  }
+  function isgeneral(s, i) {
+    i = i || 0;
+    return s.length >= 7 + i && (s.charCodeAt(i) | 32) === 103 && (s.charCodeAt(i + 1) | 32) === 101 && (s.charCodeAt(i + 2) | 32) === 110 && (s.charCodeAt(i + 3) | 32) === 101 && (s.charCodeAt(i + 4) | 32) === 114 && (s.charCodeAt(i + 5) | 32) === 97 && (s.charCodeAt(i + 6) | 32) === 108;
+  }
+  const days = [
+    ["Sun", "Sunday"],
+    ["Mon", "Monday"],
+    ["Tue", "Tuesday"],
+    ["Wed", "Wednesday"],
+    ["Thu", "Thursday"],
+    ["Fri", "Friday"],
+    ["Sat", "Saturday"]
+  ];
+  const months = [
+    ["J", "Jan", "January"],
+    ["F", "Feb", "February"],
+    ["M", "Mar", "March"],
+    ["A", "Apr", "April"],
+    ["M", "May", "May"],
+    ["J", "Jun", "June"],
+    ["J", "Jul", "July"],
+    ["A", "Aug", "August"],
+    ["S", "Sep", "September"],
+    ["O", "Oct", "October"],
+    ["N", "Nov", "November"],
+    ["D", "Dec", "December"]
+  ];
+  function init_table(t) {
+    t[0] = "General";
+    t[1] = "0";
+    t[2] = "0.00";
+    t[3] = "#,##0";
+    t[4] = "#,##0.00";
+    t[9] = "0%";
+    t[10] = "0.00%";
+    t[11] = "0.00E+00";
+    t[12] = "# ?/?";
+    t[13] = "# ??/??";
+    t[14] = "m/d/yy";
+    t[15] = "d-mmm-yy";
+    t[16] = "d-mmm";
+    t[17] = "mmm-yy";
+    t[18] = "h:mm AM/PM";
+    t[19] = "h:mm:ss AM/PM";
+    t[20] = "h:mm";
+    t[21] = "h:mm:ss";
+    t[22] = "m/d/yy h:mm";
+    t[37] = "#,##0 ;(#,##0)";
+    t[38] = "#,##0 ;[Red](#,##0)";
+    t[39] = "#,##0.00;(#,##0.00)";
+    t[40] = "#,##0.00;[Red](#,##0.00)";
+    t[45] = "mm:ss";
+    t[46] = "[h]:mm:ss";
+    t[47] = "mmss.0";
+    t[48] = "##0.0E+0";
+    t[49] = "@";
+    t[56] = '"上午/下午 "hh"時"mm"分"ss"秒 "';
+    t[65535] = "General";
+  }
+  const table_fmt = {};
+  init_table(table_fmt);
+  function frac(x2, D, mixed) {
+    const sgn = x2 < 0 ? -1 : 1;
+    let B = x2 * sgn;
+    let P_2 = 0, P_1 = 1, P = 0;
+    let Q_2 = 1, Q_1 = 0, Q = 0;
+    let A = Math.floor(B);
+    while (Q_1 < D) {
+      A = Math.floor(B);
+      P = A * P_1 + P_2;
+      Q = A * Q_1 + Q_2;
+      if (B - A < 5e-8) break;
+      B = 1 / (B - A);
+      P_2 = P_1;
+      P_1 = P;
+      Q_2 = Q_1;
+      Q_1 = Q;
+    }
+    if (Q > D) {
+      if (Q_1 > D) {
+        Q = Q_2;
+        P = P_2;
+      } else {
+        Q = Q_1;
+        P = P_1;
+      }
+    }
+    if (!mixed) return [0, sgn * P, Q];
+    const q = Math.floor(sgn * P / Q);
+    return [q, sgn * P - q * Q, Q];
+  }
+  function parse_date_code(v, opts, b2) {
+    if (v > 2958465 || v < 0) return null;
+    let date2 = v | 0, time = Math.floor(86400 * (v - date2)), dow = 0;
+    let dout = [];
+    const out = { D: date2, T: time, u: 86400 * (v - date2) - time, y: 0, m: 0, d: 0, H: 0, M: 0, S: 0, q: 0 };
+    if (Math.abs(out.u) < 1e-6) out.u = 0;
+    if (opts && opts.date1904) date2 += 1462;
+    if (out.u > 0.9999) {
+      out.u = 0;
+      if (++time === 86400) {
+        out.T = time = 0;
+        ++date2;
+        ++out.D;
+      }
+    }
+    if (date2 === 60) {
+      dout = b2 ? [1317, 10, 29] : [1900, 2, 29];
+      dow = 3;
+    } else if (date2 === 0) {
+      dout = b2 ? [1317, 8, 29] : [1900, 1, 0];
+      dow = 6;
+    } else {
+      if (date2 > 60) --date2;
+      const d = new Date(1900, 0, 1);
+      d.setDate(d.getDate() + date2 - 1);
+      dout = [d.getFullYear(), d.getMonth() + 1, d.getDate()];
+      dow = d.getDay();
+      if (date2 < 60) dow = (dow + 6) % 7;
+      if (b2) dow = fix_hijri();
+    }
+    out.y = dout[0];
+    out.m = dout[1];
+    out.d = dout[2];
+    out.S = time % 60;
+    time = Math.floor(time / 60);
+    out.M = time % 60;
+    time = Math.floor(time / 60);
+    out.H = time;
+    out.q = dow;
+    return out;
+  }
+  SSF.parse_date_code = parse_date_code;
+  const basedate = new Date(1899, 11, 31, 0, 0, 0);
+  const dnthresh = basedate.getTime();
+  const base1904 = new Date(1900, 2, 1, 0, 0, 0);
+  function datenum_local(v, date1904) {
+    let epoch = v.getTime();
+    if (date1904) epoch -= 1461 * 24 * 60 * 60 * 1e3;
+    else if (v >= base1904) epoch += 24 * 60 * 60 * 1e3;
+    return (epoch - (dnthresh + (v.getTimezoneOffset() - basedate.getTimezoneOffset()) * 6e4)) / (24 * 60 * 60 * 1e3);
+  }
+  function general_fmt_int(v) {
+    return v.toString(10);
+  }
+  SSF._general_int = general_fmt_int;
+  const general_fmt_num = /* @__PURE__ */ (function make_general_fmt_num() {
+    const gnr1 = /\.(\d*[1-9])0+$/, gnr2 = /\.0*$/, gnr4 = /\.(\d*[1-9])0+/, gnr5 = /\.0*[Ee]/, gnr6 = /(E[+-])(\d)$/;
+    function gfn2(v) {
+      const w = v < 0 ? 12 : 11;
+      let o = gfn5(v.toFixed(12));
+      if (o.length <= w) return o;
+      o = v.toPrecision(10);
+      if (o.length <= w) return o;
+      return v.toExponential(5);
+    }
+    function gfn3(v) {
+      let o = v.toFixed(11).replace(gnr1, ".$1");
+      if (o.length > (v < 0 ? 12 : 11)) o = v.toPrecision(6);
+      return o;
+    }
+    function gfn4(o) {
+      for (let i = 0; i !== o.length; ++i) if ((o.charCodeAt(i) | 32) === 101) return o.replace(gnr4, ".$1").replace(gnr5, "E").replace("e", "E").replace(gnr6, "$10$2");
+      return o;
+    }
+    function gfn5(o) {
+      return o.indexOf(".") > -1 ? o.replace(gnr2, "").replace(gnr1, ".$1") : o;
+    }
+    return function general_fmt_num2(v) {
+      let V2 = Math.floor(Math.log(Math.abs(v)) * Math.LOG10E), o;
+      if (V2 >= -4 && V2 <= -1) o = v.toPrecision(10 + V2);
+      else if (Math.abs(V2) <= 9) o = gfn2(v);
+      else if (V2 === 10) o = v.toFixed(10).substr(0, 12);
+      else o = gfn3(v);
+      return gfn5(gfn4(o));
+    };
+  })();
+  SSF._general_num = general_fmt_num;
+  function general_fmt(v, opts) {
+    switch (typeof v) {
+      case "string":
+        return v;
+      case "boolean":
+        return v ? "TRUE" : "FALSE";
+      case "number":
+        return (v | 0) === v ? general_fmt_int(v) : general_fmt_num(v);
+      case "undefined":
+        return "";
+      case "object":
+        if (v == null) return "";
+        if (v instanceof Date) return format(14, datenum_local(v, opts && opts.date1904), opts);
+    }
+    throw new Error("unsupported value in General format: " + v);
+  }
+  SSF._general = general_fmt;
+  function fix_hijri() {
+    return 0;
+  }
+  function write_date(type, fmt, val, ss0) {
+    let o = "", ss = 0, tt = 0, y = val.y, out, outl = 0;
+    switch (type) {
+      case 98:
+        y = val.y + 543;
+      /* falls through */
+      case 121:
+        switch (fmt.length) {
+          case 1:
+          case 2:
+            out = y % 100;
+            outl = 2;
+            break;
+          default:
+            out = y % 1e4;
+            outl = 4;
+            break;
+        }
+        break;
+      case 109:
+        switch (fmt.length) {
+          case 1:
+          case 2:
+            out = val.m;
+            outl = fmt.length;
+            break;
+          case 3:
+            return months[val.m - 1][1];
+          case 5:
+            return months[val.m - 1][0];
+          default:
+            return months[val.m - 1][2];
+        }
+        break;
+      case 100:
+        switch (fmt.length) {
+          case 1:
+          case 2:
+            out = val.d;
+            outl = fmt.length;
+            break;
+          case 3:
+            return days[val.q][0];
+          default:
+            return days[val.q][1];
+        }
+        break;
+      case 104:
+        switch (fmt.length) {
+          case 1:
+          case 2:
+            out = 1 + (val.H + 11) % 12;
+            outl = fmt.length;
+            break;
+          default:
+            throw "bad hour format: " + fmt;
+        }
+        break;
+      case 72:
+        switch (fmt.length) {
+          case 1:
+          case 2:
+            out = val.H;
+            outl = fmt.length;
+            break;
+          default:
+            throw "bad hour format: " + fmt;
+        }
+        break;
+      case 77:
+        switch (fmt.length) {
+          case 1:
+          case 2:
+            out = val.M;
+            outl = fmt.length;
+            break;
+          default:
+            throw "bad minute format: " + fmt;
+        }
+        break;
+      case 115:
+        if (fmt !== "s" && fmt !== "ss" && fmt !== ".0" && fmt !== ".00" && fmt !== ".000") throw "bad second format: " + fmt;
+        if (val.u === 0 && (fmt === "s" || fmt === "ss")) return pad0(val.S, fmt.length);
+        if (ss0 >= 2) tt = ss0 === 3 ? 1e3 : 100;
+        else tt = ss0 === 1 ? 10 : 1;
+        ss = Math.round(tt * (val.S + val.u));
+        if (ss >= 60 * tt) ss = 0;
+        if (fmt === "s") return ss === 0 ? "0" : "" + ss / tt;
+        o = pad0(ss, 2 + ss0);
+        if (fmt === "ss") return o.substr(0, 2);
+        return "." + o.substr(2, fmt.length - 1);
+      case 90:
+        switch (fmt) {
+          case "[h]":
+          case "[hh]":
+            out = val.D * 24 + val.H;
+            break;
+          case "[m]":
+          case "[mm]":
+            out = (val.D * 24 + val.H) * 60 + val.M;
+            break;
+          case "[s]":
+          case "[ss]":
+            out = ((val.D * 24 + val.H) * 60 + val.M) * 60 + Math.round(val.S + val.u);
+            break;
+          default:
+            throw "bad abstime format: " + fmt;
+        }
+        outl = fmt.length === 3 ? 1 : 2;
+        break;
+      case 101:
+        out = y;
+        outl = 1;
+    }
+    if (outl > 0) return pad0(out, outl);
+    else return "";
+  }
+  function commaify(s) {
+    const w = 3;
+    if (s.length <= w) return s;
+    let j = s.length % w, o = s.substr(0, j);
+    for (; j !== s.length; j += w) o += (o.length > 0 ? "," : "") + s.substr(j, w);
+    return o;
+  }
+  const write_num = /* @__PURE__ */ (function make_write_num() {
+    const pct1 = /%/g;
+    function write_num_pct(type, fmt, val) {
+      const sfmt = fmt.replace(pct1, ""), mul = fmt.length - sfmt.length;
+      return write_num(type, sfmt, val * Math.pow(10, 2 * mul)) + fill("%", mul);
+    }
+    function write_num_cm(type, fmt, val) {
+      let idx = fmt.length - 1;
+      while (fmt.charCodeAt(idx - 1) === 44) --idx;
+      return write_num(type, fmt.substr(0, idx), val / Math.pow(10, 3 * (fmt.length - idx)));
+    }
+    function write_num_exp(fmt, val) {
+      let o;
+      let idx = fmt.indexOf("E") - fmt.indexOf(".") - 1;
+      if (fmt.match(/^#+0.0E\+0$/)) {
+        if (val === 0) return "0.0E+0";
+        else if (val < 0) return "-" + write_num_exp(fmt, -val);
+        let period = fmt.indexOf(".");
+        if (period === -1) period = fmt.indexOf("E");
+        let ee = Math.floor(Math.log(val) * Math.LOG10E) % period;
+        if (ee < 0) ee += period;
+        o = (val / Math.pow(10, ee)).toPrecision(idx + 1 + (period + ee) % period);
+        if (o.indexOf("e") === -1) {
+          const fakee = Math.floor(Math.log(val) * Math.LOG10E);
+          if (o.indexOf(".") === -1) o = o.charAt(0) + "." + o.substr(1) + "E+" + (fakee - o.length + ee);
+          else o += "E+" + (fakee - ee);
+          while (o.substr(0, 2) === "0.") {
+            o = o.charAt(0) + o.substr(2, period) + "." + o.substr(2 + period);
+            o = o.replace(/^0+([1-9])/, "$1").replace(/^0+\./, "0.");
+          }
+          o = o.replace(/\+-/, "-");
+        }
+        o = o.replace(/^([+-]?)(\d*)\.(\d*)[Ee]/, function($$, $1, $2, $3) {
+          return $1 + $2 + $3.substr(0, (period + ee) % period) + "." + $3.substr(ee) + "E";
+        });
+      } else o = val.toExponential(idx);
+      if (fmt.match(/E\+00$/) && o.match(/e[+-]\d$/)) o = o.substr(0, o.length - 1) + "0" + o.charAt(o.length - 1);
+      if (fmt.match(/E\-/) && o.match(/e\+/)) o = o.replace(/e\+/, "e");
+      return o.replace("e", "E");
+    }
+    const frac1 = /# (\?+)( ?)\/( ?)(\d+)/;
+    function write_num_f1(r, aval, sign) {
+      const den = parseInt(r[4], 10), rr = Math.round(aval * den), base = Math.floor(rr / den);
+      let myn = rr - base * den, myd = den;
+      return sign + (base === 0 ? "" : "" + base) + " " + (myn === 0 ? fill(" ", r[1].length + 1 + r[4].length) : pad_(myn, r[1].length) + r[2] + "/" + r[3] + pad0(myd, r[4].length));
+    }
+    function write_num_f2(r, aval, sign) {
+      return sign + (aval === 0 ? "" : "" + aval) + fill(" ", r[1].length + 2 + r[4].length);
+    }
+    const dec1 = /^#*0*\.([0#]+)/;
+    const closeparen = /\).*[0#]/;
+    const phone = /\(###\) ###\\?-####/;
+    function hashq(str) {
+      let o = "", cc;
+      for (let i = 0; i !== str.length; ++i) switch (cc = str.charCodeAt(i)) {
+        case 35:
+          break;
+        case 63:
+          o += " ";
+          break;
+        case 48:
+          o += "0";
+          break;
+        default:
+          o += String.fromCharCode(cc);
+      }
+      return o;
+    }
+    function rnd(val, d) {
+      const dd = Math.pow(10, d);
+      return "" + Math.round(val * dd) / dd;
+    }
+    function dec(val, d) {
+      if (d < ("" + Math.round((val - Math.floor(val)) * Math.pow(10, d))).length) {
+        return 0;
+      }
+      return Math.round((val - Math.floor(val)) * Math.pow(10, d));
+    }
+    function carry(val, d) {
+      if (d < ("" + Math.round((val - Math.floor(val)) * Math.pow(10, d))).length) {
+        return 1;
+      }
+      return 0;
+    }
+    function flr(val) {
+      if (val < 2147483647 && val > -2147483648) return "" + (val >= 0 ? val | 0 : val - 1 | 0);
+      return "" + Math.floor(val);
+    }
+    function write_num_flt(type, fmt, val) {
+      if (type.charCodeAt(0) === 40 && !fmt.match(closeparen)) {
+        const ffmt = fmt.replace(/\( */, "").replace(/ \)/, "").replace(/\)/, "");
+        if (val >= 0) return write_num_flt("n", ffmt, val);
+        return "(" + write_num_flt("n", ffmt, -val) + ")";
+      }
+      if (fmt.charCodeAt(fmt.length - 1) === 44) return write_num_cm(type, fmt, val);
+      if (fmt.indexOf("%") !== -1) return write_num_pct(type, fmt, val);
+      if (fmt.indexOf("E") !== -1) return write_num_exp(fmt, val);
+      if (fmt.charCodeAt(0) === 36) return "$" + write_num_flt(type, fmt.substr(fmt.charAt(1) == " " ? 2 : 1), val);
+      let o;
+      let r, ri, ff, aval = Math.abs(val), sign = val < 0 ? "-" : "";
+      if (fmt.match(/^00+$/)) return sign + pad0r(aval, fmt.length);
+      if (fmt.match(/^[#?]+$/)) {
+        o = pad0r(val, 0);
+        if (o === "0") o = "";
+        return o.length > fmt.length ? o : hashq(fmt.substr(0, fmt.length - o.length)) + o;
+      }
+      if (r = fmt.match(frac1)) return write_num_f1(r, aval, sign);
+      if (fmt.match(/^#+0+$/)) return sign + pad0r(aval, fmt.length - fmt.indexOf("0"));
+      if (r = fmt.match(dec1)) {
+        o = rnd(val, r[1].length).replace(/^([^\.]+)$/, "$1." + hashq(r[1])).replace(/\.$/, "." + hashq(r[1])).replace(/\.(\d*)$/, function($$, $1) {
+          return "." + $1 + fill("0", hashq(r[1]).length - $1.length);
+        });
+        return fmt.indexOf("0.") !== -1 ? o : o.replace(/^0\./, ".");
+      }
+      fmt = fmt.replace(/^#+([0.])/, "$1");
+      if (r = fmt.match(/^(0*)\.(#*)$/)) {
+        return sign + rnd(aval, r[2].length).replace(/\.(\d*[1-9])0*$/, ".$1").replace(/^(-?\d*)$/, "$1.").replace(/^0\./, r[1].length ? "0." : ".");
+      }
+      if (r = fmt.match(/^#{1,3},##0(\.?)$/)) return sign + commaify(pad0r(aval, 0));
+      if (r = fmt.match(/^#,##0\.([#0]*0)$/)) {
+        return val < 0 ? "-" + write_num_flt(type, fmt, -val) : commaify("" + (Math.floor(val) + carry(val, r[1].length))) + "." + pad0(dec(val, r[1].length), r[1].length);
+      }
+      if (r = fmt.match(/^#,#*,#0/)) return write_num_flt(type, fmt.replace(/^#,#*,/, ""), val);
+      if (r = fmt.match(/^([0#]+)(\\?-([0#]+))+$/)) {
+        o = _strrev(write_num_flt(type, fmt.replace(/[\\-]/g, ""), val));
+        ri = 0;
+        return _strrev(_strrev(fmt.replace(/\\/g, "")).replace(/[0#]/g, function(x2) {
+          return ri < o.length ? o.charAt(ri++) : x2 === "0" ? "0" : "";
+        }));
+      }
+      if (fmt.match(phone)) {
+        o = write_num_flt(type, "##########", val);
+        return "(" + o.substr(0, 3) + ") " + o.substr(3, 3) + "-" + o.substr(6);
+      }
+      let oa = "";
+      if (r = fmt.match(/^([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+        ri = Math.min(r[4].length, 7);
+        ff = frac(aval, Math.pow(10, ri) - 1, false);
+        o = "" + sign;
+        oa = write_num("n", r[1], ff[1]);
+        if (oa.charAt(oa.length - 1) === " ") oa = oa.substr(0, oa.length - 1) + "0";
+        o += oa + r[2] + "/" + r[3];
+        oa = rpad_(ff[2], ri);
+        if (oa.length < r[4].length) oa = hashq(r[4].substr(r[4].length - oa.length)) + oa;
+        o += oa;
+        return o;
+      }
+      if (r = fmt.match(/^# ([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+        ri = Math.min(Math.max(r[1].length, r[4].length), 7);
+        ff = frac(aval, Math.pow(10, ri) - 1, true);
+        return sign + (ff[0] || (ff[1] ? "" : "0")) + " " + (ff[1] ? pad_(ff[1], ri) + r[2] + "/" + r[3] + rpad_(ff[2], ri) : fill(" ", 2 * ri + 1 + r[2].length + r[3].length));
+      }
+      if (r = fmt.match(/^[#0?]+$/)) {
+        o = pad0r(val, 0);
+        if (fmt.length <= o.length) return o;
+        return hashq(fmt.substr(0, fmt.length - o.length)) + o;
+      }
+      if (r = fmt.match(/^([#0?]+)\.([#0]+)$/)) {
+        o = "" + val.toFixed(Math.min(r[2].length, 10)).replace(/([^0])0+$/, "$1");
+        ri = o.indexOf(".");
+        const lres = fmt.indexOf(".") - ri, rres = fmt.length - o.length - lres;
+        return hashq(fmt.substr(0, lres) + o + fmt.substr(fmt.length - rres));
+      }
+      if (r = fmt.match(/^00,000\.([#0]*0)$/)) {
+        ri = dec(val, r[1].length);
+        return val < 0 ? "-" + write_num_flt(type, fmt, -val) : commaify(flr(val)).replace(/^\d,\d{3}$/, "0$&").replace(/^\d*$/, function($$) {
+          return "00," + ($$.length < 3 ? pad0(0, 3 - $$.length) : "") + $$;
+        }) + "." + pad0(ri, r[1].length);
+      }
+      switch (fmt) {
+        case "###,##0.00":
+          return write_num_flt(type, "#,##0.00", val);
+        case "###,###":
+        case "##,###":
+        case "#,###":
+          const x2 = commaify(pad0r(aval, 0));
+          return x2 !== "0" ? sign + x2 : "";
+        case "###,###.00":
+          return write_num_flt(type, "###,##0.00", val).replace(/^0\./, ".");
+        case "#,###.00":
+          return write_num_flt(type, "#,##0.00", val).replace(/^0\./, ".");
+      }
+      throw new Error("unsupported format |" + fmt + "|");
+    }
+    function write_num_cm2(type, fmt, val) {
+      let idx = fmt.length - 1;
+      while (fmt.charCodeAt(idx - 1) === 44) --idx;
+      return write_num(type, fmt.substr(0, idx), val / Math.pow(10, 3 * (fmt.length - idx)));
+    }
+    function write_num_pct2(type, fmt, val) {
+      const sfmt = fmt.replace(pct1, ""), mul = fmt.length - sfmt.length;
+      return write_num(type, sfmt, val * Math.pow(10, 2 * mul)) + fill("%", mul);
+    }
+    function write_num_exp2(fmt, val) {
+      let o;
+      let idx = fmt.indexOf("E") - fmt.indexOf(".") - 1;
+      if (fmt.match(/^#+0.0E\+0$/)) {
+        if (val === 0) return "0.0E+0";
+        else if (val < 0) return "-" + write_num_exp2(fmt, -val);
+        let period = fmt.indexOf(".");
+        if (period === -1) period = fmt.indexOf("E");
+        let ee = Math.floor(Math.log(val) * Math.LOG10E) % period;
+        if (ee < 0) ee += period;
+        o = (val / Math.pow(10, ee)).toPrecision(idx + 1 + (period + ee) % period);
+        if (!o.match(/[Ee]/)) {
+          const fakee = Math.floor(Math.log(val) * Math.LOG10E);
+          if (o.indexOf(".") === -1) o = o.charAt(0) + "." + o.substr(1) + "E+" + (fakee - o.length + ee);
+          else o += "E+" + (fakee - ee);
+          o = o.replace(/\+-/, "-");
+        }
+        o = o.replace(/^([+-]?)(\d*)\.(\d*)[Ee]/, function($$, $1, $2, $3) {
+          return $1 + $2 + $3.substr(0, (period + ee) % period) + "." + $3.substr(ee) + "E";
+        });
+      } else o = val.toExponential(idx);
+      if (fmt.match(/E\+00$/) && o.match(/e[+-]\d$/)) o = o.substr(0, o.length - 1) + "0" + o.charAt(o.length - 1);
+      if (fmt.match(/E\-/) && o.match(/e\+/)) o = o.replace(/e\+/, "e");
+      return o.replace("e", "E");
+    }
+    function write_num_int(type, fmt, val) {
+      if (type.charCodeAt(0) === 40 && !fmt.match(closeparen)) {
+        const ffmt = fmt.replace(/\( */, "").replace(/ \)/, "").replace(/\)/, "");
+        if (val >= 0) return write_num_int("n", ffmt, val);
+        return "(" + write_num_int("n", ffmt, -val) + ")";
+      }
+      if (fmt.charCodeAt(fmt.length - 1) === 44) return write_num_cm2(type, fmt, val);
+      if (fmt.indexOf("%") !== -1) return write_num_pct2(type, fmt, val);
+      if (fmt.indexOf("E") !== -1) return write_num_exp2(fmt, val);
+      if (fmt.charCodeAt(0) === 36) return "$" + write_num_int(type, fmt.substr(fmt.charAt(1) == " " ? 2 : 1), val);
+      let o;
+      let r, ri, ff, aval = Math.abs(val), sign = val < 0 ? "-" : "";
+      if (fmt.match(/^00+$/)) return sign + pad0(aval, fmt.length);
+      if (fmt.match(/^[#?]+$/)) {
+        o = "" + val;
+        if (val === 0) o = "";
+        return o.length > fmt.length ? o : hashq(fmt.substr(0, fmt.length - o.length)) + o;
+      }
+      if (r = fmt.match(frac1)) return write_num_f2(r, aval, sign);
+      if (fmt.match(/^#+0+$/)) return sign + pad0(aval, fmt.length - fmt.indexOf("0"));
+      if (r = fmt.match(dec1)) {
+        o = ("" + val).replace(/^([^\.]+)$/, "$1." + hashq(r[1])).replace(/\.$/, "." + hashq(r[1]));
+        o = o.replace(/\.(\d*)$/, function($$, $1) {
+          return "." + $1 + fill("0", hashq(r[1]).length - $1.length);
+        });
+        return fmt.indexOf("0.") !== -1 ? o : o.replace(/^0\./, ".");
+      }
+      fmt = fmt.replace(/^#+([0.])/, "$1");
+      if (r = fmt.match(/^(0*)\.(#*)$/)) {
+        return sign + ("" + aval).replace(/\.(\d*[1-9])0*$/, ".$1").replace(/^(-?\d*)$/, "$1.").replace(/^0\./, r[1].length ? "0." : ".");
+      }
+      if (r = fmt.match(/^#{1,3},##0(\.?)$/)) return sign + commaify("" + aval);
+      if (r = fmt.match(/^#,##0\.([#0]*0)$/)) {
+        return val < 0 ? "-" + write_num_int(type, fmt, -val) : commaify("" + val) + "." + fill("0", r[1].length);
+      }
+      if (r = fmt.match(/^#,#*,#0/)) return write_num_int(type, fmt.replace(/^#,#*,/, ""), val);
+      if (r = fmt.match(/^([0#]+)(\\?-([0#]+))+$/)) {
+        o = _strrev(write_num_int(type, fmt.replace(/[\\-]/g, ""), val));
+        ri = 0;
+        return _strrev(_strrev(fmt.replace(/\\/g, "")).replace(/[0#]/g, function(x2) {
+          return ri < o.length ? o.charAt(ri++) : x2 === "0" ? "0" : "";
+        }));
+      }
+      if (fmt.match(phone)) {
+        o = write_num_int(type, "##########", val);
+        return "(" + o.substr(0, 3) + ") " + o.substr(3, 3) + "-" + o.substr(6);
+      }
+      let oa = "";
+      if (r = fmt.match(/^([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+        ri = Math.min(r[4].length, 7);
+        ff = frac(aval, Math.pow(10, ri) - 1, false);
+        o = "" + sign;
+        oa = write_num("n", r[1], ff[1]);
+        if (oa.charAt(oa.length - 1) == " ") oa = oa.substr(0, oa.length - 1) + "0";
+        o += oa + r[2] + "/" + r[3];
+        oa = rpad_(ff[2], ri);
+        if (oa.length < r[4].length) oa = hashq(r[4].substr(r[4].length - oa.length)) + oa;
+        o += oa;
+        return o;
+      }
+      if (r = fmt.match(/^# ([#0?]+)( ?)\/( ?)([#0?]+)/)) {
+        ri = Math.min(Math.max(r[1].length, r[4].length), 7);
+        ff = frac(aval, Math.pow(10, ri) - 1, true);
+        return sign + (ff[0] || (ff[1] ? "" : "0")) + " " + (ff[1] ? pad_(ff[1], ri) + r[2] + "/" + r[3] + rpad_(ff[2], ri) : fill(" ", 2 * ri + 1 + r[2].length + r[3].length));
+      }
+      if (r = fmt.match(/^[#0?]+$/)) {
+        o = "" + val;
+        if (fmt.length <= o.length) return o;
+        return hashq(fmt.substr(0, fmt.length - o.length)) + o;
+      }
+      if (r = fmt.match(/^([#0]+)\.([#0]+)$/)) {
+        o = "" + val.toFixed(Math.min(r[2].length, 10)).replace(/([^0])0+$/, "$1");
+        ri = o.indexOf(".");
+        let lres = fmt.indexOf(".") - ri, rres = fmt.length - o.length - lres;
+        return hashq(fmt.substr(0, lres) + o + fmt.substr(fmt.length - rres));
+      }
+      if (r = fmt.match(/^00,000\.([#0]*0)$/)) {
+        return val < 0 ? "-" + write_num_int(type, fmt, -val) : commaify("" + val).replace(/^\d,\d{3}$/, "0$&").replace(/^\d*$/, function($$) {
+          return "00," + ($$.length < 3 ? pad0(0, 3 - $$.length) : "") + $$;
+        }) + "." + pad0(0, r[1].length);
+      }
+      switch (fmt) {
+        case "###,###":
+        case "##,###":
+        case "#,###":
+          const x2 = commaify("" + aval);
+          return x2 !== "0" ? sign + x2 : "";
+        default:
+          if (fmt.match(/\.[0#?]*$/)) return write_num_int(type, fmt.slice(0, fmt.lastIndexOf(".")), val) + hashq(fmt.slice(fmt.lastIndexOf(".")));
+      }
+      throw new Error("unsupported format |" + fmt + "|");
+    }
+    return function write_num2(type, fmt, val) {
+      return (val | 0) === val ? write_num_int(type, fmt, val) : write_num_flt(type, fmt, val);
+    };
+  })();
+  function split_fmt(fmt) {
+    const out = [];
+    let in_str = false, j = 0;
+    for (let i = 0; i < fmt.length; ++i) switch (
+      /*cc=*/
+      fmt.charCodeAt(i)
+    ) {
+      case 34:
+        in_str = !in_str;
+        break;
+      case 95:
+      case 42:
+      case 92:
+        ++i;
+        break;
+      case 59:
+        out[out.length] = fmt.substr(j, i - j);
+        j = i + 1;
+    }
+    out[out.length] = fmt.substr(j);
+    if (in_str === true) throw new Error("Format |" + fmt + "| unterminated string ");
+    return out;
+  }
+  SSF._split = split_fmt;
+  const abstime = /\[[HhMmSs]*\]/;
+  function fmt_is_date(fmt) {
+    let i = 0, c = "", o = "";
+    while (i < fmt.length) {
+      switch (c = fmt.charAt(i)) {
+        case "G":
+          if (isgeneral(fmt, i)) i += 6;
+          i++;
+          break;
+        case '"':
+          for (
+            ;
+            /*cc=*/
+            fmt.charCodeAt(++i) !== 34 && i < fmt.length;
+          ) ++i;
+          ++i;
+          break;
+        case "\\":
+          i += 2;
+          break;
+        case "_":
+          i += 2;
+          break;
+        case "@":
+          ++i;
+          break;
+        case "B":
+        case "b":
+          if (fmt.charAt(i + 1) === "1" || fmt.charAt(i + 1) === "2") return true;
+        /* falls through */
+        case "M":
+        case "D":
+        case "Y":
+        case "H":
+        case "S":
+        case "E":
+        /* falls through */
+        case "m":
+        case "d":
+        case "y":
+        case "h":
+        case "s":
+        case "e":
+        case "g":
+          return true;
+        case "A":
+        case "a":
+          if (fmt.substr(i, 3).toUpperCase() === "A/P") return true;
+          if (fmt.substr(i, 5).toUpperCase() === "AM/PM") return true;
+          ++i;
+          break;
+        case "[":
+          o = c;
+          while (fmt.charAt(i++) !== "]" && i < fmt.length) o += fmt.charAt(i);
+          if (o.match(abstime)) return true;
+          break;
+        case ".":
+        /* falls through */
+        case "0":
+        case "#":
+          while (i < fmt.length && ("0#?.,E+-%".indexOf(c = fmt.charAt(++i)) > -1 || c == "\\" && fmt.charAt(i + 1) == "-" && "0#".indexOf(fmt.charAt(i + 2)) > -1)) {
+          }
+          break;
+        case "?":
+          while (fmt.charAt(++i) === c) {
+          }
+          break;
+        case "*":
+          ++i;
+          if (fmt.charAt(i) === " " || fmt.charAt(i) === "*") ++i;
+          break;
+        case "(":
+        case ")":
+          ++i;
+          break;
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+          while (i < fmt.length && "0123456789".indexOf(fmt.charAt(++i)) > -1) {
+          }
+          break;
+        case " ":
+          ++i;
+          break;
+        default:
+          ++i;
+          break;
+      }
+    }
+    return false;
+  }
+  SSF.is_date = fmt_is_date;
+  function eval_fmt(fmt, v, opts, flen) {
+    let out = [], o = "", i = 0, c = "", lst = "t", dt, j, cc;
+    let hr = "H";
+    while (i < fmt.length) {
+      switch (c = fmt.charAt(i)) {
+        case "G":
+          if (!isgeneral(fmt, i)) throw new Error("unrecognized character " + c + " in " + fmt);
+          out[out.length] = { t: "G", v: "General" };
+          i += 7;
+          break;
+        case '"':
+          for (o = ""; (cc = fmt.charCodeAt(++i)) !== 34 && i < fmt.length; ) o += String.fromCharCode(cc);
+          out[out.length] = { t: "t", v: o };
+          ++i;
+          break;
+        case "\\":
+          const w = fmt.charAt(++i), t = w === "(" || w === ")" ? w : "t";
+          out[out.length] = { t, v: w };
+          ++i;
+          break;
+        case "_":
+          out[out.length] = { t: "t", v: " " };
+          i += 2;
+          break;
+        case "@":
+          out[out.length] = { t: "T", v };
+          ++i;
+          break;
+        case "B":
+        case "b":
+          if (fmt.charAt(i + 1) === "1" || fmt.charAt(i + 1) === "2") {
+            if (dt == null) {
+              dt = parse_date_code(v, opts, fmt.charAt(i + 1) === "2");
+              if (dt == null) return "";
+            }
+            out[out.length] = { t: "X", v: fmt.substr(i, 2) };
+            lst = c;
+            i += 2;
+            break;
+          }
+        /* falls through */
+        case "M":
+        case "D":
+        case "Y":
+        case "H":
+        case "S":
+        case "E":
+          c = c.toLowerCase();
+        /* falls through */
+        case "m":
+        case "d":
+        case "y":
+        case "h":
+        case "s":
+        case "e":
+        case "g":
+          if (v < 0) return "";
+          if (dt == null) {
+            dt = parse_date_code(v, opts);
+            if (dt == null) return "";
+          }
+          o = c;
+          while (++i < fmt.length && fmt.charAt(i).toLowerCase() === c) o += c;
+          if (c === "m" && lst.toLowerCase() === "h") c = "M";
+          if (c === "h") c = hr;
+          out[out.length] = { t: c, v: o };
+          lst = c;
+          break;
+        case "A":
+        case "a":
+          const q = { t: c, v: c };
+          if (dt == null) dt = parse_date_code(v, opts);
+          if (fmt.substr(i, 3).toUpperCase() === "A/P") {
+            if (dt != null) q.v = dt.H >= 12 ? "P" : "A";
+            q.t = "T";
+            hr = "h";
+            i += 3;
+          } else if (fmt.substr(i, 5).toUpperCase() === "AM/PM") {
+            if (dt != null) q.v = dt.H >= 12 ? "PM" : "AM";
+            q.t = "T";
+            i += 5;
+            hr = "h";
+          } else {
+            q.t = "t";
+            ++i;
+          }
+          if (dt == null && q.t === "T") return "";
+          out[out.length] = q;
+          lst = c;
+          break;
+        case "[":
+          o = c;
+          while (fmt.charAt(i++) !== "]" && i < fmt.length) o += fmt.charAt(i);
+          if (o.slice(-1) !== "]") throw 'unterminated "[" block: |' + o + "|";
+          if (o.match(abstime)) {
+            if (dt == null) {
+              dt = parse_date_code(v, opts);
+              if (dt == null) return "";
+            }
+            out[out.length] = { t: "Z", v: o.toLowerCase() };
+            lst = o.charAt(1);
+          } else if (o.indexOf("$") > -1) {
+            o = (o.match(/\$([^-\[\]]*)/) || [])[1] || "$";
+            if (!fmt_is_date(fmt)) out[out.length] = { t: "t", v: o };
+          }
+          break;
+        /* Numbers */
+        case ".":
+          if (dt != null) {
+            o = c;
+            while (++i < fmt.length && (c = fmt.charAt(i)) === "0") o += c;
+            out[out.length] = { t: "s", v: o };
+            break;
+          }
+        /* falls through */
+        case "0":
+        case "#":
+          o = c;
+          while (++i < fmt.length && "0#?.,E+-%".indexOf(c = fmt.charAt(i)) > -1 || c == "\\" && fmt.charAt(i + 1) == "-" && i < fmt.length - 2 && "0#".indexOf(fmt.charAt(i + 2)) > -1) o += c;
+          out[out.length] = { t: "n", v: o };
+          break;
+        case "?":
+          o = c;
+          while (fmt.charAt(++i) === c) o += c;
+          out[out.length] = { t: c, v: o };
+          lst = c;
+          break;
+        case "*":
+          ++i;
+          if (fmt.charAt(i) === " " || fmt.charAt(i) === "*") ++i;
+          break;
+        // **
+        case "(":
+        case ")":
+          out[out.length] = { t: flen === 1 || typeof v === "number" && v < 0 ? "t" : c, v: c };
+          ++i;
+          break;
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+          o = c;
+          while (i < fmt.length && "0123456789".indexOf(fmt.charAt(++i)) > -1) o += fmt.charAt(i);
+          out[out.length] = { t: "D", v: o };
+          break;
+        case " ":
+          out[out.length] = { t: c, v: c };
+          ++i;
+          break;
+        default:
+          if (",$-+/():!^&'~{}<>=€acfijklopqrtuvwxzP".indexOf(c) === -1) throw new Error("unrecognized character " + c + " in " + fmt);
+          out[out.length] = { t: "t", v: c };
+          ++i;
+          break;
+      }
+    }
+    let bt = 0, ss0 = 0, ssm;
+    for (i = out.length - 1, lst = "t"; i >= 0; --i) {
+      switch (out[i].t) {
+        case "h":
+        case "H":
+          out[i].t = hr;
+          lst = "h";
+          if (bt < 1) bt = 1;
+          break;
+        case "s":
+          if (ssm = out[i].v.match(/\.0+$/)) ss0 = Math.max(ss0, ssm[0].length - 1);
+          if (bt < 3) bt = 3;
+        /* falls through */
+        case "d":
+        case "y":
+        case "M":
+        case "e":
+          lst = out[i].t;
+          break;
+        case "m":
+          if (lst === "s") {
+            out[i].t = "M";
+            if (bt < 2) bt = 2;
+          }
+          break;
+        case "X":
+          break;
+        case "Z":
+          if (bt < 1 && out[i].v.match(/[Hh]/)) bt = 1;
+          if (bt < 2 && out[i].v.match(/[Mm]/)) bt = 2;
+          if (bt < 3 && out[i].v.match(/[Ss]/)) bt = 3;
+      }
+    }
+    switch (bt) {
+      case 0:
+        break;
+      case 1:
+        if (dt.u >= 0.5) {
+          dt.u = 0;
+          ++dt.S;
+        }
+        if (dt.S >= 60) {
+          dt.S = 0;
+          ++dt.M;
+        }
+        if (dt.M >= 60) {
+          dt.M = 0;
+          ++dt.H;
+        }
+        break;
+      case 2:
+        if (dt.u >= 0.5) {
+          dt.u = 0;
+          ++dt.S;
+        }
+        if (dt.S >= 60) {
+          dt.S = 0;
+          ++dt.M;
+        }
+        break;
+    }
+    let nstr = "", jj;
+    for (i = 0; i < out.length; ++i) {
+      switch (out[i].t) {
+        case "t":
+        case "T":
+        case " ":
+        case "D":
+          break;
+        case "X":
+          out[i].v = "";
+          out[i].t = ";";
+          break;
+        case "d":
+        case "m":
+        case "y":
+        case "h":
+        case "H":
+        case "M":
+        case "s":
+        case "e":
+        case "b":
+        case "Z":
+          out[i].v = write_date(out[i].t.charCodeAt(0), out[i].v, dt, ss0);
+          out[i].t = "t";
+          break;
+        case "n":
+        case "(":
+        case "?":
+          jj = i + 1;
+          while (out[jj] != null && ((c = out[jj].t) === "?" || c === "D" || (c === " " || c === "t") && out[jj + 1] != null && (out[jj + 1].t === "?" || out[jj + 1].t === "t" && out[jj + 1].v === "/") || out[i].t === "(" && (c === " " || c === "n" || c === ")") || c === "t" && (out[jj].v === "/" || out[jj].v === " " && out[jj + 1] != null && out[jj + 1].t === "?"))) {
+            out[i].v += out[jj].v;
+            out[jj] = { v: "", t: ";" };
+            ++jj;
+          }
+          nstr += out[i].v;
+          i = jj - 1;
+          break;
+        case "G":
+          out[i].t = "t";
+          out[i].v = general_fmt(v, opts);
+          break;
+      }
+    }
+    let vv = "", myv, ostr;
+    if (nstr.length > 0) {
+      if (nstr.charCodeAt(0) === 40) {
+        myv = v < 0 && nstr.charCodeAt(0) === 45 ? -v : v;
+        ostr = write_num("(", nstr, myv);
+      } else {
+        myv = v < 0 && flen > 1 ? -v : v;
+        ostr = write_num("n", nstr, myv);
+        if (myv < 0 && out[0] && out[0].t === "t") {
+          ostr = ostr.substr(1);
+          out[0].v = "-" + out[0].v;
+        }
+      }
+      jj = ostr.length - 1;
+      let decpt = out.length;
+      for (i = 0; i < out.length; ++i) if (out[i] != null && out[i].t !== "t" && out[i].v.indexOf(".") > -1) {
+        decpt = i;
+        break;
+      }
+      let lasti = out.length;
+      if (decpt === out.length && ostr.indexOf("E") === -1) {
+        for (i = out.length - 1; i >= 0; --i) {
+          if (out[i] == null || "n?(".indexOf(out[i].t) === -1) continue;
+          if (jj >= out[i].v.length - 1) {
+            jj -= out[i].v.length;
+            out[i].v = ostr.substr(jj + 1, out[i].v.length);
+          } else if (jj < 0) out[i].v = "";
+          else {
+            out[i].v = ostr.substr(0, jj + 1);
+            jj = -1;
+          }
+          out[i].t = "t";
+          lasti = i;
+        }
+        if (jj >= 0 && lasti < out.length) out[lasti].v = ostr.substr(0, jj + 1) + out[lasti].v;
+      } else if (decpt !== out.length && ostr.indexOf("E") === -1) {
+        jj = ostr.indexOf(".") - 1;
+        for (i = decpt; i >= 0; --i) {
+          if (out[i] == null || "n?(".indexOf(out[i].t) === -1) continue;
+          j = out[i].v.indexOf(".") > -1 && i === decpt ? out[i].v.indexOf(".") - 1 : out[i].v.length - 1;
+          vv = out[i].v.substr(j + 1);
+          for (; j >= 0; --j) {
+            if (jj >= 0 && (out[i].v.charAt(j) === "0" || out[i].v.charAt(j) === "#")) vv = ostr.charAt(jj--) + vv;
+          }
+          out[i].v = vv;
+          out[i].t = "t";
+          lasti = i;
+        }
+        if (jj >= 0 && lasti < out.length) out[lasti].v = ostr.substr(0, jj + 1) + out[lasti].v;
+        jj = ostr.indexOf(".") + 1;
+        for (i = decpt; i < out.length; ++i) {
+          if (out[i] == null || "n?(".indexOf(out[i].t) === -1 && i !== decpt) continue;
+          j = out[i].v.indexOf(".") > -1 && i === decpt ? out[i].v.indexOf(".") + 1 : 0;
+          vv = out[i].v.substr(0, j);
+          for (; j < out[i].v.length; ++j) {
+            if (jj < ostr.length) vv += ostr.charAt(jj++);
+          }
+          out[i].v = vv;
+          out[i].t = "t";
+          lasti = i;
+        }
+      }
+    }
+    for (i = 0; i < out.length; ++i) if (out[i] != null && "n(?".indexOf(out[i].t) > -1) {
+      myv = flen > 1 && v < 0 && i > 0 && out[i - 1].v === "-" ? -v : v;
+      out[i].v = write_num(out[i].t, out[i].v, myv);
+      out[i].t = "t";
+    }
+    let retval = "";
+    for (i = 0; i !== out.length; ++i) if (out[i] != null) retval += out[i].v;
+    return retval;
+  }
+  SSF._eval = eval_fmt;
+  const cfregex = /\[[=<>]/;
+  const cfregex2 = /\[([=<>]*)(-?\d+\.?\d*)\]/;
+  function chkcond(v, rr) {
+    if (rr == null) return false;
+    const thresh = parseFloat(rr[2]);
+    switch (rr[1]) {
+      case "=":
+        if (v === thresh) return true;
+        break;
+      case ">":
+        if (v > thresh) return true;
+        break;
+      case "<":
+        if (v < thresh) return true;
+        break;
+      case "<>":
+        if (v !== thresh) return true;
+        break;
+      case ">=":
+        if (v >= thresh) return true;
+        break;
+      case "<=":
+        if (v <= thresh) return true;
+        break;
+    }
+    return false;
+  }
+  function choose_fmt(f, v) {
+    let fmt = split_fmt(f);
+    let l = fmt.length, lat = fmt[l - 1].indexOf("@");
+    if (l < 4 && lat > -1) --l;
+    if (fmt.length > 4) throw new Error("cannot find right format for |" + fmt.join("|") + "|");
+    if (typeof v !== "number") return [4, fmt.length === 4 || lat > -1 ? fmt[fmt.length - 1] : "@"];
+    switch (fmt.length) {
+      case 1:
+        fmt = lat > -1 ? ["General", "General", "General", fmt[0]] : [fmt[0], fmt[0], fmt[0], "@"];
+        break;
+      case 2:
+        fmt = lat > -1 ? [fmt[0], fmt[0], fmt[0], fmt[1]] : [fmt[0], fmt[1], fmt[0], "@"];
+        break;
+      case 3:
+        fmt = lat > -1 ? [fmt[0], fmt[1], fmt[0], fmt[2]] : [fmt[0], fmt[1], fmt[2], "@"];
+        break;
+    }
+    const ff = v > 0 ? fmt[0] : v < 0 ? fmt[1] : fmt[2];
+    if (fmt[0].indexOf("[") === -1 && fmt[1].indexOf("[") === -1) return [l, ff];
+    if (fmt[0].match(cfregex) != null || fmt[1].match(cfregex) != null) {
+      const m1 = fmt[0].match(cfregex2);
+      const m2 = fmt[1].match(cfregex2);
+      return chkcond(v, m1) ? [l, fmt[0]] : chkcond(v, m2) ? [l, fmt[1]] : [l, fmt[m1 != null && m2 != null ? 2 : 1]];
+    }
+    return [l, ff];
+  }
+  function format(fmt, v, o) {
+    if (o == null) o = {};
+    let sfmt = "";
+    switch (typeof fmt) {
+      case "string":
+        if (fmt === "m/d/yy" && o.dateNF) sfmt = o.dateNF;
+        else sfmt = fmt;
+        break;
+      case "number":
+        if (fmt === 14 && o.dateNF) sfmt = o.dateNF;
+        else sfmt = (o.table != null ? o.table : table_fmt)[fmt];
+        break;
+    }
+    if (isgeneral(sfmt, 0)) return general_fmt(v, o);
+    if (v instanceof Date) v = datenum_local(v, o.date1904);
+    const f = choose_fmt(sfmt, v);
+    if (isgeneral(f[1])) return general_fmt(v, o);
+    if (v === true) v = "TRUE";
+    else if (v === false) v = "FALSE";
+    else if (v === "" || v == null) return "";
+    return eval_fmt(f[1], v, o, f[0]);
+  }
+  function load_entry(fmt, idx) {
+    if (typeof idx !== "number") {
+      idx = +idx || -1;
+      for (let i = 0; i < 392; ++i) {
+        if (table_fmt[i] === void 0) {
+          if (idx < 0) idx = i;
+          continue;
+        }
+        if (table_fmt[i] === fmt) {
+          idx = i;
+          break;
+        }
+      }
+      if (idx < 0) idx = 391;
+    }
+    table_fmt[idx] = fmt;
+    return idx;
+  }
+  SSF.load = load_entry;
+  SSF._table = table_fmt;
+  SSF.get_table = function get_table() {
+    return table_fmt;
+  };
+  SSF.load_table = function load_table(tbl) {
+    for (let i = 0; i !== 392; ++i)
+      if (tbl[i] !== void 0) load_entry(tbl[i], i);
+  };
+  SSF.init_table = init_table;
+  SSF.format = format;
+  ssf = SSF;
+  return ssf;
+}
+var text;
+var hasRequiredText;
+function requireText() {
+  if (hasRequiredText) return text;
+  hasRequiredText = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types, WildCard } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const ssf2 = requireSsf();
+  const bahttext = require$$3;
+  const charsets = {
+    latin: { halfRE: /[!-~]/g, fullRE: /[！-～]/g, delta: 65248 },
+    hangul1: { halfRE: /[ﾡ-ﾾ]/g, fullRE: /[ᆨ-ᇂ]/g, delta: -60921 },
+    hangul2: { halfRE: /[ￂ-ￜ]/g, fullRE: /[ᅡ-ᅵ]/g, delta: -61025 },
+    kana: {
+      delta: 0,
+      half: "｡｢｣､･ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟ",
+      full: "。「」、・ヲァィゥェォャュョッーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン゛゜"
+    },
+    extras: {
+      delta: 0,
+      half: "¢£¬¯¦¥₩ |←↑→↓■°",
+      full: "￠￡￢￣￤￥￦　￨￩￪￫￬￭￮"
+    }
+  };
+  const toFull = (set2) => (c) => set2.delta ? String.fromCharCode(c.charCodeAt(0) + set2.delta) : [...set2.full][[...set2.half].indexOf(c)];
+  const toHalf = (set2) => (c) => set2.delta ? String.fromCharCode(c.charCodeAt(0) - set2.delta) : [...set2.half][[...set2.full].indexOf(c)];
+  const re = (set2, way) => set2[way + "RE"] || new RegExp("[" + set2[way] + "]", "g");
+  const sets = Object.keys(charsets).map((i) => charsets[i]);
+  const toFullWidth = (str0) => sets.reduce((str, set2) => str.replace(re(set2, "half"), toFull(set2)), str0);
+  const toHalfWidth = (str0) => sets.reduce((str, set2) => str.replace(re(set2, "full"), toHalf(set2)), str0);
+  const TextFunctions = {
+    ASC: (text2) => {
+      text2 = H2.accept(text2, Types.STRING);
+      return toHalfWidth(text2);
+    },
+    BAHTTEXT: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      try {
+        return bahttext(number);
+      } catch (e) {
+        throw Error(`Error in https://github.com/jojoee/bahttext 
+${e.toString()}`);
+      }
+    },
+    CHAR: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number > 255 || number < 1)
+        throw FormulaError.VALUE;
+      return String.fromCharCode(number);
+    },
+    CLEAN: (text2) => {
+      text2 = H2.accept(text2, Types.STRING);
+      return text2.replace(/[\x00-\x1F]/g, "");
+    },
+    CODE: (text2) => {
+      text2 = H2.accept(text2, Types.STRING);
+      if (text2.length === 0)
+        throw FormulaError.VALUE;
+      return text2.charCodeAt(0);
+    },
+    CONCAT: (...params) => {
+      let text2 = "";
+      H2.flattenParams(params, Types.STRING, false, (item) => {
+        item = H2.accept(item, Types.STRING);
+        text2 += item;
+      });
+      return text2;
+    },
+    CONCATENATE: (...params) => {
+      let text2 = "";
+      if (params.length === 0)
+        throw Error("CONCATENATE need at least one argument.");
+      params.forEach((param) => {
+        param = H2.accept(param, Types.STRING);
+        text2 += param;
+      });
+      return text2;
+    },
+    DBCS: (text2) => {
+      text2 = H2.accept(text2, Types.STRING);
+      return toFullWidth(text2);
+    },
+    DOLLAR: (number, decimals) => {
+      number = H2.accept(number, Types.NUMBER);
+      decimals = H2.accept(decimals, Types.NUMBER, 2);
+      const decimalString = Array(decimals).fill("0").join("");
+      return ssf2.format(`$#,##0.${decimalString}_);($#,##0.${decimalString})`, number).trim();
+    },
+    EXACT: (text1, text2) => {
+      text1 = H2.accept(text1, [Types.STRING]);
+      text2 = H2.accept(text2, [Types.STRING]);
+      return text1 === text2;
+    },
+    FIND: (findText, withinText, startNum) => {
+      findText = H2.accept(findText, Types.STRING);
+      withinText = H2.accept(withinText, Types.STRING);
+      startNum = H2.accept(startNum, Types.NUMBER, 1);
+      if (startNum < 1 || startNum > withinText.length)
+        throw FormulaError.VALUE;
+      const res = withinText.indexOf(findText, startNum - 1);
+      if (res === -1)
+        throw FormulaError.VALUE;
+      return res + 1;
+    },
+    FINDB: (...params) => {
+      return TextFunctions.FIND(...params);
+    },
+    FIXED: (number, decimals, noCommas) => {
+      number = H2.accept(number, Types.NUMBER);
+      decimals = H2.accept(decimals, Types.NUMBER, 2);
+      noCommas = H2.accept(noCommas, Types.BOOLEAN, false);
+      const decimalString = Array(decimals).fill("0").join("");
+      const comma = noCommas ? "" : "#,";
+      return ssf2.format(`${comma}##0.${decimalString}_);(${comma}##0.${decimalString})`, number).trim();
+    },
+    LEFT: (text2, numChars) => {
+      text2 = H2.accept(text2, Types.STRING);
+      numChars = H2.accept(numChars, Types.NUMBER, 1);
+      if (numChars < 0)
+        throw FormulaError.VALUE;
+      if (numChars > text2.length)
+        return text2;
+      return text2.slice(0, numChars);
+    },
+    LEFTB: (...params) => {
+      return TextFunctions.LEFT(...params);
+    },
+    LEN: (text2) => {
+      text2 = H2.accept(text2, Types.STRING);
+      return text2.length;
+    },
+    LENB: (...params) => {
+      return TextFunctions.LEN(...params);
+    },
+    LOWER: (text2) => {
+      text2 = H2.accept(text2, Types.STRING);
+      return text2.toLowerCase();
+    },
+    MID: (text2, startNum, numChars) => {
+      text2 = H2.accept(text2, Types.STRING);
+      startNum = H2.accept(startNum, Types.NUMBER);
+      numChars = H2.accept(numChars, Types.NUMBER);
+      if (startNum > text2.length)
+        return "";
+      if (startNum < 1 || numChars < 1)
+        throw FormulaError.VALUE;
+      return text2.slice(startNum - 1, startNum + numChars - 1);
+    },
+    MIDB: (...params) => {
+      return TextFunctions.MID(...params);
+    },
+    NUMBERVALUE: (text2, decimalSeparator, groupSeparator) => {
+      text2 = H2.accept(text2, Types.STRING);
+      decimalSeparator = H2.accept(decimalSeparator, Types.STRING, ".");
+      groupSeparator = H2.accept(groupSeparator, Types.STRING, ",");
+      if (text2.length === 0)
+        return 0;
+      if (decimalSeparator.length === 0 || groupSeparator.length === 0)
+        throw FormulaError.VALUE;
+      decimalSeparator = decimalSeparator[0];
+      groupSeparator = groupSeparator[0];
+      if (decimalSeparator === groupSeparator || text2.indexOf(decimalSeparator) < text2.lastIndexOf(groupSeparator))
+        throw FormulaError.VALUE;
+      const res = text2.replace(groupSeparator, "").replace(decimalSeparator, ".").replace(/[^\-0-9.%()]/g, "").match(/([(-]*)([0-9]*[.]*[0-9]+)([)]?)([%]*)/);
+      if (!res)
+        throw FormulaError.VALUE;
+      const leftParenOrMinus = res[1].length, rightParen = res[3].length, percent = res[4].length;
+      let number = Number(res[2]);
+      if (leftParenOrMinus > 1 || leftParenOrMinus && !rightParen || !leftParenOrMinus && rightParen || isNaN(number))
+        throw FormulaError.VALUE;
+      number = number / 100 ** percent;
+      return leftParenOrMinus ? -number : number;
+    },
+    PHONETIC: () => {
+    },
+    PROPER: (text2) => {
+      text2 = H2.accept(text2, [Types.STRING]);
+      text2 = text2.toLowerCase();
+      text2 = text2.charAt(0).toUpperCase() + text2.slice(1);
+      return text2.replace(
+        /(?:[^a-zA-Z])([a-zA-Z])/g,
+        (letter) => letter.toUpperCase()
+      );
+    },
+    REPLACE: (old_text, start_num, num_chars, new_text) => {
+      old_text = H2.accept(old_text, [Types.STRING]);
+      start_num = H2.accept(start_num, [Types.NUMBER]);
+      num_chars = H2.accept(num_chars, [Types.NUMBER]);
+      new_text = H2.accept(new_text, [Types.STRING]);
+      let arr2 = old_text.split("");
+      arr2.splice(start_num - 1, num_chars, new_text);
+      return arr2.join("");
+    },
+    REPLACEB: (...params) => {
+      return TextFunctions.REPLACE(...params);
+    },
+    REPT: (text2, number_times) => {
+      text2 = H2.accept(text2, Types.STRING);
+      number_times = H2.accept(number_times, Types.NUMBER);
+      let str = "";
+      for (let i = 0; i < number_times; i++) {
+        str += text2;
+      }
+      return str;
+    },
+    RIGHT: (text2, numChars) => {
+      text2 = H2.accept(text2, Types.STRING);
+      numChars = H2.accept(numChars, Types.NUMBER, 1);
+      if (numChars < 0)
+        throw FormulaError.VALUE;
+      const len = text2.length;
+      if (numChars > len)
+        return text2;
+      return text2.slice(len - numChars);
+    },
+    RIGHTB: (...params) => {
+      return TextFunctions.RIGHT(...params);
+    },
+    SEARCH: (findText, withinText, startNum) => {
+      findText = H2.accept(findText, Types.STRING);
+      withinText = H2.accept(withinText, Types.STRING);
+      startNum = H2.accept(startNum, Types.NUMBER, 1);
+      if (startNum < 1 || startNum > withinText.length)
+        throw FormulaError.VALUE;
+      let findTextRegex = WildCard.isWildCard(findText) ? WildCard.toRegex(findText, "i") : findText;
+      const res = withinText.slice(startNum - 1).search(findTextRegex);
+      if (res === -1)
+        throw FormulaError.VALUE;
+      return res + startNum;
+    },
+    SEARCHB: (...params) => {
+      return TextFunctions.SEARCH(...params);
+    },
+    SUBSTITUTE: (...params) => {
+    },
+    T: (value) => {
+      value = H2.accept(value);
+      if (typeof value === "string")
+        return value;
+      return "";
+    },
+    TEXT: (value, formatText) => {
+      value = H2.accept(value, Types.NUMBER);
+      formatText = H2.accept(formatText, Types.STRING);
+      try {
+        return ssf2.format(formatText, value);
+      } catch (e) {
+        console.error(e);
+        throw FormulaError.VALUE;
+      }
+    },
+    TEXTJOIN: (...params) => {
+    },
+    TRIM: (text2) => {
+      text2 = H2.accept(text2, [Types.STRING]);
+      return text2.replace(/^\s+|\s+$/g, "");
+    },
+    UNICHAR: (number) => {
+      number = H2.accept(number, [Types.NUMBER]);
+      if (number <= 0)
+        throw FormulaError.VALUE;
+      return String.fromCharCode(number);
+    },
+    UNICODE: (text2) => {
+      return TextFunctions.CODE(text2);
+    }
+  };
+  text = TextFunctions;
+  return text;
+}
+var operators;
+var hasRequiredOperators;
+function requireOperators() {
+  if (hasRequiredOperators) return operators;
+  hasRequiredOperators = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers } = requireHelpers();
+  const Prefix = {
+    unaryOp: (prefixes, value, isArray) => {
+      let sign = 1;
+      prefixes.forEach((prefix2) => {
+        if (prefix2 === "+") ;
+        else if (prefix2 === "-") {
+          sign = -sign;
+        } else {
+          throw new Error(`Unrecognized prefix: ${prefix2}`);
+        }
+      });
+      if (value == null) {
+        value = 0;
+      }
+      if (sign === 1) {
+        return value;
+      }
+      try {
+        value = FormulaHelpers.acceptNumber(value, isArray);
+      } catch (e) {
+        if (e instanceof FormulaError) {
+          if (Array.isArray(value))
+            value = value[0][0];
+        } else
+          throw e;
+      }
+      if (typeof value === "number" && isNaN(value)) return FormulaError.VALUE;
+      return -value;
+    }
+  };
+  const Postfix = {
+    percentOp: (value, postfix, isArray) => {
+      try {
+        value = FormulaHelpers.acceptNumber(value, isArray);
+      } catch (e) {
+        if (e instanceof FormulaError)
+          return e;
+        throw e;
+      }
+      if (postfix === "%") {
+        return value / 100;
+      }
+      throw new Error(`Unrecognized postfix: ${postfix}`);
+    }
+  };
+  const type2Number = { "boolean": 3, "string": 2, "number": 1 };
+  const Infix = {
+    compareOp: (value1, infix, value2, isArray1, isArray2) => {
+      if (value1 == null) value1 = 0;
+      if (value2 == null) value2 = 0;
+      if (isArray1) {
+        value1 = value1[0][0];
+      }
+      if (isArray2) {
+        value2 = value2[0][0];
+      }
+      const type1 = typeof value1, type2 = typeof value2;
+      if (type1 === type2) {
+        switch (infix) {
+          case "=":
+            return value1 === value2;
+          case ">":
+            return value1 > value2;
+          case "<":
+            return value1 < value2;
+          case "<>":
+            return value1 !== value2;
+          case "<=":
+            return value1 <= value2;
+          case ">=":
+            return value1 >= value2;
+        }
+      } else {
+        switch (infix) {
+          case "=":
+            return false;
+          case ">":
+            return type2Number[type1] > type2Number[type2];
+          case "<":
+            return type2Number[type1] < type2Number[type2];
+          case "<>":
+            return true;
+          case "<=":
+            return type2Number[type1] <= type2Number[type2];
+          case ">=":
+            return type2Number[type1] >= type2Number[type2];
+        }
+      }
+      throw Error("Infix.compareOp: Should not reach here.");
+    },
+    concatOp: (value1, infix, value2, isArray1, isArray2) => {
+      if (value1 == null) value1 = "";
+      if (value2 == null) value2 = "";
+      if (isArray1) {
+        value1 = value1[0][0];
+      }
+      if (isArray2) {
+        value2 = value2[0][0];
+      }
+      const type1 = typeof value1, type2 = typeof value2;
+      if (type1 === "boolean")
+        value1 = value1 ? "TRUE" : "FALSE";
+      if (type2 === "boolean")
+        value2 = value2 ? "TRUE" : "FALSE";
+      return "" + value1 + value2;
+    },
+    mathOp: (value1, infix, value2, isArray1, isArray2) => {
+      if (value1 == null) value1 = 0;
+      if (value2 == null) value2 = 0;
+      try {
+        value1 = FormulaHelpers.acceptNumber(value1, isArray1);
+        value2 = FormulaHelpers.acceptNumber(value2, isArray2);
+      } catch (e) {
+        if (e instanceof FormulaError)
+          return e;
+        throw e;
+      }
+      switch (infix) {
+        case "+":
+          return value1 + value2;
+        case "-":
+          return value1 - value2;
+        case "*":
+          return value1 * value2;
+        case "/":
+          if (value2 === 0)
+            return FormulaError.DIV0;
+          return value1 / value2;
+        case "^":
+          return value1 ** value2;
+      }
+      throw Error("Infix.mathOp: Should not reach here.");
+    }
+  };
+  operators = {
+    Prefix,
+    Postfix,
+    Infix,
+    Operators: {
+      compareOp: ["<", ">", "=", "<>", "<=", ">="],
+      concatOp: ["&"],
+      mathOp: ["+", "-", "*", "/", "^"]
+    }
+  };
+  return operators;
+}
+var math;
+var hasRequiredMath;
+function requireMath() {
+  if (hasRequiredMath) return math;
+  hasRequiredMath = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types, Factorials, Criteria } = requireHelpers();
+  const { Infix } = requireOperators();
+  const H2 = FormulaHelpers;
+  const f = [], fd = [];
+  function factorial(n) {
+    if (n <= 100)
+      return Factorials[n];
+    if (f[n] > 0)
+      return f[n];
+    return f[n] = factorial(n - 1) * n;
+  }
+  function factorialDouble(n) {
+    if (n === 1 || n === 0)
+      return 1;
+    if (n === 2)
+      return 2;
+    if (fd[n] > 0)
+      return fd[n];
+    return fd[n] = factorialDouble(n - 2) * n;
+  }
+  const MathFunctions = {
+    ABS: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.abs(number);
+    },
+    AGGREGATE: (functionNum, options, ref1, ...refs) => {
+    },
+    ARABIC: (text2) => {
+      text2 = H2.accept(text2, Types.STRING).toUpperCase();
+      if (!/^M*(?:D?C{0,3}|C[MD])(?:L?X{0,3}|X[CL])(?:V?I{0,3}|I[XV])$/.test(text2)) {
+        throw new FormulaError("#VALUE!", "Invalid roman numeral in ARABIC evaluation.");
+      }
+      let r = 0;
+      text2.replace(/[MDLV]|C[MD]?|X[CL]?|I[XV]?/g, function(i) {
+        r += {
+          M: 1e3,
+          CM: 900,
+          D: 500,
+          CD: 400,
+          C: 100,
+          XC: 90,
+          L: 50,
+          XL: 40,
+          X: 10,
+          IX: 9,
+          V: 5,
+          IV: 4,
+          I: 1
+        }[i];
+      });
+      return r;
+    },
+    BASE: (number, radix, minLength) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number < 0 || number >= 2 ** 53)
+        throw FormulaError.NUM;
+      radix = H2.accept(radix, Types.NUMBER);
+      if (radix < 2 || radix > 36)
+        throw FormulaError.NUM;
+      minLength = H2.accept(minLength, Types.NUMBER, 0);
+      if (minLength < 0) {
+        throw FormulaError.NUM;
+      }
+      const result = number.toString(radix).toUpperCase();
+      return new Array(Math.max(minLength + 1 - result.length, 0)).join("0") + result;
+    },
+    CEILING: (number, significance) => {
+      number = H2.accept(number, Types.NUMBER);
+      significance = H2.accept(significance, Types.NUMBER);
+      if (significance === 0)
+        return 0;
+      if (number / significance % 1 === 0)
+        return number;
+      const absSignificance = Math.abs(significance);
+      const times = Math.floor(Math.abs(number) / absSignificance);
+      if (number < 0) {
+        const roundDown = significance < 0;
+        return roundDown ? -absSignificance * (times + 1) : -absSignificance * times;
+      } else {
+        return (times + 1) * absSignificance;
+      }
+    },
+    "CEILING.MATH": (number, significance, mode) => {
+      number = H2.accept(number, Types.NUMBER);
+      significance = H2.accept(significance, Types.NUMBER, number > 0 ? 1 : -1);
+      mode = H2.accept(mode, Types.NUMBER, 0);
+      if (number >= 0) {
+        return MathFunctions.CEILING(number, significance);
+      }
+      const offset2 = mode ? significance : 0;
+      return MathFunctions.CEILING(number, significance) - offset2;
+    },
+    "CEILING.PRECISE": (number, significance) => {
+      number = H2.accept(number, Types.NUMBER);
+      significance = H2.accept(significance, Types.NUMBER, 1);
+      return MathFunctions.CEILING(number, Math.abs(significance));
+    },
+    COMBIN: (number, numberChosen) => {
+      number = H2.accept(number, Types.NUMBER);
+      numberChosen = H2.accept(numberChosen, Types.NUMBER);
+      if (number < 0 || numberChosen < 0 || number < numberChosen)
+        throw FormulaError.NUM;
+      const nFactorial = MathFunctions.FACT(number), kFactorial = MathFunctions.FACT(numberChosen);
+      return nFactorial / kFactorial / MathFunctions.FACT(number - numberChosen);
+    },
+    COMBINA: (number, numberChosen) => {
+      number = H2.accept(number, Types.NUMBER);
+      numberChosen = H2.accept(numberChosen, Types.NUMBER);
+      if ((number === 0 || number === 1) && numberChosen === 0)
+        return 1;
+      if (number < 0 || numberChosen < 0)
+        throw FormulaError.NUM;
+      return MathFunctions.COMBIN(number + numberChosen - 1, number - 1);
+    },
+    DECIMAL: (text2, radix) => {
+      text2 = H2.accept(text2, Types.STRING);
+      radix = H2.accept(radix, Types.NUMBER);
+      radix = Math.trunc(radix);
+      if (radix < 2 || radix > 36)
+        throw FormulaError.NUM;
+      const res = parseInt(text2, radix);
+      if (isNaN(res))
+        throw FormulaError.NUM;
+      return res;
+    },
+    DEGREES: (radians) => {
+      radians = H2.accept(radians, Types.NUMBER);
+      return radians * (180 / Math.PI);
+    },
+    EVEN: (number) => {
+      return MathFunctions.CEILING(number, -2);
+    },
+    EXP: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.exp(number);
+    },
+    FACT: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      number = Math.trunc(number);
+      if (number > 170 || number < 0)
+        throw FormulaError.NUM;
+      if (number <= 100)
+        return Factorials[number];
+      return factorial(number);
+    },
+    FACTDOUBLE: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      number = Math.trunc(number);
+      if (number < -1)
+        throw FormulaError.NUM;
+      if (number === -1)
+        return 1;
+      return factorialDouble(number);
+    },
+    FLOOR: (number, significance) => {
+      number = H2.accept(number, Types.NUMBER);
+      significance = H2.accept(significance, Types.NUMBER);
+      if (significance === 0)
+        return 0;
+      if (number > 0 && significance < 0)
+        throw FormulaError.NUM;
+      if (number / significance % 1 === 0)
+        return number;
+      const absSignificance = Math.abs(significance);
+      const times = Math.floor(Math.abs(number) / absSignificance);
+      if (number < 0) {
+        const roundDown = significance < 0;
+        return roundDown ? -absSignificance * times : -absSignificance * (times + 1);
+      } else {
+        return times * absSignificance;
+      }
+    },
+    "FLOOR.MATH": (number, significance, mode) => {
+      number = H2.accept(number, Types.NUMBER);
+      significance = H2.accept(significance, Types.NUMBER, number > 0 ? 1 : -1);
+      mode = H2.accept(mode, Types.NUMBER, 0);
+      if (mode === 0 || number >= 0) {
+        return MathFunctions.FLOOR(number, Math.abs(significance));
+      }
+      return MathFunctions.FLOOR(number, significance) + significance;
+    },
+    "FLOOR.PRECISE": (number, significance) => {
+      number = H2.accept(number, Types.NUMBER);
+      significance = H2.accept(significance, Types.NUMBER, 1);
+      return MathFunctions.FLOOR(number, Math.abs(significance));
+    },
+    GCD: (...params) => {
+      const arr2 = [];
+      H2.flattenParams(
+        params,
+        null,
+        false,
+        (param) => {
+          param = typeof param === "boolean" ? NaN : Number(param);
+          if (!isNaN(param)) {
+            if (param < 0 || param > 9007199254740990)
+              throw FormulaError.NUM;
+            arr2.push(Math.trunc(param));
+          } else
+            throw FormulaError.VALUE;
+        },
+        0
+      );
+      let i, y, n = params.length, x2 = Math.abs(arr2[0]);
+      for (i = 1; i < n; i++) {
+        y = Math.abs(arr2[i]);
+        while (x2 && y) {
+          x2 > y ? x2 %= y : y %= x2;
+        }
+        x2 += y;
+      }
+      return x2;
+    },
+    INT: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.floor(number);
+    },
+    "ISO.CEILING": (...params) => {
+      return MathFunctions["CEILING.PRECISE"](...params);
+    },
+    LCM: (...params) => {
+      const arr2 = [];
+      H2.flattenParams(
+        params,
+        null,
+        false,
+        (param) => {
+          param = typeof param === "boolean" ? NaN : Number(param);
+          if (!isNaN(param)) {
+            if (param < 0 || param > 9007199254740990)
+              throw FormulaError.NUM;
+            arr2.push(Math.trunc(param));
+          } else
+            throw FormulaError.VALUE;
+        },
+        1
+      );
+      let n = arr2.length, a = Math.abs(arr2[0]);
+      for (let i = 1; i < n; i++) {
+        let b2 = Math.abs(arr2[i]), c = a;
+        while (a && b2) {
+          a > b2 ? a %= b2 : b2 %= a;
+        }
+        a = Math.abs(c * arr2[i]) / (a + b2);
+      }
+      return a;
+    },
+    LN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.log(number);
+    },
+    LOG: (number, base) => {
+      number = H2.accept(number, Types.NUMBER);
+      base = H2.accept(base, Types.NUMBER, 10);
+      return Math.log(number) / Math.log(base);
+    },
+    LOG10: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.log10(number);
+    },
+    MDETERM: (array) => {
+      array = H2.accept(array, Types.ARRAY, void 0, false, true);
+      if (array[0].length !== array.length)
+        throw FormulaError.VALUE;
+      const numRow = array.length, numCol = array[0].length;
+      let det = 0, diagLeft, diagRight;
+      if (numRow === 1) {
+        return array[0][0];
+      } else if (numRow === 2) {
+        return array[0][0] * array[1][1] - array[0][1] * array[1][0];
+      }
+      for (let col = 0; col < numCol; col++) {
+        diagLeft = array[0][col];
+        diagRight = array[0][col];
+        for (let row = 1; row < numRow; row++) {
+          diagRight *= array[row][((col + row) % numCol + numCol) % numCol];
+          diagLeft *= array[row][((col - row) % numCol + numCol) % numCol];
+        }
+        det += diagRight - diagLeft;
+      }
+      return det;
+    },
+    MINVERSE: (array) => {
+    },
+    MMULT: (array1, array2) => {
+      array1 = H2.accept(array1, Types.ARRAY, void 0, false, true);
+      array2 = H2.accept(array2, Types.ARRAY, void 0, false, true);
+      const aNumRows = array1.length, aNumCols = array1[0].length, bNumRows = array2.length, bNumCols = array2[0].length, m = new Array(aNumRows);
+      if (aNumCols !== bNumRows)
+        throw FormulaError.VALUE;
+      for (let r = 0; r < aNumRows; r++) {
+        m[r] = new Array(bNumCols);
+        for (let c = 0; c < bNumCols; c++) {
+          m[r][c] = 0;
+          for (let i = 0; i < aNumCols; i++) {
+            const v1 = array1[r][i], v2 = array2[i][c];
+            if (typeof v1 !== "number" || typeof v2 !== "number") throw FormulaError.VALUE;
+            m[r][c] += array1[r][i] * array2[i][c];
+          }
+        }
+      }
+      return m;
+    },
+    MOD: (number, divisor) => {
+      number = H2.accept(number, Types.NUMBER);
+      divisor = H2.accept(divisor, Types.NUMBER);
+      if (divisor === 0)
+        throw FormulaError.DIV0;
+      return number - divisor * MathFunctions.INT(number / divisor);
+    },
+    MROUND: (number, multiple) => {
+      number = H2.accept(number, Types.NUMBER);
+      multiple = H2.accept(multiple, Types.NUMBER);
+      if (multiple === 0)
+        return 0;
+      if (number > 0 && multiple < 0 || number < 0 && multiple > 0)
+        throw FormulaError.NUM;
+      if (number / multiple % 1 === 0)
+        return number;
+      return Math.round(number / multiple) * multiple;
+    },
+    MULTINOMIAL: (...numbers) => {
+      let numerator = 0, denominator = 1;
+      H2.flattenParams(numbers, Types.NUMBER, false, (number) => {
+        if (number < 0)
+          throw FormulaError.NUM;
+        numerator += number;
+        denominator *= factorial(number);
+      });
+      return factorial(numerator) / denominator;
+    },
+    MUNIT: (dimension) => {
+      dimension = H2.accept(dimension, Types.NUMBER);
+      const matrix = [];
+      for (let row = 0; row < dimension; row++) {
+        const rowArr = [];
+        for (let col = 0; col < dimension; col++) {
+          if (row === col)
+            rowArr.push(1);
+          else
+            rowArr.push(0);
+        }
+        matrix.push(rowArr);
+      }
+      return matrix;
+    },
+    ODD: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number === 0)
+        return 1;
+      let temp = Math.ceil(Math.abs(number));
+      temp = temp & 1 ? temp : temp + 1;
+      return number > 0 ? temp : -temp;
+    },
+    PI: () => {
+      return Math.PI;
+    },
+    POWER: (number, power) => {
+      number = H2.accept(number, Types.NUMBER);
+      power = H2.accept(power, Types.NUMBER);
+      return number ** power;
+    },
+    PRODUCT: (...numbers) => {
+      let product = 1;
+      H2.flattenParams(numbers, null, true, (number, info) => {
+        const parsedNumber = Number(number);
+        if (info.isLiteral && !isNaN(parsedNumber)) {
+          product *= parsedNumber;
+        } else {
+          if (typeof number === "number")
+            product *= number;
+        }
+      }, 1);
+      return product;
+    },
+    QUOTIENT: (numerator, denominator) => {
+      numerator = H2.accept(numerator, Types.NUMBER);
+      denominator = H2.accept(denominator, Types.NUMBER);
+      return Math.trunc(numerator / denominator);
+    },
+    RADIANS: (degrees) => {
+      degrees = H2.accept(degrees, Types.NUMBER);
+      return degrees / 180 * Math.PI;
+    },
+    RAND: () => {
+      return Math.random();
+    },
+    RANDBETWEEN: (bottom, top) => {
+      bottom = H2.accept(bottom, Types.NUMBER);
+      top = H2.accept(top, Types.NUMBER);
+      return Math.floor(Math.random() * (top - bottom + 1) + bottom);
+    },
+    ROMAN: (number, form) => {
+      number = H2.accept(number, Types.NUMBER);
+      form = H2.accept(form, Types.NUMBER, 0);
+      if (form !== 0)
+        throw Error("ROMAN: only allows form=0 (classic form).");
+      const digits = String(number).split("");
+      const key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM", "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC", "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+      let roman = "", i = 3;
+      while (i--) {
+        roman = (key[+digits.pop() + i * 10] || "") + roman;
+      }
+      return new Array(+digits.join("") + 1).join("M") + roman;
+    },
+    ROUND: (number, digits) => {
+      number = H2.accept(number, Types.NUMBER);
+      digits = H2.accept(digits, Types.NUMBER);
+      const multiplier = Math.pow(10, Math.abs(digits));
+      const sign = number > 0 ? 1 : -1;
+      if (digits > 0) {
+        return sign * Math.round(Math.abs(number) * multiplier) / multiplier;
+      } else if (digits === 0) {
+        return sign * Math.round(Math.abs(number));
+      } else {
+        return sign * Math.round(Math.abs(number) / multiplier) * multiplier;
+      }
+    },
+    ROUNDDOWN: (number, digits) => {
+      number = H2.accept(number, Types.NUMBER);
+      digits = H2.accept(digits, Types.NUMBER);
+      const multiplier = Math.pow(10, Math.abs(digits));
+      const sign = number > 0 ? 1 : -1;
+      if (digits > 0) {
+        const offset2 = 1 / multiplier * 0.5;
+        return sign * Math.round((Math.abs(number) - offset2) * multiplier) / multiplier;
+      } else if (digits === 0) {
+        const offset2 = 0.5;
+        return sign * Math.round(Math.abs(number) - offset2);
+      } else {
+        const offset2 = multiplier * 0.5;
+        return sign * Math.round((Math.abs(number) - offset2) / multiplier) * multiplier;
+      }
+    },
+    ROUNDUP: (number, digits) => {
+      number = H2.accept(number, Types.NUMBER);
+      digits = H2.accept(digits, Types.NUMBER);
+      const multiplier = Math.pow(10, Math.abs(digits));
+      const sign = number > 0 ? 1 : -1;
+      if (digits > 0) {
+        const offset2 = 1 / multiplier * 0.5;
+        return sign * Math.round((Math.abs(number) + offset2) * multiplier) / multiplier;
+      } else if (digits === 0) {
+        const offset2 = 0.5;
+        return sign * Math.round(Math.abs(number) + offset2);
+      } else {
+        const offset2 = multiplier * 0.5;
+        return sign * Math.round((Math.abs(number) + offset2) / multiplier) * multiplier;
+      }
+    },
+    SERIESSUM: (x2, n, m, coefficients) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      n = H2.accept(n, Types.NUMBER);
+      m = H2.accept(m, Types.NUMBER);
+      let i = 0, result;
+      H2.flattenParams([coefficients], Types.NUMBER, false, (coefficient) => {
+        if (typeof coefficient !== "number") {
+          throw FormulaError.VALUE;
+        }
+        if (i === 0) {
+          result = coefficient * Math.pow(x2, n);
+        } else {
+          result += coefficient * Math.pow(x2, n + i * m);
+        }
+        i++;
+      });
+      return result;
+    },
+    SIGN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return number > 0 ? 1 : number === 0 ? 0 : -1;
+    },
+    SQRT: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number < 0)
+        throw FormulaError.NUM;
+      return Math.sqrt(number);
+    },
+    SQRTPI: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number < 0)
+        throw FormulaError.NUM;
+      return Math.sqrt(number * Math.PI);
+    },
+    SUBTOTAL: () => {
+    },
+    SUM: (...params) => {
+      let result = 0;
+      H2.flattenParams(
+        params,
+        Types.NUMBER,
+        true,
+        (item, info) => {
+          if (info.isLiteral) {
+            result += item;
+          } else {
+            if (typeof item === "number")
+              result += item;
+          }
+        }
+      );
+      return result;
+    },
+    /**
+     * This functions requires instance of {@link FormulaParser}.
+     */
+    SUMIF: (context2, range2, criteria, sumRange) => {
+      const ranges = H2.retrieveRanges(context2, range2, sumRange);
+      range2 = ranges[0];
+      sumRange = ranges[1];
+      criteria = H2.retrieveArg(context2, criteria);
+      const isCriteriaArray = criteria.isArray;
+      criteria = Criteria.parse(H2.accept(criteria));
+      let sum = 0;
+      range2.forEach((row, rowNum) => {
+        row.forEach((value, colNum) => {
+          const valueToAdd = sumRange[rowNum][colNum];
+          if (typeof valueToAdd !== "number")
+            return;
+          if (criteria.op === "wc") {
+            if (criteria.match === criteria.value.test(value)) {
+              sum += valueToAdd;
+            }
+          } else if (Infix.compareOp(value, criteria.op, criteria.value, Array.isArray(value), isCriteriaArray)) {
+            sum += valueToAdd;
+          }
+        });
+      });
+      return sum;
+    },
+    SUMIFS: () => {
+    },
+    SUMPRODUCT: (array1, ...arrays) => {
+      array1 = H2.accept(array1, Types.ARRAY, void 0, false, true);
+      arrays.forEach((array) => {
+        array = H2.accept(array, Types.ARRAY, void 0, false, true);
+        if (array1[0].length !== array[0].length || array1.length !== array.length)
+          throw FormulaError.VALUE;
+        for (let i = 0; i < array1.length; i++) {
+          for (let j = 0; j < array1[0].length; j++) {
+            if (typeof array1[i][j] !== "number")
+              array1[i][j] = 0;
+            if (typeof array[i][j] !== "number")
+              array[i][j] = 0;
+            array1[i][j] *= array[i][j];
+          }
+        }
+      });
+      let result = 0;
+      array1.forEach((row) => {
+        row.forEach((value) => {
+          result += value;
+        });
+      });
+      return result;
+    },
+    SUMSQ: (...params) => {
+      let result = 0;
+      H2.flattenParams(
+        params,
+        Types.NUMBER,
+        true,
+        (item, info) => {
+          if (info.isLiteral) {
+            result += item ** 2;
+          } else {
+            if (typeof item === "number")
+              result += item ** 2;
+          }
+        }
+      );
+      return result;
+    },
+    SUMX2MY2: (arrayX, arrayY) => {
+      const x2 = [], y = [];
+      let sum = 0;
+      H2.flattenParams([arrayX], null, false, (item, info) => {
+        x2.push(item);
+      });
+      H2.flattenParams([arrayY], null, false, (item, info) => {
+        y.push(item);
+      });
+      if (x2.length !== y.length)
+        throw FormulaError.NA;
+      for (let i = 0; i < x2.length; i++) {
+        if (typeof x2[i] === "number" && typeof y[i] === "number")
+          sum += x2[i] ** 2 - y[i] ** 2;
+      }
+      return sum;
+    },
+    SUMX2PY2: (arrayX, arrayY) => {
+      const x2 = [], y = [];
+      let sum = 0;
+      H2.flattenParams([arrayX], null, false, (item, info) => {
+        x2.push(item);
+      });
+      H2.flattenParams([arrayY], null, false, (item, info) => {
+        y.push(item);
+      });
+      if (x2.length !== y.length)
+        throw FormulaError.NA;
+      for (let i = 0; i < x2.length; i++) {
+        if (typeof x2[i] === "number" && typeof y[i] === "number")
+          sum += x2[i] ** 2 + y[i] ** 2;
+      }
+      return sum;
+    },
+    SUMXMY2: (arrayX, arrayY) => {
+      const x2 = [], y = [];
+      let sum = 0;
+      H2.flattenParams([arrayX], null, false, (item, info) => {
+        x2.push(item);
+      });
+      H2.flattenParams([arrayY], null, false, (item, info) => {
+        y.push(item);
+      });
+      if (x2.length !== y.length)
+        throw FormulaError.NA;
+      for (let i = 0; i < x2.length; i++) {
+        if (typeof x2[i] === "number" && typeof y[i] === "number")
+          sum += (x2[i] - y[i]) ** 2;
+      }
+      return sum;
+    },
+    TRUNC: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.trunc(number);
+    }
+  };
+  math = MathFunctions;
+  return math;
+}
+var trigonometry;
+var hasRequiredTrigonometry;
+function requireTrigonometry() {
+  if (hasRequiredTrigonometry) return trigonometry;
+  hasRequiredTrigonometry = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const MAX_NUMBER = 2 ** 27 - 1;
+  const TrigFunctions = {
+    ACOS: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number > 1 || number < -1)
+        throw FormulaError.NUM;
+      return Math.acos(number);
+    },
+    ACOSH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number < 1)
+        throw FormulaError.NUM;
+      return Math.acosh(number);
+    },
+    ACOT: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.PI / 2 - Math.atan(number);
+    },
+    ACOTH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) <= 1)
+        throw FormulaError.NUM;
+      return Math.atanh(1 / number);
+    },
+    ASIN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number > 1 || number < -1)
+        throw FormulaError.NUM;
+      return Math.asin(number);
+    },
+    ASINH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.asinh(number);
+    },
+    ATAN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.atan(number);
+    },
+    ATAN2: (x2, y) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      y = H2.accept(y, Types.NUMBER);
+      if (y === 0 && x2 === 0)
+        throw FormulaError.DIV0;
+      return Math.atan2(y, x2);
+    },
+    ATANH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > 1)
+        throw FormulaError.NUM;
+      return Math.atanh(number);
+    },
+    COS: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > MAX_NUMBER)
+        throw FormulaError.NUM;
+      return Math.cos(number);
+    },
+    COSH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.cosh(number);
+    },
+    COT: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > MAX_NUMBER)
+        throw FormulaError.NUM;
+      if (number === 0)
+        throw FormulaError.DIV0;
+      return 1 / Math.tan(number);
+    },
+    COTH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number === 0)
+        throw FormulaError.DIV0;
+      return 1 / Math.tanh(number);
+    },
+    CSC: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > MAX_NUMBER)
+        throw FormulaError.NUM;
+      return 1 / Math.sin(number);
+    },
+    CSCH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (number === 0)
+        throw FormulaError.DIV0;
+      return 1 / Math.sinh(number);
+    },
+    SEC: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > MAX_NUMBER)
+        throw FormulaError.NUM;
+      return 1 / Math.cos(number);
+    },
+    SECH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return 1 / Math.cosh(number);
+    },
+    SIN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > MAX_NUMBER)
+        throw FormulaError.NUM;
+      return Math.sin(number);
+    },
+    SINH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.sinh(number);
+    },
+    TAN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      if (Math.abs(number) > MAX_NUMBER)
+        throw FormulaError.NUM;
+      return Math.tan(number);
+    },
+    TANH: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      return Math.tanh(number);
+    }
+  };
+  trigonometry = TrigFunctions;
+  return trigonometry;
+}
+var logical;
+var hasRequiredLogical;
+function requireLogical() {
+  if (hasRequiredLogical) return logical;
+  hasRequiredLogical = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  function getNumLogicalValue(params) {
+    let numTrue = 0, numFalse = 0;
+    H2.flattenParams(params, null, true, (val) => {
+      const type = typeof val;
+      if (type === "string") {
+        if (val === "TRUE")
+          val = true;
+        else if (val === "FALSE")
+          val = false;
+      } else if (type === "number")
+        val = Boolean(val);
+      if (typeof val === "boolean") {
+        if (val === true)
+          numTrue++;
+        else
+          numFalse++;
+      }
+    });
+    return [numTrue, numFalse];
+  }
+  const LogicalFunctions = {
+    AND: (...params) => {
+      const [numTrue, numFalse] = getNumLogicalValue(params);
+      if (numTrue === 0 && numFalse === 0)
+        return FormulaError.VALUE;
+      return numTrue > 0 && numFalse === 0;
+    },
+    FALSE: () => {
+      return false;
+    },
+    // Special
+    IF: (context2, logicalTest, valueIfTrue, valueIfFalse) => {
+      logicalTest = H2.accept(logicalTest, Types.BOOLEAN);
+      valueIfTrue = H2.accept(valueIfTrue);
+      valueIfFalse = H2.accept(valueIfFalse, null, false);
+      return logicalTest ? valueIfTrue : valueIfFalse;
+    },
+    IFERROR: (value, valueIfError) => {
+      return value.value instanceof FormulaError ? H2.accept(valueIfError) : H2.accept(value);
+    },
+    IFNA: function(value, valueIfNa) {
+      if (arguments.length > 2)
+        throw FormulaError.TOO_MANY_ARGS("IFNA");
+      return FormulaError.NA.equals(value.value) ? H2.accept(valueIfNa) : H2.accept(value);
+    },
+    IFS: (...params) => {
+      if (params.length % 2 !== 0)
+        return new FormulaError("#N/A", "IFS expects all arguments after position 0 to be in pairs.");
+      for (let i = 0; i < params.length / 2; i++) {
+        const logicalTest = H2.accept(params[i * 2], Types.BOOLEAN);
+        const valueIfTrue = H2.accept(params[i * 2 + 1]);
+        if (logicalTest)
+          return valueIfTrue;
+      }
+      return FormulaError.NA;
+    },
+    NOT: (logical2) => {
+      logical2 = H2.accept(logical2, Types.BOOLEAN);
+      return !logical2;
+    },
+    OR: (...params) => {
+      const [numTrue, numFalse] = getNumLogicalValue(params);
+      if (numTrue === 0 && numFalse === 0)
+        return FormulaError.VALUE;
+      return numTrue > 0;
+    },
+    SWITCH: (...params) => {
+    },
+    TRUE: () => {
+      return true;
+    },
+    XOR: (...params) => {
+      const [numTrue, numFalse] = getNumLogicalValue(params);
+      if (numTrue === 0 && numFalse === 0)
+        return FormulaError.VALUE;
+      return numTrue % 2 === 1;
+    }
+  };
+  logical = LogicalFunctions;
+  return logical;
+}
+var engineering;
+var hasRequiredEngineering;
+function requireEngineering() {
+  if (hasRequiredEngineering) return engineering;
+  hasRequiredEngineering = 1;
+  const FormulaError = requireError();
+  const TextFunctions = requireText();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const bessel = require$$3$1;
+  const jStat = require$$4;
+  const MAX_OCT = 536870911, MIN_OCT = -536870912, MAX_BIN = 511, MIN_BIN = -512;
+  const numberRegex = /^\s?[+-]?\s?[0-9]+[.]?[0-9]*([eE][+\-][0-9]+)?\s?$/;
+  const IMWithoutRealRegex = /^\s?([+-]?\s?([0-9]+[.]?[0-9]*([eE][+\-][0-9]+)?)?)\s?[ij]\s?$/;
+  const IMRegex = /^\s?([+-]?\s?[0-9]+[.]?[0-9]*([eE][+\-][0-9]+)?)\s?([+-]?\s?([0-9]+[.]?[0-9]*([eE][+\-][0-9]+)?)?)\s?[ij]\s?$/;
+  function parseIM(textOrNumber) {
+    textOrNumber = H2.accept(textOrNumber);
+    let real = 0, im = 0, unit = "i";
+    if (typeof textOrNumber === "number")
+      return { real: textOrNumber, im, unit };
+    if (typeof textOrNumber === "boolean")
+      throw FormulaError.VALUE;
+    let match = textOrNumber.match(numberRegex);
+    if (match) {
+      real = Number(match[0]);
+      return { real, im, unit };
+    }
+    match = textOrNumber.match(IMWithoutRealRegex);
+    if (match) {
+      im = Number(/^\s?[+-]?\s?$/.test(match[1]) ? match[1] + "1" : match[1]);
+      unit = match[0].slice(-1);
+      return { real, im, unit };
+    }
+    match = textOrNumber.match(IMRegex);
+    if (match) {
+      real = Number(match[1]);
+      im = Number(/^\s?[+-]?\s?$/.test(match[3]) ? match[3] + "1" : match[3]);
+      unit = match[0].slice(-1);
+      return { real, im, unit };
+    }
+    throw FormulaError.NUM;
+  }
+  const EngineeringFunctions = {
+    BESSELI: (x2, n) => {
+      x2 = H2.accept(x2, Types.NUMBER_NO_BOOLEAN);
+      n = H2.accept(n, Types.NUMBER_NO_BOOLEAN);
+      n = Math.trunc(n);
+      if (n < 0) {
+        throw FormulaError.NUM;
+      }
+      return bessel.besseli(x2, n);
+    },
+    BESSELJ: (x2, n) => {
+      x2 = H2.accept(x2, Types.NUMBER_NO_BOOLEAN);
+      n = H2.accept(n, Types.NUMBER_NO_BOOLEAN);
+      n = Math.trunc(n);
+      if (n < 0) {
+        throw FormulaError.NUM;
+      }
+      return bessel.besselj(x2, n);
+    },
+    BESSELK: (x2, n) => {
+      x2 = H2.accept(x2, Types.NUMBER_NO_BOOLEAN);
+      n = H2.accept(n, Types.NUMBER_NO_BOOLEAN);
+      n = Math.trunc(n);
+      if (n < 0) {
+        throw FormulaError.NUM;
+      }
+      return bessel.besselk(x2, n);
+    },
+    BESSELY: (x2, n) => {
+      x2 = H2.accept(x2, Types.NUMBER_NO_BOOLEAN);
+      n = H2.accept(n, Types.NUMBER_NO_BOOLEAN);
+      n = Math.trunc(n);
+      if (n < 0) {
+        throw FormulaError.NUM;
+      }
+      return bessel.bessely(x2, n);
+    },
+    BIN2DEC: (number) => {
+      number = H2.accept(number, Types.NUMBER_NO_BOOLEAN);
+      let numberStr = number.toString();
+      if (numberStr.length > 10) {
+        throw FormulaError.NUM;
+      }
+      if (numberStr.length === 10 && numberStr.substring(0, 1) === "1") {
+        return parseInt(numberStr.substring(1), 2) + MIN_BIN;
+      } else {
+        return parseInt(numberStr, 2);
+      }
+    },
+    BIN2HEX: (number, places) => {
+      number = H2.accept(number, Types.NUMBER_NO_BOOLEAN);
+      places = H2.accept(places, Types.NUMBER_NO_BOOLEAN, null);
+      const numberStr = number.toString();
+      if (numberStr.length > 10) {
+        throw FormulaError.NUM;
+      }
+      if (numberStr.length === 10 && numberStr.substring(0, 1) === "1") {
+        return (parseInt(numberStr.substring(1), 2) + 1099511627264).toString(16).toUpperCase();
+      }
+      const result = parseInt(number, 2).toString(16);
+      if (places == null) {
+        return result.toUpperCase();
+      } else {
+        if (places < 0) {
+          throw FormulaError.NUM;
+        }
+        places = Math.trunc(places);
+        if (places >= result.length) {
+          return (TextFunctions.REPT("0", places - result.length) + result).toUpperCase();
+        } else {
+          throw FormulaError.NUM;
+        }
+      }
+    },
+    BIN2OCT: (number, places) => {
+      number = H2.accept(number, Types.NUMBER_NO_BOOLEAN);
+      places = H2.accept(places, Types.NUMBER, null);
+      let numberStr = number.toString();
+      if (numberStr.length > 10) {
+        throw FormulaError.NUM;
+      }
+      if (numberStr.length === 10 && numberStr.substr(0, 1) === "1") {
+        return (parseInt(numberStr.substr(1), 2) + 1073741312).toString(8);
+      }
+      let result = parseInt(number, 2).toString(8);
+      if (places == null) {
+        return result.toUpperCase();
+      } else {
+        if (places < 0) {
+          throw FormulaError.NUM;
+        }
+        places = Math.trunc(places);
+        if (places >= result.length) {
+          return TextFunctions.REPT("0", places - result.length) + result;
+        } else {
+          throw FormulaError.NUM;
+        }
+      }
+    },
+    BITAND: (number1, number2) => {
+      number1 = H2.accept(number1, Types.NUMBER);
+      number2 = H2.accept(number2, Types.NUMBER);
+      if (number1 < 0 || number2 < 0) {
+        throw FormulaError.NUM;
+      }
+      if (Math.floor(number1) !== number1 || Math.floor(number2) !== number2) {
+        throw FormulaError.NUM;
+      }
+      if (number1 > 281474976710655 || number2 > 281474976710655) {
+        throw FormulaError.NUM;
+      }
+      return number1 & number2;
+    },
+    BITLSHIFT: (number, shiftAmount) => {
+      number = H2.accept(number, Types.NUMBER);
+      shiftAmount = H2.accept(shiftAmount, Types.NUMBER);
+      shiftAmount = Math.trunc(shiftAmount);
+      if (Math.abs(shiftAmount) > 53) {
+        throw FormulaError.NUM;
+      }
+      if (number < 0 || Math.floor(number) !== number || number > 281474976710655) {
+        throw FormulaError.NUM;
+      }
+      const result = shiftAmount >= 0 ? number * 2 ** shiftAmount : Math.trunc(number / 2 ** -shiftAmount);
+      if (result > 281474976710655)
+        throw FormulaError.NUM;
+      else
+        return result;
+    },
+    BITOR: (number1, number2) => {
+      number1 = H2.accept(number1, Types.NUMBER);
+      number2 = H2.accept(number2, Types.NUMBER);
+      if (number1 < 0 || number2 < 0) {
+        throw FormulaError.NUM;
+      }
+      if (Math.floor(number1) !== number1 || Math.floor(number2) !== number2) {
+        throw FormulaError.NUM;
+      }
+      if (number1 > 281474976710655 || number2 > 281474976710655) {
+        throw FormulaError.NUM;
+      }
+      return number1 | number2;
+    },
+    BITRSHIFT: (number, shiftAmount) => {
+      number = H2.accept(number, Types.NUMBER);
+      shiftAmount = H2.accept(shiftAmount, Types.NUMBER);
+      return EngineeringFunctions.BITLSHIFT(number, -shiftAmount);
+    },
+    BITXOR: (number1, number2) => {
+      number1 = H2.accept(number1, Types.NUMBER);
+      number2 = H2.accept(number2, Types.NUMBER);
+      if (number1 < 0 || number1 > 281474976710655 || Math.floor(number1) !== number1) {
+        throw FormulaError.NUM;
+      }
+      if (number2 < 0 || number2 > 281474976710655 || Math.floor(number2) !== number2) {
+        throw FormulaError.NUM;
+      }
+      return number1 ^ number2;
+    },
+    COMPLEX: (realNum, iNum, suffix2) => {
+      realNum = H2.accept(realNum, Types.NUMBER_NO_BOOLEAN);
+      iNum = H2.accept(iNum, Types.NUMBER_NO_BOOLEAN);
+      suffix2 = H2.accept(suffix2, Types.STRING, "i");
+      if (suffix2 !== "i" && suffix2 !== "j") {
+        throw FormulaError.VALUE;
+      }
+      if (realNum === 0 && iNum === 0) {
+        return 0;
+      } else if (realNum === 0) {
+        if (iNum === 1) {
+          return suffix2;
+        } else if (iNum === -1) {
+          return "-" + suffix2;
+        } else {
+          return iNum.toString() + suffix2;
+        }
+      } else if (iNum === 0) {
+        return realNum.toString();
+      } else {
+        let sign = iNum > 0 ? "+" : "";
+        if (iNum === 1) {
+          return realNum.toString() + sign + suffix2;
+        } else if (iNum === -1) {
+          return realNum.toString() + sign + "-" + suffix2;
+        } else {
+          return realNum.toString() + sign + iNum.toString() + suffix2;
+        }
+      }
+    },
+    DEC2BIN: (number, places) => {
+      number = H2.accept(number, Types.NUMBER);
+      places = H2.accept(places, Types.NUMBER, null);
+      if (number < MIN_BIN || number > MAX_BIN) {
+        throw FormulaError.NUM;
+      }
+      if (number < 0) {
+        return "1" + TextFunctions.REPT("0", 9 - (512 + number).toString(2).length) + (512 + number).toString(2);
+      }
+      let result = parseInt(number, 10).toString(2);
+      if (places == null) {
+        return result;
+      } else {
+        places = Math.trunc(places);
+        if (places <= 0) {
+          throw FormulaError.NUM;
+        }
+        if (places < result.length)
+          throw FormulaError.NUM;
+        return TextFunctions.REPT("0", places - result.length) + result;
+      }
+    },
+    DEC2HEX: (number, places) => {
+      number = H2.accept(number, Types.NUMBER);
+      places = H2.accept(places, Types.NUMBER, null);
+      if (number < -549755813888 || number > 549755813888) {
+        throw FormulaError.NUM;
+      }
+      if (number < 0) {
+        return (1099511627776 + number).toString(16).toUpperCase();
+      }
+      let result = parseInt(number, 10).toString(16);
+      if (places == null) {
+        return result.toUpperCase();
+      } else {
+        places = Math.trunc(places);
+        if (places <= 0) {
+          throw FormulaError.NUM;
+        }
+        if (places < result.length)
+          throw FormulaError.NUM;
+        return TextFunctions.REPT("0", places - result.length) + result.toUpperCase();
+      }
+    },
+    DEC2OCT: (number, places) => {
+      number = H2.accept(number, Types.NUMBER);
+      places = H2.accept(places, Types.NUMBER, null);
+      if (number < -536870912 || number > 536870912) {
+        throw FormulaError.NUM;
+      }
+      if (number < 0) {
+        return (number + 1073741824).toString(8);
+      }
+      let result = parseInt(number, 10).toString(8);
+      if (places == null) {
+        return result.toUpperCase();
+      } else {
+        places = Math.trunc(places);
+        if (places <= 0) {
+          throw FormulaError.NUM;
+        }
+        if (places < result.length)
+          throw FormulaError.NUM;
+        return TextFunctions.REPT("0", places - result.length) + result;
+      }
+    },
+    DELTA: (number1, number2) => {
+      number1 = H2.accept(number1, Types.NUMBER_NO_BOOLEAN);
+      number2 = H2.accept(number2, Types.NUMBER_NO_BOOLEAN, 0);
+      return number1 === number2 ? 1 : 0;
+    },
+    ERF: (lowerLimit, upperLimit) => {
+      lowerLimit = H2.accept(lowerLimit, Types.NUMBER_NO_BOOLEAN);
+      upperLimit = H2.accept(upperLimit, Types.NUMBER_NO_BOOLEAN, 0);
+      return jStat.erf(lowerLimit);
+    },
+    ERFC: (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER_NO_BOOLEAN);
+      return jStat.erfc(x2);
+    },
+    GESTEP: (number, step) => {
+      number = H2.accept(number, Types.NUMBER_NO_BOOLEAN);
+      step = H2.accept(step, Types.NUMBER_NO_BOOLEAN, 0);
+      return number >= step ? 1 : 0;
+    },
+    HEX2BIN: (number, places) => {
+      number = H2.accept(number, Types.STRING);
+      places = H2.accept(places, Types.NUMBER, null);
+      if (number.length > 10 || !/^[0-9a-fA-F]*$/.test(number)) {
+        throw FormulaError.NUM;
+      }
+      let ifNegative = number.length === 10 && number.substr(0, 1).toLowerCase() === "f";
+      let toDecimal = ifNegative ? parseInt(number, 16) - 1099511627776 : parseInt(number, 16);
+      if (toDecimal < MIN_BIN || toDecimal > MAX_BIN) {
+        throw FormulaError.NUM;
+      }
+      if (ifNegative) {
+        return "1" + TextFunctions.REPT("0", 9 - (toDecimal + 512).toString(2).length) + (toDecimal + 512).toString(2);
+      }
+      let toBinary = toDecimal.toString(2);
+      if (places == null) {
+        return toBinary;
+      } else {
+        places = Math.trunc(places);
+        if (places <= 0 || places < toBinary.length) {
+          throw FormulaError.NUM;
+        }
+        return TextFunctions.REPT("0", places - toBinary.length) + toBinary;
+      }
+    },
+    HEX2DEC: (number) => {
+      number = H2.accept(number, Types.STRING);
+      if (number.length > 10 || !/^[0-9a-fA-F]*$/.test(number)) {
+        throw FormulaError.NUM;
+      }
+      let result = parseInt(number, 16);
+      return result >= 549755813888 ? result - 1099511627776 : result;
+    },
+    HEX2OCT: (number, places) => {
+      number = H2.accept(number, Types.STRING);
+      if (number.length > 10 || !/^[0-9a-fA-F]*$/.test(number)) {
+        throw FormulaError.NUM;
+      }
+      let toDecimal = EngineeringFunctions.HEX2DEC(number);
+      if (toDecimal > MAX_OCT || toDecimal < MIN_OCT) {
+        throw FormulaError.NUM;
+      }
+      return EngineeringFunctions.DEC2OCT(toDecimal, places);
+    },
+    IMABS: (iNumber) => {
+      const { real, im } = parseIM(iNumber);
+      return Math.sqrt(Math.pow(real, 2) + Math.pow(im, 2));
+    },
+    IMAGINARY: (iNumber) => {
+      return parseIM(iNumber).im;
+    },
+    IMARGUMENT: (iNumber) => {
+      const { real, im } = parseIM(iNumber);
+      if (real === 0 && im === 0) {
+        throw FormulaError.DIV0;
+      }
+      if (real === 0 && im > 0) {
+        return Math.PI / 2;
+      }
+      if (real === 0 && im < 0) {
+        return -Math.PI / 2;
+      }
+      if (real < 0 && im === 0) {
+        return Math.PI;
+      }
+      if (real > 0 && im === 0) {
+        return 0;
+      }
+      if (real > 0) {
+        return Math.atan(im / real);
+      } else if (real < 0 && im > 0) {
+        return Math.atan(im / real) + Math.PI;
+      } else {
+        return Math.atan(im / real) - Math.PI;
+      }
+    },
+    IMCONJUGATE: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      return im !== 0 ? EngineeringFunctions.COMPLEX(real, -im, unit) : "" + real;
+    },
+    IMCOS: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let realInput = Math.cos(real) * (Math.exp(im) + Math.exp(-im)) / 2;
+      let imaginaryInput = -Math.sin(real) * (Math.exp(im) - Math.exp(-im)) / 2;
+      return EngineeringFunctions.COMPLEX(realInput, imaginaryInput, unit);
+    },
+    IMCOSH: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let realInput = Math.cos(im) * (Math.exp(real) + Math.exp(-real)) / 2;
+      let imaginaryInput = -Math.sin(im) * (Math.exp(real) - Math.exp(-real)) / 2;
+      return EngineeringFunctions.COMPLEX(realInput, -imaginaryInput, unit);
+    },
+    IMCOT: (iNumber) => {
+      iNumber = H2.accept(iNumber);
+      let real = EngineeringFunctions.IMCOS(iNumber);
+      let imaginary = EngineeringFunctions.IMSIN(iNumber);
+      return EngineeringFunctions.IMDIV(real, imaginary);
+    },
+    IMCSC: (iNumber) => {
+      iNumber = H2.accept(iNumber);
+      return EngineeringFunctions.IMDIV("1", EngineeringFunctions.IMSIN(iNumber));
+    },
+    IMCSCH: (iNumber) => {
+      iNumber = H2.accept(iNumber);
+      return EngineeringFunctions.IMDIV("1", EngineeringFunctions.IMSINH(iNumber));
+    },
+    IMDIV: (iNumber1, iNumber2) => {
+      const res1 = parseIM(iNumber1);
+      const a = res1.real, b2 = res1.im, unit1 = res1.unit;
+      const res2 = parseIM(iNumber2);
+      const c = res2.real, d = res2.im, unit2 = res2.unit;
+      if (c === 0 && d === 0 || unit1 !== unit2) {
+        throw FormulaError.NUM;
+      }
+      let unit = unit1;
+      let denominator = Math.pow(c, 2) + Math.pow(d, 2);
+      return EngineeringFunctions.COMPLEX((a * c + b2 * d) / denominator, (b2 * c - a * d) / denominator, unit);
+    },
+    IMEXP: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let e = Math.exp(real);
+      return EngineeringFunctions.COMPLEX(e * Math.cos(im), e * Math.sin(im), unit);
+    },
+    IMLN: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      return EngineeringFunctions.COMPLEX(
+        Math.log(Math.sqrt(Math.pow(real, 2) + Math.pow(im, 2))),
+        Math.atan(im / real),
+        unit
+      );
+    },
+    IMLOG10: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let realInput = Math.log(Math.sqrt(Math.pow(real, 2) + Math.pow(im, 2))) / Math.log(10);
+      let imaginaryInput = Math.atan(im / real) / Math.log(10);
+      return EngineeringFunctions.COMPLEX(realInput, imaginaryInput, unit);
+    },
+    IMLOG2: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let realInput = Math.log(Math.sqrt(Math.pow(real, 2) + Math.pow(im, 2))) / Math.log(2);
+      let imaginaryInput = Math.atan(im / real) / Math.log(2);
+      return EngineeringFunctions.COMPLEX(realInput, imaginaryInput, unit);
+    },
+    IMPOWER: (iNumber, number) => {
+      let { unit } = parseIM(iNumber);
+      number = H2.accept(number, Types.NUMBER_NO_BOOLEAN);
+      let p = Math.pow(EngineeringFunctions.IMABS(iNumber), number);
+      let t = EngineeringFunctions.IMARGUMENT(iNumber);
+      let real = p * Math.cos(number * t);
+      let imaginary = p * Math.sin(number * t);
+      return EngineeringFunctions.COMPLEX(real, imaginary, unit);
+    },
+    IMPRODUCT: (...params) => {
+      let result;
+      let i = 0;
+      H2.flattenParams(params, null, false, (item) => {
+        if (i === 0) {
+          result = H2.accept(item);
+          parseIM(result);
+        } else {
+          const res1 = parseIM(result);
+          const a = res1.real, b2 = res1.im, unit1 = res1.unit;
+          const res2 = parseIM(item);
+          const c = res2.real, d = res2.im, unit2 = res2.unit;
+          if (unit1 !== unit2)
+            throw FormulaError.VALUE;
+          result = EngineeringFunctions.COMPLEX(a * c - b2 * d, a * d + b2 * c);
+        }
+        i++;
+      }, 1);
+      return result;
+    },
+    IMREAL: (iNumber) => {
+      return parseIM(iNumber).real;
+    },
+    IMSEC: (iNumber) => {
+      return EngineeringFunctions.IMDIV("1", EngineeringFunctions.IMCOS(iNumber));
+    },
+    IMSECH: (iNumber) => {
+      return EngineeringFunctions.IMDIV("1", EngineeringFunctions.IMCOSH(iNumber));
+    },
+    IMSIN: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let realInput = Math.sin(real) * (Math.exp(im) + Math.exp(-im)) / 2;
+      let imaginaryInput = Math.cos(real) * (Math.exp(im) - Math.exp(-im)) / 2;
+      return EngineeringFunctions.COMPLEX(realInput, imaginaryInput, unit);
+    },
+    IMSINH: (iNumber) => {
+      const { real, im, unit } = parseIM(iNumber);
+      let realInput = Math.cos(im) * (Math.exp(real) - Math.exp(-real)) / 2;
+      let imaginaryInput = Math.sin(im) * (Math.exp(real) + Math.exp(-real)) / 2;
+      return EngineeringFunctions.COMPLEX(realInput, imaginaryInput, unit);
+    },
+    IMSQRT: (iNumber) => {
+      const { unit } = parseIM(iNumber);
+      let power = Math.sqrt(EngineeringFunctions.IMABS(iNumber));
+      let argument = EngineeringFunctions.IMARGUMENT(iNumber);
+      return EngineeringFunctions.COMPLEX(power * Math.cos(argument / 2), power * Math.sin(argument / 2), unit);
+    },
+    IMSUB: (iNumber1, iNumber2) => {
+      const res1 = parseIM(iNumber1);
+      const a = res1.real, b2 = res1.im, unit1 = res1.unit;
+      const res2 = parseIM(iNumber2);
+      const c = res2.real, d = res2.im, unit2 = res2.unit;
+      if (unit1 !== unit2) {
+        throw FormulaError.VALUE;
+      }
+      return EngineeringFunctions.COMPLEX(a - c, b2 - d, unit1);
+    },
+    IMSUM: (...params) => {
+      let realSum = 0, imSum = 0, prevUnit;
+      H2.flattenParams(params, null, false, (item) => {
+        const { real, im, unit } = parseIM(item);
+        if (!prevUnit) prevUnit = unit;
+        if (prevUnit !== unit)
+          throw FormulaError.VALUE;
+        realSum += real;
+        imSum += im;
+      });
+      return EngineeringFunctions.COMPLEX(realSum, imSum, prevUnit);
+    },
+    IMTAN: (iNumber) => {
+      const { unit } = parseIM(iNumber);
+      return EngineeringFunctions.IMDIV(EngineeringFunctions.IMSIN(iNumber), EngineeringFunctions.IMCOS(iNumber), unit);
+    },
+    // FIXME: need to check the test cases
+    OCT2BIN: (number, places) => {
+      number = H2.accept(number, Types.STRING);
+      places = H2.accept(places, Types.NUMBER, null);
+      if (number.length > 10) {
+        throw FormulaError.NUM;
+      }
+      if (places > 10) {
+        throw FormulaError.NUM;
+      }
+      if (places !== null && places < 0) {
+        throw FormulaError.NUM;
+      }
+      places = Math.trunc(places);
+      let isNegative = number.length === 10 && number.substring(0, 1) === "7";
+      let toDecimal = EngineeringFunctions.OCT2DEC(number);
+      if (toDecimal < MIN_BIN || toDecimal > MAX_BIN) {
+        return FormulaError.NUM;
+      }
+      if (isNegative) {
+        return "1" + TextFunctions.REPT("0", 9 - (512 + toDecimal).toString(2).length) + (512 + toDecimal).toString(2);
+      }
+      let result = toDecimal.toString(2);
+      if (places === 0) {
+        return result;
+      }
+      if (places < result.length) {
+        throw FormulaError.NUM;
+      }
+      return TextFunctions.REPT("0", places - result.length) + result;
+    },
+    OCT2DEC: (number) => {
+      number = H2.accept(number, Types.STRING);
+      if (number.length > 10) {
+        throw FormulaError.NUM;
+      }
+      for (const n of number) {
+        if (n < "0" || n > "7") {
+          throw FormulaError.NUM;
+        }
+      }
+      let result = parseInt(number, 8);
+      return result >= 536870912 ? result - 1073741824 : result;
+    },
+    OCT2HEX: (number, places) => {
+      number = H2.accept(number, Types.STRING);
+      places = H2.accept(places, Types.NUMBER_NO_BOOLEAN, null);
+      if (number.length > 10) {
+        throw FormulaError.NUM;
+      }
+      for (const n of number) {
+        if (n < "0" || n > "7") {
+          throw FormulaError.NUM;
+        }
+      }
+      places = Math.trunc(places);
+      if (places < 0 || places > 10) {
+        throw FormulaError.NUM;
+      }
+      let toDecimal = EngineeringFunctions.OCT2DEC(number);
+      let toHex = EngineeringFunctions.DEC2HEX(toDecimal);
+      if (places === 0) {
+        return toHex;
+      }
+      if (places < toHex.length) {
+        throw FormulaError.NUM;
+      } else {
+        return TextFunctions.REPT("0", places - toHex.length) + toHex;
+      }
+    }
+  };
+  engineering = EngineeringFunctions;
+  return engineering;
+}
+var reference;
+var hasRequiredReference;
+function requireReference() {
+  if (hasRequiredReference) return reference;
+  hasRequiredReference = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types, WildCard, Address } = requireHelpers();
+  const Collection2 = requireCollection();
+  const H2 = FormulaHelpers;
+  const ReferenceFunctions = {
+    ADDRESS: (rowNumber, columnNumber, absNum, a1, sheetText) => {
+      rowNumber = H2.accept(rowNumber, Types.NUMBER);
+      columnNumber = H2.accept(columnNumber, Types.NUMBER);
+      absNum = H2.accept(absNum, Types.NUMBER, 1);
+      a1 = H2.accept(a1, Types.BOOLEAN, true);
+      sheetText = H2.accept(sheetText, Types.STRING, "");
+      if (rowNumber < 1 || columnNumber < 1 || absNum < 1 || absNum > 4)
+        throw FormulaError.VALUE;
+      let result = "";
+      if (sheetText.length > 0) {
+        if (/[^A-Za-z_.\d\u007F-\uFFFF]/.test(sheetText)) {
+          result += `'${sheetText}'!`;
+        } else {
+          result += sheetText + "!";
+        }
+      }
+      if (a1) {
+        result += absNum === 1 || absNum === 3 ? "$" : "";
+        result += Address.columnNumberToName(columnNumber);
+        result += absNum === 1 || absNum === 2 ? "$" : "";
+        result += rowNumber;
+      } else {
+        result += "R";
+        result += absNum === 4 || absNum === 3 ? `[${rowNumber}]` : rowNumber;
+        result += "C";
+        result += absNum === 4 || absNum === 2 ? `[${columnNumber}]` : columnNumber;
+      }
+      return result;
+    },
+    AREAS: (refs) => {
+      refs = H2.accept(refs);
+      if (refs instanceof Collection2) {
+        return refs.length;
+      }
+      return 1;
+    },
+    CHOOSE: (indexNum, ...values) => {
+    },
+    // Special
+    COLUMN: (context2, obj) => {
+      if (obj == null) {
+        if (context2.position.col != null)
+          return context2.position.col;
+        else
+          throw Error("FormulaParser.parse is called without position parameter.");
+      } else {
+        if (typeof obj !== "object" || Array.isArray(obj))
+          throw FormulaError.VALUE;
+        if (H2.isCellRef(obj)) {
+          return obj.ref.col;
+        } else if (H2.isRangeRef(obj)) {
+          return obj.ref.from.col;
+        } else {
+          throw Error("ReferenceFunctions.COLUMN should not reach here.");
+        }
+      }
+    },
+    // Special
+    COLUMNS: (context2, obj) => {
+      if (obj == null) {
+        throw Error("COLUMNS requires one argument");
+      }
+      if (typeof obj != "object" || Array.isArray(obj))
+        throw FormulaError.VALUE;
+      if (H2.isCellRef(obj)) {
+        return 1;
+      } else if (H2.isRangeRef(obj)) {
+        return Math.abs(obj.ref.from.col - obj.ref.to.col) + 1;
+      } else {
+        throw Error("ReferenceFunctions.COLUMNS should not reach here.");
+      }
+    },
+    HLOOKUP: (lookupValue, tableArray, rowIndexNum, rangeLookup) => {
+      lookupValue = H2.accept(lookupValue);
+      try {
+        tableArray = H2.accept(tableArray, Types.ARRAY, void 0, false);
+      } catch (e) {
+        if (e instanceof FormulaError)
+          throw FormulaError.NA;
+        throw e;
+      }
+      rowIndexNum = H2.accept(rowIndexNum, Types.NUMBER);
+      rangeLookup = H2.accept(rangeLookup, Types.BOOLEAN, true);
+      if (rowIndexNum < 1)
+        throw FormulaError.VALUE;
+      if (tableArray[rowIndexNum - 1] === void 0)
+        throw FormulaError.REF;
+      const lookupType = typeof lookupValue;
+      if (rangeLookup) {
+        let prevValue = lookupType === typeof tableArray[0][0] ? tableArray[0][0] : null;
+        for (let i = 1; i < tableArray[0].length; i++) {
+          const currValue = tableArray[0][i];
+          const type = typeof currValue;
+          if (type !== lookupType)
+            continue;
+          if (prevValue > lookupValue && currValue > lookupValue) {
+            throw FormulaError.NA;
+          }
+          if (currValue === lookupValue)
+            return tableArray[rowIndexNum - 1][i];
+          if (prevValue != null && currValue > lookupValue && prevValue <= lookupValue) {
+            return tableArray[rowIndexNum - 1][i - 1];
+          }
+          prevValue = currValue;
+        }
+        if (prevValue == null)
+          throw FormulaError.NA;
+        return prevValue;
+      } else {
+        let index2 = -1;
+        if (WildCard.isWildCard(lookupValue)) {
+          index2 = tableArray[0].findIndex((item) => {
+            return WildCard.toRegex(lookupValue, "i").test(item);
+          });
+        } else {
+          index2 = tableArray[0].findIndex((item) => {
+            return item === lookupValue;
+          });
+        }
+        if (index2 === -1) throw FormulaError.NA;
+        return tableArray[rowIndexNum - 1][index2];
+      }
+    },
+    // Special
+    INDEX: (context2, ranges, rowNum, colNum, areaNum) => {
+      rowNum = context2.utils.extractRefValue(rowNum);
+      rowNum = { value: rowNum.val, isArray: rowNum.isArray };
+      rowNum = H2.accept(rowNum, Types.NUMBER);
+      rowNum = Math.trunc(rowNum);
+      if (colNum == null) {
+        colNum = 1;
+      } else {
+        colNum = context2.utils.extractRefValue(colNum);
+        colNum = { value: colNum.val, isArray: colNum.isArray };
+        colNum = H2.accept(colNum, Types.NUMBER, 1);
+        colNum = Math.trunc(colNum);
+      }
+      if (areaNum == null) {
+        areaNum = 1;
+      } else {
+        areaNum = context2.utils.extractRefValue(areaNum);
+        areaNum = { value: areaNum.val, isArray: areaNum.isArray };
+        areaNum = H2.accept(areaNum, Types.NUMBER, 1);
+        areaNum = Math.trunc(areaNum);
+      }
+      let range2 = ranges;
+      if (ranges instanceof Collection2) {
+        range2 = ranges.refs[areaNum - 1];
+      } else if (areaNum > 1) {
+        throw FormulaError.REF;
+      }
+      if (rowNum === 0 && colNum === 0) {
+        return range2;
+      }
+      if (rowNum === 0) {
+        if (H2.isRangeRef(range2)) {
+          if (range2.ref.to.col - range2.ref.from.col < colNum - 1)
+            throw FormulaError.REF;
+          range2.ref.from.col += colNum - 1;
+          range2.ref.to.col = range2.ref.from.col;
+          return range2;
+        } else if (Array.isArray(range2)) {
+          const res = [];
+          range2.forEach((row) => res.push([row[colNum - 1]]));
+          return res;
+        }
+      }
+      if (colNum === 0) {
+        if (H2.isRangeRef(range2)) {
+          if (range2.ref.to.row - range2.ref.from.row < rowNum - 1)
+            throw FormulaError.REF;
+          range2.ref.from.row += rowNum - 1;
+          range2.ref.to.row = range2.ref.from.row;
+          return range2;
+        } else if (Array.isArray(range2)) {
+          return range2[colNum - 1];
+        }
+      }
+      if (rowNum !== 0 && colNum !== 0) {
+        if (H2.isRangeRef(range2)) {
+          range2 = range2.ref;
+          if (range2.to.row - range2.from.row < rowNum - 1 || range2.to.col - range2.from.col < colNum - 1)
+            throw FormulaError.REF;
+          return { ref: { row: range2.from.row + rowNum - 1, col: range2.from.col + colNum - 1 } };
+        } else if (H2.isCellRef(range2)) {
+          range2 = range2.ref;
+          if (rowNum > 1 || colNum > 1)
+            throw FormulaError.REF;
+          return { ref: { row: range2.row + rowNum - 1, col: range2.col + colNum - 1 } };
+        } else if (Array.isArray(range2)) {
+          if (range2.length < rowNum || range2[0].length < colNum)
+            throw FormulaError.REF;
+          return range2[rowNum - 1][colNum - 1];
+        }
+      }
+    },
+    MATCH: () => {
+    },
+    // Special
+    ROW: (context2, obj) => {
+      if (obj == null) {
+        if (context2.position.row != null)
+          return context2.position.row;
+        else
+          throw Error("FormulaParser.parse is called without position parameter.");
+      } else {
+        if (typeof obj !== "object" || Array.isArray(obj))
+          throw FormulaError.VALUE;
+        if (H2.isCellRef(obj)) {
+          return obj.ref.row;
+        } else if (H2.isRangeRef(obj)) {
+          return obj.ref.from.row;
+        } else {
+          throw Error("ReferenceFunctions.ROW should not reach here.");
+        }
+      }
+    },
+    // Special
+    ROWS: (context2, obj) => {
+      if (obj == null) {
+        throw Error("ROWS requires one argument");
+      }
+      if (typeof obj != "object" || Array.isArray(obj))
+        throw FormulaError.VALUE;
+      if (H2.isCellRef(obj)) {
+        return 1;
+      } else if (H2.isRangeRef(obj)) {
+        return Math.abs(obj.ref.from.row - obj.ref.to.row) + 1;
+      } else {
+        throw Error("ReferenceFunctions.ROWS should not reach here.");
+      }
+    },
+    TRANSPOSE: (array) => {
+      array = H2.accept(array, Types.ARRAY, void 0, false);
+      const result = [];
+      for (let i = 0; i < array[0].length; i++) {
+        result[i] = [];
+        for (let j = 0; j < array.length; j++) {
+          result[i][j] = array[j][i];
+        }
+      }
+      return result;
+    },
+    VLOOKUP: (lookupValue, tableArray, colIndexNum, rangeLookup) => {
+      lookupValue = H2.accept(lookupValue);
+      try {
+        tableArray = H2.accept(tableArray, Types.ARRAY, void 0, false);
+      } catch (e) {
+        if (e instanceof FormulaError)
+          throw FormulaError.NA;
+        throw e;
+      }
+      colIndexNum = H2.accept(colIndexNum, Types.NUMBER);
+      rangeLookup = H2.accept(rangeLookup, Types.BOOLEAN, true);
+      if (colIndexNum < 1)
+        throw FormulaError.VALUE;
+      if (tableArray[0][colIndexNum - 1] === void 0)
+        throw FormulaError.REF;
+      const lookupType = typeof lookupValue;
+      if (rangeLookup) {
+        let prevValue = lookupType === typeof tableArray[0][0] ? tableArray[0][0] : null;
+        for (let i = 1; i < tableArray.length; i++) {
+          const currRow = tableArray[i];
+          const currValue = tableArray[i][0];
+          const type = typeof currValue;
+          if (type !== lookupType)
+            continue;
+          if (prevValue > lookupValue && currValue > lookupValue) {
+            throw FormulaError.NA;
+          }
+          if (currValue === lookupValue)
+            return currRow[colIndexNum - 1];
+          if (prevValue != null && currValue > lookupValue && prevValue <= lookupValue) {
+            return tableArray[i - 1][colIndexNum - 1];
+          }
+          prevValue = currValue;
+        }
+        if (prevValue == null)
+          throw FormulaError.NA;
+        return prevValue;
+      } else {
+        let index2 = -1;
+        if (WildCard.isWildCard(lookupValue)) {
+          index2 = tableArray.findIndex((currRow) => {
+            return WildCard.toRegex(lookupValue, "i").test(currRow[0]);
+          });
+        } else {
+          index2 = tableArray.findIndex((currRow) => {
+            return currRow[0] === lookupValue;
+          });
+        }
+        if (index2 === -1) throw FormulaError.NA;
+        return tableArray[index2][colIndexNum - 1];
+      }
+    }
+  };
+  reference = ReferenceFunctions;
+  return reference;
+}
+var information;
+var hasRequiredInformation;
+function requireInformation() {
+  if (hasRequiredInformation) return information;
+  hasRequiredInformation = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const error2Number = {
+    "#NULL!": 1,
+    "#DIV/0!": 2,
+    "#VALUE!": 3,
+    "#REF!": 4,
+    "#NAME?": 5,
+    "#NUM!": 6,
+    "#N/A": 7
+  };
+  const InfoFunctions = {
+    CELL: (infoType, reference2) => {
+    },
+    "ERROR.TYPE": (value) => {
+      value = H2.accept(value);
+      if (value instanceof FormulaError)
+        return error2Number[value.toString()];
+      throw FormulaError.NA;
+    },
+    INFO: () => {
+    },
+    ISBLANK: (value) => {
+      if (!value.ref)
+        return false;
+      return value.value == null || value.value === "";
+    },
+    ISERR: (value) => {
+      value = H2.accept(value);
+      return value instanceof FormulaError && value.toString() !== "#N/A";
+    },
+    ISERROR: (value) => {
+      value = H2.accept(value);
+      return value instanceof FormulaError;
+    },
+    ISEVEN: (number) => {
+      number = H2.accept(number, Types.NUMBER);
+      number = Math.trunc(number);
+      return number % 2 === 0;
+    },
+    ISLOGICAL: (value) => {
+      value = H2.accept(value);
+      return typeof value === "boolean";
+    },
+    ISNA: (value) => {
+      value = H2.accept(value);
+      return value instanceof FormulaError && value.toString() === "#N/A";
+    },
+    ISNONTEXT: (value) => {
+      value = H2.accept(value);
+      return typeof value !== "string";
+    },
+    ISNUMBER: (value) => {
+      value = H2.accept(value);
+      return typeof value === "number";
+    },
+    ISREF: (value) => {
+      if (!value.ref)
+        return false;
+      if (H2.isCellRef(value) && (value.ref.row > 1048576 || value.ref.col > 16384)) {
+        return false;
+      }
+      if (H2.isRangeRef(value) && (value.ref.from.row > 1048576 || value.ref.from.col > 16384 || value.ref.to.row > 1048576 || value.ref.to.col > 16384)) {
+        return false;
+      }
+      value = H2.accept(value);
+      return !(value instanceof FormulaError && value.toString() === "#REF!");
+    },
+    ISTEXT: (value) => {
+      value = H2.accept(value);
+      return typeof value === "string";
+    },
+    N: (value) => {
+      value = H2.accept(value);
+      const type = typeof value;
+      if (type === "number")
+        return value;
+      else if (type === "boolean")
+        return Number(value);
+      else if (value instanceof FormulaError)
+        throw value;
+      return 0;
+    },
+    NA: () => {
+      throw FormulaError.NA;
+    },
+    TYPE: (value) => {
+      if (value.ref) {
+        if (H2.isRangeRef(value)) {
+          return 16;
+        } else if (H2.isCellRef(value)) {
+          value = H2.accept(value);
+          if (typeof value === "string" && value.length === 0)
+            return 1;
+        }
+      }
+      value = H2.accept(value);
+      const type = typeof value;
+      if (type === "number")
+        return 1;
+      else if (type === "string")
+        return 2;
+      else if (type === "boolean")
+        return 4;
+      else if (value instanceof FormulaError)
+        return 16;
+      else if (Array.isArray(value))
+        return 64;
+    }
+  };
+  information = InfoFunctions;
+  return information;
+}
+var distribution;
+var hasRequiredDistribution;
+function requireDistribution() {
+  if (hasRequiredDistribution) return distribution;
+  hasRequiredDistribution = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const jStat = require$$4;
+  const MathFunctions = requireMath();
+  const SQRT2PI = 2.5066282746310002;
+  const DistributionFunctions = {
+    "BETA.DIST": (x2, alpha2, beta, cumulative, a, b2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      beta = H2.accept(beta, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      a = H2.accept(a, Types.NUMBER, 0);
+      b2 = H2.accept(b2, Types.NUMBER, 1);
+      if (alpha2 <= 0 || beta <= 0 || x2 < a || x2 > b2 || a === b2)
+        throw FormulaError.NUM;
+      x2 = (x2 - a) / (b2 - a);
+      return cumulative ? jStat.beta.cdf(x2, alpha2, beta) : jStat.beta.pdf(x2, alpha2, beta) / (b2 - a);
+    },
+    "BETA.INV": (probability, alpha2, beta, a, b2) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      beta = H2.accept(beta, Types.NUMBER);
+      a = H2.accept(a, Types.NUMBER, 0);
+      b2 = H2.accept(b2, Types.NUMBER, 1);
+      if (alpha2 <= 0 || beta <= 0 || probability <= 0 || probability > 1)
+        throw FormulaError.NUM;
+      return jStat.beta.inv(probability, alpha2, beta) * (b2 - a) + a;
+    },
+    "BINOM.DIST": (numberS, trials, probabilityS, cumulative) => {
+      numberS = H2.accept(numberS, Types.NUMBER);
+      trials = H2.accept(trials, Types.NUMBER);
+      probabilityS = H2.accept(probabilityS, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (trials < 0 || probabilityS < 0 || probabilityS > 1 || numberS < 0 || numberS > trials)
+        throw FormulaError.NUM;
+      return cumulative ? jStat.binomial.cdf(numberS, trials, probabilityS) : jStat.binomial.pdf(numberS, trials, probabilityS);
+    },
+    "BINOM.DIST.RANGE": (trials, probabilityS, numberS, numberS2) => {
+      trials = H2.accept(trials, Types.NUMBER);
+      probabilityS = H2.accept(probabilityS, Types.NUMBER);
+      numberS = H2.accept(numberS, Types.NUMBER);
+      numberS2 = H2.accept(numberS2, Types.NUMBER, numberS);
+      if (trials < 0 || probabilityS < 0 || probabilityS > 1 || numberS < 0 || numberS > trials || numberS2 < numberS || numberS2 > trials)
+        throw FormulaError.NUM;
+      let result = 0;
+      for (let i = numberS; i <= numberS2; i++) {
+        result += MathFunctions.COMBIN(trials, i) * Math.pow(probabilityS, i) * Math.pow(1 - probabilityS, trials - i);
+      }
+      return result;
+    },
+    "BINOM.INV": (trials, probabilityS, alpha2) => {
+      trials = H2.accept(trials, Types.NUMBER);
+      probabilityS = H2.accept(probabilityS, Types.NUMBER);
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      if (trials < 0 || probabilityS < 0 || probabilityS > 1 || alpha2 < 0 || alpha2 > 1)
+        throw FormulaError.NUM;
+      let x2 = 0;
+      while (x2 <= trials) {
+        if (jStat.binomial.cdf(x2, trials, probabilityS) >= alpha2) {
+          return x2;
+        }
+        x2++;
+      }
+    },
+    "CHISQ.DIST": (x2, degFreedom, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      degFreedom = H2.accept(degFreedom, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.NUMBER);
+      degFreedom = Math.trunc(degFreedom);
+      if (x2 < 0 || degFreedom < 1 || degFreedom > 10 ** 10)
+        throw FormulaError.NUM;
+      return cumulative ? jStat.chisquare.cdf(x2, degFreedom) : jStat.chisquare.pdf(x2, degFreedom);
+    },
+    "CHISQ.DIST.RT": (x2, degFreedom) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      degFreedom = H2.accept(degFreedom, Types.NUMBER);
+      degFreedom = Math.trunc(degFreedom);
+      if (x2 < 0 || degFreedom < 1 || degFreedom > 10 ** 10)
+        throw FormulaError.NUM;
+      return 1 - jStat.chisquare.cdf(x2, degFreedom);
+    },
+    "CHISQ.INV": (probability, degFreedom) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      degFreedom = H2.accept(degFreedom, Types.NUMBER);
+      degFreedom = Math.trunc(degFreedom);
+      if (probability < 0 || probability > 1 || degFreedom < 1 || degFreedom > 10 ** 10)
+        throw FormulaError.NUM;
+      return jStat.chisquare.inv(probability, degFreedom);
+    },
+    "CHISQ.INV.RT": (probability, degFreedom) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      degFreedom = H2.accept(degFreedom, Types.NUMBER);
+      degFreedom = Math.trunc(degFreedom);
+      if (probability < 0 || probability > 1 || degFreedom < 1 || degFreedom > 10 ** 10)
+        throw FormulaError.NUM;
+      return jStat.chisquare.inv(1 - probability, degFreedom);
+    },
+    "CHISQ.TEST": (actualRange, expectedRange) => {
+      const actual = H2.accept(actualRange, Types.ARRAY, void 0, false, false);
+      const expected = H2.accept(expectedRange, Types.ARRAY, void 0, false, false);
+      if (actual.length !== expected.length || actual[0].length !== expected[0].length || actual.length === 1 && actual[0].length === 1)
+        throw FormulaError.NA;
+      const row = actual.length;
+      const col = actual[0].length;
+      let dof = (row - 1) * (col - 1);
+      if (row === 1)
+        dof = col - 1;
+      else
+        dof = row - 1;
+      let xsqr = 0;
+      for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+          if (typeof actual[i][j] !== "number" || typeof expected[i][j] !== "number")
+            continue;
+          if (expected[i][j] === 0) throw FormulaError.DIV0;
+          xsqr += Math.pow(actual[i][j] - expected[i][j], 2) / expected[i][j];
+        }
+      }
+      let p = Math.exp(-0.5 * xsqr);
+      if (dof % 2 === 1) {
+        p = p * Math.sqrt(2 * xsqr / Math.PI);
+      }
+      let k = dof;
+      while (k >= 2) {
+        p = p * xsqr / k;
+        k = k - 2;
+      }
+      let t = p, a = dof;
+      while (t > 1e-15 * p) {
+        a = a + 2;
+        t = t * xsqr / a;
+        p = p + t;
+      }
+      return 1 - p;
+    },
+    "CONFIDENCE.NORM": (alpha2, std, size2) => {
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      std = H2.accept(std, Types.NUMBER);
+      size2 = H2.accept(size2, Types.NUMBER);
+      size2 = Math.trunc(size2);
+      if (alpha2 <= 0 || alpha2 >= 1 || std <= 0 || size2 < 1)
+        throw FormulaError.NUM;
+      return jStat.normalci(1, alpha2, std, size2)[1] - 1;
+    },
+    "CONFIDENCE.T": (alpha2, std, size2) => {
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      std = H2.accept(std, Types.NUMBER);
+      size2 = H2.accept(size2, Types.NUMBER);
+      size2 = Math.trunc(size2);
+      if (alpha2 <= 0 || alpha2 >= 1 || std <= 0 || size2 < 1)
+        throw FormulaError.NUM;
+      if (size2 === 1)
+        throw FormulaError.DIV0;
+      return jStat.tci(1, alpha2, std, size2)[1] - 1;
+    },
+    CORREL: (array1, array2) => {
+      array1 = H2.accept(array1, Types.ARRAY, void 0, true, true);
+      array2 = H2.accept(array2, Types.ARRAY, void 0, true, true);
+      if (array1.length !== array2.length)
+        throw FormulaError.NA;
+      const filterArr1 = [], filterArr2 = [];
+      for (let i = 0; i < array1.length; i++) {
+        if (typeof array1[i] !== "number" || typeof array2[i] !== "number")
+          continue;
+        filterArr1.push(array1[i]);
+        filterArr2.push(array2[i]);
+      }
+      if (filterArr1.length <= 1)
+        throw FormulaError.DIV0;
+      return jStat.corrcoeff(filterArr1, filterArr2);
+    },
+    "COVARIANCE.P": (array1, array2) => {
+      array1 = H2.accept(array1, Types.ARRAY, void 0, true, true);
+      array2 = H2.accept(array2, Types.ARRAY, void 0, true, true);
+      if (array1.length !== array2.length)
+        throw FormulaError.NA;
+      const filterArr1 = [], filterArr2 = [];
+      for (let i = 0; i < array1.length; i++) {
+        if (typeof array1[i] !== "number" || typeof array2[i] !== "number")
+          continue;
+        filterArr1.push(array1[i]);
+        filterArr2.push(array2[i]);
+      }
+      const mean1 = jStat.mean(filterArr1), mean2 = jStat.mean(filterArr2);
+      let result = 0;
+      for (let i = 0; i < filterArr1.length; i++) {
+        result += (filterArr1[i] - mean1) * (filterArr2[i] - mean2);
+      }
+      return result / filterArr1.length;
+    },
+    "COVARIANCE.S": (array1, array2) => {
+      array1 = H2.accept(array1, Types.ARRAY, void 0, true, true);
+      array2 = H2.accept(array2, Types.ARRAY, void 0, true, true);
+      if (array1.length !== array2.length)
+        throw FormulaError.NA;
+      const filterArr1 = [], filterArr2 = [];
+      for (let i = 0; i < array1.length; i++) {
+        if (typeof array1[i] !== "number" || typeof array2[i] !== "number")
+          continue;
+        filterArr1.push(array1[i]);
+        filterArr2.push(array2[i]);
+      }
+      if (filterArr1.length <= 1)
+        throw FormulaError.DIV0;
+      return jStat.covariance(filterArr1, filterArr2);
+    },
+    DEVSQ: (...numbers) => {
+      let sum = 0, x2 = [];
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        if (typeof item === "number") {
+          sum += item;
+          x2.push(item);
+        }
+      });
+      const mean = sum / x2.length;
+      sum = 0;
+      for (let i = 0; i < x2.length; i++) {
+        sum += (x2[i] - mean) ** 2;
+      }
+      return sum;
+    },
+    "EXPON.DIST": (x2, lambda, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      lambda = H2.accept(lambda, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (x2 < 0 || lambda <= 0)
+        throw FormulaError.NUM;
+      return cumulative ? jStat.exponential.cdf(x2, lambda) : jStat.exponential.pdf(x2, lambda);
+    },
+    "F.DIST": (x2, d1, d2, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      d1 = H2.accept(d1, Types.NUMBER);
+      d2 = H2.accept(d2, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (x2 < 0 || d1 < 1 || d2 < 1) {
+        throw FormulaError.NUM;
+      }
+      d1 = Math.trunc(d1);
+      d2 = Math.trunc(d2);
+      return cumulative ? jStat.centralF.cdf(x2, d1, d2) : jStat.centralF.pdf(x2, d1, d2);
+    },
+    "F.DIST.RT": (x2, d1, d2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      d1 = H2.accept(d1, Types.NUMBER);
+      d2 = H2.accept(d2, Types.NUMBER);
+      if (x2 < 0 || d1 < 1 || d2 < 1) {
+        throw FormulaError.NUM;
+      }
+      d1 = Math.trunc(d1);
+      d2 = Math.trunc(d2);
+      return 1 - jStat.centralF.cdf(x2, d1, d2);
+    },
+    "F.INV": (probability, d1, d2) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      d1 = H2.accept(d1, Types.NUMBER);
+      d2 = H2.accept(d2, Types.NUMBER);
+      if (probability < 0 || probability > 1) {
+        throw FormulaError.NUM;
+      }
+      if (d1 < 1 || d2 < 1) {
+        throw FormulaError.NUM;
+      }
+      d1 = Math.trunc(d1);
+      d2 = Math.trunc(d2);
+      return jStat.centralF.inv(probability, d1, d2);
+    },
+    "F.INV.RT": (probability, d1, d2) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      d1 = H2.accept(d1, Types.NUMBER);
+      d2 = H2.accept(d2, Types.NUMBER);
+      if (probability < 0 || probability > 1) {
+        throw FormulaError.NUM;
+      }
+      if (d1 < 1 || d1 >= Math.pow(10, 10)) {
+        throw FormulaError.NUM;
+      }
+      if (d2 < 1 || d2 >= Math.pow(10, 10)) {
+        throw FormulaError.NUM;
+      }
+      d1 = Math.trunc(d1);
+      d2 = Math.trunc(d2);
+      return jStat.centralF.inv(1 - probability, d1, d2);
+    },
+    /**
+     * https://en.wikipedia.org/wiki/F-test_of_equality_of_variances
+     */
+    "F.TEST": (array1, array2) => {
+      array1 = H2.accept(array1, Types.ARRAY, void 0, true, true);
+      array2 = H2.accept(array2, Types.ARRAY, void 0, true, true);
+      const x1 = [], x2 = [];
+      let x1Mean = 0, x2Mean = 0;
+      for (let i = 0; i < Math.max(array1.length, array2.length); i++) {
+        if (typeof array1[i] === "number") {
+          x1.push(array1[i]);
+          x1Mean += array1[i];
+        }
+        if (typeof array2[i] === "number") {
+          x2.push(array2[i]);
+          x2Mean += array2[i];
+        }
+      }
+      if (x1.length <= 1 || x2.length <= 1)
+        throw FormulaError.DIV0;
+      x1Mean /= x1.length;
+      x2Mean /= x2.length;
+      let s1 = 0, s2 = 0;
+      for (let i = 0; i < x1.length; i++) {
+        s1 += (x1Mean - x1[i]) ** 2;
+      }
+      s1 /= x1.length - 1;
+      for (let i = 0; i < x2.length; i++) {
+        s2 += (x2Mean - x2[i]) ** 2;
+      }
+      s2 /= x2.length - 1;
+      return jStat.centralF.cdf(s1 / s2, x1.length - 1, x2.length - 1) * 2;
+    },
+    FISHER: (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      if (x2 <= -1 || x2 >= 1) {
+        throw FormulaError.NUM;
+      }
+      return Math.log((1 + x2) / (1 - x2)) / 2;
+    },
+    FISHERINV: (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      let e2y = Math.exp(2 * x2);
+      return (e2y - 1) / (e2y + 1);
+    },
+    // FIXME
+    FORECAST: (x2, knownYs, knownXs) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      knownYs = H2.accept(knownYs, Types.ARRAY, void 0, true, true);
+      knownXs = H2.accept(knownXs, Types.ARRAY, void 0, true, true);
+      if (knownXs.length !== knownYs.length)
+        throw FormulaError.NA;
+      const filteredY = [], filteredX = [];
+      let xAllEqual = true;
+      for (let i = 0; i < knownYs.length; i++) {
+        if (typeof knownYs[i] !== "number" || typeof knownXs[i] !== "number")
+          continue;
+        filteredY.push(knownYs[i]);
+        filteredX.push(knownXs[i]);
+        if (knownXs[i] !== knownXs[0])
+          xAllEqual = false;
+      }
+      if (xAllEqual)
+        throw FormulaError.DIV0;
+      const yMean = jStat.mean(filteredY);
+      const xMean = jStat.mean(filteredX);
+      let numerator = 0, denominator = 0;
+      for (let i = 0; i < filteredY.length; i++) {
+        numerator += (filteredX[i] - xMean) * (filteredY[i] - yMean);
+        denominator += (filteredX[i] - xMean) ** 2;
+      }
+      const b2 = numerator / denominator;
+      const a = yMean - b2 * xMean;
+      return a + b2 * x2;
+    },
+    "FORECAST.ETS": () => {
+    },
+    "FORECAST.ETS.CONFINT": () => {
+    },
+    "FORECAST.ETS.SEASONALITY": () => {
+    },
+    "FORECAST.ETS.STAT": () => {
+    },
+    "FORECAST.LINEAR": (...params) => {
+      return DistributionFunctions.FORECAST(...params);
+    },
+    FREQUENCY: (dataArray, binsArray) => {
+      dataArray = H2.accept(dataArray, Types.ARRAY, void 0, true, true);
+      binsArray = H2.accept(binsArray, Types.ARRAY, void 0, true, true);
+      const binsArrayFiltered = [];
+      for (let i = 0; i < binsArray.length; i++) {
+        if (typeof binsArray[i] !== "number")
+          continue;
+        binsArrayFiltered.push(binsArray[i]);
+      }
+      binsArrayFiltered.sort();
+      binsArrayFiltered.push(Infinity);
+      const result = [];
+      for (let j = 0; j < binsArrayFiltered.length; j++) {
+        result[j] = [];
+        result[j][0] = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          if (typeof dataArray[i] !== "number") {
+            continue;
+          }
+          const curr = dataArray[i];
+          if (curr <= binsArrayFiltered[j]) {
+            result[j][0]++;
+            dataArray[i] = null;
+          }
+        }
+      }
+      return result;
+    },
+    GAMMA: (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      if (x2 === 0 || x2 < 0 && x2 === Math.trunc(x2)) {
+        throw FormulaError.NUM;
+      }
+      return jStat.gammafn(x2);
+    },
+    "GAMMA.DIST": (x2, alpha2, beta, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      beta = H2.accept(beta, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (x2 < 0 || alpha2 <= 0 || beta <= 0) {
+        throw FormulaError.NUM;
+      }
+      return cumulative ? jStat.gamma.cdf(x2, alpha2, beta, true) : jStat.gamma.pdf(x2, alpha2, beta, false);
+    },
+    "GAMMA.INV": (probability, alpha2, beta) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      beta = H2.accept(beta, Types.NUMBER);
+      if (probability < 0 || probability > 1 || alpha2 <= 0 || beta <= 0) {
+        throw FormulaError.NUM;
+      }
+      return jStat.gamma.inv(probability, alpha2, beta);
+    },
+    GAMMALN: (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      if (x2 <= 0) {
+        throw FormulaError.NUM;
+      }
+      return jStat.gammaln(x2);
+    },
+    "GAMMALN.PRECISE": (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      if (x2 <= 0) {
+        throw FormulaError.NUM;
+      }
+      return jStat.gammaln(x2);
+    },
+    GAUSS: (z2) => {
+      z2 = H2.accept(z2, Types.NUMBER);
+      return jStat.normal.cdf(z2, 0, 1) - 0.5;
+    },
+    GEOMEAN: (...numbers) => {
+      const filterArr = [];
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        if (typeof item === "number") {
+          filterArr.push(item);
+        }
+      });
+      return jStat.geomean(filterArr);
+    },
+    GROWTH: (knownY, knownX, newX, useConst) => {
+      knownY = H2.accept(knownY, Types.ARRAY, void 0, true, true);
+      for (let i = 0; i < knownY.length; i++) {
+        if (typeof knownY[i] !== "number")
+          throw FormulaError.VALUE;
+      }
+      knownX = H2.accept(knownX, Types.ARRAY, null, true, true);
+      const isKnownXOmitted = knownX == null;
+      if (knownX == null) {
+        knownX = [];
+        for (let i = 1; i <= knownY.length; i++) {
+          knownX.push(i);
+        }
+      } else {
+        if (knownX.length !== knownY.length)
+          throw FormulaError.REF;
+        for (let i = 0; i < knownX.length; i++) {
+          if (typeof knownX[i] !== "number")
+            throw FormulaError.VALUE;
+        }
+      }
+      newX = H2.accept(newX, Types.ARRAY, null, false, true);
+      if (newX == null && isKnownXOmitted) {
+        newX = [];
+        for (let i = 1; i <= knownY.length; i++) {
+          newX.push(i);
+        }
+        newX = [newX];
+      } else if (newX == null) {
+        newX = Array.isArray(knownX[0]) ? knownX : [knownX];
+      }
+      useConst = H2.accept(useConst, Types.BOOLEAN, true);
+      const n = knownY.length;
+      let avg_x = 0, avg_y = 0, avg_xy = 0, avg_xx = 0;
+      for (let i = 0; i < n; i++) {
+        const x2 = knownX[i];
+        const y = Math.log(knownY[i]);
+        avg_x += x2;
+        avg_y += y;
+        avg_xy += x2 * y;
+        avg_xx += x2 * x2;
+      }
+      avg_x /= n;
+      avg_y /= n;
+      avg_xy /= n;
+      avg_xx /= n;
+      let beta;
+      let alpha2;
+      if (useConst) {
+        beta = (avg_xy - avg_x * avg_y) / (avg_xx - avg_x * avg_x);
+        alpha2 = avg_y - beta * avg_x;
+      } else {
+        beta = avg_xy / avg_xx;
+        alpha2 = 0;
+      }
+      const new_y = [];
+      for (let i = 0; i < newX.length; i++) {
+        new_y[i] = [];
+        for (let j = 0; j < newX[0].length; j++) {
+          if (typeof newX[i][j] !== "number")
+            throw FormulaError.VALUE;
+          new_y[i][j] = Math.exp(alpha2 + beta * newX[i][j]);
+        }
+      }
+      return new_y;
+    },
+    HARMEAN: (...numbers) => {
+      let cnt = 0, denominator = 0;
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        if (typeof item === "number") {
+          denominator += 1 / item;
+          cnt++;
+        }
+      });
+      return cnt / denominator;
+    },
+    "HYPGEOM.DIST": (sample_s, number_sample, population_s, number_pop, cumulative) => {
+      sample_s = H2.accept(sample_s, Types.NUMBER);
+      number_sample = H2.accept(number_sample, Types.NUMBER);
+      population_s = H2.accept(population_s, Types.NUMBER);
+      number_pop = H2.accept(number_pop, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      sample_s = Math.trunc(sample_s);
+      number_sample = Math.trunc(number_sample);
+      population_s = Math.trunc(population_s);
+      number_pop = Math.trunc(number_pop);
+      if (number_pop <= 0 || sample_s < 0 || number_sample <= 0 || population_s <= 0) {
+        throw FormulaError.NUM;
+      }
+      if (number_sample > number_pop) {
+        throw FormulaError.NUM;
+      }
+      if (population_s > number_pop) {
+        throw FormulaError.NUM;
+      }
+      if (number_sample < sample_s || population_s < sample_s) {
+        throw FormulaError.NUM;
+      }
+      if (sample_s < number_sample - number_pop + population_s) {
+        throw FormulaError.NUM;
+      }
+      function pdf(x2, n, M2, N2) {
+        return MathFunctions.COMBIN(M2, x2) * MathFunctions.COMBIN(N2 - M2, n - x2) / MathFunctions.COMBIN(N2, n);
+      }
+      function cdf(x2, n, M2, N2) {
+        let result = 0;
+        for (let i = 0; i <= x2; i++) {
+          result += pdf(i, n, M2, N2);
+        }
+        return result;
+      }
+      return cumulative ? cdf(sample_s, number_sample, population_s, number_pop) : pdf(sample_s, number_sample, population_s, number_pop);
+    },
+    INTERCEPT: (knownYs, knownXs) => {
+      knownYs = H2.accept(knownYs, Types.ARRAY, void 0, true, true);
+      knownXs = H2.accept(knownXs, Types.ARRAY, void 0, true, true);
+      if (knownXs.length !== knownYs.length)
+        throw FormulaError.NA;
+      const filteredY = [], filteredX = [];
+      for (let i = 0; i < knownYs.length; i++) {
+        if (typeof knownYs[i] !== "number" || typeof knownXs[i] !== "number")
+          continue;
+        filteredY.push(knownYs[i]);
+        filteredX.push(knownXs[i]);
+      }
+      if (filteredY.length <= 1)
+        throw FormulaError.DIV0;
+      const yMean = jStat.mean(filteredY);
+      const xMean = jStat.mean(filteredX);
+      let numerator = 0, denominator = 0;
+      for (let i = 0; i < filteredY.length; i++) {
+        numerator += (filteredX[i] - xMean) * (filteredY[i] - yMean);
+        denominator += (filteredX[i] - xMean) ** 2;
+      }
+      const b2 = numerator / denominator;
+      return yMean - b2 * xMean;
+    },
+    KURT: (...numbers) => {
+      let mean = 0, range2 = [];
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        if (typeof item === "number") {
+          mean += item;
+          range2.push(item);
+        }
+      });
+      const n = range2.length;
+      mean /= n;
+      let sigma = 0;
+      for (let i = 0; i < n; i++) {
+        sigma += Math.pow(range2[i] - mean, 4);
+      }
+      sigma = sigma / Math.pow(jStat.stdev(range2, true), 4);
+      return n * (n + 1) / ((n - 1) * (n - 2) * (n - 3)) * sigma - 3 * (n - 1) * (n - 1) / ((n - 2) * (n - 3));
+    },
+    LINEST: () => {
+    },
+    LOGEST: () => {
+    },
+    "LOGNORM.DIST": (x2, mean, standard_dev, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      mean = H2.accept(mean, Types.NUMBER);
+      standard_dev = H2.accept(standard_dev, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (x2 <= 0 || standard_dev <= 0) {
+        throw FormulaError.NUM;
+      }
+      return cumulative ? jStat.lognormal.cdf(x2, mean, standard_dev) : jStat.lognormal.pdf(x2, mean, standard_dev);
+    },
+    "LOGNORM.INV": (probability, mean, standard_dev) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      mean = H2.accept(mean, Types.NUMBER);
+      standard_dev = H2.accept(standard_dev, Types.NUMBER);
+      if (probability <= 0 || probability >= 1) {
+        throw FormulaError.NUM;
+      }
+      if (standard_dev <= 0) {
+        throw FormulaError.NUM;
+      }
+      return jStat.lognormal.inv(probability, mean, standard_dev);
+    },
+    "MODE.MULT": () => {
+    },
+    "MODE.SNGL": () => {
+    },
+    "NEGBINOM.DIST": (number_f, number_s, probability_s, cumulative) => {
+      number_f = H2.accept(number_f, Types.NUMBER);
+      number_s = H2.accept(number_s, Types.NUMBER);
+      probability_s = H2.accept(probability_s, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      number_f = Math.trunc(number_f);
+      number_s = Math.trunc(number_s);
+      if (probability_s < 0 || probability_s > 1) {
+        throw FormulaError.NUM;
+      }
+      if (number_f < 0 || number_s < 1) {
+        throw FormulaError.NUM;
+      }
+      return cumulative ? jStat.negbin.cdf(number_f, number_s, probability_s) : jStat.negbin.pdf(number_f, number_s, probability_s);
+    },
+    "NORM.DIST": (x2, mean, standard_dev, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      mean = H2.accept(mean, Types.NUMBER);
+      standard_dev = H2.accept(standard_dev, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (standard_dev <= 0) {
+        throw FormulaError.NUM;
+      }
+      return cumulative ? jStat.normal.cdf(x2, mean, standard_dev) : jStat.normal.pdf(x2, mean, standard_dev);
+    },
+    "NORM.INV": (probability, mean, standard_dev) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      mean = H2.accept(mean, Types.NUMBER);
+      standard_dev = H2.accept(standard_dev, Types.NUMBER);
+      if (probability <= 0 || probability >= 1) {
+        throw FormulaError.NUM;
+      }
+      if (standard_dev <= 0) {
+        throw FormulaError.NUM;
+      }
+      return jStat.normal.inv(probability, mean, standard_dev);
+    },
+    "NORM.S.DIST": (z2, cumulative) => {
+      z2 = H2.accept(z2, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      return cumulative ? jStat.normal.cdf(z2, 0, 1) : jStat.normal.pdf(z2, 0, 1);
+    },
+    "NORM.S.INV": (probability) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      if (probability <= 0 || probability >= 1) {
+        throw FormulaError.NUM;
+      }
+      return jStat.normal.inv(probability, 0, 1);
+    },
+    PEARSON: () => {
+    },
+    "PERCENTILE.EXC": () => {
+    },
+    "PERCENTILE.INC": () => {
+    },
+    "PERCENTRANK.EXC": () => {
+    },
+    "PERCENTRANK.INC": () => {
+    },
+    PERMUTATIONA: () => {
+    },
+    PHI: (x2) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      return Math.exp(-0.5 * x2 * x2) / SQRT2PI;
+    },
+    "POISSON.DIST": (x2, mean, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      mean = H2.accept(mean, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (x2 < 0 || mean < 0) {
+        throw FormulaError.NUM;
+      }
+      x2 = Math.trunc(x2);
+      return cumulative ? jStat.poisson.cdf(x2, mean) : jStat.poisson.pdf(x2, mean);
+    },
+    "PROB": () => {
+    },
+    "QUARTILE.EXC": () => {
+    },
+    "QUARTILE.INC": () => {
+    },
+    "RANK.AVG": () => {
+    },
+    "RANK.EQ": () => {
+    },
+    RSQ: () => {
+    },
+    SKEW: () => {
+    },
+    "SKEW.P": () => {
+    },
+    SLOPE: () => {
+    },
+    STANDARDIZE: (x2, mean, standard_dev) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      mean = H2.accept(mean, Types.NUMBER);
+      standard_dev = H2.accept(standard_dev, Types.NUMBER);
+      if (standard_dev <= 0) {
+        throw FormulaError.NUM;
+      }
+      return (x2 - mean) / standard_dev;
+    },
+    "STDEV.P": () => {
+    },
+    "STDEV.S": () => {
+    },
+    STDEVA: () => {
+    },
+    STDEVPA: () => {
+    },
+    STEYX: () => {
+    },
+    "T.DIST": (x2, deg_freedom, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      deg_freedom = H2.accept(deg_freedom, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (deg_freedom < 1) {
+        throw FormulaError.NUM;
+      }
+      return cumulative ? jStat.studentt.cdf(x2, deg_freedom) : jStat.studentt.pdf(x2, deg_freedom);
+    },
+    "T.DIST.2T": (x2, deg_freedom) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      deg_freedom = H2.accept(deg_freedom, Types.NUMBER);
+      if (deg_freedom < 1 || x2 < 0) {
+        throw FormulaError.NUM;
+      }
+      return (1 - jStat.studentt.cdf(x2, deg_freedom)) * 2;
+    },
+    "T.DIST.RT": (x2, deg_freedom) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      deg_freedom = H2.accept(deg_freedom, Types.NUMBER);
+      if (deg_freedom < 1) {
+        throw FormulaError.NUM;
+      }
+      return 1 - jStat.studentt.cdf(x2, deg_freedom);
+    },
+    "T.INV": (probability, deg_freedom) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      deg_freedom = H2.accept(deg_freedom, Types.NUMBER);
+      if (probability <= 0 || probability > 1 || deg_freedom < 1) {
+        throw FormulaError.NUM;
+      }
+      deg_freedom = deg_freedom % 1 === 0 ? deg_freedom : Math.trunc(deg_freedom);
+      return jStat.studentt.inv(probability, deg_freedom);
+    },
+    "T.INV.2T": (probability, deg_freedom) => {
+      probability = H2.accept(probability, Types.NUMBER);
+      deg_freedom = H2.accept(deg_freedom, Types.NUMBER);
+      if (probability <= 0 || probability > 1 || deg_freedom < 1) {
+        throw FormulaError.NUM;
+      }
+      deg_freedom = deg_freedom % 1 === 0 ? deg_freedom : Math.trunc(deg_freedom);
+      return Math.abs(jStat.studentt.inv(probability / 2, deg_freedom));
+    },
+    "T.TEST": () => {
+    },
+    TREND: () => {
+    },
+    TRIMMEAN: () => {
+    },
+    "VAR.P": () => {
+    },
+    "VAR.S": () => {
+    },
+    "VARA": () => {
+    },
+    "VARPA": () => {
+    },
+    "WEIBULL.DIST": (x2, alpha2, beta, cumulative) => {
+      x2 = H2.accept(x2, Types.NUMBER);
+      alpha2 = H2.accept(alpha2, Types.NUMBER);
+      beta = H2.accept(beta, Types.NUMBER);
+      cumulative = H2.accept(cumulative, Types.BOOLEAN);
+      if (x2 < 0 || alpha2 <= 0 || beta <= 0) {
+        throw FormulaError.NUM;
+      }
+      return cumulative ? 1 - Math.exp(-Math.pow(x2 / beta, alpha2)) : Math.pow(x2, alpha2 - 1) * Math.exp(-Math.pow(x2 / beta, alpha2)) * alpha2 / Math.pow(beta, alpha2);
+    },
+    "Z.TEST": () => {
+    }
+  };
+  distribution = {
+    DistributionFunctions
+  };
+  return distribution;
+}
+var statistical;
+var hasRequiredStatistical;
+function requireStatistical() {
+  if (hasRequiredStatistical) return statistical;
+  hasRequiredStatistical = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types, Criteria, Address } = requireHelpers();
+  const { Infix } = requireOperators();
+  const H2 = FormulaHelpers;
+  const { DistributionFunctions } = requireDistribution();
+  const StatisticalFunctions = {
+    AVEDEV: (...numbers) => {
+      let sum = 0;
+      const arr2 = [];
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        if (typeof item === "number") {
+          sum += item;
+          arr2.push(item);
+        }
+      });
+      const avg = sum / arr2.length;
+      sum = 0;
+      for (let i = 0; i < arr2.length; i++) {
+        sum += Math.abs(arr2[i] - avg);
+      }
+      return sum / arr2.length;
+    },
+    AVERAGE: (...numbers) => {
+      let sum = 0, cnt = 0;
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        if (typeof item === "number") {
+          sum += item;
+          cnt++;
+        }
+      });
+      return sum / cnt;
+    },
+    AVERAGEA: (...numbers) => {
+      let sum = 0, cnt = 0;
+      H2.flattenParams(numbers, Types.NUMBER, true, (item, info) => {
+        const type = typeof item;
+        if (type === "number") {
+          sum += item;
+          cnt++;
+        } else if (type === "string") {
+          cnt++;
+        }
+      });
+      return sum / cnt;
+    },
+    // special
+    AVERAGEIF: (context2, range2, criteria, averageRange) => {
+      const ranges = H2.retrieveRanges(context2, range2, averageRange);
+      range2 = ranges[0];
+      averageRange = ranges[1];
+      criteria = H2.retrieveArg(context2, criteria);
+      const isCriteriaArray = criteria.isArray;
+      criteria = Criteria.parse(H2.accept(criteria));
+      let sum = 0, cnt = 0;
+      range2.forEach((row, rowNum) => {
+        row.forEach((value, colNum) => {
+          const valueToAdd = averageRange[rowNum][colNum];
+          if (typeof valueToAdd !== "number")
+            return;
+          if (criteria.op === "wc") {
+            if (criteria.match === criteria.value.test(value)) {
+              sum += valueToAdd;
+              cnt++;
+            }
+          } else if (Infix.compareOp(value, criteria.op, criteria.value, Array.isArray(value), isCriteriaArray)) {
+            sum += valueToAdd;
+            cnt++;
+          }
+        });
+      });
+      if (cnt === 0) throw FormulaError.DIV0;
+      return sum / cnt;
+    },
+    AVERAGEIFS: () => {
+    },
+    COUNT: (...ranges) => {
+      let cnt = 0;
+      H2.flattenParams(
+        ranges,
+        null,
+        true,
+        (item, info) => {
+          if (info.isLiteral && !isNaN(item)) {
+            cnt++;
+          } else {
+            if (typeof item === "number")
+              cnt++;
+          }
+        }
+      );
+      return cnt;
+    },
+    COUNTIF: (range2, criteria) => {
+      range2 = H2.accept(range2, Types.ARRAY, void 0, false, true);
+      const isCriteriaArray = criteria.isArray;
+      criteria = H2.accept(criteria);
+      let cnt = 0;
+      criteria = Criteria.parse(criteria);
+      range2.forEach((row) => {
+        row.forEach((value) => {
+          if (criteria.op === "wc") {
+            if (criteria.match === criteria.value.test(value))
+              cnt++;
+          } else if (Infix.compareOp(value, criteria.op, criteria.value, Array.isArray(value), isCriteriaArray)) {
+            cnt++;
+          }
+        });
+      });
+      return cnt;
+    },
+    LARGE: () => {
+    },
+    MAX: () => {
+    },
+    MAXA: () => {
+    },
+    MAXIFS: () => {
+    },
+    MEDIAN: () => {
+    },
+    MIN: () => {
+    },
+    MINA: () => {
+    },
+    MINIFS: () => {
+    },
+    PERMUT: () => {
+    },
+    PERMUTATIONA: () => {
+    },
+    SMALL: () => {
+    }
+  };
+  statistical = Object.assign(StatisticalFunctions, DistributionFunctions);
+  return statistical;
+}
+var date;
+var hasRequiredDate;
+function requireDate() {
+  if (hasRequiredDate) return date;
+  hasRequiredDate = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const MS_PER_DAY = 1e3 * 60 * 60 * 24;
+  const d1900 = new Date(Date.UTC(1900, 0, 1));
+  const WEEK_STARTS = [
+    void 0,
+    0,
+    1,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    0
+  ];
+  const WEEK_TYPES = [
+    void 0,
+    [1, 2, 3, 4, 5, 6, 7],
+    [7, 1, 2, 3, 4, 5, 6],
+    [6, 0, 1, 2, 3, 4, 5],
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    void 0,
+    [7, 1, 2, 3, 4, 5, 6],
+    [6, 7, 1, 2, 3, 4, 5],
+    [5, 6, 7, 1, 2, 3, 4],
+    [4, 5, 6, 7, 1, 2, 3],
+    [3, 4, 5, 6, 7, 1, 2],
+    [2, 3, 4, 5, 6, 7, 1],
+    [1, 2, 3, 4, 5, 6, 7]
+  ];
+  const WEEKEND_TYPES = [
+    void 0,
+    [6, 0],
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4],
+    [4, 5],
+    [5, 6],
+    void 0,
+    void 0,
+    void 0,
+    [0],
+    [1],
+    [2],
+    [3],
+    [4],
+    [5],
+    [6]
+  ];
+  const timeRegex = /^\s*(\d\d?)\s*(:\s*\d\d?)?\s*(:\s*\d\d?)?\s*(pm|am)?\s*$/i;
+  const dateRegex1 = /^\s*((\d\d?)\s*([-\/])\s*(\d\d?))([\d:.apm\s]*)$/i;
+  const dateRegex2 = /^\s*((\d\d?)\s*([-/])\s*(jan\w*|feb\w*|mar\w*|apr\w*|may\w*|jun\w*|jul\w*|aug\w*|sep\w*|oct\w*|nov\w*|dec\w*))([\d:.apm\s]*)$/i;
+  const dateRegex3 = /^\s*((jan\w*|feb\w*|mar\w*|apr\w*|may\w*|jun\w*|jul\w*|aug\w*|sep\w*|oct\w*|nov\w*|dec\w*)\s*([-/])\s*(\d\d?))([\d:.apm\s]*)$/i;
+  function parseSimplifiedDate(text2) {
+    const fmt1 = text2.match(dateRegex1);
+    const fmt2 = text2.match(dateRegex2);
+    const fmt3 = text2.match(dateRegex3);
+    if (fmt1) {
+      text2 = fmt1[1] + fmt1[3] + (/* @__PURE__ */ new Date()).getFullYear() + fmt1[5];
+    } else if (fmt2) {
+      text2 = fmt2[1] + fmt2[3] + (/* @__PURE__ */ new Date()).getFullYear() + fmt2[5];
+    } else if (fmt3) {
+      text2 = fmt3[1] + fmt3[3] + (/* @__PURE__ */ new Date()).getFullYear() + fmt3[5];
+    }
+    return new Date(Date.parse(`${text2} UTC`));
+  }
+  function parseTime(text2) {
+    const res = text2.match(timeRegex);
+    if (!res) return;
+    const minutes = res[2] ? res[2] : ":00";
+    const seconds = res[3] ? res[3] : ":00";
+    const ampm = res[4] ? " " + res[4] : "";
+    const date2 = new Date(Date.parse(`1/1/1900 ${res[1] + minutes + seconds + ampm} UTC`));
+    let now = /* @__PURE__ */ new Date();
+    now = new Date(Date.UTC(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+      now.getMilliseconds()
+    ));
+    return new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      date2.getUTCHours(),
+      date2.getUTCMinutes(),
+      date2.getUTCSeconds(),
+      date2.getUTCMilliseconds()
+    ));
+  }
+  function toSerial(date2) {
+    const addOn = date2 > -22038912e5 ? 2 : 1;
+    return Math.floor((date2 - d1900) / 864e5) + addOn;
+  }
+  function toDate(serial) {
+    if (serial < 0) {
+      throw FormulaError.VALUE;
+    }
+    if (serial <= 60) {
+      return new Date(d1900.getTime() + (serial - 1) * 864e5);
+    }
+    return new Date(d1900.getTime() + (serial - 2) * 864e5);
+  }
+  function parseDateWithExtra(serialOrString) {
+    if (serialOrString instanceof Date) return { date: serialOrString };
+    serialOrString = H2.accept(serialOrString);
+    let isDateGiven = true, date2;
+    if (!isNaN(serialOrString)) {
+      serialOrString = Number(serialOrString);
+      date2 = toDate(serialOrString);
+    } else {
+      date2 = parseTime(serialOrString);
+      if (!date2) {
+        date2 = parseSimplifiedDate(serialOrString);
+      } else {
+        isDateGiven = false;
+      }
+    }
+    return { date: date2, isDateGiven };
+  }
+  function parseDate(serialOrString) {
+    return parseDateWithExtra(serialOrString).date;
+  }
+  function compareDateIgnoreTime(date1, date2) {
+    return date1.getUTCFullYear() === date2.getUTCFullYear() && date1.getUTCMonth() === date2.getUTCMonth() && date1.getUTCDate() === date2.getUTCDate();
+  }
+  function isLeapYear(year) {
+    if (year === 1900) {
+      return true;
+    }
+    return new Date(year, 1, 29).getMonth() === 1;
+  }
+  const DateFunctions = {
+    DATE: (year, month, day) => {
+      year = H2.accept(year, Types.NUMBER);
+      month = H2.accept(month, Types.NUMBER);
+      day = H2.accept(day, Types.NUMBER);
+      if (year < 0 || year >= 1e4)
+        throw FormulaError.NUM;
+      if (year < 1900) {
+        year += 1900;
+      }
+      return toSerial(Date.UTC(year, month - 1, day));
+    },
+    DATEDIF: (startDate, endDate, unit) => {
+      startDate = parseDate(startDate);
+      endDate = parseDate(endDate);
+      unit = H2.accept(unit, Types.STRING).toLowerCase();
+      if (startDate > endDate)
+        throw FormulaError.NUM;
+      const yearDiff = endDate.getUTCFullYear() - startDate.getUTCFullYear();
+      const monthDiff = endDate.getUTCMonth() - startDate.getUTCMonth();
+      const dayDiff = endDate.getUTCDate() - startDate.getUTCDate();
+      let offset2;
+      switch (unit) {
+        case "y":
+          offset2 = monthDiff < 0 || monthDiff === 0 && dayDiff < 0 ? -1 : 0;
+          return offset2 + yearDiff;
+        case "m":
+          offset2 = dayDiff < 0 ? -1 : 0;
+          return yearDiff * 12 + monthDiff + offset2;
+        case "d":
+          return Math.floor(endDate - startDate) / MS_PER_DAY;
+        case "md":
+          startDate.setUTCFullYear(endDate.getUTCFullYear());
+          if (dayDiff < 0) {
+            startDate.setUTCMonth(endDate.getUTCMonth() - 1);
+          } else {
+            startDate.setUTCMonth(endDate.getUTCMonth());
+          }
+          return Math.floor(endDate - startDate) / MS_PER_DAY;
+        case "ym":
+          offset2 = dayDiff < 0 ? -1 : 0;
+          return (offset2 + yearDiff * 12 + monthDiff) % 12;
+        case "yd":
+          if (monthDiff < 0 || monthDiff === 0 && dayDiff < 0) {
+            startDate.setUTCFullYear(endDate.getUTCFullYear() - 1);
+          } else {
+            startDate.setUTCFullYear(endDate.getUTCFullYear());
+          }
+          return Math.floor(endDate - startDate) / MS_PER_DAY;
+      }
+    },
+    /**
+     * Limitation: Year must be four digit, only support ISO 8016 date format.
+     * Does not support date without year, i.e. "5-JUL".
+     * @param {string} dateText
+     */
+    DATEVALUE: (dateText) => {
+      dateText = H2.accept(dateText, Types.STRING);
+      const { date: date2, isDateGiven } = parseDateWithExtra(dateText);
+      if (!isDateGiven) return 0;
+      const serial = toSerial(date2);
+      if (serial < 0 || serial > 2958465)
+        throw FormulaError.VALUE;
+      return serial;
+    },
+    DAY: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      return date2.getUTCDate();
+    },
+    DAYS: (endDate, startDate) => {
+      endDate = parseDate(endDate);
+      startDate = parseDate(startDate);
+      let offset2 = 0;
+      if (startDate < -22038912e5 && -22038912e5 < endDate) {
+        offset2 = 1;
+      }
+      return Math.floor(endDate - startDate) / MS_PER_DAY + offset2;
+    },
+    DAYS360: (startDate, endDate, method) => {
+      startDate = parseDate(startDate);
+      endDate = parseDate(endDate);
+      method = H2.accept(method, Types.BOOLEAN, false);
+      if (startDate.getUTCDate() === 31) {
+        startDate.setUTCDate(30);
+      }
+      if (!method && startDate.getUTCDate() < 30 && endDate.getUTCDate() > 30) {
+        endDate.setUTCMonth(endDate.getUTCMonth() + 1, 1);
+      } else {
+        if (endDate.getUTCDate() === 31) {
+          endDate.setUTCDate(30);
+        }
+      }
+      const yearDiff = endDate.getUTCFullYear() - startDate.getUTCFullYear();
+      const monthDiff = endDate.getUTCMonth() - startDate.getUTCMonth();
+      const dayDiff = endDate.getUTCDate() - startDate.getUTCDate();
+      return monthDiff * 30 + dayDiff + yearDiff * 12 * 30;
+    },
+    EDATE: (startDate, months) => {
+      startDate = parseDate(startDate);
+      months = H2.accept(months, Types.NUMBER);
+      startDate.setUTCMonth(startDate.getUTCMonth() + months);
+      return toSerial(startDate);
+    },
+    EOMONTH: (startDate, months) => {
+      startDate = parseDate(startDate);
+      months = H2.accept(months, Types.NUMBER);
+      startDate.setUTCMonth(startDate.getUTCMonth() + months + 1, 0);
+      return toSerial(startDate);
+    },
+    HOUR: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      return date2.getUTCHours();
+    },
+    ISOWEEKNUM: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      const d = new Date(Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate()));
+      const dayNum = d.getUTCDay();
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil(((d - yearStart) / 864e5 + 1) / 7);
+    },
+    MINUTE: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      return date2.getUTCMinutes();
+    },
+    MONTH: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      return date2.getUTCMonth() + 1;
+    },
+    NETWORKDAYS: (startDate, endDate, holidays) => {
+      startDate = parseDate(startDate);
+      endDate = parseDate(endDate);
+      let sign = 1;
+      if (startDate > endDate) {
+        sign = -1;
+        const temp = startDate;
+        startDate = endDate;
+        endDate = temp;
+      }
+      const holidaysArr = [];
+      if (holidays != null) {
+        H2.flattenParams([holidays], Types.NUMBER, false, (item) => {
+          holidaysArr.push(parseDate(item));
+        });
+      }
+      let numWorkDays = 0;
+      while (startDate <= endDate) {
+        if (startDate.getUTCDay() !== 0 && startDate.getUTCDay() !== 6) {
+          let found = false;
+          for (let i = 0; i < holidaysArr.length; i++) {
+            if (compareDateIgnoreTime(startDate, holidaysArr[i])) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) numWorkDays++;
+        }
+        startDate.setUTCDate(startDate.getUTCDate() + 1);
+      }
+      return sign * numWorkDays;
+    },
+    "NETWORKDAYS.INTL": (startDate, endDate, weekend, holidays) => {
+      startDate = parseDate(startDate);
+      endDate = parseDate(endDate);
+      let sign = 1;
+      if (startDate > endDate) {
+        sign = -1;
+        const temp = startDate;
+        startDate = endDate;
+        endDate = temp;
+      }
+      weekend = H2.accept(weekend, null, 1);
+      if (weekend === "1111111")
+        return 0;
+      if (typeof weekend === "string" && Number(weekend).toString() !== weekend) {
+        if (weekend.length !== 7) throw FormulaError.VALUE;
+        weekend = weekend.charAt(6) + weekend.slice(0, 6);
+        const weekendArr = [];
+        for (let i = 0; i < weekend.length; i++) {
+          if (weekend.charAt(i) === "1")
+            weekendArr.push(i);
+        }
+        weekend = weekendArr;
+      } else {
+        if (typeof weekend !== "number")
+          throw FormulaError.VALUE;
+        weekend = WEEKEND_TYPES[weekend];
+      }
+      const holidaysArr = [];
+      if (holidays != null) {
+        H2.flattenParams([holidays], Types.NUMBER, false, (item) => {
+          holidaysArr.push(parseDate(item));
+        });
+      }
+      let numWorkDays = 0;
+      while (startDate <= endDate) {
+        let skip = false;
+        for (let i = 0; i < weekend.length; i++) {
+          if (weekend[i] === startDate.getUTCDay()) {
+            skip = true;
+            break;
+          }
+        }
+        if (!skip) {
+          let found = false;
+          for (let i = 0; i < holidaysArr.length; i++) {
+            if (compareDateIgnoreTime(startDate, holidaysArr[i])) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) numWorkDays++;
+        }
+        startDate.setUTCDate(startDate.getUTCDate() + 1);
+      }
+      return sign * numWorkDays;
+    },
+    NOW: () => {
+      const now = /* @__PURE__ */ new Date();
+      return toSerial(Date.UTC(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds(),
+        now.getMilliseconds()
+      )) + (3600 * now.getHours() + 60 * now.getMinutes() + now.getSeconds()) / 86400;
+    },
+    SECOND: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      return date2.getUTCSeconds();
+    },
+    TIME: (hour, minute, second) => {
+      hour = H2.accept(hour, Types.NUMBER);
+      minute = H2.accept(minute, Types.NUMBER);
+      second = H2.accept(second, Types.NUMBER);
+      if (hour < 0 || hour > 32767 || minute < 0 || minute > 32767 || second < 0 || second > 32767)
+        throw FormulaError.NUM;
+      return (3600 * hour + 60 * minute + second) / 86400;
+    },
+    TIMEVALUE: (timeText) => {
+      timeText = parseDate(timeText);
+      return (3600 * timeText.getUTCHours() + 60 * timeText.getUTCMinutes() + timeText.getUTCSeconds()) / 86400;
+    },
+    TODAY: () => {
+      const now = /* @__PURE__ */ new Date();
+      return toSerial(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    },
+    WEEKDAY: (serialOrString, returnType) => {
+      const date2 = parseDate(serialOrString);
+      returnType = H2.accept(returnType, Types.NUMBER, 1);
+      const day = date2.getUTCDay();
+      const weekTypes = WEEK_TYPES[returnType];
+      if (!weekTypes)
+        throw FormulaError.NUM;
+      return weekTypes[day];
+    },
+    WEEKNUM: (serialOrString, returnType) => {
+      const date2 = parseDate(serialOrString);
+      returnType = H2.accept(returnType, Types.NUMBER, 1);
+      if (returnType === 21) {
+        return DateFunctions.ISOWEEKNUM(serialOrString);
+      }
+      const weekStart = WEEK_STARTS[returnType];
+      const yearStart = new Date(Date.UTC(date2.getUTCFullYear(), 0, 1));
+      const offset2 = yearStart.getUTCDay() < weekStart ? 1 : 0;
+      return Math.ceil(((date2 - yearStart) / 864e5 + 1) / 7) + offset2;
+    },
+    WORKDAY: (startDate, days, holidays) => {
+      return DateFunctions["WORKDAY.INTL"](startDate, days, 1, holidays);
+    },
+    "WORKDAY.INTL": (startDate, days, weekend, holidays) => {
+      startDate = parseDate(startDate);
+      days = H2.accept(days, Types.NUMBER);
+      weekend = H2.accept(weekend, null, 1);
+      if (weekend === "1111111")
+        throw FormulaError.VALUE;
+      if (typeof weekend === "string" && Number(weekend).toString() !== weekend) {
+        if (weekend.length !== 7)
+          throw FormulaError.VALUE;
+        weekend = weekend.charAt(6) + weekend.slice(0, 6);
+        const weekendArr = [];
+        for (let i = 0; i < weekend.length; i++) {
+          if (weekend.charAt(i) === "1")
+            weekendArr.push(i);
+        }
+        weekend = weekendArr;
+      } else {
+        if (typeof weekend !== "number")
+          throw FormulaError.VALUE;
+        weekend = WEEKEND_TYPES[weekend];
+        if (weekend == null)
+          throw FormulaError.NUM;
+      }
+      const holidaysArr = [];
+      if (holidays != null) {
+        H2.flattenParams([holidays], Types.NUMBER, false, (item) => {
+          holidaysArr.push(parseDate(item));
+        });
+      }
+      startDate.setUTCDate(startDate.getUTCDate() + 1);
+      let cnt = 0;
+      while (cnt < days) {
+        let skip = false;
+        for (let i = 0; i < weekend.length; i++) {
+          if (weekend[i] === startDate.getUTCDay()) {
+            skip = true;
+            break;
+          }
+        }
+        if (!skip) {
+          let found = false;
+          for (let i = 0; i < holidaysArr.length; i++) {
+            if (compareDateIgnoreTime(startDate, holidaysArr[i])) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) cnt++;
+        }
+        startDate.setUTCDate(startDate.getUTCDate() + 1);
+      }
+      return toSerial(startDate) - 1;
+    },
+    YEAR: (serialOrString) => {
+      const date2 = parseDate(serialOrString);
+      return date2.getUTCFullYear();
+    },
+    // Warning: may have bugs
+    YEARFRAC: (startDate, endDate, basis) => {
+      startDate = parseDate(startDate);
+      endDate = parseDate(endDate);
+      if (startDate > endDate) {
+        const temp = startDate;
+        startDate = endDate;
+        endDate = temp;
+      }
+      basis = H2.accept(basis, Types.NUMBER, 0);
+      basis = Math.trunc(basis);
+      if (basis < 0 || basis > 4)
+        throw FormulaError.VALUE;
+      let sd = startDate.getUTCDate();
+      const sm = startDate.getUTCMonth() + 1;
+      const sy = startDate.getUTCFullYear();
+      let ed = endDate.getUTCDate();
+      const em = endDate.getUTCMonth() + 1;
+      const ey = endDate.getUTCFullYear();
+      switch (basis) {
+        case 0:
+          if (sd === 31 && ed === 31) {
+            sd = 30;
+            ed = 30;
+          } else if (sd === 31) {
+            sd = 30;
+          } else if (sd === 30 && ed === 31) {
+            ed = 30;
+          }
+          return Math.abs(ed + em * 30 + ey * 360 - (sd + sm * 30 + sy * 360)) / 360;
+        case 1:
+          if (ey - sy < 2) {
+            const yLength = isLeapYear(sy) && sy !== 1900 ? 366 : 365;
+            const days = DateFunctions.DAYS(endDate, startDate);
+            return days / yLength;
+          } else {
+            const years = ey - sy + 1;
+            const days = (new Date(ey + 1, 0, 1) - new Date(sy, 0, 1)) / 1e3 / 60 / 60 / 24;
+            const average = days / years;
+            return DateFunctions.DAYS(endDate, startDate) / average;
+          }
+        case 2:
+          return Math.abs(DateFunctions.DAYS(endDate, startDate) / 360);
+        case 3:
+          return Math.abs(DateFunctions.DAYS(endDate, startDate) / 365);
+        case 4:
+          return Math.abs(ed + em * 30 + ey * 360 - (sd + sm * 30 + sy * 360)) / 360;
+      }
+    }
+  };
+  date = DateFunctions;
+  return date;
+}
+var web;
+var hasRequiredWeb;
+function requireWeb() {
+  if (hasRequiredWeb) return web;
+  hasRequiredWeb = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types } = requireHelpers();
+  const H2 = FormulaHelpers;
+  const WebFunctions = {
+    ENCODEURL: (text2) => {
+      return encodeURIComponent(H2.accept(text2, Types.STRING));
+    },
+    FILTERXML: () => {
+    },
+    WEBSERVICE: (context2, url) => {
+      throw FormulaError.ERROR("WEBSERVICE is not supported in sync mode.");
+    }
+  };
+  web = WebFunctions;
+  return web;
+}
+var lexing;
+var hasRequiredLexing;
+function requireLexing() {
+  if (hasRequiredLexing) return lexing;
+  hasRequiredLexing = 1;
+  const { createToken, Lexer } = require$$0;
+  const FormulaError = requireError();
+  const tokenVocabulary = {};
+  const WhiteSpace = createToken({
+    name: "WhiteSpace",
+    pattern: /\s+/,
+    group: Lexer.SKIPPED
+  });
+  const String2 = createToken({
+    name: "String",
+    pattern: /"(""|[^"])*"/
+  });
+  const SingleQuotedString = createToken({
+    name: "SingleQuotedString",
+    pattern: /'(''|[^'])*'/
+  });
+  const SheetQuoted = createToken({
+    name: "SheetQuoted",
+    pattern: /'((?![\\\/\[\]*?:]).)+?'!/
+  });
+  const Function = createToken({
+    name: "Function",
+    pattern: /[A-Za-z_]+[A-Za-z_0-9.]*\(/
+  });
+  const FormulaErrorT = createToken({
+    name: "FormulaErrorT",
+    pattern: /#NULL!|#DIV\/0!|#VALUE!|#NAME\?|#NUM!|#N\/A/
+  });
+  const RefError = createToken({
+    name: "RefError",
+    pattern: /#REF!/
+  });
+  const Name = createToken({
+    name: "Name",
+    pattern: /[a-zA-Z_][a-zA-Z0-9_.?]*/
+    // longer_alt: RangeColumn // e.g. A:AA
+  });
+  const Sheet = createToken({
+    name: "Sheet",
+    pattern: /[A-Za-z_.\d\u007F-\uFFFF]+!/
+  });
+  const Cell2 = createToken({
+    name: "Cell",
+    pattern: /[$]?[A-Za-z]{1,3}[$]?[1-9][0-9]*/,
+    longer_alt: Name
+  });
+  const Number2 = createToken({
+    name: "Number",
+    pattern: /[0-9]+[.]?[0-9]*([eE][+\-][0-9]+)?/
+  });
+  const Boolean2 = createToken({
+    name: "Boolean",
+    pattern: /TRUE|FALSE/i
+  });
+  const Column = createToken({
+    name: "Column",
+    pattern: /[$]?[A-Za-z]{1,3}/,
+    longer_alt: Name
+  });
+  const At = createToken({
+    name: "At",
+    pattern: /@/
+  });
+  const Comma = createToken({
+    name: "Comma",
+    pattern: /,/
+  });
+  const Colon = createToken({
+    name: "Colon",
+    pattern: /:/
+  });
+  const Semicolon = createToken({
+    name: "Semicolon",
+    pattern: /;/
+  });
+  const OpenParen = createToken({
+    name: "OpenParen",
+    pattern: /\(/
+  });
+  const CloseParen = createToken({
+    name: "CloseParen",
+    pattern: /\)/
+  });
+  const OpenSquareParen = createToken({
+    name: "OpenSquareParen",
+    pattern: /\[/
+  });
+  const CloseSquareParen = createToken({
+    name: "CloseSquareParen",
+    pattern: /]/
+  });
+  createToken({
+    name: "exclamationMark",
+    pattern: /!/
+  });
+  const OpenCurlyParen = createToken({
+    name: "OpenCurlyParen",
+    pattern: /{/
+  });
+  const CloseCurlyParen = createToken({
+    name: "CloseCurlyParen",
+    pattern: /}/
+  });
+  const QuoteS = createToken({
+    name: "QuoteS",
+    pattern: /'/
+  });
+  const MulOp = createToken({
+    name: "MulOp",
+    pattern: /\*/
+  });
+  const PlusOp = createToken({
+    name: "PlusOp",
+    pattern: /\+/
+  });
+  const DivOp = createToken({
+    name: "DivOp",
+    pattern: /\//
+  });
+  const MinOp = createToken({
+    name: "MinOp",
+    pattern: /-/
+  });
+  const ConcatOp = createToken({
+    name: "ConcatOp",
+    pattern: /&/
+  });
+  const ExOp = createToken({
+    name: "ExOp",
+    pattern: /\^/
+  });
+  const PercentOp = createToken({
+    name: "PercentOp",
+    pattern: /%/
+  });
+  const GtOp = createToken({
+    name: "GtOp",
+    pattern: />/
+  });
+  const EqOp = createToken({
+    name: "EqOp",
+    pattern: /=/
+  });
+  const LtOp = createToken({
+    name: "LtOp",
+    pattern: /</
+  });
+  const NeqOp = createToken({
+    name: "NeqOp",
+    pattern: /<>/
+  });
+  const GteOp = createToken({
+    name: "GteOp",
+    pattern: />=/
+  });
+  const LteOp = createToken({
+    name: "LteOp",
+    pattern: /<=/
+  });
+  const allTokens = [
+    WhiteSpace,
+    String2,
+    SheetQuoted,
+    SingleQuotedString,
+    Function,
+    FormulaErrorT,
+    RefError,
+    Sheet,
+    Cell2,
+    Boolean2,
+    Column,
+    Name,
+    Number2,
+    At,
+    Comma,
+    Colon,
+    Semicolon,
+    OpenParen,
+    CloseParen,
+    OpenSquareParen,
+    CloseSquareParen,
+    // ExclamationMark,
+    OpenCurlyParen,
+    CloseCurlyParen,
+    QuoteS,
+    MulOp,
+    PlusOp,
+    DivOp,
+    MinOp,
+    ConcatOp,
+    ExOp,
+    MulOp,
+    PercentOp,
+    NeqOp,
+    GteOp,
+    LteOp,
+    GtOp,
+    EqOp,
+    LtOp
+  ];
+  const SelectLexer = new Lexer(allTokens, { ensureOptimizations: true });
+  allTokens.forEach((tokenType) => {
+    tokenVocabulary[tokenType.name] = tokenType;
+  });
+  lexing = {
+    tokenVocabulary,
+    lex: function(inputText) {
+      const lexingResult = SelectLexer.tokenize(inputText);
+      if (lexingResult.errors.length > 0) {
+        const error2 = lexingResult.errors[0];
+        const line2 = error2.line, column = error2.column;
+        let msg = "\n" + inputText.split("\n")[line2 - 1] + "\n";
+        msg += Array(column - 1).fill(" ").join("") + "^\n";
+        error2.message = msg + `Error at position ${line2}:${column}
+` + error2.message;
+        error2.errorLocation = { line: line2, column };
+        throw FormulaError.ERROR(error2.message, error2);
+      }
+      return lexingResult;
+    }
+  };
+  return lexing;
+}
+var parsing;
+var hasRequiredParsing;
+function requireParsing() {
+  if (hasRequiredParsing) return parsing;
+  hasRequiredParsing = 1;
+  const lexer = requireLexing();
+  const { EmbeddedActionsParser } = require$$0;
+  const tokenVocabulary = lexer.tokenVocabulary;
+  const {
+    String: String2,
+    SheetQuoted,
+    ExcelRefFunction,
+    ExcelConditionalRefFunction,
+    Function,
+    FormulaErrorT,
+    RefError,
+    Cell: Cell2,
+    Sheet,
+    Name,
+    Number: Number2,
+    Boolean: Boolean2,
+    Column,
+    // At,
+    Comma,
+    Colon,
+    Semicolon,
+    OpenParen,
+    CloseParen,
+    // OpenSquareParen,
+    // CloseSquareParen,
+    // ExclamationMark,
+    OpenCurlyParen,
+    CloseCurlyParen,
+    MulOp,
+    PlusOp,
+    DivOp,
+    MinOp,
+    ConcatOp,
+    ExOp,
+    PercentOp,
+    NeqOp,
+    GteOp,
+    LteOp,
+    GtOp,
+    EqOp,
+    LtOp
+  } = lexer.tokenVocabulary;
+  class Parsing extends EmbeddedActionsParser {
+    /**
+     *
+     * @param {FormulaParser|DepParser} context
+     * @param {Utils} utils
+     */
+    constructor(context2, utils2) {
+      super(tokenVocabulary, {
+        outputCst: false,
+        maxLookahead: 1,
+        skipValidations: true
+        // traceInitPerf: true,
+      });
+      this.utils = utils2;
+      this.binaryOperatorsPrecedence = [
+        ["^"],
+        ["*", "/"],
+        ["+", "-"],
+        ["&"],
+        ["<", ">", "=", "<>", "<=", ">="]
+      ];
+      const $ = this;
+      $.RULE("formulaWithBinaryOp", () => {
+        const infixes = [];
+        const values = [$.SUBRULE($.formulaWithPercentOp)];
+        $.MANY(() => {
+          infixes.push($.OR($.c1 || ($.c1 = [
+            { ALT: () => $.CONSUME(GtOp).image },
+            { ALT: () => $.CONSUME(EqOp).image },
+            { ALT: () => $.CONSUME(LtOp).image },
+            { ALT: () => $.CONSUME(NeqOp).image },
+            { ALT: () => $.CONSUME(GteOp).image },
+            { ALT: () => $.CONSUME(LteOp).image },
+            { ALT: () => $.CONSUME(ConcatOp).image },
+            { ALT: () => $.CONSUME(PlusOp).image },
+            { ALT: () => $.CONSUME(MinOp).image },
+            { ALT: () => $.CONSUME(MulOp).image },
+            { ALT: () => $.CONSUME(DivOp).image },
+            { ALT: () => $.CONSUME(ExOp).image }
+          ])));
+          values.push($.SUBRULE2($.formulaWithPercentOp));
+        });
+        $.ACTION(() => {
+          for (const ops of this.binaryOperatorsPrecedence) {
+            for (let index2 = 0, length = infixes.length; index2 < length; index2++) {
+              const infix = infixes[index2];
+              if (!ops.includes(infix)) continue;
+              infixes.splice(index2, 1);
+              values.splice(index2, 2, this.utils.applyInfix(values[index2], infix, values[index2 + 1]));
+              index2--;
+              length--;
+            }
+          }
+        });
+        return values[0];
+      });
+      $.RULE("plusMinusOp", () => $.OR([
+        { ALT: () => $.CONSUME(PlusOp).image },
+        { ALT: () => $.CONSUME(MinOp).image }
+      ]));
+      $.RULE("formulaWithPercentOp", () => {
+        let value = $.SUBRULE($.formulaWithUnaryOp);
+        $.OPTION(() => {
+          const postfix = $.CONSUME(PercentOp).image;
+          value = $.ACTION(() => this.utils.applyPostfix(value, postfix));
+        });
+        return value;
+      });
+      $.RULE("formulaWithUnaryOp", () => {
+        const prefixes = [];
+        $.MANY(() => {
+          const op = $.OR([
+            { ALT: () => $.CONSUME(PlusOp).image },
+            { ALT: () => $.CONSUME(MinOp).image }
+          ]);
+          prefixes.push(op);
+        });
+        const formula = $.SUBRULE($.formulaWithIntersect);
+        if (prefixes.length > 0) return $.ACTION(() => this.utils.applyPrefix(prefixes, formula));
+        return formula;
+      });
+      $.RULE("formulaWithIntersect", () => {
+        let ref1 = $.SUBRULE($.formulaWithRange);
+        const refs = [ref1];
+        $.MANY({
+          GATE: () => {
+            const prevToken = $.LA(0);
+            const nextToken = $.LA(1);
+            return nextToken.startOffset > prevToken.endOffset + 1;
+          },
+          DEF: () => {
+            refs.push($.SUBRULE3($.formulaWithRange));
+          }
+        });
+        if (refs.length > 1) {
+          return $.ACTION(() => $.ACTION(() => this.utils.applyIntersect(refs)));
+        }
+        return ref1;
+      });
+      $.RULE("formulaWithRange", () => {
+        const ref1 = $.SUBRULE($.formula);
+        const refs = [ref1];
+        $.MANY(() => {
+          $.CONSUME(Colon);
+          refs.push($.SUBRULE2($.formula));
+        });
+        if (refs.length > 1)
+          return $.ACTION(() => $.ACTION(() => this.utils.applyRange(refs)));
+        return ref1;
+      });
+      $.RULE("formula", () => $.OR9([
+        { ALT: () => $.SUBRULE($.referenceWithoutInfix) },
+        { ALT: () => $.SUBRULE($.paren) },
+        { ALT: () => $.SUBRULE($.constant) },
+        { ALT: () => $.SUBRULE($.functionCall) },
+        { ALT: () => $.SUBRULE($.constantArray) }
+      ]));
+      $.RULE("paren", () => {
+        $.CONSUME(OpenParen);
+        let result;
+        const refs = [];
+        refs.push($.SUBRULE($.formulaWithBinaryOp));
+        $.MANY(() => {
+          $.CONSUME(Comma);
+          refs.push($.SUBRULE2($.formulaWithBinaryOp));
+        });
+        if (refs.length > 1)
+          result = $.ACTION(() => this.utils.applyUnion(refs));
+        else
+          result = refs[0];
+        $.CONSUME(CloseParen);
+        return result;
+      });
+      $.RULE("constantArray", () => {
+        const arr2 = [[]];
+        let currentRow = 0;
+        $.CONSUME(OpenCurlyParen);
+        arr2[currentRow].push($.SUBRULE($.constantForArray));
+        $.MANY(() => {
+          const sep = $.OR([
+            { ALT: () => $.CONSUME(Comma).image },
+            { ALT: () => $.CONSUME(Semicolon).image }
+          ]);
+          const constant = $.SUBRULE2($.constantForArray);
+          if (sep === ",") {
+            arr2[currentRow].push(constant);
+          } else {
+            currentRow++;
+            arr2[currentRow] = [];
+            arr2[currentRow].push(constant);
+          }
+        });
+        $.CONSUME(CloseCurlyParen);
+        return $.ACTION(() => this.utils.toArray(arr2));
+      });
+      $.RULE("constantForArray", () => $.OR([
+        {
+          ALT: () => {
+            const prefix2 = $.OPTION(() => $.SUBRULE($.plusMinusOp));
+            const image = $.CONSUME(Number2).image;
+            const number = $.ACTION(() => this.utils.toNumber(image));
+            if (prefix2)
+              return $.ACTION(() => this.utils.applyPrefix([prefix2], number));
+            return number;
+          }
+        },
+        {
+          ALT: () => {
+            const str = $.CONSUME(String2).image;
+            return $.ACTION(() => this.utils.toString(str));
+          }
+        },
+        {
+          ALT: () => {
+            const bool = $.CONSUME(Boolean2).image;
+            return $.ACTION(() => this.utils.toBoolean(bool));
+          }
+        },
+        {
+          ALT: () => {
+            const err = $.CONSUME(FormulaErrorT).image;
+            return $.ACTION(() => this.utils.toError(err));
+          }
+        },
+        {
+          ALT: () => {
+            const err = $.CONSUME(RefError).image;
+            return $.ACTION(() => this.utils.toError(err));
+          }
+        }
+      ]));
+      $.RULE("constant", () => $.OR([
+        {
+          ALT: () => {
+            const number = $.CONSUME(Number2).image;
+            return $.ACTION(() => this.utils.toNumber(number));
+          }
+        },
+        {
+          ALT: () => {
+            const str = $.CONSUME(String2).image;
+            return $.ACTION(() => this.utils.toString(str));
+          }
+        },
+        {
+          ALT: () => {
+            const bool = $.CONSUME(Boolean2).image;
+            return $.ACTION(() => this.utils.toBoolean(bool));
+          }
+        },
+        {
+          ALT: () => {
+            const err = $.CONSUME(FormulaErrorT).image;
+            return $.ACTION(() => this.utils.toError(err));
+          }
+        }
+      ]));
+      $.RULE("functionCall", () => {
+        const functionName2 = $.CONSUME(Function).image.slice(0, -1);
+        const args = $.SUBRULE($.arguments);
+        $.CONSUME(CloseParen);
+        return $.ACTION(() => context2.callFunction(functionName2, args));
+      });
+      $.RULE("arguments", () => {
+        $.MANY2(() => {
+          $.CONSUME2(Comma);
+        });
+        const args = [];
+        $.OPTION(() => {
+          args.push($.SUBRULE($.formulaWithBinaryOp));
+          $.MANY(() => {
+            $.CONSUME1(Comma);
+            args.push(null);
+            $.OPTION3(() => {
+              args.pop();
+              args.push($.SUBRULE2($.formulaWithBinaryOp));
+            });
+          });
+        });
+        return args;
+      });
+      $.RULE("referenceWithoutInfix", () => $.OR([
+        { ALT: () => $.SUBRULE($.referenceItem) },
+        {
+          // sheet name prefix
+          ALT: () => {
+            const sheetName = $.SUBRULE($.prefixName);
+            const referenceItem = $.SUBRULE2($.formulaWithRange);
+            $.ACTION(() => {
+              if (this.utils.isFormulaError(referenceItem))
+                return referenceItem;
+              referenceItem.ref.sheet = sheetName;
+            });
+            return referenceItem;
+          }
+        }
+        // {ALT: () => $.SUBRULE('dynamicDataExchange')},
+      ]));
+      $.RULE("referenceItem", () => $.OR([
+        {
+          ALT: () => {
+            const address = $.CONSUME(Cell2).image;
+            return $.ACTION(() => this.utils.parseCellAddress(address));
+          }
+        },
+        {
+          ALT: () => {
+            const name = $.CONSUME(Name).image;
+            return $.ACTION(() => context2.getVariable(name));
+          }
+        },
+        {
+          ALT: () => {
+            const column = $.CONSUME(Column).image;
+            return $.ACTION(() => this.utils.parseCol(column));
+          }
+        },
+        // A row check should be here, but the token is same with Number,
+        // In other to resolve ambiguities, I leave this empty, and
+        // parse the number to row number when needed.
+        {
+          ALT: () => {
+            const err = $.CONSUME(RefError).image;
+            return $.ACTION(() => this.utils.toError(err));
+          }
+        }
+        // {ALT: () => $.SUBRULE($.udfFunctionCall)},
+        // {ALT: () => $.SUBRULE($.structuredReference)},
+      ]));
+      $.RULE("prefixName", () => $.OR([
+        { ALT: () => $.CONSUME(Sheet).image.slice(0, -1) },
+        { ALT: () => $.CONSUME(SheetQuoted).image.slice(1, -2).replace(/''/g, "'") }
+      ]));
+      this.performSelfAnalysis();
+    }
+  }
+  parsing = {
+    Parser: Parsing
+  };
+  return parsing;
+}
+var utils$1;
+var hasRequiredUtils$1;
+function requireUtils$1() {
+  if (hasRequiredUtils$1) return utils$1;
+  hasRequiredUtils$1 = 1;
+  const FormulaError = requireError();
+  const { Address } = requireHelpers();
+  const { Prefix, Postfix, Infix, Operators } = requireOperators();
+  const Collection2 = requireCollection();
+  const MAX_ROW = 1048576, MAX_COLUMN = 16384;
+  const { NotAllInputParsedException } = require$$0;
+  class Utils {
+    constructor(context2) {
+      this.context = context2;
+    }
+    columnNameToNumber(columnName) {
+      return Address.columnNameToNumber(columnName);
+    }
+    /**
+     * Parse the cell address only.
+     * @param {string} cellAddress
+     * @return {{ref: {col: number, address: string, row: number}}}
+     */
+    parseCellAddress(cellAddress) {
+      const res = cellAddress.match(/([$]?)([A-Za-z]{1,3})([$]?)([1-9][0-9]*)/);
+      return {
+        ref: {
+          address: res[0],
+          col: this.columnNameToNumber(res[2]),
+          row: +res[4]
+        }
+      };
+    }
+    parseRow(row) {
+      const rowNum = +row;
+      if (!Number.isInteger(rowNum))
+        throw Error("Row number must be integer.");
+      return {
+        ref: {
+          col: void 0,
+          row: +row
+        }
+      };
+    }
+    parseCol(col) {
+      return {
+        ref: {
+          col: this.columnNameToNumber(col),
+          row: void 0
+        }
+      };
+    }
+    parseColRange(col1, col2) {
+      col1 = this.columnNameToNumber(col1);
+      col2 = this.columnNameToNumber(col2);
+      return {
+        ref: {
+          from: {
+            col: Math.min(col1, col2),
+            row: null
+          },
+          to: {
+            col: Math.max(col1, col2),
+            row: null
+          }
+        }
+      };
+    }
+    parseRowRange(row1, row2) {
+      return {
+        ref: {
+          from: {
+            col: null,
+            row: Math.min(row1, row2)
+          },
+          to: {
+            col: null,
+            row: Math.max(row1, row2)
+          }
+        }
+      };
+    }
+    _applyPrefix(prefixes, val, isArray) {
+      if (this.isFormulaError(val))
+        return val;
+      return Prefix.unaryOp(prefixes, val, isArray);
+    }
+    async applyPrefixAsync(prefixes, value) {
+      const { val, isArray } = this.extractRefValue(await value);
+      return this._applyPrefix(prefixes, val, isArray);
+    }
+    /**
+     * Apply + or - unary prefix.
+     * @param {Array.<string>} prefixes
+     * @param {*} value
+     * @return {*}
+     */
+    applyPrefix(prefixes, value) {
+      if (this.context.async) {
+        return this.applyPrefixAsync(prefixes, value);
+      } else {
+        const { val, isArray } = this.extractRefValue(value);
+        return this._applyPrefix(prefixes, val, isArray);
+      }
+    }
+    _applyPostfix(val, isArray, postfix) {
+      if (this.isFormulaError(val))
+        return val;
+      return Postfix.percentOp(val, postfix, isArray);
+    }
+    async applyPostfixAsync(value, postfix) {
+      const { val, isArray } = this.extractRefValue(await value);
+      return this._applyPostfix(val, isArray, postfix);
+    }
+    applyPostfix(value, postfix) {
+      if (this.context.async) {
+        return this.applyPostfixAsync(value, postfix);
+      } else {
+        const { val, isArray } = this.extractRefValue(value);
+        return this._applyPostfix(val, isArray, postfix);
+      }
+    }
+    _applyInfix(res1, infix, res2) {
+      const val1 = res1.val, isArray1 = res1.isArray;
+      const val2 = res2.val, isArray2 = res2.isArray;
+      if (this.isFormulaError(val1))
+        return val1;
+      if (this.isFormulaError(val2))
+        return val2;
+      if (Operators.compareOp.includes(infix))
+        return Infix.compareOp(val1, infix, val2, isArray1, isArray2);
+      else if (Operators.concatOp.includes(infix))
+        return Infix.concatOp(val1, infix, val2, isArray1, isArray2);
+      else if (Operators.mathOp.includes(infix))
+        return Infix.mathOp(val1, infix, val2, isArray1, isArray2);
+      else
+        throw new Error(`Unrecognized infix: ${infix}`);
+    }
+    async applyInfixAsync(value1, infix, value2) {
+      const res1 = this.extractRefValue(await value1);
+      const res2 = this.extractRefValue(await value2);
+      return this._applyInfix(res1, infix, res2);
+    }
+    applyInfix(value1, infix, value2) {
+      if (this.context.async) {
+        return this.applyInfixAsync(value1, infix, value2);
+      } else {
+        const res1 = this.extractRefValue(value1);
+        const res2 = this.extractRefValue(value2);
+        return this._applyInfix(res1, infix, res2);
+      }
+    }
+    applyIntersect(refs) {
+      if (this.isFormulaError(refs[0]))
+        return refs[0];
+      if (!refs[0].ref)
+        throw Error(`Expecting a reference, but got ${refs[0]}.`);
+      let maxRow, maxCol, minRow, minCol, sheet, res;
+      const ref2 = refs.shift().ref;
+      sheet = ref2.sheet;
+      if (!ref2.from) {
+        if (ref2.row === void 0 || ref2.col === void 0) {
+          throw Error("Cannot intersect the whole row or column.");
+        }
+        maxRow = minRow = ref2.row;
+        maxCol = minCol = ref2.col;
+      } else {
+        maxRow = Math.max(ref2.from.row, ref2.to.row);
+        minRow = Math.min(ref2.from.row, ref2.to.row);
+        maxCol = Math.max(ref2.from.col, ref2.to.col);
+        minCol = Math.min(ref2.from.col, ref2.to.col);
+      }
+      let err;
+      refs.forEach((ref3) => {
+        if (this.isFormulaError(ref3))
+          return ref3;
+        ref3 = ref3.ref;
+        if (!ref3) throw Error(`Expecting a reference, but got ${ref3}.`);
+        if (!ref3.from) {
+          if (ref3.row === void 0 || ref3.col === void 0) {
+            throw Error("Cannot intersect the whole row or column.");
+          }
+          if (ref3.row > maxRow || ref3.row < minRow || ref3.col > maxCol || ref3.col < minCol || sheet !== ref3.sheet) {
+            err = FormulaError.NULL;
+          }
+          maxRow = minRow = ref3.row;
+          maxCol = minCol = ref3.col;
+        } else {
+          const refMaxRow = Math.max(ref3.from.row, ref3.to.row);
+          const refMinRow = Math.min(ref3.from.row, ref3.to.row);
+          const refMaxCol = Math.max(ref3.from.col, ref3.to.col);
+          const refMinCol = Math.min(ref3.from.col, ref3.to.col);
+          if (refMinRow > maxRow || refMaxRow < minRow || refMinCol > maxCol || refMaxCol < minCol || sheet !== ref3.sheet) {
+            err = FormulaError.NULL;
+          }
+          maxRow = Math.min(maxRow, refMaxRow);
+          minRow = Math.max(minRow, refMinRow);
+          maxCol = Math.min(maxCol, refMaxCol);
+          minCol = Math.max(minCol, refMinCol);
+        }
+      });
+      if (err) return err;
+      if (maxRow === minRow && maxCol === minCol) {
+        res = {
+          ref: {
+            sheet,
+            row: maxRow,
+            col: maxCol
+          }
+        };
+      } else {
+        res = {
+          ref: {
+            sheet,
+            from: { row: minRow, col: minCol },
+            to: { row: maxRow, col: maxCol }
+          }
+        };
+      }
+      if (!res.ref.sheet)
+        delete res.ref.sheet;
+      return res;
+    }
+    applyUnion(refs) {
+      const collection2 = new Collection2();
+      for (let i = 0; i < refs.length; i++) {
+        if (this.isFormulaError(refs[i]))
+          return refs[i];
+        collection2.add(this.extractRefValue(refs[i]).val, refs[i]);
+      }
+      return collection2;
+    }
+    /**
+     * Apply multiple references, e.g. A1:B3:C8:A:1:.....
+     * @param refs
+     // * @return {{ref: {from: {col: number, row: number}, to: {col: number, row: number}}}}
+     */
+    applyRange(refs) {
+      let res, maxRow = -1, maxCol = -1, minRow = MAX_ROW + 1, minCol = MAX_COLUMN + 1;
+      refs.forEach((ref2) => {
+        if (this.isFormulaError(ref2))
+          return ref2;
+        if (typeof ref2 === "number") {
+          ref2 = this.parseRow(ref2);
+        }
+        ref2 = ref2.ref;
+        if (ref2.row === void 0) {
+          minRow = 1;
+          maxRow = MAX_ROW;
+        }
+        if (ref2.col === void 0) {
+          minCol = 1;
+          maxCol = MAX_COLUMN;
+        }
+        if (ref2.row > maxRow)
+          maxRow = ref2.row;
+        if (ref2.row < minRow)
+          minRow = ref2.row;
+        if (ref2.col > maxCol)
+          maxCol = ref2.col;
+        if (ref2.col < minCol)
+          minCol = ref2.col;
+      });
+      if (maxRow === minRow && maxCol === minCol) {
+        res = {
+          ref: {
+            row: maxRow,
+            col: maxCol
+          }
+        };
+      } else {
+        res = {
+          ref: {
+            from: { row: minRow, col: minCol },
+            to: { row: maxRow, col: maxCol }
+          }
+        };
+      }
+      return res;
+    }
+    /**
+     * Throw away the refs, and retrieve the value.
+     * @return {{val: *, isArray: boolean}}
+     */
+    extractRefValue(obj) {
+      let res = obj, isArray = false;
+      if (Array.isArray(res))
+        isArray = true;
+      if (obj.ref) {
+        return { val: this.context.retrieveRef(obj), isArray };
+      }
+      return { val: res, isArray };
+    }
+    /**
+     *
+     * @param array
+     * @return {Array}
+     */
+    toArray(array) {
+      return array;
+    }
+    /**
+     * @param {string} number
+     * @return {number}
+     */
+    toNumber(number) {
+      return Number(number);
+    }
+    /**
+     * @param {string} string
+     * @return {string}
+     */
+    toString(string) {
+      return string.substring(1, string.length - 1).replace(/""/g, '"');
+    }
+    /**
+     * @param {string} bool
+     * @return {boolean}
+     */
+    toBoolean(bool) {
+      return bool === "TRUE";
+    }
+    /**
+     * Parse an error.
+     * @param {string} error
+     * @return {string}
+     */
+    toError(error2) {
+      return new FormulaError(error2.toUpperCase());
+    }
+    isFormulaError(obj) {
+      return obj instanceof FormulaError;
+    }
+    static formatChevrotainError(error2, inputText) {
+      let line2, column, msg = "";
+      if (error2 instanceof NotAllInputParsedException) {
+        line2 = error2.token.startLine;
+        column = error2.token.startColumn;
+      } else {
+        line2 = error2.previousToken.startLine;
+        column = error2.previousToken.startColumn + 1;
+      }
+      msg += "\n" + inputText.split("\n")[line2 - 1] + "\n";
+      msg += Array(column - 1).fill(" ").join("") + "^\n";
+      msg += `Error at position ${line2}:${column}
+` + error2.message;
+      error2.errorLocation = { line: line2, column };
+      return FormulaError.ERROR(msg, error2);
+    }
+  }
+  utils$1 = Utils;
+  return utils$1;
+}
+var hooks$1;
+var hasRequiredHooks$1;
+function requireHooks$1() {
+  if (hasRequiredHooks$1) return hooks$1;
+  hasRequiredHooks$1 = 1;
+  const TextFunctions = requireText();
+  const MathFunctions = requireMath();
+  const TrigFunctions = requireTrigonometry();
+  const LogicalFunctions = requireLogical();
+  const EngFunctions = requireEngineering();
+  const ReferenceFunctions = requireReference();
+  const InformationFunctions = requireInformation();
+  const StatisticalFunctions = requireStatistical();
+  const DateFunctions = requireDate();
+  const WebFunctions = requireWeb();
+  const FormulaError = requireError();
+  const { FormulaHelpers } = requireHelpers();
+  const { Parser, allTokens } = requireParsing();
+  const lexer = requireLexing();
+  const Utils = requireUtils$1();
+  class FormulaParser2 {
+    /**
+     * @param {{functions: {}, functionsNeedContext: {}, onVariable: function, onCell: function, onRange: function}} [config]
+     * @param isTest - is in testing environment
+     */
+    constructor(config, isTest = false) {
+      this.logs = [];
+      this.isTest = isTest;
+      this.utils = new Utils(this);
+      config = Object.assign({
+        functions: {},
+        functionsNeedContext: {},
+        onVariable: () => null,
+        onCell: () => 0,
+        onRange: () => [[0]]
+      }, config);
+      this.onVariable = config.onVariable;
+      this.functions = Object.assign(
+        {},
+        DateFunctions,
+        StatisticalFunctions,
+        InformationFunctions,
+        ReferenceFunctions,
+        EngFunctions,
+        LogicalFunctions,
+        TextFunctions,
+        MathFunctions,
+        TrigFunctions,
+        WebFunctions,
+        config.functions,
+        config.functionsNeedContext
+      );
+      this.onRange = config.onRange;
+      this.onCell = config.onCell;
+      this.funsNullAs0 = Object.keys(MathFunctions).concat(Object.keys(TrigFunctions)).concat(Object.keys(LogicalFunctions)).concat(Object.keys(EngFunctions)).concat(Object.keys(ReferenceFunctions)).concat(Object.keys(StatisticalFunctions)).concat(Object.keys(DateFunctions));
+      this.funsNeedContextAndNoDataRetrieve = ["ROW", "ROWS", "COLUMN", "COLUMNS", "SUMIF", "INDEX", "AVERAGEIF", "IF"];
+      this.funsNeedContext = [
+        ...Object.keys(config.functionsNeedContext),
+        ...this.funsNeedContextAndNoDataRetrieve,
+        "INDEX",
+        "OFFSET",
+        "INDIRECT",
+        "IF",
+        "CHOOSE",
+        "WEBSERVICE"
+      ];
+      this.funsPreserveRef = Object.keys(InformationFunctions);
+      this.parser = new Parser(this, this.utils);
+    }
+    /**
+     * Get all lexing token names. Webpack needs this.
+     * @return {Array.<string>} - All token names that should not be minimized.
+     */
+    static get allTokens() {
+      return allTokens;
+    }
+    /**
+     * Get value from the cell reference
+     * @param ref
+     * @return {*}
+     */
+    getCell(ref2) {
+      if (ref2.sheet == null)
+        ref2.sheet = this.position ? this.position.sheet : void 0;
+      return this.onCell(ref2);
+    }
+    /**
+     * Get values from the range reference.
+     * @param ref
+     * @return {*}
+     */
+    getRange(ref2) {
+      if (ref2.sheet == null)
+        ref2.sheet = this.position ? this.position.sheet : void 0;
+      return this.onRange(ref2);
+    }
+    /**
+     * TODO:
+     * Get references or values from a user defined variable.
+     * @param name
+     * @return {*}
+     */
+    getVariable(name) {
+      const res = { ref: this.onVariable(name, this.position.sheet, this.position) };
+      if (res.ref == null)
+        return FormulaError.NAME;
+      return res;
+    }
+    /**
+     * Retrieve values from the given reference.
+     * @param valueOrRef
+     * @return {*}
+     */
+    retrieveRef(valueOrRef) {
+      if (FormulaHelpers.isRangeRef(valueOrRef)) {
+        return this.getRange(valueOrRef.ref);
+      }
+      if (FormulaHelpers.isCellRef(valueOrRef)) {
+        return this.getCell(valueOrRef.ref);
+      }
+      return valueOrRef;
+    }
+    /**
+     * Call an excel function.
+     * @param name - Function name.
+     * @param args - Arguments that pass to the function.
+     * @return {*}
+     */
+    _callFunction(name, args) {
+      if (name.indexOf("_xlfn.") === 0)
+        name = name.slice(6);
+      name = name.toUpperCase();
+      const nullValue = this.funsNullAs0.includes(name) ? 0 : "";
+      if (!this.funsNeedContextAndNoDataRetrieve.includes(name)) {
+        args = args.map((arg) => {
+          if (arg === null)
+            return { value: nullValue, isArray: false, omitted: true };
+          const res = this.utils.extractRefValue(arg);
+          if (this.funsPreserveRef.includes(name)) {
+            return { value: res.val, isArray: res.isArray, ref: arg.ref };
+          }
+          return {
+            value: res.val,
+            isArray: res.isArray,
+            isRangeRef: !!FormulaHelpers.isRangeRef(arg),
+            isCellRef: !!FormulaHelpers.isCellRef(arg)
+          };
+        });
+      }
+      if (this.functions[name]) {
+        let res;
+        try {
+          if (!this.funsNeedContextAndNoDataRetrieve.includes(name) && !this.funsNeedContext.includes(name))
+            res = this.functions[name](...args);
+          else
+            res = this.functions[name](this, ...args);
+        } catch (e) {
+          if (e instanceof FormulaError) {
+            return e;
+          } else {
+            throw e;
+          }
+        }
+        if (res === void 0) {
+          if (this.isTest) {
+            if (!this.logs.includes(name)) this.logs.push(name);
+            return { value: 0, ref: {} };
+          }
+          throw FormulaError.NOT_IMPLEMENTED(name);
+        }
+        return res;
+      } else {
+        if (this.isTest) {
+          if (!this.logs.includes(name)) this.logs.push(name);
+          return { value: 0, ref: {} };
+        }
+        throw FormulaError.NOT_IMPLEMENTED(name);
+      }
+    }
+    async callFunctionAsync(name, args) {
+      const awaitedArgs = [];
+      for (const arg of args) {
+        awaitedArgs.push(await arg);
+      }
+      const res = await this._callFunction(name, awaitedArgs);
+      return FormulaHelpers.checkFunctionResult(res);
+    }
+    callFunction(name, args) {
+      if (this.async) {
+        return this.callFunctionAsync(name, args);
+      } else {
+        const res = this._callFunction(name, args);
+        return FormulaHelpers.checkFunctionResult(res);
+      }
+    }
+    /**
+     * Return currently supported functions.
+     * @return {this}
+     */
+    supportedFunctions() {
+      const supported = [];
+      const functions = Object.keys(this.functions);
+      functions.forEach((fun) => {
+        try {
+          const res = this.functions[fun](0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+          if (res === void 0) return;
+          supported.push(fun);
+        } catch (e) {
+          if (e instanceof Error)
+            supported.push(fun);
+        }
+      });
+      return supported.sort();
+    }
+    /**
+     * Check and return the appropriate formula result.
+     * @param result
+     * @param {boolean} [allowReturnArray] - If the formula can return an array
+     * @return {*}
+     */
+    checkFormulaResult(result, allowReturnArray = false) {
+      const type = typeof result;
+      if (type === "number") {
+        if (isNaN(result)) {
+          return FormulaError.VALUE;
+        } else if (!isFinite(result)) {
+          return FormulaError.NUM;
+        }
+        result += 0;
+      } else if (type === "object") {
+        if (result instanceof FormulaError)
+          return result;
+        if (allowReturnArray) {
+          if (result.ref) {
+            result = this.retrieveRef(result);
+          }
+          if (typeof result === "object" && !Array.isArray(result) && result != null) {
+            return FormulaError.VALUE;
+          }
+        } else {
+          if (result.ref && result.ref.row && !result.ref.from) {
+            result = this.retrieveRef(result);
+          } else if (result.ref && result.ref.from && result.ref.from.col === result.ref.to.col) {
+            result = this.retrieveRef({
+              ref: {
+                row: result.ref.from.row,
+                col: result.ref.from.col
+              }
+            });
+          } else if (Array.isArray(result)) {
+            result = result[0][0];
+          } else {
+            return FormulaError.VALUE;
+          }
+        }
+      }
+      return result;
+    }
+    /**
+     * Parse an excel formula.
+     * @param {string} inputText
+     * @param {{row: number, col: number}} [position] - The position of the parsed formula
+     *              e.g. {row: 1, col: 1}
+     * @param {boolean} [allowReturnArray] - If the formula can return an array. Useful when parsing array formulas,
+     *                                      or data validation formulas.
+     * @returns {*}
+     */
+    parse(inputText, position2, allowReturnArray = false) {
+      if (inputText.length === 0) throw Error("Input must not be empty.");
+      this.position = position2;
+      this.async = false;
+      const lexResult = lexer.lex(inputText);
+      this.parser.input = lexResult.tokens;
+      let res;
+      try {
+        res = this.parser.formulaWithBinaryOp();
+        res = this.checkFormulaResult(res, allowReturnArray);
+        if (res instanceof FormulaError) {
+          return res;
+        }
+      } catch (e) {
+        throw FormulaError.ERROR(e.message, e);
+      }
+      if (this.parser.errors.length > 0) {
+        const error2 = this.parser.errors[0];
+        throw Utils.formatChevrotainError(error2, inputText);
+      }
+      return res;
+    }
+    /**
+     * Parse an excel formula asynchronously.
+     * Use when providing custom async functions.
+     * @param {string} inputText
+     * @param {{row: number, col: number}} [position] - The position of the parsed formula
+     *              e.g. {row: 1, col: 1}
+     * @param {boolean} [allowReturnArray] - If the formula can return an array. Useful when parsing array formulas,
+     *                                      or data validation formulas.
+     * @returns {*}
+     */
+    async parseAsync(inputText, position2, allowReturnArray = false) {
+      if (inputText.length === 0) throw Error("Input must not be empty.");
+      this.position = position2;
+      this.async = true;
+      const lexResult = lexer.lex(inputText);
+      this.parser.input = lexResult.tokens;
+      let res;
+      try {
+        res = await this.parser.formulaWithBinaryOp();
+        res = this.checkFormulaResult(res, allowReturnArray);
+        if (res instanceof FormulaError) {
+          return res;
+        }
+      } catch (e) {
+        throw FormulaError.ERROR(e.message, e);
+      }
+      if (this.parser.errors.length > 0) {
+        const error2 = this.parser.errors[0];
+        throw Utils.formatChevrotainError(error2, inputText);
+      }
+      return res;
+    }
+  }
+  hooks$1 = {
+    FormulaParser: FormulaParser2,
+    FormulaHelpers
+  };
+  return hooks$1;
+}
+var utils;
+var hasRequiredUtils;
+function requireUtils() {
+  if (hasRequiredUtils) return utils;
+  hasRequiredUtils = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers, Types, Address } = requireHelpers();
+  const { Prefix, Postfix, Infix, Operators } = requireOperators();
+  const Collection2 = requireCollection();
+  const MAX_ROW = 1048576, MAX_COLUMN = 16384;
+  class Utils {
+    constructor(context2) {
+      this.context = context2;
+    }
+    columnNameToNumber(columnName) {
+      return Address.columnNameToNumber(columnName);
+    }
+    /**
+     * Parse the cell address only.
+     * @param {string} cellAddress
+     * @return {{ref: {col: number, address: string, row: number}}}
+     */
+    parseCellAddress(cellAddress) {
+      const res = cellAddress.match(/([$]?)([A-Za-z]{1,3})([$]?)([1-9][0-9]*)/);
+      return {
+        ref: {
+          col: this.columnNameToNumber(res[2]),
+          row: +res[4]
+        }
+      };
+    }
+    parseRow(row) {
+      const rowNum = +row;
+      if (!Number.isInteger(rowNum))
+        throw Error("Row number must be integer.");
+      return {
+        ref: {
+          col: void 0,
+          row: +row
+        }
+      };
+    }
+    parseCol(col) {
+      return {
+        ref: {
+          col: this.columnNameToNumber(col),
+          row: void 0
+        }
+      };
+    }
+    /**
+     * Apply + or - unary prefix.
+     * @param {Array.<string>} prefixes
+     * @param {*} value
+     * @return {*}
+     */
+    applyPrefix(prefixes, value) {
+      this.extractRefValue(value);
+      return 0;
+    }
+    applyPostfix(value, postfix) {
+      this.extractRefValue(value);
+      return 0;
+    }
+    applyInfix(value1, infix, value2) {
+      this.extractRefValue(value1);
+      this.extractRefValue(value2);
+      return 0;
+    }
+    applyIntersect(refs) {
+      if (this.isFormulaError(refs[0]))
+        return refs[0];
+      if (!refs[0].ref)
+        throw Error(`Expecting a reference, but got ${refs[0]}.`);
+      let maxRow, maxCol, minRow, minCol, sheet, res;
+      const ref2 = refs.shift().ref;
+      sheet = ref2.sheet;
+      if (!ref2.from) {
+        if (ref2.row === void 0 || ref2.col === void 0) {
+          throw Error("Cannot intersect the whole row or column.");
+        }
+        maxRow = minRow = ref2.row;
+        maxCol = minCol = ref2.col;
+      } else {
+        maxRow = Math.max(ref2.from.row, ref2.to.row);
+        minRow = Math.min(ref2.from.row, ref2.to.row);
+        maxCol = Math.max(ref2.from.col, ref2.to.col);
+        minCol = Math.min(ref2.from.col, ref2.to.col);
+      }
+      let err;
+      refs.forEach((ref3) => {
+        if (this.isFormulaError(ref3))
+          return ref3;
+        ref3 = ref3.ref;
+        if (!ref3) throw Error(`Expecting a reference, but got ${ref3}.`);
+        if (!ref3.from) {
+          if (ref3.row === void 0 || ref3.col === void 0) {
+            throw Error("Cannot intersect the whole row or column.");
+          }
+          if (ref3.row > maxRow || ref3.row < minRow || ref3.col > maxCol || ref3.col < minCol || sheet !== ref3.sheet) {
+            err = FormulaError.NULL;
+          }
+          maxRow = minRow = ref3.row;
+          maxCol = minCol = ref3.col;
+        } else {
+          const refMaxRow = Math.max(ref3.from.row, ref3.to.row);
+          const refMinRow = Math.min(ref3.from.row, ref3.to.row);
+          const refMaxCol = Math.max(ref3.from.col, ref3.to.col);
+          const refMinCol = Math.min(ref3.from.col, ref3.to.col);
+          if (refMinRow > maxRow || refMaxRow < minRow || refMinCol > maxCol || refMaxCol < minCol || sheet !== ref3.sheet) {
+            err = FormulaError.NULL;
+          }
+          maxRow = Math.min(maxRow, refMaxRow);
+          minRow = Math.max(minRow, refMinRow);
+          maxCol = Math.min(maxCol, refMaxCol);
+          minCol = Math.max(minCol, refMinCol);
+        }
+      });
+      if (err) return err;
+      if (maxRow === minRow && maxCol === minCol) {
+        res = {
+          ref: {
+            sheet,
+            row: maxRow,
+            col: maxCol
+          }
+        };
+      } else {
+        res = {
+          ref: {
+            sheet,
+            from: { row: minRow, col: minCol },
+            to: { row: maxRow, col: maxCol }
+          }
+        };
+      }
+      if (!res.ref.sheet)
+        delete res.ref.sheet;
+      return res;
+    }
+    applyUnion(refs) {
+      const collection2 = new Collection2();
+      for (let i = 0; i < refs.length; i++) {
+        if (this.isFormulaError(refs[i]))
+          return refs[i];
+        collection2.add(this.extractRefValue(refs[i]).val, refs[i]);
+      }
+      return collection2;
+    }
+    /**
+     * Apply multiple references, e.g. A1:B3:C8:A:1:.....
+     * @param refs
+     // * @return {{ref: {from: {col: number, row: number}, to: {col: number, row: number}}}}
+     */
+    applyRange(refs) {
+      let res, maxRow = -1, maxCol = -1, minRow = MAX_ROW + 1, minCol = MAX_COLUMN + 1;
+      refs.forEach((ref2) => {
+        if (this.isFormulaError(ref2))
+          return ref2;
+        if (typeof ref2 === "number") {
+          ref2 = this.parseRow(ref2);
+        }
+        ref2 = ref2.ref;
+        if (ref2.row === void 0) {
+          minRow = 1;
+          maxRow = MAX_ROW;
+        }
+        if (ref2.col === void 0) {
+          minCol = 1;
+          maxCol = MAX_COLUMN;
+        }
+        if (ref2.row > maxRow)
+          maxRow = ref2.row;
+        if (ref2.row < minRow)
+          minRow = ref2.row;
+        if (ref2.col > maxCol)
+          maxCol = ref2.col;
+        if (ref2.col < minCol)
+          minCol = ref2.col;
+      });
+      if (maxRow === minRow && maxCol === minCol) {
+        res = {
+          ref: {
+            row: maxRow,
+            col: maxCol
+          }
+        };
+      } else {
+        res = {
+          ref: {
+            from: { row: minRow, col: minCol },
+            to: { row: maxRow, col: maxCol }
+          }
+        };
+      }
+      return res;
+    }
+    /**
+     * Throw away the refs, and retrieve the value.
+     * @return {{val: *, isArray: boolean}}
+     */
+    extractRefValue(obj) {
+      const isArray = Array.isArray(obj);
+      if (obj.ref) {
+        return { val: this.context.retrieveRef(obj), isArray };
+      }
+      return { val: obj, isArray };
+    }
+    /**
+     *
+     * @param array
+     * @return {Array}
+     */
+    toArray(array) {
+      return array;
+    }
+    /**
+     * @param {string} number
+     * @return {number}
+     */
+    toNumber(number) {
+      return Number(number);
+    }
+    /**
+     * @param {string} string
+     * @return {string}
+     */
+    toString(string) {
+      return string.substring(1, string.length - 1).replace(/""/g, '"');
+    }
+    /**
+     * @param {string} bool
+     * @return {boolean}
+     */
+    toBoolean(bool) {
+      return bool === "TRUE";
+    }
+    /**
+     * Parse an error.
+     * @param {string} error
+     * @return {FormulaError}
+     */
+    toError(error2) {
+      return new FormulaError(error2.toUpperCase());
+    }
+    isFormulaError(obj) {
+      return obj instanceof FormulaError;
+    }
+  }
+  utils = Utils;
+  return utils;
+}
+var hooks;
+var hasRequiredHooks;
+function requireHooks() {
+  if (hasRequiredHooks) return hooks;
+  hasRequiredHooks = 1;
+  const FormulaError = requireError();
+  const { FormulaHelpers } = requireHelpers();
+  const { Parser } = requireParsing();
+  const lexer = requireLexing();
+  const Utils = requireUtils();
+  const { formatChevrotainError } = requireUtils$1();
+  class DepParser {
+    /**
+     *
+     * @param {{onVariable: Function}} [config]
+     */
+    constructor(config) {
+      this.data = [];
+      this.utils = new Utils(this);
+      config = Object.assign({
+        onVariable: () => null
+      }, config);
+      this.utils = new Utils(this);
+      this.onVariable = config.onVariable;
+      this.functions = {};
+      this.parser = new Parser(this, this.utils);
+    }
+    /**
+     * Get value from the cell reference
+     * @param ref
+     * @return {*}
+     */
+    getCell(ref2) {
+      if (ref2.row != null) {
+        if (ref2.sheet == null)
+          ref2.sheet = this.position ? this.position.sheet : void 0;
+        const idx = this.data.findIndex((element) => {
+          return element.from && element.from.row <= ref2.row && element.to.row >= ref2.row && element.from.col <= ref2.col && element.to.col >= ref2.col || element.row === ref2.row && element.col === ref2.col && element.sheet === ref2.sheet;
+        });
+        if (idx === -1)
+          this.data.push(ref2);
+      }
+      return 0;
+    }
+    /**
+     * Get values from the range reference.
+     * @param ref
+     * @return {*}
+     */
+    getRange(ref2) {
+      if (ref2.from.row != null) {
+        if (ref2.sheet == null)
+          ref2.sheet = this.position ? this.position.sheet : void 0;
+        const idx = this.data.findIndex((element) => {
+          return element.from && element.from.row === ref2.from.row && element.from.col === ref2.from.col && element.to.row === ref2.to.row && element.to.col === ref2.to.col;
+        });
+        if (idx === -1)
+          this.data.push(ref2);
+      }
+      return [[0]];
+    }
+    /**
+     * TODO:
+     * Get references or values from a user defined variable.
+     * @param name
+     * @return {*}
+     */
+    getVariable(name) {
+      const res = { ref: this.onVariable(name, this.position.sheet) };
+      if (res.ref == null)
+        return FormulaError.NAME;
+      if (FormulaHelpers.isCellRef(res))
+        this.getCell(res.ref);
+      else {
+        this.getRange(res.ref);
+      }
+      return 0;
+    }
+    /**
+     * Retrieve values from the given reference.
+     * @param valueOrRef
+     * @return {*}
+     */
+    retrieveRef(valueOrRef) {
+      if (FormulaHelpers.isRangeRef(valueOrRef)) {
+        return this.getRange(valueOrRef.ref);
+      }
+      if (FormulaHelpers.isCellRef(valueOrRef)) {
+        return this.getCell(valueOrRef.ref);
+      }
+      return valueOrRef;
+    }
+    /**
+     * Call an excel function.
+     * @param name - Function name.
+     * @param args - Arguments that pass to the function.
+     * @return {*}
+     */
+    callFunction(name, args) {
+      args.forEach((arg) => {
+        if (arg == null)
+          return;
+        this.retrieveRef(arg);
+      });
+      return { value: 0, ref: {} };
+    }
+    /**
+     * Check and return the appropriate formula result.
+     * @param result
+     * @return {*}
+     */
+    checkFormulaResult(result) {
+      this.retrieveRef(result);
+    }
+    /**
+     * Parse an excel formula and return the dependencies
+     * @param {string} inputText
+     * @param {{row: number, col: number, sheet: string}} position
+     * @param {boolean} [ignoreError=false] if true, throw FormulaError when error occurred.
+     *                                      if false, the parser will return partial dependencies.
+     * @returns {Array.<{}>}
+     */
+    parse(inputText, position2, ignoreError = false) {
+      if (inputText.length === 0) throw Error("Input must not be empty.");
+      this.data = [];
+      this.position = position2;
+      const lexResult = lexer.lex(inputText);
+      this.parser.input = lexResult.tokens;
+      try {
+        const res = this.parser.formulaWithBinaryOp();
+        this.checkFormulaResult(res);
+      } catch (e) {
+        if (!ignoreError) {
+          throw FormulaError.ERROR(e.message, e);
+        }
+      }
+      if (this.parser.errors.length > 0 && !ignoreError) {
+        const error2 = this.parser.errors[0];
+        throw formatChevrotainError(error2, inputText);
+      }
+      return this.data;
+    }
+  }
+  hooks = {
+    DepParser
+  };
+  return hooks;
+}
+var fastFormulaParser;
+var hasRequiredFastFormulaParser;
+function requireFastFormulaParser() {
+  if (hasRequiredFastFormulaParser) return fastFormulaParser;
+  hasRequiredFastFormulaParser = 1;
+  const { FormulaParser: FormulaParser2 } = requireHooks$1();
+  const { DepParser } = requireHooks();
+  const SSF = requireSsf();
+  const FormulaError = requireError();
+  Object.assign(FormulaParser2, {
+    MAX_ROW: 1048576,
+    MAX_COLUMN: 16384,
+    SSF,
+    DepParser,
+    FormulaError,
+    ...requireHelpers()
+  });
+  fastFormulaParser = FormulaParser2;
+  return fastFormulaParser;
+}
+var fastFormulaParserExports = requireFastFormulaParser();
+const FormulaParser = /* @__PURE__ */ getDefaultExportFromCjs(fastFormulaParserExports);
 const CONTEXT_VALUE = /* @__PURE__ */ Symbol();
 const ORIGINAL_PROVIDER = /* @__PURE__ */ Symbol();
 const isSSR = typeof window === "undefined" || /ServerSideRendering/.test(window.navigator && window.navigator.userAgent);
@@ -41083,15 +48366,15 @@ function createFormulaParser(data, config) {
     });
   } }));
 }
-var depParser = new DepParser();
+var depParser = new fastFormulaParserExports.DepParser();
 function getReferences(formula, point, data) {
   var _a2 = getSize(data), rows = _a2.rows, columns = _a2.columns;
   try {
     var dependencies = depParser.parse(formula, convertPointToCellRef(point));
-    var references = PointSet.from(dependencies.flatMap(function(reference) {
-      var isRange = "from" in reference;
+    var references = PointSet.from(dependencies.flatMap(function(reference2) {
+      var isRange = "from" in reference2;
       if (isRange) {
-        var from2 = reference.from, to2 = reference.to;
+        var from2 = reference2.from, to2 = reference2.to;
         var normalizedFrom = {
           row: from2.row - 1,
           column: from2.col - 1
@@ -41103,11 +48386,11 @@ function getReferences(formula, point, data) {
         var range2 = new PointRange(normalizedFrom, normalizedTo);
         return Array.from(range2);
       }
-      return { row: reference.row - 1, column: reference.col - 1 };
+      return { row: reference2.row - 1, column: reference2.col - 1 };
     }));
     return references;
   } catch (error2) {
-    if (error2 instanceof FormulaError) {
+    if (error2 instanceof fastFormulaParserExports.FormulaError) {
       return PointSet.from([]);
     } else {
       throw error2;
@@ -41118,9 +48401,9 @@ function evaluate(formula, point, formulaParser) {
   try {
     var position2 = convertPointToCellRef(point);
     var returned = formulaParser.parse(formula, position2);
-    return returned instanceof FormulaError ? returned.toString() : returned;
+    return returned instanceof fastFormulaParserExports.FormulaError ? returned.toString() : returned;
   } catch (error2) {
-    if (error2 instanceof FormulaError) {
+    if (error2 instanceof fastFormulaParserExports.FormulaError) {
       return error2.toString();
     }
     throw error2;
@@ -41433,7 +48716,7 @@ function evaluateCell(prevEvaluatedData, data, referenceGraph, point, cell, form
   var e_1, _a2, e_2, _b2;
   if (referenceGraph.hasCircularDependency(point)) {
     var visited = PointSet.from([point]);
-    var nextEvaluatedData_1 = set(point, __assign(__assign({}, cell), { value: FormulaError.REF }), prevEvaluatedData);
+    var nextEvaluatedData_1 = set(point, __assign(__assign({}, cell), { value: fastFormulaParserExports.FormulaError.REF }), prevEvaluatedData);
     try {
       for (var _c = __values(referenceGraph.getBackwardsRecursive(point)), _d = _c.next(); !_d.done; _d = _c.next()) {
         var referrer = _d.value;
@@ -41445,7 +48728,7 @@ function evaluateCell(prevEvaluatedData, data, referenceGraph, point, cell, form
         if (!referrerCell) {
           continue;
         }
-        nextEvaluatedData_1 = set(referrer, __assign(__assign({}, referrerCell), { value: FormulaError.REF }), nextEvaluatedData_1);
+        nextEvaluatedData_1 = set(referrer, __assign(__assign({}, referrerCell), { value: fastFormulaParserExports.FormulaError.REF }), nextEvaluatedData_1);
       }
     } catch (e_1_1) {
       e_1 = { error: e_1_1 };
@@ -41539,7 +48822,7 @@ function getFormulaComputedValue(value, point, formulaParser) {
   try {
     return evaluate(formula, point, formulaParser);
   } catch (e) {
-    return FormulaError.REF;
+    return fastFormulaParserExports.FormulaError.REF;
   }
 }
 var INITIAL_STATE = {
@@ -41621,12 +48904,12 @@ function reducer(state, action) {
       return __assign(__assign({}, state), { copied: selectedRange, cut: action.type === CUT, hasPasted: false });
     }
     case PASTE: {
-      var text = action.payload.data;
+      var text2 = action.payload.data;
       var active = state.active;
       if (!active) {
         return state;
       }
-      var copied = split(text, function(value) {
+      var copied = split(text2, function(value) {
         return { value };
       });
       var copiedSize = getSize(copied);
@@ -42515,8 +49798,8 @@ var Spreadsheet = function(props, ref2) {
       event.preventDefault();
       event.stopPropagation();
       if (event.clipboardData) {
-        var text = readTextFromClipboard(event);
-        paste$1(text);
+        var text2 = readTextFromClipboard(event);
+        paste$1(text2);
       }
     }
   }, [mode, paste$1]);
@@ -45253,7 +52536,7 @@ function tokenize(formula) {
 }
 function toRpn(tokens) {
   const output = [];
-  const operators = [];
+  const operators2 = [];
   for (let index2 = 0; index2 < tokens.length; index2 += 1) {
     const token = tokens[index2];
     const previous = index2 > 0 ? tokens[index2 - 1] : null;
@@ -45262,14 +52545,14 @@ function toRpn(tokens) {
       continue;
     }
     if (token === "(") {
-      operators.push(token);
+      operators2.push(token);
       continue;
     }
     if (token === ")") {
-      while (operators.length > 0 && operators[operators.length - 1] !== "(") {
-        output.push(operators.pop());
+      while (operators2.length > 0 && operators2[operators2.length - 1] !== "(") {
+        output.push(operators2.pop());
       }
-      if (operators.pop() !== "(") {
+      if (operators2.pop() !== "(") {
         throw new Error("Mismatched parentheses in formula");
       }
       continue;
@@ -45277,8 +52560,8 @@ function toRpn(tokens) {
     if (token === "+" || token === "-" || token === "*" || token === "/") {
       const isUnaryMinus = token === "-" && (previous === null || previous === "(" || OPERATORS.has(previous));
       const operator = isUnaryMinus ? "u-" : token;
-      while (operators.length > 0) {
-        const top = operators[operators.length - 1];
+      while (operators2.length > 0) {
+        const top = operators2[operators2.length - 1];
         if (!OPERATORS.has(top)) {
           break;
         }
@@ -45287,15 +52570,15 @@ function toRpn(tokens) {
         if (!lowerPrecedence && !samePrecedenceLeftAssoc) {
           break;
         }
-        output.push(operators.pop());
+        output.push(operators2.pop());
       }
-      operators.push(operator);
+      operators2.push(operator);
       continue;
     }
     throw new Error(`Unsupported token: ${token}`);
   }
-  while (operators.length > 0) {
-    const operator = operators.pop();
+  while (operators2.length > 0) {
+    const operator = operators2.pop();
     if (operator === "(" || operator === ")") {
       throw new Error("Mismatched parentheses in formula");
     }
@@ -45735,7 +53018,7 @@ function PeerCritiqueForm({ activity, className = "", onSubmit }) {
     );
     setSubmitted(false);
   }, [categories]);
-  const allComplete = Object.values(ratings).every((rating) => rating > 0) && Object.values(comments).every((text) => text.trim().length > 0);
+  const allComplete = Object.values(ratings).every((rating) => rating > 0) && Object.values(comments).every((text2) => text2.trim().length > 0);
   const handleSubmit = () => {
     if (!allComplete) return;
     onSubmit?.({
@@ -45874,7 +53157,7 @@ function PeerCritiqueForm({ activity, className = "", onSubmit }) {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between pt-4 text-sm text-muted-foreground", children: [
         /* @__PURE__ */ jsxs("span", { children: [
-          Object.values(comments).filter((text) => text.trim().length > 0).length,
+          Object.values(comments).filter((text2) => text2.trim().length > 0).length,
           "/",
           categories.length,
           " comments filled"
@@ -47587,13 +54870,13 @@ function GrowthPuzzle({ activity, onComplete }) {
   }, [selections, options, totalProfit]);
   const stats = useMemo$1(() => {
     let reinvestment = 0;
-    let distribution = 0;
+    let distribution2 = 0;
     selections.forEach((id) => {
       const option = options.find((o) => o.id === id);
       if (option?.type === "reinvestment") reinvestment += option.amount;
-      else if (option?.type === "distribution") distribution += option.amount;
+      else if (option?.type === "distribution") distribution2 += option.amount;
     });
-    return { reinvestment, distribution };
+    return { reinvestment, distribution: distribution2 };
   }, [selections, options]);
   const handleToggleOption = (id) => {
     if (selections.includes(id)) {

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { pgTable, timestamp, jsonb, text, uuid, pgEnum, boolean, integer, check, unique, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql, relations, eq, count, and, asc, inArray } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { createClient as createClient$1 } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { clsx } from "clsx";
@@ -15832,6 +15832,32 @@ function getSSRFontStyles() {
 function getSSRFontPreloads() {
   return [...ssrFontPreloads];
 }
+async function getServerSessionClaims() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  if (!token) return null;
+  return verifySessionToken(token, getAuthJwtSecret());
+}
+function getCookieValueFromHeader(cookieHeader, key) {
+  if (!cookieHeader) return null;
+  const entries = cookieHeader.split(";");
+  for (const entry of entries) {
+    const trimmed = entry.trim();
+    if (!trimmed) continue;
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex <= 0) continue;
+    const name = trimmed.slice(0, separatorIndex).trim();
+    if (name !== key) continue;
+    return decodeURIComponent(trimmed.slice(separatorIndex + 1));
+  }
+  return null;
+}
+async function getRequestSessionClaims(request) {
+  const token = getCookieValueFromHeader(request.headers.get("cookie"), SESSION_COOKIE_NAME);
+  if (!token) return null;
+  return verifySessionToken(token, getAuthJwtSecret());
+}
+const version = "1.32.0";
 var lookup = [];
 var revLookup = [];
 var Arr = Uint8Array;
@@ -16244,111 +16270,6 @@ class ConvexError extends (_b = Error, _a = IDENTIFYING_FIELD, _b) {
 const arr = () => Array.from({ length: 4 }, () => 0);
 arr();
 arr();
-const version = "1.32.0";
-const functionName = /* @__PURE__ */ Symbol.for("functionName");
-const toReferencePath = /* @__PURE__ */ Symbol.for("toReferencePath");
-function extractReferencePath(reference) {
-  return reference[toReferencePath] ?? null;
-}
-function isFunctionHandle(s) {
-  return s.startsWith("function://");
-}
-function getFunctionAddress(functionReference) {
-  let functionAddress;
-  if (typeof functionReference === "string") {
-    if (isFunctionHandle(functionReference)) {
-      functionAddress = { functionHandle: functionReference };
-    } else {
-      functionAddress = { name: functionReference };
-    }
-  } else if (functionReference[functionName]) {
-    functionAddress = { name: functionReference[functionName] };
-  } else {
-    const referencePath = extractReferencePath(functionReference);
-    if (!referencePath) {
-      throw new Error(`${functionReference} is not a functionReference`);
-    }
-    functionAddress = { reference: referencePath };
-  }
-  return functionAddress;
-}
-function getFunctionName(functionReference) {
-  const address = getFunctionAddress(functionReference);
-  if (address.name === void 0) {
-    if (address.functionHandle !== void 0) {
-      throw new Error(
-        `Expected function reference like "api.file.func" or "internal.file.func", but received function handle ${address.functionHandle}`
-      );
-    } else if (address.reference !== void 0) {
-      throw new Error(
-        `Expected function reference in the current component like "api.file.func" or "internal.file.func", but received reference ${address.reference}`
-      );
-    }
-    throw new Error(
-      `Expected function reference like "api.file.func" or "internal.file.func", but received ${JSON.stringify(address)}`
-    );
-  }
-  if (typeof functionReference === "string") return functionReference;
-  const name = functionReference[functionName];
-  if (!name) {
-    throw new Error(`${functionReference} is not a functionReference`);
-  }
-  return name;
-}
-function createApi(pathParts = []) {
-  const handler2 = {
-    get(_, prop) {
-      if (typeof prop === "string") {
-        const newParts = [...pathParts, prop];
-        return createApi(newParts);
-      } else if (prop === functionName) {
-        if (pathParts.length < 2) {
-          const found = ["api", ...pathParts].join(".");
-          throw new Error(
-            `API path is expected to be of the form \`api.moduleName.functionName\`. Found: \`${found}\``
-          );
-        }
-        const path = pathParts.slice(0, -1).join("/");
-        const exportName = pathParts[pathParts.length - 1];
-        if (exportName === "default") {
-          return path;
-        } else {
-          return path + ":" + exportName;
-        }
-      } else if (prop === Symbol.toStringTag) {
-        return "FunctionReference";
-      } else {
-        return void 0;
-      }
-    }
-  };
-  return new Proxy({}, handler2);
-}
-const anyApi = createApi();
-function createChildComponents(root, pathParts) {
-  const handler2 = {
-    get(_, prop) {
-      if (typeof prop === "string") {
-        const newParts = [...pathParts, prop];
-        return createChildComponents(root, newParts);
-      } else if (prop === toReferencePath) {
-        if (pathParts.length < 1) {
-          const found = [root, ...pathParts].join(".");
-          throw new Error(
-            `API path is expected to be of the form \`${root}.childComponent.functionName\`. Found: \`${found}\``
-          );
-        }
-        return `_reference/childComponent/` + pathParts.join("/");
-      } else {
-        return void 0;
-      }
-    }
-  };
-  return new Proxy({}, handler2);
-}
-const componentsGeneric = () => createChildComponents("components", []);
-const api = anyApi;
-componentsGeneric();
 var __defProp$1 = Object.defineProperty;
 var __defNormalProp$1 = (obj, key, value) => key in obj ? __defProp$1(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField$1 = (obj, key, value) => __defNormalProp$1(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -16452,6 +16373,86 @@ function logForFunction(logger, type, source, udfPath, message) {
     logger.log(`%c[CONVEX ${prefix}(${udfPath})] [${level}]`, INFO_COLOR, args);
   }
 }
+const functionName = /* @__PURE__ */ Symbol.for("functionName");
+const toReferencePath = /* @__PURE__ */ Symbol.for("toReferencePath");
+function extractReferencePath(reference) {
+  return reference[toReferencePath] ?? null;
+}
+function isFunctionHandle(s) {
+  return s.startsWith("function://");
+}
+function getFunctionAddress(functionReference) {
+  let functionAddress;
+  if (typeof functionReference === "string") {
+    if (isFunctionHandle(functionReference)) {
+      functionAddress = { functionHandle: functionReference };
+    } else {
+      functionAddress = { name: functionReference };
+    }
+  } else if (functionReference[functionName]) {
+    functionAddress = { name: functionReference[functionName] };
+  } else {
+    const referencePath = extractReferencePath(functionReference);
+    if (!referencePath) {
+      throw new Error(`${functionReference} is not a functionReference`);
+    }
+    functionAddress = { reference: referencePath };
+  }
+  return functionAddress;
+}
+function getFunctionName(functionReference) {
+  const address = getFunctionAddress(functionReference);
+  if (address.name === void 0) {
+    if (address.functionHandle !== void 0) {
+      throw new Error(
+        `Expected function reference like "api.file.func" or "internal.file.func", but received function handle ${address.functionHandle}`
+      );
+    } else if (address.reference !== void 0) {
+      throw new Error(
+        `Expected function reference in the current component like "api.file.func" or "internal.file.func", but received reference ${address.reference}`
+      );
+    }
+    throw new Error(
+      `Expected function reference like "api.file.func" or "internal.file.func", but received ${JSON.stringify(address)}`
+    );
+  }
+  if (typeof functionReference === "string") return functionReference;
+  const name = functionReference[functionName];
+  if (!name) {
+    throw new Error(`${functionReference} is not a functionReference`);
+  }
+  return name;
+}
+function createApi(pathParts = []) {
+  const handler2 = {
+    get(_, prop) {
+      if (typeof prop === "string") {
+        const newParts = [...pathParts, prop];
+        return createApi(newParts);
+      } else if (prop === functionName) {
+        if (pathParts.length < 2) {
+          const found = ["api", ...pathParts].join(".");
+          throw new Error(
+            `API path is expected to be of the form \`api.moduleName.functionName\`. Found: \`${found}\``
+          );
+        }
+        const path = pathParts.slice(0, -1).join("/");
+        const exportName = pathParts[pathParts.length - 1];
+        if (exportName === "default") {
+          return path;
+        } else {
+          return path + ":" + exportName;
+        }
+      } else if (prop === Symbol.toStringTag) {
+        return "FunctionReference";
+      } else {
+        return void 0;
+      }
+    }
+  };
+  return new Proxy({}, handler2);
+}
+const anyApi = createApi();
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
@@ -16893,7 +16894,33 @@ function forwardErrorData(errorData, error) {
   error.data = jsonToConvex(errorData);
   return error;
 }
+function createChildComponents(root, pathParts) {
+  const handler2 = {
+    get(_, prop) {
+      if (typeof prop === "string") {
+        const newParts = [...pathParts, prop];
+        return createChildComponents(root, newParts);
+      } else if (prop === toReferencePath) {
+        if (pathParts.length < 1) {
+          const found = [root, ...pathParts].join(".");
+          throw new Error(
+            `API path is expected to be of the form \`${root}.childComponent.functionName\`. Found: \`${found}\``
+          );
+        }
+        return `_reference/childComponent/` + pathParts.join("/");
+      } else {
+        return void 0;
+      }
+    }
+  };
+  return new Proxy({}, handler2);
+}
+const componentsGeneric = () => createChildComponents("components", []);
+const api = anyApi;
+const internal = anyApi;
+componentsGeneric();
 let convexClient = null;
+let internalConvexClient = null;
 function getConvexClient$1() {
   if (!convexClient) {
     const url = "http://127.0.0.1:3210";
@@ -16901,127 +16928,31 @@ function getConvexClient$1() {
   }
   return convexClient;
 }
+function getInternalConvexClient() {
+  if (!internalConvexClient) {
+    const url = "http://127.0.0.1:3210";
+    internalConvexClient = new ConvexHttpClient(url);
+  }
+  const deployKey = process.env.CONVEX_DEPLOY_KEY;
+  if (!deployKey) {
+    throw new Error("Missing CONVEX_DEPLOY_KEY for internal Convex calls");
+  }
+  internalConvexClient.setAdminAuth(deployKey);
+  return internalConvexClient;
+}
 async function fetchQuery(ref, args) {
   return getConvexClient$1().query(ref, args);
 }
 async function fetchMutation(ref, args) {
   return getConvexClient$1().mutation(ref, args);
 }
-function extractUsername(user) {
-  const fromMetadata = user.user_metadata && typeof user.user_metadata.username === "string" ? user.user_metadata.username.trim() : "";
-  if (fromMetadata.length > 0) {
-    return fromMetadata;
-  }
-  if (typeof user.email === "string" && user.email.includes("@")) {
-    const [localPart] = user.email.split("@");
-    const username = localPart?.trim();
-    if (username) return username;
-  }
-  return null;
+async function fetchInternalQuery(ref, args) {
+  return getInternalConvexClient().query(ref, args);
 }
-async function resolveConvexProfileIdFromSupabaseUser(user) {
-  if (typeof user.id === "string" && user.id.length > 0) {
-    return user.id;
-  }
-  const username = extractUsername(user);
-  if (!username) return null;
-  const profile = await fetchQuery(api.activities.getProfileByUsername, { username });
-  return profile?.id ?? null;
+async function fetchInternalMutation(ref, args) {
+  return getInternalConvexClient().mutation(ref, args);
 }
-function toUser(claims) {
-  return {
-    id: claims.sub,
-    email: null,
-    user_metadata: {
-      username: claims.username,
-      role: claims.role
-    }
-  };
-}
-async function createClient() {
-  const cookieStore = await cookies();
-  const getClaims = async () => {
-    const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-    if (!token) return null;
-    return verifySessionToken(token, getAuthJwtSecret());
-  };
-  const auth = {
-    getUser: async () => {
-      const claims = await getClaims();
-      return {
-        data: {
-          user: claims ? toUser(claims) : null
-        },
-        error: null
-      };
-    },
-    getSession: async () => {
-      const claims = await getClaims();
-      return {
-        data: {
-          session: claims ? { user: toUser(claims), access_token: "" } : null
-        },
-        error: null
-      };
-    },
-    getClaims: async () => {
-      const claims = await getClaims();
-      return {
-        data: {
-          claims: claims ? {
-            sub: claims.sub,
-            username: claims.username,
-            role: claims.role,
-            organization_id: claims.organizationId ?? null
-          } : null
-        },
-        error: null
-      };
-    }
-  };
-  const from = (table) => {
-    if (table !== "profiles") {
-      throw new Error(`Unsupported table in auth shim: ${table}`);
-    }
-    return {
-      select: (_columns) => ({
-        eq: (column, value) => ({
-          maybeSingle: async () => {
-            if (column !== "id") {
-              return { data: null, error: { message: `Unsupported where column: ${column}` } };
-            }
-            const profile = await fetchQuery(api.activities.getProfileById, { profileId: value });
-            if (!profile) {
-              return { data: null, error: null };
-            }
-            return {
-              data: {
-                id: profile.id,
-                organization_id: profile.organizationId,
-                username: profile.username,
-                role: profile.role,
-                display_name: profile.displayName
-              },
-              error: null
-            };
-          },
-          single: async () => {
-            const result = await from("profiles").select("*").eq(column, value).maybeSingle();
-            if (!result.data) {
-              return { data: null, error: { message: "Profile not found" } };
-            }
-            return result;
-          }
-        })
-      })
-    };
-  };
-  return {
-    auth,
-    from
-  };
-}
-const apiAny$1 = api;
+const apiAny$2 = api;
 const CompletePhaseSchema = z.object({
   lessonId: z.string().trim().min(1, "Lesson identifier is required"),
   phaseNumber: z.number().int().positive("Phase number must be a positive integer"),
@@ -17031,18 +16962,14 @@ const CompletePhaseSchema = z.object({
 });
 async function POST$e(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: authData,
-      error: authError
-    } = await supabase.auth.getUser();
-    if (authError || !authData.user) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return NextResponse.json(
-        { error: authError?.message ?? "Unauthorized. Please sign in to complete phases." },
+        { error: "Unauthorized. Please sign in to complete phases." },
         { status: 401 }
       );
     }
-    const userId = await resolveConvexProfileIdFromSupabaseUser(authData.user) ?? authData.user.id;
+    const userId = claims.sub;
     const body = await request.json();
     const validationResult = CompletePhaseSchema.safeParse(body);
     if (!validationResult.success) {
@@ -17062,7 +16989,7 @@ async function POST$e(request) {
       linkedStandardId
     } = validationResult.data;
     const serverTimestamp = (/* @__PURE__ */ new Date()).toISOString();
-    const lesson = await fetchQuery(apiAny$1.api.getLessonBySlugOrId, { identifier: lessonIdentifier });
+    const lesson = await fetchQuery(apiAny$2.api.getLessonBySlugOrId, { identifier: lessonIdentifier });
     if (!lesson) {
       return NextResponse.json(
         {
@@ -17072,7 +16999,7 @@ async function POST$e(request) {
         { status: 404 }
       );
     }
-    const canAccess = await fetchQuery(apiAny$1.api.canAccessPhase, {
+    const canAccess = await fetchQuery(apiAny$2.api.canAccessPhase, {
       userId,
       lessonId: lesson._id,
       phaseNumber
@@ -17087,7 +17014,7 @@ async function POST$e(request) {
         { status: 403 }
       );
     }
-    const phaseContext = await fetchQuery(apiAny$1.api.getPhaseContext, {
+    const phaseContext = await fetchQuery(apiAny$2.api.getPhaseContext, {
       lessonId: lesson._id,
       phaseNumber
     });
@@ -17101,7 +17028,7 @@ async function POST$e(request) {
       );
     }
     const { phaseId, lessonVersionId } = phaseContext;
-    const existingWithKey = await fetchQuery(apiAny$1.api.getStudentProgressByIdempotencyKey, {
+    const existingWithKey = await fetchQuery(apiAny$2.api.getStudentProgressByIdempotencyKey, {
       userId,
       idempotencyKey
     });
@@ -17115,7 +17042,7 @@ async function POST$e(request) {
           { status: 409 }
         );
       }
-      const nextPhaseExists = await fetchQuery(apiAny$1.api.checkNextPhaseExists, {
+      const nextPhaseExists = await fetchQuery(apiAny$2.api.checkNextPhaseExists, {
         lessonVersionId,
         phaseNumber
       });
@@ -17127,12 +17054,12 @@ async function POST$e(request) {
         completedAt: existingWithKey.completedAt ? new Date(existingWithKey.completedAt).toISOString() : serverTimestamp
       });
     }
-    const existingProgress = await fetchQuery(apiAny$1.api.getStudentProgressByPhase, {
+    const existingProgress = await fetchQuery(apiAny$2.api.getStudentProgressByPhase, {
       userId,
       phaseId
     });
     if (existingProgress && existingProgress.idempotencyKey && existingProgress.idempotencyKey !== idempotencyKey) {
-      const nextPhaseExists = await fetchQuery(apiAny$1.api.checkNextPhaseExists, {
+      const nextPhaseExists = await fetchQuery(apiAny$2.api.checkNextPhaseExists, {
         lessonVersionId,
         phaseNumber
       });
@@ -17147,14 +17074,14 @@ async function POST$e(request) {
         { status: 200 }
       );
     }
-    const result = await fetchMutation(apiAny$1.api.completePhaseMutation, {
+    const result = await fetchMutation(apiAny$2.api.completePhaseMutation, {
       userId,
       phaseId,
       timeSpent,
       idempotencyKey,
       linkedStandardId
     });
-    const nextPhaseUnlocked = await fetchQuery(apiAny$1.api.checkNextPhaseExists, {
+    const nextPhaseUnlocked = await fetchQuery(apiAny$2.api.checkNextPhaseExists, {
       lessonVersionId,
       phaseNumber
     });
@@ -17190,7 +17117,7 @@ const CompleteActivitySchema = z.object({
   idempotencyKey: z.string().uuid("Invalid idempotency key format")
 });
 const REPLACEMENT_ENDPOINT = "/api/phases/complete";
-function isRecord$2(value) {
+function isRecord(value) {
   return typeof value === "object" && value !== null;
 }
 function deprecationHeaders() {
@@ -17201,7 +17128,7 @@ function deprecationHeaders() {
   };
 }
 function deriveTimeSpent(completionData) {
-  if (!isRecord$2(completionData)) {
+  if (!isRecord(completionData)) {
     return 0;
   }
   const rawTimeSpent = completionData.timeSpent ?? completionData.timeSpentSeconds;
@@ -17265,7 +17192,7 @@ async function POST$d(request) {
       phaseResult = null;
     }
     if (!phaseResponse.ok) {
-      const errorPayload = isRecord$2(phaseResult) ? phaseResult : {};
+      const errorPayload = isRecord(phaseResult) ? phaseResult : {};
       const errorMessage = typeof errorPayload.message === "string" ? errorPayload.message : `Use POST ${REPLACEMENT_ENDPOINT}.`;
       return NextResponse.json(
         {
@@ -17278,7 +17205,7 @@ async function POST$d(request) {
         { status: phaseResponse.status, headers: deprecationHeaders() }
       );
     }
-    const successPayload = isRecord$2(phaseResult) ? phaseResult : null;
+    const successPayload = isRecord(phaseResult) ? phaseResult : null;
     const compatibilityResponse = {
       success: Boolean(successPayload?.success),
       nextPhaseUnlocked: Boolean(successPayload?.nextPhaseUnlocked),
@@ -17656,37 +17583,42 @@ async function POST$c(request) {
   if (!username || !password) {
     return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
   }
-  const credential = await fetchQuery(api.auth.getCredentialByUsername, { username });
-  if (!credential) {
-    return NextResponse.json({ error: "Invalid login credentials" }, { status: 401 });
+  try {
+    const credential = await fetchInternalQuery(internal.auth.getCredentialByUsername, { username });
+    if (!credential) {
+      return NextResponse.json({ error: "Invalid login credentials" }, { status: 401 });
+    }
+    const isValidPassword = await verifyPassword(password, {
+      salt: credential.passwordSalt,
+      iterations: credential.passwordHashIterations ?? PASSWORD_HASH_ITERATIONS,
+      passwordHash: credential.passwordHash
+    });
+    if (!isValidPassword) {
+      return NextResponse.json({ error: "Invalid login credentials" }, { status: 401 });
+    }
+    const token = await signSessionToken(
+      {
+        sub: credential.profileId,
+        username: credential.username,
+        role: credential.role,
+        organizationId: credential.organizationId
+      },
+      getAuthJwtSecret(),
+      SESSION_TTL_SECONDS
+    );
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: SESSION_TTL_SECONDS
+    });
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Login route failed", error);
+    return NextResponse.json({ error: "Authentication service unavailable" }, { status: 500 });
   }
-  const isValidPassword = await verifyPassword(password, {
-    salt: credential.passwordSalt,
-    iterations: credential.passwordHashIterations ?? PASSWORD_HASH_ITERATIONS,
-    passwordHash: credential.passwordHash
-  });
-  if (!isValidPassword) {
-    return NextResponse.json({ error: "Invalid login credentials" }, { status: 401 });
-  }
-  const token = await signSessionToken(
-    {
-      sub: credential.profileId,
-      username: credential.username,
-      role: credential.role,
-      organizationId: credential.organizationId
-    },
-    getAuthJwtSecret(),
-    SESSION_TTL_SECONDS
-  );
-  const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: SESSION_TTL_SECONDS
-  });
-  return NextResponse.json({ ok: true });
 }
 const mod_2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -20140,7 +20072,7 @@ const selectContentRevisionSchema = createSelectSchema(contentRevisions, {
   proposedChanges: jsonRecordSchema,
   validationErrors: validationErrorSchema.array().nullable()
 });
-const requestSchema$3 = z.object({
+const requestSchema$5 = z.object({
   activityId: z.string().trim().min(1),
   answers: z.record(z.string(), z.unknown()),
   interactionHistory: z.array(z.unknown()).optional(),
@@ -20157,21 +20089,14 @@ function buildBadRequest(details) {
 }
 async function POST$a(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data,
-      error: authError
-    } = await supabase.auth.getUser();
-    if (authError || !data?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? "Unauthorized" },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     let payload;
     try {
       const body = await request.json();
-      const parsed = requestSchema$3.safeParse(body);
+      const parsed = requestSchema$5.safeParse(body);
       if (!parsed.success) {
         return buildBadRequest(parsed.error.flatten().fieldErrors);
       }
@@ -20213,7 +20138,7 @@ async function POST$a(request) {
       interactionHistory: payload.interactionHistory,
       metadata: payload.metadata
     });
-    const userId = await resolveConvexProfileIdFromSupabaseUser(data.user) ?? data.user.id;
+    const userId = claims.sub;
     await fetchMutation(api.activities.submitAssessment, {
       userId,
       activityId: payload.activityId,
@@ -20255,31 +20180,6 @@ const mod_7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   __proto__: null,
   POST: POST$9
 }, Symbol.toStringTag, { value: "Module" }));
-async function getServerSessionClaims() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (!token) return null;
-  return verifySessionToken(token, getAuthJwtSecret());
-}
-function getCookieValueFromHeader(cookieHeader, key) {
-  if (!cookieHeader) return null;
-  const entries = cookieHeader.split(";");
-  for (const entry of entries) {
-    const trimmed = entry.trim();
-    if (!trimmed) continue;
-    const separatorIndex = trimmed.indexOf("=");
-    if (separatorIndex <= 0) continue;
-    const name = trimmed.slice(0, separatorIndex).trim();
-    if (name !== key) continue;
-    return decodeURIComponent(trimmed.slice(separatorIndex + 1));
-  }
-  return null;
-}
-async function getRequestSessionClaims(request) {
-  const token = getCookieValueFromHeader(request.headers.get("cookie"), SESSION_COOKIE_NAME);
-  if (!token) return null;
-  return verifySessionToken(token, getAuthJwtSecret());
-}
 const querySchema = z.object({
   studentId: z.string().trim().min(1, "studentId is required"),
   lessonId: z.string().trim().min(1, "lessonId is required")
@@ -20347,7 +20247,7 @@ function createAdminClient() {
       "SUPABASE_SERVICE_ROLE_KEY is not set. Please check your environment variables."
     );
   }
-  return createClient$1(supabaseUrl, supabaseServiceRoleKey, {
+  return createClient(supabaseUrl, supabaseServiceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
@@ -20955,47 +20855,24 @@ const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST: POST$7,
   dynamic: dynamic$3
 }, Symbol.toStringTag, { value: "Module" }));
-function sanitizeInput(value) {
-  if (!value || typeof value !== "string") return "";
-  return value.trim().slice(0, 50);
-}
-function slugify(value) {
-  if (!value) return "";
-  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").replace(/_+/g, "_").slice(0, 24);
-}
-async function generateUniqueUsername(opts, ctx) {
-  const base = slugify(opts.preferredUsername) || slugify(`${opts.firstName ?? ""}_${opts.lastName ?? ""}`) || "student";
-  for (let attempt = 0; attempt < 50; attempt++) {
-    const candidate = attempt === 0 ? base : `${base}_${(attempt + 1).toString().padStart(2, "0")}`;
-    if (ctx.reserved.has(candidate)) continue;
-    const taken = await ctx.exists(candidate);
-    if (!taken) {
-      ctx.reserved.add(candidate);
-      return candidate;
-    }
-  }
-  const fallback = `${base}_${crypto.randomUUID().slice(0, 4)}`;
-  ctx.reserved.add(fallback);
-  return fallback;
-}
-function buildDisplayName(firstName, lastName, fallback) {
-  const capitalize = (v) => v ? v.charAt(0).toUpperCase() + v.slice(1) : "";
-  const combined = [capitalize(firstName), capitalize(lastName)].filter(Boolean).join(" ");
-  return combined || fallback;
-}
-function generateRandomPassword$1(length = 8) {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+const PASSWORD_ALPHABET$2 = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+const studentSchema = z.object({
+  firstName: z.string().trim().max(50).optional(),
+  lastName: z.string().trim().max(50).optional(),
+  displayName: z.string().trim().max(80).optional(),
+  username: z.string().trim().max(50).optional()
+});
+const requestSchema$4 = z.object({
+  students: z.array(studentSchema).min(1).max(100)
+});
+function generateRandomPassword$2(length = 8) {
   const bytes = crypto.getRandomValues(new Uint8Array(length));
-  return Array.from(bytes, (byte) => alphabet.charAt(byte % alphabet.length)).join("");
+  return Array.from(bytes, (byte) => PASSWORD_ALPHABET$2[byte % PASSWORD_ALPHABET$2.length]).join("");
 }
 async function POST$6(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError
-    } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
     let body;
@@ -21004,94 +20881,73 @@ async function POST$6(request) {
     } catch {
       return Response.json({ error: "Invalid JSON body" }, { status: 400 });
     }
-    if (!body.students || !Array.isArray(body.students) || body.students.length === 0) {
+    const rawStudents = typeof body === "object" && body !== null && "students" in body ? body.students : void 0;
+    if (!Array.isArray(rawStudents) || rawStudents.length === 0) {
       return Response.json({ error: "Request must include a non-empty students array" }, { status: 400 });
     }
-    if (body.students.length > 100) {
+    if (rawStudents.length > 100) {
       return Response.json({ error: "Maximum batch size is 100 students" }, { status: 400 });
     }
-    const admin = createAdminClient();
-    const { data: teacherProfile, error: teacherProfileError } = await admin.from("profiles").select("id, role, organization_id").eq("id", user.id).maybeSingle();
-    if (teacherProfileError || !teacherProfile) {
-      return Response.json({ error: "Teacher profile not found" }, { status: 403 });
-    }
-    if (teacherProfile.role !== "teacher" && teacherProfile.role !== "admin") {
-      return Response.json({ error: "Only teachers can create students" }, { status: 403 });
-    }
-    const reservedUsernames = /* @__PURE__ */ new Set();
-    const createdUserIds = [];
-    const createdCredentials = [];
-    try {
-      for (const student of body.students) {
-        const firstName = sanitizeInput(student.firstName);
-        const lastName = sanitizeInput(student.lastName);
-        const displayName = sanitizeInput(student.displayName);
-        const preferredUsername = sanitizeInput(student.username);
-        const username = await generateUniqueUsername(
-          { preferredUsername, firstName, lastName },
-          {
-            reserved: reservedUsernames,
-            exists: async (candidate) => {
-              const { count: count2, error } = await admin.from("profiles").select("id", { head: true, count: "exact" }).eq("username", candidate);
-              if (error) return true;
-              return Boolean(count2);
-            }
-          }
-        );
-        const password = generateRandomPassword$1();
-        const resolvedDisplayName = displayName || buildDisplayName(firstName, lastName, username);
-        const { data: createdUser, error: createUserError } = await admin.auth.admin.createUser({
-          email: `${username}@internal.domain`,
-          password,
-          email_confirm: true,
-          user_metadata: {
-            role: "student",
-            firstName,
-            lastName,
-            organizationId: teacherProfile.organization_id,
-            createdBy: teacherProfile.id
-          }
-        });
-        if (createUserError || !createdUser?.user) {
-          throw new Error(createUserError?.message ?? "Failed to create user");
-        }
-        createdUserIds.push(createdUser.user.id);
-        const { error: profileError } = await admin.from("profiles").upsert({
-          id: createdUser.user.id,
-          organization_id: teacherProfile.organization_id,
-          username,
-          role: "student",
-          display_name: resolvedDisplayName,
-          metadata: {
-            firstName: firstName || null,
-            lastName: lastName || null,
-            createdBy: teacherProfile.id
-          }
-        });
-        if (profileError) {
-          throw new Error(`Failed to create profile for ${username}`);
-        }
-        createdCredentials.push({
-          username,
-          password,
-          displayName: resolvedDisplayName,
-          email: `${username}@internal.domain`,
-          organizationId: teacherProfile.organization_id
-        });
-      }
-    } catch (error) {
-      console.error("Bulk student creation failed. Rolling back.", error);
-      await Promise.allSettled(createdUserIds.map((id) => admin.auth.admin.deleteUser(id)));
+    const parsedBody = requestSchema$4.safeParse({ students: rawStudents });
+    if (!parsedBody.success) {
       return Response.json(
-        { error: "Failed to create all students. No accounts were created." },
-        { status: 500 }
+        { error: "Invalid request payload", details: parsedBody.error.flatten().fieldErrors },
+        { status: 400 }
       );
     }
+    const preparedStudents = await Promise.all(
+      parsedBody.data.students.map(async (student) => {
+        const password = generateRandomPassword$2();
+        const passwordSalt = generatePasswordSalt();
+        const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
+        return {
+          firstName: student.firstName,
+          lastName: student.lastName,
+          displayName: student.displayName,
+          preferredUsername: student.username,
+          password,
+          passwordHash,
+          passwordSalt,
+          passwordHashIterations: PASSWORD_HASH_ITERATIONS
+        };
+      })
+    );
+    const result = await fetchInternalMutation(internal.auth.bulkCreateStudentAccounts, {
+      teacherProfileId: claims.sub,
+      students: preparedStudents.map((student) => ({
+        firstName: student.firstName,
+        lastName: student.lastName,
+        displayName: student.displayName,
+        preferredUsername: student.preferredUsername,
+        passwordHash: student.passwordHash,
+        passwordSalt: student.passwordSalt,
+        passwordHashIterations: student.passwordHashIterations
+      }))
+    });
+    if (!result.ok) {
+      if (result.reason === "teacher_not_found") {
+        return Response.json({ error: "Teacher profile not found" }, { status: 403 });
+      }
+      if (result.reason === "forbidden") {
+        return Response.json({ error: "Only teachers can create students" }, { status: 403 });
+      }
+      if (result.reason === "invalid_batch") {
+        return Response.json({ error: "Maximum batch size is 100 students" }, { status: 400 });
+      }
+      return Response.json({ error: "Failed to create students" }, { status: 500 });
+    }
+    const students = result.students.map((student, index2) => ({
+      studentId: student.studentId,
+      username: student.username,
+      password: preparedStudents[index2]?.password ?? generateRandomPassword$2(),
+      displayName: student.displayName,
+      email: student.email
+    }));
     return Response.json(
       {
-        totalCreated: createdCredentials.length,
-        organizationId: teacherProfile.organization_id,
-        students: createdCredentials
+        totalCreated: result.totalCreated,
+        organizationId: result.organizationId,
+        students
       },
       { status: 201 }
     );
@@ -21104,44 +20960,73 @@ const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   POST: POST$6
 }, Symbol.toStringTag, { value: "Module" }));
-const EDGE_FUNCTION_PATH = "/functions/v1/create-student";
+const PASSWORD_ALPHABET$1 = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+const requestSchema$3 = z.object({
+  firstName: z.string().trim().max(50).optional(),
+  lastName: z.string().trim().max(50).optional(),
+  displayName: z.string().trim().max(80).optional(),
+  username: z.string().trim().max(50).optional()
+});
+function generateRandomPassword$1(length = 12) {
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (byte) => PASSWORD_ALPHABET$1[byte % PASSWORD_ALPHABET$1.length]).join("");
+}
 async function POST$5(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { session }
-    } = await supabase.auth.getSession();
-    if (!session) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const supabaseUrl = "http://127.0.0.1:54321";
-    if (!supabaseUrl) ;
     let body;
     try {
       body = await request.json();
     } catch {
       return Response.json({ error: "Invalid JSON body" }, { status: 400 });
     }
-    const response = await fetch(`${supabaseUrl}${EDGE_FUNCTION_PATH}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${session.access_token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body ?? {})
+    const parsedBody = requestSchema$3.safeParse(body ?? {});
+    if (!parsedBody.success) {
+      return Response.json(
+        { error: "Invalid request payload", details: parsedBody.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+    const password = generateRandomPassword$1(12);
+    const passwordSalt = generatePasswordSalt();
+    const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
+    const result = await fetchInternalMutation(internal.auth.createStudentAccount, {
+      teacherProfileId: claims.sub,
+      student: {
+        preferredUsername: parsedBody.data.username,
+        firstName: parsedBody.data.firstName,
+        lastName: parsedBody.data.lastName,
+        displayName: parsedBody.data.displayName,
+        passwordHash,
+        passwordSalt,
+        passwordHashIterations: PASSWORD_HASH_ITERATIONS
+      }
     });
-    const payload = await safeParseJson(response);
-    return Response.json(payload, { status: response.status });
+    if (!result.ok) {
+      if (result.reason === "teacher_not_found") {
+        return Response.json({ error: "Teacher profile not found" }, { status: 403 });
+      }
+      if (result.reason === "forbidden") {
+        return Response.json({ error: "Only teachers can create students" }, { status: 403 });
+      }
+      return Response.json({ error: "Failed to create student" }, { status: 500 });
+    }
+    return Response.json(
+      {
+        studentId: result.studentId,
+        username: result.username,
+        password,
+        displayName: result.displayName,
+        email: `${result.username}@internal.domain`
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Failed to invoke create-student edge function", error);
+    console.error("Unexpected error in create-student", error);
     return Response.json({ error: "Unexpected error" }, { status: 500 });
-  }
-}
-async function safeParseJson(response) {
-  try {
-    return await response.json();
-  } catch {
-    return { error: "Unexpected response from edge function" };
   }
 }
 const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -21150,22 +21035,24 @@ const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 }, Symbol.toStringTag, { value: "Module" }));
 const DEMO_USERS = [
   { username: "demo_teacher", role: "teacher", password: "demo123" },
-  { username: "demo_student", role: "student", password: "demo123" }
+  { username: "demo_student", role: "student", password: "demo123" },
+  { username: "demo_admin", role: "admin", password: "demo123" }
 ];
 async function POST$4() {
   try {
     const results = [];
     for (const user of DEMO_USERS) {
-      const profile = await fetchQuery(api.activities.getProfileByUsername, {
-        username: user.username
+      const profileResult = await fetchInternalMutation(internal.auth.ensureProfileByUsername, {
+        username: user.username,
+        role: user.role
       });
-      if (!profile) {
-        results.push({ username: user.username, status: "profile_not_found" });
+      if (!profileResult.ok) {
+        results.push({ username: user.username, status: profileResult.reason });
         continue;
       }
       const salt = generatePasswordSalt();
       const passwordHash = await hashPassword(user.password, salt, PASSWORD_HASH_ITERATIONS);
-      const result = await fetchMutation(api.auth.upsertCredentialByUsername, {
+      const result = await fetchInternalMutation(internal.auth.upsertCredentialByUsername, {
         username: user.username,
         role: user.role,
         passwordHash,
@@ -21188,25 +21075,18 @@ const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   POST: POST$4
 }, Symbol.toStringTag, { value: "Module" }));
-const requestSchema$2 = z.object({
-  studentId: z.string().uuid("studentId must be a valid UUID")
-});
 const PASSWORD_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
-function isRecord$1(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
+const requestSchema$2 = z.object({
+  studentId: z.string().trim().min(1, "studentId is required")
+});
 function generateRandomPassword(length = 12) {
   const bytes = crypto.getRandomValues(new Uint8Array(length));
   return Array.from(bytes, (byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]).join("");
 }
 async function POST$3(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError
-    } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
     let body;
@@ -21222,42 +21102,33 @@ async function POST$3(request) {
         { status: 400 }
       );
     }
-    const admin = createAdminClient();
-    const { data: teacherProfile, error: teacherError } = await admin.from("profiles").select("id, role, organization_id").eq("id", user.id).maybeSingle();
-    if (teacherError || !teacherProfile) {
-      return Response.json({ error: "Teacher profile not found" }, { status: 403 });
-    }
-    if (teacherProfile.role !== "teacher" && teacherProfile.role !== "admin") {
-      return Response.json({ error: "Only teachers can reset student passwords" }, { status: 403 });
-    }
-    const { data: studentProfile, error: studentError } = await admin.from("profiles").select("id, role, organization_id, username, display_name, metadata").eq("id", parsedBody.data.studentId).maybeSingle();
-    if (studentError || !studentProfile || studentProfile.role !== "student" || studentProfile.organization_id !== teacherProfile.organization_id) {
-      return Response.json({ error: "Student not found" }, { status: 404 });
-    }
-    const nextPassword = generateRandomPassword(12);
-    const { error: updateAuthError } = await admin.auth.admin.updateUserById(studentProfile.id, {
-      password: nextPassword
+    const password = generateRandomPassword(12);
+    const passwordSalt = generatePasswordSalt();
+    const passwordHash = await hashPassword(password, passwordSalt, PASSWORD_HASH_ITERATIONS);
+    const result = await fetchInternalMutation(internal.auth.resetStudentPassword, {
+      teacherProfileId: claims.sub,
+      studentProfileId: parsedBody.data.studentId,
+      passwordHash,
+      passwordSalt,
+      passwordHashIterations: PASSWORD_HASH_ITERATIONS
     });
-    if (updateAuthError) {
+    if (!result.ok) {
+      if (result.reason === "teacher_not_found") {
+        return Response.json({ error: "Teacher profile not found" }, { status: 403 });
+      }
+      if (result.reason === "forbidden") {
+        return Response.json({ error: "Only teachers can reset student passwords" }, { status: 403 });
+      }
+      if (result.reason === "student_not_found") {
+        return Response.json({ error: "Student not found" }, { status: 404 });
+      }
       return Response.json({ error: "Failed to reset student password" }, { status: 500 });
     }
-    const existingMetadata = isRecord$1(studentProfile.metadata) ? studentProfile.metadata : {};
-    const nextMetadata = {
-      ...existingMetadata,
-      lastPasswordResetAt: (/* @__PURE__ */ new Date()).toISOString(),
-      lastPasswordResetBy: teacherProfile.id
-    };
-    const { error: metadataError } = await admin.from("profiles").update({
-      metadata: nextMetadata
-    }).eq("id", studentProfile.id);
-    if (metadataError) {
-      return Response.json({ error: "Password reset succeeded but audit metadata failed to save" }, { status: 500 });
-    }
     return Response.json({
-      studentId: studentProfile.id,
-      username: studentProfile.username,
-      displayName: studentProfile.display_name ?? studentProfile.username,
-      password: nextPassword
+      studentId: result.studentId,
+      username: result.username,
+      displayName: result.displayName,
+      password
     });
   } catch (error) {
     console.error("Unexpected error in reset-student-password", error);
@@ -21269,24 +21140,17 @@ const mod_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST: POST$3
 }, Symbol.toStringTag, { value: "Module" }));
 const requestSchema$1 = z.object({
-  studentId: z.string().uuid("studentId must be a valid UUID"),
+  studentId: z.string().trim().min(1, "studentId is required"),
   displayName: z.string().trim().min(1).max(80).optional(),
   deactivate: z.boolean().optional()
 }).refine((value) => value.displayName !== void 0 || value.deactivate !== void 0, {
   message: "Provide displayName and/or deactivate",
   path: ["displayName"]
 });
-function isRecord(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
 async function POST$2(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-      error: authError
-    } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
     let body;
@@ -21302,57 +21166,32 @@ async function POST$2(request) {
         { status: 400 }
       );
     }
-    const admin = createAdminClient();
-    const { data: teacherProfile, error: teacherError } = await admin.from("profiles").select("id, role, organization_id").eq("id", user.id).maybeSingle();
-    if (teacherError || !teacherProfile) {
-      return Response.json({ error: "Teacher profile not found" }, { status: 403 });
-    }
-    if (teacherProfile.role !== "teacher" && teacherProfile.role !== "admin") {
-      return Response.json({ error: "Only teachers can manage students" }, { status: 403 });
-    }
-    const { data: studentProfile, error: studentError } = await admin.from("profiles").select("id, role, organization_id, username, display_name, metadata").eq("id", parsedBody.data.studentId).maybeSingle();
-    if (studentError || !studentProfile || studentProfile.role !== "student" || studentProfile.organization_id !== teacherProfile.organization_id) {
-      return Response.json({ error: "Student not found" }, { status: 404 });
-    }
-    const nextDisplayName = parsedBody.data.displayName ?? studentProfile.display_name ?? studentProfile.username;
-    const existingMetadata = isRecord(studentProfile.metadata) ? studentProfile.metadata : {};
-    const nowIso = (/* @__PURE__ */ new Date()).toISOString();
-    const deactivated = parsedBody.data.deactivate !== void 0 ? parsedBody.data.deactivate : Boolean(existingMetadata.isDeactivated);
-    if (parsedBody.data.deactivate !== void 0) {
-      const { error: authUpdateError } = await admin.auth.admin.updateUserById(studentProfile.id, {
-        ban_duration: parsedBody.data.deactivate ? "876000h" : "none"
-      });
-      if (authUpdateError) {
-        return Response.json({ error: "Failed to update student auth status" }, { status: 500 });
+    const result = await fetchInternalMutation(internal.auth.updateStudentAccount, {
+      teacherProfileId: claims.sub,
+      studentProfileId: parsedBody.data.studentId,
+      displayName: parsedBody.data.displayName,
+      deactivate: parsedBody.data.deactivate
+    });
+    if (!result.ok) {
+      if (result.reason === "teacher_not_found") {
+        return Response.json({ error: "Teacher profile not found" }, { status: 403 });
       }
-    }
-    const nextMetadata = {
-      ...existingMetadata,
-      isDeactivated: deactivated,
-      accountStatus: deactivated ? "deactivated" : "active",
-      lastStudentProfileUpdateAt: nowIso,
-      lastStudentProfileUpdateBy: teacherProfile.id
-    };
-    if (parsedBody.data.deactivate === true) {
-      nextMetadata.deactivatedAt = nowIso;
-      nextMetadata.deactivatedBy = teacherProfile.id;
-    }
-    if (parsedBody.data.deactivate === false) {
-      nextMetadata.reactivatedAt = nowIso;
-      nextMetadata.reactivatedBy = teacherProfile.id;
-    }
-    const { error: updateError } = await admin.from("profiles").update({
-      display_name: nextDisplayName,
-      metadata: nextMetadata
-    }).eq("id", studentProfile.id);
-    if (updateError) {
+      if (result.reason === "forbidden") {
+        return Response.json({ error: "Only teachers can manage students" }, { status: 403 });
+      }
+      if (result.reason === "student_not_found") {
+        return Response.json({ error: "Student not found" }, { status: 404 });
+      }
+      if (result.reason === "invalid_input") {
+        return Response.json({ error: "Invalid request payload" }, { status: 400 });
+      }
       return Response.json({ error: "Failed to update student profile" }, { status: 500 });
     }
     return Response.json({
-      studentId: studentProfile.id,
-      username: studentProfile.username,
-      displayName: nextDisplayName,
-      deactivated
+      studentId: result.studentId,
+      username: result.username,
+      displayName: result.displayName,
+      deactivated: result.deactivated
     });
   } catch (error) {
     console.error("Unexpected error in update-student", error);
@@ -21375,15 +21214,11 @@ async function GET$6(request, { params }) {
         { status: 400 }
       );
     }
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? "Unauthorized" },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = await resolveConvexProfileIdFromSupabaseUser(authData.user) ?? authData.user.id;
+    const userId = claims.sub;
     const response = await fetchQuery(api.activities.getSpreadsheetDraft, {
       userId,
       activityId
@@ -21414,15 +21249,11 @@ async function POST$1(request, { params }) {
         { status: 400 }
       );
     }
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? "Unauthorized" },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = await resolveConvexProfileIdFromSupabaseUser(authData.user) ?? authData.user.id;
+    const userId = claims.sub;
     let payload;
     try {
       const body = await request.json();
@@ -21631,15 +21462,11 @@ async function GET$5(request, { params }) {
         { status: 400 }
       );
     }
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? "Unauthorized" },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const requesterId = await resolveConvexProfileIdFromSupabaseUser(authData.user) ?? authData.user.id;
+    const requesterId = claims.sub;
     const requesterProfile = await fetchQuery(api.activities.getProfileByUserId, {
       userId: requesterId
     });
@@ -21709,15 +21536,11 @@ async function POST(request, { params }) {
         { status: 400 }
       );
     }
-    const supabase = await createClient();
-    const { data: authData, error: authError } = await supabase.auth.getUser();
-    if (authError || !authData?.user) {
-      return NextResponse.json(
-        { error: authError?.message ?? "Unauthorized" },
-        { status: 401 }
-      );
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = await resolveConvexProfileIdFromSupabaseUser(authData.user) ?? authData.user.id;
+    const userId = claims.sub;
     let payload;
     try {
       const body = await request.json();
@@ -21815,11 +21638,8 @@ const mod_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST
 }, Symbol.toStringTag, { value: "Module" }));
 async function AdminDashboard() {
-  const supabase = await createClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect("/auth/login");
   }
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto p-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "max-w-4xl mx-auto", children: [
@@ -21834,7 +21654,7 @@ async function AdminDashboard() {
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "text-xl font-semibold mb-2", children: "Your Account" }),
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
           "User ID: ",
-          user.id
+          claims.sub
         ] })
       ] })
     ] })
@@ -21927,7 +21747,7 @@ async function GET$3(request) {
         error: "Missing Supabase credentials"
       }, { status: 500 });
     }
-    const supabase = createClient$1(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase.rpc("version");
     if (error) {
       const result = await supabase.from("pg_catalog.pg_tables").select("tablename").limit(1);
@@ -22349,12 +22169,10 @@ const LogoutButton = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'LogoutButton' is called on server");
 }, "a9027afaa0f7", "LogoutButton");
 async function AuthButton() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getClaims();
-  const user = data?.claims;
-  return user ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-4", children: [
+  const claims = await getServerSessionClaims();
+  return claims ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-4", children: [
     "Hey, ",
-    user.email,
+    claims.username,
     "!",
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(LogoutButton, {})
   ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex gap-2", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, size: "sm", variant: "outline", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/auth/login", children: "Sign in" }) }) });
@@ -22682,10 +22500,9 @@ const CourseOverviewGrid = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'CourseOverviewGrid' is called on server");
 }, "757d8b621f8b", "CourseOverviewGrid");
 async function CourseGradebookPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login?redirect=/teacher/gradebook");
-  const [teacher] = await db.select({ id: profiles.id, username: profiles.username, role: profiles.role, organizationId: profiles.organizationId }).from(profiles).where(eq(profiles.id, user.id)).limit(1);
+  const claims = await getServerSessionClaims();
+  if (!claims) redirect("/auth/login?redirect=/teacher/gradebook");
+  const [teacher] = await db.select({ id: profiles.id, username: profiles.username, role: profiles.role, organizationId: profiles.organizationId }).from(profiles).where(eq(profiles.id, claims.sub)).limit(1);
   if (!teacher) redirect("/auth/login");
   if (teacher.role !== "teacher" && teacher.role !== "admin") redirect("/student/dashboard");
   const { rows, units } = await fetchCourseOverviewData(teacher.organizationId);
@@ -22714,7 +22531,7 @@ const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: CourseGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
-const apiAny = api;
+const apiAny$1 = api;
 async function GET$1(request, { params }) {
   try {
     const claims = await getRequestSessionClaims(request);
@@ -22722,7 +22539,7 @@ async function GET$1(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = claims.sub;
-    const profile = await fetchQuery(apiAny.api.getProfile, {
+    const profile = await fetchQuery(apiAny$1.api.getProfile, {
       userId
     });
     if (!profile?.role) {
@@ -22741,7 +22558,7 @@ async function GET$1(request, { params }) {
     if (!activityId?.trim()) {
       return NextResponse.json({ error: "Invalid activity ID format" }, { status: 400 });
     }
-    const activity = await fetchQuery(apiAny.api.getActivity, {
+    const activity = await fetchQuery(apiAny$1.api.getActivity, {
       activityId
     });
     if (!activity) {
@@ -22840,6 +22657,7 @@ const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 const LessonRenderer = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'LessonRenderer' is called on server");
 }, "d2d9302f16e5", "LessonRenderer");
+const apiAny = api;
 const PHASE_TYPE_BY_NUMBER = {
   1: "intro",
   2: "example",
@@ -22975,13 +22793,6 @@ function AccessCheckError({ lessonTitle }) {
     )
   ] }) });
 }
-async function getUserProfile(userId) {
-  const [profile] = await db.select({
-    id: profiles.id,
-    role: profiles.role
-  }).from(profiles).where(eq(profiles.id, userId)).limit(1);
-  return profile ?? null;
-}
 async function getLessonWithPhases(slug) {
   const [lesson] = await db.select().from(lessons).where(eq(lessons.slug, slug)).limit(1);
   if (!lesson) {
@@ -23069,11 +22880,11 @@ async function getFirstLessonSlug() {
 async function LessonPage({ params, searchParams }) {
   const { lessonSlug } = await params;
   const { phase: phaseParam } = await searchParams;
-  const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect("/auth/login");
   }
+  const userId = claims.sub;
   const data = await getLessonWithPhases(lessonSlug);
   if (!data && /^unit\d{2}-lesson\d{2}$/i.test(lessonSlug)) {
     const firstLessonSlug = await getFirstLessonSlug();
@@ -23089,42 +22900,81 @@ async function LessonPage({ params, searchParams }) {
   if (lessonPhases2.length === 0) {
     return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(NoPhaseError, { lessonTitle: lesson.title });
   }
-  const userProfile = await getUserProfile(user.id);
+  let userProfile = null;
+  try {
+    userProfile = await fetchQuery(apiAny.activities.getProfileById, {
+      profileId: userId
+    });
+  } catch (profileError) {
+    console.error("Error loading user profile from Convex:", profileError);
+  }
   const isBypassRole = userProfile?.role === "teacher" || userProfile?.role === "admin";
   const requestedPhaseNumber = phaseParam ? parseInt(phaseParam, 10) : 1;
   if (isNaN(requestedPhaseNumber) || requestedPhaseNumber < 1 || requestedPhaseNumber > lessonPhases2.length) {
     redirect(`/student/lesson/${lessonSlug}?phase=1`);
   }
   if (!isBypassRole) {
+    let convexLesson = null;
+    try {
+      convexLesson = await fetchQuery(apiAny.api.getLessonBySlugOrId, {
+        identifier: lesson.slug
+      });
+    } catch (convexLessonError) {
+      console.error("Error resolving lesson in Convex:", convexLessonError);
+      return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
+    }
+    if (!convexLesson) {
+      console.error("Lesson was not found in Convex for slug:", lesson.slug);
+      return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
+    }
     if (!phaseParam) {
-      const { data: progressResponse } = await supabase.from("student_progress").select("phase_id, status").eq("user_id", user.id).in("phase_id", lessonPhases2.map((p) => p.id));
-      const completedPhaseIds = new Set(
-        progressResponse?.filter((p) => p.status === "completed")?.map((p) => p.phase_id) || []
-      );
-      const firstIncompletePhase = lessonPhases2.find((p) => !completedPhaseIds.has(p.id));
-      const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
-      if (targetPhaseNumber !== requestedPhaseNumber) {
-        redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+      try {
+        const progressResponse = await fetchQuery(apiAny.student.getLessonProgress, {
+          userId,
+          lessonIdentifier: lesson.slug
+        });
+        const completedPhaseNumbers = new Set(
+          (progressResponse?.phases ?? []).filter((phase) => phase.status === "completed").map((phase) => phase.phaseNumber)
+        );
+        const firstIncompletePhase = lessonPhases2.find(
+          (phase) => !completedPhaseNumbers.has(phase.phaseNumber)
+        );
+        const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
+        if (targetPhaseNumber !== requestedPhaseNumber) {
+          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        }
+      } catch (progressError) {
+        console.error("Error loading lesson progress from Convex:", progressError);
+        return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
       }
     }
-    const { data: canAccess, error: rpcError } = await supabase.rpc("can_access_phase", {
-      p_lesson_id: lesson.id,
-      p_phase_number: requestedPhaseNumber
-    });
-    if (rpcError) {
-      console.error("Error checking phase access:", rpcError);
+    let canAccess = false;
+    try {
+      canAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+        userId,
+        lessonId: convexLesson._id,
+        phaseNumber: requestedPhaseNumber
+      });
+    } catch (accessError) {
+      console.error("Error checking phase access:", accessError);
       return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
     }
     if (!canAccess) {
       let latestAccessiblePhase = 1;
       for (let i = lessonPhases2.length; i >= 1; i--) {
-        const { data: phaseAccess } = await supabase.rpc("can_access_phase", {
-          p_lesson_id: lesson.id,
-          p_phase_number: i
-        });
-        if (phaseAccess) {
-          latestAccessiblePhase = i;
-          break;
+        try {
+          const phaseAccess = await fetchQuery(apiAny.api.canAccessPhase, {
+            userId,
+            lessonId: convexLesson._id,
+            phaseNumber: i
+          });
+          if (phaseAccess) {
+            latestAccessiblePhase = i;
+            break;
+          }
+        } catch (phaseAccessError) {
+          console.error("Error checking latest accessible phase:", phaseAccessError);
+          return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
         }
       }
       redirect(`/student/lesson/${lessonSlug}?phase=${latestAccessiblePhase}`);
@@ -23255,14 +23105,11 @@ async function TeacherStudentDetailPage({
   params
 }) {
   const { studentId } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect(`/auth/login?redirect=/teacher/students/${studentId}`);
   }
-  const teacher = await getTeacherProfile(user.id);
+  const teacher = await getTeacherProfile(claims.sub);
   if (!teacher) {
     redirect("/auth/login?redirect=/teacher");
   }
@@ -23431,9 +23278,8 @@ async function UnitGradebookPage({ params }) {
   if (Number.isNaN(unitNumber) || unitNumber < 1) {
     notFound();
   }
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect(`/auth/login?redirect=/teacher/units/${unitNumber}`);
   }
   const [teacher] = await db.select({
@@ -23441,7 +23287,7 @@ async function UnitGradebookPage({ params }) {
     username: profiles.username,
     role: profiles.role,
     organizationId: profiles.organizationId
-  }).from(profiles).where(eq(profiles.id, user.id)).limit(1);
+  }).from(profiles).where(eq(profiles.id, claims.sub)).limit(1);
   if (!teacher) {
     redirect("/auth/login");
   }
@@ -24500,9 +24346,8 @@ function FetchDataSteps() {
   ] });
 }
 async function ProtectedPage() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
-  if (error || !data?.claims) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
     redirect("/auth/login");
   }
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex-1 w-full flex flex-col gap-12", children: [
@@ -24512,7 +24357,7 @@ async function ProtectedPage() {
     ] }) }),
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col gap-2 items-start", children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-bold text-2xl mb-4", children: "Your user details" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("pre", { className: "text-xs font-mono p-3 rounded border max-h-32 overflow-auto", children: JSON.stringify(data.claims, null, 2) })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("pre", { className: "text-xs font-mono p-3 rounded border max-h-32 overflow-auto", children: JSON.stringify(claims, null, 2) })
     ] }),
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-bold text-2xl mb-4", children: "Next steps" }),

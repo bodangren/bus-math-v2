@@ -1,3 +1,5 @@
+import { PASSWORD_ALPHABET } from './constants';
+
 type UserRole = 'student' | 'teacher' | 'admin';
 
 export interface SessionClaims {
@@ -172,6 +174,11 @@ export async function verifyPassword(
   const a = encoder.encode(candidate);
   const b = encoder.encode(credential.passwordHash);
   return timingSafeEquals(a, b);
+}
+
+export function generateRandomPassword(length = 12): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (byte) => PASSWORD_ALPHABET[byte % PASSWORD_ALPHABET.length]).join('');
 }
 
 export function generatePasswordSalt(bytes = 16): string {

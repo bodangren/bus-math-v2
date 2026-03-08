@@ -205,6 +205,68 @@ export const completePhaseMutation = mutation({
   },
 });
 
+export const getLessonWithContent = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    const lesson = await ctx.db
+      .query("lessons")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .unique();
+
+    if (!lesson) return null;
+
+    const versions = await ctx.db
+      .query("lesson_versions")
+      .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
+      .collect();
+
+    if (versions.length === 0) return { lesson, phases: [] };
+
+    versions.sort((a, b) => b.version - a.version);
+    const latestVersion = versions[0];
+
+    const phases = await ctx.db
+      .query("phase_versions")
+      .withIndex("by_lesson_version", (q) => q.eq("lessonVersionId", latestVersion._id))
+      .collect();
+
+    phases.sort((a, b) => a.phaseNumber - b.phaseNumber);
+
+    const phasesWithSections = await Promise.all(
+      phases.map(async (phase) => {
+        const sections = await ctx.db
+          .query("phase_sections")
+          .withIndex("by_phase_version", (q) => q.eq("phaseVersionId", phase._id))
+          .collect();
+        sections.sort((a, b) => a.sequenceOrder - b.sequenceOrder);
+        return { ...phase, sections };
+      }),
+    );
+
+    return {
+      lesson: {
+        ...lesson,
+        title: latestVersion.title ?? lesson.title,
+        description: latestVersion.description ?? lesson.description,
+      },
+      phases: phasesWithSections,
+    };
+  },
+});
+
+export const getFirstLessonSlug = query({
+  args: {},
+  handler: async (ctx) => {
+    const allLessons = await ctx.db.query("lessons").collect();
+    if (allLessons.length === 0) return null;
+    allLessons.sort((a, b) => {
+      if (a.unitNumber !== b.unitNumber) return a.unitNumber - b.unitNumber;
+      return a.orderIndex - b.orderIndex;
+    });
+    return allLessons[0].slug;
+  },
+});
+
 export const canAccessPhase = query({
   args: {
     userId: v.id("profiles"),

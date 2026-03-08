@@ -1,20 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockFetchQuery = vi.fn();
 const mockFetchInternalMutation = vi.fn();
 const mockGeneratePasswordSalt = vi.fn();
 const mockHashPassword = vi.fn();
 
 vi.mock('@/lib/convex/server', () => ({
-  fetchQuery: mockFetchQuery,
   fetchInternalMutation: mockFetchInternalMutation,
-  api: {
-    activities: {
-      getProfileByUsername: 'api.activities.getProfileByUsername',
-    },
-  },
   internal: {
     auth: {
+      ensureProfileByUsername: 'internal.auth.ensureProfileByUsername',
       upsertCredentialByUsername: 'internal.auth.upsertCredentialByUsername',
     },
   },
@@ -32,25 +26,24 @@ describe('POST /api/users/ensure-demo', () => {
     vi.clearAllMocks();
   });
 
-  it('provisions credentials for demo users with existing profiles', async () => {
-    mockFetchQuery.mockResolvedValueOnce({
-      id: 'teacher-id',
-      username: 'demo_teacher',
-      role: 'teacher',
-    });
-    mockFetchQuery.mockResolvedValueOnce({
-      id: 'student-id',
-      username: 'demo_student',
-      role: 'student',
-    });
+  it('ensures demo profiles and provisions credentials', async () => {
+    mockFetchInternalMutation
+      // teacher
+      .mockResolvedValueOnce({ ok: true, created: false, profileId: 'teacher-id' })
+      .mockResolvedValueOnce({ ok: true, updated: false })
+      // student
+      .mockResolvedValueOnce({ ok: true, created: false, profileId: 'student-id' })
+      .mockResolvedValueOnce({ ok: true, updated: true })
+      // admin
+      .mockResolvedValueOnce({ ok: true, created: true, profileId: 'admin-id' })
+      .mockResolvedValueOnce({ ok: true, updated: false });
 
     mockGeneratePasswordSalt.mockReturnValueOnce('salt-teacher');
     mockGeneratePasswordSalt.mockReturnValueOnce('salt-student');
+    mockGeneratePasswordSalt.mockReturnValueOnce('salt-admin');
     mockHashPassword.mockResolvedValueOnce('hash-teacher');
     mockHashPassword.mockResolvedValueOnce('hash-student');
-
-    mockFetchInternalMutation.mockResolvedValueOnce({ ok: true, updated: false });
-    mockFetchInternalMutation.mockResolvedValueOnce({ ok: true, updated: true });
+    mockHashPassword.mockResolvedValueOnce('hash-admin');
 
     const response = await POST();
     const json = await response.json();
@@ -61,21 +54,29 @@ describe('POST /api/users/ensure-demo', () => {
       results: [
         { username: 'demo_teacher', status: 'created' },
         { username: 'demo_student', status: 'updated' },
+        { username: 'demo_admin', status: 'created' },
       ],
     });
 
-    expect(mockFetchQuery).toHaveBeenNthCalledWith(1, 'api.activities.getProfileByUsername', {
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith('internal.auth.ensureProfileByUsername', {
       username: 'demo_teacher',
+      role: 'teacher',
     });
-    expect(mockFetchQuery).toHaveBeenNthCalledWith(2, 'api.activities.getProfileByUsername', {
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith('internal.auth.ensureProfileByUsername', {
       username: 'demo_student',
+      role: 'student',
+    });
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith('internal.auth.ensureProfileByUsername', {
+      username: 'demo_admin',
+      role: 'admin',
     });
 
     expect(mockHashPassword).toHaveBeenNthCalledWith(1, 'demo123', 'salt-teacher', 120000);
     expect(mockHashPassword).toHaveBeenNthCalledWith(2, 'demo123', 'salt-student', 120000);
+    expect(mockHashPassword).toHaveBeenNthCalledWith(3, 'demo123', 'salt-admin', 120000);
 
     expect(mockFetchInternalMutation).toHaveBeenNthCalledWith(
-      1,
+      2,
       'internal.auth.upsertCredentialByUsername',
       expect.objectContaining({
         username: 'demo_teacher',
@@ -87,7 +88,7 @@ describe('POST /api/users/ensure-demo', () => {
       }),
     );
     expect(mockFetchInternalMutation).toHaveBeenNthCalledWith(
-      2,
+      4,
       'internal.auth.upsertCredentialByUsername',
       expect.objectContaining({
         username: 'demo_student',
@@ -98,18 +99,35 @@ describe('POST /api/users/ensure-demo', () => {
         isActive: true,
       }),
     );
+    expect(mockFetchInternalMutation).toHaveBeenNthCalledWith(
+      6,
+      'internal.auth.upsertCredentialByUsername',
+      expect.objectContaining({
+        username: 'demo_admin',
+        role: 'admin',
+        passwordHash: 'hash-admin',
+        passwordSalt: 'salt-admin',
+        passwordHashIterations: 120000,
+        isActive: true,
+      }),
+    );
   });
 
-  it('marks missing demo profile records without attempting credential writes', async () => {
-    mockFetchQuery.mockResolvedValueOnce(null);
-    mockFetchQuery.mockResolvedValueOnce({
-      id: 'student-id',
-      username: 'demo_student',
-      role: 'student',
-    });
+  it('records profile ensure failures without attempting credential writes for that user', async () => {
+    mockFetchInternalMutation
+      // teacher ensure -> fail
+      .mockResolvedValueOnce({ ok: false, reason: 'organization_not_found' })
+      // student ensure + upsert
+      .mockResolvedValueOnce({ ok: true, created: false, profileId: 'student-id' })
+      .mockResolvedValueOnce({ ok: true, updated: false })
+      // admin ensure + upsert
+      .mockResolvedValueOnce({ ok: true, created: false, profileId: 'admin-id' })
+      .mockResolvedValueOnce({ ok: true, updated: true });
+
     mockGeneratePasswordSalt.mockReturnValueOnce('salt-student');
+    mockGeneratePasswordSalt.mockReturnValueOnce('salt-admin');
     mockHashPassword.mockResolvedValueOnce('hash-student');
-    mockFetchInternalMutation.mockResolvedValueOnce({ ok: true, updated: false });
+    mockHashPassword.mockResolvedValueOnce('hash-admin');
 
     const response = await POST();
     const json = await response.json();
@@ -118,24 +136,18 @@ describe('POST /api/users/ensure-demo', () => {
     expect(json).toEqual({
       ok: true,
       results: [
-        { username: 'demo_teacher', status: 'profile_not_found' },
+        { username: 'demo_teacher', status: 'organization_not_found' },
         { username: 'demo_student', status: 'created' },
+        { username: 'demo_admin', status: 'updated' },
       ],
     });
 
-    expect(mockFetchInternalMutation).toHaveBeenCalledTimes(1);
+    expect(mockFetchInternalMutation).toHaveBeenCalledTimes(5);
   });
 
   it('returns 500 when credential provisioning fails', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    mockFetchQuery.mockResolvedValue({
-      id: 'teacher-id',
-      username: 'demo_teacher',
-      role: 'teacher',
-    });
-    mockGeneratePasswordSalt.mockReturnValue('salt');
-    mockHashPassword.mockResolvedValue('hash');
     mockFetchInternalMutation.mockRejectedValue(new Error('boom'));
 
     const response = await POST();

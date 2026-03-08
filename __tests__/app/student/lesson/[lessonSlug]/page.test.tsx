@@ -7,6 +7,9 @@ import LessonPage from '../../../../../app/student/lesson/[lessonSlug]/page';
 const { mockGetServerSessionClaims } = vi.hoisted(() => ({
   mockGetServerSessionClaims: vi.fn(),
 }));
+const { mockFetchQuery } = vi.hoisted(() => ({
+  mockFetchQuery: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
@@ -17,23 +20,36 @@ vi.mock('@/lib/auth/server', () => ({
   getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
-vi.mock('@/lib/db/drizzle', () => ({
-  db: {
-    select: vi.fn(),
-    query: {
-      lessonVersions: { findMany: vi.fn() },
-      phaseVersions: { findMany: vi.fn() },
-      phaseSections: { findMany: vi.fn() },
+vi.mock('@/lib/convex/server', () => ({
+  fetchQuery: mockFetchQuery,
+  api: {
+    api: {
+      getLessonWithContent: 'api.api.getLessonWithContent',
+      getFirstLessonSlug: 'api.api.getFirstLessonSlug',
+      getLessonBySlugOrId: 'api.api.getLessonBySlugOrId',
+      canAccessPhase: 'api.api.canAccessPhase',
+    },
+    activities: {
+      getProfileById: 'api.activities.getProfileById',
+    },
+    student: {
+      getLessonProgress: 'api.student.getLessonProgress',
     },
   },
 }));
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn(),
-}));
-
 vi.mock('@/components/student/LessonRenderer', () => ({
-  LessonRenderer: ({ lesson, phases, currentPhaseNumber, lessonSlug }: { lesson: { title: string }; phases: unknown[]; currentPhaseNumber: number; lessonSlug: string }) => {
+  LessonRenderer: ({
+    lesson,
+    phases,
+    currentPhaseNumber,
+    lessonSlug,
+  }: {
+    lesson: { title: string };
+    phases: unknown[];
+    currentPhaseNumber: number;
+    lessonSlug: string;
+  }) => {
     const firstPhase = phases[0] as { contentBlocks?: unknown[] } | undefined;
     const firstBlock = firstPhase?.contentBlocks?.[0] ?? null;
 
@@ -49,126 +65,117 @@ vi.mock('@/components/student/LessonRenderer', () => ({
   },
 }));
 
-const baseLesson = {
-  id: '123',
-  unitNumber: 1,
-  title: 'Base Lesson',
-  slug: 'test-lesson',
-  description: 'Base description',
-  learningObjectives: ['Objective 1'],
-  orderIndex: 1,
-  metadata: null,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+// ── Fixtures ──────────────────────────────────────────────────────────────────
 
-function mockDbSelect(lessonResult: unknown[] = [baseLesson], profileRole: 'student' | 'teacher' | 'admin' = 'student') {
-  return async () => {
-    const { db } = await import('@/lib/db/drizzle');
-    const limitLesson = vi.fn().mockResolvedValue(lessonResult);
-    const limitProfile = vi.fn().mockResolvedValue([{ id: 'user-123', role: profileRole }]);
-    const whereLesson = vi.fn().mockReturnValue({ limit: limitLesson });
-    const whereProfile = vi.fn().mockReturnValue({ limit: limitProfile });
-    const fromLesson = vi.fn().mockReturnValue({ where: whereLesson });
-    const fromProfile = vi.fn().mockReturnValue({ where: whereProfile });
-    let call = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      call += 1;
-      if (call === 1) return { from: fromLesson } as never;
-      return { from: fromProfile } as never;
-    });
+function makeConvexLesson(slug = 'test-lesson') {
+  return {
+    _id: 'cvx-lesson-1',
+    unitNumber: 1,
+    title: 'Test Lesson',
+    slug,
+    description: 'A test lesson',
+    learningObjectives: ['Objective 1'],
+    orderIndex: 1,
+    metadata: null,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 }
 
-async function mockVersionedPhases(phaseCount = 3) {
-  const { db } = await import('@/lib/db/drizzle');
-  vi.mocked(db.query.lessonVersions.findMany).mockResolvedValue([
-    {
-      id: 'lv-1',
-      lessonId: '123',
-      version: 1,
-      title: 'Versioned Lesson',
-      description: 'Versioned description',
-      status: 'published',
-      createdAt: new Date(),
-    },
-  ] as never);
-
-  const phases = Array.from({ length: phaseCount }).map((_, i) => ({
-    id: `pv-${i + 1}`,
+function makeConvexPhases(phaseCount = 3) {
+  return Array.from({ length: phaseCount }, (_, i) => ({
+    _id: `pv-${i + 1}`,
     lessonVersionId: 'lv-1',
     phaseNumber: i + 1,
     title: `Phase ${i + 1}`,
     estimatedMinutes: 10,
-    createdAt: new Date(),
+    createdAt: Date.now(),
+    sections: [
+      {
+        _id: `ps-${i + 1}`,
+        phaseVersionId: `pv-${i + 1}`,
+        sequenceOrder: 1,
+        sectionType: 'text',
+        content: { markdown: `# Phase ${i + 1}` },
+        createdAt: Date.now(),
+      },
+    ],
   }));
-  vi.mocked(db.query.phaseVersions.findMany).mockResolvedValue(phases as never);
-  vi.mocked(db.query.phaseSections.findMany).mockResolvedValue(
-    phases.map((p) => ({
-      id: `ps-${p.phaseNumber}`,
-      phaseVersionId: p.id,
-      sequenceOrder: 1,
-      sectionType: 'text',
-      content: { markdown: `# ${p.title}` },
-      createdAt: new Date(),
-    })) as never,
-  );
 }
 
-describe('LessonPage', () => {
-  beforeEach(async () => {
-    vi.resetAllMocks();
+function makeConvexContent(slug = 'test-lesson', phaseCount = 3) {
+  return {
+    lesson: makeConvexLesson(slug),
+    phases: makeConvexPhases(phaseCount),
+  };
+}
 
-    mockGetServerSessionClaims.mockResolvedValue({
-      sub: 'user-123',
-      username: 'student',
-      role: 'student',
-      iat: 1,
-      exp: 2,
-    });
+// ── Shared mock setup ─────────────────────────────────────────────────────────
 
-    const { createClient } = await import('@/lib/supabase/server');
-    vi.mocked(createClient).mockResolvedValue({
-      rpc: vi.fn().mockResolvedValue({ data: true, error: null }),
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            in: vi.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      }),
-    } as never);
-
-    await mockDbSelect()();
-    await mockVersionedPhases(3);
+function setupDefaultMocks() {
+  mockGetServerSessionClaims.mockResolvedValue({
+    sub: 'user-123',
+    username: 'student',
+    role: 'student',
+    iat: 1,
+    exp: 2,
   });
 
-  it('renders versioned lesson phase', async () => {
+  mockFetchQuery.mockImplementation(async (name: unknown) => {
+    if (name === 'api.api.getLessonWithContent') {
+      return makeConvexContent();
+    }
+    if (name === 'api.activities.getProfileById') {
+      return { _id: 'user-123', role: 'student' };
+    }
+    if (name === 'api.api.getLessonBySlugOrId') {
+      return { _id: 'cvx-lesson-1' };
+    }
+    if (name === 'api.api.canAccessPhase') {
+      return true;
+    }
+    if (name === 'api.student.getLessonProgress') {
+      return { phases: [] };
+    }
+    return null;
+  });
+}
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
+
+describe('LessonPage', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    setupDefaultMocks();
+  });
+
+  it('renders lesson phases from Convex content', async () => {
     const page = await LessonPage({
       params: Promise.resolve({ lessonSlug: 'test-lesson' }),
       searchParams: Promise.resolve({ phase: '1' }),
     });
     render(page);
     expect(screen.getByTestId('lesson-renderer')).toBeInTheDocument();
-    expect(screen.getByText('Versioned Lesson')).toBeInTheDocument();
+    expect(screen.getByText('Test Lesson')).toBeInTheDocument();
     expect(screen.getByTestId('phase-count')).toHaveTextContent('3');
   });
 
   it('redirects unauthenticated users to login', async () => {
     mockGetServerSessionClaims.mockResolvedValue(null);
-
     try {
       await LessonPage({
         params: Promise.resolve({ lessonSlug: 'test-lesson' }),
         searchParams: Promise.resolve({}),
       });
     } catch {}
-
     expect(redirect).toHaveBeenCalledWith('/auth/login');
   });
 
-  it('calls notFound when lesson is missing', async () => {
-    await mockDbSelect([])();
+  it('calls notFound when lesson is missing from Convex', async () => {
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return null;
+      return null;
+    });
     try {
       await LessonPage({
         params: Promise.resolve({ lessonSlug: 'missing-lesson' }),
@@ -179,33 +186,27 @@ describe('LessonPage', () => {
   });
 
   it('redirects legacy slug to first lesson when available', async () => {
-    const { db } = await import('@/lib/db/drizzle');
-    const limitMissing = vi.fn().mockResolvedValue([]);
-    const whereMissing = vi.fn().mockReturnValue({ limit: limitMissing });
-    const fromMissing = vi.fn().mockReturnValue({ where: whereMissing });
-    const limitFirst = vi.fn().mockResolvedValue([{ slug: 'foundations-ledger-basics' }]);
-    const orderByFirst = vi.fn().mockReturnValue({ limit: limitFirst });
-    const fromFirst = vi.fn().mockReturnValue({ orderBy: orderByFirst });
-    let call = 0;
-    vi.mocked(db.select).mockImplementation(() => {
-      call += 1;
-      if (call === 1) return { from: fromMissing } as never;
-      return { from: fromFirst } as never;
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return null;
+      if (name === 'api.api.getFirstLessonSlug') return 'unit-1-lesson-1';
+      return null;
     });
-
     try {
       await LessonPage({
         params: Promise.resolve({ lessonSlug: 'unit01-lesson01' }),
         searchParams: Promise.resolve({}),
       });
     } catch {}
-    expect(redirect).toHaveBeenCalledWith('/student/lesson/foundations-ledger-basics?phase=1');
+    expect(redirect).toHaveBeenCalledWith('/student/lesson/unit-1-lesson-1?phase=1');
   });
 
-  it('shows no-phase error when versioned phases are absent', async () => {
-    const { db } = await import('@/lib/db/drizzle');
-    vi.mocked(db.query.phaseVersions.findMany).mockResolvedValue([] as never);
-
+  it('shows no-phase error when lesson has zero phases in Convex', async () => {
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') {
+        return { lesson: makeConvexLesson(), phases: [] };
+      }
+      return null;
+    });
     const page = await LessonPage({
       params: Promise.resolve({ lessonSlug: 'test-lesson' }),
       searchParams: Promise.resolve({}),
@@ -215,22 +216,37 @@ describe('LessonPage', () => {
   });
 
   it('maps activity sections into activity content blocks', async () => {
-    const { db } = await import('@/lib/db/drizzle');
-    vi.mocked(db.query.phaseSections.findMany).mockResolvedValue(
-      [
-        {
-          id: 'ps-activity',
-          phaseVersionId: 'pv-1',
-          sequenceOrder: 1,
-          sectionType: 'activity',
-          content: {
-            activityId: 'activity-123',
-            required: true,
-          },
-          createdAt: new Date(),
-        },
-      ] as never,
-    );
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') {
+        return {
+          lesson: makeConvexLesson(),
+          phases: [
+            {
+              _id: 'pv-1',
+              phaseNumber: 1,
+              title: 'Phase 1',
+              estimatedMinutes: 10,
+              createdAt: Date.now(),
+              sections: [
+                {
+                  _id: 'ps-activity',
+                  phaseVersionId: 'pv-1',
+                  sequenceOrder: 1,
+                  sectionType: 'activity',
+                  content: { activityId: 'cvx-activity-abc', required: true },
+                  createdAt: Date.now(),
+                },
+              ],
+            },
+          ],
+        };
+      }
+      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
+      if (name === 'api.api.canAccessPhase') return true;
+      if (name === 'api.student.getLessonProgress') return { phases: [] };
+      return null;
+    });
 
     const page = await LessonPage({
       params: Promise.resolve({ lessonSlug: 'test-lesson' }),
@@ -246,26 +262,42 @@ describe('LessonPage', () => {
     };
 
     expect(firstBlock.type).toBe('activity');
-    expect(firstBlock.activityId).toBe('activity-123');
+    expect(firstBlock.activityId).toBe('cvx-activity-abc');
     expect(firstBlock.required).toBe(true);
   });
 
   it('falls back to markdown content for unsupported section types', async () => {
-    const { db } = await import('@/lib/db/drizzle');
-    vi.mocked(db.query.phaseSections.findMany).mockResolvedValue(
-      [
-        {
-          id: 'ps-unsupported',
-          phaseVersionId: 'pv-1',
-          sequenceOrder: 1,
-          sectionType: 'unsupported',
-          content: {
-            text: 'Fallback content',
-          },
-          createdAt: new Date(),
-        },
-      ] as never,
-    );
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') {
+        return {
+          lesson: makeConvexLesson(),
+          phases: [
+            {
+              _id: 'pv-1',
+              phaseNumber: 1,
+              title: 'Phase 1',
+              estimatedMinutes: 10,
+              createdAt: Date.now(),
+              sections: [
+                {
+                  _id: 'ps-unsupported',
+                  phaseVersionId: 'pv-1',
+                  sequenceOrder: 1,
+                  sectionType: 'unsupported',
+                  content: { text: 'Fallback content' },
+                  createdAt: Date.now(),
+                },
+              ],
+            },
+          ],
+        };
+      }
+      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
+      if (name === 'api.api.canAccessPhase') return true;
+      if (name === 'api.student.getLessonProgress') return { phases: [] };
+      return null;
+    });
 
     const page = await LessonPage({
       params: Promise.resolve({ lessonSlug: 'test-lesson' }),
@@ -274,27 +306,20 @@ describe('LessonPage', () => {
     render(page);
 
     const firstBlockText = screen.getByTestId('first-block').textContent ?? 'null';
-    const firstBlock = JSON.parse(firstBlockText) as {
-      type: string;
-      content?: string;
-    };
+    const firstBlock = JSON.parse(firstBlockText) as { type: string; content?: string };
 
     expect(firstBlock.type).toBe('markdown');
     expect(firstBlock.content).toBe('Fallback content');
   });
 
-  it('shows access error page when RPC fails', async () => {
-    const { createClient } = await import('@/lib/supabase/server');
-    vi.mocked(createClient).mockResolvedValue({
-      rpc: vi.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } }),
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            in: vi.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      }),
-    } as never);
+  it('shows access error page when Convex access check throws', async () => {
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return makeConvexContent();
+      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
+      if (name === 'api.api.canAccessPhase') throw new Error('Database error');
+      return null;
+    });
 
     const page = await LessonPage({
       params: Promise.resolve({ lessonSlug: 'test-lesson' }),
@@ -305,19 +330,11 @@ describe('LessonPage', () => {
   });
 
   it('allows teacher role to bypass phase locking', async () => {
-    const { createClient } = await import('@/lib/supabase/server');
-    const rpc = vi.fn();
-    vi.mocked(createClient).mockResolvedValue({
-      rpc,
-      from: vi.fn().mockReturnValue({
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            in: vi.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      }),
-    } as never);
-    await mockDbSelect([baseLesson], 'teacher')();
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return makeConvexContent();
+      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'teacher' };
+      return null;
+    });
 
     const page = await LessonPage({
       params: Promise.resolve({ lessonSlug: 'test-lesson' }),
@@ -325,6 +342,35 @@ describe('LessonPage', () => {
     });
     render(page);
     expect(screen.getByTestId('current-phase')).toHaveTextContent('3');
-    expect(rpc).not.toHaveBeenCalled();
+    // Only getLessonWithContent + getProfileById called (no access checks for teachers)
+    expect(mockFetchQuery).toHaveBeenCalledTimes(2);
+  });
+
+  it('redirects to the first incomplete phase using Convex lesson progress', async () => {
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return makeConvexContent();
+      if (name === 'api.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
+      if (name === 'api.student.getLessonProgress') {
+        return {
+          phases: [
+            { phaseNumber: 1, status: 'completed' },
+            { phaseNumber: 2, status: 'completed' },
+            { phaseNumber: 3, status: 'available' },
+          ],
+        };
+      }
+      if (name === 'api.api.canAccessPhase') return true;
+      return null;
+    });
+
+    try {
+      await LessonPage({
+        params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+        searchParams: Promise.resolve({}),
+      });
+    } catch {}
+
+    expect(redirect).toHaveBeenCalledWith('/student/lesson/test-lesson?phase=3');
   });
 });
