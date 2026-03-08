@@ -1,0 +1,25 @@
+Task: Teacher Intervention Dashboard
+
+Summary:
+- added shared teacher intervention analytics for status derivation, summary counts, filtering, and priority ordering
+- extended teacher dashboard UI with intervention summary cards, filtered roster, and CSV-aligned status export
+- archived the completed Conductor track and updated README feature docs
+
+Files:
+- README.md
+- app/teacher/page.tsx
+- components/teacher/TeacherCsvExportButton.tsx
+- components/teacher/TeacherDashboardContent.tsx
+- components/teacher/csvUtils.ts
+- lib/teacher/intervention.ts
+- __tests__/components/teacher/TeacherDashboardContent.test.tsx
+- __tests__/components/teacher/csvUtils.test.ts
+- __tests__/lib/teacher/intervention.test.ts
+- conductor/tracks.md
+- conductor/archive/teacher_intervention_dashboard_20260309/index.md
+- conductor/archive/teacher_intervention_dashboard_20260309/metadata.json
+- conductor/archive/teacher_intervention_dashboard_20260309/plan.md
+- conductor/archive/teacher_intervention_dashboard_20260309/spec.md
+
+Why:
+- give teachers an actionable early-intervention view that matches the PRD goal of identifying struggling or inactive students quickly without adding new backend schema or dependencies
