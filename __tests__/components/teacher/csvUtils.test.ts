@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import type { StudentDashboardRow } from "../../../components/teacher/TeacherDashboardContent";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import type { StudentDashboardRow } from "../../../lib/teacher/intervention";
 import { buildCsvFilename, studentRowsToCsv } from "../../../components/teacher/csvUtils";
 
 const demoRows: StudentDashboardRow[] = [
@@ -24,13 +24,24 @@ const demoRows: StudentDashboardRow[] = [
 ];
 
 describe("studentRowsToCsv", () => {
+  beforeAll(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2025-11-14T18:00:00.000Z"));
+  });
+
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
   it("creates CSV output with headers and formatted values", () => {
     const csv = studentRowsToCsv(demoRows);
     const lines = csv.split("\n");
 
-    expect(lines[0]).toBe("Username,Progress %,Completed Phases,Total Phases,Last Active");
-    expect(lines[1]).toBe("demo_student,66.7%,120,180,2025-11-14");
-    expect(lines[2]).toBe("quiet_student,100%,180,180,");
+    expect(lines[0]).toBe(
+      "Username,Display Name,Status,Needs Attention,Progress %,Completed Phases,Total Phases,Last Active",
+    );
+    expect(lines[1]).toBe("demo_student,Demo Student,on_track,No,66.7%,120,180,2025-11-14");
+    expect(lines[2]).toBe("quiet_student,,completed,No,100%,180,180,");
   });
 
   it("escapes commas and quotes in values", () => {
@@ -52,7 +63,7 @@ describe("studentRowsToCsv", () => {
 
   it("returns only headers when no students exist", () => {
     expect(studentRowsToCsv([])).toBe(
-      "Username,Progress %,Completed Phases,Total Phases,Last Active",
+      "Username,Display Name,Status,Needs Attention,Progress %,Completed Phases,Total Phases,Last Active",
     );
   });
 });

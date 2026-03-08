@@ -1,7 +1,13 @@
-import type { StudentDashboardRow } from "./TeacherDashboardContent";
+import {
+  deriveStudentIntervention,
+  type StudentDashboardRow,
+} from "@/lib/teacher/intervention";
 
 const HEADERS = [
   "Username",
+  "Display Name",
+  "Status",
+  "Needs Attention",
   "Progress %",
   "Completed Phases",
   "Total Phases",
@@ -50,8 +56,12 @@ export function studentRowsToCsv(students: StudentDashboardRow[]) {
   const rows = [HEADERS.join(",")];
 
   students.forEach((student) => {
+    const derived = deriveStudentIntervention(student);
     const values = [
       student.username,
+      student.displayName ?? "",
+      derived.status,
+      derived.needsAttention ? "Yes" : "No",
       formatPercentage(student.progressPercentage),
       Number.isFinite(student.completedPhases)
         ? String(student.completedPhases)

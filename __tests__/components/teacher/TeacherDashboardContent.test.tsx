@@ -1,10 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi, beforeAll, afterAll } from "vitest";
 import {
   TeacherDashboardContent,
   formatLastActive,
-  type StudentDashboardRow,
 } from "../../../components/teacher/TeacherDashboardContent";
+import type { StudentDashboardRow } from "../../../lib/teacher/intervention";
 
 const sampleStudents: StudentDashboardRow[] = [
   {
@@ -71,8 +71,41 @@ describe("TeacherDashboardContent", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Demo School")).toBeInTheDocument();
     expect(screen.getByText("1 active in the last 7 days")).toBeInTheDocument();
+    expect(screen.getByText("0 students need attention")).toBeInTheDocument();
+    expect(screen.getAllByText("At Risk").length).toBeGreaterThan(0);
     expect(screen.getByText("Students at 100% completion")).toBeInTheDocument();
     expect(screen.getByText("Course Overview")).toBeInTheDocument();
+  });
+
+  it("renders the intervention roster with status badges and default priority ordering", () => {
+    render(
+      <TeacherDashboardContent
+        teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
+        students={sampleStudents}
+        courseOverview={sampleCourseOverview}
+      />,
+    );
+
+    expect(screen.getByText("Student Intervention Queue")).toBeInTheDocument();
+    const roster = within(screen.getByTestId("intervention-roster"));
+    expect(roster.getAllByText("@demo_student").length).toBeGreaterThan(0);
+    expect(roster.getAllByText("@quiet_student").length).toBeGreaterThan(0);
+  });
+
+  it("filters the intervention roster by selected status", async () => {
+    render(
+      <TeacherDashboardContent
+        teacher={{ username: "demo_teacher", organizationName: "Demo School" }}
+        students={sampleStudents}
+        courseOverview={sampleCourseOverview}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /^completed$/i }));
+
+    const roster = within(screen.getByTestId("intervention-roster"));
+    expect(roster.getAllByText("@quiet_student").length).toBeGreaterThan(0);
+    expect(roster.queryByText("@demo_student")).not.toBeInTheDocument();
   });
 
   it("shows the CourseOverviewGrid in the main content area", () => {
@@ -88,7 +121,7 @@ describe("TeacherDashboardContent", () => {
     expect(
       screen.getByRole("table", { name: /course overview/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Demo Student")).toBeInTheDocument();
+    expect(screen.getAllByText("Demo Student").length).toBeGreaterThan(0);
     // unit header link (exact name targets the column header, not cell aria-labels)
     expect(screen.getByRole("link", { name: "Unit 1" })).toBeInTheDocument();
   });

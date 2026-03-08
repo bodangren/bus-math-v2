@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { StudentDashboardRow } from "./TeacherDashboardContent";
+import type { StudentDashboardRow } from "@/lib/teacher/intervention";
 import { buildCsvFilename, studentRowsToCsv } from "./csvUtils";
 
 interface TeacherCsvExportButtonProps {

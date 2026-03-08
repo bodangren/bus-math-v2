@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
 import { getServerSessionClaims } from "@/lib/auth/server";
-import {
-  TeacherDashboardContent,
-  type StudentDashboardRow,
-} from "@/components/teacher/TeacherDashboardContent";
+import { TeacherDashboardContent } from "@/components/teacher/TeacherDashboardContent";
 import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import { fetchCourseOverviewData } from "@/lib/teacher/course-overview-data";
+import type { StudentDashboardRow } from "@/lib/teacher/intervention";
 
 export default async function TeacherDashboardPage() {
   const claims = await getServerSessionClaims();
