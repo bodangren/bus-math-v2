@@ -22,6 +22,7 @@ This file is the source of truth for active execution order and archived track h
 
 - [x] **Track: Teacher Intervention Dashboard**
   *Link: [./conductor/archive/teacher_intervention_dashboard_20260309/](./conductor/archive/teacher_intervention_dashboard_20260309/)*
+  *Checkpoint: `e195777` (2026-03-09 closeout)*
 
 - [x] **Track: Convex Authorization Hardening & Server Boundary Cleanup**
   *Link: [./conductor/archive/convex_authz_hardening_20260309/](./conductor/archive/convex_authz_hardening_20260309/)*
