@@ -1,0 +1,23 @@
+Track: Account Settings & Self-Service Password Changes
+
+Summary:
+- Added a secure authenticated password-change API and shared role-aware password policy validation.
+- Replaced the placeholder /settings and password-update experience with a real account settings page and self-service password form.
+- Archived the Conductor track, updated README docs, and absorbed the previously untracked intervention utility test left by an earlier unfinished run.
+- Regenerated tracked dist assets after a successful production build.
+
+Key files:
+- app/api/auth/change-password/route.ts
+- app/settings/page.tsx
+- components/update-password-form.tsx
+- convex/auth.ts
+- lib/auth/password-policy.ts
+- README.md
+- conductor/archive/account_settings_password_20260309/*
+- __tests__/app/api/auth/change-password/route.test.ts
+- __tests__/app/settings/page.test.tsx
+- __tests__/components/update-password-form.test.tsx
+- __tests__/lib/teacher/intervention.test.ts
+
+Why:
+- Align the shipped auth UX with the product definition so authenticated users can manage passwords without teacher intervention for routine changes while preserving the existing teacher-managed forgot-password flow.
