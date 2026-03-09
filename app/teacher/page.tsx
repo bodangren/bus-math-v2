@@ -1,15 +1,11 @@
 import { redirect } from "next/navigation";
-import { getServerSessionClaims } from "@/lib/auth/server";
+import { requireTeacherSessionClaims } from "@/lib/auth/server";
 import { TeacherDashboardContent } from "@/components/teacher/TeacherDashboardContent";
 import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import type { StudentDashboardRow } from "@/lib/teacher/intervention";
 
 export default async function TeacherDashboardPage() {
-  const claims = await getServerSessionClaims();
-
-  if (!claims) {
-    redirect("/auth/login?redirect=/teacher");
-  }
+  const claims = await requireTeacherSessionClaims("/teacher");
 
   const data = await fetchInternalQuery(internal.teacher.getTeacherDashboardData, {
     userId: claims.sub as never,

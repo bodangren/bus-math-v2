@@ -1,0 +1,5 @@
+# Server Role Guard Cleanup & Admin Authorization Hardening
+
+- Metadata: [./metadata.json](./metadata.json)
+- Specification: [./spec.md](./spec.md)
+- Implementation Plan: [./plan.md](./plan.md)

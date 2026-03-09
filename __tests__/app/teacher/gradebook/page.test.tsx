@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { redirect } from 'next/navigation';
 
-const { mockGetServerSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
-  mockGetServerSessionClaims: vi.fn(),
+const { mockRequireTeacherSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
+  mockRequireTeacherSessionClaims: vi.fn(),
   mockFetchInternalQuery: vi.fn(),
 }));
 
@@ -13,7 +13,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/lib/auth/server', () => ({
-  getServerSessionClaims: mockGetServerSessionClaims,
+  requireTeacherSessionClaims: mockRequireTeacherSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', async () => {
@@ -36,7 +36,7 @@ const { default: CourseGradebookPage } = await import('../../../../app/teacher/g
 describe('CourseGradebookPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetServerSessionClaims.mockResolvedValue({
+    mockRequireTeacherSessionClaims.mockResolvedValue({
       sub: 'teacher_profile_1',
       username: 'teacher_one',
       role: 'teacher',
@@ -47,12 +47,14 @@ describe('CourseGradebookPage', () => {
   });
 
   it('redirects unauthenticated users to login', async () => {
-    mockGetServerSessionClaims.mockResolvedValue(null);
+    mockRequireTeacherSessionClaims.mockRejectedValue(
+      new Error('NEXT_REDIRECT:/auth/login?redirect=/teacher/gradebook'),
+    );
 
     await expect(CourseGradebookPage()).rejects.toThrow(
       'NEXT_REDIRECT:/auth/login?redirect=/teacher/gradebook',
     );
-    expect(redirect).toHaveBeenCalledWith('/auth/login?redirect=/teacher/gradebook');
+    expect(mockRequireTeacherSessionClaims).toHaveBeenCalledWith('/teacher/gradebook');
   });
 
   it('loads the course overview from an internal teacher query', async () => {
@@ -65,5 +67,12 @@ describe('CourseGradebookPage', () => {
         userId: 'teacher_profile_1',
       },
     );
+  });
+
+  it('returns teachers to the dashboard when the gradebook payload is unavailable', async () => {
+    mockFetchInternalQuery.mockResolvedValue(null);
+
+    await expect(CourseGradebookPage()).rejects.toThrow('NEXT_REDIRECT:/teacher');
+    expect(redirect).toHaveBeenCalledWith('/teacher');
   });
 });

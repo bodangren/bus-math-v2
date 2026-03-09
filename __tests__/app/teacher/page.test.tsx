@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { redirect } from 'next/navigation';
 
-const { mockGetServerSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
-  mockGetServerSessionClaims: vi.fn(),
+const { mockRequireTeacherSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
+  mockRequireTeacherSessionClaims: vi.fn(),
   mockFetchInternalQuery: vi.fn(),
 }));
 
@@ -13,7 +12,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/lib/auth/server', () => ({
-  getServerSessionClaims: mockGetServerSessionClaims,
+  requireTeacherSessionClaims: mockRequireTeacherSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', async () => {
@@ -37,7 +36,7 @@ const { default: TeacherDashboardPage } = await import('../../../app/teacher/pag
 describe('TeacherDashboardPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetServerSessionClaims.mockResolvedValue({
+    mockRequireTeacherSessionClaims.mockResolvedValue({
       sub: 'teacher_profile_1',
       username: 'teacher_one',
       role: 'teacher',
@@ -65,10 +64,10 @@ describe('TeacherDashboardPage', () => {
   });
 
   it('redirects unauthenticated users to login', async () => {
-    mockGetServerSessionClaims.mockResolvedValue(null);
+    mockRequireTeacherSessionClaims.mockRejectedValue(new Error('NEXT_REDIRECT'));
 
     await expect(TeacherDashboardPage()).rejects.toThrow('NEXT_REDIRECT');
-    expect(redirect).toHaveBeenCalledWith('/auth/login?redirect=/teacher');
+    expect(mockRequireTeacherSessionClaims).toHaveBeenCalledWith('/teacher');
   });
 
   it('loads teacher dashboard using profile id from session claims', async () => {

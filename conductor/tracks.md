@@ -41,6 +41,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Server Role Guard Cleanup & Admin Authorization Hardening**
+  *Link: [./conductor/archive/server_role_guard_cleanup_20260310/](./conductor/archive/server_role_guard_cleanup_20260310/)*
+  *Checkpoint: `pending` (2026-03-10 closeout)*
+
 - [x] **Track: Security Surface Hardening**
   *Link: [./conductor/archive/security_surface_hardening_20260310/](./conductor/archive/security_surface_hardening_20260310/)*
   *Checkpoint: `47fc7df` (2026-03-10 closeout)*

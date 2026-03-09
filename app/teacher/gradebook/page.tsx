@@ -1,14 +1,12 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { getServerSessionClaims } from '@/lib/auth/server';
+import { requireTeacherSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { CourseOverviewGrid } from '@/components/teacher/CourseOverviewGrid';
 
 export default async function CourseGradebookPage() {
-  const claims = await getServerSessionClaims();
-  if (!claims) redirect('/auth/login?redirect=/teacher/gradebook');
-  if (claims.role !== 'teacher' && claims.role !== 'admin') redirect('/student/dashboard');
+  const claims = await requireTeacherSessionClaims('/teacher/gradebook');
 
   const courseOverview = await fetchInternalQuery(
     internal.teacher.getTeacherCourseOverviewData,
@@ -17,7 +15,7 @@ export default async function CourseGradebookPage() {
     },
   );
 
-  if (!courseOverview) redirect('/auth/login');
+  if (!courseOverview) redirect('/teacher');
 
   const { rows, units } = courseOverview as {
     rows: Array<{

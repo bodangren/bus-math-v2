@@ -164,3 +164,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Migrating the remaining teacher pages to internal Convex queries removed the last live teacher runtime dependence on Drizzle without forcing a UI rewrite. The new page tests for `/teacher/gradebook`, `/teacher/units/[unitNumber]`, and `/teacher/students/[studentId]` now pin that boundary in place.
 - **Lesson:** When the app claims Convex is the source of truth, server-rendered teacher analytics pages cannot be allowed to keep “temporary” SQL fallbacks for long. Boundary tests that inspect the actual page source are cheap, but they catch this kind of architectural backslide early.
+
+### #server-role-guard-cleanup-2026-03-10 - Server Role Guard Cleanup & Admin Authorization Hardening
+
+- **Went well:** Pulling teacher/admin page gating into shared server helpers closed a real admin authorization gap and removed duplicate redirect logic from the March 9 teacher pages without changing their UI contracts.
+- **Lesson:** Placeholder or low-traffic privileged pages still need the same explicit role enforcement as production dashboards. Shared server guards are safer than repeating inline checks because redirect drift becomes immediately visible in focused page tests.

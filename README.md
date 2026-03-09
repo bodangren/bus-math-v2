@@ -9,6 +9,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Student Progress Hub**: Guided dashboard with overall course progress, resume/start recommendations, and unit-by-unit completion cards
 - **Teacher Intervention Queue**: At-risk and inactive student triage with status filters and CSV-aligned intervention exports
 - **Convex-Backed Teacher Views**: Teacher dashboard, course gradebook, unit gradebook, and student detail pages now all read through internal Convex queries instead of legacy Drizzle runtime paths
+- **Shared Server Role Guards**: Teacher/admin App Router pages now use shared server-side claim guards, and the admin dashboard rejects non-admin sessions
 - **Account Settings & Self-Service Password Changes**: Authenticated users can review account context and update their own password without leaving the session
 - **Multi-tenant Architecture**: Organization-based access control
 - **Role-Based Access**: Separate interfaces for students, teachers, and administrators
@@ -157,6 +158,7 @@ bus-math-v2/
 - Authenticated users can update their password from `/settings`; forgotten-password recovery remains teacher/admin-managed.
 - `/student` now resolves to the guided student dashboard, and lesson resume links consistently target `/student/lesson/[lessonSlug]`.
 - Teacher-facing dashboard, gradebook, and student-detail routes now use internal Convex queries end to end, keeping classroom analytics on the same runtime data path as the rest of the app.
+- Privileged App Router pages should use the shared helpers in `lib/auth/server.ts` (`requireTeacherSessionClaims`, `requireAdminSessionClaims`) instead of ad hoc inline role checks so login and fallback redirects stay consistent.
 
 ## Testing
 

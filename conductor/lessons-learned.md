@@ -6,16 +6,19 @@
 ### Architecture & Design
 <!-- Decisions made that future tracks should be aware of -->
 
+- (2026-03-10, server_role_guard_cleanup_20260310) Privileged App Router pages should enter through shared `lib/auth/server` role guards so authentication, role checks, and redirect targets stay centralized and testable.
 - (2026-03-10, security_surface_hardening_20260310) Sensitive curriculum/activity lookups must stay behind internal Convex queries even when a server route performs extra redaction logic.
 
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->
 
+- (2026-03-10, server_role_guard_cleanup_20260310) “Authenticated” is not an authorization policy; admin/teacher pages need explicit role guards even when the UI is still a placeholder shell.
 - (2026-03-10, security_surface_hardening_20260310) Environment-gated demo/bootstrap endpoints are still production attack surface; review proxy public-route allowlists alongside the route handler itself.
 
 ### Patterns That Worked Well
 <!-- Approaches worth repeating -->
 
+- (2026-03-10, server_role_guard_cleanup_20260310) Helper-first route tests made it easy to refactor page auth logic without losing redirect coverage for teacher/admin flows.
 - (2026-03-10, security_surface_hardening_20260310) Boundary tests that grep Convex export kinds plus targeted route tests caught the public-vs-internal API drift quickly.
 
 ### Planning Improvements

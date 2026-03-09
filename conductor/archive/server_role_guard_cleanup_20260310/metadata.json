@@ -1,0 +1,11 @@
+{
+  "track_id": "server_role_guard_cleanup_20260310",
+  "type": "refactor",
+  "status": "archived",
+  "created_at": "2026-03-10T00:55:00Z",
+  "updated_at": "2026-03-10T05:00:00Z",
+  "description": "Consolidate server-side role guards, harden admin authorization, and remove duplicate teacher page auth logic.",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": ""
+}

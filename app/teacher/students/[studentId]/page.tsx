@@ -5,7 +5,7 @@ import { formatLastActive } from '@/components/teacher/TeacherDashboardContent';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { getServerSessionClaims } from '@/lib/auth/server';
+import { requireTeacherSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, internal } from '@/lib/convex/server';
 
 interface StudentProgressSnapshot {
@@ -39,14 +39,7 @@ export default async function TeacherStudentDetailPage({
 }: TeacherStudentDetailPageProps) {
   const { studentId } = await params;
 
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect(`/auth/login?redirect=/teacher/students/${studentId}`);
-  }
-
-  if (claims.role !== 'teacher' && claims.role !== 'admin') {
-    redirect('/student/dashboard');
-  }
+  const claims = await requireTeacherSessionClaims(`/teacher/students/${studentId}`);
 
   const result = await fetchInternalQuery(
     internal.teacher.getTeacherStudentDetail,
@@ -61,7 +54,7 @@ export default async function TeacherStudentDetailPage({
   }
 
   if (result.status === 'unauthorized') {
-    redirect('/auth/login?redirect=/teacher');
+    redirect('/teacher');
   }
 
   const { organizationName, student, snapshot } = result as {

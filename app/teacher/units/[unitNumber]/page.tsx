@@ -1,7 +1,7 @@
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { getServerSessionClaims } from '@/lib/auth/server';
+import { requireTeacherSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { GradebookGrid } from '@/components/teacher/GradebookGrid';
 
@@ -17,14 +17,7 @@ export default async function UnitGradebookPage({ params }: PageProps) {
     notFound();
   }
 
-  // Auth
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect(`/auth/login?redirect=/teacher/units/${unitNumber}`);
-  }
-  if (claims.role !== 'teacher' && claims.role !== 'admin') {
-    redirect('/student/dashboard');
-  }
+  const claims = await requireTeacherSessionClaims(`/teacher/units/${unitNumber}`);
 
   const gradebook = await fetchInternalQuery(
     internal.teacher.getTeacherGradebookData,
@@ -35,7 +28,7 @@ export default async function UnitGradebookPage({ params }: PageProps) {
   );
 
   if (!gradebook) {
-    redirect('/auth/login');
+    redirect('/teacher');
   }
 
   const { rows, lessons } = gradebook as {

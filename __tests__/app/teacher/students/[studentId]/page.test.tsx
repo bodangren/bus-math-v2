@@ -7,7 +7,7 @@ const mockRedirect = vi.fn((path: string) => {
 const mockNotFound = vi.fn(() => {
   throw new Error('notFound');
 });
-const mockGetServerSessionClaims = vi.fn();
+const mockRequireTeacherSessionClaims = vi.fn();
 const mockFetchInternalQuery = vi.fn();
 
 vi.mock('next/navigation', () => ({
@@ -16,7 +16,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/lib/auth/server', () => ({
-  getServerSessionClaims: mockGetServerSessionClaims,
+  requireTeacherSessionClaims: mockRequireTeacherSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', async () => {
@@ -39,7 +39,7 @@ const StudentDetailPageImport = () => import('../../../../../app/teacher/student
 describe('Teacher student detail page', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    mockGetServerSessionClaims.mockResolvedValue({
+    mockRequireTeacherSessionClaims.mockResolvedValue({
       sub: 'teacher-1',
       username: 'teacher',
       role: 'teacher',
@@ -49,7 +49,9 @@ describe('Teacher student detail page', () => {
   });
 
   it('redirects unauthenticated users to login', async () => {
-    mockGetServerSessionClaims.mockResolvedValue(null);
+    mockRequireTeacherSessionClaims.mockRejectedValue(
+      new Error('redirect:/auth/login?redirect=/teacher/students/student-1'),
+    );
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();
 
@@ -58,6 +60,7 @@ describe('Teacher student detail page', () => {
         params: Promise.resolve({ studentId: 'student-1' }),
       }),
     ).rejects.toThrow('redirect:/auth/login?redirect=/teacher/students/student-1');
+    expect(mockRequireTeacherSessionClaims).toHaveBeenCalledWith('/teacher/students/student-1');
   }, 15_000);
 
   it('renders org-scoped student details', async () => {
@@ -113,5 +116,18 @@ describe('Teacher student detail page', () => {
         params: Promise.resolve({ studentId: 'student-2' }),
       }),
     ).rejects.toThrow('notFound');
+  });
+
+  it('returns teachers to the dashboard when access is denied after auth', async () => {
+    mockFetchInternalQuery.mockResolvedValue({ status: 'unauthorized' });
+
+    const { default: StudentDetailPage } = await StudentDetailPageImport();
+
+    await expect(
+      StudentDetailPage({
+        params: Promise.resolve({ studentId: 'student-1' }),
+      }),
+    ).rejects.toThrow('redirect:/teacher');
+    expect(mockRedirect).toHaveBeenCalledWith('/teacher');
   });
 });

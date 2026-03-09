@@ -1,11 +1,7 @@
-import { redirect } from "next/navigation";
-import { getServerSessionClaims } from "@/lib/auth/server";
+import { requireAdminSessionClaims } from "@/lib/auth/server";
 
 export default async function AdminDashboard() {
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect("/auth/login");
-  }
+  const claims = await requireAdminSessionClaims("/admin/dashboard");
 
   return (
     <div className="container mx-auto p-8">
