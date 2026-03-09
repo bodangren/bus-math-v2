@@ -1,0 +1,4 @@
+Track: security_surface_hardening_20260310
+Summary: Hardened demo-account provisioning and sensitive activity access boundaries after code review surfaced critical preview credential exposure and public Convex answer-key leakage.
+Files: README.md, __tests__/app/api/activities/[activityId]/route.test.ts, __tests__/app/api/users/ensure-demo/route.test.ts, __tests__/config/convex-auth-boundary.test.ts, __tests__/proxy.test.ts, app/api/activities/[activityId]/route.ts, conductor/archive/security_surface_hardening_20260310/{index.md,metadata.json,plan.md,spec.md}, conductor/lessons-learned.md, conductor/tech-debt.md, conductor/tracks.md, convex/api.ts, dist/server/index.js, lib/auth/demo-provisioning.ts, proxy.ts
+Why: Prevent unauthenticated preview users from minting known demo teacher/admin credentials and ensure student-facing activity access cannot bypass server-side redaction via public Convex queries.
