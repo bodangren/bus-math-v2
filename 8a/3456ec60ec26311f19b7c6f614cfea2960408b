@@ -1,0 +1,25 @@
+Track: Dashboard Helper Consolidation & Dev Stack Closeout
+
+Summary:
+- finished the shared dashboard helper extraction across Convex dashboard/curriculum queries
+- added a non-interactive local dev stack helper script and package command
+- updated README, retrospective notes, and Conductor archive state to close the stale migration umbrella track
+- captured generated API typings and rebuilt dist assets left by the unattended run
+
+Files:
+- convex/dashboardHelpers.ts
+- convex/public.ts
+- convex/student.ts
+- convex/teacher.ts
+- __tests__/convex/dashboard-helpers.test.ts
+- __tests__/setup/dev-stack-script.test.ts
+- scripts/dev-stack.mjs
+- package.json
+- README.md
+- conductor/tracks.md
+- conductor/archive/dashboard_refactor_dev_stack_20260309/*
+- conductor/archive/vinext_convex_migration_20260225/*
+- docs/RETROSPECTIVE.md
+
+Why:
+The previous unattended run left coherent but uncommitted cleanup work in the tree. Closing it out restores a clean Conductor state and removes duplicated helper logic and local setup friction before new feature work continues.
