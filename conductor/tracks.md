@@ -43,7 +43,7 @@ This file is the source of truth for active execution order and archived track h
 
 - [x] **Track: Security Surface Hardening**
   *Link: [./conductor/archive/security_surface_hardening_20260310/](./conductor/archive/security_surface_hardening_20260310/)*
-  *Checkpoint: `pending` (2026-03-10 closeout)*
+  *Checkpoint: `47fc7df` (2026-03-10 closeout)*
 
 - [x] **Track: Teacher Convex Data Paths**
   *Link: [./conductor/archive/teacher_convex_data_paths_20260309/](./conductor/archive/teacher_convex_data_paths_20260309/)*
