@@ -2,7 +2,7 @@ import require$$0, { AsyncLocalStorage as AsyncLocalStorage$1 } from "node:async
 import assetsManifest from "./__vite_rsc_assets_manifest.js";
 import { z } from "zod";
 import { pgTable, timestamp, jsonb, text, uuid, pgEnum, boolean, integer, check, unique, index, uniqueIndex } from "drizzle-orm/pg-core";
-import { sql, relations, eq, count, and, asc, inArray } from "drizzle-orm";
+import { sql, relations, eq, count } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createClient } from "@supabase/supabase-js";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -22754,172 +22754,6 @@ const formatLastActive = /* @__PURE__ */ registerClientReference(() => {
 const TeacherDashboardContent = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'TeacherDashboardContent' is called on server");
 }, "12afa74d869d", "TeacherDashboardContent");
-function computeLessonStatus(phaseStatuses) {
-  if (phaseStatuses.length === 0) return "not_started";
-  if (phaseStatuses.every((s) => s === "completed")) return "completed";
-  if (phaseStatuses.some((s) => s === "completed" || s === "in_progress")) return "in_progress";
-  return "not_started";
-}
-function computeCellColor(completionStatus, masteryLevel) {
-  if (completionStatus === "not_started" && masteryLevel === null) return "gray";
-  if (completionStatus === "completed" || masteryLevel !== null && masteryLevel >= 80) {
-    return "green";
-  }
-  if (completionStatus === "in_progress" || masteryLevel !== null && masteryLevel >= 50) {
-    return "yellow";
-  }
-  return "red";
-}
-function buildGradebookCell(lesson, phases, masteryLevel) {
-  const completionStatus = computeLessonStatus(phases);
-  const color = computeCellColor(completionStatus, masteryLevel);
-  return { lesson, completionStatus, masteryLevel, color };
-}
-function assembleGradebookRows(students, rawLessons, rawLessonVersions, rawPhaseVersions, rawPrimaryStandards, progressRows, competencyRows) {
-  const sortedLessons = [...rawLessons].sort((a, b) => a.orderIndex - b.orderIndex);
-  const versionByLessonId = /* @__PURE__ */ new Map();
-  for (const lv of rawLessonVersions) {
-    if (!versionByLessonId.has(lv.lessonId)) {
-      versionByLessonId.set(lv.lessonId, lv.id);
-    }
-  }
-  const phasesByVersion = /* @__PURE__ */ new Map();
-  const sortedPhases = [...rawPhaseVersions].sort((a, b) => a.phaseNumber - b.phaseNumber);
-  for (const pv of sortedPhases) {
-    const list = phasesByVersion.get(pv.lessonVersionId) ?? [];
-    list.push(pv.id);
-    phasesByVersion.set(pv.lessonVersionId, list);
-  }
-  const primaryStandardByVersion = /* @__PURE__ */ new Map();
-  for (const ls of rawPrimaryStandards) {
-    if (ls.isPrimary) {
-      primaryStandardByVersion.set(ls.lessonVersionId, ls.standardId);
-    }
-  }
-  const progressIndex = /* @__PURE__ */ new Map();
-  for (const row of progressRows) {
-    progressIndex.set(`${row.userId}|${row.phaseId}`, row.status);
-  }
-  const competencyIndex = /* @__PURE__ */ new Map();
-  for (const row of competencyRows) {
-    competencyIndex.set(`${row.studentId}|${row.standardId}`, row.masteryLevel);
-  }
-  const gradebookLessons = sortedLessons.map((lesson) => ({
-    lessonId: lesson.id,
-    lessonTitle: lesson.title,
-    orderIndex: lesson.orderIndex,
-    isUnitTest: lesson.orderIndex === 11
-  }));
-  const rows = students.map((student) => {
-    const cells = gradebookLessons.map((gl) => {
-      const lessonVersionId = versionByLessonId.get(gl.lessonId);
-      const phaseIds = lessonVersionId ? phasesByVersion.get(lessonVersionId) ?? [] : [];
-      const standardId = lessonVersionId ? primaryStandardByVersion.get(lessonVersionId) : void 0;
-      const phaseStatuses = phaseIds.map(
-        (phaseId) => progressIndex.get(`${student.id}|${phaseId}`) ?? "not_started"
-      );
-      const masteryLevel = standardId != null ? competencyIndex.get(`${student.id}|${standardId}`) ?? null : null;
-      return buildGradebookCell(gl, phaseStatuses, masteryLevel);
-    });
-    return {
-      studentId: student.id,
-      displayName: student.displayName ?? student.username,
-      username: student.username,
-      cells
-    };
-  });
-  return { rows, lessons: gradebookLessons };
-}
-function assembleCourseOverviewRows(students, rawLessons, rawLessonVersions, rawPrimaryStandards, competencyRows) {
-  const unitNumbers = [...new Set(rawLessons.map((l) => l.unitNumber))].sort((a, b) => a - b);
-  const units = unitNumbers.map((n) => ({ unitNumber: n }));
-  const unitByLesson = new Map(rawLessons.map((l) => [l.id, l.unitNumber]));
-  const lessonByVersion = new Map(rawLessonVersions.map((lv) => [lv.id, lv.lessonId]));
-  const standardsByUnit = /* @__PURE__ */ new Map();
-  for (const ls of rawPrimaryStandards) {
-    if (!ls.isPrimary) continue;
-    const lessonId = lessonByVersion.get(ls.lessonVersionId);
-    if (!lessonId) continue;
-    const unitNumber = unitByLesson.get(lessonId);
-    if (unitNumber == null) continue;
-    const set = standardsByUnit.get(unitNumber) ?? /* @__PURE__ */ new Set();
-    set.add(ls.standardId);
-    standardsByUnit.set(unitNumber, set);
-  }
-  const competencyIndex = /* @__PURE__ */ new Map();
-  for (const row of competencyRows) {
-    competencyIndex.set(`${row.studentId}|${row.standardId}`, row.masteryLevel);
-  }
-  const rows = students.map((student) => {
-    const cells = unitNumbers.map((unitNumber) => {
-      const standardIds = standardsByUnit.get(unitNumber);
-      if (!standardIds || standardIds.size === 0) {
-        return { unitNumber, avgMastery: null, color: "gray" };
-      }
-      const values = [];
-      for (const stdId of standardIds) {
-        const level = competencyIndex.get(`${student.id}|${stdId}`);
-        if (level != null) values.push(level);
-      }
-      if (values.length === 0) {
-        return { unitNumber, avgMastery: null, color: "gray" };
-      }
-      const avg = Math.round(values.reduce((s, v) => s + v, 0) / values.length);
-      return { unitNumber, avgMastery: avg, color: computeCellColor("not_started", avg) };
-    });
-    return {
-      studentId: student.id,
-      displayName: student.displayName ?? student.username,
-      username: student.username,
-      cells
-    };
-  });
-  return { rows, units };
-}
-async function fetchCourseOverviewData(orgId) {
-  const [students, rawLessons] = await Promise.all([
-    db.select({ id: profiles.id, username: profiles.username, displayName: profiles.displayName }).from(profiles).where(and(eq(profiles.organizationId, orgId), eq(profiles.role, "student"))).orderBy(asc(profiles.displayName)),
-    db.select({ id: lessons.id, unitNumber: lessons.unitNumber }).from(lessons).orderBy(asc(lessons.unitNumber))
-  ]);
-  if (students.length === 0 || rawLessons.length === 0) {
-    const unitNumbers = [...new Set(rawLessons.map((l) => l.unitNumber))].sort((a, b) => a - b);
-    return { rows: [], units: unitNumbers.map((n) => ({ unitNumber: n })) };
-  }
-  const lessonIds = rawLessons.map((l) => l.id);
-  const rawLessonVersions = await db.select({ id: lessonVersions.id, lessonId: lessonVersions.lessonId }).from(lessonVersions).where(and(inArray(lessonVersions.lessonId, lessonIds), eq(lessonVersions.status, "published")));
-  if (rawLessonVersions.length === 0) {
-    return assembleCourseOverviewRows(students, rawLessons, [], [], []);
-  }
-  const lessonVersionIds = rawLessonVersions.map((lv) => lv.id);
-  const rawPrimaryStandards = await db.select({
-    lessonVersionId: lessonStandards.lessonVersionId,
-    standardId: lessonStandards.standardId,
-    isPrimary: lessonStandards.isPrimary
-  }).from(lessonStandards).where(and(
-    inArray(lessonStandards.lessonVersionId, lessonVersionIds),
-    eq(lessonStandards.isPrimary, true)
-  ));
-  if (rawPrimaryStandards.length === 0) {
-    return assembleCourseOverviewRows(students, rawLessons, rawLessonVersions, [], []);
-  }
-  const standardIds = rawPrimaryStandards.map((ls) => ls.standardId);
-  const studentIds = students.map((s) => s.id);
-  const competencyRows = await db.select({
-    studentId: studentCompetency.studentId,
-    standardId: studentCompetency.standardId,
-    masteryLevel: studentCompetency.masteryLevel
-  }).from(studentCompetency).where(and(
-    inArray(studentCompetency.studentId, studentIds),
-    inArray(studentCompetency.standardId, standardIds)
-  ));
-  return assembleCourseOverviewRows(
-    students,
-    rawLessons,
-    rawLessonVersions,
-    rawPrimaryStandards,
-    competencyRows
-  );
-}
 async function TeacherDashboardPage() {
   const claims = await getServerSessionClaims();
   if (!claims) {
@@ -22931,7 +22765,15 @@ async function TeacherDashboardPage() {
   if (!data) {
     redirect("/student/dashboard");
   }
-  const courseOverview = await fetchCourseOverviewData(data.teacher.organizationId);
+  const courseOverview = await fetchInternalQuery(
+    internal.teacher.getTeacherCourseOverviewData,
+    {
+      userId: claims.sub
+    }
+  );
+  if (!courseOverview) {
+    redirect("/student/dashboard");
+  }
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
     TeacherDashboardContent,
     {
@@ -22958,10 +22800,15 @@ const CourseOverviewGrid = /* @__PURE__ */ registerClientReference(() => {
 async function CourseGradebookPage() {
   const claims = await getServerSessionClaims();
   if (!claims) redirect("/auth/login?redirect=/teacher/gradebook");
-  const [teacher] = await db.select({ id: profiles.id, username: profiles.username, role: profiles.role, organizationId: profiles.organizationId }).from(profiles).where(eq(profiles.id, claims.sub)).limit(1);
-  if (!teacher) redirect("/auth/login");
-  if (teacher.role !== "teacher" && teacher.role !== "admin") redirect("/student/dashboard");
-  const { rows, units } = await fetchCourseOverviewData(teacher.organizationId);
+  if (claims.role !== "teacher" && claims.role !== "admin") redirect("/student/dashboard");
+  const courseOverview = await fetchInternalQuery(
+    internal.teacher.getTeacherCourseOverviewData,
+    {
+      userId: claims.sub
+    }
+  );
+  if (!courseOverview) redirect("/auth/login");
+  const { rows, units } = courseOverview;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 space-y-6", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("header", { className: "space-y-1", children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Link, { href: "/teacher", className: "inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground", children: [
@@ -23423,69 +23270,6 @@ function clampPercentage(value) {
 function formatPercentage(value) {
   return `${percentageFormatter.format(clampPercentage(value))}%`;
 }
-async function getTeacherProfile(userId) {
-  const [teacher] = await db.select({
-    id: profiles.id,
-    username: profiles.username,
-    role: profiles.role,
-    organizationId: profiles.organizationId
-  }).from(profiles).where(eq(profiles.id, userId)).limit(1);
-  return teacher ?? null;
-}
-async function getOrganizationName(orgId) {
-  const [organization] = await db.select({
-    id: organizations.id,
-    name: organizations.name
-  }).from(organizations).where(eq(organizations.id, orgId)).limit(1);
-  return organization?.name ?? "Your organization";
-}
-async function getStudentInOrganization(studentId, orgId) {
-  const [student] = await db.select({
-    id: profiles.id,
-    username: profiles.username,
-    displayName: profiles.displayName
-  }).from(profiles).where(
-    and(
-      eq(profiles.id, studentId),
-      eq(profiles.organizationId, orgId),
-      eq(profiles.role, "student")
-    )
-  ).limit(1);
-  return student ?? null;
-}
-async function getStudentProgressSnapshot(studentId) {
-  const versionedPhaseRows = await db.select({ id: phaseVersions.id }).from(phaseVersions);
-  const activePhaseIds = new Set(versionedPhaseRows.map((row) => row.id));
-  const totalPhases = activePhaseIds.size;
-  const progressRows = await db.select({
-    phaseId: studentProgress.phaseId,
-    status: studentProgress.status,
-    updatedAt: studentProgress.updatedAt
-  }).from(studentProgress).where(eq(studentProgress.userId, studentId));
-  let completedPhases = 0;
-  let lastActive = null;
-  for (const row of progressRows) {
-    if (!activePhaseIds.has(row.phaseId)) {
-      continue;
-    }
-    if (row.status === "completed") {
-      completedPhases += 1;
-    }
-    if (row.updatedAt) {
-      const rowTime = row.updatedAt.getTime();
-      const currentTime = lastActive ? new Date(lastActive).getTime() : 0;
-      if (rowTime > currentTime) {
-        lastActive = row.updatedAt.toISOString();
-      }
-    }
-  }
-  return {
-    completedPhases,
-    totalPhases,
-    progressPercentage: totalPhases > 0 ? Number((completedPhases / totalPhases * 100).toFixed(1)) : 0,
-    lastActive
-  };
-}
 async function TeacherStudentDetailPage({
   params
 }) {
@@ -23494,21 +23278,23 @@ async function TeacherStudentDetailPage({
   if (!claims) {
     redirect(`/auth/login?redirect=/teacher/students/${studentId}`);
   }
-  const teacher = await getTeacherProfile(claims.sub);
-  if (!teacher) {
-    redirect("/auth/login?redirect=/teacher");
-  }
-  if (teacher.role !== "teacher" && teacher.role !== "admin") {
+  if (claims.role !== "teacher" && claims.role !== "admin") {
     redirect("/student/dashboard");
   }
-  const [organizationName, student, snapshot] = await Promise.all([
-    getOrganizationName(teacher.organizationId),
-    getStudentInOrganization(studentId, teacher.organizationId),
-    getStudentProgressSnapshot(studentId)
-  ]);
-  if (!student) {
+  const result = await fetchInternalQuery(
+    internal.teacher.getTeacherStudentDetail,
+    {
+      userId: claims.sub,
+      studentId
+    }
+  );
+  if (!result || result.status === "not_found") {
     notFound();
   }
+  if (result.status === "unauthorized") {
+    redirect("/auth/login?redirect=/teacher");
+  }
+  const { organizationName, student, snapshot } = result;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-3xl px-4 space-y-6", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
@@ -23562,98 +23348,6 @@ const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: TeacherStudentDetailPage
 }, Symbol.toStringTag, { value: "Module" }));
-async function fetchGradebookData(unitNumber, orgId) {
-  const rawLessons = await db.select({
-    id: lessons.id,
-    title: lessons.title,
-    orderIndex: lessons.orderIndex,
-    unitNumber: lessons.unitNumber
-  }).from(lessons).where(eq(lessons.unitNumber, unitNumber)).orderBy(asc(lessons.orderIndex));
-  if (rawLessons.length === 0) {
-    return { rows: [], lessons: [] };
-  }
-  const lessonIds = rawLessons.map((l) => l.id);
-  const rawLessonVersions = await db.select({ id: lessonVersions.id, lessonId: lessonVersions.lessonId }).from(lessonVersions).where(
-    and(
-      inArray(lessonVersions.lessonId, lessonIds),
-      eq(lessonVersions.status, "published")
-    )
-  );
-  const lessonVersionIds = rawLessonVersions.map((lv) => lv.id);
-  if (lessonVersionIds.length === 0) {
-    const gradebookLessons = rawLessons.map((l) => ({
-      lessonId: l.id,
-      lessonTitle: l.title,
-      orderIndex: l.orderIndex,
-      isUnitTest: l.orderIndex === 11
-    }));
-    return { rows: [], lessons: gradebookLessons };
-  }
-  const [rawPhaseVersions, rawPrimaryStandards, students] = await Promise.all([
-    db.select({
-      id: phaseVersions.id,
-      lessonVersionId: phaseVersions.lessonVersionId,
-      phaseNumber: phaseVersions.phaseNumber
-    }).from(phaseVersions).where(inArray(phaseVersions.lessonVersionId, lessonVersionIds)),
-    db.select({
-      lessonVersionId: lessonStandards.lessonVersionId,
-      standardId: lessonStandards.standardId,
-      isPrimary: lessonStandards.isPrimary
-    }).from(lessonStandards).where(
-      and(
-        inArray(lessonStandards.lessonVersionId, lessonVersionIds),
-        eq(lessonStandards.isPrimary, true)
-      )
-    ),
-    db.select({
-      id: profiles.id,
-      username: profiles.username,
-      displayName: profiles.displayName
-    }).from(profiles).where(
-      and(
-        eq(profiles.organizationId, orgId),
-        eq(profiles.role, "student")
-      )
-    ).orderBy(asc(profiles.displayName))
-  ]);
-  if (students.length === 0) {
-    return assembleGradebookRows([], rawLessons, rawLessonVersions, rawPhaseVersions, rawPrimaryStandards, [], []);
-  }
-  const studentIds = students.map((s) => s.id);
-  const phaseIds = rawPhaseVersions.map((pv) => pv.id);
-  const standardIds = rawPrimaryStandards.map((ls) => ls.standardId);
-  const [progressRows, competencyRows] = await Promise.all([
-    phaseIds.length > 0 ? db.select({
-      userId: studentProgress.userId,
-      phaseId: studentProgress.phaseId,
-      status: studentProgress.status
-    }).from(studentProgress).where(
-      and(
-        inArray(studentProgress.userId, studentIds),
-        inArray(studentProgress.phaseId, phaseIds)
-      )
-    ) : Promise.resolve([]),
-    standardIds.length > 0 ? db.select({
-      studentId: studentCompetency.studentId,
-      standardId: studentCompetency.standardId,
-      masteryLevel: studentCompetency.masteryLevel
-    }).from(studentCompetency).where(
-      and(
-        inArray(studentCompetency.studentId, studentIds),
-        inArray(studentCompetency.standardId, standardIds)
-      )
-    ) : Promise.resolve([])
-  ]);
-  return assembleGradebookRows(
-    students,
-    rawLessons,
-    rawLessonVersions,
-    rawPhaseVersions,
-    rawPrimaryStandards,
-    progressRows,
-    competencyRows
-  );
-}
 const GradebookGrid = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'GradebookGrid' is called on server");
 }, "8a73f3786674", "GradebookGrid");
@@ -23667,19 +23361,20 @@ async function UnitGradebookPage({ params }) {
   if (!claims) {
     redirect(`/auth/login?redirect=/teacher/units/${unitNumber}`);
   }
-  const [teacher] = await db.select({
-    id: profiles.id,
-    username: profiles.username,
-    role: profiles.role,
-    organizationId: profiles.organizationId
-  }).from(profiles).where(eq(profiles.id, claims.sub)).limit(1);
-  if (!teacher) {
-    redirect("/auth/login");
-  }
-  if (teacher.role !== "teacher" && teacher.role !== "admin") {
+  if (claims.role !== "teacher" && claims.role !== "admin") {
     redirect("/student/dashboard");
   }
-  const { rows, lessons: lessons2 } = await fetchGradebookData(unitNumber, teacher.organizationId);
+  const gradebook = await fetchInternalQuery(
+    internal.teacher.getTeacherGradebookData,
+    {
+      userId: claims.sub,
+      unitNumber
+    }
+  );
+  if (!gradebook) {
+    redirect("/auth/login");
+  }
+  const { rows, lessons: lessons2 } = gradebook;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 space-y-6", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("header", { className: "space-y-1", children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(

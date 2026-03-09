@@ -1,27 +1,33 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { eq } from 'drizzle-orm';
 import { getServerSessionClaims } from '@/lib/auth/server';
-import { db } from '@/lib/db/drizzle';
-import { profiles } from '@/lib/db/schema';
-import { fetchCourseOverviewData } from '@/lib/teacher/course-overview-data';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { CourseOverviewGrid } from '@/components/teacher/CourseOverviewGrid';
 
 export default async function CourseGradebookPage() {
   const claims = await getServerSessionClaims();
   if (!claims) redirect('/auth/login?redirect=/teacher/gradebook');
+  if (claims.role !== 'teacher' && claims.role !== 'admin') redirect('/student/dashboard');
 
-  const [teacher] = await db
-    .select({ id: profiles.id, username: profiles.username, role: profiles.role, organizationId: profiles.organizationId })
-    .from(profiles)
-    .where(eq(profiles.id, claims.sub))
-    .limit(1);
+  const courseOverview = await fetchInternalQuery(
+    internal.teacher.getTeacherCourseOverviewData,
+    {
+      userId: claims.sub as never,
+    },
+  );
 
-  if (!teacher) redirect('/auth/login');
-  if (teacher.role !== 'teacher' && teacher.role !== 'admin') redirect('/student/dashboard');
+  if (!courseOverview) redirect('/auth/login');
 
-  const { rows, units } = await fetchCourseOverviewData(teacher.organizationId);
+  const { rows, units } = courseOverview as {
+    rows: Array<{
+      studentId: string;
+      displayName: string;
+      username: string;
+      cells: Array<{ unitNumber: number; avgMastery: number | null; color: string }>;
+    }>;
+    units: Array<{ unitNumber: number }>;
+  };
 
   return (
     <main className="min-h-screen bg-muted/10 py-10">

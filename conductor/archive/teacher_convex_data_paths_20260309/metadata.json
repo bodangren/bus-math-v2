@@ -1,0 +1,11 @@
+{
+  "track_id": "teacher_convex_data_paths_20260309",
+  "type": "refactor",
+  "status": "archived",
+  "created_at": "2026-03-09T00:00:00Z",
+  "updated_at": "2026-03-09T16:58:00Z",
+  "description": "Migrate remaining teacher-facing server data paths from legacy Drizzle helpers to Convex internal queries, add missing page coverage, and keep teacher dashboards aligned with the Convex-only architecture.",
+  "estimated_tasks": 11,
+  "actual_tasks": 11,
+  "deviation_notes": "The runtime migration was completed by moving teacher pages directly onto new internal Convex queries rather than preserving the old Drizzle-backed fetch-layer wrappers. Pure view-model assembly helpers remained unchanged and were reused inside the Convex query module."
+}

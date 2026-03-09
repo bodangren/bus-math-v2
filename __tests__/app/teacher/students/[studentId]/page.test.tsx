@@ -8,7 +8,7 @@ const mockNotFound = vi.fn(() => {
   throw new Error('notFound');
 });
 const mockGetServerSessionClaims = vi.fn();
-const mockSelect = vi.fn();
+const mockFetchInternalQuery = vi.fn();
 
 vi.mock('next/navigation', () => ({
   redirect: (path: string) => mockRedirect(path),
@@ -19,11 +19,20 @@ vi.mock('@/lib/auth/server', () => ({
   getServerSessionClaims: mockGetServerSessionClaims,
 }));
 
-vi.mock('@/lib/db/drizzle', () => ({
-  db: {
-    select: mockSelect,
-  },
-}));
+vi.mock('@/lib/convex/server', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/convex/server')>(
+    '@/lib/convex/server',
+  );
+  return {
+    ...actual,
+    fetchInternalQuery: mockFetchInternalQuery,
+    internal: {
+      teacher: {
+        getTeacherStudentDetail: 'internal.teacher.getTeacherStudentDetail',
+      },
+    },
+  };
+});
 
 const StudentDetailPageImport = () => import('../../../../../app/teacher/students/[studentId]/page');
 
@@ -52,29 +61,20 @@ describe('Teacher student detail page', () => {
   }, 15_000);
 
   it('renders org-scoped student details', async () => {
-    const dbCallPlan = [
-      [{ id: 'teacher-1', username: 'demo_teacher', role: 'teacher', organizationId: 'org-1' }],
-      [{ id: 'org-1', name: 'Demo School' }],
-      [{ id: 'student-1', username: 'demo_student', displayName: 'Demo Student' }],
-      [{ id: 'pv-1' }, { id: 'pv-2' }],
-      [{ phaseId: 'pv-1', status: 'completed', updatedAt: new Date('2026-02-09T08:00:00.000Z') }],
-    ];
-
-    let call = 0;
-    mockSelect.mockImplementation(() => {
-      const result = dbCallPlan[call] ?? [];
-      call += 1;
-
-      const chain = {
-        from: () => chain,
-        where: () => chain,
-        limit: () => chain,
-        then: <T,>(onfulfilled: (value: unknown[]) => T) =>
-          Promise.resolve(onfulfilled(result)),
-        catch: () => chain,
-        finally: () => chain,
-      };
-      return chain as never;
+    mockFetchInternalQuery.mockResolvedValue({
+      status: 'success',
+      organizationName: 'Demo School',
+      student: {
+        id: 'student-1',
+        username: 'demo_student',
+        displayName: 'Demo Student',
+      },
+      snapshot: {
+        completedPhases: 1,
+        totalPhases: 2,
+        progressPercentage: 50,
+        lastActive: '2026-02-09T08:00:00.000Z',
+      },
     });
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();
@@ -94,33 +94,17 @@ describe('Teacher student detail page', () => {
       'href',
       '/teacher',
     );
+    expect(mockFetchInternalQuery).toHaveBeenCalledWith(
+      'internal.teacher.getTeacherStudentDetail',
+      {
+        userId: 'teacher-1',
+        studentId: 'student-1',
+      },
+    );
   });
 
   it('returns notFound when student is outside teacher organization', async () => {
-    const dbCallPlan = [
-      [{ id: 'teacher-1', username: 'demo_teacher', role: 'teacher', organizationId: 'org-1' }],
-      [{ id: 'org-1', name: 'Demo School' }],
-      [],
-      [],
-      [],
-    ];
-
-    let call = 0;
-    mockSelect.mockImplementation(() => {
-      const result = dbCallPlan[call] ?? [];
-      call += 1;
-
-      const chain = {
-        from: () => chain,
-        where: () => chain,
-        limit: () => chain,
-        then: <T,>(onfulfilled: (value: unknown[]) => T) =>
-          Promise.resolve(onfulfilled(result)),
-        catch: () => chain,
-        finally: () => chain,
-      };
-      return chain as never;
-    });
+    mockFetchInternalQuery.mockResolvedValue({ status: 'not_found' });
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();
 

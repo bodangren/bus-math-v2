@@ -1,12 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { redirect } from 'next/navigation';
 
-const { mockGetServerSessionClaims, mockFetchInternalQuery, mockFetchCourseOverviewData } =
-  vi.hoisted(() => ({
-    mockGetServerSessionClaims: vi.fn(),
-    mockFetchInternalQuery: vi.fn(),
-    mockFetchCourseOverviewData: vi.fn(),
-  }));
+const { mockGetServerSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
+  mockGetServerSessionClaims: vi.fn(),
+  mockFetchInternalQuery: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({
   redirect: vi.fn(() => {
@@ -28,27 +26,41 @@ vi.mock('@/lib/convex/server', async () => {
     internal: {
       teacher: {
         getTeacherDashboardData: 'internal.teacher.getTeacherDashboardData',
+        getTeacherCourseOverviewData: 'internal.teacher.getTeacherCourseOverviewData',
       },
     },
   };
 });
-
-vi.mock('@/lib/teacher/course-overview-data', () => ({
-  fetchCourseOverviewData: mockFetchCourseOverviewData,
-}));
 
 const { default: TeacherDashboardPage } = await import('../../../app/teacher/page');
 
 describe('TeacherDashboardPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockFetchCourseOverviewData.mockResolvedValue({ rows: [], units: [] });
     mockGetServerSessionClaims.mockResolvedValue({
       sub: 'teacher_profile_1',
       username: 'teacher_one',
       role: 'teacher',
       iat: 1,
       exp: 2,
+    });
+    mockFetchInternalQuery.mockImplementation((ref: string) => {
+      if (ref === 'internal.teacher.getTeacherDashboardData') {
+        return Promise.resolve({
+          teacher: {
+            username: 'teacher_one',
+            organizationName: 'Test School',
+            organizationId: 'org_1',
+          },
+          students: [],
+        });
+      }
+
+      if (ref === 'internal.teacher.getTeacherCourseOverviewData') {
+        return Promise.resolve({ rows: [], units: [] });
+      }
+
+      return Promise.resolve(null);
     });
   });
 
@@ -60,20 +72,22 @@ describe('TeacherDashboardPage', () => {
   });
 
   it('loads teacher dashboard using profile id from session claims', async () => {
-    mockFetchInternalQuery.mockResolvedValue({
-      teacher: {
-        username: 'teacher_one',
-        organizationName: 'Test School',
-        organizationId: 'org_1',
-      },
-      students: [],
-    });
-
     const jsx = await TeacherDashboardPage();
 
     expect(jsx).toBeDefined();
-    expect(mockFetchInternalQuery).toHaveBeenCalledWith('internal.teacher.getTeacherDashboardData', {
-      userId: 'teacher_profile_1',
-    });
+    expect(mockFetchInternalQuery).toHaveBeenNthCalledWith(
+      1,
+      'internal.teacher.getTeacherDashboardData',
+      {
+        userId: 'teacher_profile_1',
+      },
+    );
+    expect(mockFetchInternalQuery).toHaveBeenNthCalledWith(
+      2,
+      'internal.teacher.getTeacherCourseOverviewData',
+      {
+        userId: 'teacher_profile_1',
+      },
+    );
   });
 });

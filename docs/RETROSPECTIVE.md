@@ -159,3 +159,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Finishing the partially started dashboard-helper extraction avoided three Convex query modules drifting apart on nullable-string and map-initialization behavior, and the new `npm run dev:stack` command removes a recurring local-onboarding footgun for unattended and classroom setup work.
 - **Lesson:** When an unattended run leaves coherent uncommitted code behind, formalizing that work as a cleanup track is safer than starting a fresh feature on top of it. The focused API surface review found no new serious or critical issue because the public demo/test routes are already environment-gated; keeping those guards covered by tests is what preserves that result.
+
+### #teacher-convex-data-paths-2026-03-09 - Teacher Convex Data Paths
+
+- **Went well:** Migrating the remaining teacher pages to internal Convex queries removed the last live teacher runtime dependence on Drizzle without forcing a UI rewrite. The new page tests for `/teacher/gradebook`, `/teacher/units/[unitNumber]`, and `/teacher/students/[studentId]` now pin that boundary in place.
+- **Lesson:** When the app claims Convex is the source of truth, server-rendered teacher analytics pages cannot be allowed to keep “temporary” SQL fallbacks for long. Boundary tests that inspect the actual page source are cheap, but they catch this kind of architectural backslide early.

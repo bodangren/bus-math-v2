@@ -1,11 +1,8 @@
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { eq } from 'drizzle-orm';
 import { getServerSessionClaims } from '@/lib/auth/server';
-import { db } from '@/lib/db/drizzle';
-import { profiles } from '@/lib/db/schema';
-import { fetchGradebookData } from '@/lib/teacher/gradebook-data';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { GradebookGrid } from '@/components/teacher/GradebookGrid';
 
 interface PageProps {
@@ -25,27 +22,35 @@ export default async function UnitGradebookPage({ params }: PageProps) {
   if (!claims) {
     redirect(`/auth/login?redirect=/teacher/units/${unitNumber}`);
   }
-
-  const [teacher] = await db
-    .select({
-      id: profiles.id,
-      username: profiles.username,
-      role: profiles.role,
-      organizationId: profiles.organizationId,
-    })
-    .from(profiles)
-    .where(eq(profiles.id, claims.sub))
-    .limit(1);
-
-  if (!teacher) {
-    redirect('/auth/login');
-  }
-
-  if (teacher.role !== 'teacher' && teacher.role !== 'admin') {
+  if (claims.role !== 'teacher' && claims.role !== 'admin') {
     redirect('/student/dashboard');
   }
 
-  const { rows, lessons } = await fetchGradebookData(unitNumber, teacher.organizationId);
+  const gradebook = await fetchInternalQuery(
+    internal.teacher.getTeacherGradebookData,
+    {
+      userId: claims.sub as never,
+      unitNumber,
+    },
+  );
+
+  if (!gradebook) {
+    redirect('/auth/login');
+  }
+
+  const { rows, lessons } = gradebook as {
+    rows: Array<{
+      studentId: string;
+      displayName: string;
+      username: string;
+      cells: Array<{
+        completionStatus: string;
+        masteryLevel: number | null;
+        color: string;
+      }>;
+    }>;
+    lessons: Array<{ lessonId: string; lessonTitle: string; orderIndex: number; isUnitTest: boolean }>;
+  };
 
   return (
     <main className="min-h-screen bg-muted/10 py-10">

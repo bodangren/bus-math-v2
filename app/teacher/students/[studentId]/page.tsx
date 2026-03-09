@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { and, eq } from 'drizzle-orm';
 import { notFound, redirect } from 'next/navigation';
 
 import { formatLastActive } from '@/components/teacher/TeacherDashboardContent';
@@ -7,21 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { getServerSessionClaims } from '@/lib/auth/server';
-import { db } from '@/lib/db/drizzle';
-import { organizations, phaseVersions, profiles, studentProgress } from '@/lib/db/schema';
-
-interface TeacherProfile {
-  id: string;
-  username: string;
-  role: 'student' | 'teacher' | 'admin';
-  organizationId: string;
-}
-
-interface StudentProfile {
-  id: string;
-  username: string;
-  displayName: string | null;
-}
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 
 interface StudentProgressSnapshot {
   completedPhases: number;
@@ -43,108 +28,6 @@ function formatPercentage(value: number) {
   return `${percentageFormatter.format(clampPercentage(value))}%`;
 }
 
-async function getTeacherProfile(userId: string): Promise<TeacherProfile | null> {
-  const [teacher] = await db
-    .select({
-      id: profiles.id,
-      username: profiles.username,
-      role: profiles.role,
-      organizationId: profiles.organizationId,
-    })
-    .from(profiles)
-    .where(eq(profiles.id, userId))
-    .limit(1);
-
-  return (teacher as TeacherProfile | undefined) ?? null;
-}
-
-async function getOrganizationName(orgId: string) {
-  const [organization] = await db
-    .select({
-      id: organizations.id,
-      name: organizations.name,
-    })
-    .from(organizations)
-    .where(eq(organizations.id, orgId))
-    .limit(1);
-
-  return organization?.name ?? 'Your organization';
-}
-
-async function getStudentInOrganization(
-  studentId: string,
-  orgId: string,
-): Promise<StudentProfile | null> {
-  const [student] = await db
-    .select({
-      id: profiles.id,
-      username: profiles.username,
-      displayName: profiles.displayName,
-    })
-    .from(profiles)
-    .where(
-      and(
-        eq(profiles.id, studentId),
-        eq(profiles.organizationId, orgId),
-        eq(profiles.role, 'student'),
-      ),
-    )
-    .limit(1);
-
-  return (student as StudentProfile | undefined) ?? null;
-}
-
-async function getStudentProgressSnapshot(
-  studentId: string,
-): Promise<StudentProgressSnapshot> {
-  const versionedPhaseRows = await db
-    .select({ id: phaseVersions.id })
-    .from(phaseVersions);
-
-  const activePhaseIds = new Set(versionedPhaseRows.map((row) => row.id));
-  const totalPhases = activePhaseIds.size;
-
-  const progressRows = await db
-    .select({
-      phaseId: studentProgress.phaseId,
-      status: studentProgress.status,
-      updatedAt: studentProgress.updatedAt,
-    })
-    .from(studentProgress)
-    .where(eq(studentProgress.userId, studentId));
-
-  let completedPhases = 0;
-  let lastActive: string | null = null;
-
-  for (const row of progressRows) {
-    if (!activePhaseIds.has(row.phaseId)) {
-      continue;
-    }
-
-    if (row.status === 'completed') {
-      completedPhases += 1;
-    }
-
-    if (row.updatedAt) {
-      const rowTime = row.updatedAt.getTime();
-      const currentTime = lastActive ? new Date(lastActive).getTime() : 0;
-      if (rowTime > currentTime) {
-        lastActive = row.updatedAt.toISOString();
-      }
-    }
-  }
-
-  return {
-    completedPhases,
-    totalPhases,
-    progressPercentage:
-      totalPhases > 0
-        ? Number(((completedPhases / totalPhases) * 100).toFixed(1))
-        : 0,
-    lastActive,
-  };
-}
-
 interface TeacherStudentDetailPageProps {
   params: Promise<{
     studentId: string;
@@ -161,24 +44,36 @@ export default async function TeacherStudentDetailPage({
     redirect(`/auth/login?redirect=/teacher/students/${studentId}`);
   }
 
-  const teacher = await getTeacherProfile(claims.sub);
-  if (!teacher) {
-    redirect('/auth/login?redirect=/teacher');
-  }
-
-  if (teacher.role !== 'teacher' && teacher.role !== 'admin') {
+  if (claims.role !== 'teacher' && claims.role !== 'admin') {
     redirect('/student/dashboard');
   }
 
-  const [organizationName, student, snapshot] = await Promise.all([
-    getOrganizationName(teacher.organizationId),
-    getStudentInOrganization(studentId, teacher.organizationId),
-    getStudentProgressSnapshot(studentId),
-  ]);
+  const result = await fetchInternalQuery(
+    internal.teacher.getTeacherStudentDetail,
+    {
+      userId: claims.sub as never,
+      studentId: studentId as never,
+    },
+  );
 
-  if (!student) {
+  if (!result || result.status === 'not_found') {
     notFound();
   }
+
+  if (result.status === 'unauthorized') {
+    redirect('/auth/login?redirect=/teacher');
+  }
+
+  const { organizationName, student, snapshot } = result as {
+    status: 'success';
+    organizationName: string;
+    student: {
+      id: string;
+      username: string;
+      displayName: string | null;
+    };
+    snapshot: StudentProgressSnapshot;
+  };
 
   return (
     <main className="min-h-screen bg-muted/10 py-10">

@@ -1,6 +1,7 @@
-import { internalQuery } from "./_generated/server";
+import { internalQuery, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
-import { getOrCreateMapEntry } from "./dashboardHelpers";
+import { assembleCourseOverviewRows } from "../lib/teacher/course-overview";
+import { assembleGradebookRows } from "../lib/teacher/gradebook";
 
 interface TeacherProgressSnapshot {
   completedPhases: number;
@@ -22,73 +23,141 @@ const DEFAULT_PHASE_NAMES: Record<number, string> = {
   6: 'Closing',
 };
 
+function sortStudentsByName<
+  T extends {
+    username: string;
+    displayName?: string | null;
+  },
+>(students: T[]): T[] {
+  return [...students].sort((a, b) =>
+    (a.displayName ?? a.username).localeCompare(b.displayName ?? b.username),
+  );
+}
+
+async function getAuthorizedTeacher(
+  ctx: QueryCtx,
+  userId: string,
+) {
+  const teacher = await ctx.db.get(userId as never);
+  if (!teacher || (teacher.role !== "teacher" && teacher.role !== "admin")) {
+    return null;
+  }
+  return teacher;
+}
+
+async function listOrganizationStudents(
+  ctx: QueryCtx,
+  organizationId: string,
+) {
+  const allProfiles = await ctx.db
+    .query("profiles")
+    .withIndex("by_organization", (q) => q.eq("organizationId", organizationId as never))
+    .collect();
+
+  return sortStudentsByName(
+    allProfiles.filter((profile) => profile.role === "student"),
+  );
+}
+
+async function getOrganizationName(
+  ctx: QueryCtx,
+  organizationId: string,
+) {
+  const organization = await ctx.db.get(organizationId as never);
+  return organization?.name ?? "Your organization";
+}
+
+async function listLatestPublishedLessonVersions(
+  ctx: QueryCtx,
+  lessonIds?: string[],
+) {
+  const lessonIdFilter = lessonIds ? new Set(lessonIds) : null;
+  const lessonVersions = await ctx.db.query("lesson_versions").collect();
+  const publishedVersions = lessonVersions.filter(
+    (version) =>
+      version.status === "published" &&
+      (!lessonIdFilter || lessonIdFilter.has(version.lessonId)),
+  );
+
+  const latestByLessonId = new Map<string, (typeof publishedVersions)[number]>();
+  for (const version of publishedVersions) {
+    const current = latestByLessonId.get(version.lessonId);
+    if (!current || version.version > current.version) {
+      latestByLessonId.set(version.lessonId, version);
+    }
+  }
+
+  return [...latestByLessonId.values()];
+}
+
+async function listActivePhaseIds(
+  ctx: QueryCtx,
+) {
+  const phaseVersions = await ctx.db.query("phase_versions").collect();
+  return new Set(phaseVersions.map((phase) => phase._id));
+}
+
+async function buildStudentProgressSnapshot(
+  ctx: QueryCtx,
+  studentId: string,
+  activePhaseIds: Set<string>,
+): Promise<TeacherProgressSnapshot> {
+  const totalPhases = activePhaseIds.size;
+  const progressRows = await ctx.db
+    .query("student_progress")
+    .withIndex("by_user", (q) => q.eq("userId", studentId as never))
+    .collect();
+
+  let completedPhases = 0;
+  let lastActive: string | null = null;
+
+  for (const row of progressRows) {
+    if (!activePhaseIds.has(row.phaseId)) {
+      continue;
+    }
+
+    if (row.status === "completed") {
+      completedPhases += 1;
+    }
+
+    if (row.updatedAt) {
+      const currentLastActive = lastActive ? new Date(lastActive).getTime() : 0;
+      if (row.updatedAt > currentLastActive) {
+        lastActive = new Date(row.updatedAt).toISOString();
+      }
+    }
+  }
+
+  return {
+    completedPhases,
+    totalPhases,
+    progressPercentage:
+      totalPhases > 0
+        ? Number(((completedPhases / totalPhases) * 100).toFixed(1))
+        : 0,
+    lastActive,
+  };
+}
+
 export const getTeacherDashboardData = internalQuery({
   args: { userId: v.id("profiles") },
   handler: async (ctx, args) => {
-    // 1. Get teacher profile
-    const teacher = await ctx.db.get(args.userId);
-    if (!teacher || (teacher.role !== "teacher" && teacher.role !== "admin")) {
-      return null; // Return null if not authorized
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return null;
     }
 
-    // 2. Get organization name
-    const organization = await ctx.db.get(teacher.organizationId);
-    const organizationName = organization?.name ?? "Your organization";
-
-    // 3. Get students in organization
-    const allProfiles = await ctx.db
-      .query("profiles")
-      .withIndex("by_organization", (q) => q.eq("organizationId", teacher.organizationId))
-      .collect();
-      
-    const students = allProfiles
-      .filter((p) => p.role === "student")
-      .sort((a, b) => a.username.localeCompare(b.username));
-
+    const organizationName = await getOrganizationName(ctx, teacher.organizationId);
+    const students = await listOrganizationStudents(ctx, teacher.organizationId);
     const studentIds = students.map((s) => s._id);
+    const activePhaseIds = await listActivePhaseIds(ctx);
 
-    // 4. Get active phases
-    const phaseVersions = await ctx.db.query("phase_versions").collect();
-    const activePhaseIds = new Set(phaseVersions.map((p) => p._id));
-    const totalPhases = activePhaseIds.size;
-
-    // 5. Get student progress snapshots
     const snapshots = new Map<string, TeacherProgressSnapshot>();
     for (const studentId of studentIds) {
-      const current = getOrCreateMapEntry(snapshots, studentId, () => ({
-        completedPhases: 0,
-        totalPhases,
-        progressPercentage: 0,
-        lastActive: null,
-      }));
-
-      const progressRows = await ctx.db
-        .query("student_progress")
-        .withIndex("by_user", (q) => q.eq("userId", studentId))
-        .collect();
-
-      for (const row of progressRows) {
-        if (!activePhaseIds.has(row.phaseId)) continue;
-        
-        if (row.status === "completed") {
-          current.completedPhases += 1;
-        }
-
-        if (row.updatedAt) {
-          const currentLastActive = current.lastActive ? new Date(current.lastActive).getTime() : 0;
-          if (row.updatedAt > currentLastActive) {
-            current.lastActive = new Date(row.updatedAt).toISOString();
-          }
-        }
-      }
-
-      current.progressPercentage =
-        current.totalPhases > 0
-          ? Number(((current.completedPhases / current.totalPhases) * 100).toFixed(1))
-          : 0;
+      const current = await buildStudentProgressSnapshot(ctx, studentId, activePhaseIds);
+      snapshots.set(studentId, current);
     }
 
-    // Combine students with their progress
     const studentsWithProgress = students.map((student) => {
       const snapshot = snapshots.get(student._id);
       return {
@@ -109,6 +178,233 @@ export const getTeacherDashboardData = internalQuery({
         organizationId: teacher.organizationId,
       },
       students: studentsWithProgress,
+    };
+  },
+});
+
+export const getTeacherCourseOverviewData = internalQuery({
+  args: { userId: v.id("profiles") },
+  handler: async (ctx, args) => {
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return null;
+    }
+
+    const students = await listOrganizationStudents(ctx, teacher.organizationId);
+    const rawLessons = (await ctx.db.query("lessons").collect())
+      .sort((a, b) => a.unitNumber - b.unitNumber || a.orderIndex - b.orderIndex)
+      .map((lesson) => ({
+        id: lesson._id,
+        unitNumber: lesson.unitNumber,
+      }));
+
+    if (rawLessons.length === 0) {
+      return { rows: [], units: [] };
+    }
+
+    const rawLessonVersions = (await listLatestPublishedLessonVersions(
+      ctx,
+      rawLessons.map((lesson) => lesson.id),
+    )).map((version) => ({
+      id: version._id,
+      lessonId: version.lessonId,
+    }));
+
+    if (rawLessonVersions.length === 0) {
+      return assembleCourseOverviewRows(students, rawLessons, [], [], []);
+    }
+
+    const lessonVersionIds = new Set(rawLessonVersions.map((version) => version.id));
+    const rawPrimaryStandards = (await ctx.db.query("lesson_standards").collect())
+      .filter(
+        (standard) =>
+          standard.isPrimary && lessonVersionIds.has(standard.lessonVersionId),
+      )
+      .map((standard) => ({
+        lessonVersionId: standard.lessonVersionId,
+        standardId: standard.standardId,
+        isPrimary: standard.isPrimary,
+      }));
+
+    if (rawPrimaryStandards.length === 0) {
+      return assembleCourseOverviewRows(students, rawLessons, rawLessonVersions, [], []);
+    }
+
+    const standardIds = new Set(rawPrimaryStandards.map((standard) => standard.standardId));
+    const competencyRows = (
+      await Promise.all(
+        students.map((student) =>
+          ctx.db
+            .query("student_competency")
+            .withIndex("by_student", (q) => q.eq("studentId", student._id))
+            .collect(),
+        ),
+      )
+    )
+      .flat()
+      .filter((row) => standardIds.has(row.standardId))
+      .map((row) => ({
+        studentId: row.studentId,
+        standardId: row.standardId,
+        masteryLevel: row.masteryLevel,
+      }));
+
+    return assembleCourseOverviewRows(
+      students,
+      rawLessons,
+      rawLessonVersions,
+      rawPrimaryStandards,
+      competencyRows,
+    );
+  },
+});
+
+export const getTeacherGradebookData = internalQuery({
+  args: {
+    userId: v.id("profiles"),
+    unitNumber: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return null;
+    }
+
+    const rawLessons = (await ctx.db.query("lessons").collect())
+      .filter((lesson) => lesson.unitNumber === args.unitNumber)
+      .sort((a, b) => a.orderIndex - b.orderIndex)
+      .map((lesson) => ({
+        id: lesson._id,
+        title: lesson.title,
+        orderIndex: lesson.orderIndex,
+        unitNumber: lesson.unitNumber,
+      }));
+
+    if (rawLessons.length === 0) {
+      return { rows: [], lessons: [] };
+    }
+
+    const rawLessonVersions = (await listLatestPublishedLessonVersions(
+      ctx,
+      rawLessons.map((lesson) => lesson.id),
+    )).map((version) => ({
+      id: version._id,
+      lessonId: version.lessonId,
+    }));
+
+    if (rawLessonVersions.length === 0) {
+      return assembleGradebookRows([], rawLessons, [], [], [], [], []);
+    }
+
+    const lessonVersionIds = new Set(rawLessonVersions.map((version) => version.id));
+    const rawPhaseVersions = (await ctx.db.query("phase_versions").collect())
+      .filter((phase) => lessonVersionIds.has(phase.lessonVersionId))
+      .map((phase) => ({
+        id: phase._id,
+        lessonVersionId: phase.lessonVersionId,
+        phaseNumber: phase.phaseNumber,
+      }));
+
+    const rawPrimaryStandards = (await ctx.db.query("lesson_standards").collect())
+      .filter(
+        (standard) =>
+          standard.isPrimary && lessonVersionIds.has(standard.lessonVersionId),
+      )
+      .map((standard) => ({
+        lessonVersionId: standard.lessonVersionId,
+        standardId: standard.standardId,
+        isPrimary: standard.isPrimary,
+      }));
+
+    const students = await listOrganizationStudents(ctx, teacher.organizationId);
+    if (students.length === 0) {
+      return assembleGradebookRows([], rawLessons, rawLessonVersions, rawPhaseVersions, rawPrimaryStandards, [], []);
+    }
+
+    const phaseIds = new Set(rawPhaseVersions.map((phase) => phase.id));
+    const standardIds = new Set(rawPrimaryStandards.map((standard) => standard.standardId));
+
+    const progressRows = (
+      await Promise.all(
+        students.map((student) =>
+          ctx.db
+            .query("student_progress")
+            .withIndex("by_user", (q) => q.eq("userId", student._id))
+            .collect(),
+        ),
+      )
+    )
+      .flat()
+      .filter((row) => phaseIds.has(row.phaseId))
+      .map((row) => ({
+        userId: row.userId,
+        phaseId: row.phaseId,
+        status: row.status,
+      }));
+
+    const competencyRows = (
+      await Promise.all(
+        students.map((student) =>
+          ctx.db
+            .query("student_competency")
+            .withIndex("by_student", (q) => q.eq("studentId", student._id))
+            .collect(),
+        ),
+      )
+    )
+      .flat()
+      .filter((row) => standardIds.has(row.standardId))
+      .map((row) => ({
+        studentId: row.studentId,
+        standardId: row.standardId,
+        masteryLevel: row.masteryLevel,
+      }));
+
+    return assembleGradebookRows(
+      students,
+      rawLessons,
+      rawLessonVersions,
+      rawPhaseVersions,
+      rawPrimaryStandards,
+      progressRows,
+      competencyRows,
+    );
+  },
+});
+
+export const getTeacherStudentDetail = internalQuery({
+  args: {
+    userId: v.id("profiles"),
+    studentId: v.id("profiles"),
+  },
+  handler: async (ctx, args) => {
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return { status: "unauthorized" as const };
+    }
+
+    const student = await ctx.db.get(args.studentId);
+    if (
+      !student ||
+      student.role !== "student" ||
+      student.organizationId !== teacher.organizationId
+    ) {
+      return { status: "not_found" as const };
+    }
+
+    const organizationName = await getOrganizationName(ctx, teacher.organizationId);
+    const activePhaseIds = await listActivePhaseIds(ctx);
+    const snapshot = await buildStudentProgressSnapshot(ctx, student._id, activePhaseIds);
+
+    return {
+      status: "success" as const,
+      organizationName,
+      student: {
+        id: student._id,
+        username: student.username,
+        displayName: student.displayName ?? null,
+      },
+      snapshot,
     };
   },
 });

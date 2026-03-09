@@ -47,12 +47,18 @@ describe('Convex authorization boundary', () => {
     expectInternalExport(studentSource, 'getLessonProgress', 'internalQuery');
 
     expectInternalExport(teacherSource, 'getTeacherDashboardData', 'internalQuery');
+    expectInternalExport(teacherSource, 'getTeacherCourseOverviewData', 'internalQuery');
+    expectInternalExport(teacherSource, 'getTeacherGradebookData', 'internalQuery');
+    expectInternalExport(teacherSource, 'getTeacherStudentDetail', 'internalQuery');
     expectInternalExport(teacherSource, 'getSubmissionDetail', 'internalQuery');
     expectInternalExport(teacherSource, 'getProfileWithOrg', 'internalQuery');
   });
 
   it('uses internal Convex helpers for sensitive server access', () => {
     const teacherDashboardPage = readFile('app/teacher/page.tsx');
+    const teacherGradebookPage = readFile('app/teacher/gradebook/page.tsx');
+    const teacherUnitPage = readFile('app/teacher/units/[unitNumber]/page.tsx');
+    const teacherStudentPage = readFile('app/teacher/students/[studentId]/page.tsx');
     const studentDashboardPage = readFile('app/student/dashboard/page.tsx');
     const spreadsheetDraftRoute = readFile('app/api/activities/spreadsheet/[activityId]/draft/route.ts');
     const spreadsheetSubmitRoute = readFile('app/api/activities/spreadsheet/[activityId]/submit/route.ts');
@@ -65,6 +71,13 @@ describe('Convex authorization boundary', () => {
 
     expect(teacherDashboardPage).toContain('fetchInternalQuery');
     expect(teacherDashboardPage).toContain('internal.teacher.getTeacherDashboardData');
+    expect(teacherDashboardPage).toContain('internal.teacher.getTeacherCourseOverviewData');
+    expect(teacherGradebookPage).toContain('fetchInternalQuery');
+    expect(teacherGradebookPage).toContain('internal.teacher.getTeacherCourseOverviewData');
+    expect(teacherUnitPage).toContain('fetchInternalQuery');
+    expect(teacherUnitPage).toContain('internal.teacher.getTeacherGradebookData');
+    expect(teacherStudentPage).toContain('fetchInternalQuery');
+    expect(teacherStudentPage).toContain('internal.teacher.getTeacherStudentDetail');
 
     expect(studentDashboardPage).toContain('fetchInternalQuery');
 

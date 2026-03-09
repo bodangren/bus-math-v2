@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getServerSessionClaims } from "@/lib/auth/server";
 import { TeacherDashboardContent } from "@/components/teacher/TeacherDashboardContent";
 import { fetchInternalQuery, internal } from "@/lib/convex/server";
-import { fetchCourseOverviewData } from "@/lib/teacher/course-overview-data";
 import type { StudentDashboardRow } from "@/lib/teacher/intervention";
 
 export default async function TeacherDashboardPage() {
@@ -21,8 +20,16 @@ export default async function TeacherDashboardPage() {
     redirect("/student/dashboard");
   }
 
-  // Fetch course overview data (still uses Drizzle for now, to be migrated next)
-  const courseOverview = await fetchCourseOverviewData(data.teacher.organizationId);
+  const courseOverview = await fetchInternalQuery(
+    internal.teacher.getTeacherCourseOverviewData,
+    {
+      userId: claims.sub as never,
+    },
+  );
+
+  if (!courseOverview) {
+    redirect("/student/dashboard");
+  }
 
   return (
     <TeacherDashboardContent
@@ -31,7 +38,7 @@ export default async function TeacherDashboardPage() {
         organizationName: data.teacher.organizationName,
       }}
       students={data.students as StudentDashboardRow[]}
-      courseOverview={courseOverview}
+      courseOverview={courseOverview as never}
     />
   );
 }

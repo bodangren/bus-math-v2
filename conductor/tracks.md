@@ -41,6 +41,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Teacher Convex Data Paths**
+  *Link: [./conductor/archive/teacher_convex_data_paths_20260309/](./conductor/archive/teacher_convex_data_paths_20260309/)*
+  *Checkpoint: `pending` (2026-03-09 closeout)*
+
 - [x] **Track: Dashboard Helper Consolidation & Dev Stack Closeout**
   *Link: [./conductor/archive/dashboard_refactor_dev_stack_20260309/](./conductor/archive/dashboard_refactor_dev_stack_20260309/)*
   *Checkpoint: `pending` (2026-03-09 closeout)*
