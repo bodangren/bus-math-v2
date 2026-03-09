@@ -154,3 +154,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Pulling teacher-only checks and student-account preparation into shared helpers reduced duplicated route logic quickly while keeping Convex as the final authorization layer. Matching the bulk-import username preview to the server normalization rules removed a real teacher trust gap in the credentials workflow.
 - **Lesson:** Demo bootstrap endpoints that mint known credentials must be environment-gated even if they only call internal functions. Route-level teacher/admin checks are still worth adding when downstream mutations already enforce authorization because they prevent avoidable privileged calls and make failures clearer in tests and logs.
+
+### #dashboard-refactor-dev-stack-2026-03-09 - Dashboard Helper Consolidation & Dev Stack Closeout
+
+- **Went well:** Finishing the partially started dashboard-helper extraction avoided three Convex query modules drifting apart on nullable-string and map-initialization behavior, and the new `npm run dev:stack` command removes a recurring local-onboarding footgun for unattended and classroom setup work.
+- **Lesson:** When an unattended run leaves coherent uncommitted code behind, formalizing that work as a cleanup track is safer than starting a fresh feature on top of it. The focused API surface review found no new serious or critical issue because the public demo/test routes are already environment-gated; keeping those guards covered by tests is what preserves that result.

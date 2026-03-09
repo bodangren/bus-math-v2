@@ -1,6 +1,7 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
+import { coerceNullableString, getOrCreateMapEntry } from "./dashboardHelpers";
 
 interface LessonVersionSnapshot {
   _id: Id<"lesson_versions">;
@@ -79,22 +80,20 @@ export const getDashboardData = internalQuery({
     for (const lesson of allLessons) {
       const versionedInfo = latestVersionByLessonId.get(lesson._id);
       const effectiveTitle = versionedInfo?.title ?? lesson.title;
-      const effectiveDesc = versionedInfo?.description ?? lesson.description;
+      const effectiveDesc = coerceNullableString(versionedInfo?.description ?? lesson.description);
 
       const phaseIds = versionedPhaseIdsByLessonId.get(lesson._id) ?? [];
       const totalPhases = phaseIds.length;
       const completedPhases = phaseIds.filter((id) => completedPhaseIds.has(id)).length;
       const progressPercentage = totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
 
-      if (!unitsMap.has(lesson.unitNumber)) {
-        unitsMap.set(lesson.unitNumber, {
+      const unit = getOrCreateMapEntry(unitsMap, lesson.unitNumber, () => ({
           unitNumber: lesson.unitNumber,
           unitTitle: lesson.metadata?.unitContent?.introduction?.unitTitle ?? `Unit ${lesson.unitNumber}`,
           lessons: [],
-        });
-      }
+        }));
 
-      unitsMap.get(lesson.unitNumber).lessons.push({
+      unit.lessons.push({
         id: lesson._id,
         unitNumber: lesson.unitNumber,
         title: effectiveTitle,

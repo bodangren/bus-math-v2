@@ -1,0 +1,9 @@
+{
+  "id": "vinext_convex_migration_20260225",
+  "title": "Migrate to Vinext and Convex",
+  "status": "archived",
+  "created_at": "2026-02-25",
+  "updated_at": "2026-03-09",
+  "owner": "experimental",
+  "notes": "Archived as a superseded umbrella migration track after its surviving follow-on work was completed in dedicated cleanup and hardening tracks."
+}

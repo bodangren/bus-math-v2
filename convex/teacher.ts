@@ -1,5 +1,6 @@
 import { internalQuery } from "./_generated/server";
 import { v } from "convex/values";
+import { getOrCreateMapEntry } from "./dashboardHelpers";
 
 interface TeacherProgressSnapshot {
   completedPhases: number;
@@ -54,19 +55,18 @@ export const getTeacherDashboardData = internalQuery({
     // 5. Get student progress snapshots
     const snapshots = new Map<string, TeacherProgressSnapshot>();
     for (const studentId of studentIds) {
-      snapshots.set(studentId, {
+      const current = getOrCreateMapEntry(snapshots, studentId, () => ({
         completedPhases: 0,
         totalPhases,
         progressPercentage: 0,
         lastActive: null,
-      });
+      }));
 
       const progressRows = await ctx.db
         .query("student_progress")
         .withIndex("by_user", (q) => q.eq("userId", studentId))
         .collect();
 
-      const current = snapshots.get(studentId);
       for (const row of progressRows) {
         if (!activePhaseIds.has(row.phaseId)) continue;
         

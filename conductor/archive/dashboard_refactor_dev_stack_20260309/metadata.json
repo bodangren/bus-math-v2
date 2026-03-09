@@ -1,0 +1,11 @@
+{
+  "track_id": "dashboard_refactor_dev_stack_20260309",
+  "type": "refactor",
+  "status": "archived",
+  "created_at": "2026-03-09T00:00:00Z",
+  "updated_at": "2026-03-09T16:30:00Z",
+  "description": "Consolidate duplicate dashboard query helpers, add a one-command local app+Convex dev workflow, document the cleanup, and close out the stale migration track bookkeeping.",
+  "estimated_tasks": 8,
+  "actual_tasks": 17,
+  "deviation_notes": "The unfinished helper/script implementation was already present in the worktree from a prior unattended run, so the red phase was reconstructed by verifying the new helper file and package script were absent from HEAD before running the focused passing tests in the current worktree. Manual verification pauses were intentionally replaced with automated-only verification for unattended execution."
+}

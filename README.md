@@ -78,10 +78,12 @@ Both accounts are automatically seeded with the demo organization.
 
    Local development does not require `CONVEX_DEPLOY_KEY` when `.convex/local/*/config.json` exists from `npx convex dev`.
 
-7. Start the development server:
+7. Start the local stack:
    ```bash
-   npm run dev
+   npm run dev:stack
    ```
+
+   Use `npm run dev` only when Convex is already running in a separate terminal and you only need the Vinext app process.
 
 8. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -135,6 +137,7 @@ bus-math-v2/
 ## Scripts
 
 - `npm run dev` - Start the Vinext development server
+- `npm run dev:stack` - Start both `npx convex dev` and `vinext dev` together for local work
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint through Vinext

@@ -1,4 +1,5 @@
 import { query } from "./_generated/server";
+import { coerceNullableString, getOrCreateMapEntry } from "./dashboardHelpers";
 
 interface PublicUnitSummary {
   unitNumber: number;
@@ -131,9 +132,11 @@ export const getCurriculum = query({
       const latestVersion = versions.length > 0 ? versions[0] : null;
 
       const effectiveTitle = latestVersion?.title ?? lesson.title;
-      const effectiveDescription = latestVersion?.description ?? lesson.description;
+      const effectiveDescription = coerceNullableString(
+        latestVersion?.description ?? lesson.description,
+      );
 
-      if (!units.has(lesson.unitNumber)) {
+      const unit = getOrCreateMapEntry(units, lesson.unitNumber, () => {
         const rawTitle =
           lesson.metadata?.unitContent?.introduction?.unitTitle ??
           lesson.metadata?.unitContent?.introduction?.unitNumber ??
@@ -151,16 +154,16 @@ export const getCurriculum = query({
           lesson.learningObjectives ?? 
           [];
 
-        units.set(lesson.unitNumber, {
+        return {
           unitNumber: lesson.unitNumber,
           title: unitTitle,
           description: unitDesc,
           objectives,
           lessons: [],
-        });
-      }
+        };
+      });
 
-      units.get(lesson.unitNumber)?.lessons.push({
+      unit.lessons.push({
         id: lesson._id,
         title: effectiveTitle,
         slug: lesson.slug,

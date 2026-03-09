@@ -17404,7 +17404,24 @@ const createLucideIcon = (iconName, iconNode) => {
   Component.displayName = toPascalCase(iconName);
   return Component;
 };
-const __iconNode$h = [
+const __iconNode$k = [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+];
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$k);
+const __iconNode$j = [
+  ["path", { d: "M12 21V7", key: "gj6g52" }],
+  ["path", { d: "m16 12 2 2 4-4", key: "mdajum" }],
+  [
+    "path",
+    {
+      d: "M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3",
+      key: "8arnkb"
+    }
+  ]
+];
+const BookOpenCheck = createLucideIcon("book-open-check", __iconNode$j);
+const __iconNode$i = [
   ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
@@ -17414,8 +17431,8 @@ const __iconNode$h = [
     }
   ]
 ];
-const BookOpen = createLucideIcon("book-open", __iconNode$h);
-const __iconNode$g = [
+const BookOpen = createLucideIcon("book-open", __iconNode$i);
+const __iconNode$h = [
   ["rect", { width: "16", height: "20", x: "4", y: "2", rx: "2", key: "1nb95v" }],
   ["line", { x1: "8", x2: "16", y1: "6", y2: "6", key: "x4nwl0" }],
   ["line", { x1: "16", x2: "16", y1: "14", y2: "18", key: "wjye3r" }],
@@ -17427,8 +17444,8 @@ const __iconNode$g = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M8 18h.01", key: "lrp35t" }]
 ];
-const Calculator = createLucideIcon("calculator", __iconNode$g);
-const __iconNode$f = [
+const Calculator = createLucideIcon("calculator", __iconNode$h);
+const __iconNode$g = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -17440,27 +17457,38 @@ const __iconNode$f = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("calendar-days", __iconNode$f);
-const __iconNode$e = [
+const CalendarDays = createLucideIcon("calendar-days", __iconNode$g);
+const __iconNode$f = [
   ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
   ["path", { d: "M18 17V9", key: "2bz60n" }],
   ["path", { d: "M13 17V5", key: "1frdt8" }],
   ["path", { d: "M8 17v-3", key: "17ska0" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$e);
-const __iconNode$d = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$d);
-const __iconNode$c = [
+const ChartColumn = createLucideIcon("chart-column", __iconNode$f);
+const __iconNode$e = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$e);
+const __iconNode$d = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$c);
-const __iconNode$b = [
+const CircleCheck = createLucideIcon("circle-check", __iconNode$d);
+const __iconNode$c = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
   ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleX = createLucideIcon("circle-x", __iconNode$b);
+const CircleX = createLucideIcon("circle-x", __iconNode$c);
+const __iconNode$b = [
+  [
+    "path",
+    {
+      d: "m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",
+      key: "9ktpf1"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+];
+const Compass = createLucideIcon("compass", __iconNode$b);
 const __iconNode$a = [
   ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
   ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
@@ -22433,6 +22461,90 @@ const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: ProtectedLayout
 }, Symbol.toStringTag, { value: "Module" }));
+function clampPercentage$1(value) {
+  if (Number.isNaN(value)) return 0;
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+function getLessonStatus(lesson) {
+  if (lesson.totalPhases > 0 && lesson.completedPhases >= lesson.totalPhases) {
+    return "completed";
+  }
+  if (lesson.completedPhases > 0 || lesson.progressPercentage > 0) {
+    return "in_progress";
+  }
+  return "not_started";
+}
+function toLessonAction(lesson) {
+  const status = getLessonStatus(lesson);
+  if (status === "completed") {
+    return null;
+  }
+  return {
+    ...lesson,
+    status,
+    actionLabel: status === "in_progress" ? "Resume Lesson" : "Start Lesson"
+  };
+}
+function getUnitStatus(lessons2, completedLessons, nextLesson) {
+  if (lessons2.length > 0 && completedLessons === lessons2.length) {
+    return "completed";
+  }
+  if (nextLesson && nextLesson.status === "in_progress") {
+    return "in_progress";
+  }
+  if (completedLessons > 0) {
+    return "in_progress";
+  }
+  return "not_started";
+}
+function buildStudentDashboardViewModel(units) {
+  let completedPhases = 0;
+  let totalPhases = 0;
+  let completedLessons = 0;
+  let inProgressLessons = 0;
+  const unitViews = units.map((unit) => {
+    const lessons2 = [...unit.lessons];
+    for (const lesson of lessons2) {
+      completedPhases += lesson.completedPhases;
+      totalPhases += lesson.totalPhases;
+      const status = getLessonStatus(lesson);
+      if (status === "completed") completedLessons += 1;
+      if (status === "in_progress") inProgressLessons += 1;
+    }
+    const nextLesson2 = lessons2.map(toLessonAction).find((lesson) => lesson?.status === "in_progress") ?? lessons2.map(toLessonAction).find((lesson) => lesson?.status === "not_started") ?? null;
+    const unitCompletedLessons = lessons2.filter((lesson) => getLessonStatus(lesson) === "completed").length;
+    const unitProgress = lessons2.length === 0 ? 0 : clampPercentage$1(
+      lessons2.reduce((sum, lesson) => sum + clampPercentage$1(lesson.progressPercentage), 0) / lessons2.length
+    );
+    return {
+      ...unit,
+      lessons: lessons2,
+      completedLessons: unitCompletedLessons,
+      progressPercentage: unitProgress,
+      status: getUnitStatus(lessons2, unitCompletedLessons, nextLesson2),
+      nextLesson: nextLesson2
+    };
+  });
+  const nextLesson = unitViews.map((unit) => unit.nextLesson).find((lesson) => lesson?.status === "in_progress") ?? unitViews.map((unit) => unit.nextLesson).find((lesson) => lesson?.status === "not_started") ?? null;
+  return {
+    summary: {
+      totalUnits: unitViews.length,
+      completedUnits: unitViews.filter((unit) => unit.status === "completed").length,
+      totalLessons: unitViews.reduce((sum, unit) => sum + unit.lessons.length, 0),
+      completedLessons,
+      inProgressLessons,
+      progressPercentage: totalPhases === 0 ? 0 : clampPercentage$1(completedPhases / totalPhases * 100)
+    },
+    nextLesson,
+    units: unitViews
+  };
+}
+function studentDashboardPath() {
+  return "/student/dashboard";
+}
+function studentLessonPath(slug) {
+  return `/student/lesson/${slug}`;
+}
 function Progress({ value = 0, className, ...props }) {
   const clampedValue = Math.max(0, Math.min(100, value));
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
@@ -22455,6 +22567,37 @@ function Progress({ value = 0, className, ...props }) {
   );
 }
 const dynamic$2 = "force-dynamic";
+const metricCards = [
+  {
+    key: "progress",
+    title: "Course Progress",
+    icon: Compass
+  },
+  {
+    key: "lessons",
+    title: "Lessons Completed",
+    icon: BookOpenCheck
+  },
+  {
+    key: "units",
+    title: "Units Completed",
+    icon: CircleCheck
+  }
+];
+function statusBadgeVariant(status) {
+  if (status === "completed") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+  if (status === "in_progress") {
+    return "border-sky-200 bg-sky-50 text-sky-700";
+  }
+  return "border-amber-200 bg-amber-50 text-amber-700";
+}
+function statusLabel(status) {
+  if (status === "completed") return "Completed";
+  if (status === "in_progress") return "In Progress";
+  return "Not Started";
+}
 async function StudentDashboard() {
   const claims = await getServerSessionClaims();
   if (!claims) {
@@ -22463,41 +22606,142 @@ async function StudentDashboard() {
   const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
     userId: claims.sub
   });
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto p-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "max-w-4xl mx-auto", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-4xl font-bold mb-4", children: "Student Dashboard" }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-muted-foreground mb-8", children: [
-      "Welcome back to your learning journey, ",
-      claims.username,
-      "!"
-    ] }),
-    studentUnits.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-center text-muted-foreground border rounded-xl p-12 bg-background", children: "No lessons available yet. Please check back later or contact your teacher." }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-8", children: studentUnits.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-3xl font-semibold mb-4", children: unit.unitTitle }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2 lg:grid-cols-3", children: unit.lessons.map((lesson) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "hover:shadow-lg transition-shadow", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", className: "w-fit mb-2", children: [
-            "Unit ",
-            lesson.unitNumber
+  const dashboard = buildStudentDashboardViewModel(studentUnits);
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/20 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mx-auto max-w-6xl space-y-8", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("header", { className: "grid gap-4 lg:grid-cols-[1.5fr,1fr]", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "border-primary/20 bg-background", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "space-y-3", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", className: "w-fit", children: "Guided Progress" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-3xl font-semibold tracking-tight md:text-4xl", children: "Student Progress Hub" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardDescription, { className: "max-w-2xl text-base", children: [
+            "Welcome back, ",
+            claims.username,
+            ". Keep moving through each unit with a clear next step and a quick view of the course."
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between text-sm text-muted-foreground", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "Overall completion" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+              dashboard.summary.progressPercentage,
+              "%"
+            ] })
           ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-xl", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: `/student/lesson/${lesson.slug}`, className: "hover:underline", children: lesson.title }) }),
-          lesson.description && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: lesson.description })
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Progress, { value: dashboard.summary.progressPercentage, className: "h-3" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "border-primary/20 bg-primary/5", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "Continue Learning" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: dashboard.nextLesson ? `Next up: ${dashboard.nextLesson.title}` : "All available lessons are complete right now." })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-4", children: dashboard.nextLesson ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-1", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+              "Unit ",
+              dashboard.nextLesson.unitNumber
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "font-semibold", children: dashboard.nextLesson.title }),
+            dashboard.nextLesson.description ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: dashboard.nextLesson.description }) : null
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, className: "w-full sm:w-auto", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Link, { href: studentLessonPath(dashboard.nextLesson.slug), children: [
+            dashboard.nextLesson.actionLabel,
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ArrowRight, { className: "ml-2 h-4 w-4" })
+          ] }) })
+        ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800", children: "You have finished every available lesson. Review completed units or ask your teacher what to tackle next." }) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "grid gap-4 md:grid-cols-3", "aria-label": "Course metrics", children: metricCards.map((card) => {
+      const Icon2 = card.icon;
+      const value = card.key === "progress" ? `${dashboard.summary.progressPercentage}%` : card.key === "lessons" ? `${dashboard.summary.completedLessons}/${dashboard.summary.totalLessons}` : `${dashboard.summary.completedUnits}/${dashboard.summary.totalUnits}`;
+      const description = card.key === "progress" ? `${dashboard.summary.inProgressLessons} lessons in progress` : card.key === "lessons" ? `${dashboard.summary.inProgressLessons} currently in progress` : `${dashboard.summary.totalUnits - dashboard.summary.completedUnits} units still active`;
+      return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "flex flex-row items-center justify-between space-y-0 pb-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-sm font-medium", children: card.title }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Icon2, { className: "h-4 w-4 text-muted-foreground" })
         ] }),
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between text-sm text-muted-foreground mb-2", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "Progress" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-3xl font-semibold", children: value }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: description })
+        ] })
+      ] }, card.key);
+    }) }),
+    dashboard.units.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-xl border bg-background p-12 text-center text-muted-foreground", children: "No lessons available yet. Please check back later or contact your teacher." }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "space-y-6", "aria-label": "Unit progress", children: dashboard.units.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { id: `unit-${unit.unitNumber}`, children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "gap-4 md:flex-row md:items-start md:justify-between", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+              "Unit ",
+              unit.unitNumber
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", className: statusBadgeVariant(unit.status), children: statusLabel(unit.status) })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: unit.unitTitle }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardDescription, { children: [
+            unit.completedLessons,
+            " of ",
+            unit.lessons.length,
+            " lessons complete"
+          ] })
+        ] }),
+        unit.nextLesson ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, variant: "outline", className: "w-full md:w-auto", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Link, { href: studentLessonPath(unit.nextLesson.slug), children: [
+          unit.nextLesson.actionLabel,
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ArrowRight, { className: "ml-2 h-4 w-4" })
+        ] }) }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", className: "w-fit border-emerald-200 bg-emerald-50 text-emerald-700", children: "Unit Complete" })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mb-2 flex items-center justify-between text-sm text-muted-foreground", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "Unit progress" }),
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+              unit.progressPercentage,
+              "%"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Progress, { value: unit.progressPercentage, className: "h-2" })
+        ] }),
+        unit.nextLesson ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border border-border/60 bg-muted/30 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Next lesson in this unit" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-1 font-semibold", children: unit.nextLesson.title }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+            unit.nextLesson.completedPhases,
+            "/",
+            unit.nextLesson.totalPhases,
+            " phases complete"
+          ] })
+        ] }) : null,
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-3 md:grid-cols-2 xl:grid-cols-3", children: unit.lessons.map((lesson) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "border-border/60 shadow-none", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "pb-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Lesson" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { className: "text-xs text-muted-foreground", children: [
+                lesson.progressPercentage,
+                "%"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg leading-snug", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+              Link,
+              {
+                href: studentLessonPath(lesson.slug),
+                className: "hover:underline",
+                children: lesson.title
+              }
+            ) }),
+            lesson.description ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: lesson.description }) : null
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Progress, { value: lesson.progressPercentage, className: "h-2" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
               lesson.completedPhases,
               "/",
               lesson.totalPhases,
-              " phases (",
-              lesson.progressPercentage,
-              "%)"
+              " phases complete"
             ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Progress, { value: lesson.progressPercentage, className: "h-2" })
-        ] })
-      ] }, lesson.id)) })
+          ] })
+        ] }, lesson.id)) })
+      ] })
     ] }, unit.unitNumber)) })
-  ] }) });
+  ] }) }) });
 }
 const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -22700,7 +22944,7 @@ async function TeacherDashboardPage() {
     }
   );
 }
-const mod_44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_45 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -24582,6 +24826,13 @@ const mod_43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: SettingsPage
 }, Symbol.toStringTag, { value: "Module" }));
+async function StudentIndexPage() {
+  redirect(studentDashboardPath());
+}
+const mod_44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: StudentIndexPage
+}, Symbol.toStringTag, { value: "Module" }));
 const Input = react_reactServerExports.forwardRef(
   ({ className, type, ...props }, ref) => {
     return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
@@ -25060,7 +25311,7 @@ async function Home() {
     ] }) })
   ] });
 }
-const mod_45 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_46 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Home
 }, Symbol.toStringTag, { value: "Module" }));
@@ -25819,7 +26070,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/teacher",
+    pattern: "/student",
     isDynamic: false,
     params: [],
     page: mod_44,
@@ -25837,10 +26088,28 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/",
+    pattern: "/teacher",
     isDynamic: false,
     params: [],
     page: mod_45,
+    routeHandler: null,
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
+    templates: [],
+    errors: [null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
+    pattern: "/",
+    isDynamic: false,
+    params: [],
+    page: mod_46,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],

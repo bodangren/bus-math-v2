@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "vinext dev",
+    "dev:stack": "node scripts/dev-stack.mjs",
     "build": "vinext build",
     "start": "vinext start",
     "lint": "vinext lint",
