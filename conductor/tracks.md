@@ -22,6 +22,7 @@ This file is the source of truth for active execution order and archived track h
 
 - [x] **Track: Account Settings & Self-Service Password Changes**
   *Link: [./conductor/archive/account_settings_password_20260309/](./conductor/archive/account_settings_password_20260309/)*
+  *Checkpoint: `e5487cd` (2026-03-09 closeout)*
 
 - [x] **Track: Teacher Intervention Dashboard**
   *Link: [./conductor/archive/teacher_intervention_dashboard_20260309/](./conductor/archive/teacher_intervention_dashboard_20260309/)*
