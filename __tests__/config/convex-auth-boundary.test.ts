@@ -52,6 +52,9 @@ describe('Convex authorization boundary', () => {
     expectInternalExport(teacherSource, 'getTeacherStudentDetail', 'internalQuery');
     expectInternalExport(teacherSource, 'getSubmissionDetail', 'internalQuery');
     expectInternalExport(teacherSource, 'getProfileWithOrg', 'internalQuery');
+
+    expect(apiSource).not.toMatch(/export const getActivity = query\(/);
+    expect(apiSource).not.toMatch(/export const getProfileByAuthId = query\(/);
   });
 
   it('uses internal Convex helpers for sensitive server access', () => {
@@ -68,6 +71,7 @@ describe('Convex authorization boundary', () => {
     const teacherSubmissionRoute = readFile('app/api/teacher/submission-detail/route.ts');
     const authSessionRoute = readFile('app/api/auth/session/route.ts');
     const lessonPage = readFile('app/student/lesson/[lessonSlug]/page.tsx');
+    const activityRoute = readFile('app/api/activities/[activityId]/route.ts');
 
     expect(teacherDashboardPage).toContain('fetchInternalQuery');
     expect(teacherDashboardPage).toContain('internal.teacher.getTeacherDashboardData');
@@ -97,5 +101,6 @@ describe('Convex authorization boundary', () => {
     expect(teacherSubmissionRoute).toContain('fetchInternalQuery');
     expect(authSessionRoute).toContain('fetchInternalQuery');
     expect(lessonPage).toContain('fetchInternalQuery');
+    expect(activityRoute).toContain('internal.activities.getActivityById');
   });
 });

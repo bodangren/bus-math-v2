@@ -39,6 +39,18 @@ describe('POST /api/users/ensure-demo', () => {
     expect(mockFetchInternalMutation).not.toHaveBeenCalled();
   });
 
+  it('returns 403 when demo provisioning is requested from a preview deployment', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VERCEL_ENV', 'preview');
+
+    const response = await POST();
+    const json = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(json).toEqual({ error: 'Demo provisioning is unavailable in this environment' });
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
+  });
+
   it('ensures demo profiles and provisions credentials', async () => {
     vi.stubEnv('NODE_ENV', 'development');
 

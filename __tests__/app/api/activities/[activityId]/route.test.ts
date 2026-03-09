@@ -13,7 +13,9 @@ vi.mock('@/lib/convex/server', () => ({
   internal: {
     api: {
       getProfile: 'internal.api.getProfile',
-      getActivity: 'internal.api.getActivity',
+    },
+    activities: {
+      getActivityById: 'internal.activities.getActivityById',
     },
   },
 }));
@@ -88,5 +90,8 @@ describe('GET /api/activities/[activityId]', () => {
     expect(payload.gradingConfig).toBeNull();
     expect(payload.props.questions[0]).not.toHaveProperty('correctAnswer');
     expect(mockFetchInternalQuery).toHaveBeenNthCalledWith(1, 'internal.api.getProfile', { userId: 'profile_123' });
+    expect(mockFetchInternalQuery).toHaveBeenNthCalledWith(2, 'internal.activities.getActivityById', {
+      activityId: '7a0bfc56-4b5a-4c41-a90e-0e5cc2e7319b',
+    });
   });
 });

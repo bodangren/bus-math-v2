@@ -2,30 +2,11 @@ import { internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
-export const getActivity = query({
-  args: { activityId: v.id("activities") },
-  handler: async (ctx, args) => {
-    const activity = await ctx.db.get(args.activityId);
-    return activity;
-  },
-});
-
 export const getProfile = internalQuery({
   args: { userId: v.id("profiles") },
   handler: async (ctx, args) => {
     const profile = await ctx.db.get(args.userId);
     return profile;
-  },
-});
-
-export const getProfileByAuthId = query({
-  args: { authId: v.string() },
-  handler: async (ctx, args) => {
-    const profiles = await ctx.db
-      .query("profiles")
-      .filter((q) => q.eq(q.field("_id"), args.authId))
-      .collect();
-    return profiles[0] ?? null;
   },
 });
 

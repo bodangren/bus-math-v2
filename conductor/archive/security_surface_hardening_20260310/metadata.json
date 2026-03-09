@@ -1,0 +1,11 @@
+{
+  "track_id": "security_surface_hardening_20260310",
+  "type": "refactor",
+  "status": "completed",
+  "created_at": "2026-03-10T00:00:00Z",
+  "updated_at": "2026-03-10T00:00:00Z",
+  "description": "Security surface hardening for demo provisioning and activity access",
+  "estimated_tasks": 5,
+  "actual_tasks": 5,
+  "deviation_notes": "Track scope pivoted from an initial UI cleanup draft after code review surfaced critical preview demo-account exposure and public activity-answer leakage. Manual verification confirmation was skipped because this run was explicitly unattended; validation used full automated lint/test/build gates instead."
+}

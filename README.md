@@ -25,7 +25,7 @@ For testing and development, use these demo accounts:
 | Teacher | `demo_teacher` | `demo123` |
 | Student | `demo_student` | `demo123` |
 
-Both accounts are automatically seeded with the demo organization.
+Both accounts are intended for local development and test environments. Preview and production deployments should seed any demonstration users out of band instead of relying on runtime reprovisioning.
 
 ## Getting Started
 
@@ -70,7 +70,7 @@ Both accounts are automatically seeded with the demo organization.
    npx convex run seed:seedUnit1Lesson1
    ```
 
-   Automatic demo-account provisioning through `POST /api/users/ensure-demo` is only enabled in local development and preview-style environments. Production deployments should seed demo users ahead of time instead of exposing runtime reprovisioning.
+   Automatic demo-account provisioning through `POST /api/users/ensure-demo` is only enabled in local development and automated test environments. Preview and production deployments should seed demo users ahead of time instead of exposing runtime reprovisioning.
 
    For cloud-hosted server-side internal Convex calls, also set:
    ```env
@@ -150,7 +150,8 @@ bus-math-v2/
 - `npx convex dev` creates local runtime state under `.convex/local/`.
 - Server-side internal Convex calls use `CONVEX_DEPLOY_KEY` in cloud environments and the local Convex CLI `adminKey` in development.
 - Identity-sensitive dashboard, progress, profile, and submission flows now run through server-only internal Convex helpers. Public page data can remain queryable, but authenticated server routes/pages should not call those sensitive functions through the public API surface.
-- Demo credentials can be reprovisioned through `POST /api/users/ensure-demo` only when demo provisioning is enabled for the current environment.
+- The activity API now reads sensitive activity records through internal Convex queries and only returns redacted payloads to student callers.
+- Demo credentials can be reprovisioned through `POST /api/users/ensure-demo` only in local development and automated test environments.
 - Teacher bulk import normalizes usernames before account creation and may add numeric suffixes to avoid collisions.
 - Teacher dashboard exports now include display name, intervention status, and a needs-attention flag to match the intervention queue.
 - Authenticated users can update their password from `/settings`; forgotten-password recovery remains teacher/admin-managed.

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { SESSION_COOKIE_NAME, getAuthJwtSecret } from "@/lib/auth/constants";
+import { isDemoProvisioningEnabled } from "@/lib/auth/demo-provisioning";
 import { verifySessionToken } from "@/lib/auth/session";
 
 export async function proxy(request: NextRequest) {
@@ -16,12 +17,14 @@ export async function proxy(request: NextRequest) {
     '/auth',
   ];
   const publicApiRoutes = [
-    '/api/users/ensure-demo',
     '/api/test/seed-e2e',
     '/api/test/cleanup-e2e',
     '/api/test-db',
     '/api/test-supabase',
   ];
+  if (isDemoProvisioningEnabled()) {
+    publicApiRoutes.unshift('/api/users/ensure-demo');
+  }
 
   const isPublicPageRoute = publicPageRoutes.some(route =>
     path === route || path.startsWith(`${route}/`)

@@ -45,6 +45,9 @@ function createRequest(pathnameWithQuery: string, cookieToken?: string) {
 describe('proxy', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv('AUTH_JWT_SECRET', 'test-secret');
+    vi.stubEnv('NODE_ENV', 'test');
+    delete process.env.VERCEL_ENV;
 
     mockNext.mockImplementation(() => ({
       status: 200,
@@ -71,9 +74,22 @@ describe('proxy', () => {
     expect(response.status).toBe(200);
   });
 
-  it('allows public API routes without authentication', async () => {
+  it('allows local demo provisioning requests without authentication', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    delete process.env.VERCEL_ENV;
+
     const response = await proxy(createRequest('/api/users/ensure-demo'));
     expect(response.status).toBe(200);
+  });
+
+  it('redirects unauthenticated preview demo provisioning requests to login', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VERCEL_ENV', 'preview');
+
+    const response = await proxy(createRequest('/api/users/ensure-demo'));
+    expect(response.status).toBe(307);
+    expect(response.headers.get('location')).toContain('/auth/login');
+    expect(response.headers.get('location')).toContain('redirect=%2Fapi%2Fusers%2Fensure-demo');
   });
 
   it('redirects unauthenticated protected page requests to login with redirect param', async () => {

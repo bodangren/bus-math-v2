@@ -15024,6 +15024,14 @@ function getAuthJwtSecret() {
   }
   throw new Error("Missing AUTH_JWT_SECRET");
 }
+function isDemoProvisioningEnabled(env = process.env) {
+  const vercelEnv = env.VERCEL_ENV?.trim();
+  const nodeEnv = env.NODE_ENV?.trim();
+  if (vercelEnv === "preview" || nodeEnv === "production") {
+    return false;
+  }
+  return nodeEnv === "development" || nodeEnv === "test";
+}
 const encoder = new TextEncoder();
 function toBase64(bytes) {
   let binary = "";
@@ -15160,12 +15168,14 @@ async function proxy(request) {
     "/auth"
   ];
   const publicApiRoutes = [
-    "/api/users/ensure-demo",
     "/api/test/seed-e2e",
     "/api/test/cleanup-e2e",
     "/api/test-db",
     "/api/test-supabase"
   ];
+  if (isDemoProvisioningEnabled()) {
+    publicApiRoutes.unshift("/api/users/ensure-demo");
+  }
   const isPublicPageRoute = publicPageRoutes.some(
     (route) => path === route || path.startsWith(`${route}/`)
   );
@@ -21258,13 +21268,6 @@ const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   POST: POST$5
 }, Symbol.toStringTag, { value: "Module" }));
-function isDemoProvisioningEnabled(env = process.env) {
-  const vercelEnv = env.VERCEL_ENV?.trim();
-  if (vercelEnv === "preview") {
-    return true;
-  }
-  return env.NODE_ENV !== "production";
-}
 const DEMO_USERS = [
   { username: "demo_teacher", role: "teacher", password: "demo123" },
   { username: "demo_student", role: "student", password: "demo123" },
@@ -22834,7 +22837,6 @@ const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: CourseGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
-const internalAny = internal;
 async function GET$1(request, { params }) {
   try {
     const claims = await getRequestSessionClaims(request);
@@ -22842,7 +22844,7 @@ async function GET$1(request, { params }) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const userId = claims.sub;
-    const profile = await fetchInternalQuery(internalAny.api.getProfile, {
+    const profile = await fetchInternalQuery(internal.api.getProfile, {
       userId
     });
     if (!profile?.role) {
@@ -22861,7 +22863,7 @@ async function GET$1(request, { params }) {
     if (!activityId?.trim()) {
       return NextResponse.json({ error: "Invalid activity ID format" }, { status: 400 });
     }
-    const activity = await fetchInternalQuery(internalAny.api.getActivity, {
+    const activity = await fetchInternalQuery(internal.activities.getActivityById, {
       activityId
     });
     if (!activity) {
