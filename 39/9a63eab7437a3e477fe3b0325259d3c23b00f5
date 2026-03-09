@@ -1,0 +1,13 @@
+Checkpoint: Account Settings & Self-Service Password Changes
+
+Verification:
+- Focused red/green tests: CI=true npm test -- __tests__/app/api/auth/change-password/route.test.ts __tests__/components/update-password-form.test.tsx __tests__/app/settings/page.test.tsx
+- Lint: CI=true npm run lint
+- Full suite: CI=true npm test
+- Production build: CI=true npm run build
+
+Outcome:
+- Lint passed.
+- Full Vitest suite passed: 194 files, 1067 tests.
+- Production Vinext build completed successfully.
+- Supabase security suites self-skipped gracefully because the local Supabase test services were unavailable, but the overall test run still passed by design.
