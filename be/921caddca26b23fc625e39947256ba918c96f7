@@ -1,0 +1,4 @@
+Track closeout: security_surface_hardening_20260310
+Summary: Recorded the archive ledger checkpoint for the completed hardening track.
+Files: conductor/tracks.md
+Why: Keep the Conductor archive ledger tied to the implementation commit for auditability.
