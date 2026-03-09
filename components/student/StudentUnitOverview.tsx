@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Lesson } from '@/lib/db/schema/validators';
+import { studentLessonPath } from '@/lib/student/navigation';
 
 interface UnitOverview {
   id: string;
@@ -96,12 +97,12 @@ const totalHours = (lessons: Lesson[]) => {
 
 const lessonPath = (lesson: Lesson) => {
   if (lesson.slug) {
-    return lesson.slug.startsWith('/student') ? lesson.slug : `/student/${lesson.slug}`;
+    return lesson.slug.startsWith('/student') ? lesson.slug : studentLessonPath(lesson.slug);
   }
 
   const unit = lesson.unitNumber.toString().padStart(2, '0');
   const lessonNumber = lesson.orderIndex.toString().padStart(2, '0');
-  return `/student/unit${unit}/lesson${lessonNumber}`;
+  return studentLessonPath(`unit${unit}-lesson${lessonNumber}`);
 };
 
 export function StudentUnitOverview({ unit, lessons }: StudentUnitOverviewProps) {

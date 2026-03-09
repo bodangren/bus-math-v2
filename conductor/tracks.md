@@ -20,6 +20,9 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Student Progress Hub & Resume Navigation**
+  *Link: [./conductor/archive/student_progress_hub_20260309/](./conductor/archive/student_progress_hub_20260309/)*
+
 - [x] **Track: Account Settings & Self-Service Password Changes**
   *Link: [./conductor/archive/account_settings_password_20260309/](./conductor/archive/account_settings_password_20260309/)*
   *Checkpoint: `e5487cd` (2026-03-09 closeout)*

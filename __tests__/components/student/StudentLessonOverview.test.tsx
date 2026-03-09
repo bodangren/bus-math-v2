@@ -42,5 +42,9 @@ describe('StudentLessonOverview', () => {
 
     expect(screen.getAllByRole('link', { name: /Start Phase/i })).toHaveLength(phases.length);
     expect(screen.getByText(/Hook • Crisis Briefing/)).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /Start Phase/i })[0]).toHaveAttribute(
+      'href',
+      '/student/lesson/unit01-lesson01?phase=1',
+    );
   });
 });

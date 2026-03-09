@@ -14,6 +14,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Lesson, Phase } from '@/lib/db/schema/validators';
+import {
+  studentDashboardPath,
+  studentLessonPhasePath,
+  studentUnitAnchor,
+} from '@/lib/student/navigation';
 
 interface LessonUnitSummary {
   title: string;
@@ -41,23 +46,12 @@ const defaultPedagogy = [
   'Hands-on spreadsheets with immediate instructor feedback'
 ];
 
-const buildLessonHref = (lesson: Lesson) => {
-  if (lesson.slug) {
-    return lesson.slug.startsWith('/student') ? lesson.slug : `/student/${lesson.slug}`;
-  }
-
-  const unitNumber = lesson.unitNumber.toString().padStart(2, '0');
-  const lessonNumber = lesson.orderIndex.toString().padStart(2, '0');
-  return `/student/unit${unitNumber}/lesson${lessonNumber}`;
-};
-
 const formattedDuration = (lesson: Lesson) => {
   const hours = (lesson.metadata?.duration ?? 60) / 60;
   return Math.round(hours * 10) / 10;
 };
 
 export function StudentLessonOverview({ lesson, unit, phases = [] }: StudentLessonOverviewProps) {
-  const baseLessonHref = buildLessonHref(lesson);
   const lessonNumber = lesson.orderIndex;
   const concepts = lesson.metadata?.tags ?? [];
   const sortedPhases = [...phases].sort((a, b) => a.phaseNumber - b.phaseNumber);
@@ -65,11 +59,11 @@ export function StudentLessonOverview({ lesson, unit, phases = [] }: StudentLess
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-4">
       <nav className="flex items-center space-x-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
-        <Link href="/student" className="hover:text-foreground">
+        <Link href={studentDashboardPath()} className="hover:text-foreground">
           Student
         </Link>
         <ArrowRight className="h-3 w-3" />
-        <Link href={`/student/unit${unit.sequence.toString().padStart(2, '0')}`} className="hover:text-foreground">
+        <Link href={studentUnitAnchor(unit.sequence)} className="hover:text-foreground">
           {unit.title}
         </Link>
         <ArrowRight className="h-3 w-3" />
@@ -171,7 +165,7 @@ export function StudentLessonOverview({ lesson, unit, phases = [] }: StudentLess
                     </div>
                   </div>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href={`${baseLessonHref}/phase-${phase.phaseNumber.toString().padStart(2, '0')}`}>
+                    <Link href={studentLessonPhasePath(lesson.slug, phase.phaseNumber)}>
                       Start Phase
                     </Link>
                   </Button>

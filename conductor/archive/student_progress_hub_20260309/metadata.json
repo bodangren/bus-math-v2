@@ -1,0 +1,11 @@
+{
+  "track_id": "student_progress_hub_20260309",
+  "type": "feature",
+  "status": "archived",
+  "created_at": "2026-03-09T10:00:00Z",
+  "updated_at": "2026-03-09T13:00:00Z",
+  "description": "Upgrade the student dashboard into a guided progress hub with clear resume actions, unit-level progress summaries, and cleaned-up student navigation paths.",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "The repo root is the active application surface for this branch; there is no bus-math-v2/ subdirectory despite the standing AGENTS scope note."
+}

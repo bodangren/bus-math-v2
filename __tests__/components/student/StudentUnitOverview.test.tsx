@@ -40,4 +40,24 @@ describe('StudentUnitOverview', () => {
     expect(screen.getByText(/Build narrative dashboards/)).toBeInTheDocument();
     expect(screen.getByText(/Practice Test & Investor Rehearsal/)).toBeInTheDocument();
   });
+
+  it('links lesson actions to the live student lesson route', () => {
+    render(
+      <StudentUnitOverview
+        unit={{
+          id: 'unit-1',
+          title: 'Unit 1 • Balance by Design',
+          description: 'Stabilize Sarah’s books and rebuild investor trust.',
+          rationale: 'Sarah needs transparent ledgers and dashboards to scale ShopStart.',
+          sequence: 1
+        }}
+        lessons={lessons}
+      />
+    );
+
+    expect(screen.getAllByRole('link', { name: /open lesson/i })[0]).toHaveAttribute(
+      'href',
+      '/student/lesson/unit01-lesson01',
+    );
+  });
 });

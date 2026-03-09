@@ -6,6 +6,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 
 - **Interactive Lessons**: Six-phase learning structure with hands-on activities
 - **Progress Tracking**: Student progress monitoring and analytics
+- **Student Progress Hub**: Guided dashboard with overall course progress, resume/start recommendations, and unit-by-unit completion cards
 - **Teacher Intervention Queue**: At-risk and inactive student triage with status filters and CSV-aligned intervention exports
 - **Account Settings & Self-Service Password Changes**: Authenticated users can review account context and update their own password without leaving the session
 - **Multi-tenant Architecture**: Organization-based access control
@@ -149,6 +150,7 @@ bus-math-v2/
 - Teacher bulk import normalizes usernames before account creation and may add numeric suffixes to avoid collisions.
 - Teacher dashboard exports now include display name, intervention status, and a needs-attention flag to match the intervention queue.
 - Authenticated users can update their password from `/settings`; forgotten-password recovery remains teacher/admin-managed.
+- `/student` now resolves to the guided student dashboard, and lesson resume links consistently target `/student/lesson/[lessonSlug]`.
 
 ## Testing
 
