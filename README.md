@@ -7,6 +7,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Interactive Lessons**: Six-phase learning structure with hands-on activities
 - **Progress Tracking**: Student progress monitoring and analytics
 - **Teacher Intervention Queue**: At-risk and inactive student triage with status filters and CSV-aligned intervention exports
+- **Account Settings & Self-Service Password Changes**: Authenticated users can review account context and update their own password without leaving the session
 - **Multi-tenant Architecture**: Organization-based access control
 - **Role-Based Access**: Separate interfaces for students, teachers, and administrators
 - **Spreadsheet Activities**: Interactive Excel-like activities for financial modeling
@@ -147,6 +148,7 @@ bus-math-v2/
 - Demo credentials can be reprovisioned through `POST /api/users/ensure-demo` only when demo provisioning is enabled for the current environment.
 - Teacher bulk import normalizes usernames before account creation and may add numeric suffixes to avoid collisions.
 - Teacher dashboard exports now include display name, intervention status, and a needs-attention flag to match the intervention queue.
+- Authenticated users can update their password from `/settings`; forgotten-password recovery remains teacher/admin-managed.
 
 ## Testing
 

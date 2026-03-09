@@ -32,6 +32,29 @@ export const getCredentialByUsername = internalQuery({
   },
 });
 
+export const getAccountSettingsContext = internalQuery({
+  args: {
+    profileId: v.id("profiles"),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db.get(args.profileId);
+    if (!profile) {
+      return null;
+    }
+
+    const organization = await ctx.db.get(profile.organizationId);
+
+    return {
+      id: profile._id,
+      username: profile.username,
+      role: profile.role,
+      displayName: profile.displayName ?? profile.username,
+      organizationId: profile.organizationId,
+      organizationName: organization?.name ?? "Your organization",
+    };
+  },
+});
+
 export const upsertCredentialByUsername = internalMutation({
   args: {
     username: v.string(),
@@ -558,6 +581,55 @@ export const resetStudentPassword = internalMutation({
       studentId: student._id,
       username: student.username,
       displayName: student.displayName ?? student.username,
+    };
+  },
+});
+
+export const changeOwnPassword = internalMutation({
+  args: {
+    profileId: v.id("profiles"),
+    passwordHash: v.string(),
+    passwordSalt: v.string(),
+    passwordHashIterations: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db.get(args.profileId);
+    if (!profile) {
+      return { ok: false as const, reason: "profile_not_found" as const };
+    }
+
+    const credential = await ctx.db
+      .query("auth_credentials")
+      .withIndex("by_profile", (q) => q.eq("profileId", args.profileId))
+      .unique();
+
+    if (!credential || !credential.isActive) {
+      return { ok: false as const, reason: "credential_not_found" as const };
+    }
+
+    const now = Date.now();
+
+    await ctx.db.patch(credential._id, {
+      passwordHash: args.passwordHash,
+      passwordSalt: args.passwordSalt,
+      passwordHashIterations: args.passwordHashIterations,
+      updatedAt: now,
+    });
+
+    const existingMetadata = asMetadataRecord(profile.metadata);
+    await ctx.db.patch(profile._id, {
+      metadata: {
+        ...existingMetadata,
+        lastPasswordChangedAt: new Date(now).toISOString(),
+      },
+      updatedAt: now,
+    });
+
+    return {
+      ok: true as const,
+      profileId: profile._id,
+      username: profile.username,
+      role: profile.role,
     };
   },
 });

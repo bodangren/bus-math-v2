@@ -17024,7 +17024,7 @@ const CompletePhaseSchema = z.object({
   idempotencyKey: z.string().uuid("Invalid idempotency key format"),
   linkedStandardId: z.string().uuid("Invalid standard ID format").optional()
 });
-async function POST$e(request) {
+async function POST$f(request) {
   try {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
@@ -17168,9 +17168,9 @@ async function POST$e(request) {
     );
   }
 }
-const mod_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  POST: POST$e
+  POST: POST$f
 }, Symbol.toStringTag, { value: "Module" }));
 const CompleteActivitySchema = z.object({
   activityId: z.string().uuid("Invalid activity ID format"),
@@ -17201,7 +17201,7 @@ function deriveTimeSpent(completionData) {
   }
   return Math.min(86400, Math.floor(rawTimeSpent));
 }
-async function POST$d(request) {
+async function POST$e(request) {
   try {
     let body;
     try {
@@ -17248,7 +17248,7 @@ async function POST$d(request) {
       },
       body: JSON.stringify(phasePayload)
     });
-    const phaseResponse = await POST$e(phaseRequest);
+    const phaseResponse = await POST$f(phaseRequest);
     let phaseResult = null;
     try {
       phaseResult = await phaseResponse.json();
@@ -17298,7 +17298,7 @@ async function POST$d(request) {
 }
 const mod_0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  POST: POST$d
+  POST: POST$e
 }, Symbol.toStringTag, { value: "Module" }));
 const RemoveDuplicateServerCss = void 0;
 const Resources = /* @__PURE__ */ ((React2, deps, RemoveDuplicateServerCss2, precedence) => {
@@ -17635,6 +17635,112 @@ const mod_1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   default: $$wrap_RootLayout,
   metadata
 }, Symbol.toStringTag, { value: "Module" }));
+function getPasswordRequirementText(role) {
+  if (role === "student") {
+    return "Use at least 6 characters.";
+  }
+  return "Use at least 8 characters with at least one letter and one number.";
+}
+function validatePasswordForRole(role, password) {
+  const trimmedPassword = password.trim();
+  if (role === "student") {
+    if (trimmedPassword.length < 6) {
+      return "New password must be at least 6 characters long.";
+    }
+    return null;
+  }
+  if (trimmedPassword.length < 8) {
+    return "New password must be at least 8 characters long.";
+  }
+  if (!/[A-Za-z]/.test(trimmedPassword) || !/[0-9]/.test(trimmedPassword)) {
+    return "New password must include at least one letter and one number.";
+  }
+  return null;
+}
+const requestSchema$6 = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(1, "New password is required"),
+  confirmPassword: z.string().min(1, "Password confirmation is required")
+});
+async function POST$d(request) {
+  try {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+    const parsedBody = requestSchema$6.safeParse(body);
+    if (!parsedBody.success) {
+      return Response.json(
+        { error: "Invalid request payload", details: parsedBody.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+    const { currentPassword, newPassword, confirmPassword } = parsedBody.data;
+    if (newPassword !== confirmPassword) {
+      return Response.json(
+        { error: "New password and confirmation do not match." },
+        { status: 400 }
+      );
+    }
+    const policyError = validatePasswordForRole(claims.role, newPassword);
+    if (policyError) {
+      return Response.json(
+        { error: policyError, requirement: getPasswordRequirementText(claims.role) },
+        { status: 400 }
+      );
+    }
+    const credential = await fetchInternalQuery(internal.auth.getCredentialByUsername, {
+      username: claims.username
+    });
+    if (!credential || credential.profileId !== claims.sub) {
+      return Response.json({ error: "Credential not found" }, { status: 404 });
+    }
+    const isCurrentPasswordValid = await verifyPassword(currentPassword, {
+      salt: credential.passwordSalt,
+      iterations: credential.passwordHashIterations ?? PASSWORD_HASH_ITERATIONS,
+      passwordHash: credential.passwordHash
+    });
+    if (!isCurrentPasswordValid) {
+      return Response.json(
+        { error: "Current password is incorrect." },
+        { status: 403 }
+      );
+    }
+    const passwordSalt = generatePasswordSalt();
+    const passwordHash = await hashPassword(
+      newPassword,
+      passwordSalt,
+      PASSWORD_HASH_ITERATIONS
+    );
+    const result = await fetchInternalMutation(internal.auth.changeOwnPassword, {
+      profileId: claims.sub,
+      passwordHash,
+      passwordSalt,
+      passwordHashIterations: PASSWORD_HASH_ITERATIONS
+    });
+    if (!result.ok) {
+      return Response.json({ error: "Failed to update password." }, { status: 500 });
+    }
+    return Response.json({
+      ok: true,
+      username: result.username,
+      message: "Password updated successfully."
+    });
+  } catch (error) {
+    console.error("Unexpected error in change-password", error);
+    return Response.json({ error: "Unexpected error" }, { status: 500 });
+  }
+}
+const mod_2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  POST: POST$d
+}, Symbol.toStringTag, { value: "Module" }));
 async function POST$c(request) {
   let body;
   try {
@@ -17684,7 +17790,7 @@ async function POST$c(request) {
     return NextResponse.json({ error: "Authentication service unavailable" }, { status: 500 });
   }
 }
-const mod_2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$c
 }, Symbol.toStringTag, { value: "Module" }));
@@ -17699,7 +17805,7 @@ async function POST$b() {
   });
   return NextResponse.json({ ok: true });
 }
-const mod_3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$b
 }, Symbol.toStringTag, { value: "Module" }));
@@ -17746,7 +17852,7 @@ async function GET$8() {
     }
   });
 }
-const mod_4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$8
 }, Symbol.toStringTag, { value: "Module" }));
@@ -20226,7 +20332,7 @@ async function POST$a(request) {
     );
   }
 }
-const mod_6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$a
 }, Symbol.toStringTag, { value: "Module" }));
@@ -20240,7 +20346,7 @@ async function POST$9(request) {
     { status: 410 }
   );
 }
-const mod_7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$9
 }, Symbol.toStringTag, { value: "Module" }));
@@ -20299,7 +20405,7 @@ async function GET$7(request) {
     );
   }
 }
-const mod_8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$7
 }, Symbol.toStringTag, { value: "Module" }));
@@ -20679,7 +20785,7 @@ async function POST$8(request) {
     );
   }
 }
-const mod_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$8,
   dynamic: dynamic$4
@@ -20914,7 +21020,7 @@ async function POST$7(request) {
     );
   }
 }
-const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$7,
   dynamic: dynamic$3
@@ -21050,7 +21156,7 @@ async function POST$6(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$6
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21120,7 +21226,7 @@ async function POST$5(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$5
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21175,7 +21281,7 @@ async function POST$4() {
     return NextResponse.json({ error: "Failed to ensure demo credentials" }, { status: 500 });
   }
 }
-const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$4
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21242,7 +21348,7 @@ async function POST$3(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_15 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21313,7 +21419,7 @@ async function POST$2(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_15 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21410,7 +21516,7 @@ async function POST$1(request, { params }) {
     );
   }
 }
-const mod_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$6,
   POST: POST$1
@@ -21747,7 +21853,7 @@ async function POST(request, { params }) {
     );
   }
 }
-const mod_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$5,
   POST
@@ -21775,7 +21881,7 @@ async function AdminDashboard() {
     ] })
   ] }) });
 }
-const mod_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: AdminDashboard
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21844,7 +21950,7 @@ async function GET$4(request) {
     status: result.success ? 200 : 500
   });
 }
-const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$4
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21887,14 +21993,14 @@ async function GET$3(request) {
     }, { status: 500 });
   }
 }
-const mod_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$3
 }, Symbol.toStringTag, { value: "Module" }));
 async function GET$2() {
   redirect("/auth/login?message=Email confirmation is not used in this system");
 }
-const mod_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21963,7 +22069,7 @@ async function Page$3({
     ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "An unspecified error occurred." }) })
   ] }) }) }) });
 }
-const mod_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21973,7 +22079,7 @@ const ForgotPasswordForm = /* @__PURE__ */ registerClientReference(() => {
 function Page$2() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ForgotPasswordForm, {}) }) });
 }
-const mod_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21983,17 +22089,14 @@ const LoginForm = /* @__PURE__ */ registerClientReference(() => {
 function Page$1() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(react_reactServerExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { children: "Loading..." }), children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(LoginForm, {}) }) }) });
 }
-const mod_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$1
 }, Symbol.toStringTag, { value: "Module" }));
-const UpdatePasswordForm = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'UpdatePasswordForm' is called on server");
-}, "902786d5592b", "UpdatePasswordForm");
 function Page() {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(UpdatePasswordForm, {}) }) });
+  redirect("/settings");
 }
-const mod_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22068,7 +22171,7 @@ async function DatabaseTestPage() {
     ] })
   ] });
 }
-const mod_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_27 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: DatabaseTestPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22326,7 +22429,7 @@ function ProtectedLayout({
     ] })
   ] }) });
 }
-const mod_27 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: ProtectedLayout
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22396,7 +22499,7 @@ async function StudentDashboard() {
     ] }, unit.unitNumber)) })
   ] }) });
 }
-const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: StudentDashboard,
   dynamic: dynamic$2
@@ -22597,11 +22700,11 @@ async function TeacherDashboardPage() {
     }
   );
 }
-const mod_43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
-const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22636,7 +22739,7 @@ async function CourseGradebookPage() {
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": "Course overview gradebook", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CourseOverviewGrid, { rows, units }) })
   ] }) });
 }
-const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CourseGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22709,7 +22812,7 @@ function redactSensitiveFields(value) {
   }
   return value;
 }
-const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$1
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22759,7 +22862,7 @@ async function GET(request, { params }) {
     );
   }
 }
-const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_33 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23028,7 +23131,7 @@ async function LessonPage({ params, searchParams }) {
     }
   );
 }
-const mod_33 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LessonPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23062,7 +23165,7 @@ function LessonLoading() {
     ] }, i)) })
   ] }) });
 }
-const mod_34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LessonLoading
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23211,7 +23314,7 @@ async function TeacherStudentDetailPage({
     ] })
   ] }) });
 }
-const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherStudentDetailPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23366,7 +23469,7 @@ async function UnitGradebookPage({ params }) {
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": `Unit ${unitNumber} gradebook`, children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(GradebookGrid, { rows, lessons: lessons2, unitNumber }) })
   ] }) });
 }
-const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_37 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: UnitGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23437,7 +23540,7 @@ function AcknowledgmentsPage() {
     ] })
   ] });
 }
-const mod_37 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_38 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: AcknowledgmentsPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23705,7 +23808,7 @@ function CapstonePage() {
     ] })
   ] });
 }
-const mod_38 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CapstonePage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23735,7 +23838,7 @@ async function CurriculumPage() {
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-12 md:py-16 bg-muted/10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4", children: units.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-center text-muted-foreground border rounded-xl p-12 bg-background", children: "Curriculum data isn't available yet. Please seed lessons in Convex to populate this page." }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-8 md:grid-cols-2", children: units.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CurriculumUnitCard, { unit }, unit.unitNumber)) }) }) })
   ] });
 }
-const mod_39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CurriculumPage,
   dynamic: dynamic$1
@@ -24174,7 +24277,7 @@ async function PrefacePage() {
     ] })
   ] });
 }
-const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_41 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: PrefacePage,
   dynamic
@@ -24401,20 +24504,81 @@ async function ProtectedPage() {
     ] })
   ] });
 }
-const mod_41 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: ProtectedPage
 }, Symbol.toStringTag, { value: "Module" }));
-function SettingsPage() {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "Settings" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Manage your account settings." })
+const UpdatePasswordForm = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'UpdatePasswordForm' is called on server");
+}, "902786d5592b", "UpdatePasswordForm");
+async function SettingsPage() {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
+    return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto max-w-2xl px-4 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { children: "Account Settings" }) }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Sign in to access your account settings." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Sign in to manage your account, review your role, and update your password." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          Link,
+          {
+            href: "/auth/login?redirect=%2Fsettings",
+            className: "inline-flex items-center text-sm font-medium text-primary hover:underline",
+            children: "Go to login"
+          }
+        )
+      ] })
+    ] }) });
+  }
+  const account = await fetchInternalQuery(internal.auth.getAccountSettingsContext, {
+    profileId: claims.sub
+  });
+  if (!account) {
+    return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto max-w-2xl px-4 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Card, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { children: "Account Settings" }) }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Account details are temporarily unavailable." })
+    ] }) }) });
+  }
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto max-w-4xl px-4 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 lg:grid-cols-[1.05fr_0.95fr]", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { children: "Account Settings" }) }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Review your account details and keep your login secure." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-muted-foreground", children: "Display name" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg font-semibold text-foreground", children: account.displayName })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-lg border bg-muted/20 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-muted-foreground", children: "Username" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-1 font-mono text-foreground", children: account.username })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-lg border bg-muted/20 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-muted-foreground", children: "Role" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", className: "mt-2 capitalize", children: account.role })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-lg border bg-muted/20 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-muted-foreground", children: "Organization" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-1 text-foreground", children: account.organizationName })
+        ] })
+      ] })
     ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { children: "Settings functionality coming soon." }) })
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+      UpdatePasswordForm,
+      {
+        username: account.username,
+        role: account.role,
+        organizationName: account.organizationName
+      }
+    )
   ] }) });
 }
-const mod_42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: SettingsPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -24896,7 +25060,7 @@ async function Home() {
     ] }) })
   ] });
 }
-const mod_44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_45 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Home
 }, Symbol.toStringTag, { value: "Module" }));
@@ -24935,7 +25099,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/auth/login",
+    pattern: "/api/auth/change-password",
     isDynamic: false,
     params: [],
     page: null,
@@ -24953,7 +25117,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/auth/logout",
+    pattern: "/api/auth/login",
     isDynamic: false,
     params: [],
     page: null,
@@ -24971,7 +25135,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/auth/session",
+    pattern: "/api/auth/logout",
     isDynamic: false,
     params: [],
     page: null,
@@ -24989,7 +25153,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/phases/complete",
+    pattern: "/api/auth/session",
     isDynamic: false,
     params: [],
     page: null,
@@ -25007,7 +25171,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/progress/assessment",
+    pattern: "/api/phases/complete",
     isDynamic: false,
     params: [],
     page: null,
@@ -25025,7 +25189,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/progress/phase",
+    pattern: "/api/progress/assessment",
     isDynamic: false,
     params: [],
     page: null,
@@ -25043,7 +25207,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/teacher/submission-detail",
+    pattern: "/api/progress/phase",
     isDynamic: false,
     params: [],
     page: null,
@@ -25061,7 +25225,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/test/cleanup-e2e",
+    pattern: "/api/teacher/submission-detail",
     isDynamic: false,
     params: [],
     page: null,
@@ -25079,7 +25243,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/test/seed-e2e",
+    pattern: "/api/test/cleanup-e2e",
     isDynamic: false,
     params: [],
     page: null,
@@ -25097,7 +25261,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/bulk-create-students",
+    pattern: "/api/test/seed-e2e",
     isDynamic: false,
     params: [],
     page: null,
@@ -25115,7 +25279,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/create-student",
+    pattern: "/api/users/bulk-create-students",
     isDynamic: false,
     params: [],
     page: null,
@@ -25133,7 +25297,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/ensure-demo",
+    pattern: "/api/users/create-student",
     isDynamic: false,
     params: [],
     page: null,
@@ -25151,7 +25315,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/reset-student-password",
+    pattern: "/api/users/ensure-demo",
     isDynamic: false,
     params: [],
     page: null,
@@ -25169,7 +25333,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/update-student",
+    pattern: "/api/users/reset-student-password",
     isDynamic: false,
     params: [],
     page: null,
@@ -25187,9 +25351,9 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/activities/spreadsheet/:activityId/draft",
-    isDynamic: true,
-    params: ["activityId"],
+    pattern: "/api/users/update-student",
+    isDynamic: false,
+    params: [],
     page: null,
     routeHandler: mod_16,
     layouts: [mod_1],
@@ -25205,7 +25369,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/activities/spreadsheet/:activityId/submit",
+    pattern: "/api/activities/spreadsheet/:activityId/draft",
     isDynamic: true,
     params: ["activityId"],
     page: null,
@@ -25223,10 +25387,28 @@ const routes = [
     unauthorized: null
   },
   {
+    pattern: "/api/activities/spreadsheet/:activityId/submit",
+    isDynamic: true,
+    params: ["activityId"],
+    page: null,
+    routeHandler: mod_18,
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
+    templates: [],
+    errors: [null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
     pattern: "/admin/dashboard",
     isDynamic: false,
     params: [],
-    page: mod_18,
+    page: mod_19,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25245,7 +25427,7 @@ const routes = [
     isDynamic: false,
     params: [],
     page: null,
-    routeHandler: mod_19,
+    routeHandler: mod_20,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25263,7 +25445,7 @@ const routes = [
     isDynamic: false,
     params: [],
     page: null,
-    routeHandler: mod_20,
+    routeHandler: mod_21,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25281,7 +25463,7 @@ const routes = [
     isDynamic: false,
     params: [],
     page: null,
-    routeHandler: mod_21,
+    routeHandler: mod_22,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25296,24 +25478,6 @@ const routes = [
   },
   {
     pattern: "/auth/error",
-    isDynamic: false,
-    params: [],
-    page: mod_22,
-    routeHandler: null,
-    layouts: [mod_1],
-    layoutSegmentDepths: [0],
-    templates: [],
-    errors: [null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
-    pattern: "/auth/forgot-password",
     isDynamic: false,
     params: [],
     page: mod_23,
@@ -25331,7 +25495,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/login",
+    pattern: "/auth/forgot-password",
     isDynamic: false,
     params: [],
     page: mod_24,
@@ -25349,7 +25513,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/update-password",
+    pattern: "/auth/login",
     isDynamic: false,
     params: [],
     page: mod_25,
@@ -25367,28 +25531,10 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/protected/db-test",
+    pattern: "/auth/update-password",
     isDynamic: false,
     params: [],
     page: mod_26,
-    routeHandler: null,
-    layouts: [mod_1, mod_27],
-    layoutSegmentDepths: [0, 1],
-    templates: [],
-    errors: [null, null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null, null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
-    pattern: "/student/dashboard",
-    isDynamic: false,
-    params: [],
-    page: mod_28,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25403,7 +25549,25 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/teacher/dashboard",
+    pattern: "/protected/db-test",
+    isDynamic: false,
+    params: [],
+    page: mod_27,
+    routeHandler: null,
+    layouts: [mod_1, mod_28],
+    layoutSegmentDepths: [0, 1],
+    templates: [],
+    errors: [null, null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null, null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
+    pattern: "/student/dashboard",
     isDynamic: false,
     params: [],
     page: mod_29,
@@ -25421,10 +25585,28 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/teacher/gradebook",
+    pattern: "/teacher/dashboard",
     isDynamic: false,
     params: [],
     page: mod_30,
+    routeHandler: null,
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
+    templates: [],
+    errors: [null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
+    pattern: "/teacher/gradebook",
+    isDynamic: false,
+    params: [],
+    page: mod_31,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25443,7 +25625,7 @@ const routes = [
     isDynamic: true,
     params: ["activityId"],
     page: null,
-    routeHandler: mod_31,
+    routeHandler: mod_32,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25461,7 +25643,7 @@ const routes = [
     isDynamic: true,
     params: ["lessonId"],
     page: null,
-    routeHandler: mod_32,
+    routeHandler: mod_33,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25478,14 +25660,14 @@ const routes = [
     pattern: "/student/lesson/:lessonSlug",
     isDynamic: true,
     params: ["lessonSlug"],
-    page: mod_33,
+    page: mod_34,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
     errors: [null],
     slots: {},
-    loading: mod_34,
+    loading: mod_35,
     error: null,
     notFound: null,
     notFounds: [null],
@@ -25496,7 +25678,7 @@ const routes = [
     pattern: "/teacher/students/:studentId",
     isDynamic: true,
     params: ["studentId"],
-    page: mod_35,
+    page: mod_36,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25514,7 +25696,7 @@ const routes = [
     pattern: "/teacher/units/:unitNumber",
     isDynamic: true,
     params: ["unitNumber"],
-    page: mod_36,
+    page: mod_37,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25532,7 +25714,7 @@ const routes = [
     pattern: "/acknowledgments",
     isDynamic: false,
     params: [],
-    page: mod_37,
+    page: mod_38,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25550,7 +25732,7 @@ const routes = [
     pattern: "/capstone",
     isDynamic: false,
     params: [],
-    page: mod_38,
+    page: mod_39,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25568,7 +25750,7 @@ const routes = [
     pattern: "/curriculum",
     isDynamic: false,
     params: [],
-    page: mod_39,
+    page: mod_40,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25586,7 +25768,7 @@ const routes = [
     pattern: "/preface",
     isDynamic: false,
     params: [],
-    page: mod_40,
+    page: mod_41,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25604,9 +25786,9 @@ const routes = [
     pattern: "/protected",
     isDynamic: false,
     params: [],
-    page: mod_41,
+    page: mod_42,
     routeHandler: null,
-    layouts: [mod_1, mod_27],
+    layouts: [mod_1, mod_28],
     layoutSegmentDepths: [0, 1],
     templates: [],
     errors: [null, null],
@@ -25620,24 +25802,6 @@ const routes = [
   },
   {
     pattern: "/settings",
-    isDynamic: false,
-    params: [],
-    page: mod_42,
-    routeHandler: null,
-    layouts: [mod_1],
-    layoutSegmentDepths: [0],
-    templates: [],
-    errors: [null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
-    pattern: "/teacher",
     isDynamic: false,
     params: [],
     page: mod_43,
@@ -25655,10 +25819,28 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/",
+    pattern: "/teacher",
     isDynamic: false,
     params: [],
     page: mod_44,
+    routeHandler: null,
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
+    templates: [],
+    errors: [null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
+    pattern: "/",
+    isDynamic: false,
+    params: [],
+    page: mod_45,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],

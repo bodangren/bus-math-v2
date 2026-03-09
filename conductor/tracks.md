@@ -20,6 +20,9 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Account Settings & Self-Service Password Changes**
+  *Link: [./conductor/archive/account_settings_password_20260309/](./conductor/archive/account_settings_password_20260309/)*
+
 - [x] **Track: Teacher Intervention Dashboard**
   *Link: [./conductor/archive/teacher_intervention_dashboard_20260309/](./conductor/archive/teacher_intervention_dashboard_20260309/)*
   *Checkpoint: `e195777` (2026-03-09 closeout)*

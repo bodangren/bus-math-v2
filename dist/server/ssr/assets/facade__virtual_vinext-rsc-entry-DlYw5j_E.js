@@ -57215,8 +57215,136 @@ function GradebookGrid({ rows, lessons, unitNumber }) {
     )
   ] });
 }
+const RECENT_ACTIVITY_WINDOW_DAYS = 7;
+const COMPLETED_THRESHOLD = 99.5;
+const AT_RISK_THRESHOLD = 50;
+function clampPercentage$2(value) {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(100, value));
+}
+function getLastActiveTimestamp(value) {
+  if (!value) {
+    return null;
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+  return parsed.getTime();
+}
+function isActiveWithinDays(value, days) {
+  const timestamp = getLastActiveTimestamp(value);
+  if (timestamp === null) {
+    return false;
+  }
+  return Date.now() - timestamp <= days * 24 * 60 * 60 * 1e3;
+}
+function deriveStudentIntervention(student) {
+  const progressPercentage = clampPercentage$2(student.progressPercentage);
+  const isCompleted = progressPercentage >= COMPLETED_THRESHOLD;
+  const isAtRisk = progressPercentage < AT_RISK_THRESHOLD;
+  const isRecentlyActive = isActiveWithinDays(
+    student.lastActive,
+    RECENT_ACTIVITY_WINDOW_DAYS
+  );
+  const isInactive = !isCompleted && !isRecentlyActive;
+  let status = "on_track";
+  if (isCompleted) {
+    status = "completed";
+  } else if (isAtRisk) {
+    status = "at_risk";
+  } else if (isInactive) {
+    status = "inactive";
+  }
+  return {
+    ...student,
+    progressPercentage,
+    status,
+    isAtRisk,
+    isInactive,
+    isCompleted,
+    isRecentlyActive,
+    needsAttention: isAtRisk || isInactive,
+    sortName: (student.displayName ?? student.username).toLowerCase(),
+    lastActiveTimestamp: getLastActiveTimestamp(student.lastActive)
+  };
+}
+function interventionPriority(student) {
+  if (student.isAtRisk && student.isInactive) return 0;
+  if (student.isAtRisk) return 1;
+  if (student.isInactive) return 2;
+  if (student.isCompleted) return 4;
+  return 3;
+}
+function prioritizeInterventionRows(students) {
+  return students.map(deriveStudentIntervention).sort((a, b2) => {
+    const priorityDiff = interventionPriority(a) - interventionPriority(b2);
+    if (priorityDiff !== 0) {
+      return priorityDiff;
+    }
+    if (a.progressPercentage !== b2.progressPercentage) {
+      return a.progressPercentage - b2.progressPercentage;
+    }
+    const timeA = a.lastActiveTimestamp ?? Number.NEGATIVE_INFINITY;
+    const timeB = b2.lastActiveTimestamp ?? Number.NEGATIVE_INFINITY;
+    if (timeA !== timeB) {
+      return timeA - timeB;
+    }
+    return a.sortName.localeCompare(b2.sortName);
+  });
+}
+function applyInterventionFilter(students, filter) {
+  const derived = prioritizeInterventionRows(students);
+  switch (filter) {
+    case "at_risk":
+      return derived.filter((student) => student.isAtRisk);
+    case "inactive":
+      return derived.filter((student) => student.isInactive);
+    case "on_track":
+      return derived.filter(
+        (student) => !student.isCompleted && !student.isAtRisk && !student.isInactive
+      );
+    case "completed":
+      return derived.filter((student) => student.isCompleted);
+    case "all":
+    default:
+      return derived;
+  }
+}
+function buildInterventionSummary(students) {
+  const derived = students.map(deriveStudentIntervention);
+  return {
+    total: derived.length,
+    activeThisWeek: derived.filter((student) => student.isRecentlyActive).length,
+    atRisk: derived.filter((student) => student.isAtRisk).length,
+    inactive: derived.filter((student) => student.isInactive).length,
+    completed: derived.filter((student) => student.isCompleted).length,
+    onTrack: derived.filter(
+      (student) => !student.isCompleted && !student.isAtRisk && !student.isInactive
+    ).length,
+    needsAttention: derived.filter((student) => student.needsAttention).length
+  };
+}
+function interventionStatusLabel(status) {
+  switch (status) {
+    case "at_risk":
+      return "At Risk";
+    case "inactive":
+      return "Inactive";
+    case "completed":
+      return "Completed";
+    case "on_track":
+    default:
+      return "On Track";
+  }
+}
 const HEADERS = [
   "Username",
+  "Display Name",
+  "Status",
+  "Needs Attention",
   "Progress %",
   "Completed Phases",
   "Total Phases",
@@ -57254,8 +57382,12 @@ function formatLastActiveDate(value) {
 function studentRowsToCsv(students) {
   const rows = [HEADERS.join(",")];
   students.forEach((student) => {
+    const derived = deriveStudentIntervention(student);
     const values = [
       student.username,
+      student.displayName ?? "",
+      derived.status,
+      derived.needsAttention ? "Yes" : "No",
       formatPercentage$1(student.progressPercentage),
       Number.isFinite(student.completedPhases) ? String(student.completedPhases) : "0",
       Number.isFinite(student.totalPhases) ? String(student.totalPhases) : "",
@@ -57957,6 +58089,13 @@ const dateTimeFormatter = new Intl.DateTimeFormat("en-US", {
   dateStyle: "medium",
   timeStyle: "short"
 });
+const FILTER_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "at_risk", label: "At Risk" },
+  { value: "inactive", label: "Inactive" },
+  { value: "on_track", label: "On Track" },
+  { value: "completed", label: "Completed" }
+];
 function clampPercentage(value) {
   if (Number.isNaN(value)) return 0;
   return Math.max(0, Math.min(100, value));
@@ -57974,40 +58113,44 @@ function formatLastActive(value) {
   }
   return dateTimeFormatter.format(parsed);
 }
-function isActiveWithinDays(value, days) {
-  if (!value) return false;
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return false;
-  const now = Date.now();
-  const diff = now - parsed.getTime();
-  const dayMs = days * 24 * 60 * 60 * 1e3;
-  return diff <= dayMs;
-}
 function getDashboardMetrics(students) {
+  const summary = buildInterventionSummary(students);
   if (students.length === 0) {
     return {
       totalStudents: 0,
       averageProgress: 0,
       activeThisWeek: 0,
-      courseCompletions: 0
+      courseCompletions: 0,
+      needsAttention: 0,
+      atRisk: 0,
+      inactive: 0
     };
   }
   const totalProgress = students.reduce(
     (sum, student) => sum + clampPercentage(student.progressPercentage),
     0
   );
-  const activeThisWeek = students.filter(
-    (student) => isActiveWithinDays(student.lastActive, 7)
-  ).length;
-  const completedCount = students.filter(
-    (student) => clampPercentage(student.progressPercentage) >= 99.5
-  ).length;
   return {
     totalStudents: students.length,
     averageProgress: totalProgress / students.length,
-    activeThisWeek,
-    courseCompletions: completedCount
+    activeThisWeek: summary.activeThisWeek,
+    courseCompletions: summary.completed,
+    needsAttention: summary.needsAttention,
+    atRisk: summary.atRisk,
+    inactive: summary.inactive
   };
+}
+function statusBadgeClassName(student) {
+  if (student.isAtRisk) {
+    return "border-red-200 bg-red-50 text-red-700";
+  }
+  if (student.isInactive) {
+    return "border-amber-200 bg-amber-50 text-amber-700";
+  }
+  if (student.isCompleted) {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+  return "border-sky-200 bg-sky-50 text-sky-700";
 }
 function TeacherDashboardContent({
   teacher,
@@ -58015,6 +58158,9 @@ function TeacherDashboardContent({
   courseOverview
 }) {
   const metrics = getDashboardMetrics(students);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const filteredStudents = applyInterventionFilter(students, activeFilter);
+  const activeFilterLabel = FILTER_OPTIONS.find((option) => option.value === activeFilter)?.label ?? "All";
   return /* @__PURE__ */ jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-4 space-y-8", children: [
     /* @__PURE__ */ jsxs("header", { className: "flex flex-col gap-4 md:flex-row md:items-center md:justify-between", children: [
       /* @__PURE__ */ jsxs("div", { children: [
@@ -58052,7 +58198,10 @@ function TeacherDashboardContent({
         ] }),
         /* @__PURE__ */ jsxs(CardContent, { children: [
           /* @__PURE__ */ jsx("div", { className: "text-3xl font-semibold", children: formatPercentage(metrics.averageProgress) }),
-          /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Across all students" })
+          /* @__PURE__ */ jsxs("p", { className: "text-sm text-muted-foreground", children: [
+            metrics.needsAttention,
+            " students need attention"
+          ] })
         ] })
       ] }),
       /* @__PURE__ */ jsxs(Card, { children: [
@@ -58066,15 +58215,110 @@ function TeacherDashboardContent({
         ] })
       ] })
     ] }),
+    /* @__PURE__ */ jsx("section", { "aria-label": "Student intervention queue", children: /* @__PURE__ */ jsxs(Card, { children: [
+      /* @__PURE__ */ jsx(CardHeader, { className: "gap-4", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between", children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx(CardTitle, { children: "Student Intervention Queue" }),
+          /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Prioritize students who are inactive, below pace, or ready for celebration." })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: FILTER_OPTIONS.map((option) => /* @__PURE__ */ jsx(
+          Button,
+          {
+            type: "button",
+            variant: activeFilter === option.value ? "default" : "outline",
+            size: "sm",
+            onClick: () => setActiveFilter(option.value),
+            children: option.label
+          },
+          option.value
+        )) })
+      ] }) }),
+      /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxs("div", { className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-4", children: [
+          /* @__PURE__ */ jsxs("div", { className: "rounded-xl border border-red-200 bg-red-50 p-4", children: [
+            /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-red-700", children: "At Risk" }),
+            /* @__PURE__ */ jsx("p", { className: "mt-1 text-2xl font-semibold text-red-900", children: metrics.atRisk }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm text-red-700", children: "Below 50% progress" })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "rounded-xl border border-amber-200 bg-amber-50 p-4", children: [
+            /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-amber-700", children: "Inactive" }),
+            /* @__PURE__ */ jsx("p", { className: "mt-1 text-2xl font-semibold text-amber-900", children: metrics.inactive }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm text-amber-700", children: "No recent activity in 7 days" })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "rounded-xl border border-sky-200 bg-sky-50 p-4", children: [
+            /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-sky-700", children: "Recently Active" }),
+            /* @__PURE__ */ jsx("p", { className: "mt-1 text-2xl font-semibold text-sky-900", children: metrics.activeThisWeek }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm text-sky-700", children: "Students active this week" })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "rounded-xl border border-emerald-200 bg-emerald-50 p-4", children: [
+            /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-emerald-700", children: "Completed" }),
+            /* @__PURE__ */ jsx("p", { className: "mt-1 text-2xl font-semibold text-emerald-900", children: metrics.courseCompletions }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm text-emerald-700", children: "Students at full completion" })
+          ] })
+        ] }),
+        filteredStudents.length === 0 ? /* @__PURE__ */ jsxs("div", { className: "rounded-xl border border-dashed border-muted-foreground/30 p-6 text-sm text-muted-foreground", children: [
+          "No students match the ",
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: activeFilterLabel }),
+          " ",
+          "filter right now."
+        ] }) : /* @__PURE__ */ jsx("div", { className: "grid gap-3", "data-testid": "intervention-roster", children: filteredStudents.map((student) => /* @__PURE__ */ jsx(
+          "article",
+          {
+            className: "rounded-xl border bg-background p-4 shadow-sm",
+            children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-3 md:flex-row md:items-start md:justify-between", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-1", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold text-foreground", children: student.displayName ?? student.username }),
+                  /* @__PURE__ */ jsx(
+                    Badge,
+                    {
+                      variant: "outline",
+                      className: cn("capitalize", statusBadgeClassName(student)),
+                      children: interventionStatusLabel(student.status)
+                    }
+                  ),
+                  student.needsAttention ? /* @__PURE__ */ jsx(
+                    Badge,
+                    {
+                      variant: "outline",
+                      className: "border-orange-200 bg-orange-50 text-orange-700",
+                      children: "Needs Attention"
+                    }
+                  ) : null
+                ] }),
+                /* @__PURE__ */ jsxs("p", { className: "text-sm text-muted-foreground", children: [
+                  "@",
+                  student.username
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-3 text-sm sm:grid-cols-3", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Progress" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-semibold", children: formatPercentage(student.progressPercentage) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Completed" }),
+                  /* @__PURE__ */ jsxs("p", { className: "font-semibold", children: [
+                    student.completedPhases,
+                    "/",
+                    student.totalPhases,
+                    " phases"
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "col-span-2 sm:col-span-1", children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Last Active" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-semibold", children: formatLastActive(student.lastActive) })
+                ] })
+              ] })
+            ] })
+          },
+          student.id
+        )) })
+      ] })
+    ] }) }),
     /* @__PURE__ */ jsx("section", { "aria-label": "Course overview", children: /* @__PURE__ */ jsxs(Card, { children: [
       /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Course Overview" }) }),
-      /* @__PURE__ */ jsx(CardContent, { className: "px-3 pb-3", children: /* @__PURE__ */ jsx(
-        CourseOverviewGrid,
-        {
-          rows: courseOverview.rows,
-          units: courseOverview.units
-        }
-      ) })
+      /* @__PURE__ */ jsx(CardContent, { className: "px-3 pb-3", children: /* @__PURE__ */ jsx(CourseOverviewGrid, { rows: courseOverview.rows, units: courseOverview.units }) })
     ] }) })
   ] }) });
 }
@@ -58642,18 +58886,145 @@ const Checkbox = React.forwardRef(({ className, ...props }, ref2) => /* @__PURE_
   }
 ));
 Checkbox.displayName = Checkbox$1.displayName;
+function getPasswordRequirementText(role) {
+  if (role === "student") {
+    return "Use at least 6 characters.";
+  }
+  return "Use at least 8 characters with at least one letter and one number.";
+}
+function validatePasswordForRole(role, password) {
+  const trimmedPassword = password.trim();
+  if (role === "student") {
+    if (trimmedPassword.length < 6) {
+      return "New password must be at least 6 characters long.";
+    }
+    return null;
+  }
+  if (trimmedPassword.length < 8) {
+    return "New password must be at least 8 characters long.";
+  }
+  if (!/[A-Za-z]/.test(trimmedPassword) || !/[0-9]/.test(trimmedPassword)) {
+    return "New password must include at least one letter and one number.";
+  }
+  return null;
+}
 function UpdatePasswordForm({
+  username,
+  role,
+  organizationName,
   className,
   ...props
 }) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error2, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const requirementText = getPasswordRequirementText(role);
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError(null);
+    setSuccess(null);
+    if (newPassword !== confirmPassword) {
+      setError("New password and confirmation do not match.");
+      return;
+    }
+    const policyError = validatePasswordForRole(role, newPassword);
+    if (policyError) {
+      setError(policyError);
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          confirmPassword
+        })
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        setError(payload?.error ?? "Unable to update password right now.");
+        return;
+      }
+      setSuccess(payload?.message ?? "Password updated successfully.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch {
+      setError("Unable to update password right now.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
   return /* @__PURE__ */ jsx("div", { className: cn("flex flex-col gap-6", className), ...props, children: /* @__PURE__ */ jsxs(Card, { children: [
     /* @__PURE__ */ jsxs(CardHeader, { children: [
-      /* @__PURE__ */ jsx(CardTitle, { className: "text-2xl", children: "Password Updates" }),
-      /* @__PURE__ */ jsx(CardDescription, { children: "Password updates are managed by your teacher/admin." })
+      /* @__PURE__ */ jsx(CardTitle, { className: "text-2xl", children: /* @__PURE__ */ jsx("h2", { children: "Update Your Password" }) }),
+      /* @__PURE__ */ jsx(CardDescription, { children: "Keep your account secure without leaving the current session." })
     ] }),
     /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
-      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "This project uses simple username/password authentication with no self-service reset flow. Contact your teacher/admin if you need a new password." }),
-      /* @__PURE__ */ jsx(Button, { asChild: true, className: "w-full", children: /* @__PURE__ */ jsx(Link, { href: "/auth/login", children: "Back to login" }) })
+      /* @__PURE__ */ jsxs("div", { className: "rounded-lg border bg-muted/30 p-4 text-sm", children: [
+        /* @__PURE__ */ jsx("p", { className: "font-medium text-foreground", children: username }),
+        /* @__PURE__ */ jsxs("p", { className: "text-muted-foreground", children: [
+          organizationName ?? "Your organization",
+          " · ",
+          role
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "mt-2 text-muted-foreground", children: requirementText })
+      ] }),
+      /* @__PURE__ */ jsxs("form", { className: "space-y-4", onSubmit: handleSubmit, children: [
+        /* @__PURE__ */ jsxs("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx(Label$2, { htmlFor: "current-password", children: "Current password" }),
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              id: "current-password",
+              type: "password",
+              autoComplete: "current-password",
+              value: currentPassword,
+              onChange: (event) => setCurrentPassword(event.target.value),
+              required: true
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx(Label$2, { htmlFor: "new-password", children: "New password" }),
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              id: "new-password",
+              type: "password",
+              autoComplete: "new-password",
+              value: newPassword,
+              onChange: (event) => setNewPassword(event.target.value),
+              required: true
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx(Label$2, { htmlFor: "confirm-password", children: "Confirm new password" }),
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              id: "confirm-password",
+              type: "password",
+              autoComplete: "new-password",
+              value: confirmPassword,
+              onChange: (event) => setConfirmPassword(event.target.value),
+              required: true
+            }
+          )
+        ] }),
+        error2 ? /* @__PURE__ */ jsx("div", { className: "rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700", role: "alert", children: error2 }) : null,
+        success ? /* @__PURE__ */ jsx("div", { className: "rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700", children: success }) : null,
+        /* @__PURE__ */ jsx(Button, { type: "submit", className: "w-full", disabled: isSubmitting, children: isSubmitting ? "Saving..." : "Save Password" })
+      ] })
     ] })
   ] }) });
 }
