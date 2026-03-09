@@ -1,0 +1,12 @@
+Track: Server Role Guard Cleanup & Admin Authorization Hardening
+
+Summary:
+- added shared server auth helpers in lib/auth/server.ts for authenticated, teacher/admin, and admin-only App Router access
+- refactored teacher and admin pages to use centralized role guards and standardized teacher fallback redirects
+- added route/helper tests for admin authorization and teacher page redirects
+- updated README, Conductor track artifacts, lessons learned, tech debt, and retrospective documentation
+
+Why:
+- remove duplicated inline role checks from March 9 teacher pages
+- close the admin dashboard authorization gap
+- keep privileged page redirect behavior centralized and testable
