@@ -1,0 +1,31 @@
+Track: Teacher Convex Data Paths
+
+Summary:
+- added internal Convex teacher queries for course overview, unit gradebook, and teacher-scoped student detail data
+- migrated /teacher, /teacher/gradebook, /teacher/units/[unitNumber], and /teacher/students/[studentId] off legacy Drizzle runtime reads
+- added missing teacher page tests and extended the Convex authorization-boundary test to lock in the internal-query architecture
+- updated README, retrospective notes, Conductor archive artifacts, and rebuilt production server output
+
+Files:
+- convex/teacher.ts
+- app/teacher/page.tsx
+- app/teacher/gradebook/page.tsx
+- app/teacher/units/[unitNumber]/page.tsx
+- app/teacher/students/[studentId]/page.tsx
+- __tests__/app/teacher/page.test.tsx
+- __tests__/app/teacher/gradebook/page.test.tsx
+- __tests__/app/teacher/units/[unitNumber]/page.test.tsx
+- __tests__/app/teacher/students/[studentId]/page.test.tsx
+- __tests__/config/convex-auth-boundary.test.ts
+- README.md
+- docs/RETROSPECTIVE.md
+- conductor/archive/teacher_convex_data_paths_20260309/*
+- conductor/tracks.md
+
+Verification:
+- CI=true npm run lint
+- CI=true npm test
+- CI=true npm run build
+
+Why:
+Teacher analytics pages were still split across Convex auth and Drizzle-backed runtime reads, which contradicted the project architecture and risked data-path drift. This change puts the remaining teacher-facing runtime on Convex-only internal queries and adds regression coverage so the boundary stays enforced.
