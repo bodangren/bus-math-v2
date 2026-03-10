@@ -62,9 +62,46 @@ describe('buildStudentDashboardViewModel', () => {
     expect(viewModel.nextLesson?.actionLabel).toBe('Resume Lesson');
     expect(viewModel.units[0].status).toBe('in_progress');
     expect(viewModel.units[0].completedLessons).toBe(1);
+    expect(viewModel.units[0].progressPercentage).toBe(67);
     expect(viewModel.units[0].nextLesson?.slug).toBe('unit-1-lesson-2');
     expect(viewModel.units[1].status).toBe('not_started');
     expect(viewModel.units[1].nextLesson?.actionLabel).toBe('Start Lesson');
+  });
+
+  it('weights unit progress by phases instead of averaging lesson percentages', () => {
+    const units: StudentDashboardUnit[] = [
+      {
+        unitNumber: 3,
+        unitTitle: 'Unit 3',
+        lessons: [
+          {
+            id: 'lesson-short',
+            unitNumber: 3,
+            title: 'Short lesson',
+            slug: 'short-lesson',
+            description: null,
+            completedPhases: 2,
+            totalPhases: 2,
+            progressPercentage: 100,
+          },
+          {
+            id: 'lesson-long',
+            unitNumber: 3,
+            title: 'Long lesson',
+            slug: 'long-lesson',
+            description: null,
+            completedPhases: 0,
+            totalPhases: 8,
+            progressPercentage: 0,
+          },
+        ],
+      },
+    ];
+
+    const viewModel = buildStudentDashboardViewModel(units);
+
+    expect(viewModel.units[0].progressPercentage).toBe(20);
+    expect(viewModel.summary.progressPercentage).toBe(20);
   });
 
   it('returns no next lesson when the course is fully complete', () => {

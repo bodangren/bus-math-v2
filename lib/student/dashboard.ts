@@ -122,13 +122,18 @@ export function buildStudentDashboardViewModel(
       null;
 
     const unitCompletedLessons = lessons.filter((lesson) => getLessonStatus(lesson) === 'completed').length;
+    const unitCompletedPhases = lessons.reduce(
+      (sum, lesson) => sum + lesson.completedPhases,
+      0,
+    );
+    const unitTotalPhases = lessons.reduce(
+      (sum, lesson) => sum + lesson.totalPhases,
+      0,
+    );
     const unitProgress =
-      lessons.length === 0
+      unitTotalPhases === 0
         ? 0
-        : clampPercentage(
-            lessons.reduce((sum, lesson) => sum + clampPercentage(lesson.progressPercentage), 0) /
-              lessons.length,
-          );
+        : clampPercentage((unitCompletedPhases / unitTotalPhases) * 100);
 
     return {
       ...unit,

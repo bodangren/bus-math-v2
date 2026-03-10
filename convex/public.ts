@@ -1,5 +1,6 @@
 import { query } from "./_generated/server";
 import { coerceNullableString, getOrCreateMapEntry } from "./dashboardHelpers";
+import { resolveLatestPublishedLessonVersion } from "../lib/progress/published-curriculum";
 
 interface PublicUnitSummary {
   unitNumber: number;
@@ -82,8 +83,7 @@ export const getUnitSummaries = query({
           .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
           .collect();
 
-        versions.sort((a, b) => b.version - a.version);
-        const latestVersion = versions.length > 0 ? versions[0] : null;
+        const latestVersion = resolveLatestPublishedLessonVersion(versions);
 
         const rawTitle =
           lesson.metadata?.unitContent?.introduction?.unitTitle ??
@@ -128,8 +128,7 @@ export const getCurriculum = query({
         .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
         .collect();
 
-      versions.sort((a, b) => b.version - a.version);
-      const latestVersion = versions.length > 0 ? versions[0] : null;
+      const latestVersion = resolveLatestPublishedLessonVersion(versions);
 
       const effectiveTitle = latestVersion?.title ?? lesson.title;
       const effectiveDescription = coerceNullableString(

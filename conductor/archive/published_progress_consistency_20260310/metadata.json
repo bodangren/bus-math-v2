@@ -1,0 +1,11 @@
+{
+  "track_id": "published_progress_consistency_20260310",
+  "type": "refactor",
+  "status": "archived",
+  "created_at": "2026-03-10T05:30:00Z",
+  "updated_at": "2026-03-10T09:00:00Z",
+  "description": "Harden student and teacher progress derivation to use the latest published curriculum versions and share that logic across Convex queries.",
+  "estimated_tasks": 10,
+  "actual_tasks": 10,
+  "deviation_notes": "The track pivoted from an initial teacher-helper cleanup draft after review surfaced higher-priority published-vs-draft curriculum drift in student and teacher progress flows. Manual verification confirmation was skipped because the run was explicitly unattended; validation used lint, full tests, and a production build."
+}

@@ -2,6 +2,12 @@ import { internalQuery, type QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { assembleCourseOverviewRows } from "../lib/teacher/course-overview";
 import { assembleGradebookRows } from "../lib/teacher/gradebook";
+import {
+  buildLatestPublishedLessonVersionMap,
+  buildPublishedPhaseIdSet,
+  buildPublishedProgressSnapshot,
+  resolveLatestPublishedLessonVersion,
+} from "../lib/progress/published-curriculum";
 
 interface TeacherProgressSnapshot {
   completedPhases: number;
@@ -71,30 +77,23 @@ async function listLatestPublishedLessonVersions(
   ctx: QueryCtx,
   lessonIds?: string[],
 ) {
-  const lessonIdFilter = lessonIds ? new Set(lessonIds) : null;
   const lessonVersions = await ctx.db.query("lesson_versions").collect();
-  const publishedVersions = lessonVersions.filter(
-    (version) =>
-      version.status === "published" &&
-      (!lessonIdFilter || lessonIdFilter.has(version.lessonId)),
-  );
-
-  const latestByLessonId = new Map<string, (typeof publishedVersions)[number]>();
-  for (const version of publishedVersions) {
-    const current = latestByLessonId.get(version.lessonId);
-    if (!current || version.version > current.version) {
-      latestByLessonId.set(version.lessonId, version);
-    }
-  }
-
-  return [...latestByLessonId.values()];
+  return [
+    ...buildLatestPublishedLessonVersionMap(lessonVersions, lessonIds).values(),
+  ];
 }
 
 async function listActivePhaseIds(
   ctx: QueryCtx,
 ) {
+  const lessonIds = (await ctx.db.query("lessons").collect()).map((lesson) => lesson._id);
+  const lessonVersions = await ctx.db.query("lesson_versions").collect();
   const phaseVersions = await ctx.db.query("phase_versions").collect();
-  return new Set(phaseVersions.map((phase) => phase._id));
+  return buildPublishedPhaseIdSet({
+    lessonIds,
+    lessonVersions,
+    phaseVersions,
+  });
 }
 
 async function buildStudentProgressSnapshot(
@@ -102,41 +101,15 @@ async function buildStudentProgressSnapshot(
   studentId: string,
   activePhaseIds: Set<string>,
 ): Promise<TeacherProgressSnapshot> {
-  const totalPhases = activePhaseIds.size;
   const progressRows = await ctx.db
     .query("student_progress")
     .withIndex("by_user", (q) => q.eq("userId", studentId as never))
     .collect();
 
-  let completedPhases = 0;
-  let lastActive: string | null = null;
-
-  for (const row of progressRows) {
-    if (!activePhaseIds.has(row.phaseId)) {
-      continue;
-    }
-
-    if (row.status === "completed") {
-      completedPhases += 1;
-    }
-
-    if (row.updatedAt) {
-      const currentLastActive = lastActive ? new Date(lastActive).getTime() : 0;
-      if (row.updatedAt > currentLastActive) {
-        lastActive = new Date(row.updatedAt).toISOString();
-      }
-    }
-  }
-
-  return {
-    completedPhases,
-    totalPhases,
-    progressPercentage:
-      totalPhases > 0
-        ? Number(((completedPhases / totalPhases) * 100).toFixed(1))
-        : 0,
-    lastActive,
-  };
+  return buildPublishedProgressSnapshot({
+    activePhaseIds,
+    progressRows,
+  });
 }
 
 export const getTeacherDashboardData = internalQuery({
@@ -427,7 +400,8 @@ export const getSubmissionDetail = internalQuery({
 
     if (lessonVersions.length === 0) return null;
 
-    const lessonVersion = lessonVersions[0];
+    const lessonVersion = resolveLatestPublishedLessonVersion(lessonVersions);
+    if (!lessonVersion) return null;
 
     const rawPhases = await ctx.db
       .query("phase_versions")

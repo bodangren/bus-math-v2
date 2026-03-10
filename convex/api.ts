@@ -1,6 +1,7 @@
 import { internalMutation, internalQuery, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
+import { resolveLatestPublishedLessonVersion } from "../lib/progress/published-curriculum";
 
 export const getProfile = internalQuery({
   args: { userId: v.id("profiles") },
@@ -60,8 +61,8 @@ export const getPhaseContext = internalQuery({
 
     if (versions.length === 0) return null;
 
-    versions.sort((a, b) => b.version - a.version);
-    const latestVersion = versions[0];
+    const latestVersion = resolveLatestPublishedLessonVersion(versions);
+    if (!latestVersion) return null;
 
     const phase = await ctx.db
       .query("phase_versions")
@@ -203,8 +204,8 @@ export const getLessonWithContent = query({
 
     if (versions.length === 0) return { lesson, phases: [] };
 
-    versions.sort((a, b) => b.version - a.version);
-    const latestVersion = versions[0];
+    const latestVersion = resolveLatestPublishedLessonVersion(versions);
+    if (!latestVersion) return { lesson, phases: [] };
 
     const phases = await ctx.db
       .query("phase_versions")
@@ -264,8 +265,8 @@ export const canAccessPhase = internalQuery({
 
     if (versions.length === 0) return false;
 
-    versions.sort((a, b) => b.version - a.version);
-    const latestVersion = versions[0];
+    const latestVersion = resolveLatestPublishedLessonVersion(versions);
+    if (!latestVersion) return false;
 
     const prevPhase = await ctx.db
       .query("phase_versions")

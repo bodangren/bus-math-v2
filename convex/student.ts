@@ -2,6 +2,11 @@ import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 import { coerceNullableString, getOrCreateMapEntry } from "./dashboardHelpers";
+import {
+  buildLatestPublishedLessonVersionMap,
+  buildPublishedLessonPhaseIdsByLessonId,
+  resolveLatestPublishedLessonVersion,
+} from "../lib/progress/published-curriculum";
 
 interface LessonVersionSnapshot {
   _id: Id<"lesson_versions">;
@@ -48,32 +53,19 @@ export const getDashboardData = internalQuery({
       
     const completedPhaseIds = new Set(userProgress.map((entry) => entry.phaseId));
 
-    // 3. Fetch latest version for each lesson
-    const latestVersionByLessonId = new Map<Id<"lessons">, LessonVersionSnapshot>();
-    for (const lessonId of lessonIds) {
-      // Find all versions for this lesson
-      const versions = await ctx.db
-        .query("lesson_versions")
-        .withIndex("by_lesson", (q) => q.eq("lessonId", lessonId))
-        .collect();
-        
-      if (versions.length > 0) {
-        // Sort descending by version number
-        versions.sort((a, b) => b.version - a.version);
-        latestVersionByLessonId.set(lessonId, versions[0]);
-      }
-    }
+    // 3. Fetch latest published versions and their phases for each lesson
+    const lessonVersions = await ctx.db.query("lesson_versions").collect();
+    const latestVersionByLessonId = buildLatestPublishedLessonVersionMap(
+      lessonVersions,
+      lessonIds,
+    ) as Map<Id<"lessons">, LessonVersionSnapshot>;
 
-    // 4. Fetch phase versions for the latest lesson versions
-    const versionedPhaseIdsByLessonId = new Map<Id<"lessons">, Id<"phase_versions">[]>();
-    for (const [lessonId, version] of latestVersionByLessonId.entries()) {
-      const phases = await ctx.db
-        .query("phase_versions")
-        .withIndex("by_lesson_version", (q) => q.eq("lessonVersionId", version._id))
-        .collect();
-        
-      versionedPhaseIdsByLessonId.set(lessonId, phases.map((p) => p._id));
-    }
+    const phaseVersions = await ctx.db.query("phase_versions").collect();
+    const versionedPhaseIdsByLessonId = buildPublishedLessonPhaseIdsByLessonId({
+      lessonIds,
+      lessonVersions,
+      phaseVersions,
+    }) as Map<Id<"lessons">, Id<"phase_versions">[]>;
 
     // 5. Assemble the final data structure
     const unitsMap = new Map<number, StudentDashboardUnitRow>();
@@ -138,9 +130,8 @@ export const getLessonProgress = internalQuery({
       .query("lesson_versions")
       .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
       .collect();
-    
-    versions.sort((a, b) => b.version - a.version);
-    const latestVersion = versions[0];
+
+    const latestVersion = resolveLatestPublishedLessonVersion(versions);
     if (!latestVersion) return { phases: [] };
 
     // 3. Get phases for this version
@@ -219,14 +210,13 @@ export const completePhase = internalMutation({
     }
     if (!lesson) throw new Error("Lesson not found");
 
-    // 2. Get latest version
+    // 2. Get latest published version
     const versions = await ctx.db
       .query("lesson_versions")
       .withIndex("by_lesson", (q) => q.eq("lessonId", lesson._id))
       .collect();
-    versions.sort((a, b) => b.version - a.version);
-    const latestVersion = versions[0];
-    if (!latestVersion) throw new Error("Lesson version not found");
+    const latestVersion = resolveLatestPublishedLessonVersion(versions);
+    if (!latestVersion) throw new Error("Published lesson version not found");
 
     // 3. Find specific phase
     const phase = await ctx.db
