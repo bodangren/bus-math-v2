@@ -43,7 +43,7 @@ This file is the source of truth for active execution order and archived track h
 
 - [x] **Track: Published Progress Consistency & Dashboard Hardening**
   *Link: [./conductor/archive/published_progress_consistency_20260310/](./conductor/archive/published_progress_consistency_20260310/)*
-  *Checkpoint: `pending` (2026-03-10 closeout)*
+  *Checkpoint: `7fd9c43` (2026-03-10 closeout)*
 
 - [x] **Track: Server Role Guard Cleanup & Admin Authorization Hardening**
   *Link: [./conductor/archive/server_role_guard_cleanup_20260310/](./conductor/archive/server_role_guard_cleanup_20260310/)*
