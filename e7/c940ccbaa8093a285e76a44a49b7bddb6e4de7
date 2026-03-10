@@ -1,0 +1,4 @@
+Track closeout: react_test_signal_cleanup_20260310
+Summary: Archived the completed cleanup track, removed it from the active Conductor queue, and recorded checkpoint d9d68ee in the archive ledger.
+Files: conductor/tracks.md; conductor/archive/react_test_signal_cleanup_20260310/{index.md,metadata.json,plan.md,spec.md}.
+Why: Conductor should show only genuinely active work, and completed tracks need archived artifacts plus a stable checkpoint reference for future autonomous runs.
