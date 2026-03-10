@@ -8,6 +8,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Progress Tracking**: Student progress monitoring and analytics
 - **Student Progress Hub**: Guided dashboard with overall course progress, resume/start recommendations, and unit-by-unit completion cards
 - **Teacher Intervention Queue**: At-risk and inactive student triage with status filters and CSV-aligned intervention exports
+- **Teacher Student Detail Analytics**: Teacher student detail pages now surface intervention status, unit-by-unit progress, and the next best published lesson for follow-up
 - **Published Curriculum Progress Guarantees**: Student dashboards, teacher snapshots, lesson delivery, and phase-completion checks all resolve against the latest published lesson version so drafts do not leak into classroom progress
 - **Convex-Backed Teacher Views**: Teacher dashboard, course gradebook, unit gradebook, and student detail pages now all read through internal Convex queries instead of legacy Drizzle runtime paths
 - **Shared Server Role Guards**: Teacher/admin App Router pages now use shared server-side claim guards, and the admin dashboard rejects non-admin sessions
@@ -157,6 +158,7 @@ bus-math-v2/
 - Demo credentials can be reprovisioned through `POST /api/users/ensure-demo` only in local development and automated test environments.
 - Teacher bulk import normalizes usernames before account creation and may add numeric suffixes to avoid collisions.
 - Teacher dashboard exports now include display name, intervention status, and a needs-attention flag to match the intervention queue.
+- Teacher student detail pages now summarize intervention status, completed lessons/units, per-unit progress, and the next recommended published lesson from internal Convex data.
 - Authenticated users can update their password from `/settings`; forgotten-password recovery remains teacher/admin-managed.
 - `/student` now resolves to the guided student dashboard, and lesson resume links consistently target `/student/lesson/[lessonSlug]`.
 - Teacher-facing dashboard, gradebook, and student-detail routes now use internal Convex queries end to end, keeping classroom analytics on the same runtime data path as the rest of the app.

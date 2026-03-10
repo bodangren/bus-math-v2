@@ -9,6 +9,7 @@
 - (2026-03-10, published_progress_consistency_20260310) Progress-sensitive student and teacher flows must resolve the latest published `lesson_versions` row, not the numerically newest version, before deriving phases or titles.
 - (2026-03-10, server_role_guard_cleanup_20260310) Privileged App Router pages should enter through shared `lib/auth/server` role guards so authentication, role checks, and redirect targets stay centralized and testable.
 - (2026-03-10, security_surface_hardening_20260310) Sensitive curriculum/activity lookups must stay behind internal Convex queries even when a server route performs extra redaction logic.
+- (2026-03-10, teacher_student_detail_analytics_20260310) Teacher-facing intervention pages can safely reuse student dashboard progression math when the Convex query returns published lesson progress as a unit/lesson tree.
 
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->
@@ -25,6 +26,7 @@
 - (2026-03-10, published_progress_consistency_20260310) Pure helper tests around published-version selection and phase snapshots caught both the dashboard leak and the unit-progress math regression without needing heavy Convex mocks.
 - (2026-03-10, server_role_guard_cleanup_20260310) Helper-first route tests made it easy to refactor page auth logic without losing redirect coverage for teacher/admin flows.
 - (2026-03-10, security_surface_hardening_20260310) Boundary tests that grep Convex export kinds plus targeted route tests caught the public-vs-internal API drift quickly.
+- (2026-03-10, teacher_student_detail_analytics_20260310) A pure teacher detail view-model built on top of shared student dashboard helpers made it easy to add richer teacher analytics without duplicating progression rules.
 
 ### Planning Improvements
 <!-- Notes on where estimates were wrong and why -->

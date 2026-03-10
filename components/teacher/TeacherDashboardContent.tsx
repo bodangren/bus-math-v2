@@ -18,6 +18,11 @@ import {
   type InterventionFilter,
   type StudentDashboardRow,
 } from "@/lib/teacher/intervention";
+import {
+  clampTeacherProgressPercentage,
+  formatTeacherLastActive,
+  formatTeacherProgressPercentage,
+} from "@/lib/teacher/progress";
 import { cn } from "@/lib/utils";
 import { TeacherCsvExportButton } from "./TeacherCsvExportButton";
 import { TeacherCreateStudentDialog } from "./TeacherCreateStudentDialog";
@@ -34,15 +39,6 @@ interface TeacherDashboardContentProps {
   courseOverview: { rows: CourseOverviewRow[]; units: UnitColumn[] };
 }
 
-const percentageFormatter = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 1,
-});
-
-const dateTimeFormatter = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
-
 const FILTER_OPTIONS: Array<{ value: InterventionFilter; label: string }> = [
   { value: "all", label: "All" },
   { value: "at_risk", label: "At Risk" },
@@ -51,26 +47,8 @@ const FILTER_OPTIONS: Array<{ value: InterventionFilter; label: string }> = [
   { value: "completed", label: "Completed" },
 ];
 
-function clampPercentage(value: number) {
-  if (Number.isNaN(value)) return 0;
-  return Math.max(0, Math.min(100, value));
-}
-
-function formatPercentage(value: number) {
-  return `${percentageFormatter.format(clampPercentage(value))}%`;
-}
-
 export function formatLastActive(value: string | null) {
-  if (!value) {
-    return "No activity recorded";
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return "No activity recorded";
-  }
-
-  return dateTimeFormatter.format(parsed);
+  return formatTeacherLastActive(value);
 }
 
 function getDashboardMetrics(students: StudentDashboardRow[]) {
@@ -89,7 +67,8 @@ function getDashboardMetrics(students: StudentDashboardRow[]) {
   }
 
   const totalProgress = students.reduce(
-    (sum, student) => sum + clampPercentage(student.progressPercentage),
+    (sum, student) =>
+      sum + clampTeacherProgressPercentage(student.progressPercentage),
     0,
   );
 
@@ -174,7 +153,7 @@ export function TeacherDashboardContent({
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-semibold">
-                {formatPercentage(metrics.averageProgress)}
+                {formatTeacherProgressPercentage(metrics.averageProgress)}
               </div>
               <p className="text-sm text-muted-foreground">
                 {metrics.needsAttention} students need attention
@@ -287,7 +266,7 @@ export function TeacherDashboardContent({
                           <div>
                             <p className="text-muted-foreground">Progress</p>
                             <p className="font-semibold">
-                              {formatPercentage(student.progressPercentage)}
+                              {formatTeacherProgressPercentage(student.progressPercentage)}
                             </p>
                           </div>
                           <div>
@@ -326,6 +305,6 @@ export function TeacherDashboardContent({
 }
 
 export const __private__ = {
-  clampPercentage,
+  clampPercentage: clampTeacherProgressPercentage,
   getDashboardMetrics,
 };

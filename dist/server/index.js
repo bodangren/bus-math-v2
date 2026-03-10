@@ -22778,9 +22778,6 @@ const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: StudentDashboard,
   dynamic: dynamic$2
 }, Symbol.toStringTag, { value: "Module" }));
-const formatLastActive = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'formatLastActive' is called on server");
-}, "12afa74d869d", "formatLastActive");
 const TeacherDashboardContent = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'TeacherDashboardContent' is called on server");
 }, "12afa74d869d", "TeacherDashboardContent");
@@ -23285,14 +23282,166 @@ const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: LessonLoading
 }, Symbol.toStringTag, { value: "Module" }));
 const percentageFormatter = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 1
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 0
 });
-function clampPercentage(value) {
-  if (Number.isNaN(value)) return 0;
+const dateTimeFormatter = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
+  timeStyle: "short"
+});
+function clampTeacherProgressPercentage(value) {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
   return Math.max(0, Math.min(100, value));
 }
-function formatPercentage(value) {
-  return `${percentageFormatter.format(clampPercentage(value))}%`;
+function formatTeacherProgressPercentage(value) {
+  return `${percentageFormatter.format(clampTeacherProgressPercentage(value))}%`;
+}
+function formatTeacherLastActive(value) {
+  if (!value) {
+    return "No activity recorded";
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return "No activity recorded";
+  }
+  return dateTimeFormatter.format(parsed);
+}
+const RECENT_ACTIVITY_WINDOW_DAYS = 7;
+const COMPLETED_THRESHOLD = 99.5;
+const AT_RISK_THRESHOLD = 50;
+function clampPercentage(value) {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, Math.min(100, value));
+}
+function getLastActiveTimestamp(value) {
+  if (!value) {
+    return null;
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+  return parsed.getTime();
+}
+function isActiveWithinDays(value, days) {
+  const timestamp2 = getLastActiveTimestamp(value);
+  if (timestamp2 === null) {
+    return false;
+  }
+  return Date.now() - timestamp2 <= days * 24 * 60 * 60 * 1e3;
+}
+function deriveStudentIntervention(student) {
+  const progressPercentage = clampPercentage(student.progressPercentage);
+  const isCompleted = progressPercentage >= COMPLETED_THRESHOLD;
+  const isAtRisk = progressPercentage < AT_RISK_THRESHOLD;
+  const isRecentlyActive = isActiveWithinDays(
+    student.lastActive,
+    RECENT_ACTIVITY_WINDOW_DAYS
+  );
+  const isInactive = !isCompleted && !isRecentlyActive;
+  let status = "on_track";
+  if (isCompleted) {
+    status = "completed";
+  } else if (isAtRisk) {
+    status = "at_risk";
+  } else if (isInactive) {
+    status = "inactive";
+  }
+  return {
+    ...student,
+    progressPercentage,
+    status,
+    isAtRisk,
+    isInactive,
+    isCompleted,
+    isRecentlyActive,
+    needsAttention: isAtRisk || isInactive,
+    sortName: (student.displayName ?? student.username).toLowerCase(),
+    lastActiveTimestamp: getLastActiveTimestamp(student.lastActive)
+  };
+}
+function interventionStatusLabel(status) {
+  switch (status) {
+    case "at_risk":
+      return "At Risk";
+    case "inactive":
+      return "Inactive";
+    case "completed":
+      return "Completed";
+    case "on_track":
+    default:
+      return "On Track";
+  }
+}
+function statusClassName(status) {
+  switch (status) {
+    case "completed":
+      return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "inactive":
+      return "border-amber-200 bg-amber-50 text-amber-700";
+    case "at_risk":
+      return "border-red-200 bg-red-50 text-red-700";
+    case "on_track":
+    default:
+      return "border-sky-200 bg-sky-50 text-sky-700";
+  }
+}
+function buildGuidance(studentLabel, summary, status) {
+  if (summary.totalLessons === 0) {
+    return `${studentLabel} does not have any published lessons assigned yet.`;
+  }
+  if (status === "completed") {
+    return `${studentLabel} has completed all published lessons and is ready for enrichment or review.`;
+  }
+  if (summary.completedLessons === 0 && summary.inProgressLessons === 0) {
+    return `${studentLabel} has not recorded progress yet. Start with the first published lesson and confirm access.`;
+  }
+  if (status === "at_risk") {
+    return `${studentLabel} is below the current course pace and likely needs teacher follow-up on the next active lesson.`;
+  }
+  if (status === "inactive") {
+    return `${studentLabel} has progress on record but no recent activity. A re-engagement check-in is recommended.`;
+  }
+  return `${studentLabel} is progressing through the published curriculum and has a clear next lesson to continue.`;
+}
+function buildTeacherStudentDetailViewModel(input) {
+  const dashboard = buildStudentDashboardViewModel(input.units);
+  const studentLabel = input.student.displayName ?? input.student.username;
+  const intervention = deriveStudentIntervention({
+    id: input.student.id,
+    username: input.student.username,
+    displayName: input.student.displayName,
+    completedPhases: input.snapshot.completedPhases,
+    totalPhases: input.snapshot.totalPhases,
+    progressPercentage: input.snapshot.progressPercentage,
+    lastActive: input.snapshot.lastActive
+  });
+  return {
+    student: input.student,
+    studentLabel,
+    summary: dashboard.summary,
+    status: {
+      value: intervention.status,
+      label: interventionStatusLabel(intervention.status),
+      needsAttention: intervention.needsAttention,
+      emphasisClassName: statusClassName(intervention.status)
+    },
+    guidance: buildGuidance(studentLabel, dashboard.summary, intervention.status),
+    nextLesson: dashboard.nextLesson,
+    unitSummaries: dashboard.units.map((unit) => ({
+      unitNumber: unit.unitNumber,
+      unitTitle: unit.unitTitle,
+      completedLessons: unit.completedLessons,
+      totalLessons: unit.lessons.length,
+      progressPercentage: unit.progressPercentage,
+      status: unit.status,
+      nextLesson: unit.nextLesson
+    }))
+  };
 }
 async function TeacherStudentDetailPage({
   params
@@ -23312,8 +23461,9 @@ async function TeacherStudentDetailPage({
   if (result.status === "unauthorized") {
     redirect("/teacher");
   }
-  const { organizationName, student, snapshot } = result;
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-3xl px-4 space-y-6", children: [
+  const { organizationName, student, snapshot, units } = result;
+  const viewModel = buildTeacherStudentDetailViewModel({ student, snapshot, units });
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-5xl px-4 space-y-6", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm uppercase tracking-wide text-muted-foreground", children: organizationName }),
@@ -23322,12 +23472,18 @@ async function TeacherStudentDetailPage({
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, variant: "outline", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/teacher", children: "Back to dashboard" }) })
     ] }),
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: student.displayName ?? student.username }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardDescription, { children: [
-          "@",
-          student.username
-        ] })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "gap-3", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col gap-3 md:flex-row md:items-start md:justify-between", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: viewModel.studentLabel }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardDescription, { children: [
+              "@",
+              student.username
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", className: viewModel.status.emphasisClassName, children: viewModel.status.label })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: viewModel.guidance })
       ] }),
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-4", children: [
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
@@ -23336,15 +23492,15 @@ async function TeacherStudentDetailPage({
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
               Progress,
               {
-                value: clampPercentage(snapshot.progressPercentage),
+                value: clampTeacherProgressPercentage(snapshot.progressPercentage),
                 "aria-label": `${student.username} progress`,
                 className: "bg-muted/60"
               }
             ),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-sm font-medium text-muted-foreground", children: formatPercentage(snapshot.progressPercentage) })
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-sm font-medium text-muted-foreground", children: formatTeacherProgressPercentage(snapshot.progressPercentage) })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-3 sm:grid-cols-2 lg:grid-cols-4", children: [
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-md border p-3", children: [
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs uppercase tracking-wide text-muted-foreground", children: "Completed Phases" }),
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-lg font-semibold text-foreground", children: [
@@ -23355,9 +23511,76 @@ async function TeacherStudentDetailPage({
           ] }),
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-md border p-3", children: [
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs uppercase tracking-wide text-muted-foreground", children: "Last Active" }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-foreground", children: formatLastActive(snapshot.lastActive) })
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-foreground", children: formatTeacherLastActive(snapshot.lastActive) })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-md border p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs uppercase tracking-wide text-muted-foreground", children: "Lessons Completed" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-lg font-semibold text-foreground", children: [
+              viewModel.summary.completedLessons,
+              " / ",
+              viewModel.summary.totalLessons
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-md border p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs uppercase tracking-wide text-muted-foreground", children: "Units Completed" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-lg font-semibold text-foreground", children: [
+              viewModel.summary.completedUnits,
+              " / ",
+              viewModel.summary.totalUnits
+            ] })
           ] })
         ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 lg:grid-cols-[1.2fr,1fr]", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "Unit Progress" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Review where this student is moving forward and where support may be needed." })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-4", children: viewModel.unitSummaries.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-dashed p-4 text-sm text-muted-foreground", children: "No published unit data is available yet." }) : viewModel.unitSummaries.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-lg border p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm font-medium text-muted-foreground", children: [
+                "Unit ",
+                unit.unitNumber
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "font-semibold text-foreground", children: unit.unitTitle }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+                unit.completedLessons,
+                " of ",
+                unit.totalLessons,
+                " lessons complete"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: formatTeacherProgressPercentage(unit.progressPercentage) })
+          ] }),
+          unit.nextLesson ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "mt-3 text-sm text-muted-foreground", children: [
+            "Next lesson:",
+            " ",
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-medium text-foreground", children: unit.nextLesson.title })
+          ] }) : null
+        ] }, unit.unitNumber)) })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "Next Best Lesson" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Use this to direct the student back into the most relevant published lesson." })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-4", children: viewModel.nextLesson ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-lg border bg-muted/30 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+              "Unit ",
+              viewModel.nextLesson.unitNumber
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-1 font-semibold text-foreground", children: viewModel.nextLesson.title }),
+            viewModel.nextLesson.description ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: viewModel.nextLesson.description }) : null
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, className: "w-full sm:w-auto", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Link, { href: studentLessonPath(viewModel.nextLesson.slug), children: [
+            viewModel.nextLesson.actionLabel,
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ArrowRight, { className: "ml-2 size-4", "aria-hidden": "true" })
+          ] }) })
+        ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800", children: viewModel.guidance }) })
       ] })
     ] })
   ] }) });

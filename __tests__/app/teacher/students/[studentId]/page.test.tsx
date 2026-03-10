@@ -78,6 +78,34 @@ describe('Teacher student detail page', () => {
         progressPercentage: 50,
         lastActive: '2026-02-09T08:00:00.000Z',
       },
+      units: [
+        {
+          unitNumber: 1,
+          unitTitle: 'Unit 1',
+          lessons: [
+            {
+              id: 'lesson-1',
+              unitNumber: 1,
+              title: 'Lesson 1',
+              slug: 'unit-1-lesson-1',
+              description: 'Completed lesson',
+              completedPhases: 2,
+              totalPhases: 2,
+              progressPercentage: 100,
+            },
+            {
+              id: 'lesson-2',
+              unitNumber: 1,
+              title: 'Lesson 2',
+              slug: 'unit-1-lesson-2',
+              description: 'Resume this lesson',
+              completedPhases: 1,
+              totalPhases: 2,
+              progressPercentage: 50,
+            },
+          ],
+        },
+      ],
     });
 
     const { default: StudentDetailPage } = await StudentDetailPageImport();
@@ -91,8 +119,16 @@ describe('Teacher student detail page', () => {
     expect(screen.getByText('Demo School')).toBeInTheDocument();
     expect(screen.getByText('Demo Student')).toBeInTheDocument();
     expect(screen.getByText('@demo_student')).toBeInTheDocument();
-    expect(screen.getByText('1 / 2')).toBeInTheDocument();
+    expect(screen.getAllByText('1 / 2').length).toBeGreaterThan(0);
     expect(screen.getByText('50%')).toBeInTheDocument();
+    expect(screen.getByText('Inactive')).toBeInTheDocument();
+    expect(screen.getByText(/next best lesson/i)).toBeInTheDocument();
+    expect(screen.getAllByText('Lesson 2').length).toBeGreaterThan(0);
+    expect(screen.getByText(/unit progress/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /resume lesson/i })).toHaveAttribute(
+      'href',
+      '/student/lesson/unit-1-lesson-2',
+    );
     expect(screen.getByRole('link', { name: /back to dashboard/i })).toHaveAttribute(
       'href',
       '/teacher',
@@ -104,6 +140,106 @@ describe('Teacher student detail page', () => {
         studentId: 'student-1',
       },
     );
+  });
+
+  it('renders a zero-state analytics view when the student has no progress yet', async () => {
+    mockFetchInternalQuery.mockResolvedValue({
+      status: 'success',
+      organizationName: 'Demo School',
+      student: {
+        id: 'student-1',
+        username: 'new_student',
+        displayName: null,
+      },
+      snapshot: {
+        completedPhases: 0,
+        totalPhases: 0,
+        progressPercentage: 0,
+        lastActive: null,
+      },
+      units: [
+        {
+          unitNumber: 1,
+          unitTitle: 'Unit 1',
+          lessons: [
+            {
+              id: 'lesson-1',
+              unitNumber: 1,
+              title: 'Lesson 1',
+              slug: 'unit-1-lesson-1',
+              description: null,
+              completedPhases: 0,
+              totalPhases: 6,
+              progressPercentage: 0,
+            },
+          ],
+        },
+      ],
+    });
+
+    const { default: StudentDetailPage } = await StudentDetailPageImport();
+    const page = await StudentDetailPage({
+      params: Promise.resolve({ studentId: 'student-1' }),
+    });
+
+    render(page);
+
+    expect(screen.getByText('@new_student')).toBeInTheDocument();
+    expect(screen.getByText(/has not recorded progress yet/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /start lesson/i })).toHaveAttribute(
+      'href',
+      '/student/lesson/unit-1-lesson-1',
+    );
+  });
+
+  it('renders a completed state without a next-lesson action', async () => {
+    mockFetchInternalQuery.mockResolvedValue({
+      status: 'success',
+      organizationName: 'Demo School',
+      student: {
+        id: 'student-1',
+        username: 'finisher',
+        displayName: 'Finisher',
+      },
+      snapshot: {
+        completedPhases: 6,
+        totalPhases: 6,
+        progressPercentage: 100,
+        lastActive: '2026-03-10T08:00:00.000Z',
+      },
+      units: [
+        {
+          unitNumber: 1,
+          unitTitle: 'Unit 1',
+          lessons: [
+            {
+              id: 'lesson-1',
+              unitNumber: 1,
+              title: 'Lesson 1',
+              slug: 'unit-1-lesson-1',
+              description: null,
+              completedPhases: 6,
+              totalPhases: 6,
+              progressPercentage: 100,
+            },
+          ],
+        },
+      ],
+    });
+
+    const { default: StudentDetailPage } = await StudentDetailPageImport();
+    const page = await StudentDetailPage({
+      params: Promise.resolve({ studentId: 'student-1' }),
+    });
+
+    render(page);
+
+    expect(screen.getByText('Completed')).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/completed all published lessons/i).length,
+    ).toBeGreaterThan(0);
+    expect(screen.queryByRole('link', { name: /resume lesson/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /start lesson/i })).not.toBeInTheDocument();
   });
 
   it('returns notFound when student is outside teacher organization', async () => {

@@ -32,6 +32,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Teacher Student Detail Analytics**
+  *Link: [./conductor/archive/teacher_student_detail_analytics_20260310/](./conductor/archive/teacher_student_detail_analytics_20260310/)*
+  *Checkpoint: `pending` (2026-03-10 closeout)*
+
 - [x] **Track: React Test Signal Cleanup & Conductor Queue Closeout**
   *Link: [./conductor/archive/react_test_signal_cleanup_20260310/](./conductor/archive/react_test_signal_cleanup_20260310/)*
   *Checkpoint: `d9d68ee` (2026-03-10 closeout)*

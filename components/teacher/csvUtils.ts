@@ -2,6 +2,11 @@ import {
   deriveStudentIntervention,
   type StudentDashboardRow,
 } from "@/lib/teacher/intervention";
+import {
+  clampTeacherProgressPercentage,
+  formatTeacherLastActiveDate,
+  formatTeacherProgressPercentage,
+} from "@/lib/teacher/progress";
 
 const HEADERS = [
   "Username",
@@ -14,42 +19,12 @@ const HEADERS = [
   "Last Active",
 ] as const;
 
-const percentageFormatter = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 1,
-  minimumFractionDigits: 0,
-});
-
-function clampPercentage(value: number) {
-  if (!Number.isFinite(value)) {
-    return 0;
-  }
-
-  return Math.max(0, Math.min(100, value));
-}
-
 function escapeCsvValue(value: string) {
   if (/[",\n]/.test(value)) {
     return `"${value.replace(/"/g, '""')}"`;
   }
 
   return value;
-}
-
-function formatPercentage(value: number) {
-  return `${percentageFormatter.format(clampPercentage(value))}%`;
-}
-
-function formatLastActiveDate(value: string | null) {
-  if (!value) {
-    return "";
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return "";
-  }
-
-  return parsed.toISOString().split("T")[0];
 }
 
 export function studentRowsToCsv(students: StudentDashboardRow[]) {
@@ -62,12 +37,12 @@ export function studentRowsToCsv(students: StudentDashboardRow[]) {
       student.displayName ?? "",
       derived.status,
       derived.needsAttention ? "Yes" : "No",
-      formatPercentage(student.progressPercentage),
+      formatTeacherProgressPercentage(student.progressPercentage),
       Number.isFinite(student.completedPhases)
         ? String(student.completedPhases)
         : "0",
       Number.isFinite(student.totalPhases) ? String(student.totalPhases) : "",
-      formatLastActiveDate(student.lastActive),
+      formatTeacherLastActiveDate(student.lastActive),
     ];
 
     rows.push(values.map((value) => escapeCsvValue(value ?? "")).join(","));
@@ -89,7 +64,7 @@ export function buildCsvFilename(referenceDate = new Date()) {
 }
 
 export const __private__ = {
-  clampPercentage,
+  clampPercentage: clampTeacherProgressPercentage,
   escapeCsvValue,
-  formatLastActiveDate,
+  formatLastActiveDate: formatTeacherLastActiveDate,
 };
