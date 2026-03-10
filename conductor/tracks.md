@@ -6,9 +6,6 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [~] **Track: React Test Signal Cleanup & Conductor Queue Closeout**
-  *Link: [./conductor/tracks/react_test_signal_cleanup_20260310/](./conductor/tracks/react_test_signal_cleanup_20260310/)*
-
 ## Upcoming / Unplanned
 
 1. Convex Auth Runtime Verification & Closeout
@@ -34,6 +31,10 @@ This file is the source of truth for active execution order and archived track h
      Deliverables: a minimum viable component set for each instruction pattern you expect to reuse across units, with seeded examples and tests.
 
 ## Archive Ledger
+
+- [x] **Track: React Test Signal Cleanup & Conductor Queue Closeout**
+  *Link: [./conductor/archive/react_test_signal_cleanup_20260310/](./conductor/archive/react_test_signal_cleanup_20260310/)*
+  *Checkpoint: `d9d68ee` (2026-03-10 closeout)*
 
 - [x] **Track: Published Progress Consistency & Dashboard Hardening**
   *Link: [./conductor/archive/published_progress_consistency_20260310/](./conductor/archive/published_progress_consistency_20260310/)*
