@@ -1,0 +1,4 @@
+Track: teacher_student_detail_analytics_20260310
+Summary: expanded the teacher student detail page into a phase-aware analytics view backed by internal Convex data and shared teacher progress helpers.
+Files: README.md, app/teacher/students/[studentId]/page.tsx, convex/teacher.ts, lib/teacher/progress.ts, lib/teacher/student-detail.ts, components/teacher/TeacherDashboardContent.tsx, components/teacher/csvUtils.ts, __tests__/app/teacher/students/[studentId]/page.test.tsx, __tests__/lib/teacher/student-detail.test.ts, conductor/archive/teacher_student_detail_analytics_20260310/*, conductor/tracks.md, conductor/tech-debt.md, conductor/lessons-learned.md, dist/*.
+Why: teachers needed actionable per-student follow-up context instead of a single aggregate progress card.
