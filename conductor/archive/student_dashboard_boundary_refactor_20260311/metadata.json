@@ -1,0 +1,11 @@
+{
+  "track_id": "student_dashboard_boundary_refactor_20260311",
+  "type": "refactor",
+  "status": "archived",
+  "created_at": "2026-03-11T00:00:00Z",
+  "updated_at": "2026-03-11T00:00:00Z",
+  "description": "Harden the student dashboard role boundary and refactor duplicated dashboard lesson-status presentation shared with teacher student detail.",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": ""
+}

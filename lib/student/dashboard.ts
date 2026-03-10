@@ -15,10 +15,10 @@ export interface StudentDashboardUnit {
   lessons: StudentDashboardLesson[];
 }
 
-type LessonStatus = 'not_started' | 'in_progress' | 'completed';
+export type LessonStatus = 'not_started' | 'in_progress' | 'completed';
 type UnitStatus = LessonStatus;
 
-interface DashboardLessonAction extends StudentDashboardLesson {
+export interface DashboardLessonAction extends StudentDashboardLesson {
   status: LessonStatus;
   actionLabel: 'Start Lesson' | 'Resume Lesson';
 }

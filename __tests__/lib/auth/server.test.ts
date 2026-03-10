@@ -83,4 +83,45 @@ describe('lib/auth/server role guards', () => {
       role: 'teacher',
     });
   });
+
+  it('returns claims for student sessions through the student helper', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'profile_3',
+      username: 'student_one',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
+    const { requireStudentSessionClaims } = await loadModule();
+
+    await expect(requireStudentSessionClaims('/student/dashboard')).resolves.toMatchObject({
+      sub: 'profile_3',
+      role: 'student',
+    });
+  });
+
+  it('redirects teacher sessions away from student-only routes', async () => {
+    const { requireStudentSessionClaims } = await loadModule();
+
+    await expect(requireStudentSessionClaims('/student/dashboard')).rejects.toThrow(
+      'NEXT_REDIRECT:/teacher',
+    );
+  });
+
+  it('redirects admin sessions away from student-only routes', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'profile_4',
+      username: 'admin_one',
+      role: 'admin',
+      iat: 1,
+      exp: 2,
+    });
+
+    const { requireStudentSessionClaims } = await loadModule();
+
+    await expect(requireStudentSessionClaims('/student/dashboard')).rejects.toThrow(
+      'NEXT_REDIRECT:/admin/dashboard',
+    );
+  });
 });

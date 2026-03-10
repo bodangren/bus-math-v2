@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { redirect } from 'next/navigation';
 
-const { mockGetServerSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
-  mockGetServerSessionClaims: vi.fn(),
+const { mockRequireStudentSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
+  mockRequireStudentSessionClaims: vi.fn(),
   mockFetchInternalQuery: vi.fn(),
 }));
 
@@ -14,7 +14,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/lib/auth/server', () => ({
-  getServerSessionClaims: mockGetServerSessionClaims,
+  requireStudentSessionClaims: mockRequireStudentSessionClaims,
 }));
 
 vi.mock('@/lib/convex/server', async () => {
@@ -37,7 +37,7 @@ const { default: StudentDashboard } = await import('../../../../app/student/dash
 describe('StudentDashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetServerSessionClaims.mockResolvedValue({
+    mockRequireStudentSessionClaims.mockResolvedValue({
       sub: 'profile_1',
       username: 'student_one',
       role: 'student',
@@ -47,10 +47,26 @@ describe('StudentDashboard', () => {
   });
 
   it('redirects unauthenticated users to login', async () => {
-    mockGetServerSessionClaims.mockResolvedValue(null);
+    mockRequireStudentSessionClaims.mockImplementation(async () => redirect('/auth/login'));
 
     await expect(StudentDashboard()).rejects.toThrow('NEXT_REDIRECT');
     expect(redirect).toHaveBeenCalledWith('/auth/login');
+  });
+
+  it('redirects teacher sessions to the teacher dashboard', async () => {
+    mockRequireStudentSessionClaims.mockImplementation(async () => redirect('/teacher'));
+
+    await expect(StudentDashboard()).rejects.toThrow('NEXT_REDIRECT');
+    expect(redirect).toHaveBeenCalledWith('/teacher');
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
+  });
+
+  it('redirects admin sessions to the admin dashboard', async () => {
+    mockRequireStudentSessionClaims.mockImplementation(async () => redirect('/admin/dashboard'));
+
+    await expect(StudentDashboard()).rejects.toThrow('NEXT_REDIRECT');
+    expect(redirect).toHaveBeenCalledWith('/admin/dashboard');
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
   });
 
   it('queries dashboard data with profile id from session claims', async () => {

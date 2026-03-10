@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { NextLessonCard } from '@/components/dashboard/NextLessonCard';
 import { Progress } from '@/components/ui/progress';
 import { requireTeacherSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, internal } from '@/lib/convex/server';
@@ -14,7 +14,6 @@ import {
   formatTeacherProgressPercentage,
 } from '@/lib/teacher/progress';
 import { buildTeacherStudentDetailViewModel } from '@/lib/teacher/student-detail';
-import { studentLessonPath } from '@/lib/student/navigation';
 
 interface TeacherStudentDetailPageProps {
   params: Promise<{
@@ -205,43 +204,12 @@ export default async function TeacherStudentDetailPage({
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Next Best Lesson</CardTitle>
-              <CardDescription>
-                Use this to direct the student back into the most relevant published lesson.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {viewModel.nextLesson ? (
-                <>
-                  <div className="rounded-lg border bg-muted/30 p-4">
-                    <p className="text-sm text-muted-foreground">
-                      Unit {viewModel.nextLesson.unitNumber}
-                    </p>
-                    <p className="mt-1 font-semibold text-foreground">
-                      {viewModel.nextLesson.title}
-                    </p>
-                    {viewModel.nextLesson.description ? (
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        {viewModel.nextLesson.description}
-                      </p>
-                    ) : null}
-                  </div>
-                  <Button asChild className="w-full sm:w-auto">
-                    <Link href={studentLessonPath(viewModel.nextLesson.slug)}>
-                      {viewModel.nextLesson.actionLabel}
-                      <ArrowRight className="ml-2 size-4" aria-hidden="true" />
-                    </Link>
-                  </Button>
-                </>
-              ) : (
-                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-                  {viewModel.guidance}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <NextLessonCard
+            heading="Next Best Lesson"
+            description="Use this to direct the student back into the most relevant published lesson."
+            lesson={viewModel.nextLesson}
+            emptyMessage={viewModel.guidance}
+          />
         </div>
       </div>
     </main>

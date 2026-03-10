@@ -90,6 +90,30 @@ export async function requireTeacherSessionClaims(
 }
 
 /**
+ * Requires a student server session for student-facing dashboard routes.
+ * Teacher/admin sessions are redirected to their own dashboard surfaces.
+ */
+export async function requireStudentSessionClaims(
+  loginRedirectPath: string,
+): Promise<SessionClaims> {
+  const claims = await requireServerSessionClaims(loginRedirectPath);
+
+  if (claims.role === 'student') {
+    return claims;
+  }
+
+  if (claims.role === 'teacher') {
+    redirect('/teacher');
+  }
+
+  if (claims.role === 'admin') {
+    redirect('/admin/dashboard');
+  }
+
+  redirect(buildLoginRedirect(loginRedirectPath));
+}
+
+/**
  * Requires an admin server session for admin-facing pages.
  */
 export async function requireAdminSessionClaims(

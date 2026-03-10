@@ -169,3 +169,8 @@ A condensed summary of key learnings from the project.
 
 - **Went well:** Pulling teacher/admin page gating into shared server helpers closed a real admin authorization gap and removed duplicate redirect logic from the March 9 teacher pages without changing their UI contracts.
 - **Lesson:** Placeholder or low-traffic privileged pages still need the same explicit role enforcement as production dashboards. Shared server guards are safer than repeating inline checks because redirect drift becomes immediately visible in focused page tests.
+
+### #student-dashboard-boundary-refactor-2026-03-11 - Student Dashboard Boundary & Progress Card Refactor
+
+- **Went well:** Tightening the student dashboard onto a dedicated student-only server guard closed a real role-boundary mismatch without changing the published-curriculum progression model, and a shared next-lesson card removed copy drift between student and teacher follow-up flows.
+- **Lesson:** A student route can still be an authorization bug even when lesson preview bypasses for teacher/admin are intentional elsewhere. Keep route guards explicit per surface and extract shared dashboard presentation before the two views diverge in copy, CTA behavior, or status styling.

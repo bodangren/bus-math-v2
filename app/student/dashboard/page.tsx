@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ArrowRight, BookOpenCheck, CheckCircle2, Compass } from "lucide-react";
-import { getServerSessionClaims } from "@/lib/auth/server";
+import { requireStudentSessionClaims } from "@/lib/auth/server";
 import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import { buildStudentDashboardViewModel, type StudentDashboardUnit } from "@/lib/student/dashboard";
+import { dashboardStatusBadgeClassName, dashboardStatusLabel } from "@/lib/student/dashboard-presentation";
 import { studentLessonPath } from "@/lib/student/navigation";
 import {
   Card,
@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { NextLessonCard } from "@/components/dashboard/NextLessonCard";
 
 export const dynamic = 'force-dynamic';
 
@@ -36,30 +37,8 @@ const metricCards = [
   },
 ] as const;
 
-function statusBadgeVariant(status: "not_started" | "in_progress" | "completed") {
-  if (status === "completed") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  }
-
-  if (status === "in_progress") {
-    return "border-sky-200 bg-sky-50 text-sky-700";
-  }
-
-  return "border-amber-200 bg-amber-50 text-amber-700";
-}
-
-function statusLabel(status: "not_started" | "in_progress" | "completed") {
-  if (status === "completed") return "Completed";
-  if (status === "in_progress") return "In Progress";
-  return "Not Started";
-}
-
 export default async function StudentDashboard() {
-  const claims = await getServerSessionClaims();
-
-  if (!claims) {
-    redirect("/auth/login");
-  }
+  const claims = await requireStudentSessionClaims("/student/dashboard");
 
   const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
     userId: claims.sub as never,
@@ -93,44 +72,16 @@ export default async function StudentDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="border-primary/20 bg-primary/5">
-              <CardHeader>
-                <CardTitle>Continue Learning</CardTitle>
-                <CardDescription>
-                  {dashboard.nextLesson
-                    ? `Next up: ${dashboard.nextLesson.title}`
-                    : "All available lessons are complete right now."}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {dashboard.nextLesson ? (
-                  <>
-                    <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">
-                        Unit {dashboard.nextLesson.unitNumber}
-                      </p>
-                      <p className="font-semibold">{dashboard.nextLesson.title}</p>
-                      {dashboard.nextLesson.description ? (
-                        <p className="text-sm text-muted-foreground">
-                          {dashboard.nextLesson.description}
-                        </p>
-                      ) : null}
-                    </div>
-                    <Button asChild className="w-full sm:w-auto">
-                      <Link href={studentLessonPath(dashboard.nextLesson.slug)}>
-                        {dashboard.nextLesson.actionLabel}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </>
-                ) : (
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-                    You have finished every available lesson. Review completed units or ask your
-                    teacher what to tackle next.
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <NextLessonCard
+              heading="Continue Learning"
+              description={
+                dashboard.nextLesson
+                  ? `Next up: ${dashboard.nextLesson.title}`
+                  : "All available lessons are complete right now."
+              }
+              lesson={dashboard.nextLesson}
+              emptyMessage="You have finished every available lesson. Review completed units or ask your teacher what to tackle next."
+            />
           </header>
 
           <section className="grid gap-4 md:grid-cols-3" aria-label="Course metrics">
@@ -176,8 +127,8 @@ export default async function StudentDashboard() {
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="outline">Unit {unit.unitNumber}</Badge>
-                        <Badge variant="outline" className={statusBadgeVariant(unit.status)}>
-                          {statusLabel(unit.status)}
+                        <Badge variant="outline" className={dashboardStatusBadgeClassName(unit.status)}>
+                          {dashboardStatusLabel(unit.status)}
                         </Badge>
                       </div>
                       <CardTitle>{unit.unitTitle}</CardTitle>
@@ -185,9 +136,9 @@ export default async function StudentDashboard() {
                         {unit.completedLessons} of {unit.lessons.length} lessons complete
                       </CardDescription>
                     </div>
-                    {unit.nextLesson ? (
-                      <Button asChild variant="outline" className="w-full md:w-auto">
-                        <Link href={studentLessonPath(unit.nextLesson.slug)}>
+                  {unit.nextLesson ? (
+                    <Button asChild variant="outline" className="w-full md:w-auto">
+                        <Link href={`/student/lesson/${unit.nextLesson.slug}`}>
                           {unit.nextLesson.actionLabel}
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
