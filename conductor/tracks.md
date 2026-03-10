@@ -32,6 +32,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Activity Component Contract Refactor**
+  *Link: [./conductor/archive/activity_component_contract_refactor_20260311/](./conductor/archive/activity_component_contract_refactor_20260311/)*
+  *Checkpoint: `pending` (2026-03-11 closeout)*
+
 - [x] **Track: Student Dashboard Boundary & Progress Card Refactor**
   *Link: [./conductor/archive/student_dashboard_boundary_refactor_20260311/](./conductor/archive/student_dashboard_boundary_refactor_20260311/)*
   *Checkpoint: `pending` (2026-03-11 closeout)*

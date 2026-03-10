@@ -11,6 +11,7 @@
 - (2026-03-10, security_surface_hardening_20260310) Sensitive curriculum/activity lookups must stay behind internal Convex queries even when a server route performs extra redaction logic.
 - (2026-03-10, teacher_student_detail_analytics_20260310) Teacher-facing intervention pages can safely reuse student dashboard progression math when the Convex query returns published lesson progress as a unit/lesson tree.
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Student-facing dashboard routes need an explicit student-role server guard even when lesson pages intentionally allow teacher/admin preview bypasses.
+- (2026-03-11, activity_component_contract_refactor_20260311) Activity contracts drift quickly when alias handling lives separately from the runtime registry and schema validators; documented curriculum keys need one canonical resolver.
 
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->
@@ -20,6 +21,7 @@
 - (2026-03-10, server_role_guard_cleanup_20260310) “Authenticated” is not an authorization policy; admin/teacher pages need explicit role guards even when the UI is still a placeholder shell.
 - (2026-03-10, security_surface_hardening_20260310) Environment-gated demo/bootstrap endpoints are still production attack surface; review proxy public-route allowlists alongside the route handler itself.
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Shared dashboard affordances such as next-lesson cards and unit-status badges drift quickly when student and teacher surfaces copy the same markup instead of reusing one presentation layer.
+- (2026-03-11, activity_component_contract_refactor_20260311) A plain union of activity prop schemas is not enough; if `componentKey` and `props` are validated independently, the app can silently accept the wrong props for a component.
 
 ### Patterns That Worked Well
 <!-- Approaches worth repeating -->
@@ -30,6 +32,7 @@
 - (2026-03-10, security_surface_hardening_20260310) Boundary tests that grep Convex export kinds plus targeted route tests caught the public-vs-internal API drift quickly.
 - (2026-03-10, teacher_student_detail_analytics_20260310) A pure teacher detail view-model built on top of shared student dashboard helpers made it easy to add richer teacher analytics without duplicating progression rules.
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Pairing a role-guard test with a shared dashboard card test made it safe to tighten authorization and refactor student/teacher progress UI in the same track.
+- (2026-03-11, activity_component_contract_refactor_20260311) Resolver tests plus a docs-backed alias regression test caught catalog drift early without needing to seed or render whole lessons.
 
 ### Planning Improvements
 <!-- Notes on where estimates were wrong and why -->

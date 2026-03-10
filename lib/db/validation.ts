@@ -1,5 +1,6 @@
 import { ZodIssue } from 'zod';
 
+import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import { activityPropsSchemas, ActivityComponentKey } from './schema/activities';
 import { contentBlockSchema } from './schema/phase-content';
 
@@ -39,7 +40,9 @@ export function validateContentBlocks(blocks: unknown[]): ValidationResult {
 }
 
 export function validateActivityProps(componentKey: string, props: unknown): ValidationResult {
-  const schema = activityPropsSchemas[componentKey as ActivityComponentKey];
+  const canonicalComponentKey = resolveActivityComponentKey(componentKey);
+  const schema =
+    canonicalComponentKey ? activityPropsSchemas[canonicalComponentKey as ActivityComponentKey] : null;
 
   if (!schema) {
     return {

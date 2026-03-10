@@ -64,4 +64,67 @@ describe('selectActivitySchema', () => {
       expect((questions[0] as { correctAnswer: unknown }).correctAnswer).toBe(100);
     }
   });
+
+  it('accepts a spreadsheet-evaluator activity', () => {
+    const result = selectActivitySchema.safeParse({
+      ...baseActivityRow,
+      componentKey: 'spreadsheet-evaluator',
+      props: {
+        templateId: 'u01l11-checkpoint',
+        instructions: 'Match the expected checkpoint values.',
+        targetCells: [
+          {
+            cell: 'B4',
+            expectedValue: 1250,
+          },
+        ],
+      },
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts a data-cleaning activity', () => {
+    const result = selectActivitySchema.safeParse({
+      ...baseActivityRow,
+      componentKey: 'data-cleaning',
+      props: {
+        title: 'Red Flag Audit',
+        description: 'Clean the ledger before the checkpoint.',
+        dataset: {
+          name: 'Unit 1 Ledger',
+          description: 'Messy rows from Sarah Chen\'s notebook',
+          rows: [
+            {
+              id: 'row-1',
+              data: {
+                account: 'Cash',
+                amount: 500,
+              },
+              issues: [
+                {
+                  type: 'duplicate',
+                  description: 'Duplicate entry',
+                  severity: 'medium',
+                },
+              ],
+            },
+          ],
+        },
+        cleaningSteps: ['Remove duplicates', 'Normalize categories'],
+      },
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects props that do not match the declared component key', () => {
+    const result = selectActivitySchema.safeParse({
+      ...baseActivityRow,
+      componentKey: 'spreadsheet-evaluator',
+      props: comprehensionProps,
+    });
+
+    expect(result.success).toBe(false);
+  });
 });

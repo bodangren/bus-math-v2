@@ -37,6 +37,7 @@ import { CapitalNegotiation } from '@/components/activities/simulations/CapitalN
 import { BusinessStressTest } from '@/components/activities/simulations/BusinessStressTest';
 import { PayStructureDecisionLab } from '@/components/activities/simulations/PayStructureDecisionLab';
 
+import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
 
 /**
@@ -102,5 +103,10 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getActivityComponent(componentKey: string): ComponentType<any> | null {
-  return activityRegistry[componentKey as ActivityComponentKey] ?? null;
+  const canonicalKey = resolveActivityComponentKey(componentKey);
+  if (!canonicalKey) {
+    return null;
+  }
+
+  return activityRegistry[canonicalKey as ActivityComponentKey] ?? null;
 }

@@ -1,6 +1,7 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
+import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import { activities, activityPropsSchemas, gradingConfigSchema } from './activities';
 import { activitySubmissions, submissionDataSchema } from './activity-submissions';
 import { classEnrollments } from './class-enrollments';
@@ -15,43 +16,36 @@ import { resources, resourceMetadataSchema } from './resources';
 import { sessionLeaderboard } from './session-leaderboard';
 import { studentProgress } from './student-progress';
 
-const activityPropsSchema = z.union([
-  activityPropsSchemas['comprehension-quiz'],
-  activityPropsSchemas['tiered-assessment'],
-  activityPropsSchemas['drag-and-drop'],
-  activityPropsSchemas['account-categorization'],
-  activityPropsSchemas['budget-category-sort'],
-  activityPropsSchemas['percentage-calculation-sorting'],
-  activityPropsSchemas['inventory-flow-diagram'],
-  activityPropsSchemas['ratio-matching'],
-  activityPropsSchemas['break-even-components'],
-  activityPropsSchemas['cash-flow-timeline'],
-  activityPropsSchemas['financial-statement-matching'],
-  activityPropsSchemas['trial-balance-sorting'],
-  activityPropsSchemas['fill-in-the-blank'],
-  activityPropsSchemas['journal-entry-building'],
-  activityPropsSchemas['reflection-journal'],
-  activityPropsSchemas['peer-critique-form'],
-  activityPropsSchemas['profit-calculator'],
-  activityPropsSchemas['budget-worksheet'],
-  activityPropsSchemas['lemonade-stand'],
-  activityPropsSchemas['startup-journey'],
-  activityPropsSchemas['budget-balancer'],
-  activityPropsSchemas['cash-flow-challenge'],
-  activityPropsSchemas['inventory-manager'],
-  activityPropsSchemas['pitch-presentation-builder'],
-  activityPropsSchemas['pay-structure-lab'],
-  activityPropsSchemas['notebook-organizer'],
-  activityPropsSchemas['ledger-hero'],
-  activityPropsSchemas['growth-puzzle'],
-  activityPropsSchemas['asset-time-machine'],
-  activityPropsSchemas['cafe-supply-chaos'],
-  activityPropsSchemas['capital-negotiation'],
-  activityPropsSchemas['business-stress-test'],
-  activityPropsSchemas['spreadsheet']
-]);
-
 const jsonRecordSchema = z.record(z.string(), z.unknown());
+
+function addActivityPropsIssues(
+  ctx: z.RefinementCtx,
+  componentKey: string,
+  props: unknown,
+) {
+  const canonicalComponentKey = resolveActivityComponentKey(componentKey);
+
+  if (!canonicalComponentKey || !(canonicalComponentKey in activityPropsSchemas)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['componentKey'],
+      message: `Unknown activity component: ${componentKey}`,
+    });
+    return;
+  }
+
+  const result = activityPropsSchemas[canonicalComponentKey].safeParse(props);
+  if (result.success) {
+    return;
+  }
+
+  result.error.issues.forEach((issue) => {
+    ctx.addIssue({
+      ...issue,
+      path: ['props', ...issue.path],
+    });
+  });
+}
 
 export const insertLessonSchema = createInsertSchema(lessons, {
   learningObjectives: z.array(z.string()).nullable().optional(),
@@ -85,13 +79,17 @@ export type Phase = z.infer<typeof selectPhaseSchema>;
 export type NewPhase = z.infer<typeof insertPhaseSchema>;
 
 export const insertActivitySchema = createInsertSchema(activities, {
-  props: activityPropsSchema,
+  props: z.unknown(),
   gradingConfig: gradingConfigSchema.nullable().optional()
+}).superRefine((activity, ctx) => {
+  addActivityPropsIssues(ctx, activity.componentKey, activity.props);
 });
 
 export const selectActivitySchema = createSelectSchema(activities, {
-  props: activityPropsSchema,
+  props: z.unknown(),
   gradingConfig: gradingConfigSchema.nullable()
+}).superRefine((activity, ctx) => {
+  addActivityPropsIssues(ctx, activity.componentKey, activity.props);
 });
 
 export type Activity = z.infer<typeof selectActivitySchema>;
