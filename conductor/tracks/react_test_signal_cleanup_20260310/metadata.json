@@ -1,0 +1,11 @@
+{
+  "track_id": "react_test_signal_cleanup_20260310",
+  "type": "refactor",
+  "status": "in_progress",
+  "created_at": "2026-03-10T04:45:00Z",
+  "updated_at": "2026-03-10T04:45:00Z",
+  "description": "Eliminate duplicate React test warnings, stabilize async test behavior, and close stale completed Conductor tracks left active in the queue.",
+  "estimated_tasks": 10,
+  "actual_tasks": 0,
+  "deviation_notes": ""
+}

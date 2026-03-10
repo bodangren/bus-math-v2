@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 
 const mockUseAuth = vi.fn();
 const mockCompletePhaseMutation = vi.fn();
@@ -43,7 +43,9 @@ describe('usePhaseCompletion', () => {
     const onSuccess = vi.fn();
     const { result } = renderHook(() => usePhaseCompletion({ ...baseOptions, onSuccess }));
 
-    await result.current.completePhase();
+    await act(async () => {
+      await result.current.completePhase();
+    });
 
     expect(mockCompletePhaseMutation).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -65,7 +67,9 @@ describe('usePhaseCompletion', () => {
     const onError = vi.fn();
     const { result } = renderHook(() => usePhaseCompletion({ ...baseOptions, onError }));
 
-    await result.current.completePhase();
+    await act(async () => {
+      await result.current.completePhase();
+    });
 
     expect(mockCompletePhaseMutation).not.toHaveBeenCalled();
     await waitFor(() => {
@@ -81,7 +85,9 @@ describe('usePhaseCompletion', () => {
       .mockResolvedValueOnce({ success: true, nextPhaseUnlocked: false });
 
     const { result } = renderHook(() => usePhaseCompletion(baseOptions));
-    await result.current.completePhase();
+    await act(async () => {
+      await result.current.completePhase();
+    });
 
     expect(mockCompletePhaseMutation).toHaveBeenCalledTimes(2);
     expect(mockCompletePhaseMutation).toHaveBeenNthCalledWith(
@@ -96,7 +102,9 @@ describe('usePhaseCompletion', () => {
     mockCompletePhaseMutation.mockRejectedValueOnce(new Error('network down'));
     const { result } = renderHook(() => usePhaseCompletion(baseOptions));
 
-    await result.current.completePhase();
+    await act(async () => {
+      await result.current.completePhase();
+    });
 
     const queue = JSON.parse(localStorage.getItem('completion-queue') ?? '[]');
     expect(queue).toHaveLength(1);
@@ -191,5 +199,20 @@ describe('usePhaseCompletion', () => {
       expect(localStorage.getItem('completion-queue')).toBeNull();
     });
     expect(localStorage.getItem('completion-queue-user')).toBe('profile-1');
+  });
+
+  it('does not emit React act warnings during the completion flow', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { result } = renderHook(() => usePhaseCompletion(baseOptions));
+
+    await act(async () => {
+      await result.current.completePhase();
+    });
+
+    const actWarnings = consoleErrorSpy.mock.calls
+      .flatMap((call) => call.map((value) => String(value)))
+      .filter((message) => message.includes('not wrapped in act'));
+
+    expect(actWarnings).toHaveLength(0);
   });
 });

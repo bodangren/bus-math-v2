@@ -13,6 +13,7 @@
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->
 
+- (2026-03-10, react_test_signal_cleanup_20260310) `Date.now()` alone is not a safe React key source for bursty simulation updates; same-tick notification/event creation needs a monotonic suffix or equivalent deterministic uniqueness.
 - (2026-03-10, published_progress_consistency_20260310) “Latest version” and “latest published version” are different invariants; dashboards, lesson content, and completion checks must share one published-only helper or they drift silently.
 - (2026-03-10, server_role_guard_cleanup_20260310) “Authenticated” is not an authorization policy; admin/teacher pages need explicit role guards even when the UI is still a placeholder shell.
 - (2026-03-10, security_surface_hardening_20260310) Environment-gated demo/bootstrap endpoints are still production attack surface; review proxy public-route allowlists alongside the route handler itself.
@@ -20,6 +21,7 @@
 ### Patterns That Worked Well
 <!-- Approaches worth repeating -->
 
+- (2026-03-10, react_test_signal_cleanup_20260310) Targeted console-warning assertions plus `waitFor`/`act` cleanup turned noisy React test suites into reliable unattended verification without changing production behavior.
 - (2026-03-10, published_progress_consistency_20260310) Pure helper tests around published-version selection and phase snapshots caught both the dashboard leak and the unit-progress math regression without needing heavy Convex mocks.
 - (2026-03-10, server_role_guard_cleanup_20260310) Helper-first route tests made it easy to refactor page auth logic without losing redirect coverage for teacher/admin flows.
 - (2026-03-10, security_surface_hardening_20260310) Boundary tests that grep Convex export kinds plus targeted route tests caught the public-vs-internal API drift quickly.

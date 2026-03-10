@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { InventoryManager } from '../../../components/activities/simulations/InventoryManager'
 import type { InventoryManagerActivityProps } from '@/types/activities'
@@ -63,6 +63,10 @@ const mockActivity: InventoryManagerActivityProps = {
 }
 
 describe('InventoryManager', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('renders with activity title and description', () => {
     render(<InventoryManager activity={mockActivity} />)
 
@@ -294,5 +298,57 @@ describe('InventoryManager', () => {
     expect(screen.getByText('Expenses')).toBeInTheDocument()
     expect(screen.getByText('Storage Costs')).toBeInTheDocument()
     expect(screen.getByText('Turnover Rate')).toBeInTheDocument()
+  })
+
+  it('does not emit duplicate key warnings when one turn creates multiple notifications', async () => {
+    const user = userEvent.setup()
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(Date, 'now').mockReturnValue(1234567890)
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+
+    const stockedActivity = {
+      ...mockActivity,
+      products: mockActivity.products.map((product) => ({
+        ...product,
+        quantity: product.name === 'Phones' ? 10 : 0
+      }))
+    }
+
+    render(<InventoryManager activity={stockedActivity} />)
+
+    await user.click(screen.getByRole('button', { name: /end day/i }))
+
+    await waitFor(() => {
+      const dayLabel = screen.getByText('Day')
+      expect(dayLabel.parentElement).toHaveTextContent('2 / 30')
+    })
+
+    const duplicateKeyWarnings = consoleErrorSpy.mock.calls
+      .flatMap((call) => call.map((value) => String(value)))
+      .filter((message) => message.includes('same key'))
+
+    expect(duplicateKeyWarnings).toHaveLength(0)
+  })
+
+  it('does not emit duplicate key warnings when rapid turns generate market events', async () => {
+    const user = userEvent.setup()
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(Date, 'now').mockReturnValue(2222222222)
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+
+    render(<InventoryManager activity={mockActivity} />)
+
+    await user.click(screen.getByRole('button', { name: /end day/i }))
+    await user.click(screen.getByRole('button', { name: /end day/i }))
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/days left/i).length).toBeGreaterThan(0)
+    })
+
+    const duplicateKeyWarnings = consoleErrorSpy.mock.calls
+      .flatMap((call) => call.map((value) => String(value)))
+      .filter((message) => message.includes('same key'))
+
+    expect(duplicateKeyWarnings).toHaveLength(0)
   })
 })

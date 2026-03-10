@@ -20,4 +20,21 @@ describe('Conductor track hygiene', () => {
 
     expect(duplicateArchivedTrackIds).toEqual([]);
   });
+
+  it('does not list completed tracks inside the active execution queue', () => {
+    const tracksRegistry = fs.readFileSync(
+      path.resolve(process.cwd(), 'conductor/tracks.md'),
+      'utf8',
+    );
+
+    const activeSection = tracksRegistry
+      .split('## Active Execution Queue (progressive order)')[1]
+      ?.split('## Upcoming / Unplanned')[0] ?? '';
+
+    const completedActiveEntries = activeSection
+      .split('\n')
+      .filter((line) => line.trimStart().startsWith('- [x]'));
+
+    expect(completedActiveEntries).toEqual([]);
+  });
 });

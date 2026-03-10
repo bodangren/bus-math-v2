@@ -15872,6 +15872,30 @@ async function getRequestSessionClaims(request) {
   if (!token) return null;
   return verifySessionToken(token, getAuthJwtSecret());
 }
+function buildLoginRedirect(loginRedirectPath) {
+  return `/auth/login?redirect=${loginRedirectPath}`;
+}
+async function requireServerSessionClaims(loginRedirectPath) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
+    redirect(buildLoginRedirect(loginRedirectPath));
+  }
+  return claims;
+}
+function requireServerRoles(claims, allowedRoles, unauthorizedRedirectPath) {
+  if (!allowedRoles.includes(claims.role)) {
+    redirect(unauthorizedRedirectPath);
+  }
+  return claims;
+}
+async function requireTeacherSessionClaims(loginRedirectPath, unauthorizedRedirectPath = "/student/dashboard") {
+  const claims = await requireServerSessionClaims(loginRedirectPath);
+  return requireServerRoles(claims, ["teacher", "admin"], unauthorizedRedirectPath);
+}
+async function requireAdminSessionClaims(loginRedirectPath, unauthorizedRedirectPath = "/student/dashboard") {
+  const claims = await requireServerSessionClaims(loginRedirectPath);
+  return requireServerRoles(claims, ["admin"], unauthorizedRedirectPath);
+}
 const version = "1.32.0";
 var lookup = [];
 var revLookup = [];
@@ -21890,10 +21914,7 @@ const mod_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   POST
 }, Symbol.toStringTag, { value: "Module" }));
 async function AdminDashboard() {
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect("/auth/login");
-  }
+  const claims = await requireAdminSessionClaims("/admin/dashboard");
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto p-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "max-w-4xl mx-auto", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-4xl font-bold mb-4", children: "Admin Dashboard" }),
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground mb-8", children: "Welcome to the administrative control panel. This is a placeholder page for development." }),
@@ -22516,9 +22537,15 @@ function buildStudentDashboardViewModel(units) {
     }
     const nextLesson2 = lessons2.map(toLessonAction).find((lesson) => lesson?.status === "in_progress") ?? lessons2.map(toLessonAction).find((lesson) => lesson?.status === "not_started") ?? null;
     const unitCompletedLessons = lessons2.filter((lesson) => getLessonStatus(lesson) === "completed").length;
-    const unitProgress = lessons2.length === 0 ? 0 : clampPercentage$1(
-      lessons2.reduce((sum, lesson) => sum + clampPercentage$1(lesson.progressPercentage), 0) / lessons2.length
+    const unitCompletedPhases = lessons2.reduce(
+      (sum, lesson) => sum + lesson.completedPhases,
+      0
     );
+    const unitTotalPhases = lessons2.reduce(
+      (sum, lesson) => sum + lesson.totalPhases,
+      0
+    );
+    const unitProgress = unitTotalPhases === 0 ? 0 : clampPercentage$1(unitCompletedPhases / unitTotalPhases * 100);
     return {
       ...unit,
       lessons: lessons2,
@@ -22758,10 +22785,7 @@ const TeacherDashboardContent = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'TeacherDashboardContent' is called on server");
 }, "12afa74d869d", "TeacherDashboardContent");
 async function TeacherDashboardPage() {
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect("/auth/login?redirect=/teacher");
-  }
+  const claims = await requireTeacherSessionClaims("/teacher");
   const data = await fetchInternalQuery(internal.teacher.getTeacherDashboardData, {
     userId: claims.sub
   });
@@ -22801,16 +22825,14 @@ const CourseOverviewGrid = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'CourseOverviewGrid' is called on server");
 }, "757d8b621f8b", "CourseOverviewGrid");
 async function CourseGradebookPage() {
-  const claims = await getServerSessionClaims();
-  if (!claims) redirect("/auth/login?redirect=/teacher/gradebook");
-  if (claims.role !== "teacher" && claims.role !== "admin") redirect("/student/dashboard");
+  const claims = await requireTeacherSessionClaims("/teacher/gradebook");
   const courseOverview = await fetchInternalQuery(
     internal.teacher.getTeacherCourseOverviewData,
     {
       userId: claims.sub
     }
   );
-  if (!courseOverview) redirect("/auth/login");
+  if (!courseOverview) redirect("/teacher");
   const { rows, units } = courseOverview;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 space-y-6", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("header", { className: "space-y-1", children: [
@@ -23276,13 +23298,7 @@ async function TeacherStudentDetailPage({
   params
 }) {
   const { studentId } = await params;
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect(`/auth/login?redirect=/teacher/students/${studentId}`);
-  }
-  if (claims.role !== "teacher" && claims.role !== "admin") {
-    redirect("/student/dashboard");
-  }
+  const claims = await requireTeacherSessionClaims(`/teacher/students/${studentId}`);
   const result = await fetchInternalQuery(
     internal.teacher.getTeacherStudentDetail,
     {
@@ -23294,7 +23310,7 @@ async function TeacherStudentDetailPage({
     notFound();
   }
   if (result.status === "unauthorized") {
-    redirect("/auth/login?redirect=/teacher");
+    redirect("/teacher");
   }
   const { organizationName, student, snapshot } = result;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-3xl px-4 space-y-6", children: [
@@ -23359,13 +23375,7 @@ async function UnitGradebookPage({ params }) {
   if (Number.isNaN(unitNumber) || unitNumber < 1) {
     notFound();
   }
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect(`/auth/login?redirect=/teacher/units/${unitNumber}`);
-  }
-  if (claims.role !== "teacher" && claims.role !== "admin") {
-    redirect("/student/dashboard");
-  }
+  const claims = await requireTeacherSessionClaims(`/teacher/units/${unitNumber}`);
   const gradebook = await fetchInternalQuery(
     internal.teacher.getTeacherGradebookData,
     {
@@ -23374,7 +23384,7 @@ async function UnitGradebookPage({ params }) {
     }
   );
   if (!gradebook) {
-    redirect("/auth/login");
+    redirect("/teacher");
   }
   const { rows, lessons: lessons2 } = gradebook;
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-muted/10 py-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 space-y-6", children: [

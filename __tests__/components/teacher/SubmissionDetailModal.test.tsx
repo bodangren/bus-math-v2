@@ -57,11 +57,19 @@ describe('SubmissionDetailModal', () => {
   });
 
   it('shows the student name and lesson title in the header', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     mockFetchSuccess();
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
     expect(screen.getByText('Alice Brown')).toBeInTheDocument();
     expect(screen.getByText('Accounting Equation')).toBeInTheDocument();
+
+    const actWarnings = consoleErrorSpy.mock.calls
+      .flatMap((call) => call.map((value) => String(value)))
+      .filter((message) => message.includes('not wrapped in act'));
+
+    expect(actWarnings).toHaveLength(0);
   });
 
   it('shows a loading indicator before data arrives', () => {
@@ -112,17 +120,26 @@ describe('SubmissionDetailModal', () => {
   });
 
   it('calls onClose when the close button is clicked', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     mockFetchSuccess();
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: /close submission detail/i }));
     expect(onClose).toHaveBeenCalledTimes(1);
+
+    const actWarnings = consoleErrorSpy.mock.calls
+      .flatMap((call) => call.map((value) => String(value)))
+      .filter((message) => message.includes('not wrapped in act'));
+
+    expect(actWarnings).toHaveLength(0);
   });
 
   it('calls onClose when Escape key is pressed', async () => {
     mockFetchSuccess();
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -140,6 +157,7 @@ describe('SubmissionDetailModal', () => {
     mockFetchSuccess();
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
     expect(
       screen.getByText(/read-only view/i),
     ).toBeInTheDocument();
@@ -186,5 +204,20 @@ describe('SubmissionDetailModal', () => {
     expect(fetch).toHaveBeenCalledWith(
       expect.stringContaining(`lessonId=${SELECTED.lessonId}`),
     );
+  });
+
+  it('does not emit React act warnings while fetched detail data settles', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    mockFetchSuccess();
+
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
+
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
+
+    const actWarnings = consoleErrorSpy.mock.calls
+      .flatMap((call) => call.map((value) => String(value)))
+      .filter((message) => message.includes('not wrapped in act'));
+
+    expect(actWarnings).toHaveLength(0);
   });
 });

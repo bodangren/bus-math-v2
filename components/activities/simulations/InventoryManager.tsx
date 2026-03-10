@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -87,6 +87,13 @@ const getIconForProduct = (iconName: string) => {
 }
 
 export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) {
+  const runtimeIdCounterRef = useRef(0)
+
+  const generateRuntimeId = useCallback((prefix: 'event' | 'notification') => {
+    runtimeIdCounterRef.current += 1
+    return `${prefix}-${Date.now()}-${runtimeIdCounterRef.current}`
+  }, [])
+
   const [gameState, setGameState] = useState<GameState>({
     cash: activity.initialState.cash,
     day: activity.initialState.day,
@@ -113,12 +120,12 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
   const [showInstructions, setShowInstructions] = useState(false)
 
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
-    const id = Date.now().toString()
+    const id = generateRuntimeId('notification')
     setNotifications(prev => [...prev, { id, message, type }])
     setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id))
     }, 5000)
-  }, [])
+  }, [generateRuntimeId])
 
   const getDemandColor = (demand: string) => {
     switch (demand) {
@@ -185,9 +192,9 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
 
     return {
       ...events[eventType],
-      id: `event-${Date.now()}`
+      id: generateRuntimeId('event')
     }
-  }, [gameState.products])
+  }, [gameState.products, generateRuntimeId])
 
   const orderStock = useCallback((productId: string, quantity: number) => {
     setGameState(prev => {

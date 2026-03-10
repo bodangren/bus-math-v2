@@ -11,6 +11,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Published Curriculum Progress Guarantees**: Student dashboards, teacher snapshots, lesson delivery, and phase-completion checks all resolve against the latest published lesson version so drafts do not leak into classroom progress
 - **Convex-Backed Teacher Views**: Teacher dashboard, course gradebook, unit gradebook, and student detail pages now all read through internal Convex queries instead of legacy Drizzle runtime paths
 - **Shared Server Role Guards**: Teacher/admin App Router pages now use shared server-side claim guards, and the admin dashboard rejects non-admin sessions
+- **Deterministic Simulation Runtime IDs**: Inventory simulation notifications and market events now keep stable unique ids during rapid updates, preventing duplicate-key rendering regressions
 - **Account Settings & Self-Service Password Changes**: Authenticated users can review account context and update their own password without leaving the session
 - **Multi-tenant Architecture**: Organization-based access control
 - **Role-Based Access**: Separate interfaces for students, teachers, and administrators
@@ -169,6 +170,8 @@ Run the full test suite:
 ```bash
 npm test
 ```
+
+The React/Vitest suites treat duplicate-key and stray `act(...)` warnings as regressions in the hardened inventory simulation, submission-detail modal, and phase-completion hook coverage.
 
 Run tests in watch mode during development:
 

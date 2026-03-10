@@ -6,14 +6,8 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [x] **Track: Assessment Regression Hotfix**
-  *Link: [./conductor/tracks/assessment_regression_hotfix_20260221/](./conductor/tracks/assessment_regression_hotfix_20260221/)*
-
-- [x] **Track: Unit 1 Curriculum Content — Balance by Design**
-  *Link: [./conductor/tracks/unit1_content_20260218/](./conductor/tracks/unit1_content_20260218/)*
-
-- [x] **Track: Curriculum Quality Standards & Unit 1 Remediation**
-  *Link: [./conductor/tracks/curriculum_rigor_20260221/](./conductor/tracks/curriculum_rigor_20260221/)*
+- [~] **Track: React Test Signal Cleanup & Conductor Queue Closeout**
+  *Link: [./conductor/tracks/react_test_signal_cleanup_20260310/](./conductor/tracks/react_test_signal_cleanup_20260310/)*
 
 ## Upcoming / Unplanned
 
@@ -79,6 +73,18 @@ This file is the source of truth for active execution order and archived track h
 - [x] **Track: Convex Runtime Parity & Auth Resilience**
   *Link: [./conductor/archive/convex_runtime_auth_cleanup_20260308/](./conductor/archive/convex_runtime_auth_cleanup_20260308/)*
   *Checkpoint: `36fcadb` (2026-03-08 closeout)*
+
+- [x] **Track: Assessment Regression Hotfix**
+  *Link: [./conductor/archive/assessment_regression_hotfix_20260221/](./conductor/archive/assessment_regression_hotfix_20260221/)*
+  *Closeout: archived on 2026-03-10 during queue hygiene cleanup after the work remained listed as complete in the active queue.*
+
+- [x] **Track: Curriculum Quality Standards & Unit 1 Remediation**
+  *Link: [./conductor/archive/curriculum_rigor_20260221/](./conductor/archive/curriculum_rigor_20260221/)*
+  *Closeout: archived on 2026-03-10 during queue hygiene cleanup after the work remained listed as complete in the active queue.*
+
+- [x] **Track: Unit 1 Curriculum Content — Balance by Design**
+  *Link: [./conductor/archive/unit1_content_20260218/](./conductor/archive/unit1_content_20260218/)*
+  *Closeout: archived on 2026-03-10 during queue hygiene cleanup after the work remained listed as complete in the active queue.*
 
 - [x] **Track: Migrate to Vinext and Convex** *(superseded umbrella track)*
   *Link: [./conductor/archive/vinext_convex_migration_20260225/](./conductor/archive/vinext_convex_migration_20260225/)*
