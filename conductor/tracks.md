@@ -6,10 +6,6 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
-- [~] **Track: Lesson Phase Objective Shell**
-  *Link: [./conductor/tracks/lesson_phase_objective_shell_20260311/](./conductor/tracks/lesson_phase_objective_shell_20260311/)*
-  *Goal: align the student lesson phase shell with curriculum phase objectives by rendering reusable phase guidance and shared block rendering.*
-
 ## Upcoming / Unplanned
 
 1. Convex Auth Runtime Verification & Closeout
@@ -35,6 +31,10 @@ This file is the source of truth for active execution order and archived track h
      Deliverables: a minimum viable component set for each instruction pattern you expect to reuse across units, with seeded examples and tests.
 
 ## Archive Ledger
+
+- [x] **Track: Lesson Phase Objective Shell**
+  *Link: [./conductor/archive/lesson_phase_objective_shell_20260311/](./conductor/archive/lesson_phase_objective_shell_20260311/)*
+  *Checkpoint: `f9a651e` (2026-03-11 implementation complete; archived during closeout)*
 
 - [x] **Track: Student Write Boundary Hardening**
   *Link: [./conductor/archive/student_lesson_access_boundary_cleanup_20260311/](./conductor/archive/student_lesson_access_boundary_cleanup_20260311/)*
