@@ -13,6 +13,7 @@
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Student-facing dashboard routes need an explicit student-role server guard even when lesson pages intentionally allow teacher/admin preview bypasses.
 - (2026-03-11, activity_component_contract_refactor_20260311) Activity contracts drift quickly when alias handling lives separately from the runtime registry and schema validators; documented curriculum keys need one canonical resolver.
 - (2026-03-11, published_progress_viewmodel_consolidation_20260311) Student dashboard rows, teacher student-detail rows, and lesson phase-status payloads should derive from the same published-progress helpers or published-version/locking fixes will diverge again.
+- (2026-03-11, student_lesson_access_boundary_cleanup_20260311) Student-owned API writes need an explicit request-level student guard even when teacher/admin lesson preview is intentionally allowed elsewhere; auth presence alone is not a safe mutation boundary.
 
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->
@@ -24,6 +25,7 @@
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Shared dashboard affordances such as next-lesson cards and unit-status badges drift quickly when student and teacher surfaces copy the same markup instead of reusing one presentation layer.
 - (2026-03-11, activity_component_contract_refactor_20260311) A plain union of activity prop schemas is not enough; if `componentKey` and `props` are validated independently, the app can silently accept the wrong props for a component.
 - (2026-03-11, published_progress_viewmodel_consolidation_20260311) Progress refactors should target shared helper outputs first; dashboard and lesson queries are thin adapters and are safer when they stop hand-assembling unit rows or phase states.
+- (2026-03-11, student_lesson_access_boundary_cleanup_20260311) Request-level auth drift is easy to miss when route handlers all start with `getRequestSessionClaims`; centralizing student-write guards catches preview-vs-mutation regressions early.
 
 ### Patterns That Worked Well
 <!-- Approaches worth repeating -->
@@ -35,6 +37,7 @@
 - (2026-03-10, teacher_student_detail_analytics_20260310) A pure teacher detail view-model built on top of shared student dashboard helpers made it easy to add richer teacher analytics without duplicating progression rules.
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Pairing a role-guard test with a shared dashboard card test made it safe to tighten authorization and refactor student/teacher progress UI in the same track.
 - (2026-03-11, activity_component_contract_refactor_20260311) Resolver tests plus a docs-backed alias regression test caught catalog drift early without needing to seed or render whole lessons.
+- (2026-03-11, student_lesson_access_boundary_cleanup_20260311) Negative route tests plus one source-level boundary assertion kept the student-write hardening small and prevented accidental breakage of teacher replay reads.
 
 ### Planning Improvements
 <!-- Notes on where estimates were wrong and why -->

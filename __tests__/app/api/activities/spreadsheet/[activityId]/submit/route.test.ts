@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
+const mockRequireStudentRequestClaims = vi.fn();
 const mockFetchInternalQuery = vi.fn();
 const mockFetchInternalMutation = vi.fn();
 const mockValidateSpreadsheetData = vi.fn();
@@ -8,6 +9,7 @@ const mockValidateSubmission = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
+  requireStudentRequestClaims: mockRequireStudentRequestClaims,
 }));
 
 vi.mock('@/lib/convex/server', async () => {
@@ -118,6 +120,16 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
       iat: 1,
       exp: 2,
     });
+    mockRequireStudentRequestClaims.mockImplementation(async () => {
+      const claims = await mockGetRequestSessionClaims();
+      if (!claims) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      if (claims.role !== 'student') {
+        return Response.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      return claims;
+    });
 
     setDefaultFetchQueryMocks();
 
@@ -149,6 +161,28 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
 
     expect(response.status).toBe(401);
     expect(mockFetchInternalQuery).not.toHaveBeenCalled();
+  });
+
+  it('returns 403 when a teacher session attempts to submit spreadsheet work', async () => {
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'profile_teacher',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
+
+    const response = await POST(
+      buildPostRequest({
+        spreadsheetData: [[{ value: 0 }]],
+      }),
+      buildContext(),
+    );
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toMatchObject({ error: 'Forbidden' });
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
   });
 
   it('uses server-side target cells and stores submission for claims subject', async () => {

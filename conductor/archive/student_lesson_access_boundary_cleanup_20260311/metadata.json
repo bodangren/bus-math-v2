@@ -1,0 +1,12 @@
+{
+  "id": "student_lesson_access_boundary_cleanup_20260311",
+  "title": "Student Write Boundary Hardening",
+  "status": "archived",
+  "type": "security",
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-11",
+  "productDefinition": "conductor/product.md",
+  "productGuidelines": "conductor/product-guidelines.md",
+  "techStack": "conductor/tech-stack.md",
+  "workflow": "conductor/workflow.md"
+}

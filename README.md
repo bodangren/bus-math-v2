@@ -10,6 +10,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Teacher Intervention Queue**: At-risk and inactive student triage with status filters and CSV-aligned intervention exports
 - **Teacher Student Detail Analytics**: Teacher student detail pages now surface intervention status, unit-by-unit progress, and the next best published lesson for follow-up
 - **Student-Only Dashboard Boundary**: Student dashboard routes now enforce the student role explicitly and redirect teacher/admin sessions to their own dashboard surfaces
+- **Student-Only Write APIs**: Phase completion, assessment submission, spreadsheet drafts, and spreadsheet submissions now reject teacher/admin sessions so preview access cannot mutate learner records
 - **Published Curriculum Progress Guarantees**: Student dashboards, teacher snapshots, lesson delivery, and phase-completion checks all resolve against the latest published lesson version so drafts do not leak into classroom progress
 - **Convex-Backed Teacher Views**: Teacher dashboard, course gradebook, unit gradebook, and student detail pages now all read through internal Convex queries instead of legacy Drizzle runtime paths
 - **Shared Server Role Guards**: Teacher/admin App Router pages now use shared server-side claim guards, and the admin dashboard rejects non-admin sessions
@@ -159,6 +160,7 @@ bus-math-v2/
 - Server-side internal Convex calls use `CONVEX_DEPLOY_KEY` in cloud environments and the local Convex CLI `adminKey` in development.
 - Identity-sensitive dashboard, progress, profile, and submission flows now run through server-only internal Convex helpers. Public page data can remain queryable, but authenticated server routes/pages should not call those sensitive functions through the public API surface.
 - The activity API now reads sensitive activity records through internal Convex queries and only returns redacted payloads to student callers.
+- Student-owned write endpoints now use a shared request guard in `lib/auth/server.ts` so teacher/admin preview sessions cannot create learner progress, draft, submission, or assessment rows.
 - Demo credentials can be reprovisioned through `POST /api/users/ensure-demo` only in local development and automated test environments.
 - Teacher bulk import normalizes usernames before account creation and may add numeric suffixes to avoid collisions.
 - Teacher dashboard exports now include display name, intervention status, and a needs-attention flag to match the intervention queue.

@@ -1,12 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetRequestSessionClaims = vi.fn();
+const mockRequireStudentRequestClaims = vi.fn();
 const mockFetchQuery = vi.fn();
 const mockFetchInternalQuery = vi.fn();
 const mockFetchInternalMutation = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
+  requireStudentRequestClaims: mockRequireStudentRequestClaims,
 }));
 
 vi.mock('@/lib/convex/server', () => ({
@@ -94,6 +96,19 @@ describe('POST /api/phases/complete', () => {
       iat: 1,
       exp: 2,
     });
+    mockRequireStudentRequestClaims.mockImplementation(async () => {
+      const claims = await mockGetRequestSessionClaims();
+      if (!claims) {
+        return Response.json(
+          { error: 'Unauthorized. Please sign in to complete phases.' },
+          { status: 401 },
+        );
+      }
+      if (claims.role !== 'student') {
+        return Response.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      return claims;
+    });
 
     setupDefaultQueryMocks();
 
@@ -133,6 +148,24 @@ describe('POST /api/phases/complete', () => {
     expect(response.status).toBe(403);
     const body = await response.json();
     expect(body.error).toMatch(/cannot complete this phase/i);
+  });
+
+  it('returns 403 when a teacher session attempts to complete a student phase', async () => {
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'profile_teacher',
+      username: 'teacher',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
+
+    const response = await POST(buildRequest(validPayload));
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toMatchObject({ error: 'Forbidden' });
+    expect(mockFetchQuery).not.toHaveBeenCalled();
+    expect(mockFetchInternalQuery).not.toHaveBeenCalled();
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
   });
 
   it('returns 404 when lesson cannot be resolved', async () => {

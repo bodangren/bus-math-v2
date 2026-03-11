@@ -124,4 +124,54 @@ describe('lib/auth/server role guards', () => {
       'NEXT_REDIRECT:/admin/dashboard',
     );
   });
+
+  it('returns a 403 response for non-student request claims on student-write APIs', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'profile_1',
+      username: 'teacher_one',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
+
+    const { requireStudentRequestClaims } = await loadModule();
+
+    const result = await requireStudentRequestClaims(
+      new Request('http://localhost/api/phases/complete', {
+        headers: {
+          cookie: 'busmath_session=signed-token',
+        },
+      }),
+    );
+
+    expect(result).toBeInstanceOf(Response);
+    const response = result as Response;
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toMatchObject({ error: 'Forbidden' });
+  });
+
+  it('returns claims for student request sessions on student-write APIs', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'profile_3',
+      username: 'student_one',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
+    const { requireStudentRequestClaims } = await loadModule();
+
+    await expect(
+      requireStudentRequestClaims(
+        new Request('http://localhost/api/phases/complete', {
+          headers: {
+            cookie: 'busmath_session=signed-token',
+          },
+        }),
+      ),
+    ).resolves.toMatchObject({
+      sub: 'profile_3',
+      role: 'student',
+    });
+  });
 });

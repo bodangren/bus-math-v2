@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { calculateScore } from '@/lib/assessments/scoring';
-import { getRequestSessionClaims } from '@/lib/auth/server';
+import { requireStudentRequestClaims } from '@/lib/auth/server';
 import { submissionDataSchema } from '@/lib/db/schema/activity-submissions';
 import { selectActivitySchema } from '@/lib/db/schema/validators';
 import { fetchInternalQuery, fetchInternalMutation, internal } from '@/lib/convex/server';
@@ -30,9 +30,9 @@ function buildBadRequest(details: Record<string, unknown> | string) {
 
 export async function POST(request: Request) {
   try {
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
 
     let payload: RequestPayload;
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
       metadata: payload.metadata,
     });
 
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
 
     await fetchInternalMutation(internal.activities.submitAssessment, {
       userId: userId as never,

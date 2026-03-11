@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getRequestSessionClaims } from '@/lib/auth/server';
+import { requireStudentRequestClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, fetchInternalMutation, fetchQuery, api, internal } from '@/lib/convex/server';
 import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
@@ -19,15 +19,15 @@ type CompletePhasePayload = z.infer<typeof CompletePhaseSchema> & CompletePhaseR
 
 export async function POST(request: Request) {
   try {
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Please sign in to complete phases.' },
-        { status: 401 }
-      );
+    const claimsOrResponse = await requireStudentRequestClaims(
+      request,
+      'Unauthorized. Please sign in to complete phases.',
+    );
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
 
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
 
     const body = await request.json();
     const validationResult = CompletePhaseSchema.safeParse(body);

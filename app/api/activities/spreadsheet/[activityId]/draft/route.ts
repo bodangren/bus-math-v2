@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getRequestSessionClaims } from '@/lib/auth/server';
+import { requireStudentRequestClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, fetchInternalMutation, internal } from '@/lib/convex/server';
 
 const draftSchema = z.object({
@@ -21,12 +21,12 @@ export async function GET(
       );
     }
 
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
 
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
 
     const response = await fetchInternalQuery(internal.activities.getSpreadsheetDraft, {
       userId: userId as never,
@@ -66,12 +66,12 @@ export async function POST(
       );
     }
 
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
 
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
 
     let payload: z.infer<typeof draftSchema>;
     try {

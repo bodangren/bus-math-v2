@@ -10,11 +10,11 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 | --- | --- | --- | --- | --- |
 | `/api/activities/[activityId]` | `GET` | Public via proxy, no auth in handler, raw activity payload | Private, auth required, student-safe payload redaction | `student`, `teacher`, `admin` |
 | `/api/activities/complete` | `POST` | Deprecated compatibility shim forwarding to `/api/phases/complete` | Private while shim exists; migrate runtime clients to `/api/phases/complete` | `student`, `teacher`, `admin` |
-| `/api/activities/spreadsheet/[activityId]/draft` | `GET`, `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
-| `/api/activities/spreadsheet/[activityId]/submit` | `GET`, `POST` | Auth checked in handler; `GET` supports read-only replay with teacher/admin org-scoped student access | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
+| `/api/activities/spreadsheet/[activityId]/draft` | `GET`, `POST` | Auth checked in handler | Private, student-only draft ownership enforcement | `student` |
+| `/api/activities/spreadsheet/[activityId]/submit` | `GET`, `POST` | Auth checked in handler; `GET` supports read-only replay with teacher/admin org-scoped student access | Private; `POST` is student-only, `GET` keeps teacher/admin replay access | `student` for `POST`; `student`, `teacher`, `admin` for `GET` |
 | `/api/lessons/[lessonId]/progress` | `GET` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
-| `/api/phases/complete` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
-| `/api/progress/assessment` | `POST` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
+| `/api/phases/complete` | `POST` | Auth checked in handler | Private, student-only learner progress mutation | `student` |
+| `/api/progress/assessment` | `POST` | Auth checked in handler | Private, student-only assessment submission | `student` |
 | `/api/progress/phase` | `POST` | Deprecated endpoint (`410 Gone`) | Do not use in runtime UI; migrate clients to `/api/phases/complete` | `n/a` |
 | `/api/users/ensure-demo` | `POST` | Public demo bootstrap endpoint | Public only for local/preview demo provisioning; explicit `403` in production-style environments | `public` (env-gated) |
 | `/api/users/create-student` | `POST` | Auth session required in handler, role enforced downstream | Private, explicit teacher/admin requirement maintained | `teacher`, `admin` |
@@ -46,6 +46,7 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 ## Route-Level Security Checklist
 - Validate request auth state at route entry (`401` on missing/invalid session).
 - Enforce role checks where behavior differs by role (`403` on disallowed role).
+- Prefer shared request guards such as `requireStudentRequestClaims(...)` for student-owned mutation routes so preview/read-only roles cannot drift into write access.
 - Redact sensitive response fields before returning student-visible payloads.
 - Keep service-role credentials out of browser/runtime-exposed code paths.
 - Gate all debug/test routes with both environment checks and optional secret token checks.

@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { NextResponse } from 'next/server';
 
 import { SESSION_COOKIE_NAME, getAuthJwtSecret } from '@/lib/auth/constants';
 import { SessionClaims, verifySessionToken } from '@/lib/auth/session';
@@ -43,6 +44,49 @@ export async function getRequestSessionClaims(request: Request): Promise<Session
   if (!token) return null;
 
   return verifySessionToken(token, getAuthJwtSecret());
+}
+
+function buildRequestUnauthorizedResponse(message = 'Unauthorized') {
+  return NextResponse.json({ error: message }, { status: 401 });
+}
+
+function buildRequestForbiddenResponse(message = 'Forbidden') {
+  return NextResponse.json({ error: message }, { status: 403 });
+}
+
+/**
+ * Requires an authenticated request session and returns a JSON 401 response when absent.
+ */
+export async function requireRequestSessionClaims(
+  request: Request,
+  unauthorizedMessage = 'Unauthorized',
+): Promise<SessionClaims | Response> {
+  const claims = await getRequestSessionClaims(request);
+  if (!claims) {
+    return buildRequestUnauthorizedResponse(unauthorizedMessage);
+  }
+
+  return claims;
+}
+
+/**
+ * Requires a student request session for APIs that mutate learner-owned data.
+ */
+export async function requireStudentRequestClaims(
+  request: Request,
+  unauthorizedMessage = 'Unauthorized',
+  forbiddenMessage = 'Forbidden',
+): Promise<SessionClaims | Response> {
+  const claimsOrResponse = await requireRequestSessionClaims(request, unauthorizedMessage);
+  if (claimsOrResponse instanceof Response) {
+    return claimsOrResponse;
+  }
+
+  if (claimsOrResponse.role !== 'student') {
+    return buildRequestForbiddenResponse(forbiddenMessage);
+  }
+
+  return claimsOrResponse;
 }
 
 function buildLoginRedirect(loginRedirectPath: string): string {
