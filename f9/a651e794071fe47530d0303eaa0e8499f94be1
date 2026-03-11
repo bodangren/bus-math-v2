@@ -1,0 +1,4 @@
+Track: lesson_phase_objective_shell_20260311
+Summary: Added canonical curriculum phase-guidance metadata and a student-facing phase guidance card, then refactored LessonRenderer onto the shared PhaseRenderer path while preserving activity completion refresh behavior.
+Files: README.md, components/student/LessonRenderer.tsx, components/student/PhaseGuidanceCard.tsx, components/lesson/PhaseRenderer.tsx, lib/curriculum/phase-guidance.ts, __tests__/components/student/LessonRenderer.test.tsx, __tests__/components/student/PhaseGuidanceCard.test.tsx, __tests__/lib/curriculum/phase-guidance.test.ts, conductor/lessons-learned.md, conductor/tracks.md, conductor/tracks/lesson_phase_objective_shell_20260311/{index.md,metadata.json,plan.md,spec.md}
+Why: Student lesson phases needed curriculum-aligned guidance and a shared rendering path so lesson pedagogy and phase content presentation do not drift separately.
