@@ -17,6 +17,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Shared Dashboard Recommendation Cards**: Student and teacher progress surfaces now reuse one next-lesson card and shared unit-status presentation helpers to keep resume/start guidance aligned
 - **Shared Published Progress View-Models**: Student dashboard units, teacher student-detail progress rows, and lesson phase-status responses now derive from the same published-progress helpers so progress math and locking rules stay aligned
 - **Canonical Activity Component Catalog**: Activity rendering and validation now resolve documented aliases such as `spreadsheet-activity` and `journal-entry-activity` through one canonical runtime contract, reducing curriculum authoring drift
+- **Objective-Aware Lesson Phase Shell**: Student lesson phases now show curriculum-aligned phase guidance and success criteria while reusing the shared phase content renderer
 - **Deterministic Simulation Runtime IDs**: Inventory simulation notifications and market events now keep stable unique ids during rapid updates, preventing duplicate-key rendering regressions
 - **Account Settings & Self-Service Password Changes**: Authenticated users can review account context and update their own password without leaving the session
 - **Multi-tenant Architecture**: Organization-based access control

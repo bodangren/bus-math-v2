@@ -1,0 +1,11 @@
+{
+  "track_id": "lesson_phase_objective_shell_20260311",
+  "type": "feature",
+  "status": "in_progress",
+  "created_at": "2026-03-11T08:34:26Z",
+  "updated_at": "2026-03-11T08:34:26Z",
+  "description": "Align student lesson phase rendering with curriculum phase objectives by adding a reusable phase guidance shell and objective-aware student presentation.",
+  "estimated_tasks": 7,
+  "actual_tasks": 7,
+  "deviation_notes": ""
+}

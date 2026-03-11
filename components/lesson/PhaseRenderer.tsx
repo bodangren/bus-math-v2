@@ -12,13 +12,21 @@ interface PhaseRendererProps {
   contentBlocks: ContentBlock[];
   lessonId: string;
   phaseNumber: number;
+  activityInitialStatus?: 'not_started' | 'in_progress' | 'completed' | 'current' | 'available' | 'locked';
+  onActivityStatusChange?: () => void;
 }
 
 /**
  * PhaseRenderer iterates over phase.contentBlocks and renders each block
  * according to its type using discriminated union pattern.
  */
-export function PhaseRenderer({ contentBlocks, lessonId, phaseNumber }: PhaseRendererProps) {
+export function PhaseRenderer({
+  contentBlocks,
+  lessonId,
+  phaseNumber,
+  activityInitialStatus,
+  onActivityStatusChange,
+}: PhaseRendererProps) {
   // Validate content blocks with Zod
   const validatedBlocks = contentBlocks.map((block, index) => {
     try {
@@ -41,7 +49,13 @@ export function PhaseRenderer({ contentBlocks, lessonId, phaseNumber }: PhaseRen
     <div className="space-y-4">
       {validatedBlocks.map((block) => (
         <ContentBlockErrorBoundary key={block.id}>
-          <ContentBlockRenderer block={block} lessonId={lessonId} phaseNumber={phaseNumber} />
+          <ContentBlockRenderer
+            block={block}
+            lessonId={lessonId}
+            phaseNumber={phaseNumber}
+            activityInitialStatus={activityInitialStatus}
+            onActivityStatusChange={onActivityStatusChange}
+          />
         </ContentBlockErrorBoundary>
       ))}
     </div>
@@ -54,11 +68,15 @@ export function PhaseRenderer({ contentBlocks, lessonId, phaseNumber }: PhaseRen
 function ContentBlockRenderer({
   block,
   lessonId,
-  phaseNumber
+  phaseNumber,
+  activityInitialStatus,
+  onActivityStatusChange,
 }: {
   block: ContentBlock;
   lessonId: string;
   phaseNumber: number;
+  activityInitialStatus?: 'not_started' | 'in_progress' | 'completed' | 'current' | 'available' | 'locked';
+  onActivityStatusChange?: () => void;
 }) {
   switch (block.type) {
     case 'markdown':
@@ -105,6 +123,8 @@ function ContentBlockRenderer({
           lessonId={lessonId}
           phaseNumber={phaseNumber}
           required={block.required}
+          initialStatus={activityInitialStatus}
+          onStatusChange={onActivityStatusChange}
           linkedStandardId={block.linkedStandardId}
         />
       );

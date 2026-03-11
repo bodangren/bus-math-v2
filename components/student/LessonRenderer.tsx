@@ -4,11 +4,13 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { LessonStepper, type StepperPhase } from '@/components/lesson/LessonStepper';
+import { PhaseRenderer } from '@/components/lesson/PhaseRenderer';
+import { PhaseGuidanceCard } from '@/components/student/PhaseGuidanceCard';
 import { usePhaseProgress } from '@/hooks/usePhaseProgress';
 import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import { Button } from '@/components/ui/button';
+import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
 import { cn } from '@/lib/utils';
-import { ActivityRenderer } from '@/components/lesson/ActivityRenderer';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
 interface Phase {
@@ -38,6 +40,18 @@ interface LessonRendererProps {
   lessonSlug: string;
 }
 
+function buildFallbackPhaseGuidance(phase: Phase, lesson: Lesson): PhaseGuidance {
+  return {
+    lessonType: 'accounting',
+    phaseNumber: phase.phaseNumber,
+    phaseLabel: phase.title,
+    goal: `Work through ${phase.title.toLowerCase()} in a way that advances the lesson objective.`,
+    successCriteria: lesson.learningObjectives?.length
+      ? [`Connect your work in this phase to at least one lesson objective.`]
+      : ['Complete the current phase and be ready to explain your thinking.'],
+  };
+}
+
 /**
  * Renders a single phase of a lesson with navigation
  * Integrates LessonStepper and enforces phase locking on the client side
@@ -59,6 +73,11 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
   // Get current phase completion status (safe with optional chaining when phase is absent)
   const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase?.id);
   const isCurrentPhaseCompleted = currentPhaseProgress?.status === 'completed';
+  const phaseGuidance =
+    currentPhase
+      ? getLessonPhaseGuidance(lesson.orderIndex, currentPhase.phaseNumber) ??
+        buildFallbackPhaseGuidance(currentPhase, lesson)
+      : null;
 
   // Hooks must be called unconditionally — placed before any early return.
   const { completePhase: autoMarkComplete, isCompleting: isAutoCompleting } = usePhaseCompletion({
@@ -186,51 +205,20 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
               )}
             </div>
 
-            {/* Content Blocks - Basic rendering */}
             <div className="space-y-4">
-              {(currentPhase.contentBlocks ?? []).map((block) => (
-                <div key={block.id}>
-                  {block.type === 'markdown' && (
-                    <div className="prose prose-sm max-w-none">
-                      {block.content}
-                    </div>
-                  )}
-                  {block.type === 'callout' && (
-                    <div className="border-l-4 border-primary pl-4 py-2 bg-muted/50">
-                      <div className="font-semibold capitalize mb-1">
-                        {block.variant.replace(/-/g, ' ')}
-                      </div>
-                      <div className="text-sm">{block.content}</div>
-                    </div>
-                  )}
-                  {block.type === 'video' && (
-                    <div className="border rounded p-4 bg-muted/50">
-                      <div className="font-semibold mb-2">Video</div>
-                      <div className="text-sm text-muted-foreground">
-                        {block.props.videoUrl}
-                      </div>
-                    </div>
-                  )}
-                  {block.type === 'image' && (
-                    <div className="border rounded p-4">
-                      <div className="font-semibold mb-2">Image</div>
-                      <div className="text-sm text-muted-foreground">
-                        {block.props.alt}
-                      </div>
-                    </div>
-                  )}
-                  {block.type === 'activity' && (
-                    <ActivityRenderer
-                      activityId={block.activityId}
-                      lessonId={lesson.slug}
-                      phaseNumber={currentPhase.phaseNumber}
-                      required={block.required}
-                      initialStatus={currentPhaseProgress?.status}
-                      onStatusChange={() => refetch()}
-                    />
-                  )}
-                </div>
-              ))}
+              {phaseGuidance ? (
+                <PhaseGuidanceCard
+                  guidance={phaseGuidance}
+                  learningObjectives={lesson.learningObjectives}
+                />
+              ) : null}
+              <PhaseRenderer
+                contentBlocks={currentPhase.contentBlocks ?? []}
+                lessonId={lesson.slug}
+                phaseNumber={currentPhase.phaseNumber}
+                activityInitialStatus={currentPhaseProgress?.status}
+                onActivityStatusChange={() => refetch()}
+              />
             </div>
 
             <div className="mt-6 flex justify-end">

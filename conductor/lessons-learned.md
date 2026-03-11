@@ -14,6 +14,7 @@
 - (2026-03-11, activity_component_contract_refactor_20260311) Activity contracts drift quickly when alias handling lives separately from the runtime registry and schema validators; documented curriculum keys need one canonical resolver.
 - (2026-03-11, published_progress_viewmodel_consolidation_20260311) Student dashboard rows, teacher student-detail rows, and lesson phase-status payloads should derive from the same published-progress helpers or published-version/locking fixes will diverge again.
 - (2026-03-11, student_lesson_access_boundary_cleanup_20260311) Student-owned API writes need an explicit request-level student guard even when teacher/admin lesson preview is intentionally allowed elsewhere; auth presence alone is not a safe mutation boundary.
+- (2026-03-11, lesson_phase_objective_shell_20260311) Student lesson pages should derive phase guidance from curriculum lesson-type metadata and reuse the shared `PhaseRenderer`, or pedagogy copy and content rendering drift separately.
 
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->

@@ -6,6 +6,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Active Execution Queue (progressive order)
 
+- [~] **Track: Lesson Phase Objective Shell**
+  *Link: [./conductor/tracks/lesson_phase_objective_shell_20260311/](./conductor/tracks/lesson_phase_objective_shell_20260311/)*
+  *Goal: align the student lesson phase shell with curriculum phase objectives by rendering reusable phase guidance and shared block rendering.*
+
 ## Upcoming / Unplanned
 
 1. Convex Auth Runtime Verification & Closeout

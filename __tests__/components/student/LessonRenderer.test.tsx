@@ -45,6 +45,22 @@ vi.mock('@/components/lesson/ActivityRenderer', () => ({
   ),
 }));
 
+vi.mock('@/components/lesson/PhaseRenderer', () => ({
+  PhaseRenderer: ({
+    contentBlocks,
+    lessonId,
+    phaseNumber,
+  }: {
+    contentBlocks: ContentBlock[];
+    lessonId: string;
+    phaseNumber: number;
+  }) => (
+    <div data-testid="phase-renderer">
+      Shared renderer for {lessonId} phase {phaseNumber} with {contentBlocks.length} blocks
+    </div>
+  ),
+}));
+
 describe('LessonRenderer', () => {
   const mockLesson = {
     id: '123',
@@ -100,9 +116,9 @@ describe('LessonRenderer', () => {
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
     expect(screen.getByText('Learning Objectives')).toBeInTheDocument();
-    expect(screen.getByText('Understand balance sheets')).toBeInTheDocument();
-    expect(screen.getByText('Read income statements')).toBeInTheDocument();
-    expect(screen.getByText('Analyze cash flow statements')).toBeInTheDocument();
+    expect(screen.getAllByText('Understand balance sheets').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Read income statements').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Analyze cash flow statements').length).toBeGreaterThan(0);
   });
 
   it('renders empty state when no phases', () => {
@@ -159,7 +175,9 @@ describe('LessonRenderer', () => {
 
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.getByText('This is markdown content')).toBeInTheDocument();
+    expect(screen.getByTestId('phase-renderer')).toHaveTextContent(
+      'Shared renderer for intro-to-financial-statements phase 1 with 1 blocks',
+    );
   });
 
   it('renders callout content blocks', () => {
@@ -183,8 +201,9 @@ describe('LessonRenderer', () => {
 
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.getByText('why this matters')).toBeInTheDocument();
-    expect(screen.getByText('This is important information')).toBeInTheDocument();
+    expect(screen.getByTestId('phase-renderer')).toHaveTextContent(
+      'Shared renderer for intro-to-financial-statements phase 1 with 1 blocks',
+    );
   });
 
   it('renders video content blocks', () => {
@@ -210,8 +229,9 @@ describe('LessonRenderer', () => {
 
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.getByText('Video')).toBeInTheDocument();
-    expect(screen.getByText('https://example.com/video.mp4')).toBeInTheDocument();
+    expect(screen.getByTestId('phase-renderer')).toHaveTextContent(
+      'Shared renderer for intro-to-financial-statements phase 1 with 1 blocks',
+    );
   });
 
   it('renders image content blocks', () => {
@@ -237,8 +257,9 @@ describe('LessonRenderer', () => {
 
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.getByText('Image')).toBeInTheDocument();
-    expect(screen.getByText('Example diagram')).toBeInTheDocument();
+    expect(screen.getByTestId('phase-renderer')).toHaveTextContent(
+      'Shared renderer for intro-to-financial-statements phase 1 with 1 blocks',
+    );
   });
 
   it('renders activity content blocks', () => {
@@ -262,9 +283,41 @@ describe('LessonRenderer', () => {
 
     render(<LessonRenderer lesson={mockLesson} phases={mockPhases} {...defaultProps} />);
 
-    expect(screen.getByTestId('activity-renderer')).toHaveTextContent(
-      /activity renderer for activity-123 \(required\)/i,
+    expect(screen.getByTestId('phase-renderer')).toHaveTextContent(
+      'Shared renderer for intro-to-financial-statements phase 1 with 1 blocks',
     );
+  });
+
+  it('renders a phase guidance shell for the current lesson phase', () => {
+    const mockPhases = [
+      {
+        id: 'phase-2',
+        phaseNumber: 2,
+        title: 'Concept Intro',
+        contentBlocks: [
+          {
+            id: 'block-1',
+            type: 'markdown' as const,
+            content: 'Work through the accounting logic.',
+          },
+        ],
+        estimatedMinutes: 20,
+        metadata: { phaseType: 'example' as const },
+      },
+    ];
+
+    render(
+      <LessonRenderer
+        lesson={mockLesson}
+        phases={mockPhases}
+        currentPhaseNumber={2}
+        lessonSlug="intro-to-financial-statements"
+      />,
+    );
+
+    expect(screen.getByText('Phase Focus')).toBeInTheDocument();
+    expect(screen.getByText(/explicit a\/l\/e reasoning/i)).toBeInTheDocument();
+    expect(screen.getByText('This phase advances these lesson objectives')).toBeInTheDocument();
   });
 
   it('renders lesson without description', () => {
