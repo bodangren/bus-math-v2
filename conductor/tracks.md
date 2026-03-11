@@ -32,6 +32,10 @@ This file is the source of truth for active execution order and archived track h
 
 ## Archive Ledger
 
+- [x] **Track: Published Progress View-Model Consolidation**
+  *Link: [./conductor/archive/published_progress_viewmodel_consolidation_20260311/](./conductor/archive/published_progress_viewmodel_consolidation_20260311/)*
+  *Checkpoint: `pending` (2026-03-11 closeout)*
+
 - [x] **Track: Activity Component Contract Refactor**
   *Link: [./conductor/archive/activity_component_contract_refactor_20260311/](./conductor/archive/activity_component_contract_refactor_20260311/)*
   *Checkpoint: `pending` (2026-03-11 closeout)*

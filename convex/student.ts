@@ -1,33 +1,12 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
-import { coerceNullableString, getOrCreateMapEntry } from "./dashboardHelpers";
+import { coerceNullableString } from "./dashboardHelpers";
 import {
-  buildLatestPublishedLessonVersionMap,
-  buildPublishedLessonPhaseIdsByLessonId,
+  buildLessonPhaseProgress,
+  buildPublishedUnitProgressRows,
   resolveLatestPublishedLessonVersion,
 } from "../lib/progress/published-curriculum";
-
-interface LessonVersionSnapshot {
-  _id: Id<"lesson_versions">;
-  title?: string | null;
-  description?: string | null;
-}
-
-interface StudentDashboardUnitRow {
-  unitNumber: number;
-  unitTitle: string;
-  lessons: Array<{
-    id: Id<"lessons">;
-    unitNumber: number;
-    title: string;
-    slug: string;
-    description: string | null;
-    totalPhases: number;
-    completedPhases: number;
-    progressPercentage: number;
-  }>;
-}
 
 export const getDashboardData = internalQuery({
   args: { userId: v.id("profiles") },
@@ -42,62 +21,22 @@ export const getDashboardData = internalQuery({
 
     if (allLessons.length === 0) return [];
 
-    const lessonIds = allLessons.map((l) => l._id);
-
-    // 2. Fetch student progress
+    const lessonVersions = await ctx.db.query("lesson_versions").collect();
+    const phaseVersions = await ctx.db.query("phase_versions").collect();
     const userProgress = await ctx.db
       .query("student_progress")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .filter((q) => q.eq(q.field("status"), "completed"))
       .collect();
-      
-    const completedPhaseIds = new Set(userProgress.map((entry) => entry.phaseId));
 
-    // 3. Fetch latest published versions and their phases for each lesson
-    const lessonVersions = await ctx.db.query("lesson_versions").collect();
-    const latestVersionByLessonId = buildLatestPublishedLessonVersionMap(
-      lessonVersions,
-      lessonIds,
-    ) as Map<Id<"lessons">, LessonVersionSnapshot>;
-
-    const phaseVersions = await ctx.db.query("phase_versions").collect();
-    const versionedPhaseIdsByLessonId = buildPublishedLessonPhaseIdsByLessonId({
-      lessonIds,
+    return buildPublishedUnitProgressRows({
+      lessons: allLessons.map((lesson) => ({
+        ...lesson,
+        description: coerceNullableString(lesson.description),
+      })),
       lessonVersions,
       phaseVersions,
-    }) as Map<Id<"lessons">, Id<"phase_versions">[]>;
-
-    // 5. Assemble the final data structure
-    const unitsMap = new Map<number, StudentDashboardUnitRow>();
-    for (const lesson of allLessons) {
-      const versionedInfo = latestVersionByLessonId.get(lesson._id);
-      const effectiveTitle = versionedInfo?.title ?? lesson.title;
-      const effectiveDesc = coerceNullableString(versionedInfo?.description ?? lesson.description);
-
-      const phaseIds = versionedPhaseIdsByLessonId.get(lesson._id) ?? [];
-      const totalPhases = phaseIds.length;
-      const completedPhases = phaseIds.filter((id) => completedPhaseIds.has(id)).length;
-      const progressPercentage = totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
-
-      const unit = getOrCreateMapEntry(unitsMap, lesson.unitNumber, () => ({
-          unitNumber: lesson.unitNumber,
-          unitTitle: lesson.metadata?.unitContent?.introduction?.unitTitle ?? `Unit ${lesson.unitNumber}`,
-          lessons: [],
-        }));
-
-      unit.lessons.push({
-        id: lesson._id,
-        unitNumber: lesson.unitNumber,
-        title: effectiveTitle,
-        slug: lesson.slug,
-        description: effectiveDesc,
-        totalPhases,
-        completedPhases,
-        progressPercentage,
-      });
-    }
-
-    return Array.from(unitsMap.values()).sort((a, b) => a.unitNumber - b.unitNumber);
+      progressRows: userProgress,
+    });
   },
 });
 
@@ -140,49 +79,18 @@ export const getLessonProgress = internalQuery({
       .withIndex("by_lesson_version", (q) => q.eq("lessonVersionId", latestVersion._id))
       .collect();
     
-    phases.sort((a, b) => a.phaseNumber - b.phaseNumber);
-
     // 4. Get student progress
     const userProgress = await ctx.db
       .query("student_progress")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect();
-    
-    const progressByPhaseId = new Map(userProgress.map(p => [p.phaseId, p]));
 
-    // 5. Calculate statuses
-    const phaseProgress = [];
-    for (let i = 0; i < phases.length; i++) {
-      const phase = phases[i];
-      const progress = progressByPhaseId.get(phase._id);
-      
-      let status: "completed" | "current" | "available" | "locked" = "locked";
-      
-      if (progress?.status === "completed") {
-        status = "completed";
-      } else if (progress?.status === "in_progress") {
-        status = "current";
-      } else if (i === 0) {
-        status = "available";
-      } else {
-        const prevPhaseId = phases[i-1]._id;
-        const prevProgress = progressByPhaseId.get(prevPhaseId);
-        if (prevProgress?.status === "completed") {
-          status = "available";
-        }
-      }
-
-      phaseProgress.push({
-        phaseNumber: phase.phaseNumber,
-        phaseId: phase._id,
-        status,
-        startedAt: progress?.startedAt ? new Date(progress.startedAt).toISOString() : null,
-        completedAt: progress?.completedAt ? new Date(progress.completedAt).toISOString() : null,
-        timeSpentSeconds: progress?.timeSpentSeconds ?? null,
-      });
-    }
-
-    return { phases: phaseProgress };
+    return {
+      phases: buildLessonPhaseProgress({
+        phases,
+        progressRows: userProgress,
+      }),
+    };
   }
 });
 

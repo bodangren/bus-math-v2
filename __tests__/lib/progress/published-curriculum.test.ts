@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  buildLessonPhaseProgress,
   buildLatestPublishedLessonVersionMap,
   buildPublishedLessonPhaseIdsByLessonId,
   buildPublishedProgressSnapshot,
+  buildPublishedUnitProgressRows,
   resolveLatestPublishedLessonVersion,
 } from "@/lib/progress/published-curriculum";
 
@@ -120,5 +122,141 @@ describe("published curriculum helpers", () => {
       progressPercentage: 50,
       lastActive: "2026-03-10T11:00:00.000Z",
     });
+  });
+
+  it("builds shared published unit progress rows with versioned lesson details and completed-phase math", () => {
+    const rows = buildPublishedUnitProgressRows({
+      lessons: [
+        {
+          _id: "lesson-1",
+          unitNumber: 1,
+          orderIndex: 2,
+          title: "Fallback Title",
+          slug: "lesson-1",
+          description: "Fallback description",
+          metadata: {},
+        },
+        {
+          _id: "lesson-2",
+          unitNumber: 1,
+          orderIndex: 1,
+          title: "Earlier Lesson",
+          slug: "lesson-2",
+          description: null,
+          metadata: {
+            unitContent: {
+              introduction: {
+                unitTitle: "Operations Foundations",
+              },
+            },
+          },
+        },
+      ],
+      lessonVersions: [
+        { _id: "version-draft", lessonId: "lesson-1", version: 3, status: "draft", title: "Draft", description: "Draft desc" },
+        { _id: "version-published", lessonId: "lesson-1", version: 2, status: "published", title: "Published Title", description: "Published description" },
+        { _id: "version-lesson-2", lessonId: "lesson-2", version: 1, status: "published", title: "Earlier Lesson Published", description: null },
+      ],
+      phaseVersions: [
+        { _id: "phase-1", lessonVersionId: "version-published" },
+        { _id: "phase-2", lessonVersionId: "version-published" },
+        { _id: "phase-draft", lessonVersionId: "version-draft" },
+        { _id: "phase-3", lessonVersionId: "version-lesson-2" },
+      ],
+      progressRows: [
+        { phaseId: "phase-1", status: "completed" },
+        { phaseId: "phase-draft", status: "completed" },
+      ],
+    });
+
+    expect(rows).toEqual([
+      {
+        unitNumber: 1,
+        unitTitle: "Operations Foundations",
+        lessons: [
+          {
+            id: "lesson-2",
+            unitNumber: 1,
+            title: "Earlier Lesson Published",
+            slug: "lesson-2",
+            description: null,
+            totalPhases: 1,
+            completedPhases: 0,
+            progressPercentage: 0,
+          },
+          {
+            id: "lesson-1",
+            unitNumber: 1,
+            title: "Published Title",
+            slug: "lesson-1",
+            description: "Published description",
+            totalPhases: 2,
+            completedPhases: 1,
+            progressPercentage: 50,
+          },
+        ],
+      },
+    ]);
+  });
+
+  it("builds ordered lesson phase progress with current and locked transitions from student progress", () => {
+    const phases = buildLessonPhaseProgress({
+      phases: [
+        { _id: "phase-1", phaseNumber: 1 },
+        { _id: "phase-2", phaseNumber: 2 },
+        { _id: "phase-3", phaseNumber: 3 },
+        { _id: "phase-4", phaseNumber: 4 },
+      ],
+      progressRows: [
+        {
+          phaseId: "phase-1",
+          status: "completed",
+          startedAt: Date.parse("2026-03-10T08:00:00.000Z"),
+          completedAt: Date.parse("2026-03-10T08:10:00.000Z"),
+          timeSpentSeconds: 600,
+        },
+        {
+          phaseId: "phase-2",
+          status: "in_progress",
+          startedAt: Date.parse("2026-03-10T08:11:00.000Z"),
+          timeSpentSeconds: 120,
+        },
+      ],
+    });
+
+    expect(phases).toEqual([
+      {
+        phaseNumber: 1,
+        phaseId: "phase-1",
+        status: "completed",
+        startedAt: "2026-03-10T08:00:00.000Z",
+        completedAt: "2026-03-10T08:10:00.000Z",
+        timeSpentSeconds: 600,
+      },
+      {
+        phaseNumber: 2,
+        phaseId: "phase-2",
+        status: "current",
+        startedAt: "2026-03-10T08:11:00.000Z",
+        completedAt: null,
+        timeSpentSeconds: 120,
+      },
+      {
+        phaseNumber: 3,
+        phaseId: "phase-3",
+        status: "locked",
+        startedAt: null,
+        completedAt: null,
+        timeSpentSeconds: null,
+      },
+      {
+        phaseNumber: 4,
+        phaseId: "phase-4",
+        status: "locked",
+        startedAt: null,
+        completedAt: null,
+        timeSpentSeconds: null,
+      },
+    ]);
   });
 });

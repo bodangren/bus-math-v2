@@ -12,6 +12,7 @@
 - (2026-03-10, teacher_student_detail_analytics_20260310) Teacher-facing intervention pages can safely reuse student dashboard progression math when the Convex query returns published lesson progress as a unit/lesson tree.
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Student-facing dashboard routes need an explicit student-role server guard even when lesson pages intentionally allow teacher/admin preview bypasses.
 - (2026-03-11, activity_component_contract_refactor_20260311) Activity contracts drift quickly when alias handling lives separately from the runtime registry and schema validators; documented curriculum keys need one canonical resolver.
+- (2026-03-11, published_progress_viewmodel_consolidation_20260311) Student dashboard rows, teacher student-detail rows, and lesson phase-status payloads should derive from the same published-progress helpers or published-version/locking fixes will diverge again.
 
 ### Recurring Gotchas
 <!-- Problems encountered repeatedly; save future tracks from the same pain -->
@@ -22,6 +23,7 @@
 - (2026-03-10, security_surface_hardening_20260310) Environment-gated demo/bootstrap endpoints are still production attack surface; review proxy public-route allowlists alongside the route handler itself.
 - (2026-03-11, student_dashboard_boundary_refactor_20260311) Shared dashboard affordances such as next-lesson cards and unit-status badges drift quickly when student and teacher surfaces copy the same markup instead of reusing one presentation layer.
 - (2026-03-11, activity_component_contract_refactor_20260311) A plain union of activity prop schemas is not enough; if `componentKey` and `props` are validated independently, the app can silently accept the wrong props for a component.
+- (2026-03-11, published_progress_viewmodel_consolidation_20260311) Progress refactors should target shared helper outputs first; dashboard and lesson queries are thin adapters and are safer when they stop hand-assembling unit rows or phase states.
 
 ### Patterns That Worked Well
 <!-- Approaches worth repeating -->

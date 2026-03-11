@@ -4,9 +4,9 @@ import { assembleCourseOverviewRows } from "../lib/teacher/course-overview";
 import { assembleGradebookRows } from "../lib/teacher/gradebook";
 import {
   buildLatestPublishedLessonVersionMap,
-  buildPublishedLessonPhaseIdsByLessonId,
   buildPublishedPhaseIdSet,
   buildPublishedProgressSnapshot,
+  buildPublishedUnitProgressRows,
   resolveLatestPublishedLessonVersion,
 } from "../lib/progress/published-curriculum";
 
@@ -133,69 +133,24 @@ async function listStudentDetailUnits(
   studentId: string,
 ): Promise<TeacherStudentDetailUnitRow[]> {
   const allLessons = await ctx.db.query("lessons").collect();
-  allLessons.sort((a, b) => a.unitNumber - b.unitNumber || a.orderIndex - b.orderIndex);
 
   if (allLessons.length === 0) {
     return [];
   }
 
-  const lessonIds = allLessons.map((lesson) => lesson._id);
   const lessonVersions = await ctx.db.query("lesson_versions").collect();
-  const latestVersionByLessonId = buildLatestPublishedLessonVersionMap(
-    lessonVersions,
-    lessonIds,
-  );
   const phaseVersions = await ctx.db.query("phase_versions").collect();
-  const phaseIdsByLessonId = buildPublishedLessonPhaseIdsByLessonId({
-    lessonIds,
-    lessonVersions,
-    phaseVersions,
-  });
   const progressRows = await ctx.db
     .query("student_progress")
     .withIndex("by_user", (q) => q.eq("userId", studentId as never))
-    .filter((q) => q.eq(q.field("status"), "completed"))
     .collect();
-  const completedPhaseIds = new Set(progressRows.map((row) => row.phaseId));
 
-  const units = new Map<number, TeacherStudentDetailUnitRow>();
-  for (const lesson of allLessons) {
-    const versionedLesson = latestVersionByLessonId.get(lesson._id);
-    const phaseIds = phaseIdsByLessonId.get(lesson._id) ?? [];
-    const totalPhases = phaseIds.length;
-    const completedPhases = phaseIds.filter((phaseId) =>
-      completedPhaseIds.has(phaseId),
-    ).length;
-    const progressPercentage =
-      totalPhases > 0 ? Math.round((completedPhases / totalPhases) * 100) : 0;
-    const unit = units.get(lesson.unitNumber) ?? {
-      unitNumber: lesson.unitNumber,
-      unitTitle:
-        lesson.metadata?.unitContent?.introduction?.unitTitle ??
-        `Unit ${lesson.unitNumber}`,
-      lessons: [],
-    };
-
-    unit.lessons.push({
-      id: lesson._id,
-      unitNumber: lesson.unitNumber,
-      title: versionedLesson?.title ?? lesson.title,
-      slug: lesson.slug,
-      description:
-        typeof versionedLesson?.description === "string"
-          ? versionedLesson.description
-          : typeof lesson.description === "string"
-            ? lesson.description
-            : null,
-      totalPhases,
-      completedPhases,
-      progressPercentage,
-    });
-
-    units.set(lesson.unitNumber, unit);
-  }
-
-  return [...units.values()].sort((a, b) => a.unitNumber - b.unitNumber);
+  return buildPublishedUnitProgressRows({
+    lessons: allLessons,
+    lessonVersions,
+    phaseVersions,
+    progressRows,
+  }) as TeacherStudentDetailUnitRow[];
 }
 
 export const getTeacherDashboardData = internalQuery({

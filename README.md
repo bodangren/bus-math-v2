@@ -14,6 +14,7 @@ An interactive, Convex-backed digital textbook for teaching business mathematics
 - **Convex-Backed Teacher Views**: Teacher dashboard, course gradebook, unit gradebook, and student detail pages now all read through internal Convex queries instead of legacy Drizzle runtime paths
 - **Shared Server Role Guards**: Teacher/admin App Router pages now use shared server-side claim guards, and the admin dashboard rejects non-admin sessions
 - **Shared Dashboard Recommendation Cards**: Student and teacher progress surfaces now reuse one next-lesson card and shared unit-status presentation helpers to keep resume/start guidance aligned
+- **Shared Published Progress View-Models**: Student dashboard units, teacher student-detail progress rows, and lesson phase-status responses now derive from the same published-progress helpers so progress math and locking rules stay aligned
 - **Canonical Activity Component Catalog**: Activity rendering and validation now resolve documented aliases such as `spreadsheet-activity` and `journal-entry-activity` through one canonical runtime contract, reducing curriculum authoring drift
 - **Deterministic Simulation Runtime IDs**: Inventory simulation notifications and market events now keep stable unique ids during rapid updates, preventing duplicate-key rendering regressions
 - **Account Settings & Self-Service Password Changes**: Authenticated users can review account context and update their own password without leaving the session
@@ -166,6 +167,7 @@ bus-math-v2/
 - `/student` now resolves to the guided student dashboard, and lesson resume links consistently target `/student/lesson/[lessonSlug]`.
 - Teacher-facing dashboard, gradebook, and student-detail routes now use internal Convex queries end to end, keeping classroom analytics on the same runtime data path as the rest of the app.
 - Progress-sensitive student and teacher flows now derive titles, descriptions, phases, and completion math from the latest published `lesson_versions` row for each lesson instead of draft or superseded versions.
+- Student dashboard unit rows, teacher student-detail unit rows, and lesson phase-status payloads now share one published-progress helper layer instead of maintaining separate inline aggregation logic in each Convex query.
 - Privileged or role-specific App Router pages should use the shared helpers in `lib/auth/server.ts` (`requireStudentSessionClaims`, `requireTeacherSessionClaims`, `requireAdminSessionClaims`) instead of ad hoc inline role checks so login and fallback redirects stay consistent.
 - Activity component validation and runtime rendering now share alias resolution for documented keys like `general-drag-and-drop`, `spreadsheet-activity`, `data-cleaning-activity`, and `journal-entry-activity`, so curriculum docs can stay human-readable without breaking the app contract.
 
