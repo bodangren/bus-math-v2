@@ -1,0 +1,28 @@
+Track: Student Write Boundary Hardening
+
+Summary:
+- Added shared request-level student guard helpers in lib/auth/server.ts.
+- Hardened phase completion, assessment submission, spreadsheet draft, and spreadsheet submission routes to reject teacher/admin sessions with 403 before learner-data mutations run.
+- Extended route and auth-boundary tests, updated README/security docs, and archived the completed Conductor track.
+
+Files:
+- lib/auth/server.ts
+- app/api/phases/complete/route.ts
+- app/api/progress/assessment/route.ts
+- app/api/activities/spreadsheet/[activityId]/draft/route.ts
+- app/api/activities/spreadsheet/[activityId]/submit/route.ts
+- __tests__/lib/auth/server.test.ts
+- __tests__/app/api/phases/complete/route.test.ts
+- __tests__/app/api/progress/assessment/route.test.ts
+- __tests__/app/api/activities/spreadsheet/[activityId]/draft/route.test.ts
+- __tests__/app/api/activities/spreadsheet/[activityId]/submit/route.test.ts
+- __tests__/config/convex-auth-boundary.test.ts
+- README.md
+- docs/security-api-route-matrix.md
+- conductor/lessons-learned.md
+- conductor/tech-debt.md
+- conductor/tracks.md
+- conductor/archive/student_lesson_access_boundary_cleanup_20260311/*
+
+Why:
+Teacher/admin preview access existed by design, but student-write APIs only checked for authenticated sessions. Centralizing the request guard closes that authorization gap and makes future route hardening easier to audit.
