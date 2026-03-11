@@ -1,0 +1,24 @@
+Task: Published Progress View-Model Consolidation
+
+Summary:
+- added shared published progress helpers for unit lesson rows and lesson phase statuses
+- refactored student and teacher Convex queries to consume the shared helper layer
+- added helper regression tests and archived the completed Conductor track
+- updated README and lessons learned with the new consolidation pattern
+
+Files:
+- README.md
+- __tests__/lib/progress/published-curriculum.test.ts
+- conductor/archive/published_progress_viewmodel_consolidation_20260311/index.md
+- conductor/archive/published_progress_viewmodel_consolidation_20260311/metadata.json
+- conductor/archive/published_progress_viewmodel_consolidation_20260311/plan.md
+- conductor/archive/published_progress_viewmodel_consolidation_20260311/spec.md
+- conductor/lessons-learned.md
+- conductor/tracks.md
+- convex/student.ts
+- convex/teacher.ts
+- lib/progress/published-curriculum.ts
+
+Why:
+- published curriculum fixes were still duplicated across student dashboard, teacher student detail, and lesson progress flows
+- centralizing the view-model assembly reduces drift risk when published-version or phase-locking rules change
