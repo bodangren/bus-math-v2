@@ -6,8 +6,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [x] **Track: Student Study Runtime**
-  *Link: [./tracks/student_study_runtime_20260313/](./tracks/student_study_runtime_20260313/)*
+No active track. Start the next queued track only after this archive commit is merged.
 
 ## Planned Queue
 
@@ -25,6 +24,10 @@ This file is the source of truth for active execution order. Archived tracks liv
    Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
+
+- [x] **Track: Student Study Runtime**
+  *Link: [./archive/student_study_runtime_20260313/](./archive/student_study_runtime_20260313/)*
+  *Closeout: archived on 2026-03-13 after finishing the student lesson resume/completion loop and aligning public curriculum copy with the protected student lesson route.*
 
 - [x] **Track: Curriculum Authoring-to-Publish Pipeline**
   *Link: [./archive/curriculum_authoring_publish_pipeline_20260313/](./archive/curriculum_authoring_publish_pipeline_20260313/)*
