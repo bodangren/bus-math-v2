@@ -1,109 +1,49 @@
 # Architecture Reference: Math for Business Operations v2
 
-This is the canonical architecture reference for the v2 system.
+## System Boundaries
 
-## Backend Architecture
+- **Browser**: student and teacher clients
+- **Cloudflare-hosted Vinext app**: routing, server rendering, session cookies, request guards, orchestration
+- **Convex**: source of truth for curriculum, publishing state, activity data, progress, submissions, and teacher monitoring queries
+- **Repository authoring layer**: curriculum docs, seeds, tests, and Conductor planning artifacts
 
-### Data Source of Truth
-- Supabase PostgreSQL is the source of truth for curriculum, progress, analytics, and auth-linked profile data.
-- Schema migrations live in `supabase/migrations/`.
-- Seed data lives in `supabase/seed/`.
+## Request Flow
 
-### Security and RLS Posture
-- Authentication is Supabase Auth with username/password flows.
-- Private routes are guarded through `lib/supabase/middleware.ts`.
-- Authorization is role-based (`student`, `teacher`, `admin`) and enforced by JWT claims plus table policies.
-- Service role keys are server-only (API routes/server actions/edge functions), never browser-exposed.
+1. A student or teacher hits a Vinext route on Cloudflare Workers.
+2. The app verifies the signed session cookie and role claims.
+3. The route calls Convex:
+   - public queries for public curriculum data
+   - internal queries and mutations for teacher/student-sensitive data
+4. The app renders or returns normalized payloads.
+5. The UI reflects the latest published curriculum and current progress state.
 
-### Data Access Patterns
-- App code primarily uses Supabase clients for auth/session-aware operations.
-- Drizzle is retained for query ergonomics and type-safe modeling where helpful, not as schema truth.
-- Edge functions handle privileged transactional operations (for example, teacher-managed account creation).
-- Curriculum quality enforcement runs in test-only validation suites over exported seed constants (`__tests__/curriculum/`) with no database dependency.
-- Algorithmic problem generation lives in `lib/curriculum/` (`problem-template`, `formula-evaluator`, `problem-generator`, `cell-validator`) and supports deterministic seeded retesting.
+## Curriculum Delivery Model
 
-### Schema Change Workflow (Supabase First)
-1. Create or update SQL in `supabase/migrations/` as the canonical schema change.
-2. Align Drizzle schema mappings in `lib/db/schema/` to mirror the SQL result for query/type safety.
-3. Run directional parity checks:
-   - `CI=true node scripts/check-migration-parity.mjs`
-   - `CI=true npm test -- __tests__/config/check-migration-parity-script.test.ts __tests__/config/drizzle-supabase-schema-parity.test.ts`
-4. Run project quality gates before merge:
-   - `npx tsc --noEmit`
-   - `npm run lint`
-   - relevant Vitest suites for changed domains
-5. Merge only when Supabase SQL and Drizzle query models are in parity.
+- Curriculum is authored in the repository and published to Convex.
+- Runtime lesson delivery always resolves against the latest **published** lesson version.
+- Lesson delivery is driven by lesson archetypes rather than one universal phase shell.
+- Phase, lesson, unit, and teacher dashboards all derive from shared published-progress helpers.
 
-### Migration Runbook
-1. Add a timestamped migration file under `supabase/migrations/` for the schema change.
-2. For data-affecting changes, add/update deterministic seed scripts under `supabase/seed/`.
-3. Update Drizzle table/relations/types in `lib/db/schema/` to match the migration output.
-4. Execute `CI=true node scripts/check-migration-parity.mjs`; resolve all reported drift before merge.
-5. Add or update tests for new schema contracts (validators, API behavior, RLS-sensitive flows).
-6. Validate local integration (`npx tsc --noEmit`, `npm run lint`, targeted tests).
-7. Include schema + seed + parity evidence in the track plan and commit notes.
+## Teacher Monitoring Model
 
-## Frontend Architecture
+- Teacher monitoring is read-only in phase 1.
+- Teacher views summarize course, unit, lesson, and student status from Convex-backed read models.
+- Teacher surfaces should never rely on a second database or legacy analytics path.
 
-### App Structure
-- Next.js App Router (`app/`) for route composition and server/client boundaries.
-- Shared component library in `components/`, with teacher/student/course domains separated by folder.
-- Reusable utilities and integration code under `lib/`.
+## Deployment Model
 
-### Component Patterns
-- shadcn/ui + Radix primitives provide consistent accessible building blocks.
-- Tailwind utility classes and existing gradient wrappers preserve v1 visual language.
-- Interactive activities and lesson phases are data-driven where needed, while preserving classroom-ready UX.
+- Production app: Vinext on Cloudflare Workers
+- Production backend: hosted Convex deployment
+- Required runtime secrets:
+  - `NEXT_PUBLIC_CONVEX_URL`
+  - `CONVEX_DEPLOY_KEY`
+  - `AUTH_JWT_SECRET`
 
-### Rendering Strategy
-- Prefer server-side data fetching for primary lesson/dashboard routes.
-- Use client components for interaction-heavy widgets only.
-- Keep hydration scope narrow for responsiveness on classroom hardware.
+The active architecture should remove Vercel-only assumptions from runtime code, docs, and deployment thinking.
 
-## Full-Stack Integration
+## Non-Negotiable Rules
 
-### Request Flow
-1. Client component or page initiates action/query.
-2. Next.js route handler or server action validates session/role.
-3. Server calls Supabase (directly or via edge function).
-4. Result is normalized and returned to UI for render/update.
-
-### Deployment Model
-- Vercel hosts Next.js application.
-- Supabase hosts database, auth, storage, and edge functions.
-- Environment variables required across environments:
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY` or publishable key equivalent
-  - `SUPABASE_SERVICE_ROLE_KEY` (server only)
-
-### Testing Matrix
-- Unit/component tests: Vitest + Testing Library.
-- Vitest convention: `__tests__/` is the canonical directory for unit/integration suites. During the consolidation track, legacy co-located tests are still discovered, but new tests should be added under `__tests__/`.
-- E2E tests: Playwright specs live in `tests/e2e/`.
-- Lint and type checks gate commits and PRs.
-
-## Brownfield Migration Status (v1 -> v2)
-
-### Completed
-- Core v1 component migration to Next.js + Supabase-backed v2 foundations.
-- Teacher/student auth flows and primary dashboards.
-- Conductor-based track workflow for feature/refactor execution.
-
-### In Progress
-- Architectural consolidation track (`arch_refactor_20260206`) for:
-  - stale docs reference cleanup
-  - type centralization
-  - test structure unification
-  - schema responsibility clarification
-
-### Remaining Cutover Work
-- Complete legacy schema deprecation in runtime and seed layers.
-- Finish test stabilization and type error elimination.
-- Finalize standards for component prop contracts and activity registry typing.
-
-## TDD and Workflow Expectations
-
-- `conductor/workflow.md` is the procedural source of truth.
-- Every task follows Red -> Green -> Refactor with auditable plan state changes.
-- Phase completion requires automated verification plus explicit user confirmation.
-- Track-level changes must keep docs synchronized with implementation reality.
+- Convex remains the only runtime source of truth.
+- Student write paths must have explicit student-role request guards.
+- Shared progress and published-curriculum helpers remain canonical for both student and teacher flows.
+- No active plan should assume admin tooling or in-app authoring before those tracks are explicitly opened.

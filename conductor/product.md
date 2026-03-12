@@ -1,45 +1,58 @@
-# Product Guide: Math for Business Operations v2
+# Product Definition: Math for Business Operations v2
 
-## Initial Concept
-An interactive, Convex-backed digital textbook for teaching business mathematics to high school students. This App Router application provides a comprehensive curriculum covering accounting fundamentals, financial analysis, and practical business calculations.
+## Product Statement
 
-## Target Audience
-- **High School Students**: The primary learners engaging with the curriculum, activities, and simulations.
-- **Teachers**: Educators who manage the curriculum, monitor student progress, and utilize analytics to guide instruction.
-- **Administrators**: School or district staff managing organization-level access and data.
+Math for Business Operations v2 is a Convex-backed digital textbook for high school business math. Phase 1 delivers the full planned curriculum through student study flows and teacher monitoring on a Vinext app hosted on Cloudflare. It is not an LMS, CMS, or admin console in this phase.
 
-## Core Value Proposition
-- **Interactive Learning**: Moves beyond static text with hands-on activities, drag-and-drop exercises, and simulations.
-- **Real-World Application**: Integrated Excel-like spreadsheet components and business simulations (e.g., cash flow, inventory) provide practical skills.
-- **Comprehensive Tracking**: Detailed analytics allow teachers to monitor student performance across six distinct learning phases.
-- **Role-Based Experience**: Tailored interfaces for students and teachers to maximize usability for each group.
+## Primary Users
 
-## Key Features
-- **Curriculum Delivery**: Structured "8 Units + Capstone" curriculum, utilizing granular, file-per-lesson infrastructure with three core instructional formats:
-    - **Six-Phase Learning Model**: Foundational and application lessons (Entry to Reflection).
-    - **Project Sprint Format**: Three-day immersive project build phases.
-    - **Summative Assessment**: Unit-level mastery checks with auto-graded components.
-- **Business Simulations**: Interactive scenarios for cash flow, inventory management, and pitch presentations.
-- **Spreadsheet Integration**: Built-in spreadsheet tools for financial modeling and accounting exercises.
-- **Progress Analytics**: Dashboards for tracking completion and mastery of learning objectives.
-- **Multi-tenant Architecture**: Organization-based data isolation and access control.
+- **Students**: move through the full curriculum, complete activities, see progress, and resume where they left off.
+- **Teachers**: monitor course, unit, lesson, and student progress well enough to intervene and guide instruction.
 
-## Curriculum Quality Standards
+## Phase 1 Scope
 
-- Curriculum seeds are authored against enforceable lesson-type rules (accounting, excel, project, assessment).
-- Auto-graded activities must include algorithmic `problemTemplate` definitions for deterministic regeneration and retesting.
-- Unit summative assessments follow a tiered model (knowledge, understanding, application) mapped directly to unit standards.
-- Project-day lessons must publish explicit deliverables for classroom accountability.
+- Ship the full **8 units x 11 lessons** curriculum plus **capstone**.
+- Support the student learning loop:
+  - discover the curriculum
+  - enter lessons
+  - complete phases, activities, and assessments
+  - resume the next recommended lesson
+- Support the teacher monitoring loop:
+  - view class progress
+  - drill into student detail
+  - see unit and lesson completion status
+  - identify who needs follow-up
+- Treat the repository plus seed/publish pipeline as the authoring system.
+- Publish curriculum content to Convex and serve only published versions at runtime.
 
-## System Boundaries & Responsibilities
-- **Client UI (`app/`, `components/`)**: Renders lesson and dashboard experiences, captures user input, and displays server-validated results.
-- **Application Server (App Router routes/actions)**: Enforces session and role checks, orchestrates Convex queries/mutations, and keeps internal-function admin auth on the server side only.
-- **Convex Platform**: Owns credential records, curriculum/activity data, progress state, realtime queries, and privileged internal functions.
-- **Conductor Planning Layer (`conductor/`)**: Owns implementation workflow, architectural guidance, and track execution status.
+## Explicitly Deferred
 
-## Data Flow Overview
-1. User interaction starts in a client component or server-rendered page.
-2. Request is sent to an App Router route/server action with authenticated session context.
-3. Server validates role/permissions, then queries Convex or invokes internal Convex functions.
-4. Convex enforces function-level validation and returns scoped data or mutation outcomes.
-5. Server returns normalized payload to the UI for render/update, preserving least-privilege access.
+- In-app curriculum authoring or editing
+- Admin role and admin-facing product surfaces
+- Broad school/district operations tooling
+- Feature creep into generic LMS messaging, assignments, discussion boards, or grading ecosystems
+
+## Curriculum Shape
+
+- **Unit 1**: Balance by Design
+- **Unit 2**: Flow of Transactions
+- **Unit 3**: Statements in Balance
+- **Unit 4**: Payroll in Motion
+- **Unit 5**: Assets That Age
+- **Unit 6**: Inventory and Project Costing Intelligence
+- **Unit 7**: Financing the Future
+- **Unit 8**: Integrated Model Sprint
+- **Capstone**: Investor-Ready Plan
+
+Each instructional unit contains 11 lessons:
+
+- Lessons 1-7: concept and build progression
+- Lessons 8-10: project sprint progression
+- Lesson 11: summative mastery check
+
+## Product Success Criteria
+
+- Every planned lesson exists as published Convex-backed runtime content.
+- Student progress is accurate at the phase, lesson, unit, and course levels.
+- Teacher monitoring reads from the same published curriculum and progress model as the student experience.
+- Active planning docs contain no Supabase, Vercel, or admin/editor-first assumptions.

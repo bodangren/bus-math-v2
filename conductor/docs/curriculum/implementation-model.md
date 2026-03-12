@@ -1,0 +1,65 @@
+# Curriculum Implementation Model
+
+## Canonical Lesson Archetypes
+
+The runtime should support a small set of lesson archetypes instead of forcing every lesson into one shape.
+
+### 1. Core Instruction Lesson
+
+Used for launch, accounting, and Excel lessons.
+
+Canonical phase sequence:
+
+1. `hook`
+2. `instruction`
+3. `guided_practice`
+4. `independent_practice`
+5. `assessment`
+6. `reflection`
+
+### 2. Project Sprint Lesson
+
+Used for lessons 8-10 in each unit.
+
+Canonical phase sequence:
+
+1. `brief`
+2. `workshop`
+3. `checkpoint`
+4. `reflection`
+
+### 3. Summative Mastery Lesson
+
+Used for lesson 11 in each unit.
+
+Canonical phase sequence:
+
+1. `directions`
+2. `assessment`
+3. `review`
+
+### 4. Capstone Lesson
+
+Capstone details can expand later, but the runtime should assume capstone work is a project-style sequence with explicit milestone checkpoints and final presentation outcomes.
+
+## Publishing Rules
+
+- Lesson docs, seeds, and runtime content must agree on:
+  - lesson type
+  - phase sequence
+  - standards linkage
+  - activity identifiers
+- Runtime should resolve only the latest published lesson version.
+- Draft or archival content must not affect student or teacher progress.
+
+## Telemetry Rules
+
+- Progress is recorded at the phase level.
+- Lesson and unit progress are derived, not hand-maintained.
+- Teacher monitoring must read the same derived progress model the student runtime uses.
+
+## Phase 1 Authoring Constraints
+
+- Repository-authored curriculum is canonical.
+- No lesson type should require in-app authoring to be functional.
+- Every new activity contract must be documented once and validated against the declared component key.

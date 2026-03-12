@@ -1,0 +1,11 @@
+{
+  "track_id": "curriculum_runtime_foundation_20260311",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-03-11T00:00:00Z",
+  "updated_at": "2026-03-11T00:00:00Z",
+  "description": "Establish the canonical Cloudflare/Vinext + Convex runtime foundation for the student and teacher product, and normalize curriculum runtime contracts before the full rollout.",
+  "estimated_tasks": 17,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
