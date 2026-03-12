@@ -6,8 +6,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [x] **Track: Curriculum Authoring-to-Publish Pipeline**
-  *Link: [./tracks/curriculum_authoring_publish_pipeline_20260313/](./tracks/curriculum_authoring_publish_pipeline_20260313/)*
+No active track. Start the next queued track only after this archive commit is merged.
 
 ## Planned Queue
 
@@ -28,6 +27,9 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Archive Ledger
 
+- [x] **Track: Curriculum Authoring-to-Publish Pipeline**
+  *Link: [./archive/curriculum_authoring_publish_pipeline_20260313/](./archive/curriculum_authoring_publish_pipeline_20260313/)*
+  *Closeout: archived on 2026-03-13 after establishing the canonical repository-to-Convex curriculum publish pipeline and replacing the one-off lesson seed surface.*
 - [x] **Track: Curriculum Runtime Foundation**
   *Link: [./archive/curriculum_runtime_foundation_20260311/](./archive/curriculum_runtime_foundation_20260311/)*
   *Closeout: archived on 2026-03-12 after establishing the Cloudflare/Vinext + Convex runtime baseline and cleaning legacy runtime residue.*
