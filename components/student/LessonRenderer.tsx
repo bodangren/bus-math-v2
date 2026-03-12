@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
@@ -9,7 +10,9 @@ import { PhaseGuidanceCard } from '@/components/student/PhaseGuidanceCard';
 import { usePhaseProgress } from '@/hooks/usePhaseProgress';
 import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import { Button } from '@/components/ui/button';
+import type { DashboardLessonActionLink } from '@/lib/student/dashboard-presentation';
 import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
+import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigation';
 import { cn } from '@/lib/utils';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
@@ -38,6 +41,8 @@ interface LessonRendererProps {
   phases: Phase[];
   currentPhaseNumber: number;
   lessonSlug: string;
+  isLessonComplete?: boolean;
+  recommendedLesson?: DashboardLessonActionLink | null;
 }
 
 function buildFallbackPhaseGuidance(phase: Phase, lesson: Lesson): PhaseGuidance {
@@ -56,7 +61,14 @@ function buildFallbackPhaseGuidance(phase: Phase, lesson: Lesson): PhaseGuidance
  * Renders a single phase of a lesson with navigation
  * Integrates LessonStepper and enforces phase locking on the client side
  */
-export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug }: LessonRendererProps) {
+export function LessonRenderer({
+  lesson,
+  phases,
+  currentPhaseNumber,
+  lessonSlug,
+  isLessonComplete = false,
+  recommendedLesson = null,
+}: LessonRendererProps) {
   const router = useRouter();
   const { data: progressData, isLoading, refetch } = usePhaseProgress(lesson.slug);
 
@@ -129,6 +141,7 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
   // Determine if previous/next navigation is available
   const canGoPrevious = currentPhaseNumber > 1;
   const canGoNext = currentPhaseNumber < phases.length;
+  const showLessonCompletePanel = isLessonComplete && currentPhaseNumber === phases.length;
 
   // Check if next phase is unlocked (either already unlocked OR current phase is completed/read-only)
   const nextPhaseStatus = stepperPhases.find(p => p.phaseNumber === currentPhaseNumber + 1)?.status;
@@ -236,6 +249,36 @@ export function LessonRenderer({ lesson, phases, currentPhaseNumber, lessonSlug 
             </div>
           </div>
         </div>
+
+        {showLessonCompletePanel ? (
+          <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+            <div className="space-y-2">
+              <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                Lesson Complete
+              </p>
+              <h3 className="text-xl font-semibold text-emerald-950">
+                You finished every published phase in this lesson.
+              </h3>
+              <p className="text-sm text-emerald-900/80">
+                Review the phase sequence here, head back to the dashboard, or continue into the
+                next recommended lesson.
+              </p>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <Button asChild variant="outline">
+                <Link href={studentDashboardPath()}>Back to Dashboard</Link>
+              </Button>
+              {recommendedLesson ? (
+                <Button asChild>
+                  <Link href={studentLessonPath(recommendedLesson.slug)}>
+                    {recommendedLesson.actionLabel}
+                  </Link>
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
 
         {/* Navigation Buttons */}
         <div className="mt-8 flex items-center justify-between">

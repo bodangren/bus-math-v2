@@ -47,6 +47,7 @@ vi.mock('@/lib/convex/server', async () => {
       },
       student: {
         getLessonProgress: 'internal.student.getLessonProgress',
+        getDashboardData: 'internal.student.getDashboardData',
       },
     },
   };
@@ -58,11 +59,15 @@ vi.mock('@/components/student/LessonRenderer', () => ({
     phases,
     currentPhaseNumber,
     lessonSlug,
+    isLessonComplete,
+    recommendedLesson,
   }: {
     lesson: { title: string };
     phases: unknown[];
     currentPhaseNumber: number;
     lessonSlug: string;
+    isLessonComplete?: boolean;
+    recommendedLesson?: { slug: string } | null;
   }) => {
     const firstPhase = phases[0] as { contentBlocks?: unknown[] } | undefined;
     const firstBlock = firstPhase?.contentBlocks?.[0] ?? null;
@@ -73,6 +78,8 @@ vi.mock('@/components/student/LessonRenderer', () => ({
         <div data-testid="phase-count">{phases.length}</div>
         <div data-testid="current-phase">{currentPhaseNumber}</div>
         <div data-testid="lesson-slug">{lessonSlug}</div>
+        <div data-testid="lesson-complete">{String(Boolean(isLessonComplete))}</div>
+        <div data-testid="recommended-lesson">{recommendedLesson?.slug ?? 'none'}</div>
         <pre data-testid="first-block">{JSON.stringify(firstBlock)}</pre>
       </div>
     );
@@ -154,6 +161,9 @@ function setupDefaultMocks() {
     }
     if (name === 'internal.student.getLessonProgress') {
       return { phases: [] };
+    }
+    if (name === 'internal.student.getDashboardData') {
+      return [];
     }
     return null;
   });
@@ -406,5 +416,98 @@ describe('LessonPage', () => {
     } catch {}
 
     expect(redirect).toHaveBeenCalledWith('/student/lesson/test-lesson?phase=3');
+  });
+
+  it('redirects completed lessons to the final phase instead of restarting from phase 1', async () => {
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return makeConvexContent();
+      if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'internal.student.getLessonProgress') {
+        return {
+          phases: [
+            { phaseNumber: 1, status: 'completed' },
+            { phaseNumber: 2, status: 'completed' },
+            { phaseNumber: 3, status: 'completed' },
+          ],
+        };
+      }
+      if (name === 'internal.student.getDashboardData') return [];
+      if (name === 'internal.api.canAccessPhase') return true;
+      return null;
+    });
+
+    try {
+      await LessonPage({
+        params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+        searchParams: Promise.resolve({}),
+      });
+    } catch {}
+
+    expect(redirect).toHaveBeenCalledWith('/student/lesson/test-lesson?phase=3');
+  });
+
+  it('passes completion state and next recommendation into the lesson renderer', async () => {
+    mockFetchQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'api.api.getLessonWithContent') return makeConvexContent('test-lesson', 3);
+      if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
+      return null;
+    });
+    mockFetchInternalQuery.mockImplementation(async (name: unknown) => {
+      if (name === 'internal.activities.getProfileById') return { _id: 'user-123', role: 'student' };
+      if (name === 'internal.student.getLessonProgress') {
+        return {
+          phases: [
+            { phaseNumber: 1, status: 'completed' },
+            { phaseNumber: 2, status: 'completed' },
+            { phaseNumber: 3, status: 'completed' },
+          ],
+        };
+      }
+      if (name === 'internal.student.getDashboardData') {
+        return [
+          {
+            unitNumber: 1,
+            unitTitle: 'Unit 1',
+            lessons: [
+              {
+                id: 'lesson-1',
+                unitNumber: 1,
+                title: 'Test Lesson',
+                slug: 'test-lesson',
+                description: 'Completed current lesson',
+                completedPhases: 3,
+                totalPhases: 3,
+                progressPercentage: 100,
+              },
+              {
+                id: 'lesson-2',
+                unitNumber: 1,
+                title: 'Next Lesson',
+                slug: 'next-lesson',
+                description: 'Continue here next',
+                completedPhases: 0,
+                totalPhases: 3,
+                progressPercentage: 0,
+              },
+            ],
+          },
+        ];
+      }
+      if (name === 'internal.api.canAccessPhase') return true;
+      return null;
+    });
+
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({ phase: '3' }),
+    });
+    render(page);
+
+    expect(screen.getByTestId('lesson-complete')).toHaveTextContent('true');
+    expect(screen.getByTestId('recommended-lesson')).toHaveTextContent('next-lesson');
   });
 });

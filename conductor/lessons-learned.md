@@ -26,3 +26,4 @@
 - (2026-03-11, replan) A narrow phase-1 scope of student study plus teacher monitoring keeps the platform coherent while the curriculum is still being fully implemented.
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Source-level generator plus manifest tests are a practical bridge when authored curriculum exists in legacy files but the runtime must import a pure Convex-safe module.
+- (2026-03-13, student_study_runtime) Completed lessons should reopen on their final published phase and use the dashboard-derived next-lesson recommendation, or the student loop drifts between dashboard and lesson routes.

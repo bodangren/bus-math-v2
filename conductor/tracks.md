@@ -6,23 +6,22 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-No active track. Start the next queued track only after this archive commit is merged.
+- [x] **Track: Student Study Runtime**
+  *Link: [./tracks/student_study_runtime_20260313/](./tracks/student_study_runtime_20260313/)*
 
 ## Planned Queue
 
-1. **Student Study Runtime**
-   Finish lesson shells, navigation, activity delivery, assessments, resume logic, and course-level progress UX.
-2. **Teacher Monitoring Core**
+1. **Teacher Monitoring Core**
    Ship the minimum teacher monitoring surface needed for course, unit, lesson, and student follow-up.
-3. **Unit 1 Canonicalization and Archetype Exemplars**
+2. **Unit 1 Canonicalization and Archetype Exemplars**
    Make Unit 1 textbook-quality and use it to prove every lesson archetype end to end.
-4. **Curriculum Rollout Wave 1 (Units 2-4)**
+3. **Curriculum Rollout Wave 1 (Units 2-4)**
    Publish the first half-book expansion on top of the proven Unit 1 model.
-5. **Curriculum Rollout Wave 2 (Units 5-8)**
+4. **Curriculum Rollout Wave 2 (Units 5-8)**
    Publish the second half-book expansion and finish the eight-unit instructional sequence.
-6. **Capstone and Textbook Completion**
+5. **Capstone and Textbook Completion**
    Implement the capstone experience and complete the first end-to-end version of the online textbook.
-7. **Cloudflare Production Hardening and Launch**
+6. **Cloudflare Production Hardening and Launch**
    Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger

@@ -74,4 +74,18 @@ describe("CurriculumPage", () => {
       screen.getByText(/Curriculum data isn't available yet/i)
     ).toBeInTheDocument();
   });
+
+  it("describes the curriculum as browsable before sign-in instead of claiming lesson study is public", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+
+    const page = await CurriculumPage();
+    render(page);
+
+    expect(
+      screen.getByText(/browse the sequence before signing in to study/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/jump into any lesson without signing in/i)
+    ).not.toBeInTheDocument();
+  });
 });

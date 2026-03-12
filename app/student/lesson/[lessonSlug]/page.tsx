@@ -2,6 +2,11 @@ import { notFound, redirect } from 'next/navigation';
 import { LessonRenderer } from '@/components/student/LessonRenderer';
 import { getServerSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, fetchQuery, api, internal } from '@/lib/convex/server';
+import {
+  buildLessonContinueState,
+  resolveLessonLandingPhase,
+} from '@/lib/student/lesson-runtime';
+import type { StudentDashboardUnit } from '@/lib/student/dashboard';
 import type { ContentBlock } from '@/types/curriculum';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -246,6 +251,8 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   const isBypassRole = userProfile?.role === 'teacher' || userProfile?.role === 'admin';
 
   const requestedPhaseNumber = phaseParam ? parseInt(phaseParam, 10) : 1;
+  let isLessonComplete = false;
+  let recommendedLesson = null;
 
   if (isNaN(requestedPhaseNumber) || requestedPhaseNumber < 1 || requestedPhaseNumber > lessonPhases.length) {
     redirect(`/student/lesson/${lessonSlug}?phase=1`);
@@ -268,6 +275,50 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
     }
 
     if (!phaseParam) {
+      let completedPhaseNumbers = new Set<number>();
+
+      try {
+        const progressResponse = await fetchInternalQuery(internal.student.getLessonProgress, {
+          userId,
+          lessonIdentifier: lesson.slug,
+        });
+
+        completedPhaseNumbers = new Set<number>(
+          (progressResponse?.phases ?? [])
+            .filter((phase: { status?: string }) => phase.status === 'completed')
+            .map((phase: { phaseNumber: number }) => phase.phaseNumber),
+        );
+
+        const targetPhaseNumber = resolveLessonLandingPhase({
+          totalPhases: lessonPhases.length,
+          completedPhaseNumbers,
+        });
+
+        isLessonComplete = lessonPhases.every(
+          (phase: { phaseNumber: number }) => completedPhaseNumbers.has(phase.phaseNumber),
+        );
+
+        if (isLessonComplete) {
+          try {
+            const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
+              userId,
+            }) as StudentDashboardUnit[];
+            recommendedLesson = buildLessonContinueState(studentUnits, lesson.slug).recommendedLesson;
+          } catch (dashboardError) {
+            console.error('Error loading dashboard recommendation from Convex:', dashboardError);
+          }
+        }
+
+        if (targetPhaseNumber !== requestedPhaseNumber) {
+          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        }
+      } catch (progressError) {
+        console.error('Error loading lesson progress from Convex:', progressError);
+        return <AccessCheckError lessonTitle={lesson.title} />;
+      }
+    }
+
+    if (phaseParam) {
       try {
         const progressResponse = await fetchInternalQuery(internal.student.getLessonProgress, {
           userId,
@@ -280,13 +331,19 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
             .map((phase: { phaseNumber: number }) => phase.phaseNumber),
         );
 
-        const firstIncompletePhase = lessonPhases.find(
-          (phase: { phaseNumber: number }) => !completedPhaseNumbers.has(phase.phaseNumber),
+        isLessonComplete = lessonPhases.every(
+          (phase: { phaseNumber: number }) => completedPhaseNumbers.has(phase.phaseNumber),
         );
-        const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
 
-        if (targetPhaseNumber !== requestedPhaseNumber) {
-          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        if (isLessonComplete) {
+          try {
+            const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
+              userId,
+            }) as StudentDashboardUnit[];
+            recommendedLesson = buildLessonContinueState(studentUnits, lesson.slug).recommendedLesson;
+          } catch (dashboardError) {
+            console.error('Error loading dashboard recommendation from Convex:', dashboardError);
+          }
         }
       } catch (progressError) {
         console.error('Error loading lesson progress from Convex:', progressError);
@@ -337,6 +394,8 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
       phases={lessonPhases}
       currentPhaseNumber={requestedPhaseNumber}
       lessonSlug={lessonSlug}
+      isLessonComplete={isLessonComplete}
+      recommendedLesson={recommendedLesson}
     />
   );
 }

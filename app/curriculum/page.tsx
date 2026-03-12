@@ -31,14 +31,14 @@ export default async function CurriculumPage() {
             Explore the Math for Business Operations Curriculum
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">
-            Every unit blends classroom-ready narratives, authentic financial problems, and spreadsheet modeling. Browse the units and jump into any lesson without signing in.
+            Every unit blends classroom-ready narratives, authentic financial problems, and spreadsheet modeling. Browse the sequence before signing in to study each protected lesson.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="shadow-md">
               <Link href="/">Back to home</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/auth/login">Teacher login</Link>
+              <Link href="/auth/login">Student or teacher login</Link>
             </Button>
           </div>
         </div>

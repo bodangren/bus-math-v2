@@ -422,4 +422,49 @@ describe('LessonRenderer', () => {
     const nextButton = screen.getByRole('button', { name: /next phase/i });
     expect(nextButton).not.toBeDisabled();
   });
+
+  it('shows a lesson completion panel with continue-learning actions on the final completed phase', () => {
+    const mockPhases = [
+      { id: 'p1', phaseNumber: 1, title: 'P1' },
+      { id: 'p2', phaseNumber: 2, title: 'P2' },
+      { id: 'p3', phaseNumber: 3, title: 'P3' },
+    ];
+
+    vi.mocked(usePhaseProgress).mockReturnValue({
+      data: {
+        phases: [
+          { phaseId: 'p1', status: 'completed' },
+          { phaseId: 'p2', status: 'completed' },
+          { phaseId: 'p3', status: 'completed' },
+        ],
+      } as any,
+      isLoading: false,
+      refetch: vi.fn(),
+    } as any);
+
+    render(
+      <LessonRenderer
+        lesson={mockLesson}
+        phases={mockPhases}
+        currentPhaseNumber={3}
+        lessonSlug="intro-to-financial-statements"
+        isLessonComplete
+        recommendedLesson={{
+          title: 'Next Lesson',
+          slug: 'next-lesson',
+          actionLabel: 'Start Lesson',
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/lesson complete/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /back to dashboard/i })).toHaveAttribute(
+      'href',
+      '/student/dashboard',
+    );
+    expect(screen.getByRole('link', { name: /start lesson/i })).toHaveAttribute(
+      'href',
+      '/student/lesson/next-lesson',
+    );
+  });
 });

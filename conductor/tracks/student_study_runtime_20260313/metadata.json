@@ -1,0 +1,11 @@
+{
+  "track_id": "student_study_runtime_20260313",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-03-13T00:00:00Z",
+  "updated_at": "2026-03-13T05:00:00Z",
+  "description": "Finish the student lesson resume and completion loop for published curriculum delivery.",
+  "estimated_tasks": 5,
+  "actual_tasks": 5,
+  "deviation_notes": "This track narrowed the broad student-study milestone to the phase-1 lesson resume, completion-state, and next-step loop so the runtime contract could be finished and fully verified in one pass."
+}
