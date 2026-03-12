@@ -6,9 +6,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [ ] **Track: Curriculum Runtime Foundation**
-  *Link: [./tracks/curriculum_runtime_foundation_20260311/](./tracks/curriculum_runtime_foundation_20260311/)*
-  Goal: establish the canonical Cloudflare/Vinext + Convex foundation, normalize curriculum runtime contracts, and clear the path for the full 8x11 plus capstone rollout.
+No active track. Start the next queued track only after this archive commit is merged.
 
 ## Planned Queue
 
@@ -31,6 +29,9 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Archive Ledger
 
+- [x] **Track: Curriculum Runtime Foundation**
+  *Link: [./archive/curriculum_runtime_foundation_20260311/](./archive/curriculum_runtime_foundation_20260311/)*
+  *Closeout: archived on 2026-03-12 after establishing the Cloudflare/Vinext + Convex runtime baseline and cleaning legacy runtime residue.*
 - [x] **Snapshot: Pre-Replan Active Conductor Surface**
   *Link: [./archive/conductor_replan_snapshot_20260311/](./archive/conductor_replan_snapshot_20260311/)*
   *Closeout: archived on 2026-03-11 before the student/teacher Cloudflare + Convex rebaseline.*
