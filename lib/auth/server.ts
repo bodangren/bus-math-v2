@@ -123,7 +123,8 @@ export function requireServerRoles<T extends SessionClaims>(
 }
 
 /**
- * Requires a teacher or admin server session for teacher-facing pages.
+ * Requires a teacher-facing server session for teacher pages.
+ * Legacy admin credentials are treated as teacher-compatible until they are fully removed.
  */
 export async function requireTeacherSessionClaims(
   loginRedirectPath: string,
@@ -135,7 +136,7 @@ export async function requireTeacherSessionClaims(
 
 /**
  * Requires a student server session for student-facing dashboard routes.
- * Teacher/admin sessions are redirected to their own dashboard surfaces.
+ * Non-student sessions are redirected to the teacher surface.
  */
 export async function requireStudentSessionClaims(
   loginRedirectPath: string,
@@ -151,19 +152,8 @@ export async function requireStudentSessionClaims(
   }
 
   if (claims.role === 'admin') {
-    redirect('/admin/dashboard');
+    redirect('/teacher');
   }
 
   redirect(buildLoginRedirect(loginRedirectPath));
-}
-
-/**
- * Requires an admin server session for admin-facing pages.
- */
-export async function requireAdminSessionClaims(
-  loginRedirectPath: string,
-  unauthorizedRedirectPath = '/student/dashboard',
-): Promise<SessionClaims> {
-  const claims = await requireServerSessionClaims(loginRedirectPath);
-  return requireServerRoles(claims, ['admin'], unauthorizedRedirectPath);
 }

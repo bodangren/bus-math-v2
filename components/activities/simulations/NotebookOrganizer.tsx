@@ -268,9 +268,9 @@ export function NotebookOrganizer({ activity, onComplete }: NotebookOrganizerPro
                       <div className="flex justify-between items-center mt-4">
                         <div className="text-lg font-black">${item.amount.toLocaleString()}</div>
                         <div className="flex gap-1">
-                          <Button size="xs" variant="outline" className="text-[10px] h-6 px-1.5" onClick={() => handlePlaceItem(item.id, 'asset')}>Have</Button>
-                          <Button size="xs" variant="outline" className="text-[10px] h-6 px-1.5" onClick={() => handlePlaceItem(item.id, 'liability')}>Owe</Button>
-                          <Button size="xs" variant="outline" className="text-[10px] h-6 px-1.5" onClick={() => handlePlaceItem(item.id, 'equity')}>Stake</Button>
+                          <Button size="sm" variant="outline" className="text-[10px] h-6 px-1.5" onClick={() => handlePlaceItem(item.id, 'asset')}>Have</Button>
+                          <Button size="sm" variant="outline" className="text-[10px] h-6 px-1.5" onClick={() => handlePlaceItem(item.id, 'liability')}>Owe</Button>
+                          <Button size="sm" variant="outline" className="text-[10px] h-6 px-1.5" onClick={() => handlePlaceItem(item.id, 'equity')}>Stake</Button>
                         </div>
                       </div>
                     </CardContent>

@@ -15,8 +15,11 @@
 - (2026-03-11, replan) Old PRDs and migration-era docs look authoritative unless they are moved entirely out of the active Conductor surface.
 - (2026-03-11, replan) “Full curriculum” claims are misleading unless the seeded and published runtime content actually matches the planned curriculum count.
 - (2026-03-11, replan) Activity and standards contracts drift quickly when validators and Convex lookups use different identifiers.
+- (2026-03-12, curriculum_runtime_foundation) Public prerendered pages must tolerate empty Convex results so a clean production build does not depend on seeded local data.
+- (2026-03-12, curriculum_runtime_foundation) Migration-era Supabase and seed utilities can still break the production TypeScript graph even after the active runtime has moved to Convex.
 
 ### Patterns Worth Repeating
 
 - (2026-03-11, replan) A non-destructive archive snapshot is safer than trying to patch stale planning docs in place.
 - (2026-03-11, replan) A narrow phase-1 scope of student study plus teacher monitoring keeps the platform coherent while the curriculum is still being fully implemented.
+- (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.

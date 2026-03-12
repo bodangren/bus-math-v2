@@ -94,6 +94,47 @@ describe('POST /api/activities/complete', () => {
     });
   });
 
+  it('accepts linked standard competency codes and forwards them unchanged', async () => {
+    mockCompletePhasePost.mockResolvedValueOnce(
+      Response.json(
+        {
+          success: true,
+          nextPhaseUnlocked: false,
+          message: 'Phase completion recorded',
+        },
+        { status: 200 },
+      ),
+    );
+
+    const request = new NextRequest('http://localhost:3000/api/activities/complete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        activityId: VALID_ACTIVITY_ID,
+        lessonId: VALID_LESSON_ID,
+        phaseNumber: 2,
+        linkedStandardId: 'ACC-1.1',
+        completionData: { timeSpentSeconds: 90 },
+        idempotencyKey: VALID_IDEMPOTENCY_KEY,
+      }),
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(200);
+    const forwardedRequest = mockCompletePhasePost.mock.calls[0][0] as Request;
+    const forwardedPayload = await forwardedRequest.json();
+    expect(forwardedPayload).toEqual({
+      lessonId: VALID_LESSON_ID,
+      phaseNumber: 2,
+      timeSpent: 90,
+      linkedStandardId: 'ACC-1.1',
+      idempotencyKey: VALID_IDEMPOTENCY_KEY,
+    });
+  });
+
   it('defaults forwarded timeSpent to 0 when completionData is missing or invalid', async () => {
     mockCompletePhasePost.mockResolvedValueOnce(
       Response.json({

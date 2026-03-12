@@ -34,7 +34,7 @@ interface SeedOptions {
 }
 
 interface DatabaseClient {
-  execute: <T = Record<string, unknown>>(query: SQL) => Promise<T[]>;
+  execute: (query: SQL) => Promise<unknown[]>;
 }
 
 const CODE_PATTERN = /^[A-Z]{3}-\d+\.\d+$/;
@@ -104,7 +104,7 @@ async function upsertStandards(
   let updated = 0;
 
   for (const standard of standards) {
-    const result = await db.execute<{ inserted: boolean }>(sql`
+    const result = (await db.execute(sql`
       INSERT INTO competency_standards (
         code,
         description,
@@ -128,7 +128,7 @@ async function upsertStandards(
         category = EXCLUDED.category,
         is_active = EXCLUDED.is_active
       RETURNING (xmax = 0) AS inserted
-    `);
+    `)) as Array<{ inserted: boolean }>;
 
     if (result[0]?.inserted) {
       inserted++;
@@ -141,19 +141,19 @@ async function upsertStandards(
 }
 
 async function verifyTotals(db: DatabaseClient): Promise<{ total: number; byCategory: Array<{ category: string; count: number }> }> {
-  const byCategoryRows = await db.execute<{ category: string; count: string | number }>(sql`
+  const byCategoryRows = (await db.execute(sql`
     SELECT category, COUNT(*) as count
     FROM competency_standards
     WHERE code LIKE 'ACC-1.%'
     GROUP BY category
     ORDER BY category
-  `);
+  `)) as Array<{ category: string; count: string | number }>;
 
-  const totalRows = await db.execute<{ total: string | number }>(sql`
+  const totalRows = (await db.execute(sql`
     SELECT COUNT(*) as total
     FROM competency_standards
     WHERE code LIKE 'ACC-1.%'
-  `);
+  `)) as Array<{ total: string | number }>;
 
   return {
     total: Number(totalRows[0]?.total ?? 0),

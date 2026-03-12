@@ -109,7 +109,7 @@ describe('lib/auth/server role guards', () => {
     );
   });
 
-  it('redirects admin sessions away from student-only routes', async () => {
+  it('redirects legacy admin sessions away from student-only routes to the teacher surface', async () => {
     mockVerifySessionToken.mockResolvedValue({
       sub: 'profile_4',
       username: 'admin_one',
@@ -121,7 +121,7 @@ describe('lib/auth/server role guards', () => {
     const { requireStudentSessionClaims } = await loadModule();
 
     await expect(requireStudentSessionClaims('/student/dashboard')).rejects.toThrow(
-      'NEXT_REDIRECT:/admin/dashboard',
+      'NEXT_REDIRECT:/teacher',
     );
   });
 

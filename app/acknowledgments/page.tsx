@@ -95,7 +95,7 @@ export default function AcknowledgmentsPage() {
               </p>
               <p className="text-sm text-muted-foreground">
                 Version 2.0 represents a complete rewrite using modern web technologies including
-                Next.js, Supabase, and React, with enhanced accessibility features and improved
+                Vinext, Convex, and React, with enhanced accessibility features and improved
                 performance.
               </p>
             </CardContent>

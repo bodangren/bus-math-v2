@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { POST as completePhasePOST } from '@/app/api/phases/complete/route';
+import { COMPETENCY_STANDARD_CODE_PATTERN } from '@/lib/curriculum/standards';
 import type {
   CompleteActivityRequest,
   CompleteActivityResponse,
@@ -15,7 +16,12 @@ const CompleteActivitySchema = z.object({
   activityId: z.string().uuid('Invalid activity ID format'),
   lessonId: z.string().uuid('Invalid lesson ID format'),
   phaseNumber: z.number().int().positive('Phase number must be a positive integer'),
-  linkedStandardId: z.string().uuid().optional().nullable(),
+  linkedStandardId: z
+    .string()
+    .trim()
+    .regex(COMPETENCY_STANDARD_CODE_PATTERN, 'Invalid standard code format')
+    .optional()
+    .nullable(),
   completionData: z.record(z.string(), z.unknown()).optional().nullable(),
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
 });
@@ -92,6 +98,7 @@ export async function POST(request: NextRequest) {
     const {
       lessonId,
       phaseNumber,
+      linkedStandardId,
       completionData,
       idempotencyKey,
     }: CompleteActivityPayload = validationResult.data;
@@ -100,6 +107,7 @@ export async function POST(request: NextRequest) {
       lessonId,
       phaseNumber,
       timeSpent: deriveTimeSpent(completionData),
+      ...(linkedStandardId ? { linkedStandardId } : {}),
       idempotencyKey,
     };
 

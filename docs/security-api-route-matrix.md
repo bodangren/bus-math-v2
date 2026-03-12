@@ -8,22 +8,20 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 
 | Route | Methods | Current State | Required State | Required Role |
 | --- | --- | --- | --- | --- |
-| `/api/activities/[activityId]` | `GET` | Public via proxy, no auth in handler, raw activity payload | Private, auth required, student-safe payload redaction | `student`, `teacher`, `admin` |
-| `/api/activities/complete` | `POST` | Deprecated compatibility shim forwarding to `/api/phases/complete` | Private while shim exists; migrate runtime clients to `/api/phases/complete` | `student`, `teacher`, `admin` |
+| `/api/activities/[activityId]` | `GET` | Public via proxy, no auth in handler, raw activity payload | Private, auth required, student-safe payload redaction | `student`, `teacher` |
+| `/api/activities/complete` | `POST` | Deprecated compatibility shim forwarding to `/api/phases/complete` | Private while shim exists; migrate runtime clients to `/api/phases/complete` | `student` |
 | `/api/activities/spreadsheet/[activityId]/draft` | `GET`, `POST` | Auth checked in handler | Private, student-only draft ownership enforcement | `student` |
-| `/api/activities/spreadsheet/[activityId]/submit` | `GET`, `POST` | Auth checked in handler; `GET` supports read-only replay with teacher/admin org-scoped student access | Private; `POST` is student-only, `GET` keeps teacher/admin replay access | `student` for `POST`; `student`, `teacher`, `admin` for `GET` |
-| `/api/lessons/[lessonId]/progress` | `GET` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher`, `admin` |
+| `/api/activities/spreadsheet/[activityId]/submit` | `GET`, `POST` | Auth checked in handler; `GET` supports read-only replay with teacher org-scoped student access | Private; `POST` is student-only, `GET` keeps teacher replay access | `student` for `POST`; `student`, `teacher` for `GET` |
+| `/api/lessons/[lessonId]/progress` | `GET` | Auth checked in handler | Private, unchanged auth requirement | `student`, `teacher` |
 | `/api/phases/complete` | `POST` | Auth checked in handler | Private, student-only learner progress mutation | `student` |
 | `/api/progress/assessment` | `POST` | Auth checked in handler | Private, student-only assessment submission | `student` |
 | `/api/progress/phase` | `POST` | Deprecated endpoint (`410 Gone`) | Do not use in runtime UI; migrate clients to `/api/phases/complete` | `n/a` |
 | `/api/users/ensure-demo` | `POST` | Public demo bootstrap endpoint | Public only for local/preview demo provisioning; explicit `403` in production-style environments | `public` (env-gated) |
-| `/api/users/create-student` | `POST` | Auth session required in handler, role enforced downstream | Private, explicit teacher/admin requirement maintained | `teacher`, `admin` |
-| `/api/users/reset-student-password` | `POST` | New teacher workflow route | Private, explicit teacher/admin role + same-organization student check | `teacher`, `admin` |
-| `/api/users/update-student` | `POST` | New teacher workflow route | Private, explicit teacher/admin role + same-organization student check | `teacher`, `admin` |
+| `/api/users/create-student` | `POST` | Auth session required in handler, role enforced downstream | Private, explicit teacher requirement maintained | `teacher` |
+| `/api/users/reset-student-password` | `POST` | New teacher workflow route | Private, explicit teacher role + same-organization student check | `teacher` |
+| `/api/users/update-student` | `POST` | New teacher workflow route | Private, explicit teacher role + same-organization student check | `teacher` |
 | `/api/test/seed-e2e` | `POST` | Non-production guard only | Public test-only endpoint with non-production + optional secret token guard | `public` (guarded by env+secret) |
 | `/api/test/cleanup-e2e` | `POST` | Non-production guard only | Public test-only endpoint with non-production + optional secret token guard | `public` (guarded by env+secret) |
-| `/api/test-db` | `GET` | Public debug endpoint | Non-production + optional secret token guard (or remove from production surface) | `public` (guarded by env+secret) |
-| `/api/test-supabase` | `GET` | Public debug endpoint using service role | Non-production + optional secret token guard (or remove from production surface) | `public` (guarded by env+secret) |
 
 ## Policy Decisions
 - Deny by default at proxy level for `/api/**`.
@@ -37,11 +35,9 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 - Keep and environment-gate:
 - `/api/test/seed-e2e`
 - `/api/test/cleanup-e2e`
-- `/api/test-db`
-- `/api/test-supabase`
 - Removal candidate after refactor stabilization:
-- `/api/test-db`
-- `/api/test-supabase`
+- `/api/test/seed-e2e`
+- `/api/test/cleanup-e2e`
 
 ## Route-Level Security Checklist
 - Validate request auth state at route entry (`401` on missing/invalid session).
@@ -57,4 +53,4 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 - Default new `/api/**` routes to private.
 - If a route must be public, add it explicitly to proxy allowlist and document rationale here.
 - Define request/response schemas with explicit validation and stable error taxonomy.
-- Prefer Supabase server client for user-scoped reads/writes where RLS is authoritative.
+- Prefer guarded server routes and internal Convex functions for user-scoped reads/writes.

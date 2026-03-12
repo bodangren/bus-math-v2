@@ -8,7 +8,7 @@ import {
   generateRandomPassword,
   generateUniqueUsername,
   sanitizeInput,
-} from "./logic.ts";
+} from "./logic";
 
 declare const Deno: {
   env: {

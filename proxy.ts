@@ -19,8 +19,6 @@ export async function proxy(request: NextRequest) {
   const publicApiRoutes = [
     '/api/test/seed-e2e',
     '/api/test/cleanup-e2e',
-    '/api/test-db',
-    '/api/test-supabase',
   ];
   if (isDemoProvisioningEnabled()) {
     publicApiRoutes.unshift('/api/users/ensure-demo');

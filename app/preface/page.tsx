@@ -208,8 +208,8 @@ export default async function PrefacePage() {
 
   let units: UnitSummary[] = [];
   try {
-    const fetchedUnits = await convex.query(api.public.getUnitSummaries);
-    units = fetchedUnits.map(u => ({
+    const fetchedUnits = (await convex.query(api.public.getUnitSummaries)) as UnitSummary[];
+    units = fetchedUnits.map((u: UnitSummary) => ({
       unitNumber: u.unitNumber,
       title: u.title,
       summary: u.summary

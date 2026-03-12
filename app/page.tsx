@@ -90,11 +90,19 @@ export default async function Home() {
   const convex = getConvexClient();
 
   // Fetch concurrently from Convex
-  const [stats, units] = await Promise.all([
+  const [statsResult, unitsResult] = await Promise.all([
     convex.query(api.public.getCurriculumStats),
     convex.query(api.public.getUnits)
   ]);
-  const landingUnits = units as LandingUnit[];
+  const stats =
+    statsResult &&
+    typeof statsResult === "object" &&
+    "unitCount" in statsResult &&
+    "lessonCount" in statsResult &&
+    "activityCount" in statsResult
+      ? statsResult
+      : null;
+  const landingUnits = Array.isArray(unitsResult) ? (unitsResult as LandingUnit[]) : [];
 
   return (
     <>

@@ -216,6 +216,23 @@ describe('POST /api/phases/complete', () => {
     expect(response.status).toBe(409);
   });
 
+  it('accepts curriculum standard codes instead of UUID-only linkedStandardId values', async () => {
+    const response = await POST(
+      buildRequest({
+        ...validPayload,
+        linkedStandardId: 'ACC-1.1',
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockFetchInternalMutation).toHaveBeenCalledWith(
+      'internal.api.completePhaseMutation',
+      expect.objectContaining({
+        linkedStandardId: 'ACC-1.1',
+      }),
+    );
+  });
+
   it('returns cached success for idempotent replay on the same phase', async () => {
     mockFetchQuery.mockImplementation(async (name: string) => {
       if (name === 'api.getLessonBySlugOrId') {

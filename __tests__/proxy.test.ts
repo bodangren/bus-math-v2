@@ -149,7 +149,7 @@ describe('proxy', () => {
     expect(studentResponse.status).toBe(200);
   });
 
-  it('allows admin access to /teacher and /student routes', async () => {
+  it('allows legacy admin sessions to reach teacher/student runtime routes', async () => {
     mockVerifySessionToken.mockResolvedValue({
       sub: 'admin-id',
       username: 'admin',

@@ -4,6 +4,7 @@ import { ChevronLeft } from 'lucide-react';
 import { requireTeacherSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { GradebookGrid } from '@/components/teacher/GradebookGrid';
+import type { GradebookLesson, GradebookRow } from '@/lib/teacher/gradebook';
 
 interface PageProps {
   params: Promise<{ unitNumber: string }>;
@@ -32,17 +33,8 @@ export default async function UnitGradebookPage({ params }: PageProps) {
   }
 
   const { rows, lessons } = gradebook as {
-    rows: Array<{
-      studentId: string;
-      displayName: string;
-      username: string;
-      cells: Array<{
-        completionStatus: string;
-        masteryLevel: number | null;
-        color: string;
-      }>;
-    }>;
-    lessons: Array<{ lessonId: string; lessonTitle: string; orderIndex: number; isUnitTest: boolean }>;
+    rows: GradebookRow[];
+    lessons: GradebookLesson[];
   };
 
   return (

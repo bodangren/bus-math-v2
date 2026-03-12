@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { COMPETENCY_STANDARD_CODE_PATTERN } from '@/lib/curriculum/standards';
 
 export const contentBlockSchema = z.discriminatedUnion('type', [
   z.object({
@@ -21,8 +22,8 @@ export const contentBlockSchema = z.discriminatedUnion('type', [
     type: z.literal('activity'),
     activityId: z.string().uuid(),
     required: z.boolean().default(false),
-    /** Standard UUID to credit in student_competency when this activity is completed */
-    linkedStandardId: z.string().uuid().optional(),
+    /** Standard code to credit in student_competency when this activity is completed */
+    linkedStandardId: z.string().regex(COMPETENCY_STANDARD_CODE_PATTERN).optional(),
   }),
   z.object({
     id: z.string(),

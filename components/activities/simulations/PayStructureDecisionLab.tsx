@@ -332,6 +332,7 @@ export function PayStructureDecisionLab({}: PayStructureDecisionLabProps) {
   const [commissionInputs, setCommissionInputs] = useState<CommissionInputs>(initialCommission)
 
   const scenario = scenarios[current]
+  const completion = { done: current + 1, total: scenarios.length }
 
   const hourlyResult = computeHourly(hourlyInputs)
   const salaryResult = computeSalary(salaryInputs)

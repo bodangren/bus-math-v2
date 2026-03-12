@@ -87,9 +87,10 @@ export async function createClient() {
     }
 
     return {
-      select: () => ({
+      select: (_columns?: string) => ({
         eq: (column: string, value: string) => ({
           maybeSingle: async () => {
+            void _columns;
             if (column !== 'id') {
               return { data: null, error: { message: `Unsupported where column: ${column}` } };
             }

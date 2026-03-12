@@ -91,7 +91,7 @@ export function LoginForm({
       } else {
         // Default redirects based on role
         if (profile.role === 'admin') {
-          router.push('/admin/dashboard');
+          router.push('/teacher/dashboard');
         } else if (profile.role === 'teacher') {
           router.push('/teacher/dashboard');
         } else {

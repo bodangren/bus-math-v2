@@ -18,7 +18,7 @@ interface ActivityRendererProps {
   required?: boolean;
   initialStatus?: 'not_started' | 'in_progress' | 'completed' | 'current' | 'available' | 'locked';
   onStatusChange?: () => void;
-  /** Standard UUID to credit in student_competency when this activity is completed */
+  /** Standard code to credit in student_competency when this activity is completed */
   linkedStandardId?: string;
 }
 

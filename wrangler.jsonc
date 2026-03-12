@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bus-math-v2",
+  "main": "./cloudflare/worker.ts",
+  "compatibility_date": "2026-03-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "NEXT_PUBLIC_CONVEX_URL": "set-per-environment"
+  },
+  // Required secrets via `wrangler secret put`:
+  // - CONVEX_DEPLOY_KEY
+  // - AUTH_JWT_SECRET
+}

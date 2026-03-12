@@ -4,6 +4,7 @@ import { ChevronLeft } from 'lucide-react';
 import { requireTeacherSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { CourseOverviewGrid } from '@/components/teacher/CourseOverviewGrid';
+import type { CourseOverviewRow, UnitColumn } from '@/lib/teacher/course-overview';
 
 export default async function CourseGradebookPage() {
   const claims = await requireTeacherSessionClaims('/teacher/gradebook');
@@ -18,13 +19,8 @@ export default async function CourseGradebookPage() {
   if (!courseOverview) redirect('/teacher');
 
   const { rows, units } = courseOverview as {
-    rows: Array<{
-      studentId: string;
-      displayName: string;
-      username: string;
-      cells: Array<{ unitNumber: number; avgMastery: number | null; color: string }>;
-    }>;
-    units: Array<{ unitNumber: number }>;
+    rows: CourseOverviewRow[];
+    units: UnitColumn[];
   };
 
   return (

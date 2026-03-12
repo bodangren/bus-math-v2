@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireStudentRequestClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, fetchInternalMutation, fetchQuery, api, internal } from '@/lib/convex/server';
+import { COMPETENCY_STANDARD_CODE_PATTERN } from '@/lib/curriculum/standards';
 import type { CompletePhaseRequest, CompletePhaseResponse } from '@/types/api';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,7 +13,11 @@ const CompletePhaseSchema = z.object({
   phaseNumber: z.number().int().positive('Phase number must be a positive integer'),
   timeSpent: z.number().int().nonnegative('Time spent must be non-negative').max(86400, 'Time spent cannot exceed 24 hours'),
   idempotencyKey: z.string().uuid('Invalid idempotency key format'),
-  linkedStandardId: z.string().uuid('Invalid standard ID format').optional(),
+  linkedStandardId: z
+    .string()
+    .trim()
+    .regex(COMPETENCY_STANDARD_CODE_PATTERN, 'Invalid standard code format')
+    .optional(),
 });
 
 type CompletePhasePayload = z.infer<typeof CompletePhaseSchema> & CompletePhaseRequest;

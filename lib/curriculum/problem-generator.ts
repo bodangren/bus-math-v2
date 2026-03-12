@@ -1,6 +1,5 @@
 import {
   type CellValueExpectation,
-  type ProblemTemplate,
   type SpreadsheetProblemTemplate,
   parseProblemTemplate,
 } from './problem-template';
@@ -75,7 +74,7 @@ function withComputedCellExpectations(
 }
 
 export function generateProblemInstance(
-  templateInput: ProblemTemplate | SpreadsheetProblemTemplate,
+  templateInput: unknown,
   seed?: number,
 ): GeneratedProblemInstance {
   const template = parseProblemTemplate(templateInput);

@@ -68,6 +68,10 @@ export function CafeSupplyChaos({ activity, onComplete }: CafeSupplyChaosProps) 
   }
 
   const handleNextDay = () => {
+    if (!method) {
+      return
+    }
+
     const dayOrder = orders.find(o => o.day === currentDay)
     let remainingToFill = dayOrder?.quantity || 0
     let costOfGoodsSold = 0

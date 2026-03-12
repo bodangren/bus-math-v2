@@ -61,11 +61,11 @@ describe('StudentDashboard', () => {
     expect(mockFetchInternalQuery).not.toHaveBeenCalled();
   });
 
-  it('redirects admin sessions to the admin dashboard', async () => {
-    mockRequireStudentSessionClaims.mockImplementation(async () => redirect('/admin/dashboard'));
+  it('redirects legacy admin sessions to the teacher dashboard', async () => {
+    mockRequireStudentSessionClaims.mockImplementation(async () => redirect('/teacher'));
 
     await expect(StudentDashboard()).rejects.toThrow('NEXT_REDIRECT');
-    expect(redirect).toHaveBeenCalledWith('/admin/dashboard');
+    expect(redirect).toHaveBeenCalledWith('/teacher');
     expect(mockFetchInternalQuery).not.toHaveBeenCalled();
   });
 

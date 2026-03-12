@@ -266,7 +266,7 @@ afterEach(() => {
     });
   });
 
-  it('redirects to admin dashboard for admin role', async () => {
+  it('redirects legacy admin sessions to the teacher dashboard', async () => {
     const user = userEvent.setup();
     mockSignIn.mockResolvedValue(undefined);
     const { rerender } = render(<LoginForm />);
@@ -283,7 +283,7 @@ afterEach(() => {
     });
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('/admin/dashboard');
+      expect(mockPush).toHaveBeenCalledWith('/teacher/dashboard');
     });
   });
 
