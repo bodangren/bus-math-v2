@@ -1,0 +1,11 @@
+{
+  "track_id": "curriculum_authoring_publish_pipeline_20260313",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-03-13T00:00:00Z",
+  "updated_at": "2026-03-13T01:00:00Z",
+  "description": "Build the repository-authored curriculum publishing pipeline for Convex-backed published lesson delivery.",
+  "estimated_tasks": 6,
+  "actual_tasks": 6,
+  "deviation_notes": "The pipeline preserves legacy Unit 1 authored activity and teacher-submission contracts through publish-time normalization instead of fully canonicalizing those authored modules in this track."
+}

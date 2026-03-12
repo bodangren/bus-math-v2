@@ -77,8 +77,10 @@ Both accounts are intended for local development and test environments. Preview 
 6. Seed demo accounts and lesson data as needed:
    ```bash
    npx convex run seed:seedDemoAccounts
-   npx convex run seed:seedUnit1Lesson1
+   npx convex run seed:seedPublishedCurriculum
    ```
+
+   `seedUnit1Lesson1` remains available as a compatibility alias, but it now publishes the same full curriculum manifest.
 
    Automatic demo-account provisioning through `POST /api/users/ensure-demo` is only enabled in local development and automated test environments. Preview and production deployments should seed demo users ahead of time instead of exposing runtime reprovisioning.
 

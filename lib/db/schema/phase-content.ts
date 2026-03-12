@@ -20,7 +20,7 @@ export const contentBlockSchema = z.discriminatedUnion('type', [
   z.object({
     id: z.string(),
     type: z.literal('activity'),
-    activityId: z.string().uuid(),
+    activityId: z.string().min(1),
     required: z.boolean().default(false),
     /** Standard code to credit in student_competency when this activity is completed */
     linkedStandardId: z.string().regex(COMPETENCY_STANDARD_CODE_PATTERN).optional(),

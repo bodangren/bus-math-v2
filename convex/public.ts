@@ -24,13 +24,18 @@ interface PublicCurriculumUnit {
   lessons: PublicCurriculumLesson[];
 }
 
+function isCapstoneLesson(lesson: { metadata?: { tags?: string[] | null } | null }) {
+  return Boolean(lesson.metadata?.tags?.includes("capstone"));
+}
+
 export const getCurriculumStats = query({
   args: {},
   handler: async (ctx) => {
     const lessons = await ctx.db.query("lessons").collect();
     const activities = await ctx.db.query("activities").collect();
 
-    const uniqueUnits = new Set(lessons.map((l) => l.unitNumber));
+    const instructionalLessons = lessons.filter((lesson) => !isCapstoneLesson(lesson));
+    const uniqueUnits = new Set(instructionalLessons.map((lesson) => lesson.unitNumber));
 
     return {
       unitCount: uniqueUnits.size,
@@ -49,11 +54,13 @@ export const getUnits = query({
       .filter((q) => q.eq(q.field("orderIndex"), 1))
       .collect();
 
+    const instructionalLessons = lessons.filter((lesson) => !isCapstoneLesson(lesson));
+
     // Sort by unit number ascending
-    lessons.sort((a, b) => a.unitNumber - b.unitNumber);
+    instructionalLessons.sort((a, b) => a.unitNumber - b.unitNumber);
 
     // Map _id to id so the frontend doesn't need to change its React keys
-    return lessons.map((l) => ({
+    return instructionalLessons.map((l) => ({
       ...l,
       id: l._id,
       unit_number: l.unitNumber,

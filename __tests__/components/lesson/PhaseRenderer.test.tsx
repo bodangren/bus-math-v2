@@ -209,6 +209,21 @@ describe('PhaseRenderer', () => {
   });
 
   describe('Activity blocks', () => {
+    it('renders activities that use Convex document ids', () => {
+      const activityId = 'js7f4h7f9p3s8m6n2k1q0w4r5t6y7u8i';
+      const contentBlocks: ContentBlock[] = [
+        {
+          id: 'block-9a',
+          type: 'activity',
+          activityId,
+          required: true,
+        },
+      ];
+
+      render(<PhaseRenderer contentBlocks={contentBlocks} lessonId="test-lesson-id" phaseNumber={1} />);
+      expect(screen.getByTestId('activity-renderer')).toHaveTextContent(activityId);
+    });
+
     it('should render required activity', () => {
       const activityId = '550e8400-e29b-41d4-a716-446655440000';
       const contentBlocks: ContentBlock[] = [
