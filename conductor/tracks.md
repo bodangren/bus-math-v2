@@ -6,8 +6,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [x] **Track: Curriculum Rollout Wave 2 (Units 5-8)**
-  *Link: [./tracks/curriculum_rollout_wave2_20260314/](./tracks/curriculum_rollout_wave2_20260314/)*
+- No active track. The next `/conductor` run should take the first item from the planned queue.
 
 ## Planned Queue
 
@@ -17,6 +16,10 @@ This file is the source of truth for active execution order. Archived tracks liv
   Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
+
+- [x] **Track: Curriculum Rollout Wave 2 (Units 5-8)**
+  *Link: [./archive/curriculum_rollout_wave2_20260314/](./archive/curriculum_rollout_wave2_20260314/)*
+  *Closeout: archived on 2026-03-14 after replacing Units 5-8 generated curriculum scaffolds with canonical authored published lessons, locking Lesson 7-11 dataset/workbook/presentation contract details into manifest regressions, and updating the active Conductor curriculum status to show all eight instructional units as authored.*
 
 - [x] **Track: Unit 1 Redesign and Lesson Contract**
   *Link: [./archive/unit1_redesign_lesson_contract_20260313/](./archive/unit1_redesign_lesson_contract_20260313/)*
