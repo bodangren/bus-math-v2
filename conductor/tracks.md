@@ -6,25 +6,24 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-No active track. Start the next queued track only after this archive commit is merged.
+- None. Select the next item from the planned queue when execution resumes.
 
 ## Planned Queue
 
-1. **Teacher Monitoring Core**
-   Ship the minimum teacher monitoring surface needed for course, unit, lesson, and student follow-up.
-2. **Unit 1 Canonicalization and Archetype Exemplars**
-   Make Unit 1 textbook-quality and use it to prove every lesson archetype end to end.
-3. **Curriculum Rollout Wave 1 (Units 2-4)**
+1. **Curriculum Rollout Wave 1 (Units 2-4)**
    Publish the first half-book expansion on top of the proven Unit 1 model.
-4. **Curriculum Rollout Wave 2 (Units 5-8)**
+2. **Curriculum Rollout Wave 2 (Units 5-8)**
    Publish the second half-book expansion and finish the eight-unit instructional sequence.
-5. **Capstone and Textbook Completion**
+3. **Capstone and Textbook Completion**
    Implement the capstone experience and complete the first end-to-end version of the online textbook.
-6. **Cloudflare Production Hardening and Launch**
+4. **Cloudflare Production Hardening and Launch**
    Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
 
+- [x] **Track: Unit 1 Canonicalization and Archetype Exemplars**
+  *Link: [./archive/unit1_canonicalization_archetypes_20260313/](./archive/unit1_canonicalization_archetypes_20260313/)*
+  *Closeout: archived on 2026-03-13 after canonicalizing Unit 1 authored lesson contracts at the source, removing legacy publish-time special casing, and unifying student/teacher published lesson presentation through one helper.*
 - [x] **Track: Teacher Monitoring Core**
   *Link: [./archive/teacher_monitoring_core_20260313/](./archive/teacher_monitoring_core_20260313/)*
   *Closeout: archived on 2026-03-13 after adding the missing lesson-level teacher monitoring route, hardening prerender fallbacks for the landing page, and fixing the stale phase-completion client hook path.*
