@@ -59,6 +59,34 @@ describe('published curriculum manifest', () => {
     });
   });
 
+  it('publishes Units 5-8 as authored Wave 2 curriculum instead of generated placeholders', () => {
+    const manifest = buildPublishedCurriculumManifest();
+    const wave2Lessons = manifest.lessons.filter((lesson) => lesson.unitNumber >= 5 && lesson.unitNumber <= 8);
+
+    expect(wave2Lessons).toHaveLength(44);
+    expect(new Set(wave2Lessons.map((lesson) => lesson.source))).toEqual(new Set(['authored']));
+
+    expect(manifest.lessons.find((lesson) => lesson.slug === 'unit-5-lesson-1')).toMatchObject({
+      source: 'authored',
+      title: 'Launch the Asset Lifecycle',
+    });
+
+    expect(manifest.lessons.find((lesson) => lesson.slug === 'unit-6-lesson-8')).toMatchObject({
+      source: 'authored',
+      lessonType: 'project_sprint',
+    });
+
+    expect(manifest.lessons.find((lesson) => lesson.slug === 'unit-7-lesson-11')).toMatchObject({
+      source: 'authored',
+      lessonType: 'summative_mastery',
+    });
+
+    expect(manifest.lessons.find((lesson) => lesson.slug === 'unit-8-lesson-10')).toMatchObject({
+      source: 'authored',
+      lessonType: 'project_sprint',
+    });
+  });
+
   it('builds a deterministic seed plan without duplicate lesson slugs', () => {
     const seedPlan = buildPublishedCurriculumSeedPlan();
     const lessonSlugs = seedPlan.lessons.map((lesson) => lesson.slug);
@@ -174,6 +202,60 @@ describe('published curriculum manifest', () => {
       'checkpoint',
       'reflection',
     ]);
+  });
+
+  it('keeps Wave 2 authored lessons aligned to the canonical redesign contract', () => {
+    const manifest = buildPublishedCurriculumManifest();
+
+    for (const unitNumber of [5, 6, 7, 8]) {
+      const lesson7 = manifest.lessons.find((lesson) => lesson.slug === `unit-${unitNumber}-lesson-7`);
+      const lesson8 = manifest.lessons.find((lesson) => lesson.slug === `unit-${unitNumber}-lesson-8`);
+      const lesson9 = manifest.lessons.find((lesson) => lesson.slug === `unit-${unitNumber}-lesson-9`);
+      const lesson10 = manifest.lessons.find((lesson) => lesson.slug === `unit-${unitNumber}-lesson-10`);
+      const lesson11 = manifest.lessons.find((lesson) => lesson.slug === `unit-${unitNumber}-lesson-11`);
+
+      expect(lesson7?.phases.map((phase) => phase.phaseKey)).toEqual([
+        'hook',
+        'instruction',
+        'guided_practice',
+        'independent_practice',
+        'assessment',
+        'reflection',
+      ]);
+      expect(lesson8?.phases.map((phase) => phase.phaseKey)).toEqual([
+        'brief',
+        'workshop',
+        'checkpoint',
+        'reflection',
+      ]);
+      expect(lesson11?.phases.map((phase) => phase.phaseKey)).toEqual([
+        'directions',
+        'assessment',
+        'review',
+      ]);
+
+      const lesson7Markdown = readLessonMarkdown(lesson7);
+      const lesson8Markdown = readLessonMarkdown(lesson8);
+      const lesson9Markdown = readLessonMarkdown(lesson9);
+      const lesson10Markdown = readLessonMarkdown(lesson10);
+      const lesson11Markdown = readLessonMarkdown(lesson11).toLowerCase();
+
+      expect(lesson7Markdown).toContain(`unit_0${unitNumber}_class_dataset.csv`);
+      expect(lesson7Markdown).toContain(`unit_0${unitNumber}_guided_workbook.xlsx`);
+      expect(lesson7Markdown).toContain(`unit_0${unitNumber}_foundation_guide.pdf`);
+      expect(lesson7Markdown).toContain(`unit_0${unitNumber}_polish_guide.pdf`);
+
+      expect(lesson8Markdown).toContain(`unit_0${unitNumber}_group_dataset_01.csv`);
+      expect(lesson8Markdown).toContain(`unit_0${unitNumber}_group_dataset_06.csv`);
+      expect(lesson8Markdown.toLowerCase()).toContain('same product structure as lesson 7');
+
+      expect(lesson9Markdown).toContain(`unit_0${unitNumber}_polish_guide.pdf`);
+      expect(lesson10Markdown).toContain(`unit_0${unitNumber}_presentation_rubric.pdf`);
+      expect(lesson10Markdown.toLowerCase()).toContain('public presentation');
+      expect(lesson11Markdown).toContain('knowledge');
+      expect(lesson11Markdown).toContain('understanding');
+      expect(lesson11Markdown).toContain('application');
+    }
   });
 });
 

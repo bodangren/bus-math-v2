@@ -6,6 +6,11 @@ import {
   WAVE1_AUTHORED_BLUEPRINTS,
   type Wave1AuthoredLessonBlueprint,
 } from './generated/wave1-authored';
+import {
+  WAVE2_AUTHORED_UNITS,
+  type Wave2AuthoredLessonBlueprint,
+  type Wave2AuthoredUnitBlueprint,
+} from './generated/wave2-authored';
 
 export type PublishedLessonType =
   | 'core_instruction'
@@ -395,12 +400,17 @@ const GENERATED_PHASE_LABELS: Record<PublishedPhaseKey, string> = {
 };
 
 const AUTHORED_WAVE1_UNIT_NUMBERS = new Set([2, 3, 4]);
+const AUTHORED_WAVE2_UNIT_NUMBERS = new Set([5, 6, 7, 8]);
 
 function textSection(markdown: string): PublishedSection {
   return {
     sectionType: 'text',
     content: { markdown },
   };
+}
+
+function bulletList(items: readonly string[]): string {
+  return items.map((item) => `- ${item}`).join('\n');
 }
 
 function cleanAuthoringText(value: string | null | undefined): string {
@@ -855,6 +865,473 @@ function buildWave1PhaseSections(
   }
 }
 
+function buildWave2LessonDescription(
+  plan: UnitPlan,
+  blueprint: Wave2AuthoredLessonBlueprint,
+): string {
+  const objective = cleanAuthoringText(blueprint.objective);
+  const accountingFocus = cleanAuthoringText(blueprint.accountingFocus).toLowerCase();
+  const excelSkillFocus = cleanAuthoringText(blueprint.excelSkillFocus).toLowerCase();
+
+  return `${objective}. Students use ${excelSkillFocus} to support ${accountingFocus} in ${plan.title}.`;
+}
+
+function buildWave2LearningObjectives(
+  blueprint: Wave2AuthoredLessonBlueprint,
+  unitBlueprint: Wave2AuthoredUnitBlueprint,
+): string[] {
+  if (blueprint.lessonNumber === 7) {
+    return [
+      cleanAuthoringText(blueprint.objective),
+      `Use ${unitBlueprint.guidedWorkbook} and ${unitBlueprint.foundationGuide} to build the common class product.`,
+      `Prepare ${cleanAuthoringText(unitBlueprint.lesson7Product)} and refine it with ${unitBlueprint.polishGuide}.`,
+    ];
+  }
+
+  if (blueprint.lessonNumber === 8) {
+    return [
+      cleanAuthoringText(blueprint.objective),
+      `Use one of the six group datasets while keeping the same product structure as lesson 7.`,
+      `Advance ${cleanAuthoringText(unitBlueprint.lesson8Product)} with clear documentation and feedback notes.`,
+    ];
+  }
+
+  if (blueprint.lessonNumber === 9) {
+    return [
+      cleanAuthoringText(blueprint.objective),
+      `Use ${unitBlueprint.polishGuide} to tighten communication quality and visual clarity.`,
+      `Revise the team artifact into ${cleanAuthoringText(unitBlueprint.lesson9PolishGoal)}.`,
+    ];
+  }
+
+  if (blueprint.lessonNumber === 10) {
+    return [
+      cleanAuthoringText(blueprint.objective),
+      `Use ${unitBlueprint.presentationRubric} to prepare a public presentation with evidence.`,
+      cleanAuthoringText(unitBlueprint.lesson10PresentationExpectation),
+    ];
+  }
+
+  if (blueprint.lessonNumber === 11) {
+    return [
+      'Demonstrate knowledge, understanding, and application independently.',
+      cleanAuthoringText(unitBlueprint.lesson11KnowledgeTask),
+      cleanAuthoringText(unitBlueprint.lesson11ApplicationTask),
+    ];
+  }
+
+  return [
+    cleanAuthoringText(blueprint.objective),
+    `Use ${cleanAuthoringText(blueprint.excelSkillFocus)} accurately in context.`,
+    `Produce ${cleanAuthoringText(blueprint.formativeProduct)} with clear business reasoning.`,
+  ];
+}
+
+function buildWave2PhaseSections(
+  plan: UnitPlan,
+  title: string,
+  description: string,
+  unitBlueprint: Wave2AuthoredUnitBlueprint,
+  blueprint: Wave2AuthoredLessonBlueprint,
+  phaseKey: PublishedPhaseKey,
+): PublishedSection[] {
+  const objective = cleanAuthoringText(blueprint.objective);
+  const accountingFocus = cleanAuthoringText(blueprint.accountingFocus);
+  const excelSkillFocus = cleanAuthoringText(blueprint.excelSkillFocus);
+  const formativeProduct = cleanAuthoringText(blueprint.formativeProduct);
+  const launch = cleanAuthoringText(blueprint.launch);
+  const miniLesson = cleanAuthoringText(blueprint.miniLesson);
+  const guidedPractice = cleanAuthoringText(blueprint.guidedPractice);
+  const independentWork = cleanAuthoringText(blueprint.independentWork);
+  const reflection = cleanAuthoringText(blueprint.reflection);
+  const checkpoint = cleanAuthoringText(blueprint.checkpoint);
+
+  if (blueprint.lessonNumber <= 6) {
+    switch (phaseKey) {
+      case 'hook':
+        return [
+          textSection(
+            `## Launch the challenge\n\n${launch || plan.context}\n\n### Lesson objective\n- ${objective}\n\n### TechStart context\n${plan.scenario}`,
+          ),
+          calloutSection(
+            `${plan.title} depends on ${accountingFocus.toLowerCase()}, so students should listen for the business decision hiding underneath the math.`,
+          ),
+        ];
+      case 'instruction':
+        return [
+          textSection(
+            `## Core idea\n\n${miniLesson || objective}\n\n### Accounting focus\n- ${accountingFocus}\n\n### Excel move\n- ${excelSkillFocus}`,
+          ),
+          textSection(
+            `## What strong work looks like\n\nStudents should leave this phase ready to build ${formativeProduct.toLowerCase()} without losing sight of the unit deliverable.`,
+          ),
+        ];
+      case 'guided_practice':
+        return [
+          textSection(
+            `## Guided practice\n\n${guidedPractice || `Model the first round of ${title.toLowerCase()} together.`}\n\n### Current checkpoint\n${checkpoint}`,
+          ),
+          calloutSection(
+            `Narrate the reasoning while students practice so the class sees how ${accountingFocus.toLowerCase()} and ${excelSkillFocus.toLowerCase()} reinforce each other.`,
+          ),
+        ];
+      case 'independent_practice':
+        return [
+          textSection(
+            `## Independent work\n\n${independentWork}\n\n### Deliverable connection\nThis work feeds ${plan.projectDeliverable}.`,
+          ),
+          textSection(
+            `## Success criteria\n\n- ${objective}\n- Use ${excelSkillFocus.toLowerCase()} accurately\n- Keep the evidence anchored to ${accountingFocus.toLowerCase()}`,
+          ),
+        ];
+      case 'assessment':
+        return [
+          textSection(
+            `## Assessment checkpoint\n\n${checkpoint}\n\n### Artifact to submit\n${formativeProduct}`,
+          ),
+          textSection(
+            `## What the teacher is looking for\n\nThe evidence should show accurate ${accountingFocus.toLowerCase()} and clear communication of the business meaning behind the numbers.`,
+          ),
+        ];
+      case 'reflection':
+        return [
+          textSection(
+            `## Reflection and transfer\n\n${reflection}\n\n### Why it matters\n${description}`,
+          ),
+          calloutSection(
+            `Students should connect today's work back to ${plan.projectDeliverable} so the unit narrative keeps building from lesson to lesson.`,
+          ),
+        ];
+      default:
+        return toGeneratedSections({
+          unitTitle: plan.title,
+          title,
+          description,
+          learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+          phaseKey,
+        });
+    }
+  }
+
+  if (blueprint.lessonNumber === 7) {
+    switch (phaseKey) {
+      case 'hook':
+        return [
+          textSection(
+            `## Whole-class guided build\n\n${objective}\n\n### Common class dataset\n- ${unitBlueprint.classDataset}\n\n### Shared workbook\n- ${unitBlueprint.guidedWorkbook}`,
+          ),
+          textSection(
+            `## Lesson 7 product\n\nBuild ${unitBlueprint.lesson7Product} using one shared dataset so every student sees the same accounting and spreadsheet moves before group variation begins.`,
+          ),
+        ];
+      case 'instruction':
+        return [
+          textSection(
+            `## Foundation and polish guidance\n\n${miniLesson || objective}\n\n### Foundational how-to\n- ${unitBlueprint.foundationGuide}\n\n### Polish extension\n- ${unitBlueprint.polishGuide}`,
+          ),
+          calloutSection(
+            `Lesson 7 is the canonical scaffold. Students should keep the same workbook structure for the group sprint that follows.`,
+          ),
+        ];
+      case 'guided_practice':
+        return [
+          textSection(
+            `## Guided practice\n\n${guidedPractice}\n\n### Accounting focus\n- ${accountingFocus}\n\n### Excel focus\n- ${excelSkillFocus}`,
+          ),
+          textSection(
+            `## Teacher modeling moves\n\nUse ${unitBlueprint.guidedWorkbook} with ${unitBlueprint.classDataset} to demonstrate the exact sequence students must reuse later.`,
+          ),
+        ];
+      case 'independent_practice':
+        return [
+          textSection(
+            `## Independent build\n\n${independentWork}\n\n### Required artifact\n${unitBlueprint.lesson7Product}`,
+          ),
+          textSection(
+            `## Student resources\n\n${bulletList([
+              unitBlueprint.classDataset,
+              unitBlueprint.guidedWorkbook,
+              unitBlueprint.foundationGuide,
+              unitBlueprint.polishGuide,
+            ])}`,
+          ),
+        ];
+      case 'assessment':
+        return [
+          textSection(
+            `## Assessment checkpoint\n\n${checkpoint}\n\n### Artifact to submit\n${formativeProduct}`,
+          ),
+          textSection(
+            `## Review focus\n\nCheck that students can explain why the build uses one shared dataset and how the product will scale into lesson 8 team datasets.`,
+          ),
+        ];
+      case 'reflection':
+        return [
+          textSection(
+            `## Reflection and transfer\n\n${reflection}\n\n### Why it matters\n${description}`,
+          ),
+          calloutSection(
+            `This common build is the bridge between direct instruction and the group sprint. Students should leave with confidence in the same product structure they will use next.`,
+          ),
+        ];
+      default:
+        return toGeneratedSections({
+          unitTitle: plan.title,
+          title,
+          description,
+          learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+          phaseKey,
+        });
+    }
+  }
+
+  if (blueprint.lessonNumber === 8) {
+    switch (phaseKey) {
+      case 'brief':
+        return [
+          textSection(
+            `## Sprint brief\n\n${objective}\n\n### Group datasets\n${bulletList(unitBlueprint.groupDatasets)}\n\n### Team target\nBuild the same product structure as lesson 7 with a new dataset.`,
+          ),
+          textSection(
+            `## Required supports\n\nUse ${unitBlueprint.foundationGuide} to coach the group workbook build and keep the artifact aligned to ${unitBlueprint.lesson8Product}.`,
+          ),
+        ];
+      case 'workshop':
+        return [
+          textSection(
+            `## Workshop time\n\n${independentWork}\n\n### Accounting focus\n- ${accountingFocus}\n\n### Excel focus\n- ${excelSkillFocus}`,
+          ),
+          textSection(
+            `## Non-negotiables\n\nTeams must preserve the same product structure as lesson 7, document the selected dataset, and note every revision choice for later polish.`,
+          ),
+        ];
+      case 'checkpoint':
+        return [
+          textSection(
+            `## Checkpoint\n\n${checkpoint}\n\n### Artifact to review\n${formativeProduct}`,
+          ),
+          textSection(
+            `## Feedback lens\n\nPrioritize whether the group used one of the six datasets, preserved the common workbook structure, and kept the evidence ready for lesson 9 refinement.`,
+          ),
+        ];
+      case 'reflection':
+        return [
+          textSection(
+            `## Reflection and transfer\n\n${reflection}\n\n### Next step\nTeams carry this same product structure as lesson 7 into polish work with ${unitBlueprint.polishGuide}.`,
+          ),
+        ];
+      default:
+        return toGeneratedSections({
+          unitTitle: plan.title,
+          title,
+          description,
+          learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+          phaseKey,
+        });
+    }
+  }
+
+  if (blueprint.lessonNumber === 9) {
+    switch (phaseKey) {
+      case 'brief':
+        return [
+          textSection(
+            `## Polish brief\n\n${objective}\n\n### Polish guide\n- ${unitBlueprint.polishGuide}\n\n### Revision target\n${unitBlueprint.lesson9PolishGoal}`,
+          ),
+          calloutSection(
+            `Lesson 9 is for advanced polish, not another placeholder work day. Teams should revise clarity, professionalism, and communication quality.`,
+          ),
+        ];
+      case 'workshop':
+        return [
+          textSection(
+            `## Workshop time\n\n${independentWork}\n\n### Artifact to refine\n${unitBlueprint.lesson8Product}`,
+          ),
+          textSection(
+            `## What to improve\n\nUse ${unitBlueprint.polishGuide} to strengthen visuals, storytelling, and executive-level clarity without changing the core model logic.`,
+          ),
+        ];
+      case 'checkpoint':
+        return [
+          textSection(
+            `## Checkpoint\n\n${checkpoint}\n\n### Evidence to review\n${formativeProduct}`,
+          ),
+          textSection(
+            `## Teacher look-fors\n\nConfirm that the revisions elevate the work toward ${unitBlueprint.lesson9PolishGoal} and prepare teams for a public presentation.`,
+          ),
+        ];
+      case 'reflection':
+        return [
+          textSection(
+            `## Reflection and transfer\n\n${reflection}\n\n### Why this matters\n${description}`,
+          ),
+        ];
+      default:
+        return toGeneratedSections({
+          unitTitle: plan.title,
+          title,
+          description,
+          learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+          phaseKey,
+        });
+    }
+  }
+
+  if (blueprint.lessonNumber === 10) {
+    switch (phaseKey) {
+      case 'brief':
+        return [
+          textSection(
+            `## Presentation brief\n\n${objective}\n\n### Presentation rubric\n- ${unitBlueprint.presentationRubric}\n\n### Presentation expectation\n${unitBlueprint.lesson10PresentationExpectation}`,
+          ),
+          textSection(
+            `## Audience promise\n\nThis is a public presentation. Students should show evidence, name business tradeoffs, and answer at least one audience or teacher question.`,
+          ),
+        ];
+      case 'workshop':
+        return [
+          textSection(
+            `## Final rehearsal and delivery\n\n${independentWork}\n\n### Core artifact\n${formativeProduct}`,
+          ),
+          textSection(
+            `## Delivery checklist\n\nUse ${unitBlueprint.presentationRubric} to verify speaker roles, evidence, visuals, and the final recommendation before the public presentation begins.`,
+          ),
+        ];
+      case 'checkpoint':
+        return [
+          textSection(
+            `## Presentation checkpoint\n\n${checkpoint}\n\n### Evidence to review\n${formativeProduct}`,
+          ),
+          textSection(
+            `## Success criteria\n\nThe audience should understand the recommendation, the evidence trail, and the limits of the model without needing extra explanation after the public presentation.`,
+          ),
+        ];
+      case 'reflection':
+        return [
+          textSection(
+            `## Reflection and transfer\n\n${reflection}\n\n### Looking ahead\nThis presentation should leave students ready to defend integrated evidence in later capstone work.`,
+          ),
+        ];
+      default:
+        return toGeneratedSections({
+          unitTitle: plan.title,
+          title,
+          description,
+          learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+          phaseKey,
+        });
+    }
+  }
+
+  if (blueprint.lessonNumber === 11) {
+    switch (phaseKey) {
+      case 'directions':
+        return [
+          textSection(
+            `## Assessment directions\n\n${miniLesson || 'Complete the mastery task independently and show each step clearly.'}\n\n### Three assessment levels\n- knowledge\n- understanding\n- application`,
+          ),
+          textSection(
+            `## Mastery target\n\n${objective}\n\n### Independent work\n${independentWork}`,
+          ),
+        ];
+      case 'assessment':
+        return [
+          textSection(
+            `## Summative assessment\n\n### knowledge\n${unitBlueprint.lesson11KnowledgeTask}\n\n### understanding\n${unitBlueprint.lesson11UnderstandingTask}\n\n### application\n${unitBlueprint.lesson11ApplicationTask}`,
+          ),
+          textSection(
+            `## Artifact to submit\n\n${formativeProduct}\n\n### Checkpoint\n${checkpoint}`,
+          ),
+        ];
+      case 'review':
+        return [
+          textSection(
+            `## Review and next steps\n\n${reflection}\n\n### Why it matters\n${description}`,
+          ),
+          calloutSection(
+            `The review should make clear how knowledge, understanding, and application work together when students transfer this unit into the next stage of the course.`,
+          ),
+        ];
+      default:
+        return toGeneratedSections({
+          unitTitle: plan.title,
+          title,
+          description,
+          learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+          phaseKey,
+        });
+    }
+  }
+
+  return toGeneratedSections({
+    unitTitle: plan.title,
+    title,
+    description,
+    learningObjectives: buildWave2LearningObjectives(blueprint, unitBlueprint),
+    phaseKey,
+  });
+}
+
+function buildWave2AuthoredLesson(
+  plan: UnitPlan,
+  unitBlueprint: Wave2AuthoredUnitBlueprint,
+  blueprint: Wave2AuthoredLessonBlueprint,
+): PublishedCurriculumLesson {
+  const title = plan.lessonTitles[blueprint.lessonNumber - 1] ?? `${plan.title} Lesson ${blueprint.lessonNumber}`;
+  const lessonType = buildGeneratedLessonType(blueprint.lessonNumber);
+  const description = buildWave2LessonDescription(plan, blueprint);
+  const learningObjectives = buildWave2LearningObjectives(blueprint, unitBlueprint);
+  const unitContent = buildUnitContent(
+    plan,
+    blueprint.lessonNumber < 11
+      ? `/student/lesson/unit-${plan.unitNumber}-lesson-${blueprint.lessonNumber + 1}`
+      : undefined,
+  );
+
+  return {
+    unitNumber: plan.unitNumber,
+    unitTitle: plan.title,
+    orderIndex: blueprint.lessonNumber,
+    lessonNumber: blueprint.lessonNumber,
+    title,
+    slug: `unit-${plan.unitNumber}-lesson-${blueprint.lessonNumber}`,
+    description,
+    learningObjectives,
+    lessonType,
+    source: 'authored',
+    standards: [
+      {
+        code: `ACC-${plan.unitNumber}.${blueprint.lessonNumber}`,
+        isPrimary: true,
+      },
+    ],
+    version: {
+      version: 1,
+      title,
+      description,
+      status: 'published',
+    },
+    metadata: buildMetadata(unitContent),
+    activities: [],
+    phases: GENERATED_PHASE_SEQUENCES[lessonType].map((phaseKey, index) => ({
+      phaseNumber: index + 1,
+      phaseKey,
+      title: GENERATED_PHASE_LABELS[phaseKey],
+      estimatedMinutes: lessonType === 'project_sprint' ? 12 : lessonType === 'summative_mastery' ? 15 : 8,
+      sections: buildWave2PhaseSections(plan, title, description, unitBlueprint, blueprint, phaseKey),
+    })),
+  };
+}
+
+function buildWave2AuthoredLessons(plan: UnitPlan): PublishedCurriculumLesson[] {
+  const unitBlueprint = WAVE2_AUTHORED_UNITS[plan.unitNumber as keyof typeof WAVE2_AUTHORED_UNITS];
+  if (!unitBlueprint || unitBlueprint.lessons.length !== 11) {
+    throw new Error(`Missing authored Wave 2 lesson blueprints for Unit ${plan.unitNumber}`);
+  }
+
+  return unitBlueprint.lessons.map((blueprint) => buildWave2AuthoredLesson(plan, unitBlueprint, blueprint));
+}
+
 function buildWave1AuthoredLesson(
   plan: UnitPlan,
   blueprint: Wave1AuthoredLessonBlueprint,
@@ -1115,8 +1592,17 @@ export function buildPublishedCurriculumManifest(): PublishedCurriculumManifest 
     );
   }
 
+  for (const plan of UNIT_PLANS.filter((unit) => AUTHORED_WAVE2_UNIT_NUMBERS.has(unit.unitNumber))) {
+    lessons.push(
+      ...buildWave2AuthoredLessons(plan).map((lesson) => validatePublishedCurriculumLesson(lesson)),
+    );
+  }
+
   for (const plan of UNIT_PLANS.filter(
-    (unit) => unit.unitNumber !== 1 && !AUTHORED_WAVE1_UNIT_NUMBERS.has(unit.unitNumber),
+    (unit) =>
+      unit.unitNumber !== 1 &&
+      !AUTHORED_WAVE1_UNIT_NUMBERS.has(unit.unitNumber) &&
+      !AUTHORED_WAVE2_UNIT_NUMBERS.has(unit.unitNumber),
   )) {
     for (let orderIndex = 1; orderIndex <= 11; orderIndex += 1) {
       lessons.push(validatePublishedCurriculumLesson(buildGeneratedLesson(plan, orderIndex)));

@@ -6,15 +6,14 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- No active track. The next `/conductor` run should take the first item from the planned queue.
+- [x] **Track: Curriculum Rollout Wave 2 (Units 5-8)**
+  *Link: [./tracks/curriculum_rollout_wave2_20260314/](./tracks/curriculum_rollout_wave2_20260314/)*
 
 ## Planned Queue
 
-1. **Curriculum Rollout Wave 2 (Units 5-8)**
-  Publish the second half-book expansion and finish the eight-unit instructional sequence using the archived Unit 1 redesign exemplar as the contract baseline.
-2. **Capstone and Textbook Completion**
+1. **Capstone and Textbook Completion**
   Implement the capstone experience and complete the first end-to-end version of the online textbook.
-3. **Cloudflare Production Hardening and Launch**
+2. **Cloudflare Production Hardening and Launch**
   Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
