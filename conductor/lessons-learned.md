@@ -31,3 +31,4 @@
 - (2026-03-13, student_study_runtime) Completed lessons should reopen on their final published phase and use the dashboard-derived next-lesson recommendation, or the student loop drifts between dashboard and lesson routes.
 - (2026-03-13, teacher_monitoring_core) A pure lesson-monitoring mapper plus page-route tests is a safe way to add teacher drill-down routes without coupling server pages directly to legacy lesson-plan component internals.
 - (2026-03-13, unit1_canonicalization_archetypes) A shared published-lesson presentation helper is the right seam for keeping student and teacher lesson views aligned while still letting each surface add role-specific chrome.
+- (2026-03-13, curriculum_rollout_wave1) Lesson-planning matrices are a workable source for authored rollout waves when they are converted into canonical lesson blueprints and validated through manifest regression tests before runtime wiring.

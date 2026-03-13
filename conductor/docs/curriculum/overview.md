@@ -46,3 +46,8 @@ Each instructional unit contains 11 lessons:
 - Curriculum is published to Convex.
 - The runtime serves published content only.
 - In-app authoring is explicitly deferred.
+
+## Current Rollout Status
+
+- Units 1-4 publish from canonical repository-authored lesson modules.
+- Units 5-8 and capstone still publish from generated scaffolds until later rollout tracks replace them.
