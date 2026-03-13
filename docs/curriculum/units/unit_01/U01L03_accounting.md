@@ -3,9 +3,11 @@ lesson_id: "U01L03"
 type: "accounting"
 objectives:
   - "Demonstrate how business events affect the accounting equation."
-  - "Use SUMIF to calculate category totals in Excel."
-  - "Verify the accounting equation remains balanced after multiple events."
+  - "Trace the dual impact of a transaction across the equation."
+  - "Verify that the accounting equation remains balanced after multiple events."
 narrative_hook: "Every time Sarah buys supplies or makes a sale, her 'balance' shifts. She wants to see exactly how a $200 coffee bean purchase changes her totals."
+lesson_role: "Accounting Principle 2"
+accounting_principle: "Every business event has dual impact: at least two parts of the equation move so balance is preserved."
 assets:
   starter_sheet: "unit_01_ledger_v1.csv"
 auto_grade:
@@ -18,30 +20,29 @@ auto_grade:
 
 # Lesson: Business Events & The Equation
 
-## Phase 1: Entry
-- **Goal:** Scenario hook.
-- **Activity:** "If Sarah spends $100 of her cash to buy $100 worth of coffee beans, did her total Assets go up, down, or stay the same?"
+## Phase 1: Introduce Accounting Principle 2
+- **Goal:** Frame how events move the equation.
+- **Activity:** Ask: "If Sarah spends $100 cash to buy $100 of coffee beans, did the business get richer, poorer, or just different?" Introduce {{accounting_principle}}.
 
-## Phase 2: Intro
-- **Goal:** Introduce how events change balance without D/C mechanics.
-- **Narrative:** {{narrative_hook}}
-- **Concept:** Dual Impact. Every transaction affects at least two parts of the equation to keep it in balance.
+## Phase 2: I Do
+- **Goal:** Teacher models event tracing.
+- **Activity:** Demonstrate 3-5 sample TechStart events and narrate how each event changes A, L, and E without introducing debits/credits yet.
 
-## Phase 3: Guided
-- **Goal:** Teacher-led walk-through of transaction effects.
-- **Activity:** Write 5 event rows together (e.g., 'Started business with $10k cash', 'Purchased equipment for $2k'). Track the running totals for A, L, and E.
+## Phase 3: We Do
+- **Goal:** Guided practice with shared reasoning.
+- **Activity:** The class traces additional events together and updates running equation totals.
 
-## Phase 4: Independent
-- **Goal:** Students apply the concept to a small set of business transactions.
-- **Activity:** Students use `=SUMIF` in their spreadsheets to calculate the total for each category (Assets, Liabilities, Equity). They must create an 'Equation Check' cell that shows 'TRUE' if A = L + E.
+## Phase 4: You Do
+- **Goal:** Students apply dual-impact reasoning independently.
+- **Activity:** Students trace new events in the ledger, calculate category totals, and create an equation check cell that confirms whether A = L + E.
 
-## Phase 5: Checkpoint
-- **Goal:** Exit ticket to verify mastery of the accounting concept.
+## Phase 5: Exit Ticket Assessment
+- **Goal:** Verify mastery of dual-impact reasoning.
 - **Auto-Grade:** Does your Equation Check cell show TRUE for all 7 events?
 
 ## Phase 6: Reflection
-- **Goal:** Connect the accounting principle to business decision-making.
-- **Activity:** What surprised you about how events affect the equation? Can an event affect ONLY Assets? (e.g., Cash for Equipment).
+- **Goal:** Connect transaction tracing to business decision quality.
+- **Activity:** What surprised you about how events affect the equation? Can an event affect only Assets? Explain with a concrete example.
 
 ---
 

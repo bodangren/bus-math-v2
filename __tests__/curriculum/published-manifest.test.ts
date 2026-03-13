@@ -93,6 +93,53 @@ describe('published curriculum manifest', () => {
     ).toEqual(['directions', 'assessment', 'review']);
   });
 
+  it('keeps Unit 1 aligned to the redesign-first lesson contract', () => {
+    const manifest = buildPublishedCurriculumManifest();
+    const unit1Lessons = manifest.lessons.filter((lesson) => lesson.unitNumber === 1);
+
+    expect(unit1Lessons.map((lesson) => lesson.title)).toEqual([
+      'Launch Unit: A = L + E',
+      'Classify Accounts: A, L, and E',
+      'Apply A/L/E to Business Events',
+      'Build the Balance Sheet',
+      'Detect and Fix Ledger Errors',
+      'Data Validation and Integrity',
+      'Whole-Class Guided Build: Balance Snapshot',
+      'Group Build: Six Dataset Challenge',
+      'Group Polish: Investor-Ready Snapshot',
+      'Class Presentation: Balance by Design',
+      'Unit 1 Mastery Check',
+    ]);
+
+    const lesson7 = unit1Lessons.find((lesson) => lesson.orderIndex === 7);
+    const lesson8 = unit1Lessons.find((lesson) => lesson.orderIndex === 8);
+    const lesson9 = unit1Lessons.find((lesson) => lesson.orderIndex === 9);
+    const lesson10 = unit1Lessons.find((lesson) => lesson.orderIndex === 10);
+    const lesson11 = unit1Lessons.find((lesson) => lesson.orderIndex === 11);
+
+    expect(readLessonMarkdown(lesson7)).toContain('unit_01_class_snapshot_dataset.csv');
+    expect(readLessonMarkdown(lesson7)).toContain('unit_01_balance_snapshot_guided.xlsx');
+    expect(readLessonMarkdown(lesson7)).toContain('unit_01_foundational_build_guide.pdf');
+    expect(readLessonMarkdown(lesson7)).toContain('unit_01_polish_guide.pdf');
+
+    expect(readLessonMarkdown(lesson8)).toContain('unit_01_group_dataset_01.csv');
+    expect(readLessonMarkdown(lesson8)).toContain('unit_01_group_dataset_06.csv');
+    expect(readLessonMarkdown(lesson8).toLowerCase()).toContain('same product structure as lesson 7');
+    expect(readLessonMarkdown(lesson8).toLowerCase()).toContain('dataset');
+
+    expect(readLessonMarkdown(lesson9)).toContain('unit_01_polish_guide.pdf');
+    expect(readLessonMarkdown(lesson9)).toContain('investor-ready');
+    expect(readLessonMarkdown(lesson9)).toContain('60-second script');
+
+    expect(readLessonMarkdown(lesson10)).toContain('unit_01_presentation_rubric.pdf');
+    expect(readLessonMarkdown(lesson10)).toContain('answer at least one audience or teacher question');
+    expect(readLessonMarkdown(lesson10)).toContain('public presentation');
+
+    expect(readLessonMarkdown(lesson11).toLowerCase()).toContain('knowledge');
+    expect(readLessonMarkdown(lesson11).toLowerCase()).toContain('understanding');
+    expect(readLessonMarkdown(lesson11).toLowerCase()).toContain('application');
+  });
+
   it('keeps Wave 1 authored lessons aligned to the canonical archetype phase sequences', () => {
     const manifest = buildPublishedCurriculumManifest();
     const sampleLessons = [
@@ -129,3 +176,19 @@ describe('published curriculum manifest', () => {
     ]);
   });
 });
+
+function readLessonMarkdown(
+  lesson:
+    | ReturnType<typeof buildPublishedCurriculumManifest>['lessons'][number]
+    | undefined,
+): string {
+  if (!lesson) {
+    return '';
+  }
+
+  return lesson.phases
+    .flatMap((phase) => phase.sections)
+    .filter((section) => section.sectionType === 'text')
+    .map((section) => String(section.content.markdown ?? ''))
+    .join('\n');
+}

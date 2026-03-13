@@ -1,5 +1,7 @@
 # Curriculum Implementation Model
 
+The lesson-by-lesson authoring contract for unit redesign lives in [./unit-design-contract.md](./unit-design-contract.md). This file defines the runtime archetypes and publish rules that authored lessons must satisfy.
+
 ## Canonical Lesson Archetypes
 
 The runtime should support a small set of lesson archetypes instead of forcing every lesson into one shape.
@@ -63,3 +65,4 @@ Capstone details can expand later, but the runtime should assume capstone work i
 - Repository-authored curriculum is canonical.
 - No lesson type should require in-app authoring to be functional.
 - Every new activity contract must be documented once and validated against the declared component key.
+- Unit 1 is the accepted redesign-first exemplar for later unit rewrites; later instructional-unit redesign tracks should copy its contract-aligned pattern before introducing new unit-specific variations.

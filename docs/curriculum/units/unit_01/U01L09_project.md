@@ -2,34 +2,36 @@
 lesson_id: "U01L09"
 type: "project"
 objectives:
-  - "Explain the logic of a balanced ledger to a non-accounting audience."
-  - "Apply visual polish and clear labeling to a Balance Snapshot."
-  - "Draft a 60-second micro-pitch explaining the business's financial health."
+  - "Apply the advanced polish guide to the differentiated group workbook."
+  - "Improve visual clarity, professionalism, and audience-facing explanation."
+  - "Draft a 60-second micro-pitch that explains the group dataset's financial story."
 narrative_hook: "The data is clean, the equation balances. Now Sarah needs to make it 'pop'. She's presenting to her logistics partner today and needs her visuals to tell a compelling story."
+lesson_role: "Group polish / advanced proficiency"
+polish_howto: "unit_01_polish_guide.pdf"
 assets:
   visual_guide: "spreadsheet_polish_best_practices.pdf"
 ---
 
-# Project Sprint: Visuals & Narrative
+# Project Sprint: Investor-Ready Snapshot
 
-## Phase 1: Goal Setting
-- **Goal:** Define daily milestones and plan work.
-- **Activity:** Teams set goals for visual polish: 'Add titles and units to all charts', 'Draft micro-pitch script', 'Finalize color scheme'.
+## Phase 1: Advanced-Quality Criteria
+- **Goal:** Launch the polish day with an explicit quality target.
+- **Activity:** Review the polish moves students did not need for foundational completion: hierarchy, spacing, labels, chart readability, audience note, and explanatory script.
 
-## Phase 2: Workshop / Studio Time
-- **Goal:** Dedicated time for students to build their projects.
-- **Activity:** Group Work Day. Focus on the Balance Snapshot. Use the Visual Guide to improve readability. Draft a 60-second script answering: 'Is our business healthy? How do we know?'
+## Phase 2: Polish / Advanced How-To
+- **Goal:** Model what advanced proficiency looks like.
+- **Activity:** Use {{polish_howto}} and {{assets.visual_guide}} to show how a technically correct workbook becomes investor-ready.
 
-## Phase 3: Milestone Checkpoint
-- **Goal:** Verify progress against the day's goals.
-- **Activity:** Teacher Spot-Check. The teacher reviews the draft snapshot and micro-pitch script, providing quick feedback on clarity and narrative alignment.
+## Phase 3: Group Revision
+- **Goal:** Upgrade the group workbook and narrative.
+- **Activity:** Teams revise their Lesson 8 workbook, improve chart/title/layout quality, and draft a 60-second script answering: "Is this business healthy, and how do we know?"
 
-## Phase 4: Peer Feedback & Reflection
-- **Goal:** Get input from peers and reflect on the day's work.
-- **Activity:** Micro-Pitch Practice. Pairs of teams practice their 60-second pitches. Give feedback on: 'Did they explain A=L+E clearly?' and 'Was the chart easy to read?'
+## Phase 4: Checkpoint + Reflection
+- **Goal:** Verify presentation readiness.
+- **Activity:** Teams practice the micro-pitch for a partner group and record one revision they still need before the formal class presentation in Lesson 10.
 
 ---
 
 ## Teacher Notes
-- **Pedagogy:** Encourage students to think about their audience. What does a partner care about most? (Profitability, Debt, Stability).
-- **Setup:** Display the 'Visual Polish Best Practices' on the screen.
+- **Pedagogy:** Lesson 9 is the explicit polish day. Keep foundational completion and advanced quality separate in teacher language.
+- **Setup:** Display the polish examples so students can see the difference between "correct" and "presentation-ready."

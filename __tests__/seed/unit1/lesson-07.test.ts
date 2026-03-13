@@ -2,6 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { LESSON_07_SEED_DATA } from '../../../supabase/seed/unit1/lesson-07';
 
 describe('Lesson 07 seed data — Balance Snapshot with Visual (ACC-1.7)', () => {
+  function readMarkdown() {
+    return LESSON_07_SEED_DATA.phases
+      .flatMap((phase) => phase.sections)
+      .filter((section) => section.sectionType === 'text')
+      .map((section) => String((section.content as Record<string, unknown>).markdown ?? ''))
+      .join('\n');
+  }
+
   it('defines exactly 6 phases', () => {
     expect(LESSON_07_SEED_DATA.phases).toHaveLength(6);
   });
@@ -93,5 +101,16 @@ describe('Lesson 07 seed data — Balance Snapshot with Visual (ACC-1.7)', () =>
     expect(act).toBeDefined();
     const props = act!.props as Record<string, unknown>;
     expect(props.template).toBe('balance-sheet');
+  });
+
+  it('treats Lesson 7 as the whole-class guided build with explicit shared assets', () => {
+    expect(LESSON_07_SEED_DATA.lesson.title).toBe('Whole-Class Guided Build: Balance Snapshot');
+
+    const markdown = readMarkdown();
+    expect(markdown).toContain('whole-class guided build');
+    expect(markdown).toContain('unit_01_class_snapshot_dataset.csv');
+    expect(markdown).toContain('unit_01_balance_snapshot_guided.xlsx');
+    expect(markdown).toContain('unit_01_foundational_build_guide.pdf');
+    expect(markdown).toContain('unit_01_polish_guide.pdf');
   });
 });

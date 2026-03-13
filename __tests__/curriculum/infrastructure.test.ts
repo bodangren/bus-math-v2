@@ -70,7 +70,7 @@ describe('Curriculum Infrastructure', () => {
     });
   });
 
-  it('should have the correct 6-phase sequence (Reflection after Checkpoint) in L1-L7', () => {
+  it('should keep the 6-phase rhythm with reflection after the phase 5 assessment block in L1-L7', () => {
     const lessons = [
       'U01L01_launch.md',
       'U01L02_accounting.md',
@@ -84,12 +84,13 @@ describe('Curriculum Infrastructure', () => {
       const lessonPath = path.resolve(process.cwd(), `docs/curriculum/units/unit_01/${lesson}`);
       const content = fs.readFileSync(lessonPath, 'utf8');
       
-      const checkpointIndex = content.indexOf('Phase 5: Checkpoint');
-      const reflectionIndex = content.indexOf('Phase 6: Reflection');
-      
-      expect(checkpointIndex).toBeGreaterThan(-1);
+      const phase5Match = content.match(/## Phase 5: .+/);
+      const reflectionIndex = content.indexOf('## Phase 6: Reflection');
+
+      expect(phase5Match).not.toBeNull();
+      expect(phase5Match?.[0].toLowerCase()).toMatch(/assessment|exit ticket/);
       expect(reflectionIndex).toBeGreaterThan(-1);
-      expect(reflectionIndex).toBeGreaterThan(checkpointIndex);
+      expect(reflectionIndex).toBeGreaterThan(content.indexOf(phase5Match?.[0] ?? ''));
     });
   });
 

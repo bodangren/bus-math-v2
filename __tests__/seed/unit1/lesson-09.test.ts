@@ -1,21 +1,33 @@
 import { describe, expect, it } from 'vitest';
 import { LESSON_09_SEED_DATA } from '../../../supabase/seed/unit1/lessons-08-10';
 
-describe('Lesson 09 seed data — Group Project Day 2', () => {
+describe('Lesson 09 seed data — Group Polish: Investor-Ready Snapshot', () => {
+  function readMarkdown() {
+    return LESSON_09_SEED_DATA.phases
+      .flatMap((phase) => phase.sections)
+      .filter((section) => section.sectionType === 'text')
+      .map((section) => String((section.content as Record<string, unknown>).markdown ?? ''))
+      .join('\n');
+  }
+
   it('defines the canonical four project-sprint phases', () => {
     expect(LESSON_09_SEED_DATA.phases).toHaveLength(4);
     expect(LESSON_09_SEED_DATA.phases.map((phase) => phase.title.toLowerCase())).toEqual([
-      expect.stringContaining('brief'),
-      expect.stringContaining('workshop'),
+      expect.stringContaining('advanced-quality'),
+      expect.stringContaining('polish'),
       expect.stringContaining('checkpoint'),
       expect.stringContaining('reflection'),
     ]);
   });
 
-  it('every phase has at least one section', () => {
-    for (const phase of LESSON_09_SEED_DATA.phases) {
-      expect(phase.sections.length, `phase ${phase.phaseNumber} sections`).toBeGreaterThanOrEqual(1);
-    }
+  it('locks Lesson 9 to polish and advanced proficiency guidance', () => {
+    expect(LESSON_09_SEED_DATA.lesson.title).toBe('Group Polish: Investor-Ready Snapshot');
+
+    const markdown = readMarkdown();
+    expect(markdown).toContain('unit_01_polish_guide.pdf');
+    expect(markdown).toContain('investor-ready');
+    expect(markdown).toContain('60-second script');
+    expect(markdown).toContain('Lesson 8 workbook');
   });
 
   it('checkpoint phase has a required reflection-journal activity', () => {
@@ -25,8 +37,19 @@ describe('Lesson 09 seed data — Group Project Day 2', () => {
     expect(activitySection, 'activity section in checkpoint phase').toBeDefined();
     const content = activitySection!.content as Record<string, unknown>;
     expect(content.required).toBe(true);
-    const act = LESSON_09_SEED_DATA.activities.find(a => a.id === content.activityId);
+    const act = LESSON_09_SEED_DATA.activities.find((activity) => activity.id === content.activityId);
     expect(act?.componentKey).toBe('reflection-journal');
+  });
+
+  it('reflection phase preserves readiness for the formal class presentation', () => {
+    const reflection = LESSON_09_SEED_DATA.phases.find((phase) => phase.phaseNumber === 4);
+    expect(reflection).toBeDefined();
+    const markdown = reflection!.sections
+      .filter((section) => section.sectionType === 'text')
+      .map((section) => String((section.content as Record<string, unknown>).markdown ?? ''))
+      .join('\n');
+
+    expect(markdown).toContain('formal class presentation in Lesson 10');
   });
 
   it('lesson slug is unit-1-lesson-9', () => {

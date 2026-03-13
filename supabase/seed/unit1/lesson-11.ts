@@ -53,11 +53,11 @@ export const LESSON_11_SEED_DATA = {
   lesson: {
     id: IDS.LESSON,
     slug: 'unit-1-lesson-11',
-    title: 'Individual Assessment: Balance by Design',
+    title: 'Unit 1 Mastery Check',
     unitNumber: 1,
     orderIndex: 11,
     description:
-      'Demonstrate mastery of ACC-1.1 through ACC-1.7 with tiered, auto-graded assessment tasks and algorithmic retest support.',
+      'Demonstrate Unit 1 mastery through explicit knowledge, understanding, and application assessment tiers.',
     learningObjectives: [
       'Demonstrate knowledge of Unit 1 standards ACC-1.1 through ACC-1.7',
       'Apply concepts in scenario-based understanding questions',
@@ -66,8 +66,8 @@ export const LESSON_11_SEED_DATA = {
   },
   version: {
     id: IDS.VERSION,
-    title: 'Individual Assessment: Balance by Design',
-    description: 'Tiered summative assessment with algorithmic retest-ready questions.',
+    title: 'Unit 1 Mastery Check',
+    description: 'Three-tier summative assessment with knowledge, understanding, and application tasks.',
     status: 'published',
   },
   standards: [

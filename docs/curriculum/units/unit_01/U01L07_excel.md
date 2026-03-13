@@ -2,10 +2,15 @@
 lesson_id: "U01L07"
 type: "excel"
 objectives:
-  - "Construct a professional Balance Snapshot using data from Unit 1."
-  - "Create a Bar Chart to visualize Asset and Liability totals."
-  - "Format a final financial report for print and presentation."
+  - "Construct a professional Balance Snapshot using the shared Unit 1 class dataset."
+  - "Use a scaffolded workbook to synthesize the accounting and Excel concepts from Lessons 1-6."
+  - "Distinguish foundational completion from polished, advanced-quality communication."
 narrative_hook: "Sarah is meeting her banker tomorrow. She's got her clean data, her balanced equation, and her BS skeleton. Now she needs to turn that raw info into a 'Snapshot' that tells a clear story."
+lesson_role: "Whole-Class Guided Project Build"
+project_dataset: "unit_01_class_snapshot_dataset.csv"
+project_workbook: "unit_01_balance_snapshot_guided.xlsx"
+foundational_howto: "unit_01_foundational_build_guide.pdf"
+polish_howto: "unit_01_polish_guide.pdf"
 assets:
   starter_sheet: "unit_01_ledger_v1.csv"
 auto_grade:
@@ -23,36 +28,32 @@ auto_grade:
 
 # Lesson: The Balance Snapshot
 
-## Phase 1: Entry
-- **Goal:** Brief hook or activator.
-- **Activity:** "If a banker only had 15 seconds to look at Sarah's business, what's the most important thing they should see?"
+## Phase 1: Introduce the Synthesis Task
+- **Goal:** Frame the first full-unit product build.
+- **Activity:** Explain that Lesson 7 is the whole-class guided build. Every student uses the same dataset, {{project_dataset}}, and the same scaffolded workbook, {{project_workbook}}, so the class can focus on the process before groups receive differentiated data.
 
-## Phase 2: Intro
-- **Goal:** Introduce the Excel skill within the narrative.
-- **Narrative:** {{narrative_hook}}
-- **Concept:** Visual Communication. A picture (or chart) is worth a thousand transaction rows. Total Assets vs. Total Liabilities is a core business health metric.
+## Phase 2: I Do
+- **Goal:** Teacher models the full task and quality bar.
+- **Activity:** Demonstrate the finished shape of the Balance Snapshot, including a structured Balance Sheet, a bar chart, totals, and print layout.
 
-## Phase 3: Guided
-- **Goal:** Teacher-led walk-through of chart basics.
-- **Activity:** Create a bar chart together comparing 'Total Assets' and 'Total Liabilities'. Show how to add titles, clear labels, and adjust colors to make it professional.
+## Phase 3: We Do
+- **Goal:** Guided class build using the common workbook.
+- **Activity:** The class completes the foundational-proficiency how-to in {{foundational_howto}} together: entering the class dataset, checking the equation, building the report sections, and generating the chart.
 
-## Phase 4: Independent
-- **Goal:** Students apply the skill to build or modify a spreadsheet.
-- **Activity:** Students assemble their final Unit 1 Milestone: The Balance Snapshot. This must include:
-  - A formatted Balance Sheet.
-  - A bar chart (Assets vs. Liabilities).
-  - Clear section totals and a balanced accounting equation.
+## Phase 4: You Do
+- **Goal:** Students finish the common class product independently.
+- **Activity:** Students complete the remaining workbook steps and then use {{polish_howto}} to add advanced communication quality such as chart labeling, professional layout, and audience-ready explanatory notes.
 
-## Phase 5: Checkpoint
-- **Goal:** Exit ticket to verify mastery of the Excel skill.
+## Phase 5: Exit Ticket Assessment
+- **Goal:** Verify students understand the final synthesis product.
 - **Auto-Grade:** Does your Snapshot include a chart that correctly reflects your category totals? ({{auto_grade.questions.0.question}})
 
 ## Phase 6: Reflection
-- **Goal:** Connect the Excel skill to business efficiency and accuracy.
-- **Activity:** What story does your snapshot tell? Is Sarah's business in good health? If not, what one thing would you change?
+- **Goal:** Prepare students for the differentiated group build.
+- **Activity:** What story does your class snapshot tell? Which part of the foundational build felt secure, and which polish step still needs work before your group receives its own dataset in Lesson 8?
 
 ---
 
 ## Teacher Notes
-- **Pedagogy:** Focus on the 'Presentation' aspect. This is the first major milestone of the unit.
-- **Setup:** Ensure students have their final cleaned and validated data from L6.
+- **Pedagogy:** This lesson is not just another Excel skill lesson. It is the whole-class guided project build that synthesizes Unit 1.
+- **Setup:** All students should work from the same scaffolded workbook and same dataset before group differentiation begins in Lesson 8.

@@ -2228,10 +2228,10 @@ export const AUTHORED_UNIT_1_LESSONS = [
     "lesson": {
       "id": "d6b57545-65f6-4c39-80d5-000000000007",
       "slug": "unit-1-lesson-7",
-      "title": "Balance Snapshot with Visual",
+      "title": "Whole-Class Guided Build: Balance Snapshot",
       "unitNumber": 1,
       "orderIndex": 7,
-      "description": "Assemble TechStart's Balance Snapshot — a clean Balance Sheet paired with a bar chart comparing Total Assets to Total Liabilities — and submit Milestone 1 (Snapshot v0.9).",
+      "description": "Use the shared Unit 1 class dataset and scaffolded workbook to complete the whole-class guided Balance Snapshot build before groups receive differentiated project data.",
       "learningObjectives": [
         "Compile a clean Balance Sheet from a validated ledger",
         "Build a bar chart in Excel comparing Total Assets to Total Liabilities",
@@ -2240,8 +2240,8 @@ export const AUTHORED_UNIT_1_LESSONS = [
     },
     "version": {
       "id": "d6b57545-65f6-4c39-80d5-000700000002",
-      "title": "Balance Snapshot with Visual",
-      "description": "Turn TechStart's validated data into a presentation-ready Balance Snapshot with chart.",
+      "title": "Whole-Class Guided Build: Balance Snapshot",
+      "description": "Complete the shared class workbook build with the common dataset, foundational guide, and polish guide.",
       "status": "published"
     },
     "standards": [
@@ -2254,26 +2254,26 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000700000100",
         "phaseNumber": 1,
-        "title": "Hook: TechStart's Classroom Presentation",
+        "title": "Hook: The Whole-Class Guided Build",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## The Presentation Challenge\n\nSarah's teacher made an announcement on Monday:\n\n> *\"On Friday, each group will present TechStart's financial position to the class. Your presentation must include a one-page document that shows TechStart's Balance Sheet and a visual comparison of what the business owns versus what it owes. You have until Thursday to submit a draft — that's your first milestone.\"*\n\nSarah had all the data. Six weeks of transactions, classified and validated. But \"a one-page document with a visual\" was different from a spreadsheet with rows and columns.\n\nShe needed to build a **Balance Snapshot**: a clean, formatted Balance Sheet on the left, and a simple bar chart on the right showing Total Assets versus Total Liabilities. One page. Print-ready. Clear enough for someone who'd never seen TechStart's numbers before.\n\n### Quick Case: The Visual Question\nIf you were looking at TechStart's financial position for the first time — without knowing anything about the numbers — what would a bar chart of Assets vs. Liabilities tell you that the numbers alone wouldn't?\n\n*Discuss with your partner. What does visual proportion communicate that text doesn't?*"
+              "markdown": "## The Whole-Class Guided Build\n\nLesson 7 is the **whole-class guided build** for Unit 1. Before groups branch into differentiated project data, everyone uses the same scaffolded workbook, `unit_01_balance_snapshot_guided.xlsx`, and the same shared dataset, `unit_01_class_snapshot_dataset.csv`.\n\nSarah is about to show her banker a one-page picture of TechStart's financial position. The class will build that product together first so every student understands the non-negotiable structure before Lesson 8 introduces six different datasets.\n\n### Quick Case: The Visual Question\nIf you were looking at TechStart's financial position for the first time, what would a bar chart of Assets vs. Liabilities tell you that the numbers alone would hide?\n\n*Discuss with a partner. What does visual proportion communicate that raw rows do not?*"
             }
           },
           {
             "sectionType": "callout",
             "content": {
               "variant": "why-this-matters",
-              "content": "Numbers in a spreadsheet are for accountants. A Balance Snapshot is for everyone else. When Sarah eventually pitches TechStart to investors, applies for a bank loan, or reports to a board of directors, she won't hand them a raw ledger. She'll hand them a one-page summary that tells the financial story at a glance. The ability to build that summary — clean, accurate, and visual — is a skill that sets accountants apart from data entry clerks."
+              "content": "The whole-class guided build establishes the common quality bar for Unit 1. By using one shared workbook and one shared dataset first, the class can focus on process, audience, and evidence before six differentiated group cases begin."
             }
           },
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## What a Balance Snapshot Includes\n\nA Balance Snapshot is a two-part document:\n\n**Part 1 — The Balance Sheet (left column or top section)**\n- TechStart's name, \"Balance Sheet,\" and current date as of header\n- Three sections: Assets (Current + Non-Current), Liabilities (Current + Non-Current), Equity\n- Subtotals at each level\n- Grand totals: TOTAL ASSETS and TOTAL LIABILITIES + EQUITY (must match)\n- Clean formatting: bold headers, indented accounts, Accounting number format, double underline for final totals\n\n**Part 2 — The Bar Chart (right column or bottom section)**\n- Title: \"TechStart Financial Position — [Date]\"\n- Two bars: one for Total Assets, one for Total Liabilities\n- Y-axis: dollar amounts\n- Data labels on each bar showing the exact total\n- A note below the chart: \"Equity = $[Total Equity]\" — the gap between the two bars\n\nThe visual purpose: if the Assets bar is taller than the Liabilities bar, TechStart has positive equity. The larger the gap, the healthier the business."
+              "markdown": "## What the Shared Build Includes\n\nThe class product has two anchor assets:\n\n- `unit_01_balance_snapshot_guided.xlsx` for the scaffolded workbook structure\n- `unit_01_class_snapshot_dataset.csv` for the common TechStart case\n\nThe build also uses:\n\n- `unit_01_foundational_build_guide.pdf` for the essential completion moves\n- `unit_01_polish_guide.pdf` for audience-ready quality moves\n\nA Balance Snapshot is a two-part document:\n\n**Part 1 — The Balance Sheet (left column or top section)**\n- TechStart's name, \"Balance Sheet,\" and current date as of header\n- Three sections: Assets (Current + Non-Current), Liabilities (Current + Non-Current), Equity\n- Subtotals at each level\n- Grand totals: TOTAL ASSETS and TOTAL LIABILITIES + EQUITY (must match)\n- Clean formatting: bold headers, indented accounts, Accounting number format, double underline for final totals\n\n**Part 2 — The Bar Chart (right column or bottom section)**\n- Title: \"TechStart Financial Position — [Date]\"\n- Two bars: one for Total Assets, one for Total Liabilities\n- Y-axis: dollar amounts\n- Data labels on each bar showing the exact total\n- A note below the chart: \"Equity = $[Total Equity]\" — the gap between the two bars\n\nThe visual purpose: if the Assets bar is taller than the Liabilities bar, TechStart has positive equity. The larger the gap, the healthier the business."
             }
           }
         ]
@@ -2281,19 +2281,19 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000700000200",
         "phaseNumber": 2,
-        "title": "Introduction: Building the Chart and Print Layout",
+        "title": "Introduction: Shared Workbook and Quality Bar",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Introduction: Visual Communication — The Balance Snapshot\n\nIn this lesson you add the final layer to TechStart's financial toolkit: **visual communication**. Numbers tell the truth; a well-designed chart makes that truth impossible to miss.\n\nYou'll build a two-bar column chart comparing Total Assets to Total Liabilities — the height difference between the bars is TechStart's equity, shown visually. Then you'll format the spreadsheet for professional presentation: landscape orientation, narrow margins, data labels, and a descriptive chart title. The finished product — your **Balance Snapshot v0.9** — is Milestone ① of the Unit 1 project."
+              "markdown": "## Introduction: Shared Workbook, Shared Sequence\n\nIn this lesson every student completes the same guided workbook so the class can rehearse the full Unit 1 process together. The **foundational build guide** in `unit_01_foundational_build_guide.pdf` covers the required steps. The **polish guide** in `unit_01_polish_guide.pdf` shows what advanced-quality communication looks like once the workbook is correct.\n\nYou'll still build the two-bar chart comparing Total Assets to Total Liabilities, but the bigger point is to internalize the common project sequence before Lesson 8 gives each group a new dataset."
             }
           },
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## The Chart-Building Walkthrough\n\n### Step 1: Create a Summary Table\n\nSomewhere below your Balance Sheet data, create a small table:\n\n| Label | Value |\n|-------|-------|\n| Total Assets | =[cell with Total Assets formula] |\n| Total Liabilities | =[cell with Total Liabilities formula] |\n\nUse cell references — don't type the numbers. This way the chart updates automatically if your data changes.\n\n### Step 2: Insert the Column Chart\n\n1. Select the two value cells (not the labels)\n2. Insert tab → Charts → 2-D Column Chart\n3. Excel creates a two-bar chart\n\n### Step 3: Format the Chart\n\n1. Click the chart title → rename to: **TechStart Financial Position — [Date]**\n2. Click a bar → right-click → Add Data Labels\n3. Click the Legend → Delete (the bars are self-explanatory)\n4. Resize the chart to fit neatly next to your Balance Sheet\n\n### Step 4: Print Layout\n\n1. Page Layout tab → Orientation: **Landscape**\n2. Margins: **Narrow**\n3. Scale: Fit to **1 page**\n4. Add a header: *TechStart Solutions | Balance Snapshot v0.9*\n5. File → Print Preview — confirm the layout looks professional\n\n### Step 5: The Equity Note\n\nBelow the chart (or in a text box), add:\n\n> *TechStart Equity: $[amount] — [Date]*\n\nThis contextualizes the gap between the bars for anyone who reads the document."
+              "markdown": "## The Guided Build Walkthrough\n\n### Step 1: Create a Summary Table\n\nSomewhere below your Balance Sheet data, create a small table:\n\n| Label | Value |\n|-------|-------|\n| Total Assets | =[cell with Total Assets formula] |\n| Total Liabilities | =[cell with Total Liabilities formula] |\n\nUse cell references — don't type the numbers. This way the chart updates automatically if your data changes.\n\n### Step 2: Insert the Column Chart\n\n1. Select the two value cells (not the labels)\n2. Insert tab → Charts → 2-D Column Chart\n3. Excel creates a two-bar chart\n\n### Step 3: Format the Chart\n\n1. Click the chart title → rename to: **TechStart Financial Position — [Date]**\n2. Click a bar → right-click → Add Data Labels\n3. Click the Legend → Delete (the bars are self-explanatory)\n4. Resize the chart to fit neatly next to your Balance Sheet\n\n### Step 4: Foundational Completion\n\nUse `unit_01_foundational_build_guide.pdf` to verify the non-negotiables:\n- the Balance Sheet sections are complete\n- totals reconcile to the accounting equation\n- the chart uses linked values rather than typed numbers\n\n### Step 5: Print Layout\n\n1. Page Layout tab → Orientation: **Landscape**\n2. Margins: **Narrow**\n3. Scale: Fit to **1 page**\n4. Add a header: *TechStart Solutions | Balance Snapshot v0.9*\n5. File → Print Preview — confirm the layout looks professional\n\n### Step 6: Advanced Polish\n\nUse `unit_01_polish_guide.pdf` to add chart labels, layout hierarchy, and audience-facing notes.\n\nBelow the chart (or in a text box), add:\n\n> *TechStart Equity: $[amount] — [Date]*\n\nThis contextualizes the gap between the bars for anyone who reads the document."
             }
           }
         ]
@@ -2335,13 +2335,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000700000400",
         "phaseNumber": 4,
-        "title": "Independent Practice: Build TechStart's Balance Snapshot",
+        "title": "Independent Practice: Finish the Shared Balance Snapshot",
         "estimatedMinutes": 25,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Build the Full Balance Snapshot\n\nNow build the complete Balance Snapshot using the spreadsheet tool below. Your goal: a clean, print-ready document with a structured Balance Sheet and a bar chart.\n\n**Requirements for Balance Snapshot v0.9:**\n- [ ] Balance Sheet header: TechStart Solutions | Balance Sheet | As of [Date]\n- [ ] Three sections: Assets (Current + Non-Current), Liabilities (Current + Non-Current), Equity\n- [ ] At least 6 accounts from TechStart's Month 3 data\n- [ ] Section subtotals and grand totals in proper order\n- [ ] Grand total check: Total Assets = Total Liabilities + Equity ($11,960)\n- [ ] Bar chart comparing Total Assets ($11,960) vs Total Liabilities ($6,230)\n- [ ] Equity note showing $5,730\n- [ ] Print-ready layout: fits on one landscape page\n\n**Use these TechStart Month 3 balances:**\n\n| Account | Balance |\n|---------|---------|\n| Cash | $5,100 |\n| Accounts Receivable | $1,800 |\n| Office Supplies | $220 |\n| Prepaid Rent | $600 |\n| Office Equipment | $3,600 |\n| Accumulated Depreciation | -$300 |\n| Accounts Payable | $380 |\n| Accrued Wages | $750 |\n| Deferred Revenue | $1,500 |\n| Bank Loan | $2,600 |\n| Sarah's Capital | $5,000 |\n| Retained Earnings | $1,140 |\n| Current Net Income | $750 |\n\nBuild your Balance Snapshot using the template below. Your submission will be Milestone ① — the first major deliverable of Unit 1."
+              "markdown": "## Finish the Shared Balance Snapshot\n\nNow complete the class workbook build using `unit_01_balance_snapshot_guided.xlsx` and `unit_01_class_snapshot_dataset.csv`. Your goal is a clean, print-ready document with a structured Balance Sheet and a bar chart.\n\n**Requirements for Balance Snapshot v0.9:**\n- [ ] Balance Sheet header: TechStart Solutions | Balance Sheet | As of [Date]\n- [ ] Three sections: Assets (Current + Non-Current), Liabilities (Current + Non-Current), Equity\n- [ ] At least 6 accounts from TechStart's Month 3 data\n- [ ] Section subtotals and grand totals in proper order\n- [ ] Grand total check: Total Assets = Total Liabilities + Equity ($11,960)\n- [ ] Bar chart comparing Total Assets ($11,960) vs Total Liabilities ($6,230)\n- [ ] Equity note showing $5,730\n- [ ] Print-ready layout: fits on one landscape page\n\n**Use these TechStart Month 3 balances:**\n\n| Account | Balance |\n|---------|---------|\n| Cash | $5,100 |\n| Accounts Receivable | $1,800 |\n| Office Supplies | $220 |\n| Prepaid Rent | $600 |\n| Office Equipment | $3,600 |\n| Accumulated Depreciation | -$300 |\n| Accounts Payable | $380 |\n| Accrued Wages | $750 |\n| Deferred Revenue | $1,500 |\n| Bank Loan | $2,600 |\n| Sarah's Capital | $5,000 |\n| Retained Earnings | $1,140 |\n| Current Net Income | $750 |\n\nBuild your Balance Snapshot using the template below. First complete the foundational moves from `unit_01_foundational_build_guide.pdf`, then apply at least one improvement from `unit_01_polish_guide.pdf` before you submit Milestone ①."
             }
           },
           {
@@ -2395,7 +2395,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## What's Coming in Lessons 8–10\n\nLessons 8, 9, and 10 are **Group Project Days**. Your team will:\n\n- **Lesson 8:** Refine the group ledger and peer-review each other's work\n- **Lesson 9:** Polish the visuals and prepare the presentation narrative\n- **Lesson 10:** Finalize and submit the Mini Balance Sheet package (Milestone ②)\n\n**Reflection prompt:** Look at the bar chart in your Balance Snapshot. The Assets bar is taller than the Liabilities bar. In two sentences, explain what that gap means for TechStart's financial health — and why an investor would care about its size."
+              "markdown": "## What's Coming in Lessons 8–10\n\nLessons 8, 9, and 10 apply the same product structure in a project sequence:\n\n- **Lesson 8:** each group receives one of six differentiated datasets\n- **Lesson 9:** groups polish the workbook and script using `unit_01_polish_guide.pdf`\n- **Lesson 10:** groups present the finished workbook to the class\n\n**Reflection prompt:** Look at the bar chart in your Balance Snapshot. The Assets bar is taller than the Liabilities bar. In two sentences, explain what that gap means for TechStart's financial health — and why an investor would care about its size."
             }
           }
         ]
@@ -2564,20 +2564,20 @@ export const AUTHORED_UNIT_1_LESSONS = [
     "lesson": {
       "id": "d6b57545-65f6-4c39-80d5-000000000008",
       "slug": "unit-1-lesson-8",
-      "title": "Group Project Day 1: Refine the Ledger",
+      "title": "Group Build: Six Dataset Challenge",
       "unitNumber": 1,
       "orderIndex": 8,
-      "description": "Refine your group ledger for accuracy and completeness, then use a structured peer-critique checklist to give and receive feedback.",
+      "description": "Apply the Lesson 7 build process to one of six differentiated datasets and produce a balanced draft workbook before advanced polish begins.",
       "learningObjectives": [
-        "Apply a peer-critique framework to evaluate a group ledger",
-        "Give specific, constructive feedback on account classification and data quality",
-        "Revise the ledger based on peer feedback before Day 2 polish"
+        "Apply the Lesson 7 product structure to a new group dataset",
+        "Use the foundational-proficiency build guide to complete the draft workbook",
+        "Document the remaining support needs before Lesson 9 polish"
       ]
     },
     "version": {
       "id": "d6b57545-65f6-4c39-80d5-000800000002",
-      "title": "Group Project Day 1: Refine the Ledger",
-      "description": "Peer-review your group Balance Sheet for accuracy before the visual polish phase.",
+      "title": "Group Build: Six Dataset Challenge",
+      "description": "Build the first group workbook draft from one of six differentiated datasets.",
       "status": "published"
     },
     "standards": [],
@@ -2585,13 +2585,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000800000100",
         "phaseNumber": 1,
-        "title": "Brief: Day 1 Goals and Group Roles",
+        "title": "Brief: Dataset Assignment + Task Framing",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Group Project Day 1: Refine and Review\n\nToday is the first of three Group Project Days. Your team has one goal: make your group ledger as accurate and clean as possible before you move into visual polish tomorrow.\n\n### Team setup for today\n\n- Assign one person to lead reconciliation, one to log revisions, and one to prepare the critique handoff\n- Keep your Day 1 materials together: individual ledgers, equation checks, and notes from Lessons 1-7\n- Define success for today: leave class with a cleaner ledger and a concrete revision log\n\n### Day 1 deliverables\n\n- Team roster with accountability roles\n- Initial account checklist mapped to A/L/E structure\n- Revision log that captures what changed and why"
+              "markdown": "## Six Dataset Challenge\n\nLesson 8 is not a generic work day. Each group receives one new dataset and must build the same Balance Snapshot product the class just completed in Lesson 7.\n\nThe six differentiated files are:\n- `unit_01_group_dataset_01.csv`\n- `unit_01_group_dataset_02.csv`\n- `unit_01_group_dataset_03.csv`\n- `unit_01_group_dataset_04.csv`\n- `unit_01_group_dataset_05.csv`\n- `unit_01_group_dataset_06.csv`\n\nToday your job is to open the assigned case, confirm roles, and restate the shared deliverable: a balanced workbook draft built from new data, not the common class dataset."
             }
           }
         ]
@@ -2599,13 +2599,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000800000200",
         "phaseNumber": 2,
-        "title": "Workshop: Reconcile the Ledger",
+        "title": "Workshop: Foundational-Proficiency Build",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Workshop: Reconcile and Validate\n\n**Part 1 — Ledger Reconciliation**\n\nEach team member should bring their individual ledger from Lessons 1–7. Compare your ledgers as a group:\n\n1. **Do your account lists match?** Did anyone include accounts that others missed?\n2. **Do your balances agree?** If there are differences, trace back to the source transaction.\n3. **Does everyone agree on the categories?** Pay special attention to gray zone accounts (Prepaid Insurance, Deferred Revenue, Owner Drawings).\n4. **Does your equation check cell show $0?** If not, identify the discrepancy before moving on.\n\n**Part 2 — Data Validation Check**\n\nApply the three Conditional Formatting rules from Lesson 5 and the Data Validation rules from Lesson 6 to your group ledger:\n\n- [ ] No blank Category fields\n- [ ] All categories are exactly A, L, or E\n- [ ] No unexpected negative balances\n - [ ] Equation check = $0"
+              "markdown": "## Foundational-Proficiency Build\n\nUse the **foundational-proficiency build guide** (`unit_01_foundational_build_guide.pdf`) to complete the non-negotiable sequence:\n\n1. classify each account correctly\n2. verify the accounting equation\n3. organize the Balance Sheet sections\n4. prepare the chart inputs\n\nEvery group must keep the **same product structure as Lesson 7** even though the numbers and business case are different. By the end of this phase, the workbook should be technically correct and ready for checkpoint review."
             }
           }
         ]
@@ -2613,13 +2613,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000800000300",
         "phaseNumber": 3,
-        "title": "Checkpoint: Peer Critique and Revision Log",
+        "title": "Checkpoint: Draft Workbook Handoff",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Checkpoint: Peer Critique\n\nSwap your group's ledger with another group. Complete the peer critique form below. Your feedback should help the other team make targeted revisions before Day 2 polish."
+              "markdown": "## Checkpoint: Draft Workbook Handoff\n\nExchange your draft workbook with another group. The checkpoint is simple: can another team follow the same product structure as Lesson 7, confirm the workbook balances, and identify the most important next revision before polish? Complete the handoff form below so the next team receives specific feedback."
             }
           },
           {
@@ -2634,13 +2634,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000800000400",
         "phaseNumber": 4,
-        "title": "Reflection: Commit the Next Revision",
+        "title": "Reflection: Prepare for Lesson 9 Polish",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## After the Critique: Revision Notes\n\nAfter receiving feedback from your peer group:\n\n1. **Read through their comments carefully.** Don't dismiss feedback — even if you disagree, write it down and discuss as a team.\n2. **Categorize each comment:**\n   - Agree and will fix → add to your revision list\n   - Disagree but will investigate → mark for discussion tomorrow\n   - Don't understand → ask the feedback group to clarify\n3. **Make your agreed changes** to the group ledger before end of class\n4. **Save your work** — tomorrow's session starts from today's revised ledger\n\n### What Makes Peer Feedback Useful\n\nGood peer feedback is specific. \"I think there's an error\" is not useful. \"Line 7 — Office Supplies is in Category L, but based on our classification test, it should be Category A\" is useful.\n\nWhen you receive a critique form back, prioritize feedback that cites a specific account name, line number, or classification rule."
+              "markdown": "## Reflection: What Still Needs Support?\n\nBefore class ends, make sure your group has:\n\n- a **balanced workbook draft**\n- a revision list based on the checkpoint feedback\n- one named priority for **Lesson 9 polish**\n\nRecord which part of the workbook still needs the most support tomorrow: account logic, layout, chart clarity, or explanation. Lesson 9 is reserved for investor-ready polish, so foundational fixes must already be visible in this draft."
             }
           }
         ]
@@ -2650,47 +2650,47 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000800001001",
         "componentKey": "peer-critique-form",
-        "displayName": "Peer Critique: Group Ledger Review",
-        "description": "Structured peer feedback on another group's Balance Sheet ledger.",
+        "displayName": "Peer Critique: Draft Workbook Handoff",
+        "description": "Structured peer feedback on another group's draft Balance Snapshot workbook.",
         "props": {
-          "projectTitle": "Group Ledger Review",
+          "projectTitle": "Draft Workbook Handoff",
           "peerName": "Partner group",
-          "description": "Review the group ledger you've been assigned. Use this form to provide specific, constructive feedback on accuracy, completeness, and data quality.",
+          "description": "Review the draft workbook you've been assigned. Use this form to give precise feedback on whether the group has met the foundational build expectations before polish.",
           "categories": [
             {
               "id": "r1",
-              "title": "Account Classification",
-              "description": "Are all accounts correctly classified as A, L, or E?",
-              "prompt": "Identify any accounts that appear to be in the wrong category and explain the correction.",
-              "placeholder": "Call out the account name, the current category, and the category you recommend.",
-              "ratingLabel": "Classification quality"
+              "title": "Workbook Structure",
+              "description": "Does the workbook follow the same product structure as Lesson 7?",
+              "prompt": "Note any missing product elements the group still needs to add before polish.",
+              "placeholder": "Call out missing sections, chart pieces, or workbook evidence.",
+              "ratingLabel": "Structure"
             },
             {
               "id": "r2",
-              "title": "Equation Balance",
-              "description": "Does Total Assets = Total Liabilities + Equity?",
-              "prompt": "Record whether the equation check is balanced and what the team should inspect next.",
-              "placeholder": "Note the equation check cell result and the next verification step.",
+              "title": "Balance Check",
+              "description": "Does the draft workbook reconcile cleanly?",
+              "prompt": "Record whether the workbook balances and what the team should inspect next if it does not.",
+              "placeholder": "Note the equation result and the next verification step.",
               "ratingLabel": "Balance check"
             },
             {
               "id": "r3",
-              "title": "Data Completeness",
-              "description": "Are all required fields filled in (Account Name, Balance, Category)?",
-              "prompt": "List any missing values, blank fields, or formatting problems the team should fix.",
-              "placeholder": "Call out the rows that still need completion or cleanup.",
+              "title": "Foundational Completion",
+              "description": "Has the group completed the essential moves from the foundational guide?",
+              "prompt": "List any unfinished foundational steps before the class can move to advanced polish.",
+              "placeholder": "Identify unfinished build steps or weak evidence.",
               "ratingLabel": "Completeness"
             },
             {
               "id": "r4",
               "title": "Specific Feedback",
-              "description": "Provide at least two specific comments on what to improve.",
-              "prompt": "Write two specific, actionable next steps the group should take before Day 2.",
-              "placeholder": "Reference exact accounts, checks, or formatting changes.",
+              "description": "Provide two specific next steps for the group.",
+              "prompt": "Write two actionable next steps the group should take before Lesson 9 polish.",
+              "placeholder": "Reference exact workbook moves, chart changes, or explanation gaps.",
               "ratingLabel": "Actionability"
             }
           ],
-          "overallPrompt": "List specific accounts that need attention, with the account name, current value, and your suggested change."
+          "overallPrompt": "List the single highest-leverage change this group should make before Lesson 9 polish."
         },
         "gradingConfig": {
           "autoGrade": false,
@@ -2704,20 +2704,20 @@ export const AUTHORED_UNIT_1_LESSONS = [
     "lesson": {
       "id": "d6b57545-65f6-4c39-80d5-000000000009",
       "slug": "unit-1-lesson-9",
-      "title": "Group Project Day 2: Polish the Visuals",
+      "title": "Group Polish: Investor-Ready Snapshot",
       "unitNumber": 1,
       "orderIndex": 9,
-      "description": "Apply visual polish to your Balance Snapshot, refine the bar chart, and draft a 60-second micro-pitch script that explains TechStart's financial position to a non-accounting audience.",
+      "description": "Apply the advanced polish guide to the Lesson 8 workbook so the group product becomes investor-ready and presentation-ready.",
       "learningObjectives": [
-        "Apply visual design principles to a financial document",
-        "Draft a 60-second micro-pitch script explaining the Balance Snapshot",
-        "Incorporate feedback from Day 1 peer critique"
+        "Apply the advanced polish guide to the Lesson 8 workbook",
+        "Improve visual clarity, professionalism, and the audience-facing explanation",
+        "Draft a 60-second script that explains the business story behind the numbers"
       ]
     },
     "version": {
       "id": "d6b57545-65f6-4c39-80d5-000900000002",
-      "title": "Group Project Day 2: Polish the Visuals",
-      "description": "Refine the Balance Snapshot and prepare the presentation narrative.",
+      "title": "Group Polish: Investor-Ready Snapshot",
+      "description": "Polish the group workbook and script using the advanced guidance assets.",
       "status": "published"
     },
     "standards": [],
@@ -2725,13 +2725,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000900000100",
         "phaseNumber": 1,
-        "title": "Brief: Day 2 Success Criteria",
+        "title": "Brief: Advanced-Quality Criteria",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Group Project Day 2: Make It Presentable\n\nToday your group has two goals: polish the visual presentation of your Balance Snapshot and write the script for your 60-second micro-pitch.\n\n### Day 2 success criteria\n\n- The workbook is visually polished and investor-ready\n- The bar chart supports the story instead of distracting from it\n- The micro-pitch is drafted in clear, non-accounting language\n\n### Part 1 — Apply Day 1 Revisions\n\nStart by incorporating the agreed changes from your peer critique:\n\n1. Open your group ledger from Day 1\n2. Make every revision that was marked \"Agree and will fix\"\n3. Re-run the equation check — verify it still shows $0 after your changes\n4. Save the updated file"
+              "markdown": "## Advanced-Quality Criteria\n\nLesson 9 is the explicit polish day. Open your **Lesson 8 workbook** and separate what counts as foundational completion from what counts as advanced communication quality.\n\nToday's target is an **investor-ready** workbook:\n- layout is readable and deliberate\n- the chart supports the story instead of distracting from it\n- the explanation is clear enough for a non-accountant\n\nKeep the workbook technically correct first. Then use the polish assets to improve the presentation quality."
             }
           }
         ]
@@ -2739,13 +2739,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000900000200",
         "phaseNumber": 2,
-        "title": "Workshop: Visual Polish Checklist",
+        "title": "Workshop: Polish / Advanced How-To",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Visual Polish Checklist\n\nReview your Balance Snapshot against this presentation checklist:\n\n**Balance Sheet Formatting:**\n- [ ] Header: Company name, \"Balance Sheet,\" and date as of\n- [ ] All sections labeled clearly (ASSETS, LIABILITIES, EQUITY)\n- [ ] Current and Non-Current subsections for Assets and Liabilities\n- [ ] Account names indented under their sections\n- [ ] Subtotals bold and right-aligned\n- [ ] Grand totals with double underline\n- [ ] Accounting number format for all dollar values ($1,234.00)\n\n**Bar Chart:**\n- [ ] Descriptive title (not \"Chart 1\")\n- [ ] Data labels on both bars\n- [ ] Y-axis starts at $0\n- [ ] Equity note below the chart\n- [ ] No clutter (no unnecessary gridlines, legends, or default formatting)\n\n**Print Layout:**\n- [ ] Landscape orientation\n- [ ] Fits on one page\n- [ ] Header with group name and date"
+              "markdown": "## Polish / Advanced How-To\n\nUse `unit_01_polish_guide.pdf` to model the moves that turn a correct workbook into an **investor-ready** one:\n\n- hierarchy and spacing\n- chart labels and readability\n- audience note and explanatory caption\n- a concise 60-second script tied to the workbook evidence\n\nThe polish guide is for advanced quality, not rescue work. If the Lesson 8 workbook still has foundational errors, fix them immediately and then return to the advanced moves."
             }
           }
         ]
@@ -2753,13 +2753,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000900000300",
         "phaseNumber": 3,
-        "title": "Checkpoint: Draft the Micro-Pitch",
+        "title": "Checkpoint: Script and Workbook Review",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Draft the Micro-Pitch\n\nA micro-pitch is a 60-second explanation of a financial document to someone who has never seen it. Think: a classroom investor who asks \"So, how is TechStart doing?\"\n\n**Script structure (three sentences):**\n\n**Sentence 1 — The Headline:** What's the most important thing the Balance Sheet shows?\n*Example: \"TechStart ended Month 3 with $11,960 in assets and $6,230 in total liabilities — leaving Sarah with $5,730 in equity, which means the business is worth significantly more than it owes.\"*\n\n**Sentence 2 — The Story:** What happened this month that drove those numbers?\n*Example: \"The biggest assets are cash from client payments and the equipment Sarah purchased to scale operations, while most of the liabilities are from a three-year bank loan that's being paid down steadily.\"*\n\n**Sentence 3 — The Signal:** What does this tell us about TechStart's financial health?\n*Example: \"The fact that equity is growing month over month — from $3,600 in Month 1 to $5,730 in Month 3 — signals that TechStart is profitable and on track for the investor conversation.\"*\n\nWrite your group's three-sentence micro-pitch in the reflection journal below."
+              "markdown": "## Checkpoint: Script and Workbook Review\n\nCheckpoint the two artifacts together:\n\n- the polished workbook\n- the **60-second script** that explains the numbers\n\nThe script should answer one question clearly: *Is this business healthy, and how do we know?* Use the reflection journal below to draft the headline, supporting evidence, and closing signal."
             }
           },
           {
@@ -2774,13 +2774,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000900000400",
         "phaseNumber": 4,
-        "title": "Reflection: Peer Presentation Prep",
+        "title": "Reflection: Prepare for Lesson 10 Presentation",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Peer Presentation Prep\n\nAt the end of class, each group will do a 60-second practice run of their micro-pitch for one other group. The audience's job: listen for one thing they understood and one thing that was confusing.\n\n**Tips for delivery:**\n- Look at the chart when referencing the visual comparison\n- Use \"we\" language (\"our group found...\")\n- Don't read from the script — use it as a guide and speak naturally\n- Lead with the headline number (equity amount), not the details"
+              "markdown": "## Reflection: Prepare for Lesson 10 Presentation\n\nBefore you leave, identify the one revision that still matters most for the **formal class presentation in Lesson 10**.\n\nUse this quick checklist:\n- the workbook is accurate and polished\n- the script references the workbook evidence directly\n- every speaker knows how to answer an audience follow-up question\n\nTomorrow is not another work day. It is the public presentation lesson."
             }
           }
         ]
@@ -2790,29 +2790,29 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-000900001001",
         "componentKey": "reflection-journal",
-        "displayName": "Micro-Pitch Script: 60-Second Financial Explanation",
-        "description": "Draft your group's 60-second micro-pitch script explaining TechStart's Balance Snapshot to a non-accounting audience.",
+        "displayName": "Investor-Ready Script Check",
+        "description": "Draft your group's 60-second script for the investor-ready workbook.",
         "props": {
-          "unitTitle": "TechStart's Financial Position",
-          "description": "Write your group's three-sentence micro-pitch. Cover: (1) the headline — what does the Balance Sheet show? (2) the story — what drove those numbers? (3) the signal — what does it mean for TechStart's financial health?",
+          "unitTitle": "Investor-Ready Snapshot",
+          "description": "Write your group's three-part script. Cover the headline, the supporting evidence from the workbook, and the business-health signal.",
           "prompts": [
             {
               "id": "p1",
               "category": "courage",
-              "prompt": "Sentence 1 — The Headline: What does TechStart's Balance Sheet show in one sentence?",
-              "placeholder": "TechStart ended [Month] with $[amount] in assets and $[amount] in liabilities, leaving $[amount] in equity..."
+              "prompt": "Headline: What is the clearest one-sentence claim about this business?",
+              "placeholder": "Our workbook shows..."
             },
             {
               "id": "p2",
               "category": "adaptability",
-              "prompt": "Sentence 2 — The Story: What happened this month that drove those numbers?",
-              "placeholder": "The biggest drivers were..."
+              "prompt": "Evidence: Which workbook details prove that claim?",
+              "placeholder": "The strongest evidence is..."
             },
             {
               "id": "p3",
               "category": "persistence",
-              "prompt": "Sentence 3 — The Signal: What does this tell us about TechStart's financial health?",
-              "placeholder": "This signals that TechStart is..."
+              "prompt": "Signal: What should the audience conclude from the workbook?",
+              "placeholder": "This means the business is..."
             }
           ]
         },
@@ -2828,20 +2828,20 @@ export const AUTHORED_UNIT_1_LESSONS = [
     "lesson": {
       "id": "d6b57545-65f6-4c39-80d5-000000000010",
       "slug": "unit-1-lesson-10",
-      "title": "Group Project Day 3: Final Polish and Submit",
+      "title": "Class Presentation: Balance by Design",
       "unitNumber": 1,
       "orderIndex": 10,
-      "description": "Complete final revisions to TechStart's Balance Sheet package, rehearse the micro-pitch, and submit the group's Mini Balance Sheet for Milestone ② evaluation.",
+      "description": "Present the finished Balance Snapshot workbook to the class, explain the business story, and respond to questions using the workbook as evidence.",
       "learningObjectives": [
-        "Complete a final pre-submission quality check",
-        "Rehearse and refine the 60-second micro-pitch",
-        "Submit the group Mini Balance Sheet package (Milestone ②)"
+        "Present a public-ready Balance Snapshot package to the class",
+        "Explain the business story behind the numbers using workbook evidence",
+        "Respond to at least one audience or teacher question with specific evidence"
       ]
     },
     "version": {
       "id": "d6b57545-65f6-4c39-80d5-001000000002",
-      "title": "Group Project Day 3: Final Polish and Submit",
-      "description": "Final quality check, rehearsal, and Milestone ② submission.",
+      "title": "Class Presentation: Balance by Design",
+      "description": "Class presentation of the finished Unit 1 workbook with evidence-based explanation.",
       "status": "published"
     },
     "standards": [],
@@ -2849,13 +2849,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-001000000100",
         "phaseNumber": 1,
-        "title": "Brief: Final Submission Checklist",
+        "title": "Brief: Presentation Setup",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Group Project Day 3: Ready to Submit\n\nThis is your last chance to refine before the Milestone ② submission deadline. Today has three parts: a final quality check, a rehearsal run, and submission.\n\n### Part 1 — Pre-Submission Checklist\n\nWork through the full checklist below. Every item must be checked before you submit.\n\n**Ledger:**\n- [ ] All accounts classified correctly (A, L, or E)\n- [ ] No blank Account Name, Balance, or Category cells\n- [ ] Equation check = $0\n- [ ] No unexpected negative balances (exception: Accumulated Depreciation)\n- [ ] Data Validation rules active on Category column\n\n**Balance Sheet:**\n- [ ] Header: Company name, \"Balance Sheet,\" current date\n- [ ] Current and Non-Current sections for both Assets and Liabilities\n- [ ] Section subtotals calculated correctly\n- [ ] Grand totals match: Total Assets = Total Liabilities + Equity\n- [ ] Accounting number format on all values\n- [ ] Double underline on final totals\n\n**Bar Chart:**\n- [ ] Descriptive title\n- [ ] Data labels on both bars\n- [ ] Equity note present\n- [ ] No \"Chart 1\" or default Excel labels\n\n**Overall:**\n- [ ] One-page print layout (landscape, fits on page)\n- [ ] Header with group name and date\n- [ ] Micro-pitch script finalized"
+              "markdown": "## Presentation Setup\n\nLesson 10 is the **public presentation** lesson. Review the expectations in `unit_01_presentation_rubric.pdf` before anyone speaks.\n\nTeams should confirm:\n- who will speak first\n- who will control the workbook on screen\n- how the chart will be used as evidence instead of decoration\n- who will handle the first audience question\n\nThe goal is not only to show the file. The goal is to explain the business story clearly."
             }
           }
         ]
@@ -2863,13 +2863,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-001000000200",
         "phaseNumber": 2,
-        "title": "Workshop: Rehearsal Run",
+        "title": "Workshop: Final Preparation",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Rehearsal Run\n\nOne more practice run of your micro-pitch — this time as a complete group. One person presents the full script while another person manages the Balance Snapshot document.\n\n**Presentation format:**\n1. Open the Balance Snapshot on the screen\n2. Deliver the three-sentence micro-pitch while pointing to the relevant chart elements\n3. Be ready for one follow-up question: *\"What is TechStart's equity, and what does that number mean?\"*\n\nAfter the practice run, identify one thing you will tighten before final submission."
+              "markdown": "## Final Preparation\n\nTake a short final prep window to open the workbook, review the script, and check that the presentation-ready file is visible and readable.\n\nBefore the class presentation begins, make sure:\n- the workbook is open to the final Balance Snapshot\n- the chart labels can be read from the audience\n- the script references specific workbook details\n- the team can answer at least one audience or teacher question"
             }
           }
         ]
@@ -2877,13 +2877,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-001000000300",
         "phaseNumber": 3,
-        "title": "Checkpoint: Submit Milestone ②",
+        "title": "Checkpoint: Class Presentation",
         "estimatedMinutes": 15,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## Milestone ② — Submit Now\n\n**Final submission package:**\n- Excel file with: validated ledger, formatted Balance Sheet, bar chart — all on one landscape page\n- File name format: `TechStart_BalanceSnapshot_Group[N]_[Date].xlsx`\n\nSubmit through the course portal. The submission confirms that your group has completed Milestone ②.\n\nBefore you submit, complete the reflection below so your team captures what is ready and what still needs attention."
+              "markdown": "## Class Presentation\n\nEach group now gives its **public presentation**. Show the finished workbook, explain what the business owns, owes, and retains, and use the chart and totals as evidence.\n\nEvery group must answer at least one **audience or teacher question** using the workbook as evidence. Complete the required presentation reflection below immediately after speaking so the team captures what landed and what still needs work."
             }
           },
           {
@@ -2898,13 +2898,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-001000000400",
         "phaseNumber": 4,
-        "title": "Reflection: Prepare for the Individual Assessment",
+        "title": "Reflection: Audience Feedback + Reflection",
         "estimatedMinutes": 10,
         "sections": [
           {
             "sectionType": "text",
             "content": {
-              "markdown": "## What's Coming: Individual Assessment\n\nAfter today's group submission, each student completes Lesson 11 individually.\n\n**Lesson 11 is the summative assessment** for the entire unit. It covers all seven ACC-1.x standards:\n- ACC-1.1: The accounting equation (A = L + E)\n- ACC-1.2: Classifying accounts into A/L/E\n- ACC-1.3: Building the Balance Sheet structure\n- ACC-1.4: Transaction effects on A/L/E\n- ACC-1.5: Detecting and fixing ledger errors\n- ACC-1.6: Data validation and integrity\n- ACC-1.7: Balance Snapshot and visual communication\n\nSeven questions. One per standard. Auto-graded. You have up to two attempts.\n\n**Recommendation:** Review your personal notes from all seven lessons tonight. The strongest preparation is being able to explain — without looking — how each standard connects to TechStart's story."
+              "markdown": "## Audience Feedback + Reflection\n\nAfter every presentation, the audience records one strength and one question. Presenters then note:\n\n- which evidence was strongest\n- which question was hardest to answer\n- what they would improve if they presented again\n\nThis reflection closes the project sequence and prepares students to articulate the same ideas independently in Lesson 11."
             }
           }
         ]
@@ -2914,29 +2914,29 @@ export const AUTHORED_UNIT_1_LESSONS = [
       {
         "id": "d6b57545-65f6-4c39-80d5-001000001001",
         "componentKey": "reflection-journal",
-        "displayName": "Milestone ② Personal Checklist — Final Reflection",
-        "description": "Complete your personal pre-submission checklist and reflect on the group project experience.",
+        "displayName": "Presentation Debrief",
+        "description": "Capture audience feedback and the team reflection after the class presentation.",
         "props": {
-          "unitTitle": "Milestone ② Personal Reflection",
-          "description": "Before your group submits, take five minutes to reflect on what you contributed and what you'd do differently.",
+          "unitTitle": "Class Presentation Debrief",
+          "description": "Record what the audience understood, what they questioned, and what the team would improve next time.",
           "prompts": [
             {
               "id": "p1",
               "category": "courage",
-              "prompt": "What was your most important contribution to the group Balance Sheet project?",
-              "placeholder": "I contributed most by..."
+              "prompt": "Which part of the public presentation landed best with the audience?",
+              "placeholder": "The clearest part of our presentation was..."
             },
             {
               "id": "p2",
               "category": "adaptability",
-              "prompt": "What's one thing you'd do differently in the next group project?",
-              "placeholder": "Next time I would..."
+              "prompt": "What question or challenge exposed the biggest gap in the presentation?",
+              "placeholder": "The toughest audience question was..."
             },
             {
               "id": "p3",
               "category": "persistence",
-              "prompt": "What's the one ACC-1.x standard you feel least confident about going into the individual assessment? What will you review?",
-              "placeholder": "I'm least confident about ACC-1.___ because..."
+              "prompt": "What would you change before presenting this workbook again?",
+              "placeholder": "Before presenting again, we would..."
             }
           ]
         },
@@ -2952,10 +2952,10 @@ export const AUTHORED_UNIT_1_LESSONS = [
     "lesson": {
       "id": "d6b57545-65f6-4c39-80d5-000000000011",
       "slug": "unit-1-lesson-11",
-      "title": "Individual Assessment: Balance by Design",
+      "title": "Unit 1 Mastery Check",
       "unitNumber": 1,
       "orderIndex": 11,
-      "description": "Demonstrate mastery of ACC-1.1 through ACC-1.7 with tiered, auto-graded assessment tasks and algorithmic retest support.",
+      "description": "Demonstrate Unit 1 mastery through explicit knowledge, understanding, and application assessment tiers.",
       "learningObjectives": [
         "Demonstrate knowledge of Unit 1 standards ACC-1.1 through ACC-1.7",
         "Apply concepts in scenario-based understanding questions",
@@ -2964,8 +2964,8 @@ export const AUTHORED_UNIT_1_LESSONS = [
     },
     "version": {
       "id": "d6b57545-65f6-4c39-80d5-001100000002",
-      "title": "Individual Assessment: Balance by Design",
-      "description": "Tiered summative assessment with algorithmic retest-ready questions.",
+      "title": "Unit 1 Mastery Check",
+      "description": "Three-tier summative assessment with knowledge, understanding, and application tasks.",
       "status": "published"
     },
     "standards": [

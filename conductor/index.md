@@ -19,4 +19,5 @@ This file is the root for active project context. Files under `conductor/archive
 
 - **Curriculum Overview**: [./docs/curriculum/overview.md](./docs/curriculum/overview.md)
 - **Curriculum Implementation Model**: [./docs/curriculum/implementation-model.md](./docs/curriculum/implementation-model.md)
+- **Curriculum Unit Design Contract**: [./docs/curriculum/unit-design-contract.md](./docs/curriculum/unit-design-contract.md)
 - **Runtime Architecture Detail**: [./docs/architecture/runtime.md](./docs/architecture/runtime.md)

@@ -60,11 +60,11 @@ export const LESSON_07_SEED_DATA = {
   lesson: {
     id: IDS.LESSON,
     slug: 'unit-1-lesson-7',
-    title: 'Balance Snapshot with Visual',
+    title: 'Whole-Class Guided Build: Balance Snapshot',
     unitNumber: 1,
     orderIndex: 7,
     description:
-      "Assemble TechStart's Balance Snapshot — a clean Balance Sheet paired with a bar chart comparing Total Assets to Total Liabilities — and submit Milestone 1 (Snapshot v0.9).",
+      "Use the shared Unit 1 class dataset and scaffolded workbook to complete the whole-class guided Balance Snapshot build before groups receive differentiated project data.",
     learningObjectives: [
       'Compile a clean Balance Sheet from a validated ledger',
       'Build a bar chart in Excel comparing Total Assets to Total Liabilities',
@@ -73,8 +73,8 @@ export const LESSON_07_SEED_DATA = {
   },
   version: {
     id: IDS.VERSION,
-    title: 'Balance Snapshot with Visual',
-    description: "Turn TechStart's validated data into a presentation-ready Balance Snapshot with chart.",
+    title: 'Whole-Class Guided Build: Balance Snapshot',
+    description: "Complete the shared class workbook build with the common dataset, foundational guide, and polish guide.",
     status: 'published',
   },
   standards: [
@@ -84,28 +84,34 @@ export const LESSON_07_SEED_DATA = {
     {
       id: IDS.PHASES[1],
       phaseNumber: 1,
-      title: "Hook: TechStart's Classroom Presentation",
+      title: "Hook: The Whole-Class Guided Build",
       estimatedMinutes: 10,
       sections: [
-        text(`## The Presentation Challenge
+        text(`## The Whole-Class Guided Build
 
-Sarah's teacher made an announcement on Monday:
+Lesson 7 is the **whole-class guided build** for Unit 1. Before groups branch into differentiated project data, everyone uses the same scaffolded workbook, \`unit_01_balance_snapshot_guided.xlsx\`, and the same shared dataset, \`unit_01_class_snapshot_dataset.csv\`.
 
-> *"On Friday, each group will present TechStart's financial position to the class. Your presentation must include a one-page document that shows TechStart's Balance Sheet and a visual comparison of what the business owns versus what it owes. You have until Thursday to submit a draft — that's your first milestone."*
-
-Sarah had all the data. Six weeks of transactions, classified and validated. But "a one-page document with a visual" was different from a spreadsheet with rows and columns.
-
-She needed to build a **Balance Snapshot**: a clean, formatted Balance Sheet on the left, and a simple bar chart on the right showing Total Assets versus Total Liabilities. One page. Print-ready. Clear enough for someone who'd never seen TechStart's numbers before.
+Sarah is about to show her banker a one-page picture of TechStart's financial position. The class will build that product together first so every student understands the non-negotiable structure before Lesson 8 introduces six different datasets.
 
 ### Quick Case: The Visual Question
-If you were looking at TechStart's financial position for the first time — without knowing anything about the numbers — what would a bar chart of Assets vs. Liabilities tell you that the numbers alone wouldn't?
+If you were looking at TechStart's financial position for the first time, what would a bar chart of Assets vs. Liabilities tell you that the numbers alone would hide?
 
-*Discuss with your partner. What does visual proportion communicate that text doesn't?*`),
+*Discuss with a partner. What does visual proportion communicate that raw rows do not?*`),
         callout(
           'why-this-matters',
-          "Numbers in a spreadsheet are for accountants. A Balance Snapshot is for everyone else. When Sarah eventually pitches TechStart to investors, applies for a bank loan, or reports to a board of directors, she won't hand them a raw ledger. She'll hand them a one-page summary that tells the financial story at a glance. The ability to build that summary — clean, accurate, and visual — is a skill that sets accountants apart from data entry clerks.",
+          "The whole-class guided build establishes the common quality bar for Unit 1. By using one shared workbook and one shared dataset first, the class can focus on process, audience, and evidence before six differentiated group cases begin.",
         ),
-        text(`## What a Balance Snapshot Includes
+        text(`## What the Shared Build Includes
+
+The class product has two anchor assets:
+
+- \`unit_01_balance_snapshot_guided.xlsx\` for the scaffolded workbook structure
+- \`unit_01_class_snapshot_dataset.csv\` for the common TechStart case
+
+The build also uses:
+
+- \`unit_01_foundational_build_guide.pdf\` for the essential completion moves
+- \`unit_01_polish_guide.pdf\` for audience-ready quality moves
 
 A Balance Snapshot is a two-part document:
 
@@ -129,15 +135,15 @@ The visual purpose: if the Assets bar is taller than the Liabilities bar, TechSt
     {
       id: IDS.PHASES[2],
       phaseNumber: 2,
-      title: 'Introduction: Building the Chart and Print Layout',
+      title: 'Introduction: Shared Workbook and Quality Bar',
       estimatedMinutes: 15,
       sections: [
-        text(`## Introduction: Visual Communication — The Balance Snapshot
+        text(`## Introduction: Shared Workbook, Shared Sequence
 
-In this lesson you add the final layer to TechStart's financial toolkit: **visual communication**. Numbers tell the truth; a well-designed chart makes that truth impossible to miss.
+In this lesson every student completes the same guided workbook so the class can rehearse the full Unit 1 process together. The **foundational build guide** in \`unit_01_foundational_build_guide.pdf\` covers the required steps. The **polish guide** in \`unit_01_polish_guide.pdf\` shows what advanced-quality communication looks like once the workbook is correct.
 
-You'll build a two-bar column chart comparing Total Assets to Total Liabilities — the height difference between the bars is TechStart's equity, shown visually. Then you'll format the spreadsheet for professional presentation: landscape orientation, narrow margins, data labels, and a descriptive chart title. The finished product — your **Balance Snapshot v0.9** — is Milestone ① of the Unit 1 project.`),
-        text(`## The Chart-Building Walkthrough
+You'll still build the two-bar chart comparing Total Assets to Total Liabilities, but the bigger point is to internalize the common project sequence before Lesson 8 gives each group a new dataset.`),
+        text(`## The Guided Build Walkthrough
 
 ### Step 1: Create a Summary Table
 
@@ -163,7 +169,14 @@ Use cell references — don't type the numbers. This way the chart updates autom
 3. Click the Legend → Delete (the bars are self-explanatory)
 4. Resize the chart to fit neatly next to your Balance Sheet
 
-### Step 4: Print Layout
+### Step 4: Foundational Completion
+
+Use \`unit_01_foundational_build_guide.pdf\` to verify the non-negotiables:
+- the Balance Sheet sections are complete
+- totals reconcile to the accounting equation
+- the chart uses linked values rather than typed numbers
+
+### Step 5: Print Layout
 
 1. Page Layout tab → Orientation: **Landscape**
 2. Margins: **Narrow**
@@ -171,7 +184,9 @@ Use cell references — don't type the numbers. This way the chart updates autom
 4. Add a header: *TechStart Solutions | Balance Snapshot v0.9*
 5. File → Print Preview — confirm the layout looks professional
 
-### Step 5: The Equity Note
+### Step 6: Advanced Polish
+
+Use \`unit_01_polish_guide.pdf\` to add chart labels, layout hierarchy, and audience-facing notes.
 
 Below the chart (or in a text box), add:
 
@@ -233,12 +248,12 @@ Before moving to Independent Practice, verify your chart has:
     {
       id: IDS.PHASES[4],
       phaseNumber: 4,
-      title: "Independent Practice: Build TechStart's Balance Snapshot",
+      title: "Independent Practice: Finish the Shared Balance Snapshot",
       estimatedMinutes: 25,
       sections: [
-        text(`## Build the Full Balance Snapshot
+        text(`## Finish the Shared Balance Snapshot
 
-Now build the complete Balance Snapshot using the spreadsheet tool below. Your goal: a clean, print-ready document with a structured Balance Sheet and a bar chart.
+Now complete the class workbook build using \`unit_01_balance_snapshot_guided.xlsx\` and \`unit_01_class_snapshot_dataset.csv\`. Your goal is a clean, print-ready document with a structured Balance Sheet and a bar chart.
 
 **Requirements for Balance Snapshot v0.9:**
 - [ ] Balance Sheet header: TechStart Solutions | Balance Sheet | As of [Date]
@@ -268,7 +283,7 @@ Now build the complete Balance Snapshot using the spreadsheet tool below. Your g
 | Retained Earnings | $1,140 |
 | Current Net Income | $750 |
 
-Build your Balance Snapshot using the template below. Your submission will be Milestone ① — the first major deliverable of Unit 1.`),
+Build your Balance Snapshot using the template below. First complete the foundational moves from \`unit_01_foundational_build_guide.pdf\`, then apply at least one improvement from \`unit_01_polish_guide.pdf\` before you submit Milestone ①.`),
         activity(IDS.ACTIVITY_SPREADSHEET, true),
         text(`## Teacher Submission
 
@@ -320,11 +335,11 @@ This document captures TechStart's financial position at the end of Month 3 — 
 That's the complete ACC-1 competency chain.`),
         text(`## What's Coming in Lessons 8–10
 
-Lessons 8, 9, and 10 are **Group Project Days**. Your team will:
+Lessons 8, 9, and 10 apply the same product structure in a project sequence:
 
-- **Lesson 8:** Refine the group ledger and peer-review each other's work
-- **Lesson 9:** Polish the visuals and prepare the presentation narrative
-- **Lesson 10:** Finalize and submit the Mini Balance Sheet package (Milestone ②)
+- **Lesson 8:** each group receives one of six differentiated datasets
+- **Lesson 9:** groups polish the workbook and script using \`unit_01_polish_guide.pdf\`
+- **Lesson 10:** groups present the finished workbook to the class
 
 **Reflection prompt:** Look at the bar chart in your Balance Snapshot. The Assets bar is taller than the Liabilities bar. In two sentences, explain what that gap means for TechStart's financial health — and why an investor would care about its size.`),
       ],

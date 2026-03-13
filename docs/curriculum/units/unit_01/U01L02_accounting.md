@@ -3,9 +3,11 @@ lesson_id: "U01L02"
 type: "accounting"
 objectives:
   - "Classify common business accounts into Assets, Liabilities, or Equity."
-  - "Create a formatted Excel Table from raw CSV data."
-  - "Apply appropriate number formats to financial data."
+  - "Use a simple classification test to justify account categories."
+  - "Record account categories in a structured ledger table."
 narrative_hook: "Sarah has a list of items: cash in the bank, a new espresso machine, a loan from her uncle, and her own savings. She needs to know where each one fits in her business's 'big picture'."
+lesson_role: "Accounting Principle 1"
+accounting_principle: "Every account belongs to one of three buckets: Asset, Liability, or Equity."
 assets:
   starter_sheet: "unit_01_ledger_v1.csv"
 auto_grade:
@@ -18,30 +20,29 @@ auto_grade:
 
 # Lesson: Classifying the Business
 
-## Phase 1: Entry
-- **Goal:** Quick case warm-up.
-- **Activity:** Sarah's Uncle lent her $5,000 to start her business. Is this $5,000 something Sarah OWNS or something she OWES? Discuss.
+## Phase 1: Introduce Accounting Principle 1
+- **Goal:** Frame the classification problem in Sarah's business.
+- **Activity:** Ask: "Sarah's uncle lent her $5,000 to start the business. Is that something the business owns or something it owes?" Use the answer to introduce {{accounting_principle}}.
 
-## Phase 2: Intro
-- **Goal:** Introduce the accounting concept within the narrative.
-- **Narrative:** {{narrative_hook}}
-- **Concept:** Assets (What you own/use), Liabilities (What you owe others), Equity (Your actual value in the business).
+## Phase 2: I Do
+- **Goal:** Teacher models the classification test.
+- **Activity:** Demonstrate a three-question decision path for classifying accounts: What does the business own or control? What does it owe? What is the owner's claim after debts?
 
-## Phase 3: Guided
-- **Goal:** Teacher-led walk-through of converting CSV to Table.
-- **Activity:** Open {{assets.starter_sheet}}. Demonstrate how to select the data and use 'Insert > Table'. Explain why headers and structured data are important for business hygiene.
+## Phase 3: We Do
+- **Goal:** Guided practice with teacher support.
+- **Activity:** Open {{assets.starter_sheet}} and convert the raw ledger to a structured table. Tag several accounts together and explain the reasoning out loud.
 
-## Phase 4: Independent
-- **Goal:** Students apply the concept to a small set of business transactions.
-- **Activity:** Students take their new Excel Table and add a 'Category' column. They must tag at least 10 accounts (e.g., Rent, Cash, Equipment) as A, L, or E.
+## Phase 4: You Do
+- **Goal:** Students classify accounts independently.
+- **Activity:** Students add a `Category` column and classify at least 10 accounts as A, L, or E, with short written justification for any gray-zone item.
 
-## Phase 5: Checkpoint
-- **Goal:** Exit ticket to verify mastery of the accounting concept.
+## Phase 5: Exit Ticket Assessment
+- **Goal:** Verify mastery of the classification principle.
 - **Auto-Grade:** {{auto_grade.questions}}
 
 ## Phase 6: Reflection
-- **Goal:** Connect the accounting principle to business decision-making.
-- **Activity:** "Gray Zone" discussion. Is a 'Gift Card' Sarah sold to a customer an Asset or a Liability? (Hint: She owes them a coffee later!)
+- **Goal:** Connect classification accuracy to later unit work.
+- **Activity:** Gray-zone discussion. Is a gift card Sarah sold to a customer an Asset or a Liability? Explain why this category choice matters for the final Balance Snapshot.
 
 ---
 

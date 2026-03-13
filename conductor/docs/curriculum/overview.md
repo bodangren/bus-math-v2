@@ -30,6 +30,8 @@ Each instructional unit contains 11 lessons:
 - **Lessons 8-10**: project sprint sequence
 - **Lesson 11**: summative mastery lesson
 
+The canonical lesson-design contract for this rhythm is defined in [./unit-design-contract.md](./unit-design-contract.md). Unit redesign work must follow that contract before expanding additional units.
+
 ## Required Runtime Outcomes
 
 - Every lesson has a canonical title, slug, lesson type, objectives, and published version.
@@ -51,3 +53,4 @@ Each instructional unit contains 11 lessons:
 
 - Units 1-4 publish from canonical repository-authored lesson modules.
 - Units 5-8 and capstone still publish from generated scaffolds until later rollout tracks replace them.
+- Unit 1 is the required redesign-first exemplar for the next curriculum-authoring pass; later unit redesign is blocked until the Unit 1 lesson contract is reworked and approved.

@@ -87,6 +87,10 @@ The product is considered a complete online textbook only when all of the follow
 
 - Curriculum Rollout Wave 2 (Units 5-8)
 
+**Dependency**
+
+- Do not start Wave 2 redesign work until the Unit 1 redesign-first contract is accepted as the canonical exemplar.
+
 **Deliverables**
 
 - Units 5, 6, 7, and 8 are fully authored, published, and testable

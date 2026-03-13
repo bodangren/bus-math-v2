@@ -2,6 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { LESSON_11_SEED_DATA } from '../../../supabase/seed/unit1/lesson-11';
 
 describe('Lesson 11 seed data — Individual Assessment (ACC-1.1–ACC-1.7)', () => {
+  function readMarkdown() {
+    return LESSON_11_SEED_DATA.phases
+      .flatMap((phase) => phase.sections)
+      .filter((section) => section.sectionType === 'text')
+      .map((section) => String((section.content as Record<string, unknown>).markdown ?? ''))
+      .join('\n');
+  }
+
   it('defines the canonical summative mastery phases', () => {
     expect(LESSON_11_SEED_DATA.phases).toHaveLength(3);
     expect(LESSON_11_SEED_DATA.phases[0]?.title.toLowerCase()).toContain('instruction');
@@ -40,6 +48,16 @@ describe('Lesson 11 seed data — Individual Assessment (ACC-1.1–ACC-1.7)', ()
       expect(activity.gradingConfig.autoGrade).toBe(true);
       expect(activity.gradingConfig.passingScore).toBe(70);
     }
+  });
+
+  it('frames the summative explicitly as knowledge, understanding, and application', () => {
+    expect(LESSON_11_SEED_DATA.lesson.title).toBe('Unit 1 Mastery Check');
+
+    const markdown = readMarkdown().toLowerCase();
+    expect(markdown).toContain('knowledge');
+    expect(markdown).toContain('understanding');
+    expect(markdown).toContain('application');
+    expect(markdown).toContain('complete all tiers in order');
   });
 
   it('links all 7 ACC-1.x standards (ACC-1.1 through ACC-1.7)', () => {
