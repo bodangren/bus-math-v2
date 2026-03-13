@@ -6,20 +6,22 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- **Unit 1 Redesign and Lesson Contract**
-  Establish the canonical instructional-unit lesson contract, redesign Unit 1 against it, and use the accepted Unit 1 structure as the exemplar before redesigning later units.
-  *Link: [./tracks/unit1_redesign_lesson_contract_20260313/](./tracks/unit1_redesign_lesson_contract_20260313/)*
+- No active track. The next `/conductor` run should take the first item from the planned queue.
 
 ## Planned Queue
 
 1. **Curriculum Rollout Wave 2 (Units 5-8)**
-  Publish the second half-book expansion and finish the eight-unit instructional sequence. This stays blocked until the Unit 1 redesign-first contract is accepted and archived as the exemplar.
+  Publish the second half-book expansion and finish the eight-unit instructional sequence using the archived Unit 1 redesign exemplar as the contract baseline.
 2. **Capstone and Textbook Completion**
   Implement the capstone experience and complete the first end-to-end version of the online textbook.
 3. **Cloudflare Production Hardening and Launch**
   Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
+
+- [x] **Track: Unit 1 Redesign and Lesson Contract**
+  *Link: [./archive/unit1_redesign_lesson_contract_20260313/](./archive/unit1_redesign_lesson_contract_20260313/)*
+  *Closeout: archived on 2026-03-14 after locking Unit 1 to the canonical redesign contract in docs and authored runtime content, adding regression guards for the shared workbook/dataset/presentation flow, and recording Wave 2's dependency on the accepted exemplar.*
 
 - [x] **Track: Curriculum Rollout Wave 1 (Units 2-4)**
   *Link: [./archive/curriculum_rollout_wave1_20260313/](./archive/curriculum_rollout_wave1_20260313/)*
