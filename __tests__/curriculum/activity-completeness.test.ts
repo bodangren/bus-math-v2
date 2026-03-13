@@ -23,27 +23,25 @@ describe('curriculum/activity-completeness', () => {
     }
   });
 
-  it('excel phase 4 includes teacher-submission section marker', () => {
+  it('excel phase 4 includes canonical teacher-submission guidance text', () => {
     for (const lesson of EXCEL_LESSONS) {
       const independent = getPhase(lesson, 4);
-      const hasTeacherSubmission = independent?.sections.some((section) => {
-        if (section.sectionType === 'teacher-submission') {
-          return true;
-        }
-
-        const submissionType = section.content.submissionType;
-        return submissionType === 'teacher-submission';
-      });
+      const hasTeacherSubmission = independent?.sections.some(
+        (section) =>
+          section.sectionType === 'text' &&
+          typeof section.content.markdown === 'string' &&
+          section.content.markdown.includes('Teacher Submission'),
+      );
 
       expect(hasTeacherSubmission, `lesson ${lesson.lesson.slug}`).toBe(true);
     }
   });
 
-  it('project days declare deliverables array in their only phase', () => {
+  it('project days include a required checkpoint activity within the sprint structure', () => {
     for (const lesson of PROJECT_LESSONS) {
-      const phase = lesson.phases[0];
-      expect(Array.isArray(phase.deliverables), `lesson ${lesson.lesson.slug}`).toBe(true);
-      expect(phase.deliverables?.length ?? 0, `lesson ${lesson.lesson.slug}`).toBeGreaterThan(0);
+      const checkpoint = getPhase(lesson, 3);
+      expect(checkpoint?.sections.length ?? 0, `lesson ${lesson.lesson.slug}`).toBeGreaterThan(0);
+      expect(getActivitySections(checkpoint).length, `lesson ${lesson.lesson.slug}`).toBeGreaterThan(0);
     }
   });
 });

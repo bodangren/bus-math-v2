@@ -272,19 +272,15 @@ TechStart's Month 3 ledger has been submitted for your review. It contains multi
 5. Verify: after corrections, do Total Assets = Total Liabilities + Equity?
 
 **Hint about Accumulated Depreciation:** This is a real accounting account. It has a negative balance by design — it represents the portion of Office Equipment that has been "used up" over time. However, it should be listed under Assets (as a negative contra-asset), not as a standalone asset with a positive balance. Think about whether this entry is correct or needs correction.`),
-        {
-          sectionType: 'teacher-submission' as const,
-          content: {
-            submissionType: 'teacher-submission',
-            deliverable:
-              'Submit corrected Month 3 ledger workbook with conditional formatting rules visible and equation-check cell showing 0.',
-            rubricCriteria: [
-              'All classification errors corrected with rationale in notes column',
-              'Conditional formatting rules configured and demonstrably flagging invalid rows',
-              'Balance sheet equation check equals 0 after corrections',
-            ],
-          },
-        },
+        text(`## Teacher Submission
+
+Submit your corrected Month 3 ledger workbook with the conditional formatting rules visible and an equation-check cell showing **0**.
+
+### Teacher review criteria
+
+- All classification errors are corrected with rationale in the notes column
+- Conditional formatting rules are configured and visibly flag invalid rows
+- The balance sheet equation check equals **0** after corrections`),
         text(`## Partner Check: Swap and Compare
 
 After completing your corrections independently:

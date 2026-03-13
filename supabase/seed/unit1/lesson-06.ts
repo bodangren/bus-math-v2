@@ -271,19 +271,15 @@ After cleaning and applying validation rules, run this checklist:
 If all five items are checked, your ledger is validation-complete. It's ready to share with an accountant, import into software, or use as the foundation for your Balance Snapshot in Lesson 7.
 
 **Share-out:** Present one issue you found and fixed to your partner. Explain what type of problem it was and how your validation rule would prevent it in the future.`),
-        {
-          sectionType: 'teacher-submission' as const,
-          content: {
-            submissionType: 'teacher-submission',
-            deliverable:
-              'Submit your cleaned workbook with active validation rules, screenshot evidence, and a one-paragraph explanation of one prevented error.',
-            rubricCriteria: [
-              'Validation list enforced for category values A/L/E',
-              'Required fields protected against blanks',
-              'Submitted reflection explains how rule selection improves data integrity',
-            ],
-          },
-        },
+        text(`## Teacher Submission
+
+Submit your cleaned workbook with active validation rules, screenshot evidence, and a one-paragraph explanation of one prevented error.
+
+### Teacher review criteria
+
+- Validation rules enforce category values of **A**, **L**, or **E**
+- Required fields are protected against blank entries
+- The submitted reflection explains how rule selection improves data integrity`),
       ],
     },
     {

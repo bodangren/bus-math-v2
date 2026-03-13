@@ -1,5 +1,5 @@
 import { resolveActivityComponentKey } from '../activities/component-keys';
-import { activityPropsSchemas } from '../db/schema/activities';
+import { activityPropsSchemas } from '../db/schema/activities-core';
 import type { LessonMetadata, UnitContent } from '../../types/curriculum';
 import { AUTHORED_UNIT_1_LESSONS } from './generated/unit1-authored';
 
@@ -414,21 +414,8 @@ function normalizeSection(
   },
   activityKeyByLegacyId: Map<string, string>,
 ): PublishedSection {
-  if (section.sectionType === 'teacher-submission') {
-    const deliverable =
-      typeof section.content.deliverable === 'string'
-        ? section.content.deliverable
-        : 'Submit the required workbook artifact for teacher review.';
-    const rubricCriteria = Array.isArray(section.content.rubricCriteria)
-      ? (section.content.rubricCriteria as string[])
-      : [];
-    const rubricMarkdown = rubricCriteria.map((item) => `- ${item}`).join('\n');
-
-    return textSection(
-      `## Teacher Submission\n\n${deliverable}${
-        rubricMarkdown ? `\n\n### Teacher review criteria\n${rubricMarkdown}` : ''
-      }`,
-    );
+  if (!['text', 'callout', 'activity', 'video', 'image'].includes(section.sectionType)) {
+    throw new Error(`Unsupported published section type: ${section.sectionType}`);
   }
 
   const content = {
@@ -767,19 +754,8 @@ function inferLegacyPhaseKey(
   lessonType: PublishedLessonType,
   phaseNumber: number,
 ): PublishedPhaseKey {
-  if (lessonType === 'core_instruction') {
-    return GENERATED_PHASE_SEQUENCES.core_instruction[phaseNumber - 1] ?? 'reflection';
-  }
-  if (lessonType === 'project_sprint') {
-    return phaseNumber === 1 ? 'brief' : GENERATED_PHASE_SEQUENCES.project_sprint[phaseNumber - 1] ?? 'reflection';
-  }
-  return phaseNumber === 1
-    ? 'directions'
-    : phaseNumber === 2
-      ? 'assessment'
-      : phaseNumber === 3
-        ? 'assessment'
-        : 'review';
+  const sequence = GENERATED_PHASE_SEQUENCES[lessonType];
+  return sequence[phaseNumber - 1] ?? sequence[sequence.length - 1] ?? 'reflection';
 }
 
 function buildAuthoredLessonMap(): Map<number, UnitPlan> {
@@ -853,15 +829,6 @@ function normalizeAuthoredLesson(
 }
 
 function getAllowedPhaseKeySequences(lesson: PublishedCurriculumLesson): PublishedPhaseKey[][] {
-  if (lesson.source === 'authored' && lesson.unitNumber === 1) {
-    if (lesson.lessonType === 'project_sprint') {
-      return [['brief'], [...GENERATED_PHASE_SEQUENCES.project_sprint]];
-    }
-    if (lesson.lessonType === 'summative_mastery') {
-      return [['directions', 'assessment', 'assessment', 'review'], [...GENERATED_PHASE_SEQUENCES.summative_mastery]];
-    }
-  }
-
   return [[...GENERATED_PHASE_SEQUENCES[lesson.lessonType]]];
 }
 
@@ -896,10 +863,6 @@ export function validatePublishedCurriculumLesson(lesson: PublishedCurriculumLes
     const schema = activityPropsSchemas[canonicalComponentKey];
     if (!schema) {
       throw new Error(`Unknown activity component: ${activity.componentKey}`);
-    }
-
-    if (lesson.source === 'authored') {
-      continue;
     }
 
     const result = schema.safeParse(activity.props);

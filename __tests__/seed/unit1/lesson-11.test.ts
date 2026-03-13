@@ -2,21 +2,22 @@ import { describe, expect, it } from 'vitest';
 import { LESSON_11_SEED_DATA } from '../../../supabase/seed/unit1/lesson-11';
 
 describe('Lesson 11 seed data — Individual Assessment (ACC-1.1–ACC-1.7)', () => {
-  it('defines instructions + three assessment tiers', () => {
-    expect(LESSON_11_SEED_DATA.phases).toHaveLength(4);
+  it('defines the canonical summative mastery phases', () => {
+    expect(LESSON_11_SEED_DATA.phases).toHaveLength(3);
     expect(LESSON_11_SEED_DATA.phases[0]?.title.toLowerCase()).toContain('instruction');
-    expect(LESSON_11_SEED_DATA.phases[1]?.title.toLowerCase()).toContain('knowledge');
-    expect(LESSON_11_SEED_DATA.phases[2]?.title.toLowerCase()).toContain('understanding');
-    expect(LESSON_11_SEED_DATA.phases[3]?.title.toLowerCase()).toContain('application');
+    expect(LESSON_11_SEED_DATA.phases[1]?.title.toLowerCase()).toContain('assessment');
+    expect(LESSON_11_SEED_DATA.phases[2]?.title.toLowerCase()).toContain('review');
   });
 
-  it('tier phases each include a required activity section', () => {
-    for (const phase of LESSON_11_SEED_DATA.phases.slice(1)) {
-      const activitySection = phase.sections.find((section) => section.sectionType === 'activity');
-      expect(activitySection, `activity section in phase ${phase.phaseNumber}`).toBeDefined();
-      const content = activitySection!.content as Record<string, unknown>;
-      expect(content.required).toBe(true);
-    }
+  it('assessment phase includes the required tier activities', () => {
+    const assessmentPhase = LESSON_11_SEED_DATA.phases[1];
+    const requiredActivities = assessmentPhase.sections.filter(
+      (section) =>
+        section.sectionType === 'activity' &&
+        (section.content as Record<string, unknown>).required === true,
+    );
+
+    expect(requiredActivities).toHaveLength(3);
   });
 
   it('contains at least 21 tiered questions and 7 application problems', () => {

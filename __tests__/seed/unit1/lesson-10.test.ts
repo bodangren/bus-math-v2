@@ -2,29 +2,37 @@ import { describe, expect, it } from 'vitest';
 import { LESSON_10_SEED_DATA } from '../../../supabase/seed/unit1/lessons-08-10';
 
 describe('Lesson 10 seed data — Group Project Day 3 (Final Polish)', () => {
-  it('defines exactly 1 phase', () => {
-    expect(LESSON_10_SEED_DATA.phases).toHaveLength(1);
+  it('defines the canonical four project-sprint phases', () => {
+    expect(LESSON_10_SEED_DATA.phases).toHaveLength(4);
+    expect(LESSON_10_SEED_DATA.phases.map((phase) => phase.title.toLowerCase())).toEqual([
+      expect.stringContaining('brief'),
+      expect.stringContaining('workshop'),
+      expect.stringContaining('checkpoint'),
+      expect.stringContaining('reflection'),
+    ]);
   });
 
-  it('phase 1 has at least 2 sections', () => {
-    expect(LESSON_10_SEED_DATA.phases[0].sections.length).toBeGreaterThanOrEqual(2);
+  it('every phase has at least one section', () => {
+    for (const phase of LESSON_10_SEED_DATA.phases) {
+      expect(phase.sections.length, `phase ${phase.phaseNumber} sections`).toBeGreaterThanOrEqual(1);
+    }
   });
 
-  it('phase 1 has a required reflection-journal activity', () => {
-    const activitySection = LESSON_10_SEED_DATA.phases[0].sections.find(
-      s => s.sectionType === 'activity',
-    );
-    expect(activitySection, 'activity section in Phase 1').toBeDefined();
+  it('checkpoint phase has a required reflection-journal activity', () => {
+    const checkpoint = LESSON_10_SEED_DATA.phases.find((phase) => phase.phaseNumber === 3);
+    expect(checkpoint).toBeDefined();
+    const activitySection = checkpoint!.sections.find((section) => section.sectionType === 'activity');
+    expect(activitySection, 'activity section in checkpoint phase').toBeDefined();
     const content = activitySection!.content as Record<string, unknown>;
     expect(content.required).toBe(true);
     const act = LESSON_10_SEED_DATA.activities.find(a => a.id === content.activityId);
     expect(act?.componentKey).toBe('reflection-journal');
   });
 
-  it('phase 1 references Milestone 2 in its content', () => {
-    const textSections = LESSON_10_SEED_DATA.phases[0].sections.filter(
-      s => s.sectionType === 'text',
-    );
+  it('checkpoint phase references Milestone 2 in its content', () => {
+    const checkpoint = LESSON_10_SEED_DATA.phases.find((phase) => phase.phaseNumber === 3);
+    expect(checkpoint).toBeDefined();
+    const textSections = checkpoint!.sections.filter((section) => section.sectionType === 'text');
     const hasMilestone = textSections.some(s =>
       JSON.stringify((s.content as Record<string, unknown>).markdown).toLowerCase().includes('milestone'),
     );

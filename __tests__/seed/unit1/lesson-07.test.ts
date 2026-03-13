@@ -88,10 +88,10 @@ describe('Lesson 07 seed data — Balance Snapshot with Visual (ACC-1.7)', () =>
     }
   });
 
-  it('spreadsheet activity uses the balance-snapshot template', () => {
+  it('spreadsheet activity uses the canonical balance-sheet template', () => {
     const act = LESSON_07_SEED_DATA.activities.find(a => a.componentKey === 'spreadsheet');
     expect(act).toBeDefined();
     const props = act!.props as Record<string, unknown>;
-    expect(props.template).toBe('balance-snapshot');
+    expect(props.template).toBe('balance-sheet');
   });
 });

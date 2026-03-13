@@ -1,5 +1,9 @@
-import type { Lesson, Phase } from '@/lib/db/schema/validators';
-import type { ContentBlock } from '@/types/curriculum';
+import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
+import {
+  fallbackPublishedPhaseTitle,
+  publishedPhaseMetadata,
+  toPublishedContentBlock,
+} from '@/lib/curriculum/published-lesson-presentation';
 
 export interface TeacherLessonMonitoringSection {
   id: string;
@@ -21,9 +25,9 @@ export interface TeacherLessonMonitoringLesson {
   title: string;
   slug: string;
   description: string | null;
-  learningObjectives: Lesson['learningObjectives'];
+  learningObjectives: string[] | null;
   orderIndex: number;
-  metadata: Lesson['metadata'];
+  metadata: LessonMetadata | null;
   createdAt?: number;
   updatedAt?: number;
 }
@@ -42,8 +46,8 @@ export interface TeacherLessonMonitoringQueryData {
 }
 
 export interface TeacherLessonMonitoringViewModel {
-  lesson: Lesson;
-  phases: Phase[];
+  lesson: TeacherPublishedLesson;
+  phases: TeacherPublishedPhase[];
   lessonNumber: number;
   availableLessons: Array<{ number: number; title: string }>;
   lessonHrefByNumber: Record<number, string>;
@@ -53,133 +57,29 @@ export interface TeacherLessonMonitoringViewModel {
   empty: boolean;
 }
 
-const PHASE_TYPE_BY_NUMBER = {
-  1: 'intro',
-  2: 'example',
-  3: 'practice',
-  4: 'challenge',
-  5: 'assessment',
-  6: 'reflection',
-} as const;
-
-function fallbackPhaseTitle(phaseNumber: number) {
-  const labels: Record<number, string> = {
-    1: 'Hook',
-    2: 'Introduction',
-    3: 'Guided Practice',
-    4: 'Independent Practice',
-    5: 'Assessment',
-    6: 'Closing',
-  };
-
-  return labels[phaseNumber] ?? `Phase ${phaseNumber}`;
+export interface TeacherPublishedLesson {
+  id: string;
+  unitNumber: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  learningObjectives: string[] | null;
+  orderIndex: number;
+  metadata: LessonMetadata | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-  if (!value || typeof value !== 'object') {
-    return null;
-  }
-
-  return value as Record<string, unknown>;
-}
-
-function contentToText(content: unknown) {
-  if (typeof content === 'string') {
-    return content;
-  }
-
-  const obj = asRecord(content);
-  if (!obj) {
-    return '';
-  }
-
-  const markdown = obj.markdown;
-  const text = obj.text;
-  const value = typeof markdown === 'string' ? markdown : text;
-  return typeof value === 'string' ? value : '';
-}
-
-function toContentBlock(
-  section: TeacherLessonMonitoringSection,
-  fallbackOrder: number,
-): ContentBlock {
-  const obj = asRecord(section.content);
-  const blockId = section.id || `section-${fallbackOrder}`;
-
-  if (section.sectionType === 'callout') {
-    const variantRaw = obj?.variant;
-    const variant =
-      variantRaw === 'why-this-matters' ||
-      variantRaw === 'tip' ||
-      variantRaw === 'warning' ||
-      variantRaw === 'example'
-        ? variantRaw
-        : 'tip';
-    const calloutContent = typeof obj?.content === 'string' ? obj.content : '';
-
-    return {
-      id: blockId,
-      type: 'callout',
-      variant,
-      content: calloutContent || 'Callout content',
-    };
-  }
-
-  if (section.sectionType === 'activity') {
-    const activityId = obj?.activityId;
-    const required = obj?.required;
-    if (typeof activityId === 'string') {
-      const linkedStandardId =
-        typeof obj?.linkedStandardId === 'string' ? obj.linkedStandardId : undefined;
-      return {
-        id: blockId,
-        type: 'activity',
-        activityId,
-        required: required === true,
-        ...(linkedStandardId ? { linkedStandardId } : {}),
-      };
-    }
-  }
-
-  if (section.sectionType === 'video') {
-    const videoUrl = obj?.videoUrl;
-    const duration = obj?.duration;
-    const transcript = obj?.transcript;
-    if (typeof videoUrl === 'string' && typeof duration === 'number' && duration > 0) {
-      return {
-        id: blockId,
-        type: 'video',
-        props: {
-          videoUrl,
-          duration,
-          transcript: typeof transcript === 'string' ? transcript : undefined,
-        },
-      };
-    }
-  }
-
-  if (section.sectionType === 'image') {
-    const imageUrl = obj?.imageUrl;
-    const alt = obj?.alt;
-    const caption = obj?.caption;
-    if (typeof imageUrl === 'string' && typeof alt === 'string') {
-      return {
-        id: blockId,
-        type: 'image',
-        props: {
-          imageUrl,
-          alt,
-          caption: typeof caption === 'string' ? caption : undefined,
-        },
-      };
-    }
-  }
-
-  return {
-    id: blockId,
-    type: 'markdown',
-    content: contentToText(section.content) || 'Content coming soon.',
-  };
+export interface TeacherPublishedPhase {
+  id: string;
+  lessonId: string;
+  phaseNumber: number;
+  title: string;
+  contentBlocks: ContentBlock[];
+  estimatedMinutes: number | null;
+  metadata: PhaseMetadata;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 function buildLessonHref(unitNumber: number, lessonId: string) {
@@ -228,15 +128,12 @@ export function buildTeacherLessonMonitoringViewModel(
         id: phase.id,
         lessonId: input.lesson.id,
         phaseNumber: phase.phaseNumber,
-        title: phase.title?.trim() || fallbackPhaseTitle(phase.phaseNumber),
+        title: phase.title?.trim() || fallbackPublishedPhaseTitle(phase.phaseNumber),
         contentBlocks: phase.sections.map((section, index) =>
-          toContentBlock(section, index + 1),
+          toPublishedContentBlock(section, index + 1),
         ),
         estimatedMinutes: phase.estimatedMinutes,
-        metadata: {
-          phaseType:
-            PHASE_TYPE_BY_NUMBER[phase.phaseNumber as keyof typeof PHASE_TYPE_BY_NUMBER],
-        },
+        metadata: publishedPhaseMetadata(phase.phaseNumber),
         createdAt: new Date(input.lesson.createdAt ?? Date.now()),
         updatedAt: new Date(input.lesson.updatedAt ?? input.lesson.createdAt ?? Date.now()),
       })),
@@ -256,8 +153,7 @@ export function buildTeacherLessonMonitoringViewModel(
 }
 
 export const __private__ = {
-  asRecord,
-  contentToText,
-  fallbackPhaseTitle,
-  toContentBlock,
+  fallbackPublishedPhaseTitle,
+  publishedPhaseMetadata,
+  toPublishedContentBlock,
 };

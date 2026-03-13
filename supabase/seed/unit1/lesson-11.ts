@@ -1,11 +1,10 @@
 /**
  * Unit 1, Lesson 11 — Individual Assessment (ACC-1.1 through ACC-1.7)
  *
- * Multi-phase summative assessment with:
- * - Phase 1: Instructions
- * - Phase 2: Knowledge tier (7 questions)
- * - Phase 3: Understanding tier (7 questions)
- * - Phase 4: Application tier (7 questions + 7 application problems)
+ * Summative mastery assessment with:
+ * - Phase 1: Directions
+ * - Phase 2: Assessment tiers (knowledge, understanding, application)
+ * - Phase 3: Review and readiness check
  */
 
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -114,31 +113,42 @@ Complete all tiers in order and submit each tier when finished.`),
     {
       id: IDS.PHASES[2],
       phaseNumber: 2,
-      title: 'Knowledge Check',
-      estimatedMinutes: 15,
+      title: 'Assessment: Knowledge, Understanding, and Application',
+      estimatedMinutes: 35,
       sections: [
-        text('## Knowledge Tier\n\nOne recall-focused question per standard. Use precise accounting language.'),
+        text(`## Assessment Sequence
+
+Work through the three tiers in order. Each activity builds on the previous one, so do not skip ahead.
+
+### Tier 1 — Knowledge
+
+One recall-focused question per standard. Use precise accounting language.`),
         activity(IDS.ACTIVITY_KNOWLEDGE, true),
+        text(`## Tier 2 — Understanding
+
+One conceptual scenario question per standard. Show that you understand why the rule works, not just the answer.`),
+        activity(IDS.ACTIVITY_UNDERSTANDING, true),
+        text(`## Tier 3 — Application
+
+Solve procedural questions and complete one applied problem per standard. This is the part of the assessment that proves you can use the Unit 1 toolkit independently.`),
+        activity(IDS.ACTIVITY_APPLICATION, true),
       ],
     },
     {
       id: IDS.PHASES[3],
       phaseNumber: 3,
-      title: 'Understanding Check',
-      estimatedMinutes: 15,
+      title: 'Review: Reflect on Unit 1 Readiness',
+      estimatedMinutes: 5,
       sections: [
-        text('## Understanding Tier\n\nOne conceptual scenario question per standard.'),
-        activity(IDS.ACTIVITY_UNDERSTANDING, true),
-      ],
-    },
-    {
-      id: IDS.PHASES[4],
-      phaseNumber: 4,
-      title: 'Application Check',
-      estimatedMinutes: 20,
-      sections: [
-        text('## Application Tier\n\nSolve procedural questions and complete one applied problem per standard.'),
-        activity(IDS.ACTIVITY_APPLICATION, true),
+        text(`## Review Your Readiness
+
+Before you leave the assessment, double-check these ideas:
+
+- Can you explain why **Assets = Liabilities + Equity** always has to stay in balance?
+- Can you classify common TechStart accounts without hesitation?
+- Can you explain how ledger quality, validation, and presentation all support a trustworthy Balance Snapshot?
+
+If you still feel shaky on one standard, note it now and use it to guide your review before Unit 2. Unit 1 is complete when you can explain both the math and the business meaning behind the numbers.`),
       ],
     },
   ],

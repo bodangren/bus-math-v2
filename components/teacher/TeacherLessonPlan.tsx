@@ -21,11 +21,14 @@ import {
   Info,
   ChevronDown
 } from "lucide-react"
-import { type Lesson, type Phase } from '@/lib/db/schema/validators';
+import type {
+  TeacherPublishedLesson,
+  TeacherPublishedPhase,
+} from '@/lib/teacher/lesson-monitoring';
 
 interface TeacherLessonPlanProps {
-  lesson: Lesson;
-  phases?: Phase[];
+  lesson: TeacherPublishedLesson;
+  phases?: TeacherPublishedPhase[];
   lessonNumber: number;
   gradeLevel?: string;
   course?: string;

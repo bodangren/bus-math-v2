@@ -44,4 +44,29 @@ describe('published curriculum manifest', () => {
     expect(new Set(lessonSlugs).size).toBe(lessonSlugs.length);
     expect(seedPlan.lessons.filter((lesson) => lesson.metadata?.tags?.includes('capstone'))).toHaveLength(1);
   });
+
+  it('keeps Unit 1 as the canonical archetype exemplar set', () => {
+    const manifest = buildPublishedCurriculumManifest();
+    const unit1Lessons = manifest.lessons.filter((lesson) => lesson.unitNumber === 1);
+
+    expect(
+      new Set(unit1Lessons.map((lesson) => lesson.lessonType)),
+    ).toEqual(new Set(['core_instruction', 'project_sprint', 'summative_mastery']));
+
+    expect(
+      unit1Lessons
+        .filter((lesson) => lesson.lessonType === 'project_sprint')
+        .map((lesson) => lesson.phases.map((phase) => phase.phaseKey)),
+    ).toEqual([
+      ['brief', 'workshop', 'checkpoint', 'reflection'],
+      ['brief', 'workshop', 'checkpoint', 'reflection'],
+      ['brief', 'workshop', 'checkpoint', 'reflection'],
+    ]);
+
+    expect(
+      unit1Lessons.find((lesson) => lesson.lessonType === 'summative_mastery')?.phases.map(
+        (phase) => phase.phaseKey,
+      ),
+    ).toEqual(['directions', 'assessment', 'review']);
+  });
 });

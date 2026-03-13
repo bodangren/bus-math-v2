@@ -270,19 +270,15 @@ Now build the complete Balance Snapshot using the spreadsheet tool below. Your g
 
 Build your Balance Snapshot using the template below. Your submission will be Milestone ① — the first major deliverable of Unit 1.`),
         activity(IDS.ACTIVITY_SPREADSHEET, true),
-        {
-          sectionType: 'teacher-submission' as const,
-          content: {
-            submissionType: 'teacher-submission',
-            deliverable:
-              'Submit the Balance Snapshot workbook and one exported PDF page showing chart labels, totals, and equity note.',
-            rubricCriteria: [
-              'Spreadsheet totals reconcile to accounting equation',
-              'Chart communicates assets vs liabilities with readable labels',
-              'Submission includes one-page print-ready layout',
-            ],
-          },
-        },
+        text(`## Teacher Submission
+
+Submit the Balance Snapshot workbook and one exported PDF page showing chart labels, totals, and the equity note.
+
+### Teacher review criteria
+
+- Spreadsheet totals reconcile to the accounting equation
+- The chart communicates assets versus liabilities with readable labels
+- The submission includes a one-page, print-ready layout`),
       ],
     },
     {
@@ -343,7 +339,7 @@ Lessons 8, 9, and 10 are **Group Project Days**. Your team will:
       props: {
         title: "TechStart Solutions — Balance Snapshot v0.9",
         description: "Assemble the Balance Sheet from Month 3 data and insert a bar chart comparing Total Assets to Total Liabilities. Milestone ① submission.",
-        template: 'balance-snapshot' as const,
+        template: 'balance-sheet' as const,
         problemTemplate: {
           parameters: {
             assets: { min: 9000, max: 20000, step: 100 },

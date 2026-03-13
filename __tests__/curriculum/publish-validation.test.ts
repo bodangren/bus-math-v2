@@ -96,6 +96,23 @@ describe('published curriculum validation', () => {
     expect(() => validatePublishedCurriculumLesson(lesson)).toThrow(/unknown activity component/i);
   });
 
+  it('rejects invalid authored activity props instead of bypassing authored lessons', () => {
+    const lesson = makeLesson({
+      source: 'authored',
+      activities: [
+        {
+          key: 'activity-1',
+          componentKey: 'comprehension-quiz',
+          displayName: 'Broken authored quiz',
+          description: 'Should fail validation',
+          props: {},
+        },
+      ],
+    });
+
+    expect(() => validatePublishedCurriculumLesson(lesson)).toThrow(/invalid activity props/i);
+  });
+
   it('rejects phase sequences that do not match the declared lesson archetype', () => {
     const lesson = makeLesson({
       phases: makeLesson().phases.slice(0, 3),

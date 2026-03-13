@@ -25,6 +25,9 @@ const IDS_L8 = {
   LESSON: 'd6b57545-65f6-4c39-80d5-000000000008',
   VERSION: 'd6b57545-65f6-4c39-80d5-000800000002',
   PHASE_1: 'd6b57545-65f6-4c39-80d5-000800000100',
+  PHASE_2: 'd6b57545-65f6-4c39-80d5-000800000200',
+  PHASE_3: 'd6b57545-65f6-4c39-80d5-000800000300',
+  PHASE_4: 'd6b57545-65f6-4c39-80d5-000800000400',
   ACTIVITY_PEER_CRITIQUE: 'd6b57545-65f6-4c39-80d5-000800001001',
 } as const;
 
@@ -32,6 +35,9 @@ const IDS_L9 = {
   LESSON: 'd6b57545-65f6-4c39-80d5-000000000009',
   VERSION: 'd6b57545-65f6-4c39-80d5-000900000002',
   PHASE_1: 'd6b57545-65f6-4c39-80d5-000900000100',
+  PHASE_2: 'd6b57545-65f6-4c39-80d5-000900000200',
+  PHASE_3: 'd6b57545-65f6-4c39-80d5-000900000300',
+  PHASE_4: 'd6b57545-65f6-4c39-80d5-000900000400',
   ACTIVITY_REFLECTION: 'd6b57545-65f6-4c39-80d5-000900001001',
 } as const;
 
@@ -39,6 +45,9 @@ const IDS_L10 = {
   LESSON: 'd6b57545-65f6-4c39-80d5-000000000010',
   VERSION: 'd6b57545-65f6-4c39-80d5-001000000002',
   PHASE_1: 'd6b57545-65f6-4c39-80d5-001000000100',
+  PHASE_2: 'd6b57545-65f6-4c39-80d5-001000000200',
+  PHASE_3: 'd6b57545-65f6-4c39-80d5-001000000300',
+  PHASE_4: 'd6b57545-65f6-4c39-80d5-001000000400',
   ACTIVITY_REFLECTION: 'd6b57545-65f6-4c39-80d5-001000001001',
 } as const;
 
@@ -83,21 +92,35 @@ export const LESSON_08_SEED_DATA = {
     {
       id: IDS_L8.PHASE_1,
       phaseNumber: 1,
-      title: 'Day 1 Scaffolding: Ledger Refinement and Team Planning',
-      estimatedMinutes: 50,
-      deliverables: [
-        'Team roster with assigned accountability roles',
-        'Initial account checklist mapped to A/L/E structure',
-        'Day 1 revision log from peer critique',
-      ],
+      title: 'Brief: Day 1 Goals and Group Roles',
+      estimatedMinutes: 10,
       sections: [
         text(`## Group Project Day 1: Refine and Review
 
 Today is the first of three Group Project Days. Your team has one goal: make your group ledger as accurate and clean as possible before you move into visual polish tomorrow.
 
-### Your Group Work Agenda
+### Team setup for today
 
-**Part 1 — Ledger Reconciliation (20 minutes)**
+- Assign one person to lead reconciliation, one to log revisions, and one to prepare the critique handoff
+- Keep your Day 1 materials together: individual ledgers, equation checks, and notes from Lessons 1-7
+- Define success for today: leave class with a cleaner ledger and a concrete revision log
+
+### Day 1 deliverables
+
+- Team roster with accountability roles
+- Initial account checklist mapped to A/L/E structure
+- Revision log that captures what changed and why`),
+      ],
+    },
+    {
+      id: IDS_L8.PHASE_2,
+      phaseNumber: 2,
+      title: 'Workshop: Reconcile the Ledger',
+      estimatedMinutes: 15,
+      sections: [
+        text(`## Workshop: Reconcile and Validate
+
+**Part 1 — Ledger Reconciliation**
 
 Each team member should bring their individual ledger from Lessons 1–7. Compare your ledgers as a group:
 
@@ -106,19 +129,34 @@ Each team member should bring their individual ledger from Lessons 1–7. Compar
 3. **Does everyone agree on the categories?** Pay special attention to gray zone accounts (Prepaid Insurance, Deferred Revenue, Owner Drawings).
 4. **Does your equation check cell show $0?** If not, identify the discrepancy before moving on.
 
-**Part 2 — Data Validation Check (10 minutes)**
+**Part 2 — Data Validation Check**
 
 Apply the three Conditional Formatting rules from Lesson 5 and the Data Validation rules from Lesson 6 to your group ledger:
 
 - [ ] No blank Category fields
 - [ ] All categories are exactly A, L, or E
 - [ ] No unexpected negative balances
-- [ ] Equation check = $0
+ - [ ] Equation check = $0`),
+      ],
+    },
+    {
+      id: IDS_L8.PHASE_3,
+      phaseNumber: 3,
+      title: 'Checkpoint: Peer Critique and Revision Log',
+      estimatedMinutes: 15,
+      sections: [
+        text(`## Checkpoint: Peer Critique
 
-**Part 3 — Peer Critique (20 minutes)**
-
-Swap your group's ledger with another group. Complete the peer critique form below — it's your structured feedback for the team you're reviewing.`),
+Swap your group's ledger with another group. Complete the peer critique form below. Your feedback should help the other team make targeted revisions before Day 2 polish.`),
         activity(IDS_L8.ACTIVITY_PEER_CRITIQUE, true),
+      ],
+    },
+    {
+      id: IDS_L8.PHASE_4,
+      phaseNumber: 4,
+      title: 'Reflection: Commit the Next Revision',
+      estimatedMinutes: 10,
+      sections: [
         text(`## After the Critique: Revision Notes
 
 After receiving feedback from your peer group:
@@ -146,54 +184,44 @@ When you receive a critique form back, prioritize feedback that cites a specific
       displayName: "Peer Critique: Group Ledger Review",
       description: "Structured peer feedback on another group's Balance Sheet ledger.",
       props: {
-        title: "Peer Critique: Group Ledger Review",
+        projectTitle: "Group Ledger Review",
+        peerName: "Partner group",
         description: "Review the group ledger you've been assigned. Use this form to provide specific, constructive feedback on accuracy, completeness, and data quality.",
-        rubric: [
+        categories: [
           {
             id: 'r1',
-            criterion: 'Account Classification',
+            title: 'Account Classification',
             description: 'Are all accounts correctly classified as A, L, or E?',
-            maxScore: 3,
-            levels: [
-              { score: 3, label: 'All correct', description: 'Every account is in the right category.' },
-              { score: 2, label: 'Minor errors', description: '1–2 accounts are misclassified.' },
-              { score: 1, label: 'Multiple errors', description: '3 or more accounts are misclassified.' },
-            ],
+            prompt: 'Identify any accounts that appear to be in the wrong category and explain the correction.',
+            placeholder: 'Call out the account name, the current category, and the category you recommend.',
+            ratingLabel: 'Classification quality',
           },
           {
             id: 'r2',
-            criterion: 'Equation Balance',
+            title: 'Equation Balance',
             description: 'Does Total Assets = Total Liabilities + Equity?',
-            maxScore: 2,
-            levels: [
-              { score: 2, label: 'Balanced', description: 'Equation check cell shows $0.' },
-              { score: 0, label: 'Not balanced', description: 'Equation does not balance — investigate.' },
-            ],
+            prompt: 'Record whether the equation check is balanced and what the team should inspect next.',
+            placeholder: 'Note the equation check cell result and the next verification step.',
+            ratingLabel: 'Balance check',
           },
           {
             id: 'r3',
-            criterion: 'Data Completeness',
+            title: 'Data Completeness',
             description: 'Are all required fields filled in (Account Name, Balance, Category)?',
-            maxScore: 2,
-            levels: [
-              { score: 2, label: 'Complete', description: 'No blank required fields.' },
-              { score: 1, label: 'Minor gaps', description: '1–2 blank fields.' },
-              { score: 0, label: 'Significant gaps', description: '3+ blank fields.' },
-            ],
+            prompt: 'List any missing values, blank fields, or formatting problems the team should fix.',
+            placeholder: 'Call out the rows that still need completion or cleanup.',
+            ratingLabel: 'Completeness',
           },
           {
             id: 'r4',
-            criterion: 'Specific Feedback',
+            title: 'Specific Feedback',
             description: 'Provide at least two specific comments on what to improve.',
-            maxScore: 3,
-            levels: [
-              { score: 3, label: 'Thorough', description: '2+ specific, actionable comments with account references.' },
-              { score: 2, label: 'Adequate', description: '1–2 comments, mostly specific.' },
-              { score: 1, label: 'Vague', description: 'Feedback is too general to act on.' },
-            ],
+            prompt: 'Write two specific, actionable next steps the group should take before Day 2.',
+            placeholder: 'Reference exact accounts, checks, or formatting changes.',
+            ratingLabel: 'Actionability',
           },
         ],
-        commentsPlaceholder: "List specific accounts that need attention, with the account name, current value, and your suggested change.",
+        overallPrompt: "List specific accounts that need attention, with the account name, current value, and your suggested change.",
       },
       gradingConfig: {
         autoGrade: false,
@@ -232,28 +260,36 @@ export const LESSON_09_SEED_DATA = {
     {
       id: IDS_L9.PHASE_1,
       phaseNumber: 1,
-      title: 'Day 2 Build: Workbook Construction and Checkpoint',
-      estimatedMinutes: 50,
-      deliverables: [
-        'Completed Excel workbook with validated totals',
-        'Equation-check screenshot showing balance',
-        'Checkpoint checklist with build milestones',
-      ],
+      title: 'Brief: Day 2 Success Criteria',
+      estimatedMinutes: 10,
       sections: [
         text(`## Group Project Day 2: Make It Presentable
 
 Today your group has two goals: polish the visual presentation of your Balance Snapshot and write the script for your 60-second micro-pitch.
 
-### Part 1 — Apply Day 1 Revisions (10 minutes)
+### Day 2 success criteria
+
+- The workbook is visually polished and investor-ready
+- The bar chart supports the story instead of distracting from it
+- The micro-pitch is drafted in clear, non-accounting language
+
+### Part 1 — Apply Day 1 Revisions
 
 Start by incorporating the agreed changes from your peer critique:
 
 1. Open your group ledger from Day 1
 2. Make every revision that was marked "Agree and will fix"
 3. Re-run the equation check — verify it still shows $0 after your changes
-4. Save the updated file
-
-### Part 2 — Visual Polish Checklist (20 minutes)
+4. Save the updated file`),
+      ],
+    },
+    {
+      id: IDS_L9.PHASE_2,
+      phaseNumber: 2,
+      title: 'Workshop: Visual Polish Checklist',
+      estimatedMinutes: 15,
+      sections: [
+        text(`## Visual Polish Checklist
 
 Review your Balance Snapshot against this presentation checklist:
 
@@ -276,9 +312,16 @@ Review your Balance Snapshot against this presentation checklist:
 **Print Layout:**
 - [ ] Landscape orientation
 - [ ] Fits on one page
-- [ ] Header with group name and date
-
-### Part 3 — Write the Micro-Pitch Script (20 minutes)
+- [ ] Header with group name and date`),
+      ],
+    },
+    {
+      id: IDS_L9.PHASE_3,
+      phaseNumber: 3,
+      title: 'Checkpoint: Draft the Micro-Pitch',
+      estimatedMinutes: 15,
+      sections: [
+        text(`## Draft the Micro-Pitch
 
 A micro-pitch is a 60-second explanation of a financial document to someone who has never seen it. Think: a classroom investor who asks "So, how is TechStart doing?"
 
@@ -295,6 +338,14 @@ A micro-pitch is a 60-second explanation of a financial document to someone who 
 
 Write your group's three-sentence micro-pitch in the reflection journal below.`),
         activity(IDS_L9.ACTIVITY_REFLECTION, true),
+      ],
+    },
+    {
+      id: IDS_L9.PHASE_4,
+      phaseNumber: 4,
+      title: 'Reflection: Peer Presentation Prep',
+      estimatedMinutes: 10,
+      sections: [
         text(`## Peer Presentation Prep
 
 At the end of class, each group will do a 60-second practice run of their micro-pitch for one other group. The audience's job: listen for one thing they understood and one thing that was confusing.
@@ -314,26 +365,28 @@ At the end of class, each group will do a 60-second practice run of their micro-
       displayName: 'Micro-Pitch Script: 60-Second Financial Explanation',
       description: "Draft your group's 60-second micro-pitch script explaining TechStart's Balance Snapshot to a non-accounting audience.",
       props: {
-        title: "Micro-Pitch Script: TechStart's Financial Position",
+        unitTitle: "TechStart's Financial Position",
         description: "Write your group's three-sentence micro-pitch. Cover: (1) the headline — what does the Balance Sheet show? (2) the story — what drove those numbers? (3) the signal — what does it mean for TechStart's financial health?",
         prompts: [
           {
             id: 'p1',
-            question: 'Sentence 1 — The Headline: What does TechStart\'s Balance Sheet show in one sentence?',
+            category: 'courage',
+            prompt: 'Sentence 1 — The Headline: What does TechStart\'s Balance Sheet show in one sentence?',
             placeholder: "TechStart ended [Month] with $[amount] in assets and $[amount] in liabilities, leaving $[amount] in equity...",
           },
           {
             id: 'p2',
-            question: 'Sentence 2 — The Story: What happened this month that drove those numbers?',
+            category: 'adaptability',
+            prompt: 'Sentence 2 — The Story: What happened this month that drove those numbers?',
             placeholder: "The biggest drivers were...",
           },
           {
             id: 'p3',
-            question: 'Sentence 3 — The Signal: What does this tell us about TechStart\'s financial health?',
+            category: 'persistence',
+            prompt: 'Sentence 3 — The Signal: What does this tell us about TechStart\'s financial health?',
             placeholder: "This signals that TechStart is...",
           },
         ],
-        minWordsPerPrompt: 20,
       },
       gradingConfig: {
         autoGrade: false,
@@ -372,19 +425,14 @@ export const LESSON_10_SEED_DATA = {
     {
       id: IDS_L10.PHASE_1,
       phaseNumber: 1,
-      title: 'Day 3 Present: Rehearsal, Delivery, and Feedback',
-      estimatedMinutes: 50,
-      deliverables: [
-        'Final Balance Sheet package',
-        'Presentation script or slides for live delivery',
-        'Peer feedback evidence from rehearsal/presentation',
-      ],
+      title: 'Brief: Final Submission Checklist',
+      estimatedMinutes: 10,
       sections: [
         text(`## Group Project Day 3: Ready to Submit
 
 This is your last chance to refine before the Milestone ② submission deadline. Today has three parts: a final quality check, a rehearsal run, and submission.
 
-### Part 1 — Pre-Submission Checklist (15 minutes)
+### Part 1 — Pre-Submission Checklist
 
 Work through the full checklist below. Every item must be checked before you submit.
 
@@ -412,9 +460,16 @@ Work through the full checklist below. Every item must be checked before you sub
 **Overall:**
 - [ ] One-page print layout (landscape, fits on page)
 - [ ] Header with group name and date
-- [ ] Micro-pitch script finalized
-
-### Part 2 — Rehearsal Run (20 minutes)
+- [ ] Micro-pitch script finalized`),
+      ],
+    },
+    {
+      id: IDS_L10.PHASE_2,
+      phaseNumber: 2,
+      title: 'Workshop: Rehearsal Run',
+      estimatedMinutes: 15,
+      sections: [
+        text(`## Rehearsal Run
 
 One more practice run of your micro-pitch — this time as a complete group. One person presents the full script while another person manages the Balance Snapshot document.
 
@@ -423,16 +478,33 @@ One more practice run of your micro-pitch — this time as a complete group. One
 2. Deliver the three-sentence micro-pitch while pointing to the relevant chart elements
 3. Be ready for one follow-up question: *"What is TechStart's equity, and what does that number mean?"*
 
-After the practice run, use the reflection journal below to note what went well and what you'd still improve.
-
-### Milestone ② — Submit Now
+After the practice run, identify one thing you will tighten before final submission.`),
+      ],
+    },
+    {
+      id: IDS_L10.PHASE_3,
+      phaseNumber: 3,
+      title: 'Checkpoint: Submit Milestone ②',
+      estimatedMinutes: 15,
+      sections: [
+        text(`## Milestone ② — Submit Now
 
 **Final submission package:**
 - Excel file with: validated ledger, formatted Balance Sheet, bar chart — all on one landscape page
 - File name format: \`TechStart_BalanceSnapshot_Group[N]_[Date].xlsx\`
 
-Submit through the course portal. The submission confirms that your group has completed Milestone ②.`),
+Submit through the course portal. The submission confirms that your group has completed Milestone ②.
+
+Before you submit, complete the reflection below so your team captures what is ready and what still needs attention.`),
         activity(IDS_L10.ACTIVITY_REFLECTION, true),
+      ],
+    },
+    {
+      id: IDS_L10.PHASE_4,
+      phaseNumber: 4,
+      title: 'Reflection: Prepare for the Individual Assessment',
+      estimatedMinutes: 10,
+      sections: [
         text(`## What's Coming: Individual Assessment
 
 After today's group submission, each student completes Lesson 11 individually.
@@ -459,27 +531,28 @@ Seven questions. One per standard. Auto-graded. You have up to two attempts.
       displayName: 'Milestone ② Personal Checklist — Final Reflection',
       description: "Complete your personal pre-submission checklist and reflect on the group project experience.",
       props: {
-        title: "Milestone ② Personal Reflection",
+        unitTitle: "Milestone ② Personal Reflection",
         description: "Before your group submits, take five minutes to reflect on what you contributed and what you'd do differently.",
         prompts: [
           {
             id: 'p1',
-            question: 'What was your most important contribution to the group Balance Sheet project?',
+            category: 'courage',
+            prompt: 'What was your most important contribution to the group Balance Sheet project?',
             placeholder: "I contributed most by...",
           },
           {
             id: 'p2',
-            question: "What's one thing you'd do differently in the next group project?",
+            category: 'adaptability',
+            prompt: "What's one thing you'd do differently in the next group project?",
             placeholder: "Next time I would...",
           },
           {
             id: 'p3',
-            question: "What's the one ACC-1.x standard you feel least confident about going into the individual assessment? What will you review?",
+            category: 'persistence',
+            prompt: "What's the one ACC-1.x standard you feel least confident about going into the individual assessment? What will you review?",
             placeholder: "I'm least confident about ACC-1.___ because...",
           },
         ],
-        minWordsPerPrompt: 15,
-        milestoneNote: 'Milestone ② — Mini Balance Sheet package submitted after this reflection.',
       },
       gradingConfig: {
         autoGrade: false,
