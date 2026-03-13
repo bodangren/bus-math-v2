@@ -89,11 +89,20 @@ const formatDifficulty = (difficulty: string) => {
 export default async function Home() {
   const convex = getConvexClient();
 
-  // Fetch concurrently from Convex
-  const [statsResult, unitsResult] = await Promise.all([
+  const [statsFetch, unitsFetch] = await Promise.allSettled([
     convex.query(api.public.getCurriculumStats),
-    convex.query(api.public.getUnits)
+    convex.query(api.public.getUnits),
   ]);
+
+  if (statsFetch.status === "rejected" || unitsFetch.status === "rejected") {
+    console.error("[home] Failed to load landing data from Convex", {
+      statsError: statsFetch.status === "rejected" ? statsFetch.reason : null,
+      unitsError: unitsFetch.status === "rejected" ? unitsFetch.reason : null,
+    });
+  }
+
+  const statsResult = statsFetch.status === "fulfilled" ? statsFetch.value : null;
+  const unitsResult = unitsFetch.status === "fulfilled" ? unitsFetch.value : [];
   const stats =
     statsResult &&
     typeof statsResult === "object" &&

@@ -1,11 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { useMutation } from 'convex/react';
-import { api } from '@/convex/_generated/api';
-import { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@/components/auth/AuthProvider';
 import type { CompletePhaseResponse } from '@/types/api';
+import { completePhaseRequest } from '@/lib/phase-completion/client';
 
 interface QueuedCompletion {
   userId: string;
@@ -141,8 +139,6 @@ export function usePhaseCompletion({
   const idempotencyKeyRef = useRef<string | null>(null);
   const processedQueueRef = useRef(false);
 
-  const completePhaseMutation = useMutation(api.student.completePhase);
-
   useEffect(() => {
     if (!userId || processedQueueRef.current) return;
 
@@ -175,8 +171,7 @@ export function usePhaseCompletion({
         }
 
         try {
-          await completePhaseMutation({
-            userId: completion.userId as Id<"profiles">,
+          await completePhaseRequest({
             lessonId: completion.lessonId,
             phaseNumber: completion.phaseNumber,
             timeSpent: completion.timeSpent,
@@ -199,7 +194,7 @@ export function usePhaseCompletion({
     };
 
     processQueuedCompletions();
-  }, [userId, completePhaseMutation]);
+  }, [userId]);
 
   const completePhase = useCallback(async () => {
     if (isCompleting) {
@@ -228,8 +223,7 @@ export function usePhaseCompletion({
       let effectiveLessonId = lessonId;
 
       try {
-        const result = await completePhaseMutation({
-          userId: userId as Id<"profiles">,
+        const result = await completePhaseRequest({
           lessonId: effectiveLessonId,
           phaseNumber,
           timeSpent,
@@ -256,8 +250,7 @@ export function usePhaseCompletion({
           if (fallbackSlug && fallbackSlug !== effectiveLessonId) {
             effectiveLessonId = fallbackSlug;
             try {
-              const result = await completePhaseMutation({
-                userId: userId as Id<"profiles">,
+              const result = await completePhaseRequest({
                 lessonId: effectiveLessonId,
                 phaseNumber,
                 timeSpent,
@@ -300,7 +293,7 @@ export function usePhaseCompletion({
     } finally {
       setIsCompleting(false);
     }
-  }, [lessonId, phaseNumber, userId, onSuccess, onError, isCompleting, linkedStandardId, completePhaseMutation]);
+  }, [lessonId, phaseNumber, userId, onSuccess, onError, isCompleting, linkedStandardId]);
 
   return {
     completePhase,

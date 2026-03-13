@@ -72,6 +72,19 @@ describe('GradebookGrid rendering', () => {
     expect(screen.getByText('Unit Test')).toBeInTheDocument();
   });
 
+  it('links lesson headers to the teacher lesson drill-down route', () => {
+    render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={3} />);
+
+    expect(screen.getByRole('link', { name: 'L1' })).toHaveAttribute(
+      'href',
+      '/teacher/units/3/lessons/lesson-1',
+    );
+    expect(screen.getByRole('link', { name: 'Unit Test' })).toHaveAttribute(
+      'href',
+      '/teacher/units/3/lessons/lesson-11',
+    );
+  });
+
   it('shows mastery percentage in a cell when available', () => {
     render(<GradebookGrid rows={twoStudents} lessons={lessons} unitNumber={1} />);
     expect(screen.getByText('90%')).toBeInTheDocument();

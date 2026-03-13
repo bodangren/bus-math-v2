@@ -2,15 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
 const mockUseAuth = vi.fn();
-const mockCompletePhaseMutation = vi.fn();
-const mockUseMutation = vi.fn();
+const mockCompletePhaseRequest = vi.fn();
 
 vi.mock('@/components/auth/AuthProvider', () => ({
   useAuth: mockUseAuth,
 }));
 
-vi.mock('convex/react', () => ({
-  useMutation: mockUseMutation,
+vi.mock('@/lib/phase-completion/client', () => ({
+  completePhaseRequest: mockCompletePhaseRequest,
 }));
 
 const { usePhaseCompletion } = await import('../../hooks/usePhaseCompletion');
@@ -29,8 +28,7 @@ describe('usePhaseCompletion', () => {
     mockUseAuth.mockReturnValue({
       user: { id: 'profile-1' },
     });
-    mockUseMutation.mockReturnValue(mockCompletePhaseMutation);
-    mockCompletePhaseMutation.mockResolvedValue({
+    mockCompletePhaseRequest.mockResolvedValue({
       success: true,
       nextPhaseUnlocked: true,
     });
@@ -47,9 +45,8 @@ describe('usePhaseCompletion', () => {
       await result.current.completePhase();
     });
 
-    expect(mockCompletePhaseMutation).toHaveBeenCalledWith(
+    expect(mockCompletePhaseRequest).toHaveBeenCalledWith(
       expect.objectContaining({
-        userId: 'profile-1',
         lessonId: 'lesson-id-1',
         phaseNumber: 2,
         idempotencyKey: 'uuid-1',
@@ -71,7 +68,7 @@ describe('usePhaseCompletion', () => {
       await result.current.completePhase();
     });
 
-    expect(mockCompletePhaseMutation).not.toHaveBeenCalled();
+    expect(mockCompletePhaseRequest).not.toHaveBeenCalled();
     await waitFor(() => {
       expect(result.current.error).toBeInstanceOf(Error);
     });
@@ -80,7 +77,7 @@ describe('usePhaseCompletion', () => {
   });
 
   it('retries with lesson slug when mutation reports lesson not found', async () => {
-    mockCompletePhaseMutation
+    mockCompletePhaseRequest
       .mockRejectedValueOnce(new Error('Lesson not found'))
       .mockResolvedValueOnce({ success: true, nextPhaseUnlocked: false });
 
@@ -89,8 +86,8 @@ describe('usePhaseCompletion', () => {
       await result.current.completePhase();
     });
 
-    expect(mockCompletePhaseMutation).toHaveBeenCalledTimes(2);
-    expect(mockCompletePhaseMutation).toHaveBeenNthCalledWith(
+    expect(mockCompletePhaseRequest).toHaveBeenCalledTimes(2);
+    expect(mockCompletePhaseRequest).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         lessonId: 'unit-1-lesson-1',
@@ -99,7 +96,7 @@ describe('usePhaseCompletion', () => {
   });
 
   it('queues failed completions for retry', async () => {
-    mockCompletePhaseMutation.mockRejectedValueOnce(new Error('network down'));
+    mockCompletePhaseRequest.mockRejectedValueOnce(new Error('network down'));
     const { result } = renderHook(() => usePhaseCompletion(baseOptions));
 
     await act(async () => {
@@ -137,7 +134,7 @@ describe('usePhaseCompletion', () => {
     renderHook(() => usePhaseCompletion(baseOptions));
 
     await waitFor(() => {
-      expect(mockCompletePhaseMutation).toHaveBeenCalledWith(
+      expect(mockCompletePhaseRequest).toHaveBeenCalledWith(
         expect.objectContaining({
           idempotencyKey: 'queued-1',
         }),
@@ -151,7 +148,7 @@ describe('usePhaseCompletion', () => {
   });
 
   it('increments retryCount when queued completion replay fails', async () => {
-    mockCompletePhaseMutation.mockRejectedValue(new Error('still offline'));
+    mockCompletePhaseRequest.mockRejectedValue(new Error('still offline'));
     localStorage.setItem('completion-queue-user', 'profile-1');
     localStorage.setItem(
       'completion-queue',

@@ -50,6 +50,7 @@ describe('Convex authorization boundary', () => {
     expectInternalExport(teacherSource, 'getTeacherCourseOverviewData', 'internalQuery');
     expectInternalExport(teacherSource, 'getTeacherGradebookData', 'internalQuery');
     expectInternalExport(teacherSource, 'getTeacherStudentDetail', 'internalQuery');
+    expectInternalExport(teacherSource, 'getTeacherLessonMonitoringData', 'internalQuery');
     expectInternalExport(teacherSource, 'getSubmissionDetail', 'internalQuery');
     expectInternalExport(teacherSource, 'getProfileWithOrg', 'internalQuery');
 
@@ -61,6 +62,7 @@ describe('Convex authorization boundary', () => {
     const teacherDashboardPage = readFile('app/teacher/page.tsx');
     const teacherGradebookPage = readFile('app/teacher/gradebook/page.tsx');
     const teacherUnitPage = readFile('app/teacher/units/[unitNumber]/page.tsx');
+    const teacherLessonPage = readFile('app/teacher/units/[unitNumber]/lessons/[lessonId]/page.tsx');
     const teacherStudentPage = readFile('app/teacher/students/[studentId]/page.tsx');
     const studentDashboardPage = readFile('app/student/dashboard/page.tsx');
     const spreadsheetDraftRoute = readFile('app/api/activities/spreadsheet/[activityId]/draft/route.ts');
@@ -80,6 +82,8 @@ describe('Convex authorization boundary', () => {
     expect(teacherGradebookPage).toContain('internal.teacher.getTeacherCourseOverviewData');
     expect(teacherUnitPage).toContain('fetchInternalQuery');
     expect(teacherUnitPage).toContain('internal.teacher.getTeacherGradebookData');
+    expect(teacherLessonPage).toContain('fetchInternalQuery');
+    expect(teacherLessonPage).toContain('internal.teacher.getTeacherLessonMonitoringData');
     expect(teacherStudentPage).toContain('fetchInternalQuery');
     expect(teacherStudentPage).toContain('internal.teacher.getTeacherStudentDetail');
 

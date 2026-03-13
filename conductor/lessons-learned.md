@@ -19,6 +19,7 @@
 - (2026-03-12, curriculum_runtime_foundation) Migration-era Supabase and seed utilities can still break the production TypeScript graph even after the active runtime has moved to Convex.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Legacy authored lesson modules can block Convex/server bundling unless they are converted into a pure generated source module first.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Publish-time normalization is safer than expanding the runtime schema when legacy authored sections still include migration-era block types such as teacher submission.
+- (2026-03-13, teacher_monitoring_core) Public prerendered pages need `Promise.allSettled`-style fallbacks around Convex reads or production builds will fail whenever local Convex is unavailable during static generation.
 
 ### Patterns Worth Repeating
 
@@ -27,3 +28,4 @@
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Source-level generator plus manifest tests are a practical bridge when authored curriculum exists in legacy files but the runtime must import a pure Convex-safe module.
 - (2026-03-13, student_study_runtime) Completed lessons should reopen on their final published phase and use the dashboard-derived next-lesson recommendation, or the student loop drifts between dashboard and lesson routes.
+- (2026-03-13, teacher_monitoring_core) A pure lesson-monitoring mapper plus page-route tests is a safe way to add teacher drill-down routes without coupling server pages directly to legacy lesson-plan component internals.

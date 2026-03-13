@@ -425,6 +425,97 @@ export const getTeacherStudentDetail = internalQuery({
   },
 });
 
+export const getTeacherLessonMonitoringData = internalQuery({
+  args: {
+    userId: v.id("profiles"),
+    unitNumber: v.number(),
+    lessonId: v.id("lessons"),
+  },
+  handler: async (ctx, args) => {
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return { status: "unauthorized" as const };
+    }
+
+    const unitLessons = (await ctx.db.query("lessons").collect())
+      .filter((lesson) => lesson.unitNumber === args.unitNumber)
+      .sort((a, b) => a.orderIndex - b.orderIndex);
+
+    if (unitLessons.length === 0) {
+      return { status: "not_found" as const };
+    }
+
+    const selectedLesson = unitLessons.find((lesson) => lesson._id === args.lessonId);
+    if (!selectedLesson) {
+      return { status: "not_found" as const };
+    }
+
+    const latestPublishedByLessonId = buildLatestPublishedLessonVersionMap(
+      await ctx.db.query("lesson_versions").collect(),
+      unitLessons.map((lesson) => lesson._id),
+    );
+    const selectedVersion = latestPublishedByLessonId.get(selectedLesson._id);
+
+    const phases =
+      selectedVersion == null
+        ? []
+        : await ctx.db
+            .query("phase_versions")
+            .withIndex("by_lesson_version", (q) =>
+              q.eq("lessonVersionId", selectedVersion._id),
+            )
+            .collect();
+
+    phases.sort((a, b) => a.phaseNumber - b.phaseNumber);
+
+    const phasesWithSections = await Promise.all(
+      phases.map(async (phase) => {
+        const sections = await ctx.db
+          .query("phase_sections")
+          .withIndex("by_phase_version", (q) => q.eq("phaseVersionId", phase._id))
+          .collect();
+
+        sections.sort((a, b) => a.sequenceOrder - b.sequenceOrder);
+
+        return {
+          id: phase._id,
+          phaseNumber: phase.phaseNumber,
+          title: phase.title ?? null,
+          estimatedMinutes: phase.estimatedMinutes ?? null,
+          sections: sections.map((section) => ({
+            id: section._id,
+            sectionType: section.sectionType,
+            content: section.content,
+          })),
+        };
+      }),
+    );
+
+    return {
+      status: "success" as const,
+      unitNumber: args.unitNumber,
+      lesson: {
+        id: selectedLesson._id,
+        unitNumber: selectedLesson.unitNumber,
+        title: selectedVersion?.title ?? selectedLesson.title,
+        slug: selectedLesson.slug,
+        description: selectedVersion?.description ?? selectedLesson.description ?? null,
+        learningObjectives: selectedLesson.learningObjectives ?? null,
+        orderIndex: selectedLesson.orderIndex,
+        metadata: selectedLesson.metadata ?? null,
+        createdAt: selectedLesson.createdAt,
+        updatedAt: selectedLesson.updatedAt,
+      },
+      phases: phasesWithSections,
+      unitLessons: unitLessons.map((lesson) => ({
+        id: lesson._id,
+        title: latestPublishedByLessonId.get(lesson._id)?.title ?? lesson.title,
+        orderIndex: lesson.orderIndex,
+      })),
+    };
+  },
+});
+
 export const getSubmissionDetail = internalQuery({
   args: {
     studentId: v.id("profiles"),

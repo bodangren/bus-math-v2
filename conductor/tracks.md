@@ -6,7 +6,9 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-No active track. Start the next queued track only after this archive commit is merged.
+- [x] **Track: Teacher Monitoring Core**
+  *Link: [./tracks/teacher_monitoring_core_20260313/](./tracks/teacher_monitoring_core_20260313/)*
+  *Goal: close the remaining lesson-level monitoring gap so the teacher surface covers course, unit, lesson, and student follow-up on Convex-backed data.*
 
 ## Planned Queue
 

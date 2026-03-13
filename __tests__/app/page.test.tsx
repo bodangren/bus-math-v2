@@ -24,10 +24,10 @@ vi.mock("@/components/hero", () => ({
   Hero: ({
     stats,
   }: {
-    stats: { unitCount: number; lessonCount: number; activityCount: number };
+    stats: { unitCount: number; lessonCount: number; activityCount: number } | null;
   }) => (
     <div data-testid="hero-stats">
-      {stats.unitCount}|{stats.lessonCount}|{stats.activityCount}
+      {stats ? `${stats.unitCount}|${stats.lessonCount}|${stats.activityCount}` : "no-stats"}
     </div>
   ),
 }));
@@ -68,5 +68,22 @@ describe("Home page", () => {
 
     expect(screen.getByTestId("hero-stats")).toHaveTextContent("8|40|120");
     expect(screen.getAllByText("Unit 1: Lesson 1").length).toBeGreaterThan(0);
+  });
+
+  it("falls back to empty landing data when Convex is unavailable", async () => {
+    mockQuery.mockRejectedValue(new Error("connect ECONNREFUSED 127.0.0.1:3210"));
+
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const page = await Home();
+    render(page);
+
+    expect(screen.getByTestId("hero-stats")).toHaveTextContent("no-stats");
+    expect(
+      screen.getByRole("heading", { name: /course structure/i }),
+    ).toBeInTheDocument();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 });
