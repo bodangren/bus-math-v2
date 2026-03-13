@@ -6,9 +6,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [x] **Track: Teacher Monitoring Core**
-  *Link: [./tracks/teacher_monitoring_core_20260313/](./tracks/teacher_monitoring_core_20260313/)*
-  *Goal: close the remaining lesson-level monitoring gap so the teacher surface covers course, unit, lesson, and student follow-up on Convex-backed data.*
+No active track. Start the next queued track only after this archive commit is merged.
 
 ## Planned Queue
 
@@ -27,6 +25,9 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Archive Ledger
 
+- [x] **Track: Teacher Monitoring Core**
+  *Link: [./archive/teacher_monitoring_core_20260313/](./archive/teacher_monitoring_core_20260313/)*
+  *Closeout: archived on 2026-03-13 after adding the missing lesson-level teacher monitoring route, hardening prerender fallbacks for the landing page, and fixing the stale phase-completion client hook path.*
 - [x] **Track: Student Study Runtime**
   *Link: [./archive/student_study_runtime_20260313/](./archive/student_study_runtime_20260313/)*
   *Closeout: archived on 2026-03-13 after finishing the student lesson resume/completion loop and aligning public curriculum copy with the protected student lesson route.*
