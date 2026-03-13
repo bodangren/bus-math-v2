@@ -6,8 +6,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [x] **Track: Curriculum Rollout Wave 1 (Units 2-4)**
-  *Link: [./tracks/curriculum_rollout_wave1_20260313/](./tracks/curriculum_rollout_wave1_20260313/)*
+- None. Select the next item from the planned queue when execution resumes.
 
 ## Planned Queue
 
@@ -19,6 +18,10 @@ This file is the source of truth for active execution order. Archived tracks liv
    Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
+
+- [x] **Track: Curriculum Rollout Wave 1 (Units 2-4)**
+  *Link: [./archive/curriculum_rollout_wave1_20260313/](./archive/curriculum_rollout_wave1_20260313/)*
+  *Closeout: archived on 2026-03-13 after replacing Units 2-4 generated curriculum scaffolds with canonical authored published lessons sourced from the active planning matrices and verified through full lint, test, and build gates.*
 
 - [x] **Track: Unit 1 Canonicalization and Archetype Exemplars**
   *Link: [./archive/unit1_canonicalization_archetypes_20260313/](./archive/unit1_canonicalization_archetypes_20260313/)*
