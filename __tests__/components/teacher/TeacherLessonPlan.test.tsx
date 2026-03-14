@@ -84,6 +84,22 @@ describe('TeacherLessonPlan', () => {
     expect(screen.getByText('Introduction to Accounting Equation')).toBeInTheDocument();
   });
 
+  it('uses the capstone label for unit 9 lessons', () => {
+    render(
+      <TeacherLessonPlan
+        lesson={{
+          ...mockLesson,
+          unitNumber: 9,
+          title: 'Capstone: Investor-Ready Plan',
+        }}
+        lessonNumber={1}
+      />,
+    );
+
+    expect(screen.getByText('Capstone - Lesson 1')).toBeInTheDocument();
+    expect(screen.queryByText('Unit 9 - Lesson 1')).not.toBeInTheDocument();
+  });
+
   it('renders lesson duration', () => {
     render(<TeacherLessonPlan lesson={mockLesson} lessonNumber={1} />);
 

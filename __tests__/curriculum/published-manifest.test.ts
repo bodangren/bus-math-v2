@@ -32,7 +32,7 @@ describe('published curriculum manifest', () => {
 
     expect(manifest.lessons.at(-1)).toMatchObject({
       slug: 'capstone-investor-ready-plan',
-      source: 'generated',
+      source: 'authored',
     });
   });
 
@@ -94,6 +94,33 @@ describe('published curriculum manifest', () => {
     expect(seedPlan.lessons).toHaveLength(89);
     expect(new Set(lessonSlugs).size).toBe(lessonSlugs.length);
     expect(seedPlan.lessons.filter((lesson) => lesson.metadata?.tags?.includes('capstone'))).toHaveLength(1);
+  });
+
+  it('publishes the capstone as authored runtime content with milestone and final-presentation guidance', () => {
+    const manifest = buildPublishedCurriculumManifest();
+    const capstone = manifest.lessons.find(
+      (lesson) => lesson.slug === 'capstone-investor-ready-plan',
+    );
+
+    expect(capstone).toMatchObject({
+      unitNumber: 9,
+      title: 'Capstone: Investor-Ready Plan',
+      source: 'authored',
+      lessonType: 'capstone',
+    });
+    expect(capstone?.phases.map((phase) => phase.phaseKey)).toEqual([
+      'brief',
+      'workshop',
+      'checkpoint',
+      'reflection',
+    ]);
+
+    const capstoneMarkdown = readLessonMarkdown(capstone);
+    expect(capstoneMarkdown).toContain('Milestone 1');
+    expect(capstoneMarkdown).toContain('Milestone 2');
+    expect(capstoneMarkdown).toContain('investor-ready workbook');
+    expect(capstoneMarkdown).toContain('final presentation');
+    expect(capstoneMarkdown).toContain('pitch');
   });
 
   it('keeps Unit 1 as the canonical archetype exemplar set', () => {

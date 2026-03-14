@@ -43,4 +43,23 @@ describe('NextLessonCard', () => {
     expect(screen.getByText(/all published lessons are complete/i)).toBeInTheDocument();
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
+
+  it('renders the capstone label instead of Unit 9 for the culminating lesson', () => {
+    render(
+      <NextLessonCard
+        heading="Continue Learning"
+        description="Pick up where progress left off."
+        lesson={{
+          unitNumber: 9,
+          title: 'Capstone: Investor-Ready Plan',
+          description: 'Rehearse the final investor pitch.',
+          slug: 'capstone-investor-ready-plan',
+          actionLabel: 'Resume Lesson',
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/^Capstone$/)).toBeInTheDocument();
+    expect(screen.queryByText(/^Unit 9$/)).not.toBeInTheDocument();
+  });
 });

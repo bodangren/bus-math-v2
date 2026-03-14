@@ -19,6 +19,7 @@ import {
   GraduationCap
 } from "lucide-react"
 import { type Lesson } from '@/lib/db/schema/validators';
+import { formatCurriculumSegmentTitle } from '@/lib/curriculum/segment-labels';
 
 interface DailyLessonActivity {
   name: string;
@@ -125,7 +126,7 @@ export function UnitLessonPlan({
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-3xl font-bold mb-4">
-          Unit {lesson.unitNumber}: {lesson.title}
+          {formatCurriculumSegmentTitle(lesson.unitNumber, lesson.title)}
         </h1>
         <p className="text-lg text-muted-foreground mb-4">
           {lesson.description}

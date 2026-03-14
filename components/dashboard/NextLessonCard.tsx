@@ -9,6 +9,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import type { DashboardLessonActionLink } from '@/lib/student/dashboard-presentation';
+import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 import { studentLessonPath } from '@/lib/student/navigation';
 
 interface NextLessonCardProps {
@@ -34,7 +35,9 @@ export function NextLessonCard({
         {lesson ? (
           <>
             <div className="rounded-xl border border-border/60 bg-background/80 p-4">
-              <p className="text-sm text-muted-foreground">Unit {lesson.unitNumber}</p>
+              <p className="text-sm text-muted-foreground">
+                {formatCurriculumSegmentLabel(lesson.unitNumber)}
+              </p>
               <p className="mt-1 font-semibold text-foreground">{lesson.title}</p>
               {lesson.description ? (
                 <p className="mt-2 text-sm text-muted-foreground">{lesson.description}</p>

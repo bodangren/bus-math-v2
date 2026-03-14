@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { notFound, redirect } from 'next/navigation';
 
 const { mockRequireTeacherSessionClaims, mockFetchInternalQuery } = vi.hoisted(() => ({
@@ -71,6 +72,18 @@ describe('UnitGradebookPage', () => {
         unitNumber: 2,
       },
     );
+  });
+
+  it('labels unit 9 as the capstone on the gradebook page', async () => {
+    const page = await UnitGradebookPage({
+      params: Promise.resolve({ unitNumber: '9' }),
+    });
+
+    render(page);
+
+    expect(screen.getByRole('heading', { name: 'Capstone — Gradebook' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Capstone gradebook' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Unit 9 — Gradebook' })).not.toBeInTheDocument();
   });
 
   it('redirects unauthenticated users to login', async () => {

@@ -14,6 +14,7 @@ import {
   formatTeacherProgressPercentage,
 } from '@/lib/teacher/progress';
 import { buildTeacherStudentDetailViewModel } from '@/lib/teacher/student-detail';
+import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 
 interface TeacherStudentDetailPageProps {
   params: Promise<{
@@ -179,7 +180,7 @@ export default async function TeacherStudentDetailPage({
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="text-sm font-medium text-muted-foreground">
-                          Unit {unit.unitNumber}
+                          {formatCurriculumSegmentLabel(unit.unitNumber)}
                         </p>
                         <p className="font-semibold text-foreground">{unit.unitTitle}</p>
                         <p className="text-sm text-muted-foreground">

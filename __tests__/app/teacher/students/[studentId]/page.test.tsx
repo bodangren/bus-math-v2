@@ -242,6 +242,52 @@ describe('Teacher student detail page', () => {
     expect(screen.queryByRole('link', { name: /start lesson/i })).not.toBeInTheDocument();
   });
 
+  it('labels the capstone distinctly in teacher student progress summaries', async () => {
+    mockFetchInternalQuery.mockResolvedValue({
+      status: 'success',
+      organizationName: 'Demo School',
+      student: {
+        id: 'student-1',
+        username: 'capstone_runner',
+        displayName: 'Capstone Runner',
+      },
+      snapshot: {
+        completedPhases: 1,
+        totalPhases: 4,
+        progressPercentage: 25,
+        lastActive: '2026-03-10T08:00:00.000Z',
+      },
+      units: [
+        {
+          unitNumber: 9,
+          unitTitle: 'Capstone: Investor-Ready Plan',
+          lessons: [
+            {
+              id: 'capstone-lesson',
+              unitNumber: 9,
+              title: 'Capstone: Investor-Ready Plan',
+              slug: 'capstone-investor-ready-plan',
+              description: 'Resume the final pitch workflow',
+              completedPhases: 1,
+              totalPhases: 4,
+              progressPercentage: 25,
+            },
+          ],
+        },
+      ],
+    });
+
+    const { default: StudentDetailPage } = await StudentDetailPageImport();
+    const page = await StudentDetailPage({
+      params: Promise.resolve({ studentId: 'student-1' }),
+    });
+
+    render(page);
+
+    expect(screen.getAllByText(/^Capstone$/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/^Unit 9$/)).not.toBeInTheDocument();
+  });
+
   it('returns notFound when student is outside teacher organization', async () => {
     mockFetchInternalQuery.mockResolvedValue({ status: 'not_found' });
 

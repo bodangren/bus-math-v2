@@ -1,0 +1,11 @@
+{
+  "track_id": "capstone_textbook_completion_20260314",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-03-14T00:00:00Z",
+  "updated_at": "2026-03-14T00:51:55Z",
+  "description": "Replace the generated capstone scaffold with canonical authored runtime content and finish the first end-to-end textbook experience from Unit 1 through capstone.",
+  "estimated_tasks": 6,
+  "actual_tasks": 6,
+  "deviation_notes": "Capstone labeling normalization was extended into shared teacher planning and student lesson-header components so generic Unit 9 labels could not survive in secondary textbook surfaces."
+}

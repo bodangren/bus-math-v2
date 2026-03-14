@@ -92,6 +92,21 @@ describe('UnitOverview', () => {
     expect(screen.getByText('Unit 1: Balance by Design')).toBeInTheDocument();
   });
 
+  it('uses the capstone title without a Unit 9 prefix', () => {
+    render(
+      <UnitOverview
+        lesson={{
+          ...mockLesson,
+          unitNumber: 9,
+          title: 'Capstone: Investor-Ready Plan',
+        }}
+      />,
+    );
+
+    expect(screen.getByText('Capstone: Investor-Ready Plan')).toBeInTheDocument();
+    expect(screen.queryByText('Unit 9: Capstone: Investor-Ready Plan')).not.toBeInTheDocument();
+  });
+
   it('renders unit description', () => {
     render(<UnitOverview lesson={mockLesson} />);
 

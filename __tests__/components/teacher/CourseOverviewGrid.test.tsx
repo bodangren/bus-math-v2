@@ -73,6 +73,28 @@ describe('CourseOverviewGrid rendering', () => {
     render(<CourseOverviewGrid rows={rows} units={[]} />);
     expect(screen.getByText(/no units/i)).toBeInTheDocument();
   });
+
+  it('labels the capstone column distinctly instead of Unit 9', () => {
+    render(
+      <CourseOverviewGrid
+        rows={[
+          {
+            studentId: 's1',
+            displayName: 'Alice Brown',
+            username: 'abrown',
+            cells: [{ unitNumber: 9, avgMastery: 88, color: 'green' }],
+          },
+        ]}
+        units={[{ unitNumber: 9 }]}
+      />,
+    );
+
+    expect(screen.getByRole('link', { name: 'Capstone' })).toHaveAttribute(
+      'href',
+      '/teacher/units/9',
+    );
+    expect(screen.queryByRole('link', { name: 'Unit 9' })).not.toBeInTheDocument();
+  });
 });
 
 describe('CourseOverviewGrid color contract', () => {

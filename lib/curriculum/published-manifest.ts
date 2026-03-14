@@ -11,6 +11,7 @@ import {
   type Wave2AuthoredLessonBlueprint,
   type Wave2AuthoredUnitBlueprint,
 } from './generated/wave2-authored';
+import { AUTHORED_CAPSTONE_BLUEPRINT } from './generated/capstone-authored';
 
 export type PublishedLessonType =
   | 'core_instruction'
@@ -1391,6 +1392,57 @@ function buildWave1AuthoredLessons(plan: UnitPlan): PublishedCurriculumLesson[] 
   return blueprints.map((blueprint) => buildWave1AuthoredLesson(plan, blueprint));
 }
 
+function buildCapstonePhaseSections(phaseKey: PublishedPhaseKey): PublishedSection[] {
+  const [milestone1, milestone2] = AUTHORED_CAPSTONE_BLUEPRINT.milestones;
+
+  switch (phaseKey) {
+    case 'brief':
+      return [
+        textSection(
+          `## Capstone brief\n\nStudents now turn the full course portfolio into one investor-ready workbook, business plan, and pitch.\n\n### ${milestone1.title}\n${milestone1.focus}\n\n### ${milestone2.title}\n${milestone2.focus}`,
+        ),
+        textSection(
+          `## Required planning assets\n\n- ${AUTHORED_CAPSTONE_BLUEPRINT.workbookTemplate}\n- ${AUTHORED_CAPSTONE_BLUEPRINT.planningGuide}\n- ${AUTHORED_CAPSTONE_BLUEPRINT.pitchRubric}\n- ${AUTHORED_CAPSTONE_BLUEPRINT.modelTourChecklist}`,
+        ),
+      ];
+    case 'workshop':
+      return [
+        textSection(
+          `## Workshop build\n\nUse ${AUTHORED_CAPSTONE_BLUEPRINT.workbookTemplate} to assemble the investor-ready workbook, then align the written plan and the model tour around the same recommendation.\n\n### Evidence to produce\n- ${milestone1.evidence.join('\n- ')}`,
+        ),
+        calloutSection(
+          `The capstone is not a fresh start. Students should reuse and refine the strongest Unit 1-8 artifacts so the final presentation feels like the coherent close of the textbook.`,
+        ),
+      ];
+    case 'checkpoint':
+      return [
+        textSection(
+          `## Checkpoint review\n\n### ${milestone1.title}\n${milestone1.focus}\n\n### ${milestone2.title}\n${milestone2.focus}`,
+        ),
+        textSection(
+          `## Final presentation evidence\n\n- ${milestone2.evidence.join('\n- ')}\n\n### Audience\n${AUTHORED_CAPSTONE_BLUEPRINT.audience}`,
+        ),
+      ];
+    case 'reflection':
+      return [
+        textSection(
+          `## Reflection and transfer\n\n${AUTHORED_CAPSTONE_BLUEPRINT.reflectionPrompt}\n\n### Final expectation\n${AUTHORED_CAPSTONE_BLUEPRINT.finalPresentationExpectation}`,
+        ),
+        calloutSection(
+          `The final presentation should sound like a real investor conversation: concise, evidence-based, and ready to defend the pitch under scrutiny.`,
+        ),
+      ];
+    default:
+      return toGeneratedSections({
+        unitTitle: CAPSTONE_PLAN.title,
+        title: CAPSTONE_PLAN.lessonTitle,
+        description: CAPSTONE_PLAN.summary,
+        learningObjectives: CAPSTONE_PLAN.unitObjectives,
+        phaseKey,
+      });
+  }
+}
+
 function buildCapstoneLesson(): PublishedCurriculumLesson {
   const unitContent = buildUnitContent(CAPSTONE_PLAN);
   const title = CAPSTONE_PLAN.lessonTitle;
@@ -1410,8 +1462,13 @@ function buildCapstoneLesson(): PublishedCurriculumLesson {
       'Deliver a final presentation that is clear, professional, and evidence-based.',
     ],
     lessonType: 'capstone',
-    source: 'generated',
-    standards: [],
+    source: 'authored',
+    standards: [
+      {
+        code: 'CAP-9.1',
+        isPrimary: true,
+      },
+    ],
     version: {
       version: 1,
       title,
@@ -1424,18 +1481,8 @@ function buildCapstoneLesson(): PublishedCurriculumLesson {
       phaseNumber: index + 1,
       phaseKey,
       title: GENERATED_PHASE_LABELS[phaseKey],
-      estimatedMinutes: 15,
-      sections: toGeneratedSections({
-        unitTitle: CAPSTONE_PLAN.title,
-        title,
-        description,
-        learningObjectives: [
-          'Curate the strongest course evidence.',
-          'Refine the investor narrative.',
-          'Prepare the final presentation.',
-        ],
-        phaseKey,
-      }),
+      estimatedMinutes: 18,
+      sections: buildCapstonePhaseSections(phaseKey),
     })),
   };
 }

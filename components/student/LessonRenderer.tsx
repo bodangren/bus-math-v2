@@ -11,6 +11,7 @@ import { usePhaseProgress } from '@/hooks/usePhaseProgress';
 import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import { Button } from '@/components/ui/button';
 import type { DashboardLessonActionLink } from '@/lib/student/dashboard-presentation';
+import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
 import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigation';
 import { cn } from '@/lib/utils';
@@ -170,7 +171,7 @@ export function LessonRenderer({
         {/* Lesson Header */}
         <div className="mb-8">
           <div className="text-sm text-muted-foreground mb-2">
-            Unit {lesson.unitNumber}
+            {formatCurriculumSegmentLabel(lesson.unitNumber)}
           </div>
           <h1 className="text-4xl font-bold mb-4">{lesson.title}</h1>
           {lesson.description && (

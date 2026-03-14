@@ -105,6 +105,8 @@ The product is considered a complete online textbook only when all of the follow
 
 **Goal**: finish the book with the culminating experience and final coherence pass.
 
+**Status**: completed on 2026-03-14 with authored capstone runtime content and shared capstone labeling across the textbook, student progress, and teacher monitoring surfaces.
+
 **Tracks**
 
 - Capstone and Textbook Completion

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 
 import type { UnitCurriculum } from "./types";
+import { formatCurriculumSegmentLabel } from "@/lib/curriculum/segment-labels";
 
 interface CurriculumUnitCardProps {
   unit: UnitCurriculum;
@@ -48,7 +49,7 @@ export function CurriculumUnitCard({ unit }: CurriculumUnitCardProps) {
     >
       <CardHeader>
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <Badge variant="outline">Unit {unit.unitNumber}</Badge>
+          <Badge variant="outline">{formatCurriculumSegmentLabel(unit.unitNumber)}</Badge>
           <span>
             {unit.lessons.length} lesson{unit.lessons.length === 1 ? "" : "s"}
           </span>

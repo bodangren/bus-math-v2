@@ -81,6 +81,21 @@ describe('UnitLessonPlan', () => {
     expect(screen.getByText(/fundamental accounting equation/)).toBeInTheDocument();
   });
 
+  it('uses the capstone title without a Unit 9 prefix', () => {
+    render(
+      <UnitLessonPlan
+        lesson={{
+          ...mockLesson,
+          unitNumber: 9,
+          title: 'Capstone: Investor-Ready Plan',
+        }}
+      />,
+    );
+
+    expect(screen.getByText('Capstone: Investor-Ready Plan')).toBeInTheDocument();
+    expect(screen.queryByText('Unit 9: Capstone: Investor-Ready Plan')).not.toBeInTheDocument();
+  });
+
   it('renders Stage 1: Desired Results section', () => {
     render(<UnitLessonPlan lesson={mockLesson} />);
 

@@ -4,6 +4,7 @@ import { requireStudentSessionClaims } from "@/lib/auth/server";
 import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import { buildStudentDashboardViewModel, type StudentDashboardUnit } from "@/lib/student/dashboard";
 import { dashboardStatusBadgeClassName, dashboardStatusLabel } from "@/lib/student/dashboard-presentation";
+import { formatCurriculumSegmentLabel } from "@/lib/curriculum/segment-labels";
 import { studentLessonPath } from "@/lib/student/navigation";
 import {
   Card,
@@ -126,7 +127,9 @@ export default async function StudentDashboard() {
                   <CardHeader className="gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="outline">Unit {unit.unitNumber}</Badge>
+                        <Badge variant="outline">
+                          {formatCurriculumSegmentLabel(unit.unitNumber)}
+                        </Badge>
                         <Badge variant="outline" className={dashboardStatusBadgeClassName(unit.status)}>
                           {dashboardStatusLabel(unit.status)}
                         </Badge>

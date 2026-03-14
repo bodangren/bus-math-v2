@@ -27,9 +27,25 @@ describe('PhaseHeader', () => {
     render(<PhaseHeader lesson={lesson} phase={phases[1]} phases={phases} />);
 
     expect(screen.getByRole('link', { name: /^Student$/ })).toBeInTheDocument();
-    expect(screen.getByText(/Unit 03 • Lesson 02/)).toBeInTheDocument();
+    expect(
+      screen.getByText((_, node) => node?.textContent === 'Unit 3 • Lesson 02'),
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Lesson 2/ })).toBeInTheDocument();
     expect(screen.getByText(/Ledger Launch Lab/)).toBeInTheDocument();
+  });
+
+  it('uses the capstone label for unit 9 lessons', () => {
+    const phases = buildPhases();
+    const capstoneLesson: Lesson = createLesson({
+      title: 'Capstone: Investor-Ready Plan',
+      unitNumber: 9,
+      orderIndex: 1,
+    });
+
+    render(<PhaseHeader lesson={capstoneLesson} phase={phases[0]} phases={phases} />);
+
+    expect(screen.getByText(/Capstone • Lesson 01/)).toBeInTheDocument();
+    expect(screen.queryByText(/Unit 9 • Lesson 01/)).not.toBeInTheDocument();
   });
 
   it('indicates progress for the current phase', () => {

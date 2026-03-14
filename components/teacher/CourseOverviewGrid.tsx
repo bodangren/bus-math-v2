@@ -9,6 +9,7 @@ import {
   TeacherStudentActions,
   type StudentAccountUpdate,
 } from '@/components/teacher/TeacherStudentActions';
+import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 
 interface CourseOverviewGridProps {
   rows: CourseOverviewRow[];
@@ -87,7 +88,7 @@ export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
                   href={`/teacher/units/${unit.unitNumber}`}
                   className="hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Unit {unit.unitNumber}
+                  {formatCurriculumSegmentLabel(unit.unitNumber)}
                 </Link>
               </th>
             ))}
@@ -134,7 +135,7 @@ export function CourseOverviewGrid({ rows, units }: CourseOverviewGridProps) {
                       <Link
                         href={`/teacher/units/${unit.unitNumber}`}
                         className="block px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
-                        aria-label={`${row.displayName} Unit ${unit.unitNumber} — ${cellColorLabel(color)}`}
+                        aria-label={`${row.displayName} ${formatCurriculumSegmentLabel(unit.unitNumber)} — ${cellColorLabel(color)}`}
                       >
                         {mastery !== null ? `${mastery}%` : '—'}
                       </Link>

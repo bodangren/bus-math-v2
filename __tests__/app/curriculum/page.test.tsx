@@ -64,6 +64,33 @@ describe("CurriculumPage", () => {
     expect(screen.getByText("2 lessons")).toBeInTheDocument();
   });
 
+  it("labels the capstone as a distinct culminating experience instead of Unit 9", async () => {
+    mockQuery.mockResolvedValueOnce([
+      {
+        unitNumber: 9,
+        title: "Capstone: Investor-Ready Plan",
+        description: "Build the final investor-ready workbook and pitch.",
+        objectives: ["Defend one integrated business plan."],
+        lessons: [
+          {
+            id: "capstone-lesson",
+            title: "Capstone: Investor-Ready Plan",
+            slug: "capstone-investor-ready-plan",
+            description: "Final textbook experience",
+            orderIndex: 1,
+          },
+        ],
+      },
+    ]);
+
+    const page = await CurriculumPage();
+    render(page);
+
+    expect(screen.getByText(/^Capstone$/)).toBeInTheDocument();
+    expect(screen.queryByText(/^Unit 9$/)).not.toBeInTheDocument();
+    expect(screen.getAllByText("Capstone: Investor-Ready Plan").length).toBeGreaterThan(0);
+  });
+
   it("shows empty state when no lessons exist", async () => {
     mockQuery.mockResolvedValueOnce([]);
 

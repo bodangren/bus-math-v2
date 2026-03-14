@@ -150,4 +150,35 @@ describe('StudentDashboard', () => {
     expect(screen.getByText(/you have finished every available lesson/i)).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /resume lesson/i })).not.toBeInTheDocument();
   });
+
+  it('labels the capstone distinctly in dashboard cards and the next-lesson panel', async () => {
+    mockFetchInternalQuery.mockResolvedValue([
+      {
+        unitNumber: 9,
+        unitTitle: 'Capstone: Investor-Ready Plan',
+        lessons: [
+          {
+            id: 'capstone-lesson',
+            unitNumber: 9,
+            title: 'Capstone: Investor-Ready Plan',
+            slug: 'capstone-investor-ready-plan',
+            description: 'Finalize the investor-ready workbook and pitch.',
+            completedPhases: 1,
+            totalPhases: 4,
+            progressPercentage: 25,
+          },
+        ],
+      },
+    ]);
+
+    const page = await StudentDashboard();
+    render(page);
+
+    expect(screen.getAllByText(/^Capstone$/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/^Unit 9$/)).not.toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /resume lesson/i })[0]).toHaveAttribute(
+      'href',
+      '/student/lesson/capstone-investor-ready-plan',
+    );
+  });
 });

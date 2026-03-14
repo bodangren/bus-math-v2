@@ -14,6 +14,10 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import type { Lesson } from '@/lib/db/schema/validators';
+import {
+  formatCurriculumSegmentLabel,
+  formatCurriculumSegmentLessonLabel,
+} from '@/lib/curriculum/segment-labels';
 import type { ContentBlock, PhaseMetadata } from '@/types/curriculum';
 import { cn } from '@/lib/utils';
 import { ResourceBasePathFixer } from '@/components/ResourceBasePathFixer';
@@ -123,7 +127,7 @@ export function PhaseHeader({ lesson, phase, phases, unit, navigationOverrides }
         </Link>
         <ArrowRight className="h-3 w-3" />
         <Link href={unitHref} className="hover:text-foreground">
-          {unit?.title ?? `Unit ${unitNumber}`}
+          {unit?.title ?? formatCurriculumSegmentLabel(lesson.unitNumber)}
         </Link>
         <ArrowRight className="h-3 w-3" />
         <Link href={lessonHref} className="hover:text-foreground">
@@ -156,7 +160,10 @@ export function PhaseHeader({ lesson, phase, phases, unit, navigationOverrides }
               <div>
                 <div className="mb-2 flex flex-wrap items-center gap-2">
                   <Badge variant="outline" className="text-xs font-medium">
-                    Unit {unitNumber} • Lesson {lessonNumber}
+                    {formatCurriculumSegmentLessonLabel(
+                      lesson.unitNumber,
+                      lesson.orderIndex,
+                    )}
                   </Badge>
                   <Badge variant="secondary" className="text-xs font-medium">
                     {theme.label}
