@@ -10,12 +10,14 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Planned Queue
 
-1. **Capstone and Textbook Completion**
-  Implement the capstone experience and complete the first end-to-end version of the online textbook.
-2. **Cloudflare Production Hardening and Launch**
+1. **Cloudflare Production Hardening and Launch**
   Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
 
 ## Archive Ledger
+
+- [x] **Track: Capstone and Textbook Completion**
+  *Link: [./archive/capstone_textbook_completion_20260314/](./archive/capstone_textbook_completion_20260314/)*
+  *Closeout: archived on 2026-03-14 after replacing the generated capstone scaffold with authored runtime content, locking milestone/workbook/final-presentation coverage into manifest and UI regressions, and normalizing capstone labeling across the core public, student, and teacher textbook flow.*
 
 - [x] **Track: Curriculum Rollout Wave 2 (Units 5-8)**
   *Link: [./archive/curriculum_rollout_wave2_20260314/](./archive/curriculum_rollout_wave2_20260314/)*
