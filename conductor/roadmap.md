@@ -125,6 +125,8 @@ The product is considered a complete online textbook only when all of the follow
 
 **Goal**: make the complete textbook safe to operate as the real product.
 
+**Status**: completed on 2026-03-16 with auth bootstrap hardening, local Convex runtime launch fixes, a checked-in Cloudflare launch checklist, and full lint/test/build verification for the Worker-targeted runtime.
+
 **Tracks**
 
 - Cloudflare Production Hardening and Launch

@@ -6,15 +6,17 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- [x] **Track: Cloudflare Production Hardening and Launch**
-  *Link: [./tracks/cloudflare_production_hardening_launch_20260316/](./tracks/cloudflare_production_hardening_launch_20260316/)*
-  *Goal: finalize Worker deployment expectations, auth/runtime hardening, and launch quality gates for the full student/teacher textbook runtime.*
+- No active track. The next `/conductor` run should open a new track only if the roadmap gains a new queued item.
 
 ## Planned Queue
 
-- No planned queue. Finish the active launch-hardening track before opening another one.
+- No planned queue.
 
 ## Archive Ledger
+
+- [x] **Track: Cloudflare Production Hardening and Launch**
+  *Link: [./archive/cloudflare_production_hardening_launch_20260316/](./archive/cloudflare_production_hardening_launch_20260316/)*
+  *Closeout: archived on 2026-03-16 after locking public auth bootstrap routes into proxy regressions, hardening local Convex admin-key and dev-stack behavior, replacing the Worker stub with a built-handler handoff plus assets fallback, and documenting the Cloudflare launch checklist verified by full lint, test, and build gates.*
 
 - [x] **Track: Capstone and Textbook Completion**
   *Link: [./archive/capstone_textbook_completion_20260314/](./archive/capstone_textbook_completion_20260314/)*
