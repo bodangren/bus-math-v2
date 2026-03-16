@@ -24,6 +24,7 @@
 - (2026-03-13, auth bootstrap hotfix) JWT-protected proxy rules must explicitly allow unauthenticated auth bootstrap endpoints like `/api/auth/login` and `/api/auth/session`, or the login page will redirect its own API calls back to itself.
 - (2026-03-14, curriculum_rollout_wave2) Later-unit project lessons regress back to generic placeholders unless Lesson 7-11 dataset, workbook, polish, and presentation obligations are asserted directly in manifest regression tests.
 - (2026-03-14, capstone_textbook_completion) Capstone regressions hide in shared unit-oriented components unless the distinct segment label is asserted from the public card layer through student headers and teacher planning views.
+- (2026-03-16, cloudflare_production_hardening_launch) Cloudflare launch assumptions drift unless the Worker handoff, required secrets, and build-first Wrangler sequence live in a checked-in checklist backed by source-level tests.
 
 ### Patterns Worth Repeating
 

@@ -16,7 +16,7 @@ async function loadAdminModule() {
   return import('@/lib/convex/admin');
 }
 
-function writeLocalConvexConfig(rootDir: string, adminKey: string) {
+function writeProjectLocalConvexConfig(rootDir: string, adminKey: string) {
   const configDir = path.join(rootDir, '.convex', 'local', 'default');
   fs.mkdirSync(configDir, { recursive: true });
   fs.writeFileSync(
@@ -25,6 +25,21 @@ function writeLocalConvexConfig(rootDir: string, adminKey: string) {
       ports: { cloud: 3210, site: 3211 },
       adminKey,
       deploymentName: 'local-test-deployment',
+    }),
+    'utf8',
+  );
+}
+
+function writeHomeLocalConvexConfig(homeDir: string, adminKey: string) {
+  const configDir = path.join(homeDir, '.convex', 'anonymous-convex-backend-state');
+  fs.mkdirSync(configDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(configDir, 'config.json'),
+    JSON.stringify({
+      adminKey,
+      deploymentName: 'anonymous-local-deployment',
+      ports: { cloud: 3210, site: 3211 },
+      uuid: 'local-anonymous-state',
     }),
     'utf8',
   );
@@ -56,7 +71,7 @@ describe('lib/convex/config', () => {
 
   it('prefers CONVEX_DEPLOY_KEY over local admin-key fallback', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'convex-config-test-'));
-    writeLocalConvexConfig(tempDir, 'local-admin-key');
+    writeProjectLocalConvexConfig(tempDir, 'local-admin-key');
     vi.stubEnv('CONVEX_DEPLOY_KEY', 'deploy-key');
     vi.stubEnv('NODE_ENV', 'development');
 
@@ -68,9 +83,9 @@ describe('lib/convex/config', () => {
     });
   });
 
-  it('uses the local .convex admin key when deploy key is absent in development', async () => {
+  it('uses the project-local .convex admin key when deploy key is absent in development', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'convex-config-test-'));
-    writeLocalConvexConfig(tempDir, 'local-admin-key');
+    writeProjectLocalConvexConfig(tempDir, 'local-admin-key');
     delete process.env.CONVEX_DEPLOY_KEY;
     vi.stubEnv('NODE_ENV', 'development');
 
@@ -79,6 +94,23 @@ describe('lib/convex/config', () => {
     await expect(resolveConvexAdminAuth({ cwd: tempDir })).resolves.toEqual({
       source: 'local-admin-key',
       token: 'local-admin-key',
+    });
+  });
+
+  it('uses the home-directory Convex state when the project-local path is absent', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'convex-config-test-'));
+    const tempHomeDir = fs.mkdtempSync(path.join(os.tmpdir(), 'convex-home-test-'));
+    writeHomeLocalConvexConfig(tempHomeDir, 'home-local-admin-key');
+    delete process.env.CONVEX_DEPLOY_KEY;
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const { resolveConvexAdminAuth } = await loadAdminModule();
+
+    await expect(
+      resolveConvexAdminAuth({ cwd: tempDir, homeDir: tempHomeDir }),
+    ).resolves.toEqual({
+      source: 'local-admin-key',
+      token: 'home-local-admin-key',
     });
   });
 

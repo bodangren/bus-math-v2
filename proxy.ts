@@ -17,6 +17,8 @@ export async function proxy(request: NextRequest) {
     '/auth',
   ];
   const publicApiRoutes = [
+    '/api/auth/login',
+    '/api/auth/session',
     '/api/test/seed-e2e',
     '/api/test/cleanup-e2e',
   ];

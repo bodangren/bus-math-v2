@@ -29,7 +29,9 @@ The following should disappear from the active runtime path:
 
 ## Deployment Notes
 
-- Local development uses `vinext dev` plus `npx convex dev`.
+- Local development should prefer `npm run dev:stack`, which runs `npx convex dev --local` and starts `vinext dev` through the Convex parent process so startup and shutdown stay coordinated.
+- `npx convex dev --local` writes local deployment state under `~/.convex/`.
+- The Cloudflare Worker entry delegates to the built Vinext handler in `dist/server/index.js`, so deployment must follow the build-first sequence documented in [./cloudflare-launch-checklist.md](./cloudflare-launch-checklist.md).
 - Production planning must include Worker config, build verification, and secret management for:
   - `NEXT_PUBLIC_CONVEX_URL`
   - `CONVEX_DEPLOY_KEY`

@@ -8,6 +8,8 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 
 | Route | Methods | Current State | Required State | Required Role |
 | --- | --- | --- | --- | --- |
+| `/api/auth/login` | `POST` | Proxy treated it as private, so unauthenticated login attempts were redirected back to `/auth/login` before the handler ran | Public bootstrap endpoint for username/password login; no proxy auth redirect | `public` |
+| `/api/auth/session` | `GET` | Proxy treated it as private, so session bootstrap checks were redirected before the handler could return unauthenticated state | Public session introspection endpoint; returns auth state instead of redirecting | `public` |
 | `/api/activities/[activityId]` | `GET` | Public via proxy, no auth in handler, raw activity payload | Private, auth required, student-safe payload redaction | `student`, `teacher` |
 | `/api/activities/complete` | `POST` | Deprecated compatibility shim forwarding to `/api/phases/complete` | Private while shim exists; migrate runtime clients to `/api/phases/complete` | `student` |
 | `/api/activities/spreadsheet/[activityId]/draft` | `GET`, `POST` | Auth checked in handler | Private, student-only draft ownership enforcement | `student` |
@@ -26,6 +28,7 @@ It is the source of truth for the API hardening refactor track (`api_security_ha
 ## Policy Decisions
 - Deny by default at proxy level for `/api/**`.
 - Keep public API allowlist explicit and minimal.
+- Public auth bootstrap routes are limited to `/api/auth/login` and `/api/auth/session`; authenticated auth-management routes stay private.
 - All lesson/progress/activity/student-management APIs are private unless explicitly listed otherwise.
 - Student-facing activity responses must never include answer keys (`correctAnswer`) or grading internals.
 - Test/debug endpoints must be unusable in production and optionally require `x-test-api-key` in non-production.

@@ -60,7 +60,7 @@ Both accounts are intended for local development and test environments. Preview 
 
 3. Start Convex locally:
    ```bash
-   npx convex dev --once
+   npx convex dev --local --once
    ```
 
 4. Copy the environment template:
@@ -70,9 +70,10 @@ Both accounts are intended for local development and test environments. Preview 
 
 5. Configure `.env.local` with at least:
    ```env
-   NEXT_PUBLIC_CONVEX_URL=http://127.0.0.1:3210
    AUTH_JWT_SECRET=<long-random-secret>
    ```
+
+   `NEXT_PUBLIC_CONVEX_URL` is typically written into `.env.local` automatically by the Convex CLI during local setup. If needed, the local default remains `http://127.0.0.1:3210`.
 
 6. Seed demo accounts and lesson data as needed:
    ```bash
@@ -89,7 +90,7 @@ Both accounts are intended for local development and test environments. Preview 
    CONVEX_DEPLOY_KEY=<server-only deploy key>
    ```
 
-   Local development does not require `CONVEX_DEPLOY_KEY` when `.convex/local/*/config.json` exists from `npx convex dev`.
+   Local development does not require `CONVEX_DEPLOY_KEY` when Convex local state exists under `~/.convex/`.
 
 7. Start the local stack:
    ```bash
@@ -111,7 +112,7 @@ AUTH_JWT_SECRET=<server-only JWT secret for session cookies>
 ```
 
 Keep `CONVEX_DEPLOY_KEY` and `AUTH_JWT_SECRET` server-only and never expose them via `NEXT_PUBLIC_*`.
-When `CONVEX_DEPLOY_KEY` is unset in local development, the app falls back to the local Convex CLI admin key stored in `.convex/local/*/config.json`.
+When `CONVEX_DEPLOY_KEY` is unset in local development, the app falls back to the local Convex CLI admin key stored in Convex local state under `~/.convex/` when available.
 
 ## Project Structure
 
@@ -150,7 +151,7 @@ bus-math-v2/
 ## Scripts
 
 - `npm run dev` - Start the Vinext development server
-- `npm run dev:stack` - Start both `npx convex dev` and `vinext dev` together for local work
+- `npm run dev:stack` - Start the local Convex deployment and run `vinext dev` through the Convex parent process
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint through Vinext
@@ -159,7 +160,7 @@ bus-math-v2/
 
 ## Convex Notes
 
-- `npx convex dev` creates local runtime state under `.convex/local/`.
+- `npx convex dev --local` creates local runtime state under `~/.convex/`.
 - Server-side internal Convex calls use `CONVEX_DEPLOY_KEY` in cloud environments and the local Convex CLI `adminKey` in development.
 - Identity-sensitive dashboard, progress, profile, and submission flows now run through server-only internal Convex helpers. Public page data can remain queryable, but authenticated server routes/pages should not call those sensitive functions through the public API surface.
 - The activity API now reads sensitive activity records through internal Convex queries and only returns redacted payloads to student callers.
@@ -201,6 +202,8 @@ This project currently targets Vinext on Cloudflare Workers. Cloud deployment re
 3. `AUTH_JWT_SECRET` configured in the application runtime
 4. Seeded Convex data for demo auth and curriculum flows
 5. A Wrangler deployment using [`wrangler.jsonc`](./wrangler.jsonc)
+
+Follow the active [Cloudflare launch checklist](./conductor/docs/architecture/cloudflare-launch-checklist.md) for the exact verification, seeding, secret, and `wrangler deploy` handoff sequence.
 
 ## Documentation
 

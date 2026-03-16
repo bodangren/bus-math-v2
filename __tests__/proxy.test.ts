@@ -82,6 +82,16 @@ describe('proxy', () => {
     expect(response.status).toBe(200);
   });
 
+  it('allows unauthenticated login API requests', async () => {
+    const response = await proxy(createRequest('/api/auth/login'));
+    expect(response.status).toBe(200);
+  });
+
+  it('allows unauthenticated auth session API requests', async () => {
+    const response = await proxy(createRequest('/api/auth/session'));
+    expect(response.status).toBe(200);
+  });
+
   it('redirects unauthenticated preview demo provisioning requests to login', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('VERCEL_ENV', 'preview');

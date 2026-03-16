@@ -6,12 +6,13 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- No active track. The next `/conductor` run should take the first item from the planned queue.
+- [x] **Track: Cloudflare Production Hardening and Launch**
+  *Link: [./tracks/cloudflare_production_hardening_launch_20260316/](./tracks/cloudflare_production_hardening_launch_20260316/)*
+  *Goal: finalize Worker deployment expectations, auth/runtime hardening, and launch quality gates for the full student/teacher textbook runtime.*
 
 ## Planned Queue
 
-1. **Cloudflare Production Hardening and Launch**
-  Finalize Worker deployment, runtime verification, auth hardening, and launch quality gates.
+- No planned queue. Finish the active launch-hardening track before opening another one.
 
 ## Archive Ledger
 
