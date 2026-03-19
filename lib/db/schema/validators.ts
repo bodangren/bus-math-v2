@@ -1,7 +1,7 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
+import { resolveActivityComponentKey } from '../../activities/component-keys';
 import { activities, activityPropsSchemas, gradingConfigSchema } from './activities';
 import { activitySubmissions, submissionDataSchema } from './activity-submissions';
 import { classEnrollments } from './class-enrollments';

@@ -1,4 +1,4 @@
-import type { ActivityComponentKey } from '@/lib/db/schema/activities';
+import type { ActivityComponentKey } from '../db/schema/activities-core';
 
 const activityComponentAliases = {
   'general-drag-and-drop': 'drag-and-drop',

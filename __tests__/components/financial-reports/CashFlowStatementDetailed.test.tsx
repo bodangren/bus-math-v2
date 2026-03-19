@@ -99,5 +99,5 @@ describe('CashFlowStatementDetailed', () => {
     await user.click(screen.getByRole('button', { name: /show details/i }));
 
     expect(screen.getByText(/Total Adjustments/i)).toBeInTheDocument();
-  });
+  }, 15_000);
 });

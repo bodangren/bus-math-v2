@@ -6,20 +6,10 @@
       "sourceType": "github",
       "computedHash": "e63392840c3a80cbd9ec7b27888bf8d433b09bf6c9077ee3a6f882668057a390"
     },
-    "convex": {
-      "source": "waynesutton/convexskills",
-      "sourceType": "github",
-      "computedHash": "de7a20d081cd19bf8bce4038bd62d038a0a88f218f85afb35320d09b052fb534"
-    },
     "convex-agents": {
       "source": "waynesutton/convexskills",
       "sourceType": "github",
       "computedHash": "3054123dedc1b7ded9b6404c6c641023683fe509103fe7dc148acda831d53d36"
-    },
-    "convex-best-practices": {
-      "source": "waynesutton/convexskills",
-      "sourceType": "github",
-      "computedHash": "3b24d2afbb5859e3a3640c1e47e2ac9ace81e9737ec76b891951999361c92ab1"
     },
     "convex-component-authoring": {
       "source": "waynesutton/convexskills",
@@ -70,11 +60,6 @@
       "source": "waynesutton/convexskills",
       "sourceType": "github",
       "computedHash": "b53e061304bb81d037c6dd4e38762d27a596523bcbeab43c58e0b05140449802"
-    },
-    "migrate-to-vinext": {
-      "source": "cloudflare/vinext",
-      "sourceType": "github",
-      "computedHash": "19853b718a63cde339b1d5fb80ab8051738505b5940111b976888d6ab7351b32"
     }
   }
 }

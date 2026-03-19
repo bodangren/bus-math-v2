@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { COMPETENCY_STANDARD_CODE_PATTERN } from '@/lib/curriculum/standards';
+import { COMPETENCY_STANDARD_CODE_PATTERN } from '../../curriculum/standards';
 
 export const contentBlockSchema = z.discriminatedUnion('type', [
   z.object({

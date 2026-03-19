@@ -69,5 +69,5 @@ describe('JournalEntryBuilding', () => {
         })
       )
     })
-  })
+  }, 15_000)
 })

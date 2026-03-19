@@ -1,4 +1,5 @@
 import { internalQuery, type QueryCtx } from "./_generated/server";
+import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { assembleCourseOverviewRows } from "../lib/teacher/course-overview";
 import { assembleGradebookRows } from "../lib/teacher/gradebook";
@@ -58,9 +59,9 @@ function sortStudentsByName<
 
 async function getAuthorizedTeacher(
   ctx: QueryCtx,
-  userId: string,
-) {
-  const teacher = await ctx.db.get(userId as never);
+  userId: Id<"profiles">,
+): Promise<Doc<"profiles"> | null> {
+  const teacher = await ctx.db.get(userId);
   if (!teacher || (teacher.role !== "teacher" && teacher.role !== "admin")) {
     return null;
   }
@@ -69,11 +70,11 @@ async function getAuthorizedTeacher(
 
 async function listOrganizationStudents(
   ctx: QueryCtx,
-  organizationId: string,
+  organizationId: Id<"organizations">,
 ) {
   const allProfiles = await ctx.db
     .query("profiles")
-    .withIndex("by_organization", (q) => q.eq("organizationId", organizationId as never))
+    .withIndex("by_organization", (q) => q.eq("organizationId", organizationId))
     .collect();
 
   return sortStudentsByName(
@@ -83,9 +84,9 @@ async function listOrganizationStudents(
 
 async function getOrganizationName(
   ctx: QueryCtx,
-  organizationId: string,
+  organizationId: Id<"organizations">,
 ) {
-  const organization = await ctx.db.get(organizationId as never);
+  const organization = await ctx.db.get(organizationId);
   return organization?.name ?? "Your organization";
 }
 
@@ -101,7 +102,7 @@ async function listLatestPublishedLessonVersions(
 
 async function listActivePhaseIds(
   ctx: QueryCtx,
-) {
+): Promise<Set<Id<"phase_versions">>> {
   const lessonIds = (await ctx.db.query("lessons").collect()).map((lesson) => lesson._id);
   const lessonVersions = await ctx.db.query("lesson_versions").collect();
   const phaseVersions = await ctx.db.query("phase_versions").collect();
@@ -109,17 +110,17 @@ async function listActivePhaseIds(
     lessonIds,
     lessonVersions,
     phaseVersions,
-  });
+  }) as Set<Id<"phase_versions">>;
 }
 
 async function buildStudentProgressSnapshot(
   ctx: QueryCtx,
-  studentId: string,
-  activePhaseIds: Set<string>,
+  studentId: Id<"profiles">,
+  activePhaseIds: Set<Id<"phase_versions">>,
 ): Promise<TeacherProgressSnapshot> {
   const progressRows = await ctx.db
     .query("student_progress")
-    .withIndex("by_user", (q) => q.eq("userId", studentId as never))
+    .withIndex("by_user", (q) => q.eq("userId", studentId))
     .collect();
 
   return buildPublishedProgressSnapshot({
@@ -130,7 +131,7 @@ async function buildStudentProgressSnapshot(
 
 async function listStudentDetailUnits(
   ctx: QueryCtx,
-  studentId: string,
+  studentId: Id<"profiles">,
 ): Promise<TeacherStudentDetailUnitRow[]> {
   const allLessons = await ctx.db.query("lessons").collect();
 
@@ -224,8 +225,14 @@ export const getTeacherCourseOverviewData = internalQuery({
       lessonId: version.lessonId,
     }));
 
+    const rawStudents = students.map((student) => ({
+      id: student._id,
+      username: student.username,
+      displayName: student.displayName ?? null,
+    }));
+
     if (rawLessonVersions.length === 0) {
-      return assembleCourseOverviewRows(students, rawLessons, [], [], []);
+      return assembleCourseOverviewRows(rawStudents, rawLessons, [], [], []);
     }
 
     const lessonVersionIds = new Set(rawLessonVersions.map((version) => version.id));
@@ -241,7 +248,7 @@ export const getTeacherCourseOverviewData = internalQuery({
       }));
 
     if (rawPrimaryStandards.length === 0) {
-      return assembleCourseOverviewRows(students, rawLessons, rawLessonVersions, [], []);
+      return assembleCourseOverviewRows(rawStudents, rawLessons, rawLessonVersions, [], []);
     }
 
     const standardIds = new Set(rawPrimaryStandards.map((standard) => standard.standardId));
@@ -264,7 +271,7 @@ export const getTeacherCourseOverviewData = internalQuery({
       }));
 
     return assembleCourseOverviewRows(
-      students,
+      rawStudents,
       rawLessons,
       rawLessonVersions,
       rawPrimaryStandards,
@@ -331,6 +338,12 @@ export const getTeacherGradebookData = internalQuery({
       }));
 
     const students = await listOrganizationStudents(ctx, teacher.organizationId);
+    const rawStudents = students.map((student) => ({
+      id: student._id,
+      username: student.username,
+      displayName: student.displayName ?? null,
+    }));
+
     if (students.length === 0) {
       return assembleGradebookRows([], rawLessons, rawLessonVersions, rawPhaseVersions, rawPrimaryStandards, [], []);
     }
@@ -375,7 +388,7 @@ export const getTeacherGradebookData = internalQuery({
       }));
 
     return assembleGradebookRows(
-      students,
+      rawStudents,
       rawLessons,
       rawLessonVersions,
       rawPhaseVersions,

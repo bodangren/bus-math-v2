@@ -120,7 +120,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
           {
             "sectionType": "activity",
             "content": {
-              "activityId": "d6b57545-65f6-4c39-80d5-000100001002",
+              "activityId": "d6b57545-65f6-4c39-80d5-000100001003",
               "required": true
             }
           },
