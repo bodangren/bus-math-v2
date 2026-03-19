@@ -14,6 +14,10 @@ describe('practice preview page', () => {
     render(<PracticePreviewPage />);
 
     expect(screen.getByText(/developer preview/i)).toBeInTheDocument();
+    expect(screen.getByText(/family a preview/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /classification and statement mapping/i })).toBeInTheDocument();
+    expect(screen.getByText(/family a guided practice/i)).toBeInTheDocument();
+    expect(screen.getByText(/family a teacher review/i)).toBeInTheDocument();
     expect(screen.getByText(/selection matrix/i)).toBeInTheDocument();
     expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
     expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();

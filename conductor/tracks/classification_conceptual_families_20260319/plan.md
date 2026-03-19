@@ -2,28 +2,28 @@
 
 ## Phase 1 — Family A: Classification and Statement Mapping
 
-- [ ] Task: Build Family A generator and solver (`lib/practice/engine/families/classification.ts`)
-    - [ ] Write unit tests: generates valid item lists from ontology, respects config (category set, item count, confusion-pair density), deterministic per seed
-    - [ ] Implement generator using account ontology lookups
-    - [ ] Implement solver returning canonical category assignments
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family A generator and solver (`lib/practice/engine/families/classification.ts`)
+    - [x] Write unit tests: generates valid item lists from ontology, respects config (category set, item count, confusion-pair density), deterministic per seed
+    - [x] Implement generator using account ontology lookups
+    - [x] Implement solver returning canonical category assignments
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family A grader
-    - [ ] Write unit tests: per-item scoring, misconception tags for known confusion pairs, partial credit
-    - [ ] Implement grader with misconception tagging (e.g., prepaid insurance vs insurance expense)
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family A grader
+    - [x] Write unit tests: per-item scoring, misconception tags for known confusion pairs, partial credit
+    - [x] Implement grader with misconception tagging (e.g., prepaid insurance vs insurance expense)
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family A to practice.v1 envelope
-    - [ ] Write integration test: generate -> solve -> grade -> toEnvelope round-trip
-    - [ ] Implement toEnvelope mapping
-    - [ ] Register familyKey `classification` in activity registry
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family A to practice.v1 envelope
+    - [x] Write integration test: generate -> solve -> grade -> toEnvelope round-trip
+    - [x] Implement toEnvelope mapping
+    - [x] Register familyKey `classification` in activity registry
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Connect Family A to CategorizationList UI
-    - [ ] Write component test: CategorizationList renders Family A generator output, emits correct response shape
-    - [ ] Implement adapter/props mapping from Family A definition to CategorizationList input
-    - [ ] Update preview route with Family A sample
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Connect Family A to CategorizationList UI
+    - [x] Write component test: CategorizationList renders Family A generator output, emits correct response shape
+    - [x] Implement adapter/props mapping from Family A definition to CategorizationList input
+    - [x] Update preview route with Family A sample
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 2 — Family M: Normal Balances and Account Nature
 

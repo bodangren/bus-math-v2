@@ -35,6 +35,7 @@
 - (2026-03-20, practice_component_legacy_backfill) Legacy accounting-entry builders backfill cleanly when the student workbench keeps the account bank as an assistive input path and packages the submitted row snapshot directly into the practice artifact.
 - (2026-03-20, practice_component_legacy_backfill) Categorization and sequence practice families need separate serializers; inventory-style ordering does not share the same item shape as bucket-based drag/drop.
 - (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, and they also catch registry typing issues; keep public string lookups and internal map keys aligned, and only serialize fields the source item actually owns.
+- (2026-03-20, practice_component_legacy_backfill) Keyboard-move fallback should live inside the shared categorization surface so teacher review annotations, keyboard controls, and drag/drop state stay synchronized.
 
 ### Patterns Worth Repeating
 

@@ -212,7 +212,7 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | familyKey | status | UI component dependency | generator dependency |
 |---|---|---|---|
 | `accounting-equation` | foundation | `StatementLayout` / numeric prompt | `mini-ledger` |
-| `classification` | planned | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
+| `classification` | implemented | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
 | `transaction-effects` | planned | `SelectionMatrix` | `transaction-event-library` |
 | `statement-completion` | planned | `StatementLayout` | `mini-ledger` |
 | `statement-construction` | planned | `StatementLayout` | `mini-ledger` |

@@ -33,6 +33,22 @@ export interface CategorizationListItem extends CategorizationItem {
   details?: Record<string, unknown>;
 }
 
+export interface CategorizationListReviewFeedback {
+  status: 'correct' | 'incorrect' | 'partial';
+  scoreLabel?: string;
+  expectedZoneLabel?: string;
+  selectedZoneLabel?: string;
+  misconceptionTags?: string[];
+  message?: string;
+}
+
+export interface CategorizationListReviewSummary {
+  scoreLabel?: string;
+  attempts?: number;
+  submittedAt?: string;
+  misconceptionCount?: number;
+}
+
 export interface CategorizationListProps<T extends CategorizationListItem> {
   title: string;
   description?: string;
@@ -42,7 +58,10 @@ export interface CategorizationListProps<T extends CategorizationListItem> {
   shuffleItems?: boolean;
   resetKey?: string;
   readOnly?: boolean;
+  teacherView?: boolean;
   reviewPlacements?: ZonePlacements<T>;
+  reviewFeedback?: Record<string, CategorizationListReviewFeedback>;
+  submissionSummary?: CategorizationListReviewSummary;
   onComplete?: (payload: { score: number; attempts: number; placements: ZonePlacements<T> }) => void;
   describeItem?: (item: T) => { label: string; description?: string; details?: Record<string, unknown> };
 }
@@ -53,14 +72,24 @@ function CategorizationReview<T extends CategorizationListItem>({
   items,
   zones,
   showHintsByDefault = false,
+  teacherView = false,
   reviewPlacements,
+  reviewFeedback = {},
+  submissionSummary,
 }: CategorizationListProps<T>) {
   const placements = reviewPlacements ?? zones.reduce<ZonePlacements<T>>((acc, zone) => {
     acc[zone.id] = [];
     return acc;
   }, {});
+  const zoneMap = useMemo(() => new Map(zones.map((zone) => [zone.id, zone])), [zones]);
 
   const unplacedItems = items.filter((item) => !Object.values(placements).some((zoneItems) => zoneItems.some((entry) => entry.id === item.id)));
+  const scoreLabel =
+    submissionSummary?.scoreLabel ??
+    `${Object.values(reviewFeedback).filter((feedback) => feedback.status === 'correct').length}/${items.length} correct`;
+  const misconceptionCount =
+    submissionSummary?.misconceptionCount ??
+    new Set(Object.values(reviewFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size;
 
   return (
     <Card className="w-full">
@@ -69,6 +98,22 @@ function CategorizationReview<T extends CategorizationListItem>({
           <CardTitle className="text-2xl">{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
+        {teacherView && (
+          <div className="grid gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-2 xl:grid-cols-4">
+            <Badge variant="secondary" className="justify-start gap-2">
+              Score: {scoreLabel}
+            </Badge>
+            <Badge variant="outline" className="justify-start gap-2">
+              Attempts: {submissionSummary?.attempts ?? '—'}
+            </Badge>
+            <Badge variant="outline" className="justify-start gap-2">
+              Submitted: {submissionSummary?.submittedAt ?? '—'}
+            </Badge>
+            <Badge variant="secondary" className="justify-start gap-2">
+              Misconceptions: {misconceptionCount}
+            </Badge>
+          </div>
+        )}
         <div className="flex flex-wrap gap-3">
           <Badge variant="secondary" className="flex items-center gap-2">
             <Target className="h-4 w-4" />
@@ -79,7 +124,9 @@ function CategorizationReview<T extends CategorizationListItem>({
       <CardContent className="space-y-6">
         <div className="grid gap-6 lg:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)]">
           <section className="rounded-xl border bg-muted/20 p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">Item bank</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">
+              {teacherView ? 'Not placed' : 'Item bank'}
+            </h3>
             <div className="flex flex-col gap-3 rounded-lg border border-dashed bg-background/70 p-3">
               {unplacedItems.map((item) => (
                 <div key={item.id} className="rounded-lg border bg-card p-3 shadow-sm">
@@ -88,6 +135,39 @@ function CategorizationReview<T extends CategorizationListItem>({
                   {showHintsByDefault && item.details && (
                     <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">{JSON.stringify(item.details, null, 2)}</pre>
                   )}
+                  {teacherView && reviewFeedback[item.id] && (
+                    <div className="mt-3 space-y-2 rounded-lg border bg-muted/30 p-3">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="destructive">Your answer: {reviewFeedback[item.id]?.selectedZoneLabel ?? 'Not placed'}</Badge>
+                        {reviewFeedback[item.id]?.expectedZoneLabel && (
+                          <Badge variant="outline">Expected: {reviewFeedback[item.id]?.expectedZoneLabel}</Badge>
+                        )}
+                        <Badge
+                          variant={
+                            reviewFeedback[item.id]?.status === 'correct'
+                              ? 'default'
+                              : reviewFeedback[item.id]?.status === 'incorrect'
+                                ? 'destructive'
+                                : 'secondary'
+                          }
+                        >
+                          {reviewFeedback[item.id]?.scoreLabel ?? reviewFeedback[item.id]?.status}
+                        </Badge>
+                      </div>
+                      {reviewFeedback[item.id]?.misconceptionTags?.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {reviewFeedback[item.id]?.misconceptionTags?.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
+                      {reviewFeedback[item.id]?.message && (
+                        <p className="text-xs text-muted-foreground">{reviewFeedback[item.id]?.message}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
               {unplacedItems.length === 0 && <p className="text-sm text-muted-foreground">All items have been placed.</p>}
@@ -95,7 +175,14 @@ function CategorizationReview<T extends CategorizationListItem>({
           </section>
           <section className="space-y-4">
             {zones.map((zone) => (
-              <div key={zone.id} className="rounded-xl border bg-muted/10 p-4">
+              <div
+                key={zone.id}
+                className={cn(
+                  'rounded-xl border bg-muted/10 p-4',
+                  teacherView && placements[zone.id]?.some((item) => reviewFeedback[item.id]?.status === 'incorrect') && 'border-destructive/70 bg-destructive/5',
+                  teacherView && placements[zone.id]?.every((item) => reviewFeedback[item.id]?.status === 'correct') && placements[zone.id]?.length > 0 && 'border-emerald-500/60 bg-emerald-50/60',
+                )}
+              >
                 <div className="flex flex-col gap-1 pb-3">
                   <div className="flex items-center gap-2">
                     <p className="text-lg font-semibold">
@@ -110,9 +197,50 @@ function CategorizationReview<T extends CategorizationListItem>({
                 <Separator />
                 <div className="mt-3 flex flex-col gap-3 rounded-lg border border-dashed bg-background/60 p-3">
                   {placements[zone.id]?.map((item) => (
-                    <div key={item.id} className="rounded-lg border bg-card p-3">
+                    <div
+                      key={item.id}
+                      className={cn(
+                        'rounded-lg border bg-card p-3',
+                        teacherView && reviewFeedback[item.id]?.status === 'correct' && 'border-emerald-500/60 bg-emerald-50/60',
+                        teacherView && reviewFeedback[item.id]?.status === 'incorrect' && 'border-destructive/70 bg-destructive/10',
+                        teacherView && reviewFeedback[item.id]?.status === 'partial' && 'border-amber-500/70 bg-amber-50/70',
+                      )}
+                    >
                       <p className="font-medium">{item.label}</p>
                       {item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}
+                      {teacherView && reviewFeedback[item.id] && (
+                        <div className="mt-3 space-y-2 rounded-lg border bg-muted/30 p-3">
+                          <div className="flex flex-wrap gap-2">
+                            <Badge
+                              variant={
+                                reviewFeedback[item.id]?.status === 'correct'
+                                  ? 'default'
+                                  : reviewFeedback[item.id]?.status === 'incorrect'
+                                    ? 'destructive'
+                                    : 'secondary'
+                              }
+                            >
+                              Your answer: {reviewFeedback[item.id]?.selectedZoneLabel ?? zoneMap.get(zone.id)?.label ?? zone.label}
+                            </Badge>
+                            {reviewFeedback[item.id]?.expectedZoneLabel && (
+                              <Badge variant="outline">Expected: {reviewFeedback[item.id]?.expectedZoneLabel}</Badge>
+                            )}
+                            <Badge variant="outline">{reviewFeedback[item.id]?.scoreLabel ?? reviewFeedback[item.id]?.status}</Badge>
+                          </div>
+                          {reviewFeedback[item.id]?.misconceptionTags?.length ? (
+                            <div className="flex flex-wrap gap-2">
+                              {reviewFeedback[item.id]?.misconceptionTags?.map((tag) => (
+                                <Badge key={tag} variant="secondary" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          ) : null}
+                          {reviewFeedback[item.id]?.message && (
+                            <p className="text-xs text-muted-foreground">{reviewFeedback[item.id]?.message}</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                   {placements[zone.id]?.length === 0 && <p className="text-sm text-muted-foreground">No items placed.</p>}
@@ -148,11 +276,42 @@ function CategorizationInteractive<T extends CategorizationListItem>({
     [items],
   );
 
-  const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(normalizedItems, zoneIds, {
+  const { availableItems, placements, attempts, score, completed, handleDragEnd, moveItemToZone, reset } = useCategorizationExercise(normalizedItems, zoneIds, {
     shuffleItems,
     resetKey,
     onComplete,
   });
+
+  const renderMoveControl = (item: T, currentZoneId: string | null = null) => (
+    <label className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <span className="font-medium text-foreground">Move to</span>
+      <select
+        aria-label={`Move ${item.label} to another category`}
+        defaultValue=""
+        onChange={(event) => {
+          const nextZoneId = event.target.value;
+          if (!nextZoneId) {
+            return;
+          }
+
+          moveItemToZone(item.id, nextZoneId === 'bank' ? null : nextZoneId);
+        }}
+        className="min-h-11 rounded-md border bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <option value="" disabled>
+          Select a category
+        </option>
+        {currentZoneId ? <option value="bank">Return to bank</option> : null}
+        {zones
+          .filter((zone) => zone.id !== currentZoneId)
+          .map((zone) => (
+            <option key={zone.id} value={zone.id}>
+              {zone.label}
+            </option>
+          ))}
+      </select>
+    </label>
+  );
 
   return (
     <Card className="w-full">
@@ -220,6 +379,7 @@ function CategorizationInteractive<T extends CategorizationListItem>({
                               {showHints && itemMeta?.details && (
                                 <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">{JSON.stringify(itemMeta.details, null, 2)}</pre>
                               )}
+                              {renderMoveControl(item as T)}
                             </div>
                           )}
                         </Draggable>
@@ -272,13 +432,14 @@ function CategorizationInteractive<T extends CategorizationListItem>({
                                 >
                                   <p className="font-medium">{label}</p>
                                   {detail && <p className="text-sm text-muted-foreground">{detail}</p>}
+                                  {renderMoveControl(item as T, zone.id)}
                                 </div>
                               )}
                             </Draggable>
                           );
                         })}
                         {provided.placeholder}
-                        {placements[zone.id]?.length === 0 && <p className="text-sm text-muted-foreground">Drop items here.</p>}
+                        {placements[zone.id]?.length === 0 && <p className="text-sm text-muted-foreground">Drop accounts here.</p>}
                       </div>
                     )}
                   </Droppable>

@@ -42,7 +42,7 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [ ] **Track: Classification and Conceptual Practice Families (A, M, K)**
+- [~] **Track: Classification and Conceptual Practice Families (A, M, K)**
   *Link: [./tracks/classification_conceptual_families_20260319/](./tracks/classification_conceptual_families_20260319/)*
   *Status: Starts after Track 6; implements classification (A), normal-balance (M), and adjustment-effects (K) families using SelectionMatrix and CategorizationList.*
 

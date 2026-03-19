@@ -81,38 +81,37 @@ export function useCategorizationExercise<T extends CategorizationItem>(items: T
     [completed, onComplete, totalItems]
   );
 
-  const handleDragEnd = useCallback(
-    (result: DropResult) => {
-      const { source, destination } = result;
-      if (!destination) return;
-      if (destination.droppableId === source.droppableId && destination.index === source.index) {
-        return;
-      }
-
+  const moveItemToZone = useCallback(
+    (itemId: string, destinationZoneId: string | null) => {
       const updatedAvailable = [...availableItems];
       const updatedPlacements = Object.keys(placements).reduce<ZonePlacements<T>>((acc, key) => {
         acc[key] = [...placements[key]];
         return acc;
       }, {});
 
-      const sourceZone = zoneFromDroppableId(source.droppableId);
-      const destinationZone = zoneFromDroppableId(destination.droppableId);
-
       let movingItem: T | undefined;
-      if (sourceZone) {
-        movingItem = updatedPlacements[sourceZone].splice(source.index, 1)[0];
-      } else if (source.droppableId === AVAILABLE_ITEMS_DROPPABLE) {
-        movingItem = updatedAvailable.splice(source.index, 1)[0];
+      const availableIndex = updatedAvailable.findIndex((item) => item.id === itemId);
+
+      if (availableIndex >= 0) {
+        movingItem = updatedAvailable.splice(availableIndex, 1)[0];
+      } else {
+        for (const zoneId of zoneIds) {
+          const zoneIndex = updatedPlacements[zoneId]?.findIndex((item) => item.id === itemId) ?? -1;
+          if (zoneIndex >= 0) {
+            movingItem = updatedPlacements[zoneId].splice(zoneIndex, 1)[0];
+            break;
+          }
+        }
       }
 
-      if (!movingItem) return;
-
-      if (destinationZone) {
-        updatedPlacements[destinationZone].splice(destination.index, 0, movingItem);
-      } else if (destination.droppableId === AVAILABLE_ITEMS_DROPPABLE) {
-        updatedAvailable.splice(destination.index, 0, movingItem);
-      } else {
+      if (!movingItem) {
         return;
+      }
+
+      if (destinationZoneId && updatedPlacements[destinationZoneId]) {
+        updatedPlacements[destinationZoneId].splice(updatedPlacements[destinationZoneId].length, 0, movingItem);
+      } else {
+        updatedAvailable.splice(updatedAvailable.length, 0, movingItem);
       }
 
       setAvailableItems(updatedAvailable);
@@ -123,7 +122,31 @@ export function useCategorizationExercise<T extends CategorizationItem>(items: T
         return upcomingAttempts;
       });
     },
-    [availableItems, placements, evaluate]
+    [availableItems, evaluate, placements, zoneIds],
+  );
+
+  const handleDragEnd = useCallback(
+    (result: DropResult) => {
+      const { source, destination } = result;
+      if (!destination) return;
+      if (destination.droppableId === source.droppableId && destination.index === source.index) {
+        return;
+      }
+
+      const sourceZone = zoneFromDroppableId(source.droppableId);
+      const destinationZone = zoneFromDroppableId(destination.droppableId);
+      if (!destinationZone && destination.droppableId !== AVAILABLE_ITEMS_DROPPABLE) {
+        return;
+      }
+
+      moveItemToZone(
+        sourceZone
+          ? (placements[sourceZone][source.index]?.id ?? '')
+          : availableItems[source.index]?.id ?? '',
+        destinationZone,
+      );
+    },
+    [availableItems, moveItemToZone, placements]
   );
 
   const reset = useCallback(() => {
@@ -143,6 +166,7 @@ export function useCategorizationExercise<T extends CategorizationItem>(items: T
     score,
     completed,
     handleDragEnd,
+    moveItemToZone,
     reset,
     getZoneDroppableId
   };
