@@ -9,20 +9,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { type FillInTheBlankActivityProps } from '@/types/activities';
 import { type Activity } from '@/lib/db/schema/validators';
+import {
+  buildPracticeSubmissionEnvelope,
+  buildPracticeSubmissionParts,
+  normalizePracticeValue,
+  type PracticeSubmissionCallbackPayload,
+} from '@/lib/practice/contract';
 
 export type FillInTheBlankActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'fill-in-the-blank';
   props: FillInTheBlankActivityProps;
 };
 
+export const FILL_IN_THE_BLANK_SUPPORTED_MODES = [
+  'guided_practice',
+  'independent_practice',
+  'assessment',
+] as const;
+
 interface FillInTheBlankProps {
   activity: FillInTheBlankActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    responses: Record<string, string>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void;
 }
 
 interface SentenceState {
@@ -30,8 +37,6 @@ interface SentenceState {
   answer: string;
   isCorrect: boolean;
 }
-
-const normalize = (value: string) => value.trim().toLowerCase();
 
 function createDeterministicOrder(words: string[], seed: string): string[] {
   return [...words].sort((a, b) => {
@@ -50,6 +55,7 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
   const [submitted, setSubmitted] = useState(false);
   const [sentenceStates, setSentenceStates] = useState<SentenceState[]>([]);
   const [hintsEnabled, setHintsEnabled] = useState(showHints);
+  const practiceMode = showHints || showWordList ? 'guided_practice' : 'independent_practice';
 
   useEffect(() => {
     setAnswers({});
@@ -72,11 +78,11 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
   const handleSubmit = () => {
     const updatedStates: SentenceState[] = sentences.map((sentence) => {
       const userAnswer = answers[sentence.id] ?? '';
-      const acceptedAnswers = [sentence.answer, ...(sentence.alternativeAnswers ?? [])].map(normalize);
+      const acceptedAnswers = [sentence.answer, ...(sentence.alternativeAnswers ?? [])].map(normalizePracticeValue);
       return {
         sentenceId: sentence.id,
         answer: userAnswer,
-        isCorrect: acceptedAnswers.includes(normalize(userAnswer)),
+        isCorrect: acceptedAnswers.includes(normalizePracticeValue(userAnswer)),
       };
     });
 
@@ -84,14 +90,36 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
     setSubmitted(true);
 
     const correct = updatedStates.filter((state) => state.isCorrect).length;
-    const score = sentences.length === 0 ? 0 : Math.round((correct / sentences.length) * 100);
 
-    onSubmit?.({
-      activityId: activity.id,
-      score,
-      responses: answers,
-      completedAt: new Date(),
+    const parts = buildPracticeSubmissionParts(answers).map((part) => {
+      const evaluation = updatedStates.find((state) => state.sentenceId === part.partId);
+      const isCorrect = Boolean(evaluation?.isCorrect);
+      return {
+        ...part,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+      };
     });
+
+    onSubmit?.(
+      buildPracticeSubmissionEnvelope({
+        activityId: activity.id,
+        mode: practiceMode,
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        analytics: {
+          correctCount: correct,
+          totalSentences: sentences.length,
+          wordListVisible: showWordList,
+          randomizedWordOrder: randomizeWordOrder,
+          hintsVisible: hintsEnabled,
+        },
+      }),
+    );
   };
 
   const reset = () => {
@@ -103,7 +131,12 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-2xl">{activity.props.title}</CardTitle>
+        <CardTitle className="flex items-center gap-3 text-2xl">
+          {activity.props.title}
+          <Badge variant="outline" className="uppercase">
+            {practiceMode.replace('_', ' ')}
+          </Badge>
+        </CardTitle>
         <CardDescription>{activity.props.description ?? activity.description}</CardDescription>
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground border-t pt-4">
           <div className="flex items-center gap-2">

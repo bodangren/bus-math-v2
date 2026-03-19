@@ -2,7 +2,11 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { ComprehensionCheck, type ComprehensionCheckActivity } from '../../../components/activities/quiz/ComprehensionCheck'
+import {
+  COMPREHENSION_CHECK_SUPPORTED_MODES,
+  ComprehensionCheck,
+  type ComprehensionCheckActivity,
+} from '../../../components/activities/quiz/ComprehensionCheck'
 import type { ComprehensionQuizActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<ComprehensionQuizActivityProps> = {}): ComprehensionCheckActivity => ({
@@ -53,9 +57,30 @@ describe('ComprehensionCheck', () => {
     expect(await screen.findByText(/2\/2 correct/i)).toBeInTheDocument()
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
+        contractVersion: 'practice.v1',
         activityId: 'activity-quiz',
-        score: 2,
-        totalQuestions: 2
+        mode: 'assessment',
+        status: 'submitted',
+        answers: {
+          q1: 'Net Income',
+          q2: 'True',
+        },
+        parts: expect.arrayContaining([
+          expect.objectContaining({
+            partId: 'q1',
+            rawAnswer: 'Net Income',
+            isCorrect: true,
+            score: 1,
+            maxScore: 1,
+          }),
+          expect.objectContaining({
+            partId: 'q2',
+            rawAnswer: 'True',
+            isCorrect: true,
+            score: 1,
+            maxScore: 1,
+          }),
+        ]),
       })
     )
   })
@@ -92,13 +117,13 @@ describe('ComprehensionCheck', () => {
     expect(await screen.findByText(/2\/2 correct/i)).toBeInTheDocument()
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
-        activityId: 'activity-quiz',
-        score: 2,
-        totalQuestions: 2,
-        responses: expect.objectContaining({
+        contractVersion: 'practice.v1',
+        mode: 'assessment',
+        status: 'submitted',
+        answers: expect.objectContaining({
           sa1: 'assets = liabilities + equity',
-          mc1: 'Income Statement'
-        })
+          mc1: 'Income Statement',
+        }),
       })
     )
   })
@@ -181,5 +206,13 @@ describe('ComprehensionCheck', () => {
       .map((button) => button.textContent?.trim())
 
     expect(rerenderedOptionLabels).toEqual(initialOptionLabels)
+  })
+
+  it('declares the supported practice modes for the family', () => {
+    expect(COMPREHENSION_CHECK_SUPPORTED_MODES).toEqual([
+      'guided_practice',
+      'independent_practice',
+      'assessment',
+    ])
   })
 })

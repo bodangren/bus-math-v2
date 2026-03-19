@@ -23,10 +23,10 @@
 
 ### Tasks
 
-- [ ] **Task: Refactor quiz-like families**
-  - [ ] Update quiz, fill-in-the-blank, and comparable structured-response components to emit canonical submissions
-  - [ ] Preserve auto-graded behavior and retry semantics
-  - [ ] Add or update focused tests
+- [x] **Task: Refactor quiz-like families**
+  - [x] Update quiz, fill-in-the-blank, and comparable structured-response components to emit canonical submissions
+  - [x] Preserve auto-graded behavior and retry semantics
+  - [x] Add or update focused tests
 
 ## Phase 3: Drag/Drop and Accounting Practice Families
 

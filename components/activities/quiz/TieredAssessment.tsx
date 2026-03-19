@@ -10,21 +10,24 @@ import { Input } from '@/components/ui/input';
 import { generateProblemInstance } from '@/lib/curriculum/problem-generator';
 import { type Activity } from '@/lib/db/schema/validators';
 import { type TieredAssessmentActivityProps } from '@/types/activities';
+import {
+  buildPracticeSubmissionEnvelope,
+  buildPracticeSubmissionParts,
+  normalizePracticeValue,
+  type PracticeSubmissionCallbackPayload,
+} from '@/lib/practice/contract';
 
 export type TieredAssessmentActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'tiered-assessment';
   props: TieredAssessmentActivityProps;
 };
 
+export const TIERED_ASSESSMENT_SUPPORTED_MODES = ['assessment'] as const;
+const TIERED_ASSESSMENT_DEFAULT_MODE = 'assessment' as const;
+
 interface TieredAssessmentProps {
   activity: TieredAssessmentActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    totalQuestions: number;
-    responses: Record<string, string>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void;
 }
 
 type Question = TieredAssessmentActivityProps['questions'][number];
@@ -58,11 +61,6 @@ const sortOptionsDeterministically = (questionId: string, options: string[]) =>
       return a.index - b.index;
     })
     .map((entry) => entry.option);
-
-const normalizeAnswer = (value: string | number | boolean | string[] | number[]) =>
-  Array.isArray(value)
-    ? value.map((entry) => String(entry).trim().toLowerCase()).sort().join('|')
-    : String(value).trim().toLowerCase();
 
 function isCorrectNumericResponse(expected: number, provided: unknown, tolerance: number): boolean {
   if (typeof provided === 'number' && Number.isFinite(provided)) {
@@ -125,11 +123,18 @@ export function TieredAssessment({ activity, onSubmit }: TieredAssessmentProps) 
     });
   }, [activity.id, activity.props.applicationProblems]);
 
-  const questionScore = preparedQuestions.reduce((count, question) => {
-    const answer = selectedAnswers[question.id];
-    if (!answer) return count;
-    return normalizeAnswer(answer) === normalizeAnswer(question.correctAnswer) ? count + 1 : count;
-  }, 0);
+  const questionEvaluations = preparedQuestions.map((question) => {
+    const answer = selectedAnswers[question.id] ?? '';
+    return {
+      question,
+      answer,
+      isCorrect: Boolean(answer) && normalizePracticeValue(answer) === normalizePracticeValue(question.correctAnswer),
+    };
+  });
+  const questionScore = questionEvaluations.reduce(
+    (count, evaluation) => (evaluation.isCorrect ? count + 1 : count),
+    0,
+  );
 
   const applicationScore = preparedApplicationProblems.reduce((count, problem) => {
     const response = selectedAnswers[problem.id];
@@ -160,13 +165,47 @@ export function TieredAssessment({ activity, onSubmit }: TieredAssessmentProps) 
 
   const handleSubmit = () => {
     setSubmitted(true);
-    onSubmit?.({
-      activityId: activity.id,
-      score,
-      totalQuestions,
-      responses: selectedAnswers,
-      completedAt: new Date(),
+
+    const questionParts = buildPracticeSubmissionParts(selectedAnswers).map((part) => {
+      const evaluation = questionEvaluations.find((entry) => entry.question.id === part.partId);
+      return {
+        ...part,
+        isCorrect: evaluation?.isCorrect ?? false,
+        score: evaluation?.isCorrect ? 1 : 0,
+        maxScore: 1,
+      };
     });
+
+    const applicationParts = preparedApplicationProblems.map((problem) => {
+      const rawAnswer = selectedAnswers[problem.id] ?? '';
+      const isCorrect = isCorrectNumericResponse(problem.correctAnswer, rawAnswer, problem.tolerance);
+      return {
+        partId: problem.id,
+        rawAnswer,
+        normalizedAnswer: normalizePracticeValue(rawAnswer),
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+      };
+    });
+
+    onSubmit?.(
+      buildPracticeSubmissionEnvelope({
+        activityId: activity.id,
+        mode: TIERED_ASSESSMENT_DEFAULT_MODE,
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers: selectedAnswers,
+        parts: [...questionParts, ...applicationParts],
+        analytics: {
+          questionScore,
+          applicationScore,
+          totalQuestions,
+          percentage,
+        },
+      }),
+    );
   };
 
   const resetAssessment = () => {
@@ -179,6 +218,9 @@ export function TieredAssessment({ activity, onSubmit }: TieredAssessmentProps) 
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-2xl">
           {activity.props.title}
+          <Badge variant="outline" className="uppercase">
+            {TIERED_ASSESSMENT_DEFAULT_MODE.replace('_', ' ')}
+          </Badge>
           <Badge variant="secondary" className="uppercase">
             {activity.props.tier}
           </Badge>
@@ -215,7 +257,8 @@ export function TieredAssessment({ activity, onSubmit }: TieredAssessmentProps) 
                   {question.options.map((option, optionIndex) => {
                     const isSelected = selected === option;
                     const showFeedback = submitted && option === selected;
-                    const optionIsCorrect = normalizeAnswer(option) === normalizeAnswer(question.correctAnswer);
+                    const optionIsCorrect =
+                      normalizePracticeValue(option) === normalizePracticeValue(question.correctAnswer);
 
                     return (
                       <Button

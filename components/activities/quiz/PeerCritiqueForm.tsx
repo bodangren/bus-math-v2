@@ -10,6 +10,11 @@ import { AlertCircle, FileText, Send, Star, User } from 'lucide-react'
 
 import { type PeerCritiqueActivityProps } from '@/types/activities'
 import { type Activity } from '@/lib/db/schema/validators'
+import {
+  buildPracticeSubmissionEnvelope,
+  normalizePracticeValue,
+  type PracticeSubmissionCallbackPayload,
+} from '@/lib/practice/contract'
 
 const DEFAULT_CATEGORIES: PeerCritiqueActivityProps['categories'] = [
   {
@@ -65,20 +70,16 @@ export type PeerCritiqueActivity = Omit<Activity, 'componentKey' | 'props'> & {
   props: PeerCritiqueActivityProps
 }
 
+export const PEER_CRITIQUE_SUPPORTED_MODES = [
+  'guided_practice',
+  'independent_practice',
+] as const
+const PEER_CRITIQUE_DEFAULT_MODE = 'independent_practice' as const
+
 interface PeerCritiqueFormProps {
   activity: PeerCritiqueActivity
   className?: string
-  onSubmit?: (payload: {
-    activityId: string
-    projectTitle: string
-    peerName: string
-    unitNumber?: number
-    reviewerName?: string
-    ratings: Record<string, number>
-    comments: Record<string, string>
-    overallComments: string
-    completedAt: Date
-  }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 export function PeerCritiqueForm({ activity, className = '', onSubmit }: PeerCritiqueFormProps) {
@@ -137,8 +138,8 @@ export function PeerCritiqueForm({ activity, className = '', onSubmit }: PeerCri
 
   const handleSubmit = () => {
     if (!allComplete) return
-    onSubmit?.({
-      activityId: activity.id,
+
+    const answers = {
       projectTitle,
       peerName,
       unitNumber,
@@ -146,8 +147,55 @@ export function PeerCritiqueForm({ activity, className = '', onSubmit }: PeerCri
       ratings,
       comments,
       overallComments,
-      completedAt: new Date()
-    })
+    }
+
+    onSubmit?.(
+      buildPracticeSubmissionEnvelope({
+        activityId: activity.id,
+        mode: PEER_CRITIQUE_DEFAULT_MODE,
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts: [
+          ...categories.map((category) => {
+            const rawAnswer = {
+              rating: ratings[category.id],
+              comment: comments[category.id],
+            }
+
+            return {
+              partId: category.id,
+              rawAnswer,
+              normalizedAnswer: normalizePracticeValue(rawAnswer),
+            }
+          }),
+          {
+            partId: 'overallComments',
+            rawAnswer: overallComments,
+            normalizedAnswer: normalizePracticeValue(overallComments),
+          },
+          {
+            partId: 'reviewerName',
+            rawAnswer: reviewerName.trim(),
+            normalizedAnswer: normalizePracticeValue(reviewerName.trim()),
+          },
+        ],
+        artifact: {
+          kind: 'peer_critique',
+          projectTitle,
+          peerName,
+          unitNumber,
+          reviewerName: reviewerName.trim() || null,
+          ratings,
+          comments,
+          overallComments,
+        },
+        analytics: {
+          categoryCount: categories.length,
+        },
+      }),
+    )
     setSubmitted(true)
   }
 
@@ -157,6 +205,9 @@ export function PeerCritiqueForm({ activity, className = '', onSubmit }: PeerCri
         <CardTitle className="flex flex-wrap items-center gap-3 text-2xl">
           <FileText className="h-6 w-6 text-muted-foreground" />
           {projectTitle}
+          <Badge variant="outline" className="uppercase">
+            {PEER_CRITIQUE_DEFAULT_MODE.replace('_', ' ')}
+          </Badge>
           <Badge variant="secondary" className="ml-auto flex items-center gap-1">
             <User className="h-3.5 w-3.5" /> {peerName}
           </Badge>
@@ -164,6 +215,20 @@ export function PeerCritiqueForm({ activity, className = '', onSubmit }: PeerCri
         <CardDescription>
           Offer structured, coachable feedback aligned with the TechStart presentation rubric.
         </CardDescription>
+        <div className="flex flex-wrap gap-4 border-t pt-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Purpose:</span>
+            <span>Capture rubric-aligned peer evidence</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Time:</span>
+            <span>~10 minutes</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Save Progress:</span>
+            <span>Recorded when you submit</span>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {unitNumber && (

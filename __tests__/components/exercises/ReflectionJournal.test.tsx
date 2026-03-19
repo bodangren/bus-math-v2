@@ -2,7 +2,10 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { ReflectionJournal } from '../../../components/activities/quiz/ReflectionJournal'
+import {
+  REFLECTION_JOURNAL_SUPPORTED_MODES,
+  ReflectionJournal,
+} from '../../../components/activities/quiz/ReflectionJournal'
 import type { ReflectionJournalActivityProps } from '@/types/activities'
 import type { Activity } from '@/lib/db/schema/validators'
 
@@ -45,9 +48,22 @@ describe('ReflectionJournal', () => {
 
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
+        contractVersion: 'practice.v1',
         activityId: 'activity-reflection',
-        responses: expect.objectContaining({ 'courage-1': 'I led the presentation.' })
+        mode: 'independent_practice',
+        status: 'submitted',
+        answers: expect.objectContaining({ 'courage-1': 'I led the presentation.' }),
+        artifact: expect.objectContaining({
+          kind: 'reflection_journal',
+        }),
       })
     )
+  })
+
+  it('declares the supported practice modes for the family', () => {
+    expect(REFLECTION_JOURNAL_SUPPORTED_MODES).toEqual([
+      'guided_practice',
+      'independent_practice',
+    ])
   })
 })

@@ -9,21 +9,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { type ComprehensionQuizActivityProps } from '@/types/activities';
 import { type Activity } from '@/lib/db/schema/validators';
+import {
+  buildPracticeSubmissionEnvelope,
+  buildPracticeSubmissionParts,
+  normalizePracticeValue,
+  type PracticeSubmissionCallbackPayload,
+} from '@/lib/practice/contract';
 
 export type ComprehensionCheckActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'comprehension-quiz';
   props: ComprehensionQuizActivityProps;
 };
 
+export const COMPREHENSION_CHECK_SUPPORTED_MODES = [
+  'guided_practice',
+  'independent_practice',
+  'assessment',
+] as const;
+const COMPREHENSION_CHECK_DEFAULT_MODE = 'assessment' as const;
+
 interface ComprehensionCheckProps {
   activity: ComprehensionCheckActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    totalQuestions: number;
-    responses: Record<string, string>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void;
 }
 
 type Question = ComprehensionQuizActivityProps['questions'][number];
@@ -53,11 +60,6 @@ const sortOptionsDeterministically = (questionId: string, options: string[]) =>
     })
     .map((entry) => entry.option);
 
-const normalizeAnswer = (value: string | number | boolean | string[] | number[]) =>
-  Array.isArray(value)
-    ? value.map((entry) => String(entry).trim().toLowerCase()).sort().join('|')
-    : String(value).trim().toLowerCase();
-
 export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -86,11 +88,19 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
   }, [questions]);
 
   const totalQuestions = preparedQuestions.length;
-  const score = preparedQuestions.reduce((count, question) => {
+  const questionEvaluations = preparedQuestions.map((question) => {
     const answer = selectedAnswers[question.id];
-    if (!answer) return count;
-    return normalizeAnswer(answer) === normalizeAnswer(question.correctAnswer) ? count + 1 : count;
-  }, 0);
+    const isCorrect =
+      Boolean(answer) &&
+      normalizePracticeValue(answer) === normalizePracticeValue(question.correctAnswer);
+
+    return {
+      question,
+      answer: answer ?? '',
+      isCorrect,
+    };
+  });
+  const score = questionEvaluations.reduce((count, evaluation) => (evaluation.isCorrect ? count + 1 : count), 0);
   const percentage = totalQuestions === 0 ? 0 : Math.round((score / totalQuestions) * 100);
 
   const recordResponse = (questionId: string, answer: string) => {
@@ -100,13 +110,33 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
 
   const handleSubmit = () => {
     setSubmitted(true);
-    onSubmit?.({
-      activityId: activity.id,
-      score,
-      totalQuestions,
-      responses: selectedAnswers,
-      completedAt: new Date(),
+
+    const parts = buildPracticeSubmissionParts(selectedAnswers).map((part) => {
+      const evaluation = questionEvaluations.find((entry) => entry.question.id === part.partId);
+      return {
+        ...part,
+        isCorrect: evaluation?.isCorrect ?? false,
+        score: evaluation?.isCorrect ? 1 : 0,
+        maxScore: 1,
+      };
     });
+
+    onSubmit?.(
+      buildPracticeSubmissionEnvelope({
+        activityId: activity.id,
+        mode: COMPREHENSION_CHECK_DEFAULT_MODE,
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers: selectedAnswers,
+        parts,
+        analytics: {
+          totalQuestions,
+          score,
+          percentage,
+        },
+      }),
+    );
   };
 
   const resetQuiz = () => {
@@ -119,6 +149,9 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
       <CardHeader>
         <CardTitle className="flex items-center gap-3 text-2xl">
           {activity.props.title}
+          <Badge variant="outline" className="uppercase">
+            {COMPREHENSION_CHECK_DEFAULT_MODE.replace('_', ' ')}
+          </Badge>
           {submitted && (
             <Badge variant={percentage >= 70 ? 'default' : 'destructive'}>
               {score}/{totalQuestions} correct ({percentage}%)
@@ -156,7 +189,8 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
                   {question.options.map((option, optionIndex) => {
                     const isSelected = selected === option;
                     const showCorrect = submitted && option === selected;
-                    const optionIsCorrect = normalizeAnswer(option) === normalizeAnswer(question.correctAnswer);
+                    const optionIsCorrect =
+                      normalizePracticeValue(option) === normalizePracticeValue(question.correctAnswer);
 
                     return (
                       <Button

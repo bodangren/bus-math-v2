@@ -1,7 +1,11 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { PeerCritiqueForm, type PeerCritiqueActivity } from '../../../components/activities/quiz/PeerCritiqueForm'
+import {
+  PEER_CRITIQUE_SUPPORTED_MODES,
+  PeerCritiqueForm,
+  type PeerCritiqueActivity,
+} from '../../../components/activities/quiz/PeerCritiqueForm'
 import type { PeerCritiqueActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<PeerCritiqueActivityProps> = {}): PeerCritiqueActivity => ({
@@ -56,11 +60,25 @@ describe('PeerCritiqueForm', () => {
 
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
+        contractVersion: 'practice.v1',
         activityId: 'activity-peer',
-        peerName: 'Jonah',
-        ratings: { strengths: expect.any(Number) },
-        comments: { strengths: 'Excellent structure and visuals.' }
+        mode: 'independent_practice',
+        status: 'submitted',
+        answers: expect.objectContaining({
+          peerName: 'Jonah',
+          reviewerName: 'Casey',
+        }),
+        artifact: expect.objectContaining({
+          kind: 'peer_critique',
+        }),
       })
     )
+  })
+
+  it('declares the supported practice modes for the family', () => {
+    expect(PEER_CRITIQUE_SUPPORTED_MODES).toEqual([
+      'guided_practice',
+      'independent_practice',
+    ])
   })
 })

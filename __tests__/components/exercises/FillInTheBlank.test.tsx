@@ -2,7 +2,11 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import { FillInTheBlank, type FillInTheBlankActivity } from '../../../components/activities/quiz/FillInTheBlank'
+import {
+  FILL_IN_THE_BLANK_SUPPORTED_MODES,
+  FillInTheBlank,
+  type FillInTheBlankActivity,
+} from '../../../components/activities/quiz/FillInTheBlank'
 import type { FillInTheBlankActivityProps } from '@/types/activities'
 
 const buildActivity = (overrides: Partial<FillInTheBlankActivityProps> = {}): FillInTheBlankActivity => ({
@@ -42,8 +46,39 @@ describe('FillInTheBlank', () => {
 
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
+        contractVersion: 'practice.v1',
         activityId: 'activity-fill',
-        score: 100
+        mode: 'independent_practice',
+        status: 'submitted',
+        answers: {
+          s1: 'Liabilities',
+        },
+        parts: expect.arrayContaining([
+          expect.objectContaining({
+            partId: 's1',
+            rawAnswer: 'Liabilities',
+            isCorrect: true,
+            score: 1,
+            maxScore: 1,
+          }),
+        ]),
+      })
+    )
+  })
+
+  it('uses guided practice mode when scaffolding is present', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    const activity = buildActivity({ showWordList: true })
+
+    render(<FillInTheBlank activity={activity} onSubmit={onSubmit} />)
+
+    await user.type(screen.getByPlaceholderText(/type your answer/i), 'Liabilities')
+    await user.click(screen.getByRole('button', { name: /check answers/i }))
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: 'guided_practice',
       })
     )
   })
@@ -70,5 +105,13 @@ describe('FillInTheBlank', () => {
       .map((node) => node.textContent)
 
     expect(rerenderOrder).toEqual(initialOrder)
+  })
+
+  it('declares the supported practice modes for the family', () => {
+    expect(FILL_IN_THE_BLANK_SUPPORTED_MODES).toEqual([
+      'guided_practice',
+      'independent_practice',
+      'assessment',
+    ])
   })
 })

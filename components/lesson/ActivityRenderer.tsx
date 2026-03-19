@@ -9,7 +9,11 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
-import { buildPracticeSubmissionEnvelope } from '@/lib/practice/contract';
+import {
+  buildPracticeSubmissionEnvelope,
+  isPracticeSubmissionEnvelope,
+  type PracticeSubmissionCallbackPayload,
+} from '@/lib/practice/contract';
 import type { CompletePhaseResponse } from '@/types/api';
 
 interface ActivityRendererProps {
@@ -23,7 +27,7 @@ interface ActivityRendererProps {
   linkedStandardId?: string;
 }
 
-interface ActivitySubmissionPayload {
+interface LegacyActivitySubmissionPayload {
   activityId?: string;
   isComplete?: boolean;
   completedAt?: Date | string;
@@ -35,6 +39,8 @@ interface ActivitySubmissionPayload {
   interactionHistory?: unknown[];
   metadata?: Record<string, unknown>;
 }
+
+type ActivitySubmissionPayload = PracticeSubmissionCallbackPayload | LegacyActivitySubmissionPayload;
 
 interface AssessmentResponse {
   score: number;
@@ -145,7 +151,19 @@ export function ActivityRenderer({
         return false;
       }
 
-      const answers = payload.answers ?? payload.responses;
+      const canonicalSubmission = isPracticeSubmissionEnvelope(payload)
+        ? payload
+        : buildPracticeSubmissionEnvelope({
+            activityId: payload.activityId ?? activity.id,
+            mode: 'assessment',
+            status: 'submitted',
+            submittedAt: new Date(),
+            answers: payload.answers ?? payload.responses ?? {},
+            interactionHistory: payload.interactionHistory,
+            analytics: payload.metadata,
+          });
+
+      const answers = canonicalSubmission.answers;
       if (
         !answers ||
         typeof answers !== 'object' ||
@@ -162,16 +180,6 @@ export function ActivityRenderer({
       setSubmissionResult(null);
 
       try {
-        const canonicalSubmission = buildPracticeSubmissionEnvelope({
-          activityId: payload.activityId ?? activity.id,
-          mode: 'assessment',
-          status: 'submitted',
-          submittedAt: new Date(),
-          answers,
-          interactionHistory: payload.interactionHistory,
-          analytics: payload.metadata,
-        });
-
         const response = await fetch('/api/progress/assessment', {
           method: 'POST',
           headers: {
@@ -224,6 +232,10 @@ export function ActivityRenderer({
   );
 
   const didPayloadCompleteActivity = useCallback((payload: ActivitySubmissionPayload): boolean => {
+    if (isPracticeSubmissionEnvelope(payload)) {
+      return payload.status !== 'draft';
+    }
+
     if (typeof payload.isComplete === 'boolean') {
       return payload.isComplete;
     }
