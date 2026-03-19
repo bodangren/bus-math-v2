@@ -207,6 +207,28 @@ Teacher-facing submission detail must be able to show:
 
 Teacher surfaces should not be limited to spreadsheet activities.
 
+## Family Key Registry
+
+| familyKey | status | UI component dependency | generator dependency |
+|---|---|---|---|
+| `accounting-equation` | foundation | `StatementLayout` / numeric prompt | `mini-ledger` |
+| `classification` | planned | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
+| `transaction-effects` | planned | `SelectionMatrix` | `transaction-event-library` |
+| `statement-completion` | planned | `StatementLayout` | `mini-ledger` |
+| `statement-construction` | planned | `StatementLayout` | `mini-ledger` |
+| `transaction-matrix` | planned | `SelectionMatrix` | `transaction-event-library` |
+| `trial-balance-errors` | planned | `SelectionMatrix` | `error-pattern-library` |
+| `journal-entry` | planned | `JournalEntryTable` | `transaction-event-library` |
+| `posting-balances` | planned | `JournalEntryTable` | `transaction-event-library` |
+| `adjusting-calculations` | planned | `StatementLayout` + `JournalEntryTable` | `adjustment-scenario-generator` |
+| `missing-adjustments-effects` | planned | `SelectionMatrix` | `adjustment-scenario-generator` |
+| `closing-cycle` | planned | `SelectionMatrix` | `account-ontology` |
+| `normal-balances` | planned | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
+| `depreciation-presentation` | planned | `StatementLayout` | `asset-register` |
+| `merchandising-computation` | planned | `StatementLayout` | `mini-ledger` + `retail-calculator` |
+| `merchandising-entries` | planned | `JournalEntryTable` | `transaction-event-library` |
+| `statement-subtotals` | planned | `StatementLayout` | `mini-ledger` |
+
 ## Analysis Requirements
 
 The contract must preserve enough evidence for two layers of analysis:

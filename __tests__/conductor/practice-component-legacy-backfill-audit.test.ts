@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 const auditPath = path.resolve(
   process.cwd(),
-  'conductor/tracks/practice_component_legacy_backfill_20260319/audit.md',
+  'conductor/archive/practice_component_legacy_backfill_20260319/audit.md',
 );
 
 describe('practice component legacy backfill audit', () => {
