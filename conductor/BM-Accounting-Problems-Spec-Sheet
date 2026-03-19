@@ -1,0 +1,853 @@
+# Accounting Problems – Visual & Structural Analysis
+
+This document translates the **BM Accounting Problems PDF** into reusable **problem families** for an algorithmic assessment system. The purpose is to preserve enough context for a separate project to design and build React components without needing the original chat thread.
+
+The source material is a 60-question accounting problem set with recurring structures: classification, equations, transaction analysis, journal entries, statement completion, merchandising calculations, and accounting-cycle tasks. The important conclusion is that the PDF does **not** imply 60 unique components. It implies a smaller set of reusable families that can generate many variants.
+
+---
+
+# 1. Global Observations
+
+## 1.1 Source Format
+- Source file: **BM-Accounting-Problems.pdf**
+- ALEKS-style worksheet/export
+- 60 questions total
+- Most questions follow a stable pattern:
+  - instruction or stem
+  - given business facts or scenario
+  - required action
+  - implied answer interface
+- Later pages in the PDF include answers, which help validate interpretation of the questions.
+
+## 1.2 Main Design Conclusion
+These 60 items are **not 60 unique UI components**. They collapse into a smaller number of reusable **problem families**.
+
+Each family should be treated as:
+- a reusable interaction pattern
+- a domain model for accounting logic
+- a generator space for many variants
+- a grading contract with partial-credit support
+
+## 1.3 Recommended Mental Model
+For each family, think in four layers:
+1. What business facts are generated?
+2. What accounting rule transforms those facts into the correct answer?
+3. What interface lets a student express the answer?
+4. How should the answer be graded field-by-field?
+
+---
+
+# 2. Problem Families
+
+## Family A — Classification and Statement Mapping
+
+### What this family measures
+Students identify the correct category for accounts, items, or statement elements.
+
+### Typical UI shape
+- vertical classification list
+- one row per item
+- one selection per row
+- options supplied by the stem
+
+### PDF sample questions
+- **Q1** — Types of accounts
+- **Q2** — Information classification into assets, liabilities, and change of equity
+- **Q3** — Information classification into revenue, expense, or other
+- **Q4** — Information classification into financial statements
+- **Q5** — Account classification into financial statements
+- **Q6** — Components of annual report
+- **Q33** — Permanent and temporary accounts
+- **Q41** — Balance sheet classification
+- **Q43** — Account classification for a retail company
+- **Q57** — Cash and cash equivalents
+- **Q58** — Inventory costs
+
+### Notes for implementation
+This is the easiest family to parameterize. A generator can pull from a tagged item bank.
+
+Each item should ideally carry metadata such as:
+- label
+- domain category
+- subcategory where relevant
+- difficulty tier
+- common confusion pairings
+
+Examples of categories seen in the PDF:
+- asset
+- liability
+- owner’s equity
+- revenue
+- expense
+- permanent vs temporary
+- balance sheet vs income statement vs equity statement
+- cash vs cash equivalent vs neither
+- inventory cost included vs not included
+
+### Guidance for algorithmic generation
+Good randomization comes from **controlled contrast**. Useful confusion pairs include:
+- prepaid insurance vs insurance expense
+- deferred revenue vs service revenue
+- owner investment vs revenue
+- sales returns and allowances vs sales
+- freight-out vs freight-in
+
+A strong generator for this family should support:
+- variable option sets
+- variable item count
+- difficulty scaling by conceptual similarity
+- optional balancing so categories are not always evenly distributed
+
+---
+
+## Family B — Accounting Equation and Equation Completion
+
+### What this family measures
+Students apply the basic accounting equation or related statement equations to solve for a missing amount or identify the correct term.
+
+### Typical UI shape
+- single numeric input
+- fill-in-the-blank equation
+- paired response such as missing term plus statement identification
+
+### PDF sample questions
+- **Q7** — Balancing the basic accounting equation
+- **Q8** — Basic structure of the Balance Sheet, Income Statement, and Equity Statement
+- **Q12** — Changes to owner’s equity: Problem type 1
+- **Q13** — Changes to owner’s equity: Problem type 2
+
+### Notes for implementation
+This family splits into two subtypes:
+1. conceptual equation completion
+2. numeric solving from accounting relationships
+
+### Guidance for algorithmic generation
+Use a compact parameter model with variables such as:
+- assets
+- liabilities
+- beginning capital
+- ending capital
+- owner investment
+- drawing
+- revenues
+- expenses
+- net income
+
+Generate from a **consistent underlying financial state**, not from isolated equations. Compute all linked values first, then hide one or more target fields.
+
+That same underlying state can later be reused for statement-completion problems.
+
+---
+
+## Family C — Transaction Effects on Accounts
+
+### What this family measures
+Students analyze how a transaction changes accounts, categories, and owner’s equity.
+
+### Typical UI shape
+- checklist or account selection
+- increase/decrease toggle
+- equity reason selection when relevant
+- sometimes “check all that apply” at the category level
+
+### PDF sample questions
+- **Q9** — Effect of transactions on accounts
+- **Q10** — Effects of a transaction on assets, liabilities, and equity: Problem type 1
+- **Q11** — Effects of a transaction on assets, liabilities, and equity: Problem type 2
+- **Q20** — Basic tabular transaction
+
+### Notes for implementation
+This family is conceptually simple but structurally rich.
+
+Q9 and Q20 show that one transaction may require multiple graded outputs:
+- which accounts are affected
+- whether each increases or decreases
+- amount of change
+- if equity changes, why it changes
+
+Q10 and Q11 use a more abstract layer:
+- whether an asset account increases or decreases
+- whether a liability account increases or decreases
+- whether equity increases or decreases
+
+### Guidance for algorithmic generation
+Treat transactions as events from a controlled event library.
+
+Useful event archetypes visible in the PDF include:
+- owner invests cash
+- business earns revenue for cash
+- business earns revenue on account
+- business collects receivable
+- business pays payable
+- business pays expense in cash
+- business purchases supplies or equipment for cash
+- business purchases supplies or equipment on account
+- business receives cash in advance
+- owner withdraws cash
+
+For each event, store:
+- affected accounts
+- direction of change
+- amount rule
+- equity effect classification, if any
+
+This family is ideal for many variants because one event schema can be reused by changing:
+- account labels
+- dollar amount
+- cash vs on-account structure
+- service vs merchandise context
+
+---
+
+## Family D — Financial Data Completion and Guided Statement Completion
+
+### What this family measures
+Students compute missing values inside partially completed accounting statements or summary tables.
+
+### Typical UI shape
+- formal statement layout
+- some rows prefilled, some blank
+- student enters missing amounts
+
+### PDF sample questions
+- **Q14** — Completing a sole proprietorship balance sheet
+- **Q15** — Completing an income statement
+- **Q16** — Completing an owner’s equity statement
+
+### Notes for implementation
+These are guided statement problems rather than full statement-construction problems. The layout matters because the position of each row carries meaning.
+
+### Guidance for algorithmic generation
+This family works best when generated from a shared mini-ledger or financial snapshot.
+
+Useful generated variables include:
+- current assets by type
+- current liabilities by type
+- beginning capital
+- owner investment
+- drawing
+- revenues by type
+- expenses by type
+
+Then compute:
+- total revenues
+- total expenses
+- net income
+- ending capital
+- total liabilities plus equity
+
+Finally, blank selected lines.
+
+Good generation rules:
+- prefer positive whole numbers unless decimals matter instructionally
+- keep the statement internally balanced
+- vary which rows are omitted so students cannot memorize a fixed pattern
+
+---
+
+## Family E — Full Financial Statement Construction
+
+### What this family measures
+Students build a complete financial statement from a flat account list.
+
+### Typical UI shape
+- provided account list or balances
+- blank statement template
+- ordering and classification matter
+- can be implemented through structured entry, drag/drop, or assisted placement
+
+### PDF sample questions
+- **Q17** — Creating a basic income statement
+- **Q18** — Completing an owner’s equity statement from an account list
+- **Q19** — Creating a basic balance sheet
+- **Q39** — Creating a balance sheet with asset depreciation
+- **Q40** — Balance sheet subtotals
+
+### Notes for implementation
+This family is more difficult than Family D because students must determine:
+- which accounts belong on the statement
+- which do not
+- correct order or section placement
+- subtotals and final totals
+
+Q39 adds depreciation and contra-account treatment. Q40 isolates subtotal computation rather than full layout.
+
+### Guidance for algorithmic generation
+Generate a coherent trial-balance-like data packet.
+Each generated account should ideally have:
+- account label
+- account type
+- statement placement
+- display convention
+- amount
+
+Advanced variants can include:
+- contra assets
+- beginning vs ending capital
+- temporary accounts that must be excluded from the final balance sheet except through ending capital
+
+Recommended strategy:
+- start from a normalized account set
+- compute net income and ending capital first
+- then render the statement problem
+
+---
+
+## Family F — Transaction Matrix and Composite Transaction Analysis
+
+### What this family measures
+Students analyze one transaction through a compound table or scaffold.
+
+### Typical UI shape
+A grid with rows as candidate accounts and columns such as:
+- affected?
+- increase/decrease
+- amount
+- why equity changed
+
+### PDF sample questions
+- **Q20** — Basic tabular transaction
+- **Q23** — Basic journal entry with the step-through method
+
+### Notes for implementation
+Q20 and Q23 are close relatives. Q20 is a table-driven composite analysis. Q23 is a scaffolded reasoning path that leads toward the journal entry.
+
+### Guidance for algorithmic generation
+Use the same event engine as Family C, but expose the answer through a more structured instructional interface.
+
+This family is especially useful for formative learning because it captures intermediate reasoning rather than only the final journal entry.
+
+A generator should allow one fact pattern to be rendered as:
+- conceptual effect table
+- journal-entry scaffold
+- full journal entry
+
+---
+
+## Family G — Trial Balance Errors and Error Analysis
+
+### What this family measures
+Students reason about whether recording or posting errors affect trial-balance equality and by how much.
+
+### Typical UI shape
+Multi-column matrix with one row per error scenario:
+- will the trial balance still balance?
+- amount of difference
+- which column becomes larger?
+
+### PDF sample questions
+- **Q22** — Trial balance errors
+
+### Guidance for algorithmic generation
+This family should be built around an **error pattern library**.
+
+Useful error archetypes visible or implied by the PDF:
+- posting a correct amount to the wrong side
+- posting one side with the wrong amount
+- posting one side twice
+- posting both sides with the same wrong amount
+- omitting one side
+- transposition or slide errors in a single amount
+
+A helpful parameter model includes:
+- original correct entry
+- error type
+- which side or account the error affects
+- correct amount
+- erroneous amount
+
+The solver should determine:
+- whether debits still equal credits
+- if not, the numerical difference
+- whether debit or credit total is larger
+
+This family is strong for infinite generation because the conceptual rule stays stable while the amounts and error mechanisms vary widely.
+
+---
+
+## Family H — Journal Entry Recording
+
+### What this family measures
+Students produce formal journal entries from transaction narratives.
+
+### Typical UI shape
+General journal table with columns such as:
+- date
+- account title
+- debit
+- credit
+
+### PDF sample questions
+- **Q24** — Journalizing transactions
+- **Q27** — Adjusting entries: Accruals
+- **Q28** — Adjusting entries with deferrals: Problem type 1
+- **Q29** — Adjusting entries with deferrals: Problem type 2
+- **Q34** — Closing entries
+- **Q36** — Correcting entries
+- **Q38** — Reversing entries: Preparing a reversing entry
+- **Q48** — Merchandising: Closing entries
+- **Q49** — Seller’s retail entries: Problem type 1
+- **Q50** — Seller’s retail entries: Problem type 2
+- **Q52** — Seller’s retail entries: Problem type 3
+- **Q53** — Buyer’s retail entries: Problem type 1
+- **Q54** — Buyer’s retail entries: Problem type 2
+- **Q55** — Buyer’s retail entries: Problem type 3
+
+### Notes for implementation
+Although these all use a journal-entry table, they are not one pedagogical subtype. They include:
+- ordinary transaction entries
+- adjusting entries
+- closing entries
+- correcting entries
+- reversing entries
+- merchandising entries for seller and buyer
+
+### Guidance for algorithmic generation
+Use a **transaction ontology** rather than separate hardcoded templates.
+
+Suggested top-level transaction categories:
+- service transaction
+- owner transaction
+- asset purchase
+- liability settlement
+- accrual adjustment
+- deferral adjustment
+- depreciation adjustment
+- closing entry
+- correcting entry
+- reversing entry
+- merchandising sale
+- merchandising purchase
+- return or allowance
+- discount settlement
+
+Each generated transaction should encode enough business facts to let the solver derive the journal lines.
+
+Implementation guidance:
+- balance checking should be automatic
+- row-level grading should be supported
+- equivalent entries may need tolerance rules in some families, especially correcting entries
+- merchandising entries often contain paired revenue-side and inventory-side effects under perpetual inventory
+
+---
+
+## Family I — Posting, Ending Balances, and Account-Level Computation
+
+### What this family measures
+Students compute ending balances after journalized amounts are posted to accounts.
+
+### Typical UI shape
+- given entries in reference form
+- list of accounts to compute
+- numeric answer fields
+
+### PDF sample questions
+- **Q25** — Ending balances of accounts
+
+### Guidance for algorithmic generation
+Generate by:
+- choosing starting balances
+- generating a sequence of postings
+- asking for ending balances of selected accounts
+
+Useful parameter controls:
+- whether all starting balances are zero except owner investment
+- number of subsequent postings
+- whether the selected accounts all appear in the transaction sequence or not
+
+A strong solver should maintain signed account balances internally using normal debit/credit behavior, while rendering final balances in the student-facing convention expected by the UI.
+
+---
+
+## Family J — Adjusting Entries and Deferral/Accrual Calculations
+
+### What this family measures
+Students compute amounts for accruals, deferrals, and depreciation-related year-end adjustments.
+
+### Typical UI shape
+- narrative scenario with dates and amounts
+- either numeric calculation fields or journal entry table
+
+### PDF sample questions
+- **Q26** — Adjusting entry calculations
+- **Q27** — Adjusting entries: Accruals
+- **Q28** — Adjusting entries with deferrals: Problem type 1
+- **Q29** — Adjusting entries with deferrals: Problem type 2
+- **Q30** — Property, plant, and equipment section of a balance sheet: Basic problem
+
+### Notes for implementation
+This is one of the richest families for algorithmic generation. It includes:
+- prepaid expense under asset method
+- prepaid expense under expense method
+- accrued revenue
+- depreciation on long-lived assets
+
+Q30 is not a journal-entry problem, but it belongs in the same generator ecosystem because the parameterization is similar: cost, life, method, and year-end state.
+
+### Guidance for algorithmic generation
+A useful parameter model for a deferral or accrual scenario includes:
+- account label (insurance, advertising, rent, etc.)
+- original amount
+- start date
+- total coverage period
+- reporting date
+- initial recording method
+- recognition pattern, usually even over time
+
+A useful depreciation parameter model includes:
+- asset category
+- cost
+- salvage value if applicable
+- useful life
+- purchase date
+- reporting date
+- depreciation method
+
+Generation advice:
+- choose dates that make month calculations clean unless fractional periods are intended
+- keep year-end conventions explicit
+- vary initial recording method to prevent memorization of one pattern
+
+---
+
+## Family K — Effects of Missing or Incorrect Adjustments on Financial Statements
+
+### What this family measures
+Students determine overstatement, understatement, or no effect on statement elements when an adjusting entry is omitted or mishandled.
+
+### Typical UI shape
+Matrix or grouped selections across:
+- revenue
+- expense
+- net income
+- assets
+- liabilities
+- owner’s equity
+
+### PDF sample questions
+- **Q31** — Effects of adjusting entries on financial statements: Problem type 1
+- **Q32** — Effects of adjusting entries on financial statements: Problem type 2
+
+### Guidance for algorithmic generation
+This family should reuse the same event structures as Family J, but ask for the **consequence** of not recording the adjustment correctly.
+
+A sound generation strategy is:
+1. generate the underlying adjustment scenario
+2. compute the correct adjustment
+3. compare corrected statements against unadjusted statements
+4. label each statement element as overstated, understated, or no effect
+
+This is more robust than hardcoding conceptual outcomes by case.
+
+---
+
+## Family L — Closing, Correcting, and Reversing Cycle Decisions
+
+### What this family measures
+Students reason about period-end and next-period accounting-cycle mechanics.
+
+### Typical UI shape
+- journal-entry table
+- selection matrix
+- numeric post-closing results
+
+### PDF sample questions
+- **Q34** — Closing entries
+- **Q35** — Effects of closing entries on account balances
+- **Q36** — Correcting entries
+- **Q37** — Reversing entries: Selecting which entries should be reversed
+- **Q38** — Reversing entries: Preparing a reversing entry
+- **Q48** — Merchandising: Closing entries
+
+### Notes for implementation
+This family is connected by timing in the accounting cycle rather than by a single interface.
+
+### Guidance for algorithmic generation
+Model this family around the status of accounts at period end.
+Useful generated concepts include:
+- adjusted trial balance
+- net income or net loss
+- drawing or dividend balance
+- whether an adjustment created an accrued item suitable for reversal
+- whether an adjustment involved a prepaid or deferred item not typically reversed
+
+For reversing-entry decisions, it helps to tag each generated adjustment with a property like “reversing recommended” based on the instructional policy you want the system to use.
+
+---
+
+## Family M — Normal Balances and Account Nature
+
+### What this family measures
+Students identify normal debit/credit balances and the conceptual nature of accounts.
+
+### Typical UI shape
+- two-column debit/credit table
+- classification grid
+
+### PDF sample questions
+- **Q21** — Normal account balances
+- **Q42** — Normal account balances for a retail company
+- **Q43** — Account classification for a retail company
+
+### Guidance for algorithmic generation
+This family is best generated from an account ontology.
+Each account record should include:
+- label
+- domain classification
+- normal balance
+- retail or non-retail applicability
+- contra-account status where relevant
+
+Difficulty comes primarily from selecting confusing accounts rather than from numeric variation.
+
+---
+
+## Family N — Depreciation, Contra Accounts, and Balance Sheet Presentation
+
+### What this family measures
+Students present long-lived assets net of accumulated depreciation and compute related balance-sheet figures.
+
+### Typical UI shape
+- balance sheet template
+- subtotal computation
+- classification task
+
+### PDF sample questions
+- **Q30** — Property, plant, and equipment section of a balance sheet: Basic problem
+- **Q39** — Creating a balance sheet with asset depreciation
+- **Q40** — Balance sheet subtotals
+- **Q41** — Balance sheet classification
+
+### Guidance for algorithmic generation
+This family should be generated from an asset register.
+Each asset can include:
+- class such as land, building, or equipment
+- historical cost
+- accumulated depreciation where applicable
+- useful life
+- depreciation method if derived during generation
+- whether the asset is depreciable
+
+Land is important because it creates a contrast case: presented at cost and not depreciated.
+
+Good generators should support both:
+- direct presentation problems where accumulated depreciation is given
+- derived presentation problems where students must compute accumulated depreciation first
+
+---
+
+## Family O — Merchandising Computation: Discounts, Freight, Returns, Net Sales, Gross Profit
+
+### What this family measures
+Students compute payment amounts, discount eligibility, shipping responsibility, and retail income statement values.
+
+### Typical UI shape
+- structured numeric response fields
+- multi-step income statement completion
+- sometimes one conceptual decision plus one numeric result
+
+### PDF sample questions
+- **Q44** — Parts of the retail income statement
+- **Q45** — Merchandising: FOB Shipping point or Destination and Discount
+- **Q46** — Merchandising: Computing amount due
+- **Q47** — Merchandising: Computing income statement amounts
+- **Q51** — Merchandising: Amount received by seller with FOB Shipping point and freight prepaid
+- **Q56** — Preparing a retail income statement
+- **Q59** — Income statement with periodic inventory: Problem type 2
+- **Q60** — Income statement with periodic inventory: Problem type 3
+
+### Guidance for algorithmic generation
+This family benefits from a clear business-parameter model.
+
+A practical parameter model should include:
+- sales price or purchase price
+- discount terms such as x/y, n/z
+- sale or purchase date
+- payment date
+- returns and allowances before payment
+- freight amount
+- FOB condition, shipping point or destination
+- who prepaid freight operationally, when relevant
+- COGS or beginning/ending inventory, when needed
+- sales discounts and sales returns for statement tasks
+
+Why this matters:
+The same raw facts can drive multiple different questions:
+- whether a discount applies
+- who bears shipping cost economically
+- amount due to seller
+- amount received by seller
+- net sales
+- gross profit
+- net income
+- cost of goods purchased
+- cost of goods sold under periodic inventory
+
+Important design guidance:
+- distinguish economic responsibility for freight from who physically prepays it
+- compute discount base after returns or allowances when appropriate
+- keep date logic explicit and testable
+- use one consistent convention for whether payment on the last discount day qualifies
+
+---
+
+## Family P — Merchandising Journal Entries: Seller and Buyer, Gross and Net, Perpetual
+
+### What this family measures
+Students record merchandising transactions under perpetual inventory with returns, discounts, and freight conditions.
+
+### Typical UI shape
+- journal-entry table
+- multiple transaction dates in one prompt
+
+### PDF sample questions
+- **Q49** — Seller’s retail entries: Problem type 1
+- **Q50** — Seller’s retail entries: Problem type 2
+- **Q52** — Seller’s retail entries: Problem type 3
+- **Q53** — Buyer’s retail entries: Problem type 1
+- **Q54** — Buyer’s retail entries: Problem type 2
+- **Q55** — Buyer’s retail entries: Problem type 3
+
+### Guidance for algorithmic generation
+This family should be driven by a merchandising transaction sequence model.
+
+Helpful fields include:
+- role, seller or buyer
+- inventory system, perpetual here
+- discount method, gross or net for purchase-side questions
+- sale or purchase amount
+- cost amount for seller-side inventory relief
+- return or allowance amount
+- payment timing
+- freight details
+- whether returned goods are damaged or resalable
+
+This family becomes easier to generate when each prompt is treated as a timeline of events:
+1. original sale or purchase
+2. return or allowance if any
+3. collection or payment
+
+The solver should process the event timeline in order and emit journal lines per date.
+
+Important guidance:
+- seller-side perpetual problems often need both revenue-side and inventory-side entries
+- buyer-side gross vs net method changes later payment logic
+- freight treatment depends on role and FOB condition
+
+---
+
+## Family Q — Statement Elements, Subtotals, and Multi-Step Retail Statements
+
+### What this family measures
+Students compute missing amounts in statement structures where subtotal logic matters.
+
+### Typical UI shape
+- statement skeleton
+- selected blanks only
+- emphasis on line relationships
+
+### PDF sample questions
+- **Q15** — Completing an income statement
+- **Q16** — Completing an owner’s equity statement
+- **Q44** — Parts of the retail income statement
+- **Q47** — Merchandising: Computing income statement amounts
+- **Q56** — Preparing a retail income statement
+- **Q59** — Income statement with periodic inventory: Problem type 2
+- **Q60** — Income statement with periodic inventory: Problem type 3
+
+### Notes for implementation
+This family overlaps with Families D and O, but it is useful to identify separately because the core skill is statement arithmetic and section logic rather than full statement construction from a raw account list.
+
+### Guidance for algorithmic generation
+Generate the full statement first, then blank specific lines.
+Possible blank targets include:
+- total revenues
+- total expenses
+- net income
+- net sales
+- gross profit
+- total operating expenses
+- cost of goods purchased
+- cost of goods available for sale
+- cost of goods sold
+
+Difficulty can scale by the number of dependent subtotals that must be inferred.
+
+---
+
+# 3. Cross-Family Design Guidance
+
+## 3.1 Build problem families, not one-off questions
+A reusable assessment engine should treat each family as:
+- a generator
+- a solver
+- a renderer
+- a grader
+
+## 3.2 Reuse one fact pattern across multiple families when possible
+A mini-ledger can support:
+- accounting-equation questions
+- statement-completion questions
+- full statement-construction questions
+- subtotal questions
+
+A merchandising timeline can support:
+- payment amount questions
+- income statement questions
+- journal entry questions
+
+This is one of the most important ways to expand the question bank without inventing disconnected data.
+
+## 3.3 Separate business logic from UI
+The accounting engine should know the answer before any interface is rendered. That makes it easier to:
+- support multiple UI modes
+- auto-grade consistently
+- generate hints and worked solutions
+- export to other platforms later
+
+## 3.4 Favor partial-credit grading
+Many problems in the PDF decompose naturally by:
+- row
+- field
+- date block
+- statement line
+
+That should influence how generated problems are modeled.
+
+## 3.5 Difficulty should be controlled by constraints, not just larger numbers
+Better difficulty levers include:
+- alternate recording methods
+- seller vs buyer perspective
+- contra accounts
+- returns before discount calculation
+- error-analysis scenarios that still balance vs do not balance
+- statement placement requirements, not just arithmetic
+
+---
+
+# 4. Suggested Minimal Metadata per Generated Problem
+
+Regardless of family, a generated problem should ideally carry:
+- family name
+- instructional objective
+- stem text
+- generated business facts
+- correct answer in canonical form
+- grading decomposition by subpart, row, or field
+- difficulty tier
+- feedback tags tied to common misconceptions
+
+This is enough context for another project to build the React components without relying on this chat.
+
+---
+
+# 5. Closing Note
+
+The BM Accounting PDF is best understood as a **blueprint for an algorithmic accounting assessment system**.
+
+The key shift is:
+- do not recreate the PDF as fixed screens
+- recreate the underlying accounting families as generators and reusable interfaces
+
+That is what makes an effectively infinite question bank possible.
+
