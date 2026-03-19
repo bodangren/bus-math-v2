@@ -1,7 +1,5 @@
 # Cloudflare Launch Checklist
 
-This is a compatibility copy of the active checklist in [conductor/docs/architecture/cloudflare-launch-checklist.md](./conductor/docs/architecture/cloudflare-launch-checklist.md).
-
 Use this checklist before treating the current textbook runtime as launch-ready on Cloudflare Workers.
 
 ## Required Runtime Inputs
