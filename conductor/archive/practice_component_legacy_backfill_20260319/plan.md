@@ -62,6 +62,6 @@
   - [x] Run `npm run lint`
   - [x] Fix regressions
 
-- [ ] **Task: Remove no-longer-needed compatibility branches**
-  - [ ] Reduce temporary adapters where all relevant families have been migrated
-  - [ ] Update Conductor docs if the supported mode matrix changed during implementation
+- [x] **Task: Remove no-longer-needed compatibility branches**
+  - [x] Reduce temporary adapters where all relevant families have been migrated
+  - [x] Update Conductor docs if the supported mode matrix changed during implementation

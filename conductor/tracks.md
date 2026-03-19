@@ -38,12 +38,6 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 ---
 
-## Active Track
-
-- [~] **Track: Practice Component Legacy Backfill**
-  *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
-  *Status: Phase 4 spreadsheet/simulation alignment is complete; verification passed and the remaining cleanup pass is limited to compatibility-branch removal.*
-
 ## Planned Queue
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
@@ -77,6 +71,10 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
 
 ## Archive Ledger
+
+- [x] **Track: Practice Component Legacy Backfill**
+  *Link: [./archive/practice_component_legacy_backfill_20260319/](./archive/practice_component_legacy_backfill_20260319/)*
+  *Closeout: archived on 2026-03-20 after removing the last spreadsheet completion shim, canonicalizing practice-family and spreadsheet component keys, and verifying the cleanup with lint, full test, and production build gates.*
 
 - [x] **Track: Practice Submission Evidence and Teacher Review**
   *Link: [./archive/practice_submission_evidence_teacher_review_20260319/](./archive/practice_submission_evidence_teacher_review_20260319/)*

@@ -16,8 +16,9 @@ This track converts legacy practice components into first-class citizens of the 
 2. structured-response backfills
 3. drag/drop and accounting-artifact backfills
 4. spreadsheet and simulation alignment
+5. compatibility-branch cleanup and canonical key docs
 
-Phase 1 audit and wave planning are complete; the remaining phases now use the audit map as their starting point.
+Phase 1 audit and wave planning are complete; the remaining phases now use the audit map as their starting point. Phase 5 cleanup is complete and the remaining compatibility shims have been removed.
 
 ## Progress
 
