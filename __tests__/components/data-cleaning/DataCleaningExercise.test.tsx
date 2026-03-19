@@ -57,7 +57,7 @@ describe('DataCleaningExercise', () => {
     )
 
     expect(screen.getByText('Step 1 of 3')).toBeInTheDocument()
-    expect(screen.getByText('Remove duplicate entries')).toBeInTheDocument()
+    expect(screen.getAllByText('Remove duplicate entries').length).toBeGreaterThan(0)
   })
 
   it('displays messy data spreadsheet', () => {
@@ -87,7 +87,7 @@ describe('DataCleaningExercise', () => {
       />
     )
 
-    expect(screen.getByText('Complete all steps to see the cleaned data')).toBeInTheDocument()
+    expect(screen.getByText('Complete all steps to reveal the cleaned output.')).toBeInTheDocument()
   })
 
   it('marks step as complete when Mark Complete button is clicked', async () => {
@@ -124,7 +124,7 @@ describe('DataCleaningExercise', () => {
     await user.click(nextButton)
 
     expect(screen.getByText('Step 2 of 3')).toBeInTheDocument()
-    expect(screen.getByText('Fix formatting issues')).toBeInTheDocument()
+    expect(screen.getAllByText('Fix formatting issues').length).toBeGreaterThan(0)
   })
 
   it('navigates to previous step when Previous button is clicked', async () => {
@@ -169,7 +169,7 @@ describe('DataCleaningExercise', () => {
     }
 
     expect(screen.getByText(/Clean Data/)).toBeInTheDocument()
-    expect(screen.getByText(/Congratulations!/i)).toBeInTheDocument()
+    expect(screen.getByText(/This is the cleaned output after all steps are complete\./i)).toBeInTheDocument()
   })
 
   it('resets exercise when Reset button is clicked', async () => {
@@ -193,7 +193,7 @@ describe('DataCleaningExercise', () => {
 
     // Should be back to start
     expect(screen.getByText('Step 1 of 3')).toBeInTheDocument()
-    expect(screen.getByText('0/3 Complete')).toBeInTheDocument()
+    expect(screen.getByText(/0\/3 complete/i)).toBeInTheDocument()
   })
 
   it('calls onComplete callback when all steps are finished', async () => {
@@ -222,6 +222,41 @@ describe('DataCleaningExercise', () => {
     expect(onComplete).toHaveBeenCalled()
   })
 
+  it('emits a canonical practice submission when all steps are finished', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+
+    render(
+      <DataCleaningExercise
+        title="Data Cleaning Practice"
+        description="Learn to clean messy data"
+        messyData={messyData}
+        cleanData={cleanData}
+        cleaningSteps={cleaningSteps}
+        activityId="data-cleaning-test"
+        onSubmit={onSubmit}
+      />
+    )
+
+    for (let i = 0; i < cleaningSteps.length; i++) {
+      await user.click(screen.getByRole('button', { name: /Mark Complete/i }))
+      if (i < cleaningSteps.length - 1) {
+        await user.click(screen.getByRole('button', { name: /Next/i }))
+      }
+    }
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        contractVersion: 'practice.v1',
+        activityId: 'data-cleaning-test',
+        mode: 'guided_practice',
+        artifact: expect.objectContaining({
+          kind: 'data_cleaning',
+        }),
+      })
+    )
+  })
+
   it('displays progress bar', () => {
     render(
       <DataCleaningExercise
@@ -233,6 +268,6 @@ describe('DataCleaningExercise', () => {
       />
     )
 
-    expect(screen.getByText('0/3 Complete')).toBeInTheDocument()
+    expect(screen.getByText(/0\/3 complete/i)).toBeInTheDocument()
   })
 })

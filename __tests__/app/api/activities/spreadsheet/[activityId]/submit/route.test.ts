@@ -27,6 +27,7 @@ vi.mock('@/lib/convex/server', async () => {
         getSpreadsheetResponse: 'internal.activities.getSpreadsheetResponse',
         getActivityForValidation: 'internal.activities.getActivityForValidation',
         submitSpreadsheet: 'internal.activities.submitSpreadsheet',
+        submitAssessment: 'internal.activities.submitAssessment',
         updateCompetency: 'internal.activities.updateCompetency',
       },
     },
@@ -36,6 +37,20 @@ vi.mock('@/lib/convex/server', async () => {
 vi.mock('@/lib/activities/spreadsheet-validation', () => ({
   validateSpreadsheetData: mockValidateSpreadsheetData,
   validateSubmission: mockValidateSubmission,
+  getCellValue: (data: Array<Array<{ value?: string | number }>>, cellRef: string) => {
+    const match = cellRef.match(/^([A-Z]+)([0-9]+)$/);
+    if (!match) return '';
+
+    const colLabel = match[1];
+    const rowIndex = Number(match[2]) - 1;
+    let colIndex = 0;
+    for (const char of colLabel) {
+      colIndex = colIndex * 26 + (char.charCodeAt(0) - 64);
+    }
+    colIndex -= 1;
+
+    return data[rowIndex]?.[colIndex]?.value ?? '';
+  },
 }));
 
 const { GET, POST } = await import(
@@ -203,10 +218,15 @@ describe('POST /api/activities/spreadsheet/[activityId]/submit', () => {
     );
 
     expect(mockFetchInternalMutation).toHaveBeenCalledWith(
-      'internal.activities.submitSpreadsheet',
+      'internal.activities.submitAssessment',
       expect.objectContaining({
         userId: 'profile_student',
         activityId: 'activity_123',
+        submissionData: expect.objectContaining({
+          contractVersion: 'practice.v1',
+          activityId: 'activity_123',
+          mode: 'assessment',
+        }),
       }),
     );
   });

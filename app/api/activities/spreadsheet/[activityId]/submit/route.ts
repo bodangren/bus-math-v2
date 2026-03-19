@@ -7,6 +7,7 @@ import {
   validateSubmission,
   type TargetCell,
 } from '@/lib/activities/spreadsheet-validation';
+import { buildSpreadsheetEvaluatorSubmission } from '@/lib/activities/spreadsheet-practice';
 
 const targetCellSchema = z.object({
   cell: z.string().regex(/^[A-Z]+[0-9]+$/),
@@ -213,13 +214,31 @@ export async function POST(
       payload.spreadsheetData,
       parsedEvaluatorProps.data.targetCells as TargetCell[]
     );
+    const existingResponse = await fetchInternalQuery(internal.activities.getSpreadsheetResponse, {
+      studentId: userId as never,
+      activityId: activityId as never,
+    });
+    const attemptNumber = (existingResponse?.attempts ?? 0) + 1;
+    const submissionData = buildSpreadsheetEvaluatorSubmission({
+      activityId,
+      templateId: parsedEvaluatorProps.data.templateId,
+      instructions: parsedEvaluatorProps.data.instructions,
+      targetCells: parsedEvaluatorProps.data.targetCells,
+      spreadsheetData: payload.spreadsheetData,
+      validationResult,
+      attemptNumber,
+      mode: 'assessment',
+    });
 
-    await fetchInternalMutation(internal.activities.submitSpreadsheet, {
+    await fetchInternalMutation(internal.activities.submitAssessment, {
       userId: userId as never,
       activityId: activityId as never,
-      spreadsheetData: payload.spreadsheetData,
-      isCompleted: validationResult.isComplete,
-      validationResult,
+      submissionData: submissionData as never,
+      score: validationResult.correctCells,
+      maxScore: validationResult.totalCells,
+      feedback: validationResult.feedback
+        .map((entry) => entry.message ?? `${entry.cell} needs attention.`)
+        .join(' '),
     });
 
     let masteryUpdate: { newLevel: number } | undefined;
@@ -238,6 +257,7 @@ export async function POST(
       success: true,
       isComplete: validationResult.isComplete,
       feedback: validationResult.feedback,
+      attemptNumber,
       masteryUpdate,
     });
   } catch (error) {

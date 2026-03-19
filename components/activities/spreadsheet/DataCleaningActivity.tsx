@@ -1,19 +1,26 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { ArrowRight, CheckCircle, Lightbulb, RotateCcw } from 'lucide-react';
+
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { SpreadsheetWrapper, type SpreadsheetData } from '@/components/activities/spreadsheet/SpreadsheetWrapper';
-import { CheckCircle, RotateCcw, Lightbulb, ArrowRight } from 'lucide-react';
+
+export const DATA_CLEANING_SUPPORTED_MODES = ['guided_practice', 'independent_practice'] as const;
+const DATA_CLEANING_DEFAULT_MODE = 'guided_practice' as const;
 
 interface DataCleaningActivityProps {
+  activityId?: string;
   title: string;
   description: string;
   messyData: SpreadsheetData;
   cleanData: SpreadsheetData;
   cleaningSteps: string[];
   onComplete?: () => void;
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void;
 }
 
 export function DataCleaningActivity({
@@ -22,19 +29,75 @@ export function DataCleaningActivity({
   messyData,
   cleanData,
   cleaningSteps,
-  onComplete
+  activityId,
+  onComplete,
+  onSubmit,
 }: DataCleaningActivityProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [showClean, setShowClean] = useState(false);
   const [userProgress, setUserProgress] = useState<boolean[]>(new Array(cleaningSteps.length).fill(false));
+  const [submitted, setSubmitted] = useState(false);
+
+  const completedSteps = userProgress.filter(Boolean).length;
+  const progressPercentage = cleaningSteps.length === 0 ? 0 : (completedSteps / cleaningSteps.length) * 100;
 
   const handleStepComplete = (stepIndex: number) => {
-    const newProgress = [...userProgress];
-    newProgress[stepIndex] = true;
-    setUserProgress(newProgress);
+    const nextProgress = [...userProgress];
+    nextProgress[stepIndex] = true;
+    setUserProgress(nextProgress);
 
-    if (stepIndex === cleaningSteps.length - 1) {
-      setShowClean(true);
+    const isFinalStep = stepIndex === cleaningSteps.length - 1;
+    if (!isFinalStep) {
+      return;
+    }
+
+    setShowClean(true);
+    setSubmitted(true);
+
+    const nextAnswers = Object.fromEntries(
+      cleaningSteps.map((step, index) => [
+        `step-${index + 1}`,
+        {
+          step,
+          completed: nextProgress[index],
+          order: index + 1,
+        },
+      ]),
+    );
+
+    const parts = buildPracticeSubmissionParts(nextAnswers).map((part, index) => ({
+      ...part,
+      isCorrect: nextProgress[index],
+      score: nextProgress[index] ? 1 : 0,
+      maxScore: 1,
+    }));
+
+    const payload = buildPracticeSubmissionEnvelope({
+      activityId: activityId ?? `${title}-${description}`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      mode: DATA_CLEANING_DEFAULT_MODE,
+      status: 'submitted',
+      attemptNumber: 1,
+      submittedAt: new Date(),
+      answers: nextAnswers,
+      parts,
+      artifact: {
+        kind: 'data_cleaning',
+        title,
+        description,
+        messyData,
+        cleanData,
+        cleaningSteps,
+        completedSteps: nextProgress.reduce((count, value) => count + (value ? 1 : 0), 0),
+      },
+      analytics: {
+        completedSteps: nextProgress.filter(Boolean).length,
+        totalSteps: cleaningSteps.length,
+      },
+    });
+
+    if (onSubmit) {
+      onSubmit(payload);
+    } else {
       onComplete?.();
     }
   };
@@ -43,6 +106,7 @@ export function DataCleaningActivity({
     setCurrentStep(0);
     setShowClean(false);
     setUserProgress(new Array(cleaningSteps.length).fill(false));
+    setSubmitted(false);
   };
 
   const nextStep = () => {
@@ -57,216 +121,176 @@ export function DataCleaningActivity({
     }
   };
 
-  const completedSteps = userProgress.filter(Boolean).length;
-  const progressPercentage = (completedSteps / cleaningSteps.length) * 100;
-
   return (
-    <Card className="w-full max-w-6xl mx-auto">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl">{title}</CardTitle>
-            <p className="text-muted-foreground mt-2">{description}</p>
+    <div className="mx-auto max-w-7xl space-y-6 p-4">
+      <Card className="border-blue-200 bg-gradient-to-r from-sky-50 via-white to-emerald-50 shadow-sm">
+        <CardHeader className="space-y-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <CardTitle className="text-2xl">{title}</CardTitle>
+              <p className="mt-2 text-muted-foreground">{description}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="uppercase">
+                {DATA_CLEANING_DEFAULT_MODE.replace('_', ' ')}
+              </Badge>
+              <Badge variant="secondary">
+                Step {currentStep + 1} of {cleaningSteps.length}
+              </Badge>
+              <Badge variant="outline">
+                {completedSteps}/{cleaningSteps.length} complete
+              </Badge>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">
-              Step {currentStep + 1} of {cleaningSteps.length}
-            </Badge>
-            <Badge variant="secondary">
-              {completedSteps}/{cleaningSteps.length} Complete
-            </Badge>
+          <div className="w-full">
+            <div className="h-2 rounded-full bg-slate-200">
+              <div
+                className="h-2 rounded-full bg-sky-600 transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
           </div>
-        </div>
+          <div className="flex flex-wrap gap-4 border-t pt-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Purpose:</span>
+              <span>Clean messy data and reveal the finished snapshot</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Mode:</span>
+              <span>Guided practice shell with stepwise evidence</span>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
 
-        {/* Progress Bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-          <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        {/* Current Step Instructions */}
-        <Card className="border-blue-200 bg-blue-50">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)_minmax(0,1fr)]">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg text-blue-800 flex items-center gap-2">
-              <Lightbulb className="h-5 w-5" />
-              Current Step: {cleaningSteps[currentStep]}
-            </CardTitle>
+            <CardTitle className="text-lg text-red-800">Messy Data</CardTitle>
+            <p className="text-sm text-red-600">Source data before cleaning</p>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between">
-              <div className="text-blue-700">
-                Focus on this data cleaning technique. Look at the messy data and think about how this step would improve it.
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={prevStep}
-                  disabled={currentStep === 0}
-                >
-                  Previous
-                </Button>
-                <Button
-                  onClick={() => handleStepComplete(currentStep)}
-                  disabled={userProgress[currentStep]}
-                  size="sm"
-                >
-                  {userProgress[currentStep] ? (
-                    <>
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Complete
-                    </>
-                  ) : (
-                    'Mark Complete'
-                  )}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={nextStep}
-                  disabled={currentStep === cleaningSteps.length - 1}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
+            <SpreadsheetWrapper
+              initialData={messyData}
+              readOnly
+              className="overflow-hidden rounded-lg border border-red-200"
+            />
           </CardContent>
         </Card>
 
-        {/* Data Comparison */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Messy Data */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-red-800 flex items-center gap-2">
-                🚨 Messy Data (Before)
-              </CardTitle>
-              <p className="text-red-600 text-sm">
-                This is the raw, problematic data that needs cleaning
-              </p>
-            </CardHeader>
-            <CardContent>
-              <SpreadsheetWrapper
-                initialData={messyData}
-                readOnly={true}
-                className="border border-red-200"
-              />
-            </CardContent>
-          </Card>
-
-          {/* Clean Data - Show after completion */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-green-800 flex items-center gap-2">
-                {showClean ? (
+        <Card className="border-blue-200 bg-blue-50/70">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg text-blue-900">
+              <Lightbulb className="h-5 w-5" />
+              Current Step
+            </CardTitle>
+            <p className="text-sm text-blue-700">
+              {cleaningSteps[currentStep]}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg border border-blue-200 bg-white p-4 text-sm text-blue-900">
+              Focus on this cleaning rule and decide what it changes in the source data.
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={prevStep} disabled={currentStep === 0}>
+                Previous
+              </Button>
+              <Button onClick={() => handleStepComplete(currentStep)} disabled={userProgress[currentStep]} size="sm">
+                {userProgress[currentStep] ? (
                   <>
-                    ✅ Clean Data (After)
-                    <ArrowRight className="h-4 w-4 mx-2" />
+                    <CheckCircle className="mr-1 h-4 w-4" />
+                    Complete
                   </>
                 ) : (
-                  <>
-                    🎯 Target: Clean Data
-                  </>
+                  'Mark Complete'
                 )}
-              </CardTitle>
-              <p className="text-green-600 text-sm">
-                {showClean
-                  ? "Congratulations! This is how the data looks after proper cleaning."
-                  : "Complete all steps to see the cleaned data"
-                }
-              </p>
-            </CardHeader>
-            <CardContent>
-              {showClean ? (
-                <SpreadsheetWrapper
-                  initialData={cleanData}
-                  readOnly={true}
-                  className="border border-green-200"
-                />
-              ) : (
-                <div className="h-48 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center">
-                  <div className="text-gray-500 text-center">
-                    <Lightbulb className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>Complete all cleaning steps</p>
-                    <p className="text-sm">to reveal the clean data</p>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+              </Button>
+              <Button variant="outline" size="sm" onClick={nextStep} disabled={currentStep === cleaningSteps.length - 1}>
+                Next
+              </Button>
+            </div>
 
-        {/* Step Checklist */}
-        <Card className="border-green-200 bg-green-50">
-          <CardHeader>
-            <CardTitle className="text-green-800">Data Cleaning Checklist</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {cleaningSteps.map((step, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center gap-2 p-3 rounded-lg border ${
-                    userProgress[index]
-                      ? 'border-green-300 bg-green-100'
-                      : index === currentStep
-                      ? 'border-blue-300 bg-blue-50'
-                      : 'border-gray-200 bg-white'
-                  }`}
-                >
-                  <div className={`flex-shrink-0 ${
-                    userProgress[index]
-                      ? 'text-green-600'
-                      : index === currentStep
-                      ? 'text-blue-600'
-                      : 'text-gray-400'
-                  }`}>
-                    {userProgress[index] ? (
-                      <CheckCircle className="h-5 w-5" />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-current" />
-                    )}
+            <div className="rounded-lg border border-blue-200 bg-white p-4">
+              <h3 className="text-sm font-semibold text-slate-900">Step checklist</h3>
+              <div className="mt-3 space-y-2">
+                {cleaningSteps.map((step, index) => (
+                  <div
+                    key={step}
+                    className={`flex items-center gap-2 rounded-md border p-2 text-sm ${
+                      userProgress[index]
+                        ? 'border-green-200 bg-green-50'
+                        : index === currentStep
+                          ? 'border-blue-200 bg-blue-50'
+                          : 'border-slate-200 bg-white'
+                    }`}
+                  >
+                    <div className={`h-4 w-4 rounded-full border-2 ${
+                      userProgress[index]
+                        ? 'border-green-600 bg-green-600'
+                        : index === currentStep
+                          ? 'border-blue-600'
+                          : 'border-slate-300'
+                    }`} />
+                    <span className={userProgress[index] ? 'text-green-800' : index === currentStep ? 'text-blue-800' : 'text-slate-600'}>
+                      {step}
+                    </span>
                   </div>
-                  <span className={`text-sm ${
-                    userProgress[index]
-                      ? 'text-green-800'
-                      : index === currentStep
-                      ? 'text-blue-800'
-                      : 'text-gray-600'
-                  }`}>
-                    {step}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Controls */}
-        <div className="flex justify-center gap-4">
-          <Button
-            onClick={resetExercise}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Reset Exercise
-          </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg text-green-800">
+              {showClean ? (
+                <>
+                  Clean Data
+                  <ArrowRight className="ml-2 inline-block h-4 w-4" />
+                </>
+              ) : (
+                'Target Snapshot'
+              )}
+            </CardTitle>
+            <p className="text-sm text-green-600">
+              {showClean
+                ? 'This is the cleaned output after all steps are complete.'
+                : 'Complete all steps to reveal the cleaned output.'}
+            </p>
+          </CardHeader>
+          <CardContent>
+            {showClean ? (
+              <SpreadsheetWrapper
+                initialData={cleanData}
+                readOnly
+                className="overflow-hidden rounded-lg border border-green-200"
+              />
+            ) : (
+              <div className="flex h-[240px] items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 text-center">
+                <div className="space-y-2 text-slate-500">
+                  <Lightbulb className="mx-auto h-8 w-8 opacity-50" />
+                  <p>Complete the cleaning steps</p>
+                  <p className="text-sm">to reveal the clean snapshot</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
-          {showClean && (
-            <Button
-              className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
-            >
-              <CheckCircle className="h-4 w-4" />
-              Exercise Complete!
-            </Button>
-          )}
+      <div className="flex items-center justify-between gap-3 border-t pt-4">
+        <div className="text-sm text-muted-foreground">
+          {submitted
+            ? 'Submission recorded as canonical practice evidence.'
+            : `Progress: ${completedSteps}/${cleaningSteps.length} cleaning steps completed`}
         </div>
-      </CardContent>
-    </Card>
+        <Button variant="outline" onClick={resetExercise}>
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Reset Exercise
+        </Button>
+      </div>
+    </div>
   );
 }

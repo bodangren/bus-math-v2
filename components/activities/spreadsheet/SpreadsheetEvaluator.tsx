@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { CheckCircle2, XCircle, Save, Loader2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CheckCircle2, Loader2, Save, XCircle } from 'lucide-react';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   SpreadsheetWrapper,
   type SpreadsheetData,
@@ -15,8 +15,9 @@ import {
   a1ToCoordinates,
 } from '@/components/activities/spreadsheet';
 import type { Activity } from '@/lib/db/schema/validators';
+import type { PracticeSubmissionCallbackPayload } from '@/lib/practice/contract';
+import { buildSpreadsheetEvaluatorSubmission } from '@/lib/activities/spreadsheet-practice';
 
-// Target cell validation schema
 const targetCellSchema = z.object({
   cell: z.string(),
   expectedValue: z.union([z.string(), z.number()]),
@@ -37,14 +38,12 @@ export type SpreadsheetEvaluatorActivity = Omit<Activity, 'componentKey' | 'prop
   props: SpreadsheetEvaluatorConfig;
 };
 
+export const SPREADSHEET_EVALUATOR_SUPPORTED_MODES = ['assessment'] as const;
+const SPREADSHEET_EVALUATOR_DEFAULT_MODE = 'assessment' as const;
+
 interface SpreadsheetEvaluatorProps {
   activity: SpreadsheetEvaluatorActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    isComplete: boolean;
-    spreadsheetData: SpreadsheetData;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void;
 }
 
 interface CellFeedback {
@@ -53,44 +52,55 @@ interface CellFeedback {
   message?: string;
 }
 
-const AUTO_SAVE_DELAY = 30000; // 30 seconds
+const AUTO_SAVE_DELAY = 30000;
+
+function normalizeValue(value: string | number): string {
+  return typeof value === 'number' ? value.toString().toLowerCase().trim() : value.toString().toLowerCase().trim();
+}
+
+function getEmptySpreadsheet(): SpreadsheetData {
+  return Array.from({ length: 10 }, () =>
+    Array.from({ length: 10 }, () => ({ value: '' })),
+  );
+}
+
+function initializeSpreadsheet(initialData?: SpreadsheetData): SpreadsheetData {
+  if (initialData && Array.isArray(initialData)) {
+    return initialData.map((row) =>
+      row.map((cell) => {
+        if (cell === null || cell === undefined) {
+          return { value: '' };
+        }
+        if (typeof cell === 'object' && 'value' in cell) {
+          return cell as SpreadsheetCell;
+        }
+        return { value: cell };
+      }),
+    );
+  }
+
+  return getEmptySpreadsheet();
+}
 
 export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluatorProps) {
-  const [data, setData] = useState<SpreadsheetData>(() => {
-    // Initialize with provided data or empty spreadsheet
-    const initial = activity.props.initialData;
-    if (initial && Array.isArray(initial)) {
-      return initial.map((row) =>
-        row.map((cell) => {
-          if (cell === null || cell === undefined) {
-            return { value: '' };
-          }
-          if (typeof cell === 'object' && 'value' in cell) {
-            return cell as SpreadsheetCell;
-          }
-          return { value: cell };
-        })
-      );
-    }
-    // Default 10x10 spreadsheet
-    return Array.from({ length: 10 }, () =>
-      Array.from({ length: 10 }, () => ({ value: '' }))
-    );
-  });
-
+  const [data, setData] = useState<SpreadsheetData>(() => initializeSpreadsheet(activity.props.initialData));
   const [feedback, setFeedback] = useState<CellFeedback[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [attemptNumber, setAttemptNumber] = useState(0);
 
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasUnsavedChanges = useRef(false);
 
-  // Auto-save logic
+  const targetCells = activity.props.targetCells;
+
   const saveAsDraft = useCallback(async () => {
-    if (!hasUnsavedChanges.current) return;
+    if (!hasUnsavedChanges.current) {
+      return;
+    }
 
     setIsSaving(true);
     try {
@@ -104,38 +114,33 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
         setLastSaved(new Date());
         hasUnsavedChanges.current = false;
       }
-    } catch (err) {
-      console.error('Auto-save failed:', err);
+    } catch (saveError) {
+      console.error('Auto-save failed:', saveError);
     } finally {
       setIsSaving(false);
     }
   }, [activity.id, data]);
 
-  // Handle spreadsheet changes
   const handleChange = useCallback((newData: SpreadsheetData) => {
     setData(newData);
     hasUnsavedChanges.current = true;
     setError(null);
 
-    // Reset auto-save timer
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
     }
+
     autoSaveTimerRef.current = setTimeout(() => {
-      saveAsDraft();
+      void saveAsDraft();
     }, AUTO_SAVE_DELAY);
   }, [saveAsDraft]);
 
-  // Cleanup auto-save timer
-  useEffect(() => {
-    return () => {
-      if (autoSaveTimerRef.current) {
-        clearTimeout(autoSaveTimerRef.current);
-      }
-    };
+  useEffect(() => () => {
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
   }, []);
 
-  // Load saved draft on mount
   useEffect(() => {
     const loadDraft = async () => {
       try {
@@ -143,20 +148,19 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
         if (response.ok) {
           const result = await response.json();
           if (result.draftData) {
-            setData(result.draftData);
+            setData(initializeSpreadsheet(result.draftData));
             setLastSaved(new Date(result.updatedAt));
           }
         }
-      } catch (err) {
-        console.error('Failed to load draft:', err);
+      } catch (loadError) {
+        console.error('Failed to load draft:', loadError);
       }
     };
 
-    loadDraft();
+    void loadDraft();
   }, [activity.id]);
 
-  // Get cell value safely
-  const getCellValue = (cellRef: string): string | number => {
+  const getCellValue = useCallback((cellRef: string): string | number => {
     try {
       const { row, col } = a1ToCoordinates(cellRef);
       const cell = data[row]?.[col];
@@ -164,250 +168,371 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
     } catch {
       return '';
     }
-  };
+  }, [data]);
 
-  // Normalize values for comparison
-  const normalizeValue = (value: string | number): string => {
-    if (typeof value === 'number') {
-      return value.toString().toLowerCase().trim();
-    }
-    return value.toString().toLowerCase().trim();
-  };
-
-  // Validate spreadsheet
-  const validateSpreadsheet = (): CellFeedback[] => {
-    const results: CellFeedback[] = [];
-
-    for (const target of activity.props.targetCells) {
+  const validateSpreadsheet = useCallback((): CellFeedback[] => {
+    return targetCells.map((target) => {
       const actualValue = getCellValue(target.cell);
-      const normalizedActual = normalizeValue(actualValue);
-      const normalizedExpected = normalizeValue(target.expectedValue);
+      const isCorrect = normalizeValue(actualValue) === normalizeValue(target.expectedValue);
 
-      const isCorrect = normalizedActual === normalizedExpected;
-
-      results.push({
+      return {
         cell: target.cell,
         isCorrect,
         message: isCorrect
           ? `Correct! Cell ${target.cell} has the expected value.`
-          : `Cell ${target.cell}: Expected "${target.expectedValue}", but got "${actualValue}"`,
-      });
-    }
+          : `Cell ${target.cell}: expected "${target.expectedValue}", but got "${actualValue}"`,
+      };
+    });
+  }, [getCellValue, targetCells]);
 
-    return results;
-  };
-
-  // Highlight cells based on feedback
-  const getHighlightedData = (): SpreadsheetData => {
-    if (!submitted || feedback.length === 0) {
+  const getHighlightedData = useCallback((currentFeedback: CellFeedback[]): SpreadsheetData => {
+    if (!submitted || currentFeedback.length === 0) {
       return data;
     }
 
-    const highlighted = data.map((row) => row.map((cell) => ({
-      value: cell?.value ?? '',
-      readOnly: cell?.readOnly,
-      className: cell?.className,
-    } as SpreadsheetCell)));
+    const highlighted = data.map((row) =>
+      row.map((cell) => ({
+        value: cell?.value ?? '',
+        readOnly: cell?.readOnly,
+        className: cell?.className,
+      } as SpreadsheetCell)),
+    );
 
-    for (const fb of feedback) {
+    for (const entry of currentFeedback) {
       try {
-        const { row, col } = a1ToCoordinates(fb.cell);
+        const { row, col } = a1ToCoordinates(entry.cell);
         if (highlighted[row]?.[col]) {
           highlighted[row][col] = {
             value: highlighted[row][col].value,
             readOnly: highlighted[row][col].readOnly,
-            className: fb.isCorrect
+            className: entry.isCorrect
               ? 'bg-green-100 border-green-500'
               : 'bg-red-100 border-red-500',
           };
         }
-      } catch (err) {
-        console.error(`Failed to highlight cell ${fb.cell}:`, err);
+      } catch (highlightError) {
+        console.error(`Failed to highlight cell ${entry.cell}:`, highlightError);
       }
     }
 
     return highlighted;
-  };
+  }, [data, submitted]);
 
-  // Handle submission
-  const handleSubmit = async () => {
+  const targetStatuses = useMemo(() => {
+    const feedbackByCell = new Map(feedback.map((entry) => [entry.cell, entry] as const));
+
+    return targetCells.map((target) => {
+      const result = feedbackByCell.get(target.cell);
+
+      if (!submitted) {
+        return {
+          cell: target.cell,
+          expectedValue: target.expectedValue,
+          status: 'pending' as const,
+          message: 'Not checked yet',
+        };
+      }
+
+      return {
+        cell: target.cell,
+        expectedValue: target.expectedValue,
+        status: result?.isCorrect ? 'correct' as const : 'incorrect' as const,
+        message: result?.message ?? `Cell ${target.cell} needs attention.`,
+      };
+    });
+  }, [feedback, submitted, targetCells]);
+
+  const statusAnnouncement = submitted
+    ? feedback.every((entry) => entry.isCorrect)
+      ? 'All target cells are correct.'
+      : `${feedback.filter((entry) => entry.isCorrect).length} of ${feedback.length} target cells are correct.`
+    : hasUnsavedChanges.current
+      ? 'Unsaved changes are present.'
+      : 'Worksheet ready for review.';
+
+  const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     setError(null);
 
-    try {
-      const validationResults = validateSpreadsheet();
-      setFeedback(validationResults);
+    const localValidation = validateSpreadsheet();
+    const localFeedback = localValidation;
 
+    try {
       const response = await fetch(`/api/activities/spreadsheet/${activity.id}/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           spreadsheetData: data,
-          targetCells: activity.props.targetCells,
+          targetCells,
         }),
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Submission failed');
+        const body = await response.json();
+        throw new Error(body.error || 'Submission failed');
       }
 
       const result = await response.json();
+      const mergedFeedback = result.feedback?.length ? result.feedback : localFeedback;
 
+      setAttemptNumber((current) => current + 1);
       setSubmitted(true);
-      setFeedback(result.feedback || validationResults);
+      setFeedback(mergedFeedback);
+      hasUnsavedChanges.current = false;
 
-      // Call external onSubmit handler
-      onSubmit?.({
-        activityId: activity.id,
-        isComplete: result.isComplete,
-        spreadsheetData: data,
-        completedAt: new Date(),
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      onSubmit?.(
+        buildSpreadsheetEvaluatorSubmission({
+          activityId: activity.id,
+          templateId: activity.props.templateId,
+          instructions: activity.props.instructions,
+          targetCells,
+          spreadsheetData: data,
+          validationResult: {
+            isComplete: Boolean(result.isComplete),
+            totalCells: localValidation.length,
+            correctCells: mergedFeedback.filter((entry: CellFeedback) => entry.isCorrect).length,
+            feedback: mergedFeedback.map((entry: CellFeedback) => ({
+              cell: entry.cell,
+              isCorrect: entry.isCorrect,
+              message: entry.message,
+            })),
+            timestamp: new Date().toISOString(),
+          },
+          attemptNumber: attemptNumber + 1,
+          mode: SPREADSHEET_EVALUATOR_DEFAULT_MODE,
+        }),
+      );
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'An unexpected error occurred');
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [activity.id, activity.props.instructions, activity.props.templateId, attemptNumber, data, onSubmit, targetCells, validateSpreadsheet]);
 
-  const isComplete = submitted && feedback.every((fb) => fb.isCorrect);
-  const correctCount = feedback.filter((fb) => fb.isCorrect).length;
-  const totalCount = activity.props.targetCells.length;
+  const isComplete = submitted && feedback.every((entry) => entry.isCorrect);
+  const correctCount = feedback.filter((entry) => entry.isCorrect).length;
+  const totalCount = targetCells.length;
+  const renderedData = getHighlightedData(feedback);
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-3 text-2xl">
+    <Card className="mx-auto w-full max-w-7xl">
+      <CardHeader className="space-y-4 border-b">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-2">
+            <CardTitle className="flex flex-wrap items-center gap-3 text-2xl">
               {activity.displayName || 'Spreadsheet Exercise'}
-              {submitted && (
+              <Badge variant="outline" className="uppercase">
+                {SPREADSHEET_EVALUATOR_DEFAULT_MODE.replace('_', ' ')}
+              </Badge>
+              {submitted ? (
                 <Badge variant={isComplete ? 'default' : 'destructive'}>
                   {correctCount}/{totalCount} correct
+                </Badge>
+              ) : (
+                <Badge variant="secondary">
+                  {targetCells.length} targets
                 </Badge>
               )}
             </CardTitle>
             <CardDescription>{activity.description}</CardDescription>
           </div>
-          {lastSaved && !isSaving && (
-            <div className="text-xs text-muted-foreground">
-              Last saved: {lastSaved.toLocaleTimeString()}
-            </div>
-          )}
-          {isSaving && (
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Saving...
-            </div>
-          )}
+          <div className="flex flex-col items-end gap-2 text-xs text-muted-foreground">
+            {lastSaved && !isSaving ? <div>Last saved: {lastSaved.toLocaleTimeString()}</div> : null}
+            {isSaving ? (
+              <div className="flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Saving...
+              </div>
+            ) : null}
+            {attemptNumber > 0 ? <div>Attempt {attemptNumber}</div> : null}
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span className="font-medium">What you are building:</span>
+            <span>Worksheet targets with teacher-visible evidence</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Completion rule:</span>
+            <span>{targetCells.length} target cells must match</span>
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Instructions */}
-        <Alert>
-          <AlertDescription>{activity.props.instructions}</AlertDescription>
-        </Alert>
+      <CardContent className="space-y-6 p-6">
+        <p className="sr-only" aria-live="polite">
+          {statusAnnouncement}
+        </p>
 
-        {/* Error message */}
-        {error && (
-          <Alert variant="destructive">
-            <XCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(18rem,0.8fr)]">
+          <div className="space-y-4">
+            <Alert>
+              <AlertDescription>{activity.props.instructions}</AlertDescription>
+            </Alert>
 
-        {/* Success message */}
-        {isComplete && (
-          <Alert className="border-green-500 bg-green-50">
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">
-              Excellent work! All cells are correct.
-            </AlertDescription>
-          </Alert>
-        )}
+            {error ? (
+              <Alert variant="destructive">
+                <XCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            ) : null}
 
-        {/* Feedback list */}
-        {submitted && feedback.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold">Validation Results:</h3>
-            <div className="space-y-1">
-              {feedback.map((fb) => (
-                <div
-                  key={fb.cell}
-                  className={`flex items-start gap-2 text-sm p-2 rounded ${
-                    fb.isCorrect ? 'bg-green-50' : 'bg-red-50'
-                  }`}
-                >
-                  {fb.isCorrect ? (
-                    <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />
-                  ) : (
-                    <XCircle className="h-4 w-4 text-red-600 mt-0.5" />
-                  )}
-                  <span className={fb.isCorrect ? 'text-green-800' : 'text-red-800'}>
-                    {fb.message}
+            {isComplete ? (
+              <Alert className="border-green-500 bg-green-50">
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800">
+                  Excellent work! All cells are correct.
+                </AlertDescription>
+              </Alert>
+            ) : null}
+
+            <div className="overflow-hidden rounded-lg border">
+              <SpreadsheetWrapper
+                initialData={renderedData}
+                onChange={submitted ? undefined : handleChange}
+                readOnly={submitted}
+                showColumnLabels
+                showRowLabels
+                className="min-h-[420px]"
+              />
+            </div>
+
+            {submitted && feedback.length > 0 ? (
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold">Validation Results</h3>
+                <div className="space-y-2">
+                  {feedback.map((entry) => (
+                    <div
+                      key={entry.cell}
+                      className={`flex items-start gap-2 rounded-md border p-3 text-sm ${
+                        entry.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+                      }`}
+                    >
+                      {entry.isCorrect ? (
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 text-green-600" />
+                      ) : (
+                        <XCircle className="mt-0.5 h-4 w-4 text-red-600" />
+                      )}
+                      <span className={entry.isCorrect ? 'text-green-800' : 'text-red-800'}>
+                        {entry.message}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <aside className="space-y-4">
+            <Card className="border-blue-200 bg-blue-50/70">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base text-blue-900">Target Checklist</CardTitle>
+                <CardDescription className="text-blue-700">
+                  Each target cell must match the expected value.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {targetStatuses.map((target) => (
+                  <div
+                    key={target.cell}
+                    className={`rounded-md border p-3 ${
+                      target.status === 'correct'
+                        ? 'border-green-200 bg-green-50'
+                        : target.status === 'incorrect'
+                          ? 'border-red-200 bg-red-50'
+                          : 'border-blue-200 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="font-medium text-slate-900">{target.cell}</div>
+                      <Badge variant="outline" className="uppercase">
+                        {target.status}
+                      </Badge>
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      Expected: {String(target.expectedValue)}
+                    </div>
+                    <div className="mt-2 text-sm text-slate-700">
+                      {target.message}
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/70">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-muted-foreground">
+                <div className="flex items-center justify-between">
+                  <span>Targets validated</span>
+                  <span className="font-medium text-foreground">
+                    {submitted ? `${correctCount}/${totalCount}` : 'Not checked'}
                   </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Spreadsheet */}
-        <div className="border rounded-lg overflow-hidden">
-          <SpreadsheetWrapper
-            initialData={getHighlightedData()}
-            onChange={handleChange}
-            readOnly={submitted}
-            showColumnLabels={true}
-            showRowLabels={true}
-            className="min-h-[400px]"
-          />
+                <div className="flex items-center justify-between">
+                  <span>Draft status</span>
+                  <span className="font-medium text-foreground">
+                    {hasUnsavedChanges.current ? 'Unsaved changes' : 'Saved'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Mode</span>
+                  <span className="font-medium text-foreground">
+                    {SPREADSHEET_EVALUATOR_DEFAULT_MODE.replace('_', ' ')}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </aside>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex justify-between items-center pt-4 border-t">
-          <div className="text-sm text-muted-foreground">
-            {hasUnsavedChanges.current && !submitted && (
-              <span className="flex items-center gap-1">
-                <Save className="h-3 w-3" />
-                Unsaved changes
-              </span>
-            )}
-          </div>
-          <div className="flex gap-2">
-            {!submitted && (
-              <>
-                <Button
-                  onClick={saveAsDraft}
-                  variant="outline"
-                  disabled={isSaving || !hasUnsavedChanges.current}
-                >
-                  {isSaving ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save Draft
-                    </>
-                  )}
-                </Button>
-                <Button onClick={handleSubmit} disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Checking...
-                    </>
-                  ) : (
-                    'Check Answer'
-                  )}
-                </Button>
-              </>
-            )}
+        <div className="sticky bottom-0 -mx-6 border-t bg-background/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="text-sm text-muted-foreground">
+              {hasUnsavedChanges.current && !submitted ? (
+                <span className="flex items-center gap-1">
+                  <Save className="h-3 w-3" />
+                  Unsaved changes
+                </span>
+              ) : (
+                <span>{statusAnnouncement}</span>
+              )}
+            </div>
+            <div className="flex gap-2">
+              {!submitted ? (
+                <>
+                  <Button
+                    onClick={saveAsDraft}
+                    variant="outline"
+                    disabled={isSaving || !hasUnsavedChanges.current}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Draft
+                      </>
+                    )}
+                  </Button>
+                  <Button onClick={handleSubmit} disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Checking...
+                      </>
+                    ) : (
+                      'Check Answer'
+                    )}
+                  </Button>
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
       </CardContent>

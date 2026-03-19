@@ -105,16 +105,25 @@ describe('SpreadsheetEvaluator', () => {
     const user = userEvent.setup();
     const activity = buildActivity();
 
-    (global.fetch as Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        success: true,
-        isComplete: true,
-        feedback: [
-          { cell: 'A1', isCorrect: true, message: 'Correct!' },
-          { cell: 'B1', isCorrect: true, message: 'Correct!' },
-        ],
-      }),
+    (global.fetch as Mock).mockImplementation(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes('/draft') && !init?.method) {
+        return { ok: true, json: async () => ({ draftData: null }) };
+      }
+      if (url.includes('/submit')) {
+        return {
+          ok: true,
+          json: async () => ({
+            success: true,
+            isComplete: true,
+            feedback: [
+              { cell: 'A1', isCorrect: true, message: 'Correct!' },
+              { cell: 'B1', isCorrect: true, message: 'Correct!' },
+            ],
+          }),
+        };
+      }
+      return { ok: true, json: async () => ({}) };
     });
 
     render(<SpreadsheetEvaluator activity={activity} />);
@@ -123,9 +132,7 @@ describe('SpreadsheetEvaluator', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/Excellent work! All cells are correct./i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Excellent work! All cells are correct./i)).toBeInTheDocument();
     });
   });
 
@@ -161,7 +168,7 @@ describe('SpreadsheetEvaluator', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/1\/2 correct/i)).toBeInTheDocument();
-      expect(screen.getByText(/Cell A1: Expected "100", but got ""/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Cell A1: Expected "100", but got ""/i).length).toBeGreaterThan(0);
     });
   });
 
@@ -224,8 +231,12 @@ describe('SpreadsheetEvaluator', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: activity.id,
-          isComplete: true,
+          mode: 'assessment',
+          artifact: expect.objectContaining({
+            kind: 'spreadsheet_evaluator',
+          }),
         })
       );
     });

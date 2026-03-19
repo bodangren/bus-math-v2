@@ -123,6 +123,14 @@ function getArtifactLabel(evidence: SubmissionEvidence) {
       return 'Categorization';
     case 'written_explanation':
       return 'Written Explanation';
+    case 'spreadsheet':
+    case 'spreadsheet_evaluator':
+    case 'spreadsheet_snapshot':
+      return 'Spreadsheet';
+    case 'data_cleaning':
+      return 'Data Cleaning';
+    case 'notebook_organizer':
+      return 'Notebook Organizer';
     default:
       return 'Practice Artifact';
   }
@@ -375,6 +383,9 @@ function PracticeEvidenceCard({
   const artifact = isPractice
     ? (submissionData?.artifact as Record<string, unknown> | undefined)
     : undefined;
+  const artifactSpreadsheetData = artifact && Array.isArray(artifact.spreadsheetData)
+    ? (artifact.spreadsheetData as unknown[])
+    : null;
   const artifactLabel = getArtifactLabel(evidence);
 
   const misconceptionTags = new Set<string>();
@@ -532,7 +543,21 @@ function PracticeEvidenceCard({
                   <FileText className="size-4 text-muted-foreground" />
                   Artifact
                 </div>
-                {artifact ? (
+                {artifactSpreadsheetData ? (
+                  <div className="mt-3 space-y-3">
+                    <div className="overflow-x-auto rounded-md border border-border">
+                      <SpreadsheetWrapper
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        initialData={artifactSpreadsheetData as any}
+                        readOnly
+                        className="text-xs"
+                      />
+                    </div>
+                    <div className="rounded-md border border-border bg-muted/20 p-3">
+                      <EvidenceValue value={artifact} />
+                    </div>
+                  </div>
+                ) : artifact ? (
                   <div className="mt-3 rounded-md border border-border bg-muted/20 p-3">
                     <EvidenceValue value={artifact} />
                   </div>

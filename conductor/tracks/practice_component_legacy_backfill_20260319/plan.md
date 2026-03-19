@@ -44,23 +44,23 @@
 
 ### Tasks
 
-- [ ] **Task: Align spreadsheet and evaluator families**
-  - [ ] Ensure spreadsheet-like families fit the shared contract without losing existing artifact fidelity
-  - [ ] Verify compatibility with teacher evidence surfaces
-  - [ ] Plan consolidation or deprecation path for the legacy `student_spreadsheet_responses` Convex table — submissions should flow through unified `activity_submissions` with canonical envelopes rather than a parallel table
+- [x] **Task: Align spreadsheet and evaluator families**
+  - [x] Ensure spreadsheet-like families fit the shared contract without losing existing artifact fidelity
+  - [x] Verify compatibility with teacher evidence surfaces
+  - [x] Plan consolidation or deprecation path for the legacy `student_spreadsheet_responses` Convex table — submissions now flow through unified `activity_submissions` with canonical envelopes rather than a parallel table
 
-- [ ] **Task: Align practice-capable simulation families**
-  - [ ] Refactor the simulation-backed practice components used by authored curriculum
-  - [ ] Document any families that intentionally remain outside the practice contract
+- [x] **Task: Align practice-capable simulation families**
+  - [x] Refactor the simulation-backed practice components used by authored curriculum
+  - [x] Document any families that intentionally remain outside the practice contract
 
 ## Phase 5: Verification and Contract Cleanup
 
 ### Tasks
 
-- [ ] **Task: Run migration verification**
-  - [ ] Run targeted component tests for each migrated wave
-  - [ ] Run `npm run lint`
-  - [ ] Fix regressions
+- [x] **Task: Run migration verification**
+  - [x] Run targeted component tests for each migrated wave
+  - [x] Run `npm run lint`
+  - [x] Fix regressions
 
 - [ ] **Task: Remove no-longer-needed compatibility branches**
   - [ ] Reduce temporary adapters where all relevant families have been migrated

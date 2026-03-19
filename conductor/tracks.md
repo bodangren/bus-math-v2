@@ -42,7 +42,7 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 - [~] **Track: Practice Component Legacy Backfill**
   *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
-  *Status: Phase 1 audit complete; structured-response backfill is next and will use [./tracks/practice_component_legacy_backfill_20260319/audit.md](./tracks/practice_component_legacy_backfill_20260319/audit.md) as its starting inventory.*
+  *Status: Phase 4 spreadsheet/simulation alignment is complete; verification passed and the remaining cleanup pass is limited to compatibility-branch removal.*
 
 ## Planned Queue
 
