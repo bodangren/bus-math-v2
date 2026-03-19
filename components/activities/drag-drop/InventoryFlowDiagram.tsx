@@ -11,21 +11,21 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
 import { type InventoryFlowDiagramActivityProps } from '@/types/activities';
+import {
+  SEQUENCE_SUPPORTED_MODES,
+  buildSequentialPracticeSubmission,
+} from './practiceSubmission';
 
 export type InventoryFlowDiagramActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'inventory-flow-diagram';
   props: InventoryFlowDiagramActivityProps;
 };
 
+export const INVENTORY_FLOW_DIAGRAM_SUPPORTED_MODES = SEQUENCE_SUPPORTED_MODES;
+
 interface InventoryFlowDiagramProps {
   activity: InventoryFlowDiagramActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string[]>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 type InventoryScenario = InventoryFlowDiagramActivityProps['scenarios'][number];
@@ -37,6 +37,7 @@ export const INVENTORY_ARRANGEMENT_DROPPABLE = 'inventory-arrangement';
 export function InventoryFlowDiagram({ activity, onSubmit }: InventoryFlowDiagramProps) {
   const scenarios = activity.props.scenarios;
   const [scenarioId, setScenarioId] = useState(scenarios[0]?.id ?? '');
+  const practiceMode = 'independent_practice' as const;
 
   const activeScenario = useMemo<InventoryScenario>(
     () => scenarios.find((scenario) => scenario.id === scenarioId) ?? scenarios[0],
@@ -91,15 +92,39 @@ export function InventoryFlowDiagram({ activity, onSubmit }: InventoryFlowDiagra
       if (!completed && targetOrder.length > 0 && correct === targetOrder.length) {
         setCompleted(true);
         onSubmit?.({
-          activityId: activity.id,
-          score: nextScore,
-          attempts: upcomingAttempts,
-          responses: { arrangement: nextArrangement.map((lot) => lot.id) },
-          completedAt: new Date()
+          ...buildSequentialPracticeSubmission({
+            activityId: activity.id,
+            mode: practiceMode,
+            attemptNumber: upcomingAttempts,
+            completedAt: new Date(),
+            family: activity.componentKey,
+            artifactKind: 'inventory_flow',
+            arrangement: nextArrangement,
+            expectedOrder: targetOrder,
+            describeItem: (item) => ({
+              label: item.label,
+              description: item.notes,
+              details: {
+                purchaseDate: item.purchaseDate,
+                quantity: item.quantity,
+                unitCost: item.unitCost,
+              },
+            }),
+            analytics: {
+              score: nextScore,
+              attempts: upcomingAttempts,
+              scenarioId: activeScenario.id,
+              methodId: activeMode.id,
+              totalQuantity: nextArrangement.reduce((sum, lot) => sum + lot.quantity, 0),
+              averageCost:
+                nextArrangement.reduce((sum, lot) => sum + lot.quantity * lot.unitCost, 0) /
+                Math.max(1, nextArrangement.reduce((sum, lot) => sum + lot.quantity, 0)),
+            },
+          }),
         });
       }
     },
-    [activity.id, activeMode, completed, onSubmit]
+    [activity.componentKey, activity.id, activeMode, activeScenario.id, completed, onSubmit]
   );
 
   const handleDragEnd = useCallback(

@@ -72,12 +72,33 @@ describe('AccountCategorization', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-account',
-          score: 100,
-          responses: {
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
             assets: ['acct-cash'],
             expenses: ['acct-rent']
-          }
+          },
+          parts: expect.arrayContaining([
+            expect.objectContaining({
+              partId: 'assets',
+              rawAnswer: ['acct-cash'],
+              isCorrect: true,
+              score: 1,
+              maxScore: 1
+            }),
+            expect.objectContaining({
+              partId: 'expenses',
+              rawAnswer: ['acct-rent'],
+              isCorrect: true,
+              score: 1,
+              maxScore: 1
+            })
+          ]),
+          artifact: expect.objectContaining({
+            kind: 'account_categorization_board'
+          })
         })
       );
     });

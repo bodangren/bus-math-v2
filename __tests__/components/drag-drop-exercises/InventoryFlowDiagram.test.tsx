@@ -80,8 +80,24 @@ describe('InventoryFlowDiagram', () => {
     expect(await screen.findByText(/Flow complete/i)).toBeInTheDocument();
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
+        contractVersion: 'practice.v1',
         activityId: 'activity-inventory',
-        responses: { arrangement: ['lot-a', 'lot-b'] }
+        mode: 'independent_practice',
+        status: 'submitted',
+        answers: { arrangement: ['lot-a', 'lot-b'] },
+        parts: expect.arrayContaining([
+          expect.objectContaining({
+            partId: 'lot-a',
+            rawAnswer: { position: 1, itemId: 'lot-a' },
+          }),
+          expect.objectContaining({
+            partId: 'lot-b',
+            rawAnswer: { position: 2, itemId: 'lot-b' },
+          })
+        ]),
+        artifact: expect.objectContaining({
+          kind: 'inventory_flow'
+        })
       })
     );
     randomSpy.mockRestore();

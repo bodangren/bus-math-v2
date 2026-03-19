@@ -10,6 +10,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
 import { type PercentageCalculationSortingActivityProps } from '@/types/activities';
+import {
+  CATEGORIZATION_SUPPORTED_MODES,
+  buildCategorizationPracticeSubmission,
+} from './practiceSubmission';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,
@@ -23,15 +27,11 @@ export type PercentageCalculationSortingActivity = Omit<Activity, 'componentKey'
   props: PercentageCalculationSortingActivityProps;
 };
 
+export const PERCENTAGE_CALCULATION_SORTING_SUPPORTED_MODES = CATEGORIZATION_SUPPORTED_MODES;
+
 interface PercentageCalculationSortingProps {
   activity: PercentageCalculationSortingActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string[]>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 type ScenarioItem = PercentageCalculationSortingActivityProps['scenarios'][number] & CategorizationItem;
@@ -49,6 +49,7 @@ const difficultyBadge = (difficulty: ScenarioItem['difficulty']) => {
 
 export function PercentageCalculationSorting({ activity, onSubmit }: PercentageCalculationSortingProps) {
   const [showHints, setShowHints] = useState(activity.props.showHintsByDefault);
+  const practiceMode = activity.props.showHintsByDefault ? 'guided_practice' : 'independent_practice';
 
   const calculationTypes = activity.props.calculationTypes;
   const zoneIds = useMemo(() => calculationTypes.map((category) => category.id), [calculationTypes]);
@@ -63,18 +64,40 @@ export function PercentageCalculationSorting({ activity, onSubmit }: PercentageC
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, ScenarioItem[]> }) => {
-      const responses = Object.fromEntries(
-        Object.entries(placements).map(([zoneId, zoneItems]) => [zoneId, zoneItems.map((item) => item.id)])
-      );
       onSubmit?.({
-        activityId: activity.id,
-        score,
-        attempts,
-        responses,
-        completedAt: new Date()
+        ...buildCategorizationPracticeSubmission({
+          activityId: activity.id,
+          mode: practiceMode,
+          attemptNumber: attempts,
+          completedAt: new Date(),
+          family: activity.componentKey,
+          artifactKind: 'categorization_board',
+          items: scenarios,
+          placements,
+          zones: calculationTypes.map((calculation) => ({
+            id: calculation.id,
+            label: calculation.title,
+            description: calculation.description,
+          })),
+          describeItem: (item) => ({
+            label: item.prompt,
+            description: item.description,
+            details: {
+              calculationTypeId: item.calculationTypeId,
+              dataPoints: item.dataPoints,
+              businessContext: item.businessContext ?? null,
+              difficulty: item.difficulty,
+            },
+          }),
+          analytics: {
+            score,
+            attempts,
+            showHintsEnabled: showHints,
+          },
+        }),
       });
     },
-    [activity.id, onSubmit]
+    [activity.componentKey, activity.id, calculationTypes, onSubmit, practiceMode, scenarios, showHints]
   );
 
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(scenarios, zoneIds, {

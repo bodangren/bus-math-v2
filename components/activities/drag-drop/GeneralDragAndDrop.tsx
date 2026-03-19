@@ -10,6 +10,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { cn } from '@/lib/utils';
 import { type DragAndDropActivityProps } from '@/types/activities';
 import { type Activity } from '@/lib/db/schema/validators';
+import {
+  CATEGORIZATION_SUPPORTED_MODES,
+  buildCategorizationPracticeSubmission,
+} from './practiceSubmission';
 
 interface MatchingItem {
   id: string;
@@ -35,15 +39,11 @@ export type DragAndDropActivity = Omit<Activity, 'componentKey' | 'props'> & {
   props: DragAndDropActivityProps;
 };
 
+export const GENERAL_DRAG_AND_DROP_SUPPORTED_MODES = CATEGORIZATION_SUPPORTED_MODES;
+
 interface GeneralDragAndDropProps {
   activity: DragAndDropActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 const AVAILABLE_DROPPABLE_ID = 'available-items';
@@ -78,8 +78,17 @@ const buildColumns = (items: MatchingItem[]) => {
 
 export function GeneralDragAndDrop({ activity, onSubmit }: GeneralDragAndDropProps) {
   const { items, leftColumnTitle, rightColumnTitle, showHints, shuffleItems } = activity.props;
+  const practiceMode = showHints ? 'guided_practice' : 'independent_practice';
 
   const { left, right } = useMemo(() => buildColumns(items as MatchingItem[]), [items]);
+  const categorizedItems = useMemo(
+    () =>
+      left.map((item) => ({
+        ...item,
+        targetId: item.matchId,
+      })),
+    [left]
+  );
 
   const [availableItems, setAvailableItems] = useState<MatchingItem[]>([]);
   const [dropZones, setDropZones] = useState<DropZone[]>([]);
@@ -119,18 +128,48 @@ export function GeneralDragAndDrop({ activity, onSubmit }: GeneralDragAndDropPro
 
     if (total > 0 && correct === total && !completed) {
       setCompleted(true);
-      const responses = Object.entries(updatedPlacements).reduce<Record<string, string>>((acc, [zoneId, placement]) => {
-        if (placement?.item) {
-          acc[zoneId] = placement.item.id;
-        }
+      const submissionPlacements = dropZones.reduce<Record<string, typeof categorizedItems>>((acc, zone) => {
+        const placement = updatedPlacements[zone.id];
+        acc[zone.id] = placement?.item
+          ? [
+              {
+                ...placement.item,
+                targetId: placement.item.matchId,
+              },
+            ]
+          : [];
         return acc;
       }, {});
       onSubmit?.({
-        activityId: activity.id,
-        score: nextScore,
-        attempts: upcomingAttempts,
-        responses,
-        completedAt: new Date(),
+        ...buildCategorizationPracticeSubmission({
+          activityId: activity.id,
+          mode: practiceMode,
+          attemptNumber: upcomingAttempts,
+          completedAt: new Date(),
+          family: activity.componentKey,
+          artifactKind: 'matching_board',
+          items: categorizedItems,
+          placements: submissionPlacements,
+          zones: right.map((item) => ({
+            id: item.id,
+            label: item.content,
+            description: item.description,
+          })),
+          describeItem: (item) => ({
+            label: item.content,
+            description: item.description,
+            details: {
+              category: item.category ?? null,
+              hint: item.hint ?? null,
+              matchId: item.matchId,
+            },
+          }),
+          analytics: {
+            score: nextScore,
+            attempts: upcomingAttempts,
+            showHintsEnabled: showHints,
+          },
+        }),
       });
     }
   };

@@ -59,8 +59,17 @@ describe('CashFlowTimeline', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-cash-flow',
-          score: 100
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
+            'week-1': ['loan'],
+            'week-2': ['rent']
+          },
+          artifact: expect.objectContaining({
+            kind: 'cash_flow_timeline'
+          })
         })
       );
     });

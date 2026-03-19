@@ -11,6 +11,10 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
 import { type BreakEvenComponentsActivityProps } from '@/types/activities';
+import {
+  CATEGORIZATION_SUPPORTED_MODES,
+  buildCategorizationPracticeSubmission,
+} from './practiceSubmission';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,
@@ -24,15 +28,11 @@ export type BreakEvenComponentsActivity = Omit<Activity, 'componentKey' | 'props
   props: BreakEvenComponentsActivityProps;
 };
 
+export const BREAK_EVEN_COMPONENTS_SUPPORTED_MODES = CATEGORIZATION_SUPPORTED_MODES;
+
 interface BreakEvenComponentsProps {
   activity: BreakEvenComponentsActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string[]>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 type CostItem = BreakEvenComponentsActivityProps['costItems'][number] & CategorizationItem;
@@ -58,6 +58,7 @@ const numberFormatter = new Intl.NumberFormat('en-US', {
 export function BreakEvenComponents({ activity, onSubmit }: BreakEvenComponentsProps) {
   const [showHints, setShowHints] = useState(activity.props.showHintsByDefault);
   const [unitPrice, setUnitPrice] = useState(activity.props.salesAssumptions.pricePerUnit);
+  const practiceMode = activity.props.showHintsByDefault ? 'guided_practice' : 'independent_practice';
 
   useEffect(() => {
     setShowHints(activity.props.showHintsByDefault);
@@ -80,18 +81,62 @@ export function BreakEvenComponents({ activity, onSubmit }: BreakEvenComponentsP
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, CostItem[]> }) => {
-      const responses = Object.fromEntries(
-        Object.entries(placements).map(([zoneId, zoneItems]) => [zoneId, zoneItems.map((item) => item.id)])
-      );
+      let fixedCosts = 0;
+      let variablePerUnit = 0;
+
+      categories.forEach((category) => {
+        const bucketTotal = (placements[category.id] ?? []).reduce((sum, cost) => sum + cost.amount, 0);
+        if (category.behavior === 'fixed') {
+          fixedCosts += bucketTotal;
+        } else if (category.behavior === 'variable') {
+          variablePerUnit += bucketTotal;
+        }
+      });
+
+      const contributionMargin = unitPrice - variablePerUnit;
+      const breakEvenUnits = contributionMargin <= 0 ? 0 : Math.ceil(fixedCosts / contributionMargin);
+      const breakEvenRevenue = breakEvenUnits * unitPrice;
+
       onSubmit?.({
-        activityId: activity.id,
-        score,
-        attempts,
-        responses,
-        completedAt: new Date()
+        ...buildCategorizationPracticeSubmission({
+          activityId: activity.id,
+          mode: practiceMode,
+          attemptNumber: attempts,
+          completedAt: new Date(),
+          family: activity.componentKey,
+          artifactKind: 'break_even_snapshot',
+          items,
+          placements,
+          zones: categories.map((category) => ({
+            id: category.id,
+            label: category.title,
+            description: category.description,
+          })),
+          describeItem: (item) => ({
+            label: item.label,
+            description: item.description,
+            details: {
+              amount: item.amount,
+              unit: item.unit,
+              realWorldExample: item.realWorldExample ?? null,
+              categoryId: item.categoryId,
+            },
+          }),
+          analytics: {
+            score,
+            attempts,
+            showHintsEnabled: showHints,
+            unitPrice,
+            fixedCosts,
+            variablePerUnit,
+            contributionMargin,
+            breakEvenUnits,
+            breakEvenRevenue,
+          },
+        }),
       });
     },
-    [activity.id, onSubmit]
+    [activity.componentKey, activity.id, categories, items, onSubmit, practiceMode, showHints, unitPrice]
   );
 
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(items, zoneIds, {

@@ -66,8 +66,17 @@ describe('BreakEvenComponents', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-break-even',
-          score: 100
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
+            fixed: ['rent'],
+            variable: ['materials']
+          },
+          artifact: expect.objectContaining({
+            kind: 'break_even_snapshot'
+          })
         })
       );
     });

@@ -32,9 +32,9 @@
 
 ### Tasks
 
-- [ ] **Task: Refactor drag/drop and categorization families**
-  - [ ] Normalize part-level answers, artifact outputs, and scaffold tracking where applicable
-  - [ ] Add or update tests for canonical submission payloads
+- [x] **Task: Refactor drag/drop and categorization families**
+  - [x] Normalize part-level answers, artifact outputs, and scaffold tracking where applicable
+  - [x] Add or update tests for canonical submission payloads
 
 - [ ] **Task: Refactor accounting-entry families**
   - [ ] Normalize journal-entry and similar accounting artifact families

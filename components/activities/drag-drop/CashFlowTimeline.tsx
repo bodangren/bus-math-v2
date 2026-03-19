@@ -11,6 +11,10 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
 import { type CashFlowTimelineActivityProps } from '@/types/activities';
+import {
+  CATEGORIZATION_SUPPORTED_MODES,
+  buildCategorizationPracticeSubmission,
+} from './practiceSubmission';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,
@@ -24,15 +28,11 @@ export type CashFlowTimelineActivity = Omit<Activity, 'componentKey' | 'props'> 
   props: CashFlowTimelineActivityProps;
 };
 
+export const CASH_FLOW_TIMELINE_SUPPORTED_MODES = CATEGORIZATION_SUPPORTED_MODES;
+
 interface CashFlowTimelineProps {
   activity: CashFlowTimelineActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string[]>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 type CashFlowItem = CashFlowTimelineActivityProps['cashFlowItems'][number] & CategorizationItem;
@@ -46,6 +46,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 export function CashFlowTimeline({ activity, onSubmit }: CashFlowTimelineProps) {
   const [showHints, setShowHints] = useState(activity.props.showHintsByDefault);
+  const practiceMode = activity.props.showHintsByDefault ? 'guided_practice' : 'independent_practice';
 
   const sortedPeriods = useMemo<TimelinePeriod[]>(
     () => [...activity.props.periods].sort((a, b) => a.order - b.order),
@@ -63,18 +64,41 @@ export function CashFlowTimeline({ activity, onSubmit }: CashFlowTimelineProps) 
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, CashFlowItem[]> }) => {
-      const responses = Object.fromEntries(
-        Object.entries(placements).map(([zoneId, zoneItems]) => [zoneId, zoneItems.map((item) => item.id)])
-      );
       onSubmit?.({
-        activityId: activity.id,
-        score,
-        attempts,
-        responses,
-        completedAt: new Date()
+        ...buildCategorizationPracticeSubmission({
+          activityId: activity.id,
+          mode: practiceMode,
+          attemptNumber: attempts,
+          completedAt: new Date(),
+          family: activity.componentKey,
+          artifactKind: 'cash_flow_timeline',
+          items,
+          placements,
+          zones: sortedPeriods.map((period) => ({
+            id: period.id,
+            label: period.label,
+            description: period.description,
+          })),
+          describeItem: (item) => ({
+            label: item.label,
+            description: item.description,
+            details: {
+              amount: item.amount,
+              direction: item.direction,
+              category: item.category ?? null,
+              hint: item.hint ?? null,
+            },
+          }),
+          analytics: {
+            score,
+            attempts,
+            showHintsEnabled: showHints,
+            startingCash: activity.props.startingCash ?? 0,
+          },
+        }),
       });
     },
-    [activity.id, onSubmit]
+    [activity.componentKey, activity.id, activity.props.startingCash, items, onSubmit, practiceMode, showHints, sortedPeriods]
   );
 
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(items, zoneIds, {

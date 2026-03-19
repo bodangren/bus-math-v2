@@ -75,12 +75,17 @@ describe('BudgetCategorySort', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-budget',
-          score: 100,
-          responses: {
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
             labor: ['expense-wages'],
             overhead: ['expense-rent']
-          }
+          },
+          artifact: expect.objectContaining({
+            kind: 'categorization_board'
+          })
         })
       );
     });

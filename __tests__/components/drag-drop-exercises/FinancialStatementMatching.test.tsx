@@ -58,8 +58,17 @@ describe('FinancialStatementMatching', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-financial-statements',
-          score: 100
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
+            income: ['revenue'],
+            balance: ['cash']
+          },
+          artifact: expect.objectContaining({
+            kind: 'categorization_board'
+          })
         })
       );
     });

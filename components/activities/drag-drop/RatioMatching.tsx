@@ -10,6 +10,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
 import { type RatioMatchingActivityProps } from '@/types/activities';
+import {
+  CATEGORIZATION_SUPPORTED_MODES,
+  buildCategorizationPracticeSubmission,
+} from './practiceSubmission';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,
@@ -23,21 +27,18 @@ export type RatioMatchingActivity = Omit<Activity, 'componentKey' | 'props'> & {
   props: RatioMatchingActivityProps;
 };
 
+export const RATIO_MATCHING_SUPPORTED_MODES = CATEGORIZATION_SUPPORTED_MODES;
+
 interface RatioMatchingProps {
   activity: RatioMatchingActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string[]>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 type RatioItem = RatioMatchingActivityProps['ratios'][number] & CategorizationItem;
 
 export function RatioMatching({ activity, onSubmit }: RatioMatchingProps) {
   const [showHints, setShowHints] = useState(activity.props.showHintsByDefault);
+  const practiceMode = activity.props.showHintsByDefault ? 'guided_practice' : 'independent_practice';
 
   const formulaZones = activity.props.formulaZones;
   const zoneIds = useMemo(() => formulaZones.map((zone) => zone.id), [formulaZones]);
@@ -52,18 +53,40 @@ export function RatioMatching({ activity, onSubmit }: RatioMatchingProps) {
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, RatioItem[]> }) => {
-      const responses = Object.fromEntries(
-        Object.entries(placements).map(([zoneId, zoneItems]) => [zoneId, zoneItems.map((item) => item.id)])
-      );
       onSubmit?.({
-        activityId: activity.id,
-        score,
-        attempts,
-        responses,
-        completedAt: new Date()
+        ...buildCategorizationPracticeSubmission({
+          activityId: activity.id,
+          mode: practiceMode,
+          attemptNumber: attempts,
+          completedAt: new Date(),
+          family: activity.componentKey,
+          artifactKind: 'categorization_board',
+          items: ratios,
+          placements,
+          zones: formulaZones.map((zone) => ({
+            id: zone.id,
+            label: zone.title,
+            description: zone.formula,
+          })),
+          describeItem: (item) => ({
+            label: item.name,
+            description: item.description,
+            details: {
+              category: item.category,
+              businessMeaning: item.businessMeaning ?? null,
+              goodRange: item.goodRange ?? null,
+              formulaSummary: item.formulaSummary,
+            },
+          }),
+          analytics: {
+            score,
+            attempts,
+            showHintsEnabled: showHints,
+          },
+        }),
       });
     },
-    [activity.id, onSubmit]
+    [activity.componentKey, activity.id, formulaZones, onSubmit, practiceMode, ratios, showHints]
   );
 
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(ratios, zoneIds, {

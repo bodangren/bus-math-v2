@@ -33,6 +33,8 @@
 - (2026-03-19, practice_component_legacy_backfill) Phase-1 backfill planning should be driven by generated curriculum and seed tests, not by registry shape alone, because the authored lessons reveal which practice families are actually on the student path.
 - (2026-03-19, practice_component_legacy_backfill) Structured-response families are the safest first migration wave; spreadsheet and simulation-backed families need their own pass because they carry artifact and storage assumptions that do not generalize cleanly.
 - (2026-03-20, practice_component_legacy_backfill) Practice families should emit the canonical `practice.v1` envelope at the component boundary so the renderer only preserves compatibility and phase completion, not submission shape translation.
+- (2026-03-20, practice_component_legacy_backfill) Categorization and sequence practice families need separate serializers; inventory-style ordering does not share the same item shape as bucket-based drag/drop.
+- (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, so artifact snapshots should only serialize fields the source item actually owns.
 
 ### Patterns Worth Repeating
 

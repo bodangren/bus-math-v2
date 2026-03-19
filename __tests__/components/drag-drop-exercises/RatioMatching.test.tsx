@@ -85,8 +85,17 @@ describe('RatioMatching', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-ratio',
-          score: 100
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
+            'zone-current': ['current'],
+            'zone-de': ['debt-equity']
+          },
+          artifact: expect.objectContaining({
+            kind: 'categorization_board'
+          })
         })
       );
     });

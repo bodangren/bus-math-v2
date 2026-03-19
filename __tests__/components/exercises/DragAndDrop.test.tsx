@@ -57,8 +57,17 @@ describe('DragAndDrop', () => {
     expect(await screen.findByText(/100% correct/i)).toBeInTheDocument()
     expect(onSubmit).toHaveBeenCalledWith(
       expect.objectContaining({
+        contractVersion: 'practice.v1',
         activityId: 'activity-dnd',
-        score: 100
+        mode: 'independent_practice',
+        status: 'submitted',
+        answers: {
+          'def-assets': ['term-assets'],
+          'def-liabilities': ['term-liabilities']
+        },
+        artifact: expect.objectContaining({
+          kind: 'matching_board'
+        })
       })
     )
   })

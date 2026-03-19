@@ -11,6 +11,10 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import type { Activity } from '@/lib/db/schema/validators';
 import { type TrialBalanceSortingActivityProps } from '@/types/activities';
+import {
+  CATEGORIZATION_SUPPORTED_MODES,
+  buildCategorizationPracticeSubmission,
+} from './practiceSubmission';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,
@@ -24,15 +28,11 @@ export type TrialBalanceSortingActivity = Omit<Activity, 'componentKey' | 'props
   props: TrialBalanceSortingActivityProps;
 };
 
+export const TRIAL_BALANCE_SORTING_SUPPORTED_MODES = CATEGORIZATION_SUPPORTED_MODES;
+
 interface TrialBalanceSortingProps {
   activity: TrialBalanceSortingActivity;
-  onSubmit?: (payload: {
-    activityId: string;
-    score: number;
-    attempts: number;
-    responses: Record<string, string[]>;
-    completedAt: Date;
-  }) => void;
+  onSubmit?: (payload: import('@/lib/practice/contract').PracticeSubmissionCallbackPayload) => void;
 }
 
 type TrialBalanceAccount = TrialBalanceSortingActivityProps['accounts'][number] & CategorizationItem;
@@ -52,6 +52,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 export function TrialBalanceSorting({ activity, onSubmit }: TrialBalanceSortingProps) {
   const [showBadges, setShowBadges] = useState(activity.props.showCategoryBadges);
+  const practiceMode = 'independent_practice' as const;
 
   const sides = activity.props.sides;
   const sideLookup = useMemo(() => Object.fromEntries(sides.map((side) => [side.id, side])), [sides]);
@@ -67,18 +68,57 @@ export function TrialBalanceSorting({ activity, onSubmit }: TrialBalanceSortingP
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, TrialBalanceAccount[]> }) => {
-      const responses = Object.fromEntries(
-        Object.entries(placements).map(([zoneId, zoneItems]) => [zoneId, zoneItems.map((item) => item.id)])
-      );
+      const debitTotal = sides
+        .filter((side) => side.type === 'debit')
+        .reduce(
+          (sum, side) => sum + (placements[side.id] ?? []).reduce((zoneTotal, account) => zoneTotal + account.amount, 0),
+          0,
+        );
+      const creditTotal = sides
+        .filter((side) => side.type === 'credit')
+        .reduce(
+          (sum, side) => sum + (placements[side.id] ?? []).reduce((zoneTotal, account) => zoneTotal + account.amount, 0),
+          0,
+        );
+      const difference = Math.abs(debitTotal - creditTotal);
+
       onSubmit?.({
-        activityId: activity.id,
-        score,
-        attempts,
-        responses,
-        completedAt: new Date()
+        ...buildCategorizationPracticeSubmission({
+          activityId: activity.id,
+          mode: practiceMode,
+          attemptNumber: attempts,
+          completedAt: new Date(),
+          family: activity.componentKey,
+          artifactKind: 'trial_balance_snapshot',
+          items,
+          placements,
+          zones: sides.map((side) => ({
+            id: side.id,
+            label: side.label,
+            description: side.description,
+          })),
+          describeItem: (item) => ({
+            label: item.name,
+            description: sideLookup[item.sideId]?.description ?? item.category,
+            details: {
+              amount: item.amount,
+              category: item.category,
+              sideId: item.sideId,
+              context: item.context ?? null,
+            },
+          }),
+          analytics: {
+            score,
+            attempts,
+            showCategoryBadges: showBadges,
+            debitTotal,
+            creditTotal,
+            difference,
+          },
+        }),
       });
     },
-    [activity.id, onSubmit]
+    [activity.componentKey, activity.id, items, onSubmit, practiceMode, showBadges, sideLookup, sides]
   );
 
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(items, zoneIds, {

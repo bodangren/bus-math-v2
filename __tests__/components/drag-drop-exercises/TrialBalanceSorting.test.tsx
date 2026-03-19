@@ -58,8 +58,17 @@ describe('TrialBalanceSorting', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-trial-balance',
-          score: 100
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
+            debit: ['cash'],
+            credit: ['accounts-payable']
+          },
+          artifact: expect.objectContaining({
+            kind: 'trial_balance_snapshot'
+          })
         })
       );
     });

@@ -82,8 +82,17 @@ describe('PercentageCalculationSorting', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-percentage',
-          score: 100
+          mode: 'independent_practice',
+          status: 'submitted',
+          answers: {
+            change: ['scenario-sales'],
+            'of-total': ['scenario-labor']
+          },
+          artifact: expect.objectContaining({
+            kind: 'categorization_board'
+          })
         })
       );
     });
