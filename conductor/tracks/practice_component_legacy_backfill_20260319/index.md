@@ -6,6 +6,7 @@ Refactor previously built practice components so the shared `practice.v1` contra
 
 - **Specification**: [./spec.md](./spec.md)
 - **Implementation Plan**: [./plan.md](./plan.md)
+- **Audit**: [./audit.md](./audit.md)
 
 ## Summary
 
@@ -15,6 +16,8 @@ This track converts legacy practice components into first-class citizens of the 
 2. structured-response backfills
 3. drag/drop and accounting-artifact backfills
 4. spreadsheet and simulation alignment
+
+Phase 1 audit and wave planning are complete; the remaining phases now use the audit map as their starting point.
 
 ## Progress
 

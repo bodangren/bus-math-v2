@@ -40,13 +40,13 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 ## Active Track
 
+- [~] **Track: Practice Component Legacy Backfill**
+  *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
+  *Status: Phase 1 audit complete; structured-response backfill is next and will use [./tracks/practice_component_legacy_backfill_20260319/audit.md](./tracks/practice_component_legacy_backfill_20260319/audit.md) as its starting inventory.*
+
 ## Planned Queue
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
-
-- [ ] **Track: Practice Component Legacy Backfill**
-  *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
-  *Status: Parallel with Track 2 after Track 1; owns family-by-family component migration onto `practice.v1`. Produces component-family-to-lesson mapping consumed by Track 8. Also owns `student_spreadsheet_responses` consolidation planning.*
 
 - [ ] **Track: Accounting Domain Engine Foundation**
   *Link: [./tracks/accounting_engine_foundation_20260319/](./tracks/accounting_engine_foundation_20260319/)*

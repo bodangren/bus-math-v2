@@ -1,6 +1,6 @@
-The launch-hardening track is complete and pushed to `origin/main`. I committed `7a17aea` (`feat(launch): harden Cloudflare production path (Codex GPT-5)`) and `83b0128` (`chore(conductor): Archive completed track`).
+Activated the Practice Component Legacy Backfill track and completed the phase-1 audit and wave planning pass.
 
-The main outcome is a hardened Cloudflare launch surface: the Worker now delegates to the built Vinext handler with asset fallback in [worker.ts](/home/daniel-bo/Desktop/bus-math-v2/cloudflare/worker.ts), the active launch checklist lives at [cloudflare-launch-checklist.md](/home/daniel-bo/Desktop/bus-math-v2/conductor/docs/architecture/cloudflare-launch-checklist.md), and the auth/dev-stack/local-Convex contracts are locked by updated tests and docs. The completed track is archived at [cloudflare_production_hardening_launch_20260316](/home/daniel-bo/Desktop/bus-math-v2/conductor/archive/cloudflare_production_hardening_launch_20260316), and Milestone 6 is marked complete in [roadmap.md](/home/daniel-bo/Desktop/bus-math-v2/conductor/roadmap.md).
-
-Verification passed with `npm run lint`, `npm test` (216 files, 1196 tests), and `npm run build`. The build still emits the already-known `baseline-browser-mapping` staleness warning, and static generation logs the expected fallback when local Convex is unavailable, but the production build completed successfully. Unrelated pre-existing unstaged changes remain in the worktree and were left untouched.
-
+- Added the backfill audit artifact and a regression test that locks the current Unit 1 practice-family inventory.
+- Updated the active track registry, track metadata, implementation plan, lessons learned, and tech-debt notes.
+- Verification passed: `npm run lint`, `CI=true npm test`, and `npm run build`.
+- Build emitted the expected `baseline-browser-mapping` warning and Convex fallback logs during static generation.

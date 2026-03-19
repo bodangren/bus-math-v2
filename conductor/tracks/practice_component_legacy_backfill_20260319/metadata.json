@@ -1,9 +1,9 @@
 {
   "track_id": "practice_component_legacy_backfill_20260319",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-03-19T12:00:00Z",
-  "updated_at": "2026-03-19T12:00:00Z",
+  "updated_at": "2026-03-19T16:00:00Z",
   "description": "Refactor previously built practice components to the shared practice.v1 contract so legacy payloads, scaffolds, and teacher-review behavior no longer drift by component family",
   "estimated_tasks": 24,
   "actual_tasks": null,

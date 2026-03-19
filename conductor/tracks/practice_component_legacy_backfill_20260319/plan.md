@@ -4,16 +4,20 @@
 
 ### Tasks
 
-- [ ] **Task: Audit legacy practice components**
-  - [ ] Inventory the curriculum-relevant activity families in the registry
-  - [ ] Group them into migration waves by shared behavior
-  - [ ] Identify which components are already close to the shared contract and which need deeper rewrites
-  - [ ] Produce a component-family-to-lesson mapping that the Curriculum Rollout track (Track 4) can consume as its starting audit input
-  - [ ] Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context
+- [x] **Task: Audit legacy practice components**
+  - [x] Inventory the curriculum-relevant activity families in the registry
+  - [x] Group them into migration waves by shared behavior
+  - [x] Identify which components are already close to the shared contract and which need deeper rewrites
+  - [x] Produce a component-family-to-lesson mapping that the Curriculum Rollout track (Track 4) can consume as its starting audit input
+  - [x] Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context
 
-- [ ] **Task: Add migration coverage targets**
-  - [ ] Define which test files need payload assertions
-  - [ ] Record any component-specific blockers that should be handled before backfill starts
+- [x] **Task: Add migration coverage targets**
+  - [x] Define which test files need payload assertions
+  - [x] Record any component-specific blockers that should be handled before backfill starts
+
+### Phase 1 Output
+
+- [x] `./audit.md`
 
 ## Phase 2: Quiz and Structured-Response Families
 
