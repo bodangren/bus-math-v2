@@ -25,6 +25,8 @@
 - (2026-03-14, curriculum_rollout_wave2) Later-unit project lessons regress back to generic placeholders unless Lesson 7-11 dataset, workbook, polish, and presentation obligations are asserted directly in manifest regression tests.
 - (2026-03-14, capstone_textbook_completion) Capstone regressions hide in shared unit-oriented components unless the distinct segment label is asserted from the public card layer through student headers and teacher planning views.
 - (2026-03-16, cloudflare_production_hardening_launch) Cloudflare launch assumptions drift unless the Worker handoff, required secrets, and build-first Wrangler sequence live in a checked-in checklist backed by source-level tests.
+- (2026-03-19, practice_contract_planning) Practice components need one mode-aware contract across worked example, guided practice, independent practice, and assessment or curriculum authoring, persistence, and teacher evidence drift immediately.
+- (2026-03-19, practice_contract_planning) Teacher review is only as useful as the stored submission envelope; score-only or spreadsheet-only evidence hides misconceptions and blocks later AI-assisted analysis.
 
 ### Patterns Worth Repeating
 

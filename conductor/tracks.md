@@ -6,11 +6,27 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Active Track
 
-- No active track. The next `/conductor` run should open a new track only if the roadmap gains a new queued item.
+- [ ] **Track: Practice Component Contract Foundation**
+  *Link: [./tracks/practice_component_contract_foundation_20260319/](./tracks/practice_component_contract_foundation_20260319/)*
+  *Status: Define and implement the canonical `practice.v1` contract across curriculum docs, runtime activity submission payloads, validator/schema seams, and compatibility coverage so later rollout tracks have one stable target.*
 
 ## Planned Queue
 
-- No planned queue.
+- [ ] **Track: Practice Submission Evidence and Teacher Review**
+  *Link: [./tracks/practice_submission_evidence_teacher_review_20260319/](./tracks/practice_submission_evidence_teacher_review_20260319/)*
+  *Status: Persist normalized practice submissions, expose teacher-readable evidence beyond spreadsheets, and add deterministic error-tagging seams for later analysis.*
+
+- [ ] **Track: Practice Component Legacy Backfill**
+  *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
+  *Status: Refactor previously built practice components to emit `practice.v1` inputs/outputs, including worked-example, guided-practice, and independent-practice compatibility where applicable.*
+
+- [ ] **Track: Curriculum Guided/Independent Practice Rollout**
+  *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
+  *Status: Update authored lessons and published-manifest regression coverage so instruction, guided practice, independent practice, and assessment phases use mode-correct activity definitions with distinct ids, scaffolds, and fresh data.*
+
+- [ ] **Track: Teacher Practice Error Analysis**
+  *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
+  *Status: Layer rule-based and AI-assisted error summaries onto the normalized practice evidence model once teacher review and component backfills are complete.*
 
 ## Archive Ledger
 

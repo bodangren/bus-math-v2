@@ -1,0 +1,11 @@
+{
+  "track_id": "teacher_practice_error_analysis_20260319",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-03-19T12:00:00Z",
+  "updated_at": "2026-03-19T12:00:00Z",
+  "description": "Add rule-based and AI-assisted teacher error-analysis summaries on top of normalized practice evidence so teachers can quickly see misconceptions and intervention opportunities",
+  "estimated_tasks": 16,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

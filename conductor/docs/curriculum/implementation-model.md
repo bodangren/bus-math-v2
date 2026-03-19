@@ -44,6 +44,24 @@ Canonical phase sequence:
 
 Capstone details can expand later, but the runtime should assume capstone work is a project-style sequence with explicit milestone checkpoints and final presentation outcomes.
 
+## Practice Activity Contract
+
+Core instruction and summative lessons may reuse the same underlying problem family across multiple modes:
+
+- `worked_example`
+- `guided_practice`
+- `independent_practice`
+- `assessment`
+
+All reusable practice components must align to the canonical contract in [./practice-component-contract.md](./practice-component-contract.md). That contract defines:
+
+- what authored practice components pass into the runtime
+- what student responses and artifacts must be passed back out
+- what must be persisted for teacher review and later analysis
+- how mode-specific scaffolding differs without creating one-off component families
+
+Legacy components may drift from the full contract until the active rollout tracks close, but new component work and refactors should target the shared contract rather than introducing parallel submission shapes.
+
 ## Publishing Rules
 
 - Lesson docs, seeds, and runtime content must agree on:

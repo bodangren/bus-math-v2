@@ -142,6 +142,33 @@ The product is considered a complete online textbook only when all of the follow
 
 - the full textbook is deployable, supportable, and ready for real classroom use
 
+## Milestone 7 - Practice Contract and Evidence Loop
+
+**Goal**: standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable contract with teacher-visible evidence.
+
+**Tracks**
+
+- Practice Component Contract Foundation
+- Practice Submission Evidence and Teacher Review
+- Practice Component Legacy Backfill
+- Curriculum Guided/Independent Practice Rollout
+- Teacher Practice Error Analysis
+
+**Deliverables**
+
+- one canonical practice-component contract documented in the active curriculum docs
+- normalized submission envelopes that preserve exact student answers, artifacts, and scaffold usage
+- teacher review surfaces that can inspect non-spreadsheet practice work after submission
+- legacy practice components refactored onto the shared contract instead of emitting one-off payloads
+- guided and independent practice lessons updated to use mode-correct, distinct authored activity configurations
+- an analysis-ready evidence model that supports deterministic misconception tagging first and AI summaries later
+
+**Exit Gate**
+
+- reusable practice families can be authored once and reused across lesson modes without storage or teacher-review drift
+- teachers can inspect actual student practice work across the supported activity families
+- the curriculum runtime, docs, and practice persistence story all describe the same contract
+
 ## Detailed Track Order
 
 1. Curriculum Runtime Foundation
@@ -153,6 +180,11 @@ The product is considered a complete online textbook only when all of the follow
 7. Curriculum Rollout Wave 2 (Units 5-8)
 8. Capstone and Textbook Completion
 9. Cloudflare Production Hardening and Launch
+10. Practice Component Contract Foundation
+11. Practice Submission Evidence and Teacher Review
+12. Practice Component Legacy Backfill
+13. Curriculum Guided/Independent Practice Rollout
+14. Teacher Practice Error Analysis
 
 ## Content Definition of Done
 
