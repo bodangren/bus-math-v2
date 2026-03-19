@@ -3,12 +3,9 @@ import { z } from 'zod';
 
 import { activities } from './activities';
 import { profiles } from './profiles';
+import { practiceSubmissionEnvelopeSchema } from '@/lib/practice/contract';
 
-export const submissionDataSchema = z.object({
-  answers: z.record(z.string(), z.unknown()),
-  interactionHistory: z.array(z.unknown()).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
-});
+export const submissionDataSchema = practiceSubmissionEnvelopeSchema;
 
 export type SubmissionData = z.infer<typeof submissionDataSchema>;
 

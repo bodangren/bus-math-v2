@@ -1,20 +1,11 @@
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 
 import { calculateScore } from '@/lib/assessments/scoring';
 import { requireStudentRequestClaims } from '@/lib/auth/server';
 import { submissionDataSchema } from '@/lib/db/schema/activity-submissions';
 import { selectActivitySchema } from '@/lib/db/schema/validators';
 import { fetchInternalQuery, fetchInternalMutation, internal } from '@/lib/convex/server';
-
-const requestSchema = z.object({
-  activityId: z.string().trim().min(1),
-  answers: z.record(z.string(), z.unknown()),
-  interactionHistory: z.array(z.unknown()).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
-});
-
-type RequestPayload = z.infer<typeof requestSchema>;
+import { normalizePracticeSubmissionInput } from '@/lib/practice/contract';
 
 function buildBadRequest(details: Record<string, unknown> | string) {
   return NextResponse.json(
@@ -35,26 +26,21 @@ export async function POST(request: Request) {
       return claimsOrResponse;
     }
 
-    let payload: RequestPayload;
+    let submission;
     try {
       const body = await request.json();
-      const parsed = requestSchema.safeParse(body);
-      if (!parsed.success) {
-        return buildBadRequest(parsed.error.flatten().fieldErrors);
-      }
-      payload = parsed.data;
+      submission = submissionDataSchema.parse(normalizePracticeSubmissionInput(body));
     } catch (parseError) {
-      return buildBadRequest(
-        parseError instanceof Error ? parseError.message : 'Unable to parse request body',
-      );
+      console.error('Invalid practice submission payload', parseError);
+      return buildBadRequest('Invalid payload');
     }
 
-    if (Object.keys(payload.answers).length === 0) {
+    if (Object.keys(submission.answers).length === 0) {
       return buildBadRequest('answers must include at least one entry.');
     }
 
     const activityRecord = await fetchInternalQuery(internal.activities.getActivityById, {
-      activityId: payload.activityId as never,
+      activityId: submission.activityId as never,
     });
 
     if (!activityRecord) {
@@ -75,24 +61,18 @@ export async function POST(request: Request) {
 
     let score;
     try {
-      score = calculateScore(activity, payload.answers);
+      score = calculateScore(activity, submission.answers);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unable to score submission';
       return NextResponse.json({ error: message }, { status: 422 });
     }
 
-    const submissionData = submissionDataSchema.parse({
-      answers: payload.answers,
-      interactionHistory: payload.interactionHistory,
-      metadata: payload.metadata,
-    });
-
     const userId = claimsOrResponse.sub;
 
     await fetchInternalMutation(internal.activities.submitAssessment, {
       userId: userId as never,
-      activityId: payload.activityId as never,
-      submissionData,
+      activityId: submission.activityId as never,
+      submissionData: submission,
       score: score.score,
       maxScore: score.maxScore,
       feedback: score.feedback,

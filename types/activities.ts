@@ -1,6 +1,15 @@
 import type { SubmissionData } from '@/lib/db/schema/activity-submissions';
 
-export const ACTIVITY_SUBMISSION_REQUIRED_FIELDS = ['answers'] as const;
+export const ACTIVITY_SUBMISSION_REQUIRED_FIELDS = [
+  'contractVersion',
+  'activityId',
+  'mode',
+  'status',
+  'attemptNumber',
+  'submittedAt',
+  'answers',
+  'parts',
+] as const;
 
 export type ActivitySubmissionData = SubmissionData;
 

@@ -274,8 +274,19 @@ describe('ActivityRenderer', () => {
     expect(submissionCall?.[0]).toBe('/api/progress/assessment');
     const body = JSON.parse(submissionCall?.[1]?.body as string);
     expect(body).toMatchObject({
+      contractVersion: 'practice.v1',
       activityId: gradedActivity.id,
+      mode: 'assessment',
+      status: 'submitted',
+      attemptNumber: 1,
       answers: { q1: '4' },
+      parts: [
+        {
+          partId: 'q1',
+          rawAnswer: '4',
+          normalizedAnswer: '4',
+        },
+      ],
     });
     expect(body).not.toHaveProperty('score');
 

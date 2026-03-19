@@ -477,10 +477,23 @@ export function buildActivitySubmissionInput(
     submissionData:
       overrides.submissionData ??
       {
+        contractVersion: 'practice.v1',
+        activityId: overrides.activityId ?? randomUUID(),
+        mode: 'assessment',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date().toISOString(),
         answers: {
-          q1: '40'
+          q1: '40',
         },
-        interactionHistory: []
+        parts: [
+          {
+            partId: 'q1',
+            rawAnswer: '40',
+            normalizedAnswer: '40',
+          },
+        ],
+        interactionHistory: [],
       },
     score: overrides.score ?? 80,
     maxScore: overrides.maxScore ?? 100,

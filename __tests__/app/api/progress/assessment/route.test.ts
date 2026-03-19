@@ -172,11 +172,28 @@ describe('POST /api/progress/assessment', () => {
   it('scores and persists submission with claims-based user id', async () => {
     const response = await POST(
       buildRequest({
+        contractVersion: 'practice.v1',
         activityId: baseActivity.id,
+        mode: 'assessment',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date().toISOString(),
         answers: {
           q1: 'Yes',
           q2: 'ledger',
         },
+        parts: [
+          {
+            partId: 'q1',
+            rawAnswer: 'Yes',
+            normalizedAnswer: 'yes',
+          },
+          {
+            partId: 'q2',
+            rawAnswer: 'ledger',
+            normalizedAnswer: 'ledger',
+          },
+        ],
       }),
     );
 

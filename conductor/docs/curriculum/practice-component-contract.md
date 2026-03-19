@@ -1,5 +1,7 @@
 # Curriculum Practice Component Contract
 
+Canonical contract version: `practice.v1`.
+
 ## Purpose
 
 This document defines the canonical contract for reusable curriculum practice components. It applies to:
@@ -12,7 +14,7 @@ The goal is to let one problem family support multiple lesson roles without crea
 
 ## Status
 
-This is the target contract for the active post-launch rollout queue. Existing runtime components may not satisfy every requirement yet, but new planning and implementation tracks must converge on this contract instead of inventing new one-off payloads.
+This is the target `practice.v1` contract for the active post-launch rollout queue. Existing runtime components may not satisfy every requirement yet, but new planning and implementation tracks must converge on this contract instead of inventing new one-off payloads.
 
 ## Core Principles
 

@@ -4,10 +4,10 @@
 
 ### Tasks
 
-- [ ] **Task: Add failing contract coverage tests**
-  - [ ] Add source-level tests for the canonical practice mode vocabulary and normalized submission envelope
-  - [ ] Add coverage that compares the active curriculum contract doc against the shared runtime contract surface where practical
-  - [ ] Add a red-path test for legacy payload compatibility expectations
+- [x] **Task: Add failing contract coverage tests**
+  - [x] Add source-level tests for the canonical practice mode vocabulary and normalized submission envelope
+  - [x] Add coverage that compares the active curriculum contract doc against the shared runtime contract surface where practical
+  - [x] Add a red-path test for legacy payload compatibility expectations
 
 ## Phase 2: Canonical Contract Surface
 

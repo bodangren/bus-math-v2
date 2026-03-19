@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
+import { buildPracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import type { CompletePhaseResponse } from '@/types/api';
 
 interface ActivityRendererProps {
@@ -161,17 +162,22 @@ export function ActivityRenderer({
       setSubmissionResult(null);
 
       try {
+        const canonicalSubmission = buildPracticeSubmissionEnvelope({
+          activityId: payload.activityId ?? activity.id,
+          mode: 'assessment',
+          status: 'submitted',
+          submittedAt: new Date(),
+          answers,
+          interactionHistory: payload.interactionHistory,
+          analytics: payload.metadata,
+        });
+
         const response = await fetch('/api/progress/assessment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            activityId: payload.activityId ?? activity.id,
-            answers,
-            interactionHistory: payload.interactionHistory,
-            metadata: payload.metadata,
-          }),
+          body: JSON.stringify(canonicalSubmission),
         });
 
         const data = await response.json();

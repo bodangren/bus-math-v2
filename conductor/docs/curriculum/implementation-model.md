@@ -53,6 +53,8 @@ Core instruction and summative lessons may reuse the same underlying problem fam
 - `independent_practice`
 - `assessment`
 
+The canonical contract version is `practice.v1`.
+
 All reusable practice components must align to the canonical contract in [./practice-component-contract.md](./practice-component-contract.md). That contract defines:
 
 - what authored practice components pass into the runtime

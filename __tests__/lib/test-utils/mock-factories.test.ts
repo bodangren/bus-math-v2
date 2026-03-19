@@ -51,6 +51,8 @@ describe('mock factories', () => {
     const submission = createActivitySubmission({ activityId: activity.id });
 
     expect(submission.activityId).toBe(activity.id);
+    expect(submission.submissionData.contractVersion).toBe('practice.v1');
     expect(submission.submissionData.answers.q1).toBeDefined();
+    expect(submission.submissionData.parts[0]?.partId).toBe('q1');
   });
 });
