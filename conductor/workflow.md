@@ -38,7 +38,7 @@ Additional expectations:
 
 - Active files in `conductor/` are the source of truth.
 - Files in `conductor/archive/` are historical context only.
-- `conductor/docs/curriculum/` defines the canonical curriculum structure and lesson archetypes.
+- `conductor/curriculum/` defines the canonical curriculum structure and lesson archetypes.
 - `conductor/tech-stack.md` and `conductor/architecture.md` must stay aligned with the actual runtime, not legacy residue in the repo.
 
 ## Track Completion and Archiving

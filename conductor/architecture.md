@@ -30,10 +30,19 @@
 - Teacher views summarize course, unit, lesson, and student status from Convex-backed read models.
 - Teacher surfaces should never rely on a second database or legacy analytics path.
 
+## Convex Access Pattern
+
+- Public curriculum pages may read through public Convex queries.
+- Authenticated teacher/student pages should prefer server-side guarded calls.
+- Internal Convex functions are the default for teacher monitoring and other identity-sensitive reads.
+
 ## Deployment Model
 
 - Production app: Vinext on Cloudflare Workers
 - Production backend: hosted Convex deployment
+- Local development: `npm run dev:stack` runs `npx convex dev --local` and starts `vinext dev` through the Convex parent process so startup and shutdown stay coordinated.
+- Local Convex state lives under `~/.convex/`.
+- The Cloudflare Worker entry delegates to the built Vinext handler in `dist/server/index.js`, so deployment must follow the build-first sequence in the [Cloudflare launch checklist](../cloudflare-launch-checklist.md).
 - Required runtime secrets:
   - `NEXT_PUBLIC_CONVEX_URL`
   - `CONVEX_DEPLOY_KEY`

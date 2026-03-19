@@ -18,7 +18,12 @@ The foundation track can introduce the shared contract and compatibility adapter
 Do not start this track until:
 
 - Practice Component Contract Foundation is complete
-- Practice Submission Evidence and Teacher Review is complete enough to receive normalized submissions
+
+This track may run in parallel with Practice Submission Evidence and Teacher Review. Components emit the canonical envelope shape defined in Track 1; persistence already accepts `v.any()` and will be tightened by Track 2 independently.
+
+## Knowledge Base
+
+Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context when migrating accounting-entry and related families.
 
 ## Functional Requirements
 

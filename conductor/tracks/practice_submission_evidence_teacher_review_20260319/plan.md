@@ -23,7 +23,12 @@
 
 - [ ] **Task: Add deterministic evaluation fields**
   - [ ] Store per-part correctness and scoring where available
-  - [ ] Add misconception-tagging hooks or storage fields for later interpretation
+  - [ ] Add misconception-tagging storage fields and empty extension hooks so components can write tags at submission time
+  - [ ] This track owns the storage schema and retrieval queries; the Error Analysis track owns population logic and aggregation
+
+- [ ] **Task: Type Convex submission schema**
+  - [ ] Replace `v.any()` on `activity_submissions.submissionData` in `convex/schema.ts` with a Convex validator matching the `practice.v1` envelope
+  - [ ] Keep backward compatibility for pre-contract submissions during migration window
 
 ## Phase 3: Teacher Evidence Surfaces
 

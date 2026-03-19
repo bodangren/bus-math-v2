@@ -7,6 +7,7 @@
 ### Tasks
 
 - [ ] **Task: Audit authored lesson practice-mode usage**
+  - [ ] Start from the component-family-to-lesson mapping produced by the Legacy Backfill track (Track 3) Phase 1 audit — do not duplicate that discovery work
   - [ ] Scan authored and generated curriculum sources for practice activities in instruction, guided practice, independent practice, and assessment phases
   - [ ] Identify lessons where guided and independent phases reuse the same activity id or materially identical props
   - [ ] Identify lessons where a worked example or teacher model should exist in instruction but currently does not
@@ -15,6 +16,7 @@
 
 - [ ] **Task: Map practice families to curriculum phase roles**
   - [ ] Confirm which problem families are appropriate for worked example, guided practice, independent practice, and assessment per unit
+  - [ ] Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context
   - [ ] Note any lessons that intentionally skip a reusable practice family
   - [ ] Document any required curriculum exceptions before implementation begins
 

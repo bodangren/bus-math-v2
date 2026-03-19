@@ -1,12 +1,15 @@
 # Current Strategic Directive
 
-Deliver the full 8-unit, 11-lesson-per-unit curriculum plus capstone on a Convex-backed Vinext app hosted on Cloudflare, with only two phase-1 product roles: `student` and `teacher`.
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring, and Cloudflare deployment are complete (Milestones 1–6 closed 2026-03-16).
+
+Current focus is **Milestone 7: Practice Contract and Evidence Loop**.
 
 Every active track must directly support one of these outcomes:
 
-- complete published curriculum delivery
-- accurate student study progress
-- useful teacher monitoring
-- removal of stale platform assumptions that block the above
+- canonical `practice.v1` contract across all practice component families
+- normalized submission persistence that preserves exact student work and artifacts
+- teacher-readable evidence surfaces for non-spreadsheet practice activities
+- legacy component migration onto the shared contract
+- deterministic misconception tagging and (later) AI-assisted error analysis
 
-Admin tooling and in-app curriculum authoring are deferred until later tracks.
+Admin tooling, in-app curriculum authoring, and new content beyond the existing 8 units + capstone are deferred.

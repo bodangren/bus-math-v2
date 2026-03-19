@@ -53,6 +53,10 @@ The repo already has reusable activity components, schema validation, and submis
 - Add contract tests that fail if docs, shared types, validator seams, and runtime expectations drift apart
 - Add focused coverage for compatibility adapters so existing components do not silently break during the transition
 
+## Knowledge Base
+
+Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context when defining part shapes and artifact expectations for accounting-entry families.
+
 ## Non-Functional Requirements
 
 ### NFR1: Contract-first implementation

@@ -1,6 +1,31 @@
 # Project Tracks
 
-This file is the source of truth for active execution order. Archived tracks live in `conductor/archive/`. The milestone-level delivery sequence lives in [./roadmap.md](./roadmap.md).
+This file is the source of truth for active execution order. Archived tracks live in `conductor/archive/`.
+
+## Milestones
+
+| # | Name | Status |
+|---|------|--------|
+| 1 | Foundation | Complete |
+| 2 | Working Textbook Slice | Complete |
+| 3 | First Half of the Book (Units 2-4) | Complete |
+| 4 | Full Core Book (Units 5-8) | Complete |
+| 5 | Capstone and Textbook Completion | Complete (2026-03-14) |
+| 6 | Production Hardening and Launch | Complete (2026-03-16) |
+| 7 | Practice Contract and Evidence Loop | **Active** |
+
+### Milestone 7 — Practice Contract and Evidence Loop
+
+Standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable `practice.v1` contract with teacher-visible evidence. The `practice_*` tracks are the controlling decomposition; older curriculum and teacher tracks retain only residual scope.
+
+**Execution graph** (not fully serial):
+```
+Track 1 (Foundation) ──→ Track 2 (Evidence) ──────────→ Track 4 (Curriculum Rollout)
+                     └──→ Track 3 (Backfill, parallel) ↗          ↕ (parallel)
+                           Track 2 + 3 done ──────────→ Track 5 (Error Analysis)
+```
+
+**Exit gate**: reusable practice families can be authored once and reused across lesson modes without storage or teacher-review drift; teachers can inspect actual student practice work; curriculum runtime, docs, and persistence all describe the same contract.
 
 ---
 
@@ -12,23 +37,23 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Planned Queue
 
-The `practice_*` split is now the governing execution sequence for Milestone 7. The older curriculum and teacher tracks remain queued only for residual scope after the first three tracks land; they no longer own contract-definition, submission-persistence, generic teacher-review, or component-migration work.
+The `practice_*` split is now the governing execution sequence for Milestone 7. Tracks 2 and 3 may run in parallel after Track 1; Tracks 4 and 5 may run in parallel after Tracks 2+3 converge. The older curriculum and teacher tracks retain only residual scope.
 
 - [ ] **Track: Practice Submission Evidence and Teacher Review**
   *Link: [./tracks/practice_submission_evidence_teacher_review_20260319/](./tracks/practice_submission_evidence_teacher_review_20260319/)*
-  *Status: First follow-on after the contract foundation; owns normalized submission persistence, generic teacher-readable evidence, and deterministic tagging seams that older teacher/curriculum planning used to imply.*
+  *Status: Parallel with Track 3 after Track 1; owns persistence typing (including Convex `v.any()` → proper validator), generic teacher-readable evidence, and misconception-tagging storage fields.*
 
 - [ ] **Track: Practice Component Legacy Backfill**
   *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
-  *Status: Second follow-on; owns family-by-family component migration onto `practice.v1` so later curriculum rollout work is updating authored lesson definitions instead of repairing component payload drift in place.*
+  *Status: Parallel with Track 2 after Track 1; owns family-by-family component migration onto `practice.v1`. Produces component-family-to-lesson mapping consumed by Track 4. Also owns `student_spreadsheet_responses` consolidation planning.*
 
 - [ ] **Track: Curriculum Guided/Independent Practice Rollout**
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
-  *Status: Residual authored-curriculum rollout only after the three `practice_*` tracks are complete; owns lesson-source and manifest alignment, not contract, persistence, teacher-review foundation, or component migration.*
+  *Status: Starts after Tracks 2+3 converge; owns lesson-source and manifest alignment. Consumes Track 3's audit mapping.*
 
 - [ ] **Track: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
-  *Status: Residual post-evidence interpretation layer only; starts after teacher review, component backfills, and curriculum rollout are stable, and does not own generic teacher evidence or persistence work.*
+  *Status: Parallel with Track 4 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 4.*
 
 ## Archive Ledger
 

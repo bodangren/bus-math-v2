@@ -7,5 +7,5 @@
   "description": "Refactor previously built practice components to the shared practice.v1 contract so legacy payloads, scaffolds, and teacher-review behavior no longer drift by component family",
   "estimated_tasks": 24,
   "actual_tasks": null,
-  "deviation_notes": ""
+  "deviation_notes": "Dependency relaxed on 2026-03-19: depends only on Contract Foundation (Track 1), not on Evidence/Teacher Review (Track 2). May run in parallel with Track 2."
 }

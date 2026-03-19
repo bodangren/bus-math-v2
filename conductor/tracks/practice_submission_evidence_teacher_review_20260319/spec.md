@@ -33,8 +33,14 @@ Do not start this track until Practice Component Contract Foundation is complete
 ### FR3: Deterministic feedback and misconception seams
 
 - Preserve per-part correctness and scoring where available
-- Introduce deterministic misconception-tagging hooks or storage fields where practical
+- Introduce misconception-tagging **storage fields and empty extension hooks** so components can write tags at submission time
+- This track owns the storage schema and retrieval queries for misconception tags; the later Error Analysis track owns the population logic and cross-submission aggregation
 - Keep those tags queryable for later teacher summaries and AI analysis
+
+### FR5: Convex schema typing for practice submissions
+
+- Replace `v.any()` on `activity_submissions.submissionData` in the Convex schema with a proper Convex validator aligned to the `practice.v1` envelope
+- Convex is the source of truth; the Zod schema in `lib/practice/contract.ts` and the Convex validator must stay in sync
 
 ### FR4: Access and boundary correctness
 

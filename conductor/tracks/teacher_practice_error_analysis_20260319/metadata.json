@@ -7,5 +7,5 @@
   "description": "Residual post-evidence interpretation layer after practice contract, evidence, backfill, and curriculum rollout work are stable; add deterministic and AI-assisted teacher summaries without re-owning baseline teacher review",
   "estimated_tasks": 16,
   "actual_tasks": null,
-  "deviation_notes": "Narrowed on 2026-03-19 so this track owns interpretation only; generic teacher evidence, submission persistence, and component migration work now belong to the earlier practice_* tracks."
+  "deviation_notes": "Narrowed on 2026-03-19 so this track owns interpretation only; generic teacher evidence, submission persistence, and component migration work now belong to the earlier practice_* tracks. Dependency on Curriculum Rollout (Track 4) relaxed on 2026-03-19: error analysis operates on stored submissions, not authored lesson files. May run in parallel with Track 4."
 }

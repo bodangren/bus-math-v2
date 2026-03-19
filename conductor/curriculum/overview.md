@@ -52,5 +52,5 @@ The canonical lesson-design contract for this rhythm is defined in [./unit-desig
 ## Current Rollout Status
 
 - Units 1-8 publish from canonical repository-authored lesson modules.
-- Capstone still publishes from the generated scaffold until the later completion track replaces it.
+- Capstone publishes from authored runtime content (completed 2026-03-14).
 - Unit 1 remains the redesign-first exemplar that informed the authored rollout for later units.

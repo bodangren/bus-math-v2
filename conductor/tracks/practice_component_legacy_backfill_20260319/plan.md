@@ -8,6 +8,8 @@
   - [ ] Inventory the curriculum-relevant activity families in the registry
   - [ ] Group them into migration waves by shared behavior
   - [ ] Identify which components are already close to the shared contract and which need deeper rewrites
+  - [ ] Produce a component-family-to-lesson mapping that the Curriculum Rollout track (Track 4) can consume as its starting audit input
+  - [ ] Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context
 
 - [ ] **Task: Add migration coverage targets**
   - [ ] Define which test files need payload assertions
@@ -41,6 +43,7 @@
 - [ ] **Task: Align spreadsheet and evaluator families**
   - [ ] Ensure spreadsheet-like families fit the shared contract without losing existing artifact fidelity
   - [ ] Verify compatibility with teacher evidence surfaces
+  - [ ] Plan consolidation or deprecation path for the legacy `student_spreadsheet_responses` Convex table — submissions should flow through unified `activity_submissions` with canonical envelopes rather than a parallel table
 
 - [ ] **Task: Align practice-capable simulation families**
   - [ ] Refactor the simulation-backed practice components used by authored curriculum

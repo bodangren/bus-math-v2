@@ -14,7 +14,8 @@ Do not start this track until:
 
 - Practice Submission Evidence and Teacher Review is complete
 - Practice Component Legacy Backfill has migrated the needed practice families
-- Curriculum Guided/Independent Practice Rollout has stabilized the authored usage patterns for the targeted families
+
+This track does not depend on Curriculum Guided/Independent Practice Rollout (Track 4). Error analysis operates on stored submissions, not on authored lesson files. Track 5 may run in parallel with Track 4 once Tracks 2 and 3 are complete.
 
 ## Deconflicted Scope
 
@@ -31,6 +32,7 @@ The following concerns are now explicitly owned by earlier tracks and are out of
 ### FR1: Deterministic error summary layer
 
 - Aggregate per-part correctness and misconception tags into teacher-facing summaries
+- This track owns the **population logic** (computing which tags apply to a submission) and **cross-submission aggregation** (lesson-level and student-level summaries); the storage schema and retrieval queries are owned by the Evidence track (Track 2)
 - Support lesson-level and student-level review for migrated practice families
 
 ### FR2: AI-assisted interpretation layer
