@@ -31,10 +31,6 @@ Track 1 (Foundation) ──→ Track 2 (Evidence) ──────────
 
 ## Active Track
 
-- [ ] **Track: Practice Component Contract Foundation**
-  *Link: [./tracks/practice_component_contract_foundation_20260319/](./tracks/practice_component_contract_foundation_20260319/)*
-  *Status: Define and implement the canonical `practice.v1` contract across curriculum docs, runtime activity submission payloads, validator/schema seams, and compatibility coverage so later rollout tracks have one stable target.*
-
 ## Planned Queue
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. Tracks 2 and 3 may run in parallel after Track 1; Tracks 4 and 5 may run in parallel after Tracks 2+3 converge. The older curriculum and teacher tracks retain only residual scope.
@@ -56,6 +52,10 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Status: Parallel with Track 4 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 4.*
 
 ## Archive Ledger
+
+- [x] **Track: Practice Component Contract Foundation**
+  *Link: [./archive/practice_component_contract_foundation_20260319/](./archive/practice_component_contract_foundation_20260319/)*
+  *Closeout: archived on 2026-03-19 after locking the canonical `practice.v1` contract across curriculum docs, runtime submission normalization, validator/schema seams, and compatibility coverage, then verifying the shared contract with full lint, test, and build gates.*
 
 - [x] **Track: Cloudflare Production Hardening and Launch**
   *Link: [./archive/cloudflare_production_hardening_launch_20260316/](./archive/cloudflare_production_hardening_launch_20260316/)*

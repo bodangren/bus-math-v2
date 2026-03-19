@@ -1,11 +1,11 @@
 {
   "track_id": "practice_component_contract_foundation_20260319",
   "type": "feature",
-  "status": "new",
+  "status": "completed",
   "created_at": "2026-03-19T12:00:00Z",
-  "updated_at": "2026-03-19T12:00:00Z",
+  "updated_at": "2026-03-19T12:14:07Z",
   "description": "Define and implement the canonical practice.v1 contract across curriculum docs, runtime submission seams, validators, and compatibility tests so later rollout tracks have one stable foundation",
   "estimated_tasks": 18,
-  "actual_tasks": null,
-  "deviation_notes": ""
+  "actual_tasks": 18,
+  "deviation_notes": "Verification closeout added the active conductor docs mirror required by the launch hardening tests."
 }

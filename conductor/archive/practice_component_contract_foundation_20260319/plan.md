@@ -41,11 +41,11 @@
 
 ### Tasks
 
-- [ ] **Task: Run contract verification**
-  - [ ] Run the targeted tests added for the contract and compatibility seams
-  - [ ] Run `npm run lint`
-  - [ ] Fix any regressions
+- [x] **Task: Run contract verification**
+  - [x] Run the targeted tests added for the contract and compatibility seams
+  - [x] Run `npm run lint`
+  - [x] Fix any regressions
 
-- [ ] **Task: Update Conductor memory files if needed**
-  - [ ] Add lessons learned if the new contract reveals a reusable planning pattern
-  - [ ] Record any new near-term debt that should shape the queued backfill or teacher-evidence tracks
+- [x] **Task: Update Conductor memory files if needed**
+  - [x] Add lessons learned if the new contract reveals a reusable planning pattern
+  - [x] Record any new near-term debt that should shape the queued backfill or teacher-evidence tracks
