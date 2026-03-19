@@ -8,7 +8,6 @@
 - (2026-03-11, replan) Published lesson version helpers are foundational; student delivery and teacher monitoring must share them rather than recomputing progress independently.
 - (2026-03-11, replan) Student write routes need explicit student-role request guards even when teacher preview paths exist elsewhere.
 - (2026-03-11, replan) Curriculum planning and runtime implementation drift unless lesson archetypes are declared explicitly and reused across docs, seeds, and UI shells.
-- (2026-03-11, replan) Cloudflare-hosted Vinext should be treated as the production target early so Vercel-only assumptions do not keep leaking back into the repo.
 
 ### Recurring Gotchas
 
@@ -33,13 +32,12 @@
 - (2026-03-19, practice_component_legacy_backfill) Phase-1 backfill planning should be driven by generated curriculum and seed tests, not by registry shape alone, because the authored lessons reveal which practice families are actually on the student path.
 - (2026-03-19, practice_component_legacy_backfill) Structured-response families are the safest first migration wave; spreadsheet and simulation-backed families need their own pass because they carry artifact and storage assumptions that do not generalize cleanly.
 - (2026-03-20, practice_component_legacy_backfill) Practice families should emit the canonical `practice.v1` envelope at the component boundary so the renderer only preserves compatibility and phase completion, not submission shape translation.
+- (2026-03-20, practice_component_legacy_backfill) Legacy accounting-entry builders backfill cleanly when the student workbench keeps the account bank as an assistive input path and packages the submitted row snapshot directly into the practice artifact.
 - (2026-03-20, practice_component_legacy_backfill) Categorization and sequence practice families need separate serializers; inventory-style ordering does not share the same item shape as bucket-based drag/drop.
 - (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, so artifact snapshots should only serialize fields the source item actually owns.
 
 ### Patterns Worth Repeating
 
-- (2026-03-11, replan) A non-destructive archive snapshot is safer than trying to patch stale planning docs in place.
-- (2026-03-11, replan) A narrow phase-1 scope of student study plus teacher monitoring keeps the platform coherent while the curriculum is still being fully implemented.
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Source-level generator plus manifest tests are a practical bridge when authored curriculum exists in legacy files but the runtime must import a pure Convex-safe module.
 - (2026-03-13, student_study_runtime) Completed lessons should reopen on their final published phase and use the dashboard-derived next-lesson recommendation, or the student loop drifts between dashboard and lesson routes.

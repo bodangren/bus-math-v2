@@ -1,6 +1,3 @@
-Activated the Practice Component Legacy Backfill track and completed the phase-1 audit and wave planning pass.
+Completed the current practice backfill phase: `JournalEntryActivity` now emits canonical `practice.v1` envelopes with journal-entry artifacts, guided/independent mode support, and accessible account insertion.
 
-- Added the backfill audit artifact and a regression test that locks the current Unit 1 practice-family inventory.
-- Updated the active track registry, track metadata, implementation plan, lessons learned, and tech-debt notes.
-- Verification passed: `npm run lint`, `CI=true npm test`, and `npm run build`.
-- Build emitted the expected `baseline-browser-mapping` warning and Convex fallback logs during static generation.
+Validation passed: `npm run lint`, `npm test` (`219` suites, `1211` tests), and `npm run build`.

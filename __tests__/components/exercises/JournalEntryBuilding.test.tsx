@@ -64,8 +64,65 @@ describe('JournalEntryBuilding', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
+          contractVersion: 'practice.v1',
           activityId: 'activity-journal',
-          scenarioId: 'scenario-1'
+          mode: 'independent_practice',
+          status: 'submitted',
+          attemptNumber: 1,
+          submittedAt: expect.any(String),
+          answers: {
+            Cash: {
+              account: 'Cash',
+              debit: 500,
+              credit: 0
+            },
+            'Service Revenue': {
+              account: 'Service Revenue',
+              debit: 0,
+              credit: 500
+            }
+          },
+          parts: expect.arrayContaining([
+            expect.objectContaining({
+              partId: 'Cash',
+              rawAnswer: expect.objectContaining({
+                account: 'Cash',
+                debit: 500,
+                credit: 0
+              }),
+              isCorrect: true,
+              score: 1,
+              maxScore: 1
+            }),
+            expect.objectContaining({
+              partId: 'Service Revenue',
+              rawAnswer: expect.objectContaining({
+                account: 'Service Revenue',
+                debit: 0,
+                credit: 500
+              }),
+              isCorrect: true,
+              score: 1,
+              maxScore: 1
+            })
+          ]),
+          artifact: expect.objectContaining({
+            kind: 'journal_entry',
+            family: 'journal-entry-building',
+            scenarioId: 'scenario-1',
+            balanced: true,
+            totals: expect.objectContaining({
+              debits: 500,
+              credits: 500
+            })
+          }),
+          analytics: expect.objectContaining({
+            scenarioId: 'scenario-1',
+            lineCount: 2,
+            totalDebits: 500,
+            totalCredits: 500
+          }),
+          studentFeedback: expect.stringContaining('Cash increases with a debit')
         })
       )
     })

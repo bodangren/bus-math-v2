@@ -36,9 +36,9 @@
   - [x] Normalize part-level answers, artifact outputs, and scaffold tracking where applicable
   - [x] Add or update tests for canonical submission payloads
 
-- [ ] **Task: Refactor accounting-entry families**
-  - [ ] Normalize journal-entry and similar accounting artifact families
-  - [ ] Preserve teacher-readable artifact output for submission review
+- [x] **Task: Refactor accounting-entry families**
+  - [x] Normalize journal-entry and similar accounting artifact families
+  - [x] Preserve teacher-readable artifact output for submission review
 
 ## Phase 4: Spreadsheet and Simulation Practice Families
 
