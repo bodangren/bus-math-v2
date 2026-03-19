@@ -9,6 +9,8 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import { db } from '@/lib/db/drizzle';
 import {
+  activitySubmissions,
+  activities,
   lessons,
   lessonVersions,
   phaseVersions,
@@ -17,6 +19,7 @@ import {
   studentSpreadsheetResponses,
 } from '@/lib/db/schema';
 import type { SpreadsheetData } from '@/lib/db/schema/spreadsheet-responses';
+import type { PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -38,6 +41,30 @@ const DEFAULT_PHASE_NAMES: Record<number, string> = {
 
 export type PhaseStatus = 'not_started' | 'in_progress' | 'completed';
 
+export interface SpreadsheetEvidence {
+  kind: 'spreadsheet';
+  activityId: string;
+  activityTitle: string;
+  componentKey: string;
+  submittedAt: string | null;
+  spreadsheetData: SpreadsheetData;
+}
+
+export interface PracticeEvidence {
+  kind: 'practice';
+  activityId: string;
+  activityTitle: string;
+  componentKey: string;
+  submittedAt: string;
+  attemptNumber: number;
+  score: number | null;
+  maxScore: number | null;
+  feedback: string | null;
+  submissionData: PracticeSubmissionEnvelope | Record<string, unknown>;
+}
+
+export type SubmissionEvidence = SpreadsheetEvidence | PracticeEvidence;
+
 export interface PhaseDetail {
   phaseNumber: number;
   phaseId: string;
@@ -46,6 +73,7 @@ export interface PhaseDetail {
   completedAt: string | null;
   /** Populated when the student submitted a spreadsheet activity in this phase. */
   spreadsheetData: SpreadsheetData | null;
+  evidence?: SubmissionEvidence[];
 }
 
 export interface SubmissionDetail {
@@ -84,6 +112,7 @@ export function assembleSubmissionDetail(
   rawPhases: RawPhaseVersion[],
   progressRows: RawProgressRow[],
   spreadsheetByPhaseNumber: Map<number, SpreadsheetData>,
+  evidenceByPhaseNumber: Map<number, SubmissionEvidence[]> = new Map(),
 ): SubmissionDetail {
   const progressByPhaseId = new Map<string, RawProgressRow>();
   for (const row of progressRows) {
@@ -107,6 +136,7 @@ export function assembleSubmissionDetail(
         status,
         completedAt: progress?.completedAt ?? null,
         spreadsheetData: spreadsheetByPhaseNumber.get(phase.phaseNumber) ?? null,
+        evidence: evidenceByPhaseNumber.get(phase.phaseNumber) ?? [],
       };
     });
 
@@ -196,35 +226,131 @@ export async function fetchSubmissionDetail(
       ),
   ]);
 
-  // 5 — spreadsheet responses for phases that had spreadsheet activities
+  // 5 — spreadsheet and practice evidence for phases that had activity submissions
   const spreadsheetByPhaseNumber = new Map<number, SpreadsheetData>();
+  const evidenceByPhaseNumber = new Map<number, SubmissionEvidence[]>();
   if (completionRows.length > 0) {
     const activityIds = completionRows.map((c) => c.activityId);
-
-    const spreadsheetRows = await db
-      .select({
-        activityId: studentSpreadsheetResponses.activityId,
-        spreadsheetData: studentSpreadsheetResponses.spreadsheetData,
-      })
-      .from(studentSpreadsheetResponses)
-      .where(
-        and(
-          eq(studentSpreadsheetResponses.studentId, studentId),
-          inArray(studentSpreadsheetResponses.activityId, activityIds),
-        ),
-      );
-
-    // Map activityId → phaseNumber, then attach spreadsheet data
     const phaseByActivityId = new Map<string, number>();
     for (const c of completionRows) {
       phaseByActivityId.set(c.activityId, c.phaseNumber);
     }
 
+    const [spreadsheetRows, practiceRows, activityRows] = await Promise.all([
+      db
+        .select({
+          activityId: studentSpreadsheetResponses.activityId,
+          spreadsheetData: studentSpreadsheetResponses.spreadsheetData,
+          submittedAt: studentSpreadsheetResponses.submittedAt,
+          updatedAt: studentSpreadsheetResponses.updatedAt,
+        })
+        .from(studentSpreadsheetResponses)
+        .where(
+          and(
+            eq(studentSpreadsheetResponses.studentId, studentId),
+            inArray(studentSpreadsheetResponses.activityId, activityIds),
+          ),
+        ),
+
+      db
+        .select({
+          activityId: activitySubmissions.activityId,
+          submissionData: activitySubmissions.submissionData,
+          score: activitySubmissions.score,
+          maxScore: activitySubmissions.maxScore,
+          feedback: activitySubmissions.feedback,
+          submittedAt: activitySubmissions.submittedAt,
+          updatedAt: activitySubmissions.updatedAt,
+        })
+        .from(activitySubmissions)
+        .where(
+          and(
+            eq(activitySubmissions.userId, studentId),
+            inArray(activitySubmissions.activityId, activityIds),
+          ),
+        ),
+
+      db
+        .select({
+          id: activities.id,
+          displayName: activities.displayName,
+          componentKey: activities.componentKey,
+        })
+        .from(activities)
+        .where(inArray(activities.id, activityIds)),
+    ]);
+
+    const activityById = new Map(activityRows.map((row) => [row.id, row] as const));
+
     for (const row of spreadsheetRows) {
       const phaseNum = phaseByActivityId.get(row.activityId);
       if (phaseNum !== undefined && row.spreadsheetData) {
         spreadsheetByPhaseNumber.set(phaseNum, row.spreadsheetData);
+
+        const activity = activityById.get(row.activityId);
+        const evidence: SubmissionEvidence = {
+          kind: 'spreadsheet',
+          activityId: row.activityId,
+          activityTitle: activity?.displayName ?? 'Spreadsheet activity',
+          componentKey: activity?.componentKey ?? 'spreadsheet',
+          submittedAt:
+            row.submittedAt?.toISOString() ?? row.updatedAt.toISOString() ?? new Date().toISOString(),
+          spreadsheetData: row.spreadsheetData,
+        };
+
+        const currentEvidence = evidenceByPhaseNumber.get(phaseNum) ?? [];
+        currentEvidence.push(evidence);
+        evidenceByPhaseNumber.set(phaseNum, currentEvidence);
       }
+    }
+
+    const latestPracticeByActivity = new Map<string, (typeof practiceRows)[number]>();
+    for (const row of practiceRows) {
+      const current = latestPracticeByActivity.get(row.activityId);
+      if (!current) {
+        latestPracticeByActivity.set(row.activityId, row);
+        continue;
+      }
+
+      const currentSubmittedAt = current.submittedAt?.getTime() ?? 0;
+      const nextSubmittedAt = row.submittedAt?.getTime() ?? 0;
+      const currentUpdatedAt = current.updatedAt?.getTime() ?? 0;
+      const nextUpdatedAt = row.updatedAt?.getTime() ?? 0;
+
+      if (
+        nextSubmittedAt > currentSubmittedAt ||
+        (nextSubmittedAt === currentSubmittedAt && nextUpdatedAt >= currentUpdatedAt)
+      ) {
+        latestPracticeByActivity.set(row.activityId, row);
+      }
+    }
+
+    for (const [activityId, row] of latestPracticeByActivity.entries()) {
+      const phaseNum = phaseByActivityId.get(activityId);
+      if (phaseNum === undefined) {
+        continue;
+      }
+
+      const activity = activityById.get(activityId);
+      const submissionData = row.submissionData as Record<string, unknown>;
+      const evidence: SubmissionEvidence = {
+        kind: 'practice',
+        activityId,
+        activityTitle: activity?.displayName ?? 'Practice submission',
+        componentKey: activity?.componentKey ?? 'practice',
+        submittedAt: row.submittedAt?.toISOString() ?? new Date().toISOString(),
+        attemptNumber: typeof submissionData.attemptNumber === 'number'
+          ? submissionData.attemptNumber
+          : 1,
+        score: row.score ?? null,
+        maxScore: row.maxScore ?? null,
+        feedback: row.feedback ?? null,
+        submissionData: row.submissionData as PracticeSubmissionEnvelope | Record<string, unknown>,
+      };
+
+      const currentEvidence = evidenceByPhaseNumber.get(phaseNum) ?? [];
+      currentEvidence.push(evidence);
+      evidenceByPhaseNumber.set(phaseNum, currentEvidence);
     }
   }
 
@@ -241,5 +367,6 @@ export async function fetchSubmissionDetail(
     rawPhases,
     typedProgressRows,
     spreadsheetByPhaseNumber,
+    evidenceByPhaseNumber,
   );
 }

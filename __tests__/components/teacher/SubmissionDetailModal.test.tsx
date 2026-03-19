@@ -27,6 +27,77 @@ const MOCK_DETAIL: SubmissionDetail = {
   ],
 };
 
+const PRACTICE_DETAIL: SubmissionDetail = {
+  ...MOCK_DETAIL,
+  phases: [
+    {
+      ...MOCK_DETAIL.phases[0],
+      evidence: [
+        {
+          kind: 'practice',
+          activityId: 'practice-1',
+          activityTitle: 'Journal Entry Check',
+          componentKey: 'journal-entry-building',
+          submittedAt: '2026-03-19T12:30:00.000Z',
+          attemptNumber: 2,
+          score: 6,
+          maxScore: 8,
+          feedback: 'Strong structure, but credit/debit order still needs work.',
+          submissionData: {
+            contractVersion: 'practice.v1',
+            activityId: 'practice-1',
+            mode: 'guided_practice',
+            status: 'submitted',
+            attemptNumber: 2,
+            submittedAt: '2026-03-19T12:30:00.000Z',
+            answers: {
+              q1: 'Cash',
+              q2: 'Revenue',
+            },
+            parts: [
+              {
+                partId: 'q1',
+                rawAnswer: 'Cash',
+                normalizedAnswer: 'cash',
+                isCorrect: true,
+                score: 1,
+                maxScore: 1,
+                misconceptionTags: [],
+                hintsUsed: 1,
+                revealStepsSeen: 0,
+                changedCount: 2,
+              },
+              {
+                partId: 'q2',
+                rawAnswer: 'Revenue',
+                normalizedAnswer: 'revenue',
+                isCorrect: false,
+                score: 0,
+                maxScore: 1,
+                misconceptionTags: ['normal-balance'],
+                hintsUsed: 0,
+                revealStepsSeen: 1,
+                changedCount: 1,
+              },
+            ],
+            artifact: {
+              kind: 'journal_entry',
+              title: 'Two-line journal',
+            },
+            interactionHistory: [],
+            analytics: {
+              source: 'student-runtime',
+            },
+            studentFeedback: 'I mixed up one line.',
+            teacherSummary: 'Review the credit line order.',
+          },
+        },
+      ],
+    },
+    ...MOCK_DETAIL.phases.slice(1),
+  ],
+};
+
 function mockFetchSuccess(detail: SubmissionDetail = MOCK_DETAIL) {
   global.fetch = vi.fn().mockResolvedValue({
     ok: true,
@@ -77,7 +148,7 @@ describe('SubmissionDetailModal', () => {
     global.fetch = vi.fn().mockReturnValue(new Promise(() => {}));
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
-    expect(screen.getByText(/loading phases/i)).toBeInTheDocument();
+    expect(screen.getByText(/loading practice evidence/i)).toBeInTheDocument();
   });
 
   it('renders all 6 phase rows after successful fetch', async () => {
@@ -106,6 +177,22 @@ describe('SubmissionDetailModal', () => {
     expect(screen.getByText('In Progress')).toBeInTheDocument(); // phase 3
     const notStartedBadges = screen.getAllByText('Not Started');
     expect(notStartedBadges).toHaveLength(3); // phases 4, 5, 6
+  });
+
+  it('renders practice evidence with answers and raw envelope controls', async () => {
+    mockFetchSuccess(PRACTICE_DETAIL);
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
+
+    await screen.findByText('Journal Entry Check');
+
+    expect(screen.getByText('Submission Snapshot')).toBeInTheDocument();
+    expect(screen.getByText('Journal Entry Check')).toBeInTheDocument();
+    expect(screen.getByText('Part-by-Part Answers')).toBeInTheDocument();
+    expect(screen.getAllByText('Attempt 2').length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: /view raw response/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /view raw response/i }));
+    expect(screen.getByText(/"contractVersion": "practice\.v1"/i)).toBeInTheDocument();
   });
 
   it('shows an error message when the fetch fails', async () => {
@@ -159,7 +246,7 @@ describe('SubmissionDetailModal', () => {
 
     await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
     expect(
-      screen.getByText(/read-only view/i),
+      screen.getByText(/read-only evidence review/i),
     ).toBeInTheDocument();
   });
 

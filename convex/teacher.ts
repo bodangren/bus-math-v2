@@ -37,6 +37,36 @@ interface SpreadsheetSubmission {
   spreadsheetData?: unknown;
 }
 
+interface PracticeSubmissionEvidence {
+  contractVersion?: string;
+  activityId?: string;
+  mode?: string;
+  status?: string;
+  attemptNumber?: number;
+  submittedAt?: string;
+  answers?: Record<string, unknown>;
+  parts?: Array<Record<string, unknown>>;
+  artifact?: Record<string, unknown>;
+  interactionHistory?: unknown[];
+  analytics?: Record<string, unknown>;
+  studentFeedback?: string;
+  teacherSummary?: string;
+}
+
+interface SubmissionEvidence {
+  kind: 'spreadsheet' | 'practice';
+  activityId: string;
+  activityTitle: string;
+  componentKey: string;
+  submittedAt: string;
+  spreadsheetData?: unknown;
+  submissionData?: PracticeSubmissionEvidence | Record<string, unknown>;
+  attemptNumber?: number;
+  score?: number | null;
+  maxScore?: number | null;
+  feedback?: string | null;
+}
+
 const DEFAULT_PHASE_NAMES: Record<number, string> = {
   1: 'Hook',
   2: 'Introduction',
@@ -572,19 +602,46 @@ export const getSubmissionDetail = internalQuery({
       .collect();
 
     const spreadsheetByPhaseNumber = new Map<number, unknown>();
+    const evidenceByPhaseNumber = new Map<number, SubmissionEvidence[]>();
 
     if (completionRows.length > 0) {
       const activityIds = completionRows.map((c) => c.activityId);
-
-      const spreadsheetRows = await ctx.db
-        .query("student_spreadsheet_responses")
-        .withIndex("by_student", (q) => q.eq("studentId", args.studentId))
-        .filter((q) => q.or(...activityIds.map((id) => q.eq(q.field("activityId"), id))))
-        .collect();
-
       const phaseByActivityId = new Map<string, number>();
       for (const c of completionRows) {
         phaseByActivityId.set(c.activityId, c.phaseNumber);
+      }
+
+      const [spreadsheetRows, practiceRows, activityRows] = await Promise.all([
+        ctx.db
+          .query("student_spreadsheet_responses")
+          .withIndex("by_student", (q) => q.eq("studentId", args.studentId))
+          .filter((q) => q.or(...activityIds.map((id) => q.eq(q.field("activityId"), id))))
+          .collect(),
+
+        ctx.db
+          .query("activity_submissions")
+          .withIndex("by_user", (q) => q.eq("userId", args.studentId))
+          .filter((q) => q.or(...activityIds.map((id) => q.eq(q.field("activityId"), id))))
+          .collect(),
+
+        Promise.all(
+          activityIds.map(async (activityId) => [activityId, await ctx.db.get(activityId)] as const),
+        ),
+      ]);
+
+      const activityById = new Map<
+        string,
+        {
+          displayName: string;
+          componentKey: string;
+        }
+      >();
+      for (const [activityId, activity] of activityRows) {
+        if (!activity) continue;
+        activityById.set(String(activityId), {
+          displayName: activity.displayName,
+          componentKey: activity.componentKey,
+        });
       }
 
       for (const row of spreadsheetRows) {
@@ -592,7 +649,64 @@ export const getSubmissionDetail = internalQuery({
         const spreadsheetRow = row as SpreadsheetSubmission;
         if (phaseNum !== undefined && spreadsheetRow.spreadsheetData) {
           spreadsheetByPhaseNumber.set(phaseNum, spreadsheetRow.spreadsheetData);
+
+          const activity = activityById.get(row.activityId);
+          const evidence: SubmissionEvidence = {
+            kind: 'spreadsheet',
+            activityId: row.activityId,
+            activityTitle: activity?.displayName ?? 'Spreadsheet activity',
+            componentKey: activity?.componentKey ?? 'spreadsheet',
+            submittedAt: new Date(row.updatedAt).toISOString(),
+            spreadsheetData: spreadsheetRow.spreadsheetData,
+          };
+
+          const existingEvidence = evidenceByPhaseNumber.get(phaseNum) ?? [];
+          existingEvidence.push(evidence);
+          evidenceByPhaseNumber.set(phaseNum, existingEvidence);
         }
+      }
+
+      const latestPracticeByActivity = new Map<string, (typeof practiceRows)[number]>();
+      for (const row of practiceRows) {
+        const current = latestPracticeByActivity.get(row.activityId);
+        if (!current) {
+          latestPracticeByActivity.set(row.activityId, row);
+          continue;
+        }
+
+        if (
+          row.submittedAt > current.submittedAt ||
+          (row.submittedAt === current.submittedAt && row.updatedAt >= current.updatedAt)
+        ) {
+          latestPracticeByActivity.set(row.activityId, row);
+        }
+      }
+
+      for (const [activityId, row] of latestPracticeByActivity.entries()) {
+        const phaseNum = phaseByActivityId.get(activityId);
+        if (phaseNum === undefined) {
+          continue;
+        }
+
+        const activity = activityById.get(activityId);
+        const submissionData = row.submissionData as PracticeSubmissionEvidence | Record<string, unknown>;
+        const evidence: SubmissionEvidence = {
+          kind: 'practice',
+          activityId,
+          activityTitle: activity?.displayName ?? 'Practice submission',
+          componentKey: activity?.componentKey ?? 'practice',
+          submittedAt: new Date(row.submittedAt).toISOString(),
+          attemptNumber:
+            typeof submissionData.attemptNumber === 'number' ? submissionData.attemptNumber : 1,
+          score: row.score ?? null,
+          maxScore: row.maxScore ?? null,
+          feedback: row.feedback ?? null,
+          submissionData,
+        };
+
+        const existingEvidence = evidenceByPhaseNumber.get(phaseNum) ?? [];
+        existingEvidence.push(evidence);
+        evidenceByPhaseNumber.set(phaseNum, existingEvidence);
       }
     }
 
@@ -618,6 +732,7 @@ export const getSubmissionDetail = internalQuery({
           status,
           completedAt: progress?.completedAt ?? null,
           spreadsheetData: spreadsheetByPhaseNumber.get(phase.phaseNumber) ?? null,
+          evidence: evidenceByPhaseNumber.get(phase.phaseNumber) ?? [],
         };
       });
 

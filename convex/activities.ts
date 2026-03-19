@@ -1,5 +1,6 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
+import { practiceSubmissionEnvelopeValidator } from "./practice-submission";
 
 export const getSpreadsheetDraft = internalQuery({
   args: {
@@ -280,7 +281,7 @@ export const submitAssessment = internalMutation({
   args: {
     userId: v.id("profiles"),
     activityId: v.id("activities"),
-    submissionData: v.any(),
+    submissionData: practiceSubmissionEnvelopeValidator,
     score: v.optional(v.number()),
     maxScore: v.optional(v.number()),
     feedback: v.optional(v.string()),

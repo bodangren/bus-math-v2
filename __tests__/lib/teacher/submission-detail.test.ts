@@ -114,6 +114,54 @@ describe('assembleSubmissionDetail', () => {
     }
   });
 
+  it('attaches evidence items to the correct phase', () => {
+    const evidenceMap = new Map([
+      [
+        4,
+        [
+          {
+            kind: 'practice' as const,
+            activityId: 'activity-1',
+            activityTitle: 'Practice Check',
+            componentKey: 'journal-entry-building',
+            submittedAt: '2026-03-19T12:30:00.000Z',
+            attemptNumber: 2,
+            score: 6,
+            maxScore: 8,
+            feedback: 'Nearly there',
+            submissionData: {
+              contractVersion: 'practice.v1',
+              activityId: 'activity-1',
+              mode: 'guided_practice',
+              status: 'submitted',
+              attemptNumber: 2,
+              submittedAt: '2026-03-19T12:30:00.000Z',
+              answers: { q1: 'Cash' },
+              parts: [{ partId: 'q1', rawAnswer: 'Cash' }],
+            },
+          },
+        ],
+      ],
+    ]);
+
+    const result = assembleSubmissionDetail(
+      'Alice',
+      'L1',
+      PHASES,
+      [],
+      new Map(),
+      evidenceMap,
+    );
+
+    const phase4 = result.phases.find((phase) => phase.phaseNumber === 4)!;
+    expect(phase4.evidence).toHaveLength(1);
+    expect(phase4.evidence?.[0]).toMatchObject({
+      kind: 'practice',
+      activityId: 'activity-1',
+      attemptNumber: 2,
+    });
+  });
+
   it('returns spreadsheetData as null for phases without submissions', () => {
     const result = assembleSubmissionDetail('Alice', 'L1', PHASES, [], new Map());
     for (const phase of result.phases) {

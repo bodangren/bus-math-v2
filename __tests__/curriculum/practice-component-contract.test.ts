@@ -90,4 +90,13 @@ describe('practice component contract foundation', () => {
 
     expect(parsed.success).toBe(false);
   });
+
+  it('uses a typed Convex validator for practice submissions', () => {
+    const convexSchema = fs.readFileSync(path.resolve(process.cwd(), 'convex/schema.ts'), 'utf8');
+    const convexActivities = fs.readFileSync(path.resolve(process.cwd(), 'convex/activities.ts'), 'utf8');
+
+    expect(convexSchema).toContain('practiceSubmissionEnvelopeValidator');
+    expect(convexActivities).toContain('practiceSubmissionEnvelopeValidator');
+    expect(convexSchema).not.toContain('submissionData: v.any()');
+  });
 });

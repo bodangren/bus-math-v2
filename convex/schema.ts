@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { practiceSubmissionEnvelopeValidator } from "./practice-submission";
 
 export default defineSchema({
   organizations: defineTable({
@@ -195,7 +196,7 @@ export default defineSchema({
   activity_submissions: defineTable({
     userId: v.id("profiles"),
     activityId: v.id("activities"),
-    submissionData: v.any(), // JSONB
+    submissionData: practiceSubmissionEnvelopeValidator,
     score: v.optional(v.number()),
     maxScore: v.optional(v.number()),
     feedback: v.optional(v.string()),
