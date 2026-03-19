@@ -1,11 +1,11 @@
 {
   "track_id": "practice_submission_evidence_teacher_review_20260319",
   "type": "feature",
-  "status": "new",
+  "status": "complete",
   "created_at": "2026-03-19T12:00:00Z",
-  "updated_at": "2026-03-19T12:00:00Z",
+  "updated_at": "2026-03-19T15:44:27Z",
   "description": "Persist normalized practice submissions and expose teacher-readable evidence across activity families so teachers can review exact student work rather than only scores or spreadsheet data",
   "estimated_tasks": 20,
-  "actual_tasks": null,
+  "actual_tasks": 11,
   "deviation_notes": ""
 }

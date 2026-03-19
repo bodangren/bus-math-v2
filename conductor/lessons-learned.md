@@ -28,6 +28,8 @@
 - (2026-03-19, practice_contract_planning) Practice components need one mode-aware contract across worked example, guided practice, independent practice, and assessment or curriculum authoring, persistence, and teacher evidence drift immediately.
 - (2026-03-19, practice_contract_planning) Teacher review is only as useful as the stored submission envelope; score-only or spreadsheet-only evidence hides misconceptions and blocks later AI-assisted analysis.
 - (2026-03-19, practice_track_deconfliction) When the practice rollout is split into contract, evidence, and backfill tracks, older curriculum/teacher umbrella tracks must be narrowed to residual authored rollout and interpretation work instead of owning the same deliverables twice.
+- (2026-03-19, practice_contract_planning) A dedicated Convex validator for the shared `practice.v1` envelope keeps persistence, schema typing, and API mutations aligned without reintroducing `v.any()`.
+- (2026-03-19, practice_contract_planning) Teacher evidence UIs should stay read-only and union-typed from the start so spreadsheet and non-spreadsheet branches are both exercised by build-time type checking.
 
 ### Patterns Worth Repeating
 

@@ -16,16 +16,25 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
-Standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable `practice.v1` contract with teacher-visible evidence. The `practice_*` tracks are the controlling decomposition; older curriculum and teacher tracks retain only residual scope.
+Standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable `practice.v1` contract with teacher-visible evidence. Build algorithmic practice families (A-Q) from the BM Accounting Problems spec as reusable generator/solver/grader engines on the shared contract. The `practice_*` tracks are the controlling decomposition; older curriculum and teacher tracks retain only residual scope.
 
 **Execution graph** (not fully serial):
 ```
-Track 1 (Foundation) ──→ Track 2 (Evidence) ──────────→ Track 4 (Curriculum Rollout)
-                     └──→ Track 3 (Backfill, parallel) ↗          ↕ (parallel)
-                           Track 2 + 3 done ──────────→ Track 5 (Error Analysis)
+Track 1 (Contract Foundation, DONE)
+  ├──→ Track 2 (Evidence) ──────────────→ Track 8 (Curriculum Rollout)
+  ├──→ Track 3 (Legacy Backfill) ────────↗        ↕ (parallel)
+  │      Track 2 + 3 done ──────────────→ Track 9 (Teacher Error Analysis)
+  │
+  └──→ Track 6 (Engine Foundation)
+         ├──→ Track 7a (Classification Families A,M,K)
+         ├──→ Track 7b (Journal/Transaction Families C,F,H,L,P)
+         ├──→ Track 7c (Statement/Computation Families B,D,E,I,J,N,O,Q)
+         └──→ Track 7d (Trial Balance Error Family G)
 ```
 
-**Exit gate**: reusable practice families can be authored once and reused across lesson modes without storage or teacher-review drift; teachers can inspect actual student practice work; curriculum runtime, docs, and persistence all describe the same contract.
+Tracks 6-7d form a serial chain (Foundation first, then families in parallel). The evidence/backfill/rollout chain (Tracks 2-3-8-9) runs independently but must converge before families can be wired into curriculum lessons.
+
+**Exit gate**: reusable practice families can be authored once and reused across lesson modes without storage or teacher-review drift; teachers can inspect actual student practice work; algorithmic generators produce infinite variant problems on the shared contract; curriculum runtime, docs, and persistence all describe the same contract.
 
 ---
 
@@ -33,15 +42,31 @@ Track 1 (Foundation) ──→ Track 2 (Evidence) ──────────
 
 ## Planned Queue
 
-The `practice_*` split is now the governing execution sequence for Milestone 7. Tracks 2 and 3 may run in parallel after Track 1; Tracks 4 and 5 may run in parallel after Tracks 2+3 converge. The older curriculum and teacher tracks retain only residual scope.
-
-- [ ] **Track: Practice Submission Evidence and Teacher Review**
-  *Link: [./tracks/practice_submission_evidence_teacher_review_20260319/](./tracks/practice_submission_evidence_teacher_review_20260319/)*
-  *Status: Parallel with Track 3 after Track 1; owns persistence typing (including Convex `v.any()` → proper validator), generic teacher-readable evidence, and misconception-tagging storage fields.*
+The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
 - [ ] **Track: Practice Component Legacy Backfill**
   *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
-  *Status: Parallel with Track 2 after Track 1; owns family-by-family component migration onto `practice.v1`. Produces component-family-to-lesson mapping consumed by Track 4. Also owns `student_spreadsheet_responses` consolidation planning.*
+  *Status: Parallel with Track 2 after Track 1; owns family-by-family component migration onto `practice.v1`. Produces component-family-to-lesson mapping consumed by Track 8. Also owns `student_spreadsheet_responses` consolidation planning.*
+
+- [ ] **Track: Accounting Domain Engine Foundation**
+  *Link: [./tracks/accounting_engine_foundation_20260319/](./tracks/accounting_engine_foundation_20260319/)*
+  *Status: Starts after Track 1 (parallel with Tracks 2-3); owns account ontology, mini-ledger generator, ProblemFamily interface, compound UI components (SelectionMatrix, StatementLayout, JournalEntryTable, CategorizationList), family key registry, and dev preview route.*
+
+- [ ] **Track: Classification and Conceptual Practice Families (A, M, K)**
+  *Link: [./tracks/classification_conceptual_families_20260319/](./tracks/classification_conceptual_families_20260319/)*
+  *Status: Starts after Track 6; implements classification (A), normal-balance (M), and adjustment-effects (K) families using SelectionMatrix and CategorizationList.*
+
+- [ ] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
+  *Link: [./tracks/journal_transaction_families_20260319/](./tracks/journal_transaction_families_20260319/)*
+  *Status: Starts after Track 6; builds transaction event library and merchandising timeline generator; implements transaction-effects (C), transaction-matrix (F), journal-entry (H), cycle-decisions (L), and merchandising-entries (P) families.*
+
+- [ ] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
+  *Link: [./tracks/statement_computation_families_20260319/](./tracks/statement_computation_families_20260319/)*
+  *Status: Starts after Track 6; builds adjustment scenario generator; implements accounting-equation (B), statement-completion (D), statement-construction (E), posting-balances (I), adjusting-calculations (J), depreciation-presentation (N), merchandising-computation (O), and statement-subtotals (Q) families.*
+
+- [ ] **Track: Trial Balance Error Analysis Family (G)**
+  *Link: [./tracks/trial_balance_error_family_20260319/](./tracks/trial_balance_error_family_20260319/)*
+  *Status: Starts after Track 6; builds error pattern library; implements trial-balance-errors (G) family.*
 
 - [ ] **Track: Curriculum Guided/Independent Practice Rollout**
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
@@ -49,9 +74,13 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
 
 - [ ] **Track: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
-  *Status: Parallel with Track 4 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 4.*
+  *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
 
 ## Archive Ledger
+
+- [x] **Track: Practice Submission Evidence and Teacher Review**
+  *Link: [./archive/practice_submission_evidence_teacher_review_20260319/](./archive/practice_submission_evidence_teacher_review_20260319/)*
+  *Closeout: archived on 2026-03-19 after replacing `v.any()` with a `practice.v1` validator, generalizing teacher submission detail to surface spreadsheet and non-spreadsheet evidence, and verifying the final tree with lint, full test, and production build gates.*
 
 - [x] **Track: Practice Component Contract Foundation**
   *Link: [./archive/practice_component_contract_foundation_20260319/](./archive/practice_component_contract_foundation_20260319/)*
