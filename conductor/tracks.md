@@ -42,10 +42,6 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [ ] **Track: Accounting Domain Engine Foundation**
-  *Link: [./tracks/accounting_engine_foundation_20260319/](./tracks/accounting_engine_foundation_20260319/)*
-  *Status: Starts after Track 1 (parallel with Tracks 2-3); owns account ontology, mini-ledger generator, ProblemFamily interface, compound UI components (SelectionMatrix, StatementLayout, JournalEntryTable, CategorizationList), family key registry, and dev preview route.*
-
 - [ ] **Track: Classification and Conceptual Practice Families (A, M, K)**
   *Link: [./tracks/classification_conceptual_families_20260319/](./tracks/classification_conceptual_families_20260319/)*
   *Status: Starts after Track 6; implements classification (A), normal-balance (M), and adjustment-effects (K) families using SelectionMatrix and CategorizationList.*
@@ -71,6 +67,10 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
 
 ## Archive Ledger
+
+- [x] **Track: Accounting Domain Engine Foundation**
+  *Link: [./archive/accounting_engine_foundation_20260319/](./archive/accounting_engine_foundation_20260319/)*
+  *Closeout: archived on 2026-03-20 after delivering the shared accounting ontology, mini-ledger generator, reference ProblemFamily, reusable practice UI primitives, dev preview route, and family-key registry, then verifying the work with full lint, test, and production build gates.*
 
 - [x] **Track: Practice Component Legacy Backfill**
   *Link: [./archive/practice_component_legacy_backfill_20260319/](./archive/practice_component_legacy_backfill_20260319/)*

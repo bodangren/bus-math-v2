@@ -17,7 +17,6 @@
 - (2026-03-12, curriculum_runtime_foundation) Public prerendered pages must tolerate empty Convex results so a clean production build does not depend on seeded local data.
 - (2026-03-12, curriculum_runtime_foundation) Migration-era Supabase and seed utilities can still break the production TypeScript graph even after the active runtime has moved to Convex.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Legacy authored lesson modules can block Convex/server bundling unless they are converted into a pure generated source module first.
-- (2026-03-13, curriculum_authoring_publish_pipeline) Publish-time normalization is safer than expanding the runtime schema when legacy authored sections still include migration-era block types such as teacher submission.
 - (2026-03-13, teacher_monitoring_core) Public prerendered pages need `Promise.allSettled`-style fallbacks around Convex reads or production builds will fail whenever local Convex is unavailable during static generation.
 - (2026-03-13, unit1_canonicalization_archetypes) Canonicalizing authored curriculum at the source is safer than accumulating manifest exceptions because both validation drift and role-specific rendering bugs disappear together.
 - (2026-03-13, auth bootstrap hotfix) JWT-protected proxy rules must explicitly allow unauthenticated auth bootstrap endpoints like `/api/auth/login` and `/api/auth/session`, or the login page will redirect its own API calls back to itself.
@@ -35,7 +34,7 @@
 - (2026-03-20, practice_component_legacy_backfill) Once the last live practice family is canonical, remove alias resolution and direct-completion shims together so docs, validation, and renderer behavior stay aligned on one contract.
 - (2026-03-20, practice_component_legacy_backfill) Legacy accounting-entry builders backfill cleanly when the student workbench keeps the account bank as an assistive input path and packages the submitted row snapshot directly into the practice artifact.
 - (2026-03-20, practice_component_legacy_backfill) Categorization and sequence practice families need separate serializers; inventory-style ordering does not share the same item shape as bucket-based drag/drop.
-- (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, so artifact snapshots should only serialize fields the source item actually owns.
+- (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, and they also catch registry typing issues; keep public string lookups and internal map keys aligned, and only serialize fields the source item actually owns.
 
 ### Patterns Worth Repeating
 
