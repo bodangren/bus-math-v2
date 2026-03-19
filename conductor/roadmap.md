@@ -146,13 +146,15 @@ The product is considered a complete online textbook only when all of the follow
 
 **Goal**: standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable contract with teacher-visible evidence.
 
+**Execution Note**: the `practice_*` tracks are now the controlling decomposition for this milestone. They supersede the contract-definition, submission-persistence, generic teacher-review, and component-migration scope that older umbrella planning used to blur into the curriculum and teacher tracks. The remaining older tracks are intentionally narrower: `curriculum_guided_independent_pairing_20260316` owns authored lesson and manifest rollout only, and `teacher_practice_error_analysis_20260319` owns post-evidence interpretation only.
+
 **Tracks**
 
 - Practice Component Contract Foundation
 - Practice Submission Evidence and Teacher Review
 - Practice Component Legacy Backfill
-- Curriculum Guided/Independent Practice Rollout
-- Teacher Practice Error Analysis
+- Curriculum Guided/Independent Practice Rollout (residual authored rollout after the `practice_*` sequence)
+- Teacher Practice Error Analysis (residual interpretation layer after teacher evidence is stable)
 
 **Deliverables**
 
@@ -183,8 +185,8 @@ The product is considered a complete online textbook only when all of the follow
 10. Practice Component Contract Foundation
 11. Practice Submission Evidence and Teacher Review
 12. Practice Component Legacy Backfill
-13. Curriculum Guided/Independent Practice Rollout
-14. Teacher Practice Error Analysis
+13. Curriculum Guided/Independent Practice Rollout (residual authored rollout only)
+14. Teacher Practice Error Analysis (post-evidence interpretation only)
 
 ## Content Definition of Done
 

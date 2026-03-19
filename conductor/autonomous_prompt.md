@@ -1,13 +1,13 @@
 /conductor
 Step 1: Check State. Read `conductor/current_directive.md`, `conductor/tech-debt.md`, and `conductor/lessons-learned.md`. 
 Step 2: Resume or Plan. 
-  - If there is an `[~] In Progress` track in `conductor/tracks.md`, DO NOT create a new track. Your sole job is to finish the existing track.
+  - If there is an `[~] In Progress` track in `conductor/tracks.md`, DO NOT create a new track. Your sole job is to finish the next phase in that track.
   - If there are no incomplete tracks, define exactly ONE new track that strictly adheres to the goals in `conductor/current_directive.md`. Create the track artifacts.
-Step 3: Implement the track autonomously with high fidelity. For visual layout or print layout (Paged.js) tasks, prioritize adding automated layout tests or snapshot checks if the framework supports it.
+Step 3: Implement the track phase autonomously with high fidelity.
 Step 4: Verify the implementation. You MUST run the full automated test suite and ensure a successful production build. Do not commit if tests fail.
 Step 5: Finalize. 
   - Commit changes and push to remote (include model/version in commit message). 
   - Update `tech-debt.md` and `lessons-learned.md` (keep under 50 lines).
-  - Move the completed track folder to `conductor/archive/` and remove it from `conductor/tracks.md`.
+  - Move any completed track folder to `conductor/archive/` and remove it from `conductor/tracks.md`.
   - Commit this cleanup with the message `chore(conductor): Archive completed track`.
 CRITICAL: All shell commands MUST use non-interactive flags (e.g., --yes, --no-interactive). This is an unattended run.

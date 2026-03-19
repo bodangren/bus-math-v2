@@ -4,8 +4,8 @@
   "status": "new",
   "created_at": "2026-03-19T12:00:00Z",
   "updated_at": "2026-03-19T12:00:00Z",
-  "description": "Add rule-based and AI-assisted teacher error-analysis summaries on top of normalized practice evidence so teachers can quickly see misconceptions and intervention opportunities",
+  "description": "Residual post-evidence interpretation layer after practice contract, evidence, backfill, and curriculum rollout work are stable; add deterministic and AI-assisted teacher summaries without re-owning baseline teacher review",
   "estimated_tasks": 16,
   "actual_tasks": null,
-  "deviation_notes": ""
+  "deviation_notes": "Narrowed on 2026-03-19 so this track owns interpretation only; generic teacher evidence, submission persistence, and component migration work now belong to the earlier practice_* tracks."
 }

@@ -4,8 +4,8 @@
   "status": "new",
   "created_at": "2026-03-16T12:00:00Z",
   "updated_at": "2026-03-16T12:00:00Z",
-  "description": "Roll out the canonical practice-component modes across authored lessons so instruction, guided practice, independent practice, and assessment phases use distinct activityIds, explicit scaffolds, and fresh data that align with the shared contract",
+  "description": "Residual authored-curriculum rollout after the practice_* foundation/evidence/backfill sequence; align lesson sources and manifest expectations so instruction, guided practice, independent practice, and assessment use the finalized contract correctly",
   "estimated_tasks": 20,
   "actual_tasks": null,
-  "deviation_notes": ""
+  "deviation_notes": "Narrowed on 2026-03-19 so this track owns authored lesson and manifest rollout only; contract definition, teacher evidence, submission persistence, and family-level component migrations now belong to the preceding practice_* tracks."
 }

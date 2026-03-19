@@ -27,6 +27,7 @@
 - (2026-03-16, cloudflare_production_hardening_launch) Cloudflare launch assumptions drift unless the Worker handoff, required secrets, and build-first Wrangler sequence live in a checked-in checklist backed by source-level tests.
 - (2026-03-19, practice_contract_planning) Practice components need one mode-aware contract across worked example, guided practice, independent practice, and assessment or curriculum authoring, persistence, and teacher evidence drift immediately.
 - (2026-03-19, practice_contract_planning) Teacher review is only as useful as the stored submission envelope; score-only or spreadsheet-only evidence hides misconceptions and blocks later AI-assisted analysis.
+- (2026-03-19, practice_track_deconfliction) When the practice rollout is split into contract, evidence, and backfill tracks, older curriculum/teacher umbrella tracks must be narrowed to residual authored rollout and interpretation work instead of owning the same deliverables twice.
 
 ### Patterns Worth Repeating
 

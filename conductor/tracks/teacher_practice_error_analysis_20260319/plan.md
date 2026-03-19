@@ -1,5 +1,7 @@
 # Implementation Plan: Teacher Practice Error Analysis
 
+> Deconfliction note: this plan assumes generic teacher evidence, canonical persistence, and migrated component payloads already exist. If those prerequisites are missing, route the gap back to the owning earlier track instead of expanding this track into evidence-foundation work.
+
 ## Phase 1: Summary Model and Safety Red Tests
 
 ### Tasks

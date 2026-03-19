@@ -1,5 +1,7 @@
 # Implementation Plan: Curriculum Guided/Independent Practice Rollout
 
+> Deconfliction note: use the outputs of the three earlier `practice_*` tracks as inputs to this rollout. If audit work uncovers contract, persistence, teacher-review, or component-family gaps, record them against the owning track instead of expanding this track back into umbrella cleanup.
+
 ## Phase 1: Curriculum Audit and Mapping
 
 ### Tasks
@@ -8,6 +10,7 @@
   - [ ] Scan authored and generated curriculum sources for practice activities in instruction, guided practice, independent practice, and assessment phases
   - [ ] Identify lessons where guided and independent phases reuse the same activity id or materially identical props
   - [ ] Identify lessons where a worked example or teacher model should exist in instruction but currently does not
+  - [ ] Route any newly discovered contract/persistence/component blockers back to the owning `practice_*` track before editing lesson content
   - [ ] Record unit-by-unit findings in the track notes before editing authored lesson content
 
 - [ ] **Task: Map practice families to curriculum phase roles**

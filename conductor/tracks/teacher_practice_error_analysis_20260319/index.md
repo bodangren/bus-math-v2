@@ -15,6 +15,8 @@ This track builds the interpretation layer on top of the practice evidence model
 2. AI-assisted interpretation with evidence grounding
 3. read-only teacher access and fallback safety
 
+This track no longer owns generic teacher submission detail, normalized submission persistence, or practice-component migration work. It starts only once those earlier tracks are complete and stable.
+
 ## Progress
 
 See [./plan.md](./plan.md) for detailed task status.

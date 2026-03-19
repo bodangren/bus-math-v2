@@ -4,7 +4,7 @@
 
 Roll out the shared `practice.v1` contract into authored lessons and published-manifest expectations so curriculum phases use the right practice mode for the right instructional purpose.
 
-This track starts after the foundation, teacher-evidence, and legacy-backfill tracks establish the shared contract and runtime support. Its job is to update the authored curriculum so students no longer see drift such as repeated guided/independent content, missing worked examples, or assessments that reuse the wrong activity shape.
+This track now starts after the foundation, teacher-evidence, and legacy-backfill tracks establish the shared contract and runtime support. Its job is limited to updating authored curriculum inputs and manifest expectations so students no longer see drift such as repeated guided/independent content, missing worked examples, or assessments that reuse the wrong activity shape.
 
 ## Problem Statement
 
@@ -24,6 +24,16 @@ Do not start this track until the following are complete:
 - Practice Component Contract Foundation
 - Practice Submission Evidence and Teacher Review
 - Practice Component Legacy Backfill
+
+## Deconflicted Scope
+
+This track is intentionally narrower than the older umbrella planning around practice improvements.
+
+The following concerns are now owned by earlier `practice_*` tracks and must not be reopened here except to record blockers back to the owning track:
+
+- canonical `practice.v1` contract definition and doc/runtime schema alignment -> Practice Component Contract Foundation
+- normalized submission persistence, generic teacher submission detail, and deterministic tagging seams -> Practice Submission Evidence and Teacher Review
+- family-level component payload migrations and supported-mode declarations -> Practice Component Legacy Backfill
 
 ## Functional Requirements
 
@@ -100,5 +110,8 @@ Add curriculum regressions that assert:
 ## Out of Scope
 
 - Creating a new practice contract separate from `practice.v1`
+- Extending or redefining the canonical submission/evidence contract instead of consuming the version finalized earlier
+- Building generic teacher evidence or persistence surfaces
+- Refactoring practice component families except for lesson-source wiring needed to consume already-migrated behavior
 - Adding entirely new runtime activity families that are not needed for the authored curriculum
 - Shipping teacher AI analysis features; this track only consumes the evidence model created earlier

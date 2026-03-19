@@ -12,21 +12,23 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ## Planned Queue
 
+The `practice_*` split is now the governing execution sequence for Milestone 7. The older curriculum and teacher tracks remain queued only for residual scope after the first three tracks land; they no longer own contract-definition, submission-persistence, generic teacher-review, or component-migration work.
+
 - [ ] **Track: Practice Submission Evidence and Teacher Review**
   *Link: [./tracks/practice_submission_evidence_teacher_review_20260319/](./tracks/practice_submission_evidence_teacher_review_20260319/)*
-  *Status: Persist normalized practice submissions, expose teacher-readable evidence beyond spreadsheets, and add deterministic error-tagging seams for later analysis.*
+  *Status: First follow-on after the contract foundation; owns normalized submission persistence, generic teacher-readable evidence, and deterministic tagging seams that older teacher/curriculum planning used to imply.*
 
 - [ ] **Track: Practice Component Legacy Backfill**
   *Link: [./tracks/practice_component_legacy_backfill_20260319/](./tracks/practice_component_legacy_backfill_20260319/)*
-  *Status: Refactor previously built practice components to emit `practice.v1` inputs/outputs, including worked-example, guided-practice, and independent-practice compatibility where applicable.*
+  *Status: Second follow-on; owns family-by-family component migration onto `practice.v1` so later curriculum rollout work is updating authored lesson definitions instead of repairing component payload drift in place.*
 
 - [ ] **Track: Curriculum Guided/Independent Practice Rollout**
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
-  *Status: Update authored lessons and published-manifest regression coverage so instruction, guided practice, independent practice, and assessment phases use mode-correct activity definitions with distinct ids, scaffolds, and fresh data.*
+  *Status: Residual authored-curriculum rollout only after the three `practice_*` tracks are complete; owns lesson-source and manifest alignment, not contract, persistence, teacher-review foundation, or component migration.*
 
 - [ ] **Track: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
-  *Status: Layer rule-based and AI-assisted error summaries onto the normalized practice evidence model once teacher review and component backfills are complete.*
+  *Status: Residual post-evidence interpretation layer only; starts after teacher review, component backfills, and curriculum rollout are stable, and does not own generic teacher evidence or persistence work.*
 
 ## Archive Ledger
 

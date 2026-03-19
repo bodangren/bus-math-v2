@@ -16,6 +16,16 @@ Do not start this track until:
 - Practice Component Legacy Backfill has migrated the needed practice families
 - Curriculum Guided/Independent Practice Rollout has stabilized the authored usage patterns for the targeted families
 
+## Deconflicted Scope
+
+This track is the post-evidence interpretation layer only.
+
+The following concerns are now explicitly owned by earlier tracks and are out of scope here except to log blockers back to the owning track:
+
+- normalized submission persistence and generic teacher submission detail -> Practice Submission Evidence and Teacher Review
+- family-level component migration onto `practice.v1` -> Practice Component Legacy Backfill
+- authored lesson and manifest rollout of finalized practice modes -> Curriculum Guided/Independent Practice Rollout
+
 ## Functional Requirements
 
 ### FR1: Deterministic error summary layer
@@ -68,6 +78,9 @@ Do not start this track until:
 
 ## Out of Scope
 
+- Building the baseline teacher evidence view that exposes raw submissions
+- Owning the persistence model for canonical practice evidence
+- Refactoring components so they emit the contract in the first place
 - Replacing teacher evidence views with AI-only summaries
 - Introducing new curriculum practice families
 - Broad class-wide analytics dashboards beyond the teacher error-analysis scope
