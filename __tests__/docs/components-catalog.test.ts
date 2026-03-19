@@ -18,18 +18,18 @@ function readComponentKeysFromDocs(): string[] {
     .filter((key): key is string => Boolean(key));
 }
 
-describe('docs/components.yaml activity aliases', () => {
-  it('keeps the documented alias keys resolvable by the runtime registry', () => {
+describe('docs/components.yaml activity keys', () => {
+  it('keeps the documented canonical keys resolvable by the runtime registry', () => {
     const documentedKeys = new Set(readComponentKeysFromDocs());
 
-    const documentedAliases = [
-      'general-drag-and-drop',
-      'journal-entry-activity',
-      'spreadsheet-activity',
-      'data-cleaning-activity',
+    const canonicalKeys = [
+      'drag-and-drop',
+      'journal-entry-building',
+      'spreadsheet',
+      'data-cleaning',
     ];
 
-    documentedAliases.forEach((key) => {
+    canonicalKeys.forEach((key) => {
       expect(documentedKeys.has(key)).toBe(true);
       expect(getActivityComponent(key), `${key} should resolve through the runtime catalog`).not.toBeNull();
     });

@@ -10,10 +10,12 @@ vi.mock('../../../components/activities/spreadsheet/SpreadsheetActivity', () => 
     title,
     description,
     onSubmit,
+    onComplete,
   }: {
     title?: string;
     description?: string;
     onSubmit?: (data: { spreadsheetData: unknown[][] }) => void;
+    onComplete?: () => void;
   }) => (
     <div>
       {title && <h3>{title}</h3>}
@@ -24,6 +26,9 @@ vi.mock('../../../components/activities/spreadsheet/SpreadsheetActivity', () => 
         >
           Submit Spreadsheet
         </button>
+      )}
+      {onComplete && (
+        <button onClick={() => onComplete()}>Complete Spreadsheet</button>
       )}
     </div>
   ),
@@ -69,27 +74,20 @@ describe('SpreadsheetActivityAdapter', () => {
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
   });
 
-  it('calls onSubmit with isComplete: true and a completedAt Date when spreadsheet is submitted', async () => {
+  it('calls onComplete when spreadsheet is submitted', async () => {
     const user = userEvent.setup();
-    const handleSubmit = vi.fn();
+    const handleComplete = vi.fn();
 
-    render(<SpreadsheetActivityAdapter activity={buildActivity()} onSubmit={handleSubmit} />);
+    render(<SpreadsheetActivityAdapter activity={buildActivity()} onComplete={handleComplete} />);
 
     await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
 
-    expect(handleSubmit).toHaveBeenCalledTimes(1);
-    expect(handleSubmit).toHaveBeenCalledWith(
-      expect.objectContaining({
-        activityId: 'activity-spreadsheet-1',
-        isComplete: true,
-        completedAt: expect.any(Date),
-      }),
-    );
+    expect(handleComplete).toHaveBeenCalledTimes(1);
   });
 
-  it('does not call onSubmit if no handler is provided', async () => {
+  it('does not call onComplete if no handler is provided', async () => {
     const user = userEvent.setup();
-    // Should not throw even if onSubmit is not passed
+    // Should not throw even if onComplete is not passed
     render(<SpreadsheetActivityAdapter activity={buildActivity()} />);
     await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
     // No assertion needed — just verifying no uncaught error

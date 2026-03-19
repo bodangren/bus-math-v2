@@ -10,7 +10,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import {
-  buildPracticeSubmissionEnvelope,
   isPracticeSubmissionEnvelope,
   type PracticeSubmissionCallbackPayload,
 } from '@/lib/practice/contract';
@@ -27,20 +26,7 @@ interface ActivityRendererProps {
   linkedStandardId?: string;
 }
 
-interface LegacyActivitySubmissionPayload {
-  activityId?: string;
-  isComplete?: boolean;
-  completedAt?: Date | string;
-  score?: number;
-  totalQuestions?: number;
-  attempts?: number;
-  answers?: Record<string, unknown>;
-  responses?: Record<string, unknown>;
-  interactionHistory?: unknown[];
-  metadata?: Record<string, unknown>;
-}
-
-type ActivitySubmissionPayload = PracticeSubmissionCallbackPayload | LegacyActivitySubmissionPayload;
+type ActivitySubmissionPayload = PracticeSubmissionCallbackPayload;
 
 interface AssessmentResponse {
   score: number;
@@ -151,18 +137,11 @@ export function ActivityRenderer({
         return false;
       }
 
-      const canonicalSubmission = isPracticeSubmissionEnvelope(payload)
-        ? payload
-        : buildPracticeSubmissionEnvelope({
-            activityId: payload.activityId ?? activity.id,
-            mode: 'assessment',
-            status: 'submitted',
-            submittedAt: new Date(),
-            answers: payload.answers ?? payload.responses ?? {},
-            interactionHistory: payload.interactionHistory,
-            analytics: payload.metadata,
-          });
+      if (!isPracticeSubmissionEnvelope(payload)) {
+        return false;
+      }
 
+      const canonicalSubmission = payload;
       const answers = canonicalSubmission.answers;
       if (
         !answers ||
@@ -232,15 +211,7 @@ export function ActivityRenderer({
   );
 
   const didPayloadCompleteActivity = useCallback((payload: ActivitySubmissionPayload): boolean => {
-    if (isPracticeSubmissionEnvelope(payload)) {
-      return payload.status !== 'draft';
-    }
-
-    if (typeof payload.isComplete === 'boolean') {
-      return payload.isComplete;
-    }
-
-    return payload.completedAt instanceof Date || typeof payload.completedAt === 'string';
+    return isPracticeSubmissionEnvelope(payload) && payload.status !== 'draft';
   }, []);
 
   const handleActivitySubmit = useCallback(

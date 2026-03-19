@@ -9,7 +9,7 @@ peer-critique-form: "Students apply a standardized rubric to evaluate peer work,
 feedback-collector: "Students use a multi-step form to rate their confidence and learning experience, providing qualitative data for instructor review."
 
 # Accounting & Financials
-journal-entry-activity: "Students record double-entry transactions by dragging account names and inputting balanced debit/credit values with real-time balance checking."
+journal-entry-building: "Students record double-entry transactions by dragging account names and inputting balanced debit/credit values with real-time balance checking."
 journal-entry: "A focused widget for recording single business transactions, helping students practice the fundamental 'Left for Debit, Right for Credit' rule."
 account-categorization: "A drag-and-drop sorting task where students classify accounts into Assets, Liabilities, Equity, Revenue, or Expenses buckets."
 trial-balance-sorting: "Students organize account balances into Debit and Credit columns, calculating net differences to ensure the ledger is in balance."
@@ -45,9 +45,9 @@ pitch-presentation-builder: "Students select data points from their simulation p
 pay-structure-lab: "Students step through realistic hiring scenarios to choose between hourly, salary, and commission pay structures while seeing the real-time impact on payroll taxes and net pay."
 
 # Spreadsheet & Data Tools
-spreadsheet-activity: "A full-featured grid where students write formulas (e.g., =SUM, =A1*B1) and format cells to solve business problems."
+spreadsheet: "A full-featured grid where students write formulas (e.g., =SUM, =A1*B1) and format cells to solve business problems."
 spreadsheet-evaluator: "A goal-oriented spreadsheet task where the system validates specific cell values and formula logic against a hidden 'Answer Key'."
-data-cleaning-activity: "Students identify and fix 'Messy Data' (duplicates, formatting errors) to prepare a dataset for accurate reporting."
+data-cleaning: "Students identify and fix 'Messy Data' (duplicates, formatting errors) to prepare a dataset for accurate reporting."
 spreadsheet-wrapper: "The underlying interactive engine that powers all grid-based activities, supporting cell references and basic math functions."
 spreadsheet-templates: "Pre-built spreadsheet models (e.g., Payroll, Tax, Break-Even) that students fill out to learn standard industry workflows."
 spreadsheet-adapter: "A technical bridge that ensures student spreadsheet data is correctly saved to the Supabase database for teacher grading."
@@ -61,7 +61,7 @@ doughnut-chart: "A variation of the pie chart focused on key center metrics, oft
 break-even-chart: "A dynamic graph where students see the 'Break-Even Point' move visually as they adjust fixed vs variable cost sliders."
 
 # Drag & Drop Exercises
-general-drag-and-drop: "A generic matching interface used for varied conceptual exercises like matching business terms to their definitions."
+drag-and-drop: "A generic matching interface used for varied conceptual exercises like matching business terms to their definitions."
 financial-statement-matching: "Students drag account names (e.g., 'Cash') to the correct financial statement where they belong (e.g., 'Balance Sheet')."
 break-even-components: "Students sort business costs into 'Fixed' and 'Variable' columns to build an accurate cost-volume-profit model."
 ratio-matching: "Students calculate ratios (e.g., Current Ratio) and match the numerical result to its qualitative business interpretation."

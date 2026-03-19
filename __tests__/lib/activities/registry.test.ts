@@ -17,16 +17,20 @@ describe('activityRegistry', () => {
     expect(getActivityComponent('tiered-assessment')).toBe(TieredAssessment);
   });
 
-  it('resolves documented drag-and-drop alias keys', () => {
-    expect(getActivityComponent('general-drag-and-drop')).toBe(GeneralDragAndDrop);
+  it('maps canonical drag-and-drop keys', () => {
+    expect(getActivityComponent('drag-and-drop')).toBe(GeneralDragAndDrop);
   });
 
-  it('resolves documented journal-entry alias keys', () => {
-    expect(getActivityComponent('journal-entry-activity')).toBe(JournalEntryActivity);
+  it('maps canonical journal-entry and data-cleaning keys', () => {
+    expect(getActivityComponent('journal-entry-building')).toBe(JournalEntryActivity);
+    expect(getActivityComponent('spreadsheet')).toBe(SpreadsheetActivityAdapter);
+    expect(getActivityComponent('data-cleaning')).toBe(DataCleaningActivity);
   });
 
-  it('resolves documented spreadsheet alias keys', () => {
-    expect(getActivityComponent('spreadsheet-activity')).toBe(SpreadsheetActivityAdapter);
-    expect(getActivityComponent('data-cleaning-activity')).toBe(DataCleaningActivity);
+  it('no longer resolves legacy compatibility aliases', () => {
+    expect(getActivityComponent('general-drag-and-drop')).toBeNull();
+    expect(getActivityComponent('journal-entry-activity')).toBeNull();
+    expect(getActivityComponent('spreadsheet-activity')).toBeNull();
+    expect(getActivityComponent('data-cleaning-activity')).toBeNull();
   });
 });

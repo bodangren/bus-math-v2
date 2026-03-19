@@ -391,28 +391,22 @@ describe('ActivityRenderer', () => {
     );
   });
 
-  it('triggers phase completion when onSubmit payload marks the activity complete', async () => {
-    const SubmitCompletionComponent = ({
-      onSubmit,
+  it('triggers phase completion when the component signals completion directly', async () => {
+    const CompletionSignalComponent = ({
+      onComplete,
     }: {
-      onSubmit?: (payload: Record<string, unknown>) => void;
+      onComplete?: () => void;
     }) => (
       <button
-        onClick={() =>
-          onSubmit?.({
-            activityId: 'test-activity-id',
-            isComplete: true,
-            completedAt: new Date(),
-          })
-        }
+        onClick={() => onComplete?.()}
       >
-        Submit complete payload
+        Complete activity
       </button>
     );
 
     mockGetActivityComponent.mockImplementation((componentKey: string) => {
-      if (componentKey === 'spreadsheet-evaluator') {
-        return SubmitCompletionComponent;
+      if (componentKey === 'spreadsheet') {
+        return CompletionSignalComponent;
       }
       return null;
     });
@@ -420,17 +414,17 @@ describe('ActivityRenderer', () => {
       ok: true,
       json: async () =>
         buildActivity({
-          componentKey: 'spreadsheet-evaluator',
+          componentKey: 'spreadsheet',
         }),
     });
 
     render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /submit complete payload/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /complete activity/i })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /submit complete payload/i }));
+    fireEvent.click(screen.getByRole('button', { name: /complete activity/i }));
 
     await waitFor(() => {
       expect(mockCompletePhase).toHaveBeenCalledTimes(1);
@@ -463,8 +457,8 @@ describe('ActivityRenderer', () => {
     );
   });
 
-  it('does not trigger phase completion when onSubmit payload is incomplete', async () => {
-    const SubmitIncompleteComponent = ({
+  it('does not trigger phase completion when a legacy completion payload is submitted', async () => {
+    const LegacyCompletionComponent = ({
       onSubmit,
     }: {
       onSubmit?: (payload: Record<string, unknown>) => void;
@@ -473,18 +467,18 @@ describe('ActivityRenderer', () => {
         onClick={() =>
           onSubmit?.({
             activityId: 'test-activity-id',
-            isComplete: false,
             completedAt: new Date(),
+            isComplete: true,
           })
         }
       >
-        Submit incomplete payload
+        Submit legacy payload
       </button>
     );
 
     mockGetActivityComponent.mockImplementation((componentKey: string) => {
-      if (componentKey === 'spreadsheet-evaluator') {
-        return SubmitIncompleteComponent;
+      if (componentKey === 'spreadsheet') {
+        return LegacyCompletionComponent;
       }
       return null;
     });
@@ -492,17 +486,17 @@ describe('ActivityRenderer', () => {
       ok: true,
       json: async () =>
         buildActivity({
-          componentKey: 'spreadsheet-evaluator',
+          componentKey: 'spreadsheet',
         }),
     });
 
     render(<ActivityRenderer activityId="test-activity-id" lessonId="test-lesson-id" phaseNumber={1} />);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /submit incomplete payload/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /submit legacy payload/i })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /submit incomplete payload/i }));
+    fireEvent.click(screen.getByRole('button', { name: /submit legacy payload/i }));
 
     await waitFor(() => {
       expect(mockCompletePhase).not.toHaveBeenCalled();

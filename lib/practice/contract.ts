@@ -78,26 +78,7 @@ export const practiceSubmissionEnvelopeSchema = z.object({
 
 export type PracticeSubmissionEnvelope = z.infer<typeof practiceSubmissionEnvelopeSchema>;
 
-export type PracticeSubmissionCompletionPayload = {
-  activityId?: string;
-  isComplete?: boolean;
-  completedAt?: Date | string;
-  score?: number;
-  totalQuestions?: number;
-  attempts?: number;
-  answers?: Record<string, unknown>;
-  responses?: Record<string, unknown>;
-  interactionHistory?: unknown[];
-  metadata?: Record<string, unknown>;
-  artifact?: Record<string, unknown>;
-  analytics?: Record<string, unknown>;
-  studentFeedback?: string;
-  teacherSummary?: string;
-};
-
-export type PracticeSubmissionCallbackPayload =
-  | PracticeSubmissionEnvelope
-  | PracticeSubmissionCompletionPayload;
+export type PracticeSubmissionCallbackPayload = PracticeSubmissionEnvelope;
 
 export function isPracticeSubmissionEnvelope(
   value: unknown,

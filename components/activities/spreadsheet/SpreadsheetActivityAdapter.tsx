@@ -1,17 +1,11 @@
 'use client';
 
 import { SpreadsheetActivity } from './SpreadsheetActivity';
-import type { SpreadsheetData } from './SpreadsheetWrapper';
 import type { Activity } from '@/lib/db/schema/validators';
 import type { SpreadsheetActivityProps } from '@/types/activities';
 
 interface SpreadsheetActivityAdapterProps {
   activity: Activity;
-  onSubmit?: (payload: {
-    activityId: string;
-    isComplete: boolean;
-    completedAt: Date;
-  }) => void;
   onComplete?: () => void;
 }
 
@@ -26,23 +20,17 @@ interface SpreadsheetActivityAdapterProps {
  *
  * This adapter:
  *  1. Extracts activity.props and spreads them as flat props.
- *  2. Converts the SpreadsheetActivity onSubmit callback into the
- *     ActivitySubmissionPayload shape that ActivityRenderer expects, including
- *     isComplete: true and completedAt so the phase-completion flow fires.
+ *  2. Treats spreadsheet submission as a direct completion signal so the
+ *     renderer can advance the phase without a legacy completion payload shim.
  */
 export function SpreadsheetActivityAdapter({
   activity,
-  onSubmit,
+  onComplete,
 }: SpreadsheetActivityAdapterProps) {
   const props = activity.props as SpreadsheetActivityProps;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSubmit = (_data: { spreadsheetData: SpreadsheetData }) => {
-    onSubmit?.({
-      activityId: activity.id,
-      isComplete: true,
-      completedAt: new Date(),
-    });
+  const handleSubmit = () => {
+    onComplete?.();
   };
 
   return <SpreadsheetActivity {...props} onSubmit={handleSubmit} />;
