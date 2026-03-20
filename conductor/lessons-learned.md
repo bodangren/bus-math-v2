@@ -35,6 +35,7 @@
 - (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, and they also catch registry typing issues; keep public string lookups and internal map keys aligned, and only serialize fields the source item actually owns.
 - (2026-03-20, practice_component_legacy_backfill) Keyboard-move fallback should live inside the shared categorization surface so teacher review annotations, keyboard controls, and drag/drop state stay synchronized.
 - (2026-03-20, normal_balance_family) Build-time type checks can catch readonly ontology union narrowing issues early; reuse existing helpers like `isContra` instead of probing optional fields directly in generator filters.
+- (2026-03-20, adjustment_effects_family) Omission/consequence matrices work best when the scenario preamble is shown above the grid and the matrix auto-advances one row at a time; the prompt needs the classroom context before the choices.
 
 ### Patterns Worth Repeating
 

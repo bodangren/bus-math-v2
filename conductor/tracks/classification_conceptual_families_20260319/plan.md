@@ -41,23 +41,23 @@
 
 ## Phase 3 — Family K: Effects of Missing Adjustments
 
-- [ ] Task: Build simplified adjustment scenario generator for Family K (`lib/practice/engine/families/adjustment-effects.ts`)
-    - [ ] Write unit tests: generates adjustment scenarios (accrual, deferral, depreciation), computes correct effect matrix
-    - [ ] Implement local adjustment scenario generator (simplified; does not need to match Family J's full generator interface)
-    - [ ] Implement solver deriving 6-element effect classification from the adjustment
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build simplified adjustment scenario generator for Family K (`lib/practice/engine/families/adjustment-effects.ts`)
+    - [x] Write unit tests: generates adjustment scenarios (accrual, deferral, depreciation), computes correct effect matrix
+    - [x] Implement local adjustment scenario generator (simplified; does not need to match Family J's full generator interface)
+    - [x] Implement solver deriving 6-element effect classification from the adjustment
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family K grader and envelope
-    - [ ] Write unit tests: per-element scoring, misconception tags for common reversal errors
-    - [ ] Implement grader and toEnvelope mapping
-    - [ ] Register familyKey `adjustment-effects`
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family K grader and envelope
+    - [x] Write unit tests: per-element scoring, misconception tags for common reversal errors
+    - [x] Implement grader and toEnvelope mapping
+    - [x] Register familyKey `adjustment-effects`
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Connect Family K to SelectionMatrix UI
-    - [ ] Write component test: SelectionMatrix renders effect matrix (6 rows x 3 columns), emits correct response shape
-    - [ ] Implement adapter from Family K definition to SelectionMatrix props
-    - [ ] Update preview route with Family K sample
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Connect Family K to SelectionMatrix UI
+    - [x] Write component test: SelectionMatrix renders effect matrix (6 rows x 3 columns), emits correct response shape
+    - [x] Implement adapter from Family K definition to SelectionMatrix props
+    - [x] Update preview route with Family K sample
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 4 — Final Verification
 

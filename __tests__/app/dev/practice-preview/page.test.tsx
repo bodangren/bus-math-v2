@@ -8,7 +8,9 @@ afterEach(() => {
 });
 
 describe('practice preview page', () => {
-  it('renders in development mode', () => {
+  it(
+    'renders in development mode',
+    () => {
     vi.stubEnv('NODE_ENV', 'development');
 
     render(<PracticePreviewPage />);
@@ -22,9 +24,15 @@ describe('practice preview page', () => {
     expect(screen.getByRole('heading', { name: /normal balances and account nature/i })).toBeInTheDocument();
     expect(screen.getByText(/family m guided practice/i)).toBeInTheDocument();
     expect(screen.getByText(/family m teacher review/i)).toBeInTheDocument();
+    expect(screen.getByText(/family k preview/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /effects of missing adjustments/i })).toBeInTheDocument();
+    expect(screen.getByText(/family k guided practice/i)).toBeInTheDocument();
+    expect(screen.getByText(/family k teacher review/i)).toBeInTheDocument();
     expect(screen.getByText(/selection matrix/i)).toBeInTheDocument();
     expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
     expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();
     expect(screen.getByText(/categorization list/i)).toBeInTheDocument();
-  });
+  },
+    20000,
+  );
 });

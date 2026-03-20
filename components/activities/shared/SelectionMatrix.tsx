@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -102,8 +102,11 @@ export function SelectionMatrix({
   submissionSummary,
 }: SelectionMatrixProps) {
   const [internalValue, setInternalValue] = useState<Record<string, string | string[]>>(defaultValue ?? {});
+  const [announcement, setAnnouncement] = useState('');
   const selectedValues = value ?? internalValue;
   const cellRefs = useRef(new Map<string, HTMLButtonElement>());
+  const lastInteractionRef = useRef<'keyboard' | 'pointer' | 'touch' | null>(null);
+  const matrixId = useId();
 
   useEffect(() => {
     if (value === undefined && defaultValue) {
@@ -147,6 +150,18 @@ export function SelectionMatrix({
     nextCell?.focus();
   };
 
+  const moveToFirstCellInNextRow = (rowId: string) => {
+    const rowIndex = rowIndexes.get(rowId);
+    const firstColumn = columns[0];
+    const nextRow = rowIndex === undefined ? undefined : rows[rowIndex + 1];
+
+    if (!firstColumn || !nextRow) {
+      return;
+    }
+
+    cellRefs.current.get(`${nextRow.id}:${firstColumn.id}`)?.focus();
+  };
+
   const renderCell = (row: SelectionMatrixRow, column: SelectionMatrixColumn) => {
     const selectionMode = row.selectionMode ?? 'single';
     const rowValue = selectedValues[row.id];
@@ -170,31 +185,48 @@ export function SelectionMatrix({
         type="button"
         role={selectionMode === 'multiple' ? 'checkbox' : 'radio'}
         aria-checked={isSelected}
-        aria-label={`${row.label} ${column.label}`}
+        aria-label={`${row.label}: ${column.label}`}
+        aria-describedby={row.description ? `${matrixId}-${row.id}-description` : undefined}
         disabled={readOnly}
+        onPointerDown={(event) => {
+          lastInteractionRef.current = event.pointerType === 'touch' ? 'touch' : 'pointer';
+        }}
         onClick={() => {
-          if (readOnly) return;
+          if (readOnly || lastInteractionRef.current === 'keyboard') return;
           updateValue(toggleSelectedValue(selectedValues, row, column.id));
+          setAnnouncement(`${row.label} set to ${column.label}`);
+          if (selectionMode === 'single' && lastInteractionRef.current !== 'touch') {
+            moveToFirstCellInNextRow(row.id);
+          }
         }}
         onKeyDown={(event) => {
           if (readOnly) return;
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
+            lastInteractionRef.current = 'keyboard';
             updateValue(toggleSelectedValue(selectedValues, row, column.id));
+            setAnnouncement(`${row.label} set to ${column.label}`);
+            if (selectionMode === 'single') {
+              moveToFirstCellInNextRow(row.id);
+            }
             return;
           }
 
           if (event.key === 'ArrowLeft') {
             event.preventDefault();
+            lastInteractionRef.current = 'keyboard';
             moveFocus(row.id, column.id, 'left');
           } else if (event.key === 'ArrowRight') {
             event.preventDefault();
+            lastInteractionRef.current = 'keyboard';
             moveFocus(row.id, column.id, 'right');
           } else if (event.key === 'ArrowUp') {
             event.preventDefault();
+            lastInteractionRef.current = 'keyboard';
             moveFocus(row.id, column.id, 'up');
           } else if (event.key === 'ArrowDown') {
             event.preventDefault();
+            lastInteractionRef.current = 'keyboard';
             moveFocus(row.id, column.id, 'down');
           }
         }}
@@ -244,6 +276,9 @@ export function SelectionMatrix({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {announcement}
+        </div>
         <div className="space-y-3">
           {rows.map((row) => {
             const feedback = rowFeedback[row.id];
@@ -267,7 +302,11 @@ export function SelectionMatrix({
                 <div className="grid gap-3 md:grid-cols-[minmax(220px,1.2fr)_minmax(0,1fr)]">
                   <div className="space-y-1">
                     <div className="font-medium">{row.label}</div>
-                    {row.description && <div className="text-sm text-muted-foreground">{row.description}</div>}
+                    {row.description && (
+                      <div id={`${matrixId}-${row.id}-description`} className="text-sm text-muted-foreground">
+                        {row.description}
+                      </div>
+                    )}
                     {row.hint && !readOnly && <div className="text-xs text-muted-foreground/80">{row.hint}</div>}
                   </div>
                   <div

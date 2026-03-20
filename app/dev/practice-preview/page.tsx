@@ -8,6 +8,11 @@ import {
   type SelectionMatrixRowFeedback,
 } from '@/components/activities/shared';
 import { practiceAccounts } from '@/lib/practice/engine/accounts';
+import {
+  adjustmentEffectsFamily,
+  buildAdjustmentEffectsReviewFeedback,
+  type AdjustmentEffectsResponse,
+} from '@/lib/practice/engine/families/adjustment-effects';
 import { buildNormalBalanceReviewFeedback, normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
 import { generateMiniLedger } from '@/lib/practice/engine/mini-ledger';
 import { formatAccountingAmount } from '@/components/activities/shared/utils';
@@ -275,6 +280,48 @@ export default function PracticePreviewPage() {
     ]),
   );
 
+  const adjustmentEffectsDefinition = adjustmentEffectsFamily.generate(2026, {
+    mode: 'guided_practice',
+    scenarioKind: 'depreciation',
+  });
+  const adjustmentEffectsSolution = adjustmentEffectsFamily.solve(adjustmentEffectsDefinition);
+  const adjustmentEffectOrder = ['overstated', 'understated', 'no-effect'] as const;
+  const adjustmentEffectsStudentResponse = adjustmentEffectsDefinition.parts.reduce<AdjustmentEffectsResponse>(
+    (acc, part, index) => {
+      const solution = adjustmentEffectsSolution[part.id];
+      if (index < 2) {
+        const alternateEffect = adjustmentEffectOrder.find((effect) => effect !== solution) ?? solution;
+        acc[part.id] = alternateEffect;
+        return acc;
+      }
+
+      acc[part.id] = solution;
+      return acc;
+    },
+    {} as AdjustmentEffectsResponse,
+  );
+  const adjustmentEffectsGrade = adjustmentEffectsFamily.grade(adjustmentEffectsDefinition, adjustmentEffectsStudentResponse);
+  const adjustmentEffectsFeedback = buildAdjustmentEffectsReviewFeedback(
+    adjustmentEffectsDefinition,
+    adjustmentEffectsStudentResponse,
+    adjustmentEffectsGrade,
+  );
+  const adjustmentEffectsReviewFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
+    adjustmentEffectsDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: (adjustmentEffectsFeedback[part.id]?.status ?? 'incorrect') as SelectionMatrixRowFeedback['status'],
+        scoreLabel: adjustmentEffectsFeedback[part.id]?.scoreLabel ?? '0/1',
+        selectedLabel: adjustmentEffectsFeedback[part.id]?.selectedLabel ?? 'Not selected',
+        expectedLabel:
+          adjustmentEffectsFeedback[part.id]?.expectedLabel ??
+          (part.targetId === 'no-effect' ? 'No effect' : `${part.targetId[0].toUpperCase()}${part.targetId.slice(1)}`),
+        misconceptionTags: adjustmentEffectsFeedback[part.id]?.misconceptionTags ?? [],
+        message: adjustmentEffectsFeedback[part.id]?.message,
+      },
+    ]),
+  );
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -357,6 +404,64 @@ export default function PracticePreviewPage() {
                 attempts: 1,
                 submittedAt: '2026-03-20 09:20',
                 misconceptionCount: new Set(Object.values(normalBalanceFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size,
+              }}
+            />
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family K preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Effects of Missing Adjustments</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              The same omission scenario appears in a guided student state and a teacher review with annotated consequence patterns.
+            </p>
+          </div>
+
+          <div className="grid gap-4 rounded-2xl border bg-slate-50/80 p-4">
+            <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+              <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.scenario}</div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What was missed</div>
+              <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.missedAdjustment}</div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Assumption</div>
+              <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.periodEndAssumption}</div>
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-500">
+            Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements.
+          </p>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <SelectionMatrix
+              title="Family K Guided Practice"
+              description={adjustmentEffectsDefinition.prompt.stem}
+              rows={adjustmentEffectsDefinition.rows}
+              columns={adjustmentEffectsDefinition.columns}
+              defaultValue={adjustmentEffectsSolution}
+            />
+
+            <SelectionMatrix
+              title="Family K Teacher Review"
+              description={adjustmentEffectsDefinition.prompt.stem}
+              rows={adjustmentEffectsDefinition.rows}
+              columns={adjustmentEffectsDefinition.columns}
+              readOnly
+              teacherView
+              defaultValue={adjustmentEffectsStudentResponse}
+              rowFeedback={adjustmentEffectsReviewFeedback}
+              submissionSummary={{
+                scoreLabel: `${adjustmentEffectsGrade.score}/${adjustmentEffectsGrade.maxScore} correct`,
+                attempts: 1,
+                submittedAt: '2026-03-20 09:25',
+                misconceptionCount: new Set(
+                  Object.values(adjustmentEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
+                ).size,
               }}
             />
           </div>

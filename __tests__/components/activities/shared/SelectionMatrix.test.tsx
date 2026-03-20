@@ -24,8 +24,8 @@ describe('SelectionMatrix', () => {
       />,
     );
 
-    await user.click(screen.getByRole('radio', { name: /assets balance sheet/i }));
-    await user.click(screen.getByRole('checkbox', { name: /contra accounts balance sheet/i }));
+    await user.click(screen.getByRole('radio', { name: /assets: balance sheet/i }));
+    await user.click(screen.getByRole('checkbox', { name: /contra accounts: balance sheet/i }));
 
     expect(onValueChange).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -33,6 +33,29 @@ describe('SelectionMatrix', () => {
         contra: ['balance-sheet'],
       }),
     );
+  });
+
+  it('advances focus to the next row after a single-select choice', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <SelectionMatrix
+        title="Effects of missing adjustments"
+        rows={[
+          { id: 'revenue', label: 'Revenue', selectionMode: 'single' },
+          { id: 'expense', label: 'Expense', selectionMode: 'single' },
+        ]}
+        columns={[
+          { id: 'overstated', label: 'Overstated' },
+          { id: 'understated', label: 'Understated' },
+          { id: 'no-effect', label: 'No effect' },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByRole('radio', { name: /revenue: understated/i }));
+
+    expect(screen.getByRole('radio', { name: /expense: overstated/i })).toHaveFocus();
   });
 
   it('renders teacher review summary and row feedback copy', () => {
