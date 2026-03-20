@@ -8,7 +8,6 @@
 - (2026-03-11, replan) Published lesson version helpers are foundational; student delivery and teacher monitoring must share them rather than recomputing progress independently.
 - (2026-03-11, replan) Student write routes need explicit student-role request guards even when teacher preview paths exist elsewhere.
 - (2026-03-11, replan) Curriculum planning and runtime implementation drift unless lesson archetypes are declared explicitly and reused across docs, seeds, and UI shells.
-
 ### Recurring Gotchas
 
 - (2026-03-11, replan) “Full curriculum” claims are misleading unless the seeded and published runtime content actually matches the planned curriculum count.
@@ -36,7 +35,6 @@
 - (2026-03-20, practice_component_legacy_backfill) Keyboard-move fallback should live inside the shared categorization surface so teacher review annotations, keyboard controls, and drag/drop state stay synchronized.
 - (2026-03-20, normal_balance_family) Build-time type checks can catch readonly ontology union narrowing issues early; reuse existing helpers like `isContra` instead of probing optional fields directly in generator filters.
 - (2026-03-20, adjustment_effects_family) Omission/consequence matrices work best when the scenario preamble is shown above the grid and the matrix auto-advances one row at a time; the prompt needs the classroom context before the choices.
-
 ### Patterns Worth Repeating
 
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.
@@ -49,3 +47,4 @@
 - (2026-03-14, curriculum_rollout_wave2) Unit-level authored blueprint modules are a practical way to scale later curriculum waves because they keep matrix detail, contract resources, and published lesson text aligned without reintroducing runtime-only generators.
 - (2026-03-14, capstone_textbook_completion) A shared curriculum-segment label helper is the simplest way to keep capstone naming coherent across public, student, and teacher flows without creating capstone-only storage or route forks.
 - (2026-03-19, practice_contract_planning) When active architecture docs are testable contract surfaces, keep the live copy under `conductor/docs/architecture/` and mirror the runtime checklist links in README/runtime docs so archive cleanup does not strand the active surface; preview slices should reuse the live family generator/solver/grader outputs so guided and teacher states stay synchronized.
+- (2026-03-20, classification_conceptual_families) Final verification is easiest when the family registry, preview samples, and plan are already aligned; archive only after lint, full test, and build all pass against the same shared practice contract surface.
