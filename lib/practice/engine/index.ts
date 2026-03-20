@@ -4,5 +4,7 @@ export * from './families/adjustment-effects';
 export * from './families/classification';
 export * from './families/normal-balance';
 export * from './mini-ledger';
+export * from './merchandising';
 export * from './reference-family';
+export * from './transactions';
 export * from './types';

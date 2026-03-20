@@ -42,7 +42,7 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [ ] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
+- [~] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
   *Link: [./tracks/journal_transaction_families_20260319/](./tracks/journal_transaction_families_20260319/)*
   *Status: Starts after Track 6; builds transaction event library and merchandising timeline generator; implements transaction-effects (C), transaction-matrix (F), journal-entry (H), cycle-decisions (L), and merchandising-entries (P) families.*
 

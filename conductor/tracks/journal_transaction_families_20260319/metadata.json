@@ -1,9 +1,9 @@
 {
   "track_id": "journal_transaction_families_20260319",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-03-19T00:00:00Z",
-  "updated_at": "2026-03-19T00:00:00Z",
+  "updated_at": "2026-03-20T04:07:01Z",
   "description": "Implement journal entry and transaction practice families: C (Transaction Effects), F (Transaction Matrix), H (Journal Entry Recording), L (Closing/Correcting/Reversing), P (Merchandising Journal Entries)",
   "estimated_tasks": 15,
   "actual_tasks": null,

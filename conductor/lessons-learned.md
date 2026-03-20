@@ -6,8 +6,6 @@
 
 - (2026-03-11, replan) Convex must remain the only runtime source of truth or product, monitoring, and curriculum delivery drift immediately.
 - (2026-03-11, replan) Published lesson version helpers are foundational; student delivery and teacher monitoring must share them rather than recomputing progress independently.
-- (2026-03-11, replan) Student write routes need explicit student-role request guards even when teacher preview paths exist elsewhere.
-- (2026-03-11, replan) Curriculum planning and runtime implementation drift unless lesson archetypes are declared explicitly and reused across docs, seeds, and UI shells.
 ### Recurring Gotchas
 
 - (2026-03-11, replan) “Full curriculum” claims are misleading unless the seeded and published runtime content actually matches the planned curriculum count.
@@ -35,6 +33,8 @@
 - (2026-03-20, practice_component_legacy_backfill) Keyboard-move fallback should live inside the shared categorization surface so teacher review annotations, keyboard controls, and drag/drop state stay synchronized.
 - (2026-03-20, normal_balance_family) Build-time type checks can catch readonly ontology union narrowing issues early; reuse existing helpers like `isContra` instead of probing optional fields directly in generator filters.
 - (2026-03-20, adjustment_effects_family) Omission/consequence matrices work best when the scenario preamble is shown above the grid and the matrix auto-advances one row at a time; the prompt needs the classroom context before the choices.
+- (2026-03-20, journal_transaction_families_20260319) On-account purchases and expenses should increase Accounts Payable, while cash settlements decrease Cash; getting the sign right keeps transaction and merchandising journal lines balanced.
+- (2026-03-20, journal_transaction_families_20260319) Full-suite verification still emits the pre-existing `baseline-browser-mapping` warning, but it does not block the phase-1 practice engine slice.
 ### Patterns Worth Repeating
 
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.

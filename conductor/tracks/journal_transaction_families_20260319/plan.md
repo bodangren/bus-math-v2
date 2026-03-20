@@ -2,17 +2,17 @@
 
 ## Phase 1 — Shared Infrastructure: Transaction Event Library and Merchandising Timeline
 
-- [ ] Task: Build transaction event library (`lib/practice/engine/transactions.ts`)
-    - [ ] Write unit tests: each archetype produces valid account effects, direction, amount rules; variant generation by label/amount/context
-    - [ ] Implement typed transaction archetype catalog (owner invests, earns revenue cash/on-account, collects receivable, pays payable, pays expense, purchases supplies/equipment cash/on-account, receives advance, owner withdraws)
-    - [ ] Implement variant generation helpers (swap labels, amounts, cash vs on-account, service vs merchandise)
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build transaction event library (`lib/practice/engine/transactions.ts`)
+    - [x] Write unit tests: each archetype produces valid account effects, direction, amount rules; variant generation by label/amount/context
+    - [x] Implement typed transaction archetype catalog (owner invests, earns revenue cash/on-account, collects receivable, pays payable, pays expense, purchases supplies/equipment cash/on-account, receives advance, owner withdraws)
+    - [x] Implement variant generation helpers (swap labels, amounts, cash vs on-account, service vs merchandise)
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build merchandising timeline generator (`lib/practice/engine/merchandising.ts`)
-    - [ ] Write unit tests: seller and buyer timelines, discount eligibility, FOB freight allocation, return-before-discount, deterministic per seed
-    - [ ] Implement timeline generator with parameters: role, inventory system, discount method, amounts, terms, freight, FOB
-    - [ ] Implement timeline solver: processes events in order, emits journal lines per date
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build merchandising timeline generator (`lib/practice/engine/merchandising.ts`)
+    - [x] Write unit tests: seller and buyer timelines, discount eligibility, FOB freight allocation, return-before-discount, deterministic per seed
+    - [x] Implement timeline generator with parameters: role, inventory system, discount method, amounts, terms, freight, FOB
+    - [x] Implement timeline solver: processes events in order, emits journal lines per date
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 2 — Families C and F: Transaction Analysis
 
