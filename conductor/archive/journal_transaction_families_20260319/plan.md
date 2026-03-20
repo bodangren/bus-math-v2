@@ -64,37 +64,37 @@
 
 ## Phase 4 — Families L and P: Cycle Decisions and Merchandising Entries
 
-- [ ] Task: Build Family L generator, solver, and grader (`lib/practice/engine/families/cycle-decisions.ts`)
-    - [ ] Write unit tests: closing entries from adjusted trial balance, reversing-entry selection with "reversing recommended" tagging, correcting entries
-    - [ ] Implement generator modeling period-end account status
-    - [ ] Implement solver for closing, correcting, and reversing entries
-    - [ ] Implement grader with per-entry scoring
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family L generator, solver, and grader (`lib/practice/engine/families/cycle-decisions.ts`)
+    - [x] Write unit tests: closing entries from adjusted trial balance, reversing-entry selection with "reversing recommended" tagging, correcting entries
+    - [x] Implement generator modeling period-end account status
+    - [x] Implement solver for closing, correcting, and reversing entries
+    - [x] Implement grader with per-entry scoring
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family L to practice.v1 envelope and UI
-    - [ ] Write integration test: selection tasks via SelectionMatrix, entry tasks via JournalEntryTable
-    - [ ] Implement toEnvelope, register familyKey `cycle-decisions`
-    - [ ] Implement adapters for both UI components
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family L to practice.v1 envelope and UI
+    - [x] Write integration test: selection tasks via SelectionMatrix, entry tasks via JournalEntryTable
+    - [x] Implement toEnvelope, register familyKey `cycle-decisions`
+    - [x] Implement adapters for both UI components
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family P generator, solver, and grader (`lib/practice/engine/families/merchandising-entries.ts`)
-    - [ ] Write unit tests: seller perpetual (revenue + inventory sides), buyer gross vs net method, multi-date timelines, freight entries
-    - [ ] Implement generator consuming merchandising timeline generator
-    - [ ] Implement solver and grader with paired-entry awareness
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family P generator, solver, and grader (`lib/practice/engine/families/merchandising-entries.ts`)
+    - [x] Write unit tests: seller perpetual (revenue + inventory sides), buyer gross vs net method, multi-date timelines, freight entries
+    - [x] Implement generator consuming merchandising timeline generator
+    - [x] Implement solver and grader with paired-entry awareness
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family P to practice.v1 envelope and JournalEntryTable UI
-    - [ ] Write integration test: full round-trip with multi-date merchandising entries
-    - [ ] Implement toEnvelope, register familyKey `merchandising-entries`
-    - [ ] Implement adapter to JournalEntryTable props
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family P to practice.v1 envelope and JournalEntryTable UI
+    - [x] Write integration test: full round-trip with multi-date merchandising entries
+    - [x] Implement toEnvelope, register familyKey `merchandising-entries`
+    - [x] Implement adapter to JournalEntryTable props
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 5 — Final Verification
 
-- [ ] Task: Update family key registry and final verification
-    - [ ] Update practice-component-contract.md: mark families C, F, H, L, P as `implemented`
-    - [ ] Run `npm run lint`, `npm test`, and `vinext build`
-    - [ ] Verify all acceptance criteria are met
-    - [ ] Update lessons-learned.md and tech-debt.md if warranted
+- [x] Task: Update family key registry and final verification
+    - [x] Update practice-component-contract.md: mark families C, F, H, L, P as `implemented`
+    - [x] Run `npm run lint`, `npm test`, and `vinext build`
+    - [x] Verify all acceptance criteria are met
+    - [x] Update lessons-learned.md and tech-debt.md if warranted

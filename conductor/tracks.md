@@ -42,10 +42,6 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [~] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
-  *Link: [./tracks/journal_transaction_families_20260319/](./tracks/journal_transaction_families_20260319/)*
-  *Status: Starts after Track 6; builds transaction event library and merchandising timeline generator; implements transaction-effects (C), transaction-matrix (F), journal-entry (H), cycle-decisions (L), and merchandising-entries (P) families.*
-
 - [ ] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
   *Link: [./tracks/statement_computation_families_20260319/](./tracks/statement_computation_families_20260319/)*
   *Status: Starts after Track 6; builds adjustment scenario generator; implements accounting-equation (B), statement-completion (D), statement-construction (E), posting-balances (I), adjusting-calculations (J), depreciation-presentation (N), merchandising-computation (O), and statement-subtotals (Q) families.*
@@ -63,6 +59,10 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
 
 ## Archive Ledger
+
+- [x] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
+  *Link: [./archive/journal_transaction_families_20260319/](./archive/journal_transaction_families_20260319/)*
+  *Closeout: archived on 2026-03-20 after finishing the full journal/transaction family wave, wiring the cycle-decision and merchandising-entry engines into the shared practice contract and preview surfaces, and verifying the phase with full lint, test, and production build gates.*
 
 - [x] **Track: Classification and Conceptual Practice Families**
   *Link: [./archive/classification_conceptual_families_20260319/](./archive/classification_conceptual_families_20260319/)*
