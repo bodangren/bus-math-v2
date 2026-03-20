@@ -50,6 +50,14 @@ describe('practice preview page', () => {
       expect(screen.getByRole('heading', { name: /merchandising entries/i })).toBeInTheDocument();
       expect(screen.getByText(/family p guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family p teacher review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family b preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /accounting equation workbench/i })).toBeInTheDocument();
+      expect(screen.getByText(/family b guided practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/family b teacher review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family i preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /posting balances workboard/i })).toBeInTheDocument();
+      expect(screen.getByText(/family i guided practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/family i teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
       expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();
       expect(screen.getByText(/categorization list/i)).toBeInTheDocument();

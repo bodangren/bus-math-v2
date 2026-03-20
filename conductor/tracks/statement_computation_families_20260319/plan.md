@@ -10,29 +10,31 @@
 
 ## Phase 2 — Equation and Balance Families (B, I)
 
-- [ ] Task: Build Family B generator, solver, and grader (`lib/practice/engine/families/accounting-equation.ts`)
-    - [ ] Write unit tests: generates consistent financial state from mini-ledger, hides 1+ fields, solver finds missing values, grader with numeric tolerance
-    - [ ] Implement generator, solver, and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family B generator, solver, and grader (`lib/practice/engine/families/accounting-equation.ts`)
+    - [x] Write unit tests: generates consistent financial state from mini-ledger, hides 1+ fields, solver finds missing values, grader with numeric tolerance
+    - [x] Implement generator, solver, and grader
+    - [x] Verify: `npm run lint`, `npm test`, and `npm run build` pass
 
-- [ ] Task: Wire Family B to practice.v1 envelope and UI
-    - [ ] Write integration test: full round-trip
-    - [ ] Implement toEnvelope, register familyKey `accounting-equation`
-    - [ ] Implement equation layout with numeric inputs
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family B to practice.v1 envelope and UI
+    - [x] Write integration test: full round-trip
+    - [x] Implement toEnvelope, register familyKey `accounting-equation`
+    - [x] Implement equation layout with numeric inputs
+    - [x] Update preview route
+    - [x] Verify: `npm run lint`, `npm test`, and `npm run build` pass
 
-- [ ] Task: Build Family I generator, solver, and grader (`lib/practice/engine/families/posting-balances.ts`)
-    - [ ] Write unit tests: starting balances + posting sequence, solver computes signed ending balances, grader scores per-account
-    - [ ] Implement generator, solver, and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family I generator, solver, and grader (`lib/practice/engine/families/posting-balances.ts`)
+    - [x] Write unit tests: starting balances + posting sequence, solver computes signed ending balances, grader scores per-account
+    - [x] Implement generator, solver, and grader
+    - [x] Verify: `npm run lint`, `npm test`, and `npm run build` pass
 
-- [ ] Task: Wire Family I to practice.v1 envelope and UI
-    - [ ] Write integration test: full round-trip
-    - [ ] Implement toEnvelope, register familyKey `posting-balances`
-    - [ ] Implement account-list numeric input layout
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family I to practice.v1 envelope and UI
+    - [x] Write integration test: full round-trip
+    - [x] Implement toEnvelope, register familyKey `posting-balances`
+    - [x] Implement account-list numeric input layout
+    - [x] Update preview route
+    - [x] Verify: `npm run lint`, `npm test`, and `npm run build` pass
+
+- Phase 2 completed on 2026-03-20 after verifying the shared equation and balance families with the full test suite and production build.
 
 ## Phase 3 — Statement Families (D, E, Q)
 

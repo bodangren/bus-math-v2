@@ -2,14 +2,21 @@ import { notFound } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
 import {
+  AccountingEquationLayout,
   CategorizationList,
   JournalEntryTable,
+  PostingBalanceList,
   SelectionMatrix,
   StatementLayout,
   type JournalEntryRowFeedback,
   type SelectionMatrixRowFeedback,
 } from '@/components/activities/shared';
 import { practiceAccounts } from '@/lib/practice/engine/accounts';
+import {
+  accountingEquationFamily,
+  buildAccountingEquationReviewFeedback,
+  type AccountingEquationResponse,
+} from '@/lib/practice/engine/families/accounting-equation';
 import {
   adjustmentEffectsFamily,
   buildAdjustmentEffectsReviewFeedback,
@@ -41,6 +48,11 @@ import {
   transactionMatrixFamily,
   type TransactionMatrixResponse,
 } from '@/lib/practice/engine/families/transaction-matrix';
+import {
+  buildPostingBalanceReviewFeedback,
+  postingBalancesFamily,
+  type PostingBalanceResponse,
+} from '@/lib/practice/engine/families/posting-balances';
 import { generateMiniLedger } from '@/lib/practice/engine/mini-ledger';
 import { formatAccountingAmount } from '@/components/activities/shared/utils';
 
@@ -551,6 +563,56 @@ export default function PracticePreviewPage() {
       },
     ]),
   );
+
+  const accountingEquationDefinition = accountingEquationFamily.generate(2026, {
+    companyType: 'retail',
+    hiddenTermId: 'equity',
+    mode: 'guided_practice',
+    tolerance: 1,
+  });
+  const accountingEquationSolution = accountingEquationFamily.solve(accountingEquationDefinition);
+  const accountingEquationStudentResponse: AccountingEquationResponse = {
+    equity: Math.max(1, (accountingEquationSolution.equity ?? 0) - 400),
+  };
+  const accountingEquationGrade = accountingEquationFamily.grade(
+    accountingEquationDefinition,
+    accountingEquationStudentResponse,
+  );
+  const accountingEquationFeedback = buildAccountingEquationReviewFeedback(
+    accountingEquationDefinition,
+    accountingEquationStudentResponse,
+    accountingEquationGrade,
+  );
+
+  const postingBalancesDefinition = postingBalancesFamily.generate(2026, {
+    mode: 'guided_practice',
+    targetAccountCount: 4,
+    postingAccountCount: 3,
+    tolerance: 1,
+  });
+  const postingBalancesSolution = postingBalancesFamily.solve(postingBalancesDefinition);
+  const postingBalanceTarget =
+    postingBalancesDefinition.rows.find((row) => row.details.netChange !== 0) ?? postingBalancesDefinition.rows[0];
+  const postingBalancesStudentResponse: PostingBalanceResponse = postingBalanceTarget
+    ? {
+        ...postingBalancesSolution,
+        [postingBalanceTarget.id]: Math.max(1, (postingBalancesSolution[postingBalanceTarget.id] ?? 0) - 100),
+      }
+    : postingBalancesSolution;
+  const postingBalancesGrade = postingBalancesFamily.grade(postingBalancesDefinition, postingBalancesStudentResponse);
+  const postingBalancesFeedback = buildPostingBalanceReviewFeedback(
+    postingBalancesDefinition,
+    postingBalancesStudentResponse,
+    postingBalancesGrade,
+  );
+  const postingBalancesRows = postingBalancesDefinition.rows.map((row) => ({
+    id: row.id,
+    accountLabel: row.label,
+    startingBalance: row.details.startingBalance,
+    normalSide: row.details.normalSide,
+    netPostingCue: row.details.postingLines[0]?.effectLabel ?? 'No postings',
+    placeholder: '0',
+  }));
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
@@ -1094,6 +1156,78 @@ export default function PracticePreviewPage() {
                 rowFeedback={merchandisingEntryRowFeedback}
               />
             </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family B preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Accounting equation workbench</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family B uses the mini-ledger snapshot to hide one term in the accounting equation and keeps the teacher review
+              aligned with the same workbench.
+            </p>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <AccountingEquationLayout
+              title="Family B Guided Practice"
+              description="Complete the hidden term using the equation workbench."
+              facts={accountingEquationDefinition.facts}
+              terms={accountingEquationDefinition.terms}
+              mode="guided_practice"
+              helperText={accountingEquationDefinition.scaffolding.helperText}
+              defaultValues={{ equity: '' }}
+            />
+
+            <AccountingEquationLayout
+              title="Family B Teacher Review"
+              description="Read-only evidence with the submitted answer and a single review annotation."
+              facts={accountingEquationDefinition.facts}
+              terms={accountingEquationDefinition.terms}
+              mode="assessment"
+              values={{ equity: String(accountingEquationStudentResponse.equity) }}
+              readOnly
+              teacherView
+              feedback={accountingEquationFeedback}
+            />
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family I preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Posting balances workboard</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family I keeps the posting sequence in a reference panel and asks for the ending balance on each account row.
+            </p>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <PostingBalanceList
+              title="Family I Guided Practice"
+              description="Use the posting trail and starting balance to compute each ending balance."
+              referenceTitle={postingBalancesDefinition.scaffolding.referenceTitle}
+              referenceLines={postingBalancesDefinition.postingLines}
+              rows={postingBalancesRows}
+              mode="guided_practice"
+              defaultValues={Object.fromEntries(postingBalancesRows.map((row) => [row.id, '']))}
+            />
+
+            <PostingBalanceList
+              title="Family I Teacher Review"
+              description="Read-only evidence with row-level review feedback and posting tags."
+              referenceTitle={postingBalancesDefinition.scaffolding.referenceTitle}
+              referenceLines={postingBalancesDefinition.postingLines}
+              rows={postingBalancesRows}
+              mode="assessment"
+              values={Object.fromEntries(
+                postingBalancesDefinition.rows.map((row) => [row.id, String(postingBalancesStudentResponse[row.id] ?? '')]),
+              )}
+              readOnly
+              teacherView
+              rowFeedback={postingBalancesFeedback}
+            />
           </div>
         </section>
 

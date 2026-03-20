@@ -6,6 +6,7 @@ import { classificationFamily } from '@/lib/practice/engine/families/classificat
 import { journalEntryFamily } from '@/lib/practice/engine/families/journal-entry';
 import { merchandisingEntriesFamily } from '@/lib/practice/engine/families/merchandising-entries';
 import { normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
+import { postingBalancesFamily } from '@/lib/practice/engine/families/posting-balances';
 import { transactionEffectsFamily } from '@/lib/practice/engine/families/transaction-effects';
 import { transactionMatrixFamily } from '@/lib/practice/engine/families/transaction-matrix';
 import { getPracticeFamily, practiceFamilyRegistry } from '@/lib/practice/engine/family-registry';
@@ -39,6 +40,11 @@ describe('practice family registry', () => {
   it('registers the normal-balance family by familyKey', () => {
     expect(practiceFamilyRegistry['normal-balance']).toBe(normalBalanceFamily);
     expect(getPracticeFamily('normal-balance')).toBe(normalBalanceFamily);
+  });
+
+  it('registers the posting-balances family by familyKey', () => {
+    expect(practiceFamilyRegistry['posting-balances']).toBe(postingBalancesFamily);
+    expect(getPracticeFamily('posting-balances')).toBe(postingBalancesFamily);
   });
 
   it('registers the transaction-effects family by familyKey', () => {
