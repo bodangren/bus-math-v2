@@ -2,11 +2,11 @@
 
 ## Phase 1 — Shared Infrastructure: Adjustment Scenario Generator
 
-- [ ] Task: Build adjustment scenario generator (`lib/practice/engine/adjustments.ts`)
-    - [ ] Write unit tests: deferral scenarios (asset/expense method), accrual scenarios, depreciation scenarios (straight-line, variable salvage), date math, deterministic per seed
-    - [ ] Implement deferral generator with parameters: account label, original amount, start date, coverage period, reporting date, initial recording method
-    - [ ] Implement depreciation generator with parameters: asset category, cost, salvage value, useful life, purchase date, reporting date, method
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build adjustment scenario generator (`lib/practice/engine/adjustments.ts`)
+    - [x] Write unit tests: deferral scenarios (asset/expense method), accrual scenarios, depreciation scenarios (straight-line, variable salvage), date math, deterministic per seed
+    - [x] Implement deferral generator with parameters: account label, original amount, start date, coverage period, reporting date, initial recording method
+    - [x] Implement depreciation generator with parameters: asset category, cost, salvage value, useful life, purchase date, reporting date, method
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 2 — Equation and Balance Families (B, I)
 

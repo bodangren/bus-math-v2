@@ -42,9 +42,9 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [ ] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
+- [~] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
   *Link: [./tracks/statement_computation_families_20260319/](./tracks/statement_computation_families_20260319/)*
-  *Status: Starts after Track 6; builds adjustment scenario generator; implements accounting-equation (B), statement-completion (D), statement-construction (E), posting-balances (I), adjusting-calculations (J), depreciation-presentation (N), merchandising-computation (O), and statement-subtotals (Q) families.*
+  *Status: In Progress; phase 1 complete, phase 2 shared equation/balance families next.*
 
 - [ ] **Track: Trial Balance Error Analysis Family (G)**
   *Link: [./tracks/trial_balance_error_family_20260319/](./tracks/trial_balance_error_family_20260319/)*

@@ -1,4 +1,10 @@
 export * from './accounts';
+export {
+  generateAccrualAdjustmentScenario,
+  generateAdjustmentScenario,
+  generateDeferralAdjustmentScenario,
+  generateDepreciationAdjustmentScenario,
+} from './adjustments';
 export * from './family-registry';
 export * from './families/adjustment-effects';
 export * from './families/classification';
