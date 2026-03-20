@@ -214,8 +214,8 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `accounting-equation` | foundation | `StatementLayout` / numeric prompt | `mini-ledger` |
 | `classification` | implemented | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
 | `transaction-effects` | implemented | `SelectionMatrix` | `transaction-event-library` |
-| `statement-completion` | planned | `StatementLayout` | `mini-ledger` |
-| `statement-construction` | planned | `StatementLayout` | `mini-ledger` |
+| `statement-completion` | implemented | `StatementLayout` | `mini-ledger` |
+| `statement-construction` | implemented | `StatementLayout` | `mini-ledger` |
 | `transaction-matrix` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `trial-balance-errors` | planned | `SelectionMatrix` | `error-pattern-library` |
 | `journal-entry` | implemented | `JournalEntryTable` | `transaction-event-library` |
@@ -227,7 +227,7 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `depreciation-presentation` | planned | `StatementLayout` | `asset-register` |
 | `merchandising-computation` | planned | `StatementLayout` | `mini-ledger` + `retail-calculator` |
 | `merchandising-entries` | implemented | `JournalEntryTable` | `transaction-event-library` |
-| `statement-subtotals` | planned | `StatementLayout` | `mini-ledger` |
+| `statement-subtotals` | implemented | `StatementLayout` | `mini-ledger` |
 
 ## Analysis Requirements
 

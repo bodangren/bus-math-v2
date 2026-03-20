@@ -26,13 +26,88 @@ describe('StatementLayout', () => {
       />,
     );
 
-    await user.type(screen.getByLabelText('Revenue'), '1000');
+    await user.type(screen.getAllByLabelText('Revenue')[0], '1000');
 
     expect(onValueChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         revenue: '1000',
       }),
     );
-    expect(screen.getByText('1,000')).toBeInTheDocument();
+    expect(screen.getAllByText('1,000')[0]).toBeInTheDocument();
+  });
+
+  it('renders statement metadata, review summary, and inline teacher feedback', () => {
+    render(
+      <StatementLayout
+        title="Balance Sheet"
+        description="Complete the statement totals."
+        sections={[
+          {
+            id: 'assets',
+            label: 'Assets',
+            rows: [
+              { id: 'cash', label: 'Cash', kind: 'prefilled', value: 1200 },
+              { id: 'total-assets', label: 'Total Assets', kind: 'editable', placeholder: '0' },
+            ],
+          },
+        ]}
+        metadataBadges={[{ label: 'Balance sheet', variant: 'secondary' }]}
+        scaffoldText="Use the section totals to complete the missing amount."
+        reviewSummary={[
+          { label: 'Attempt', value: '1' },
+          { label: 'Score', value: '0/1' },
+          { label: 'Needs review', value: '1' },
+        ]}
+        teacherView
+        readOnly
+        rowFeedback={{
+          'total-assets': { status: 'incorrect', message: 'Total assets should equal the section total.' },
+        }}
+      />,
+    );
+
+    expect(screen.getByText('Balance sheet')).toBeInTheDocument();
+    expect(screen.getByText('Use the section totals to complete the missing amount.')).toBeInTheDocument();
+    expect(screen.getByText('Attempt')).toBeInTheDocument();
+    expect(screen.getByText('0/1')).toBeInTheDocument();
+    expect(screen.getAllByText('Total assets should equal the section total.')[0]).toBeInTheDocument();
+  });
+
+  it('supports editable line-item labels for statement construction rows', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+
+    render(
+      <StatementLayout
+        title="Balance Sheet"
+        sections={[
+          {
+            id: 'assets',
+            label: 'Assets',
+            rows: [
+              {
+                id: 'cash-row',
+                label: 'Asset account',
+                kind: 'editable',
+                editableField: 'label',
+                placeholder: 'Cash',
+                value: 1200,
+                note: 'Type the account name that belongs on this line.',
+              },
+            ],
+          },
+        ]}
+        onValueChange={onValueChange}
+      />,
+    );
+
+    await user.type(screen.getAllByLabelText('Asset account')[0], 'Cash');
+
+    expect(onValueChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        'cash-row': 'Cash',
+      }),
+    );
+    expect(screen.getAllByText('1,200').length).toBeGreaterThan(0);
   });
 });

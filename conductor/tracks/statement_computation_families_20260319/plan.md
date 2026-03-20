@@ -38,44 +38,48 @@
 
 ## Phase 3 — Statement Families (D, E, Q)
 
-- [ ] Task: Build Family D generator, solver, and grader (`lib/practice/engine/families/statement-completion.ts`)
-    - [ ] Write unit tests: generates full statement from mini-ledger, blanks selected rows, solver fills blanks, grader scores per-row
-    - [ ] Implement generator for income statement, balance sheet, and equity statement variants
-    - [ ] Implement solver and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family D generator, solver, and grader (`lib/practice/engine/families/statement-completion.ts`)
+    - [x] Write unit tests: generates full statement from mini-ledger, blanks selected rows, solver fills blanks, grader scores per-row
+    - [x] Implement generator for income statement, balance sheet, and equity statement variants
+    - [x] Implement solver and grader
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family D to practice.v1 envelope and StatementLayout UI
-    - [ ] Write integration test: full round-trip with prefilled + editable rows
-    - [ ] Implement toEnvelope, register familyKey `statement-completion`
-    - [ ] Implement adapter to StatementLayout props
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family D to practice.v1 envelope and StatementLayout UI
+    - [x] Write integration test: full round-trip with prefilled + editable rows
+    - [x] Implement toEnvelope, register familyKey `statement-completion`
+    - [x] Implement adapter to StatementLayout props
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family E generator, solver, and grader (`lib/practice/engine/families/statement-construction.ts`)
-    - [ ] Write unit tests: generates flat account list from mini-ledger, solver determines correct placement + order + totals, grader distinguishes placement vs arithmetic errors
-    - [ ] Implement generator with advanced variants (contra assets, temporary account exclusion)
-    - [ ] Implement solver and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- Phase 3 Family D completed on 2026-03-21 after expanding the preview to income-statement, balance-sheet, and equity-statement variants and aligning the shared statement shell to the worksheet spec.
 
-- [ ] Task: Wire Family E to practice.v1 envelope and StatementLayout UI
-    - [ ] Write integration test: full round-trip with account bank + blank template
-    - [ ] Implement toEnvelope, register familyKey `statement-construction`
-    - [ ] Implement adapter to StatementLayout props (blank template mode)
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family E generator, solver, and grader (`lib/practice/engine/families/statement-construction.ts`)
+    - [x] Write unit tests: generates flat account list from mini-ledger, solver determines correct placement + order + totals, grader distinguishes placement vs arithmetic errors
+    - [x] Implement generator with advanced variants (contra assets, temporary account exclusion)
+    - [x] Implement solver and grader
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family Q generator, solver, and grader (`lib/practice/engine/families/statement-subtotals.ts`)
-    - [ ] Write unit tests: generates full statement then blanks subtotal lines, solver infers dependent subtotals, grader scores per-line
-    - [ ] Implement generator supporting service and retail income statements, equity statements
-    - [ ] Implement solver and grader with dependent-subtotal awareness
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family E to practice.v1 envelope and StatementLayout UI
+    - [x] Write integration test: full round-trip with account bank + blank template
+    - [x] Implement toEnvelope, register familyKey `statement-construction`
+    - [x] Implement adapter to StatementLayout props (blank template mode)
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family Q to practice.v1 envelope and StatementLayout UI
-    - [ ] Write integration test: full round-trip
-    - [ ] Implement toEnvelope, register familyKey `statement-subtotals`
-    - [ ] Implement adapter to StatementLayout props
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family Q generator, solver, and grader (`lib/practice/engine/families/statement-subtotals.ts`)
+    - [x] Write unit tests: generates full statement then blanks subtotal lines, solver infers dependent subtotals, grader scores per-line
+    - [x] Implement generator supporting service and retail income statements, equity statements
+    - [x] Implement solver and grader with dependent-subtotal awareness
+    - [x] Verify: `npm run lint` and tests pass
+
+- [x] Task: Wire Family Q to practice.v1 envelope and StatementLayout UI
+    - [x] Write integration test: full round-trip
+    - [x] Implement toEnvelope, register familyKey `statement-subtotals`
+    - [x] Implement adapter to StatementLayout props
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
+
+  - Phase 3 completed on 2026-03-21 after wiring Families E and Q into the shared statement shell and validating the statement-family slice with lint, targeted tests, and production build.
 
 ## Phase 4 — Adjustment, Depreciation, and Merchandising Families (J, N, O)
 

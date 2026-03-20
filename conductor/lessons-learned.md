@@ -32,11 +32,14 @@
 - (2026-03-20, journal_transaction_families_20260319) Journal-entry and merchandising review should accept equivalent line order as valid evidence, but the teacher surface should still explain that the order is non-canonical and keep the scenario context above the table.
 - (2026-03-20, statement_computation_families_20260319) When adding a shared practice generator next to an existing family module, use explicit barrel exports to avoid type-name collisions in production builds.
 - (2026-03-20, statement_computation_families_20260319) Preview demos should null-coalesce partial `solve()` outputs before fabricating mismatched student answers because practice-family response types are often partial records even when the generator itself can produce a complete solution.
+- (2026-03-21, statement_computation_families_20260319) Teacher-review layouts expect a complete feedback record and row-part contracts expect `prompt` on every part, so normalize partial grader output before handing it to shared UI shells.
 - (2026-03-20, normal_balance_family) Build-time type checks can catch readonly ontology union narrowing issues early; reuse existing helpers like `isContra` instead of probing optional fields directly in generator filters.
 - (2026-03-20, adjustment_effects_family) Omission/consequence matrices work best when the scenario preamble is shown above the grid and the matrix auto-advances one row at a time; the prompt needs the classroom context before the choices.
 - (2026-03-20, journal_transaction_families_20260319) On-account purchases and expenses should increase Accounts Payable, while cash settlements decrease Cash; getting the sign right keeps transaction and merchandising journal lines balanced.
 - (2026-03-20, journal_transaction_families_20260319) Full-suite verification still emits the pre-existing `baseline-browser-mapping` warning, but it does not block the phase-1 practice engine slice.
 - (2026-03-20, journal_transaction_families_20260319) SelectionMatrix preview defaults should be row-only projections when a family response carries numeric metadata, or the matrix prop contract will reject the full envelope.
+- (2026-03-20, repo_wide_component_suite_regressions) A phase-specific slice can be green while the repo-wide Vitest run still fails in unrelated component suites; capture those failures in tech-debt before treating the branch as closed.
+- (2026-03-21, statement_completion_preview) Family D/E/Q previews read more like real worksheets when the preview shows separate guided and teacher-review panels for each statement type instead of a single generic example.
 ### Patterns Worth Repeating
 
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.

@@ -1,3 +1,5 @@
-Completed the current practice backfill phase: `JournalEntryActivity` now emits canonical `practice.v1` envelopes with journal-entry artifacts, guided/independent mode support, and accessible account insertion.
+Completed the Phase 3 statement-family expansion for Families D, E, and Q. The shared `StatementLayout` now supports label-editable account placement rows plus subtotal rows, and the practice preview shows separate guided/review panels for each statement variant.
 
-Validation passed: `npm run lint`, `npm test` (`219` suites, `1211` tests), and `npm run build`.
+Validation passed: `npm run lint`, `npm test` (`246` files, `1283` tests), and `npm run build`.
+
+The active statement/computation track remains in progress for the later adjustment, depreciation, and merchandising phases.

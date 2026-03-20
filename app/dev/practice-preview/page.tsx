@@ -53,6 +53,22 @@ import {
   postingBalancesFamily,
   type PostingBalanceResponse,
 } from '@/lib/practice/engine/families/posting-balances';
+import {
+  buildStatementCompletionReviewFeedback,
+  statementCompletionFamily,
+  type StatementCompletionKind,
+  type StatementCompletionResponse,
+} from '@/lib/practice/engine/families/statement-completion';
+import {
+  buildStatementConstructionReviewFeedback,
+  statementConstructionFamily,
+  type StatementConstructionResponse,
+} from '@/lib/practice/engine/families/statement-construction';
+import {
+  buildStatementSubtotalsReviewFeedback,
+  statementSubtotalsFamily,
+  type StatementSubtotalsResponse,
+} from '@/lib/practice/engine/families/statement-subtotals';
 import { generateMiniLedger } from '@/lib/practice/engine/mini-ledger';
 import { formatAccountingAmount } from '@/components/activities/shared/utils';
 
@@ -209,6 +225,40 @@ export default function PracticePreviewPage() {
       ],
     },
   ];
+
+  const statementCompletionPreviewVariants: Array<{
+    statementKind: StatementCompletionKind;
+    label: string;
+    heading: string;
+    description: string;
+    studentDescription: string;
+    teacherDescription: string;
+  }> = [
+    {
+      statementKind: 'income-statement',
+      label: 'Income statement',
+      heading: 'Family D Income Statement',
+      description: 'One missing bottom-line amount keeps the revenue-minus-expense flow visible.',
+      studentDescription: 'Family D keeps the income statement structure visible while asking for Net Income.',
+      teacherDescription: 'Read-only evidence with row-level review feedback and the same income-statement structure.',
+    },
+    {
+      statementKind: 'balance-sheet',
+      label: 'Balance sheet',
+      heading: 'Family D Balance Sheet',
+      description: 'Two totals stay visible so students can read the assets-versus-claims structure.',
+      studentDescription: 'Family D keeps the balance sheet structure visible while asking for the section total and final equality line.',
+      teacherDescription: 'Read-only evidence with row-level review feedback and the same balance-sheet structure.',
+    },
+    {
+      statementKind: 'equity-statement',
+      label: "Owner's equity statement",
+      heading: 'Family D Equity Statement',
+      description: 'The rollforward ties beginning capital, net income, and withdrawals to the ending balance.',
+      studentDescription: 'Family D keeps the equity statement structure visible while asking for the ending rollforward amount.',
+      teacherDescription: 'Read-only evidence with row-level review feedback and the same equity-statement structure.',
+    },
+  ] as const;
 
   const journalTotal = miniLedger.totals.liabilities + miniLedger.totals.endingCapital;
   const journalLines = [
@@ -1267,6 +1317,296 @@ export default function PracticePreviewPage() {
             }}
           />
         </div>
+
+        {statementCompletionPreviewVariants.map((variant) => {
+          const statementCompletionDefinition = statementCompletionFamily.generate(2026, {
+            mode: 'guided_practice',
+            statementKind: variant.statementKind,
+          });
+          const statementCompletionSolution = statementCompletionFamily.solve(statementCompletionDefinition);
+          const statementCompletionFirstPart = statementCompletionDefinition.parts[0];
+          const statementCompletionStudentResponse: StatementCompletionResponse = {
+            ...statementCompletionSolution,
+            ...(statementCompletionFirstPart
+              ? {
+                  [statementCompletionFirstPart.id]: (statementCompletionSolution[statementCompletionFirstPart.id] ?? 0) + 125,
+                }
+              : {}),
+          };
+          const statementCompletionGradeResult = statementCompletionFamily.grade(
+            statementCompletionDefinition,
+            statementCompletionStudentResponse,
+          );
+          const statementCompletionFeedback = buildStatementCompletionReviewFeedback(
+            statementCompletionDefinition,
+            statementCompletionStudentResponse,
+            statementCompletionGradeResult,
+          );
+          const statementCompletionBlankCount = statementCompletionDefinition.parts.length;
+          const statementCompletionReviewCount = Object.values(statementCompletionFeedback).filter(
+            (feedback) => feedback?.status !== 'correct',
+          ).length;
+
+          return (
+            <section key={variant.statementKind} className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family D preview</p>
+                <h2 className="text-2xl font-semibold tracking-tight">{variant.heading}</h2>
+                <p className="max-w-4xl text-sm text-slate-600">{variant.description}</p>
+              </div>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family D Guided Practice"
+                  description={variant.studentDescription}
+                  sections={statementCompletionDefinition.sections}
+                  defaultValues={Object.fromEntries(statementCompletionDefinition.parts.map((part) => [part.id, '']))}
+                  metadataBadges={[
+                    { label: variant.label, variant: 'outline' },
+                    { label: statementCompletionDefinition.scaffolding.statementLabel, variant: 'secondary' },
+                    { label: `${statementCompletionBlankCount} blanks`, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={statementCompletionDefinition.scaffolding.guidance}
+                />
+
+                <StatementLayout
+                  title="Family D Teacher Review"
+                  description={variant.teacherDescription}
+                  sections={statementCompletionDefinition.sections}
+                  values={Object.fromEntries(
+                    statementCompletionDefinition.rows
+                      .filter((row) => row.kind === 'editable')
+                      .map((row) => [row.id, String(statementCompletionStudentResponse[row.id] ?? '')]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: variant.label, variant: 'outline' },
+                    { label: statementCompletionDefinition.scaffolding.statementLabel, variant: 'secondary' },
+                    { label: `${statementCompletionBlankCount} blanks`, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={statementCompletionDefinition.scaffolding.guidance}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${statementCompletionGradeResult.score}/${statementCompletionGradeResult.maxScore}`,
+                    },
+                    { label: 'Submitted', value: 'Preview sample' },
+                    { label: 'Needs review', value: String(statementCompletionReviewCount) },
+                  ]}
+                  rowFeedback={statementCompletionFeedback}
+                />
+              </div>
+            </section>
+          );
+        })}
+
+        {(() => {
+          const statementConstructionDefinition = statementConstructionFamily.generate(2026, {
+            mode: 'guided_practice',
+            statementKind: 'income-statement',
+          });
+          const statementConstructionSolution = statementConstructionFamily.solve(statementConstructionDefinition);
+          const statementConstructionLabelPart =
+            statementConstructionDefinition.parts.find((part) => part.details.expectedAnswerType === 'label') ??
+            statementConstructionDefinition.parts[0];
+          const statementConstructionAmountPart =
+            statementConstructionDefinition.parts.find((part) => part.details.expectedAnswerType === 'number') ??
+            statementConstructionDefinition.parts[1];
+          const statementConstructionStudentResponse: StatementConstructionResponse = {
+            ...statementConstructionSolution,
+            ...(statementConstructionLabelPart
+              ? {
+                  [statementConstructionLabelPart.id]: 'Wrong Account',
+                }
+              : {}),
+            ...(statementConstructionAmountPart
+              ? {
+                  [statementConstructionAmountPart.id]: Number(statementConstructionSolution[statementConstructionAmountPart.id] ?? 0) + 125,
+                }
+              : {}),
+          };
+          const statementConstructionGradeResult = statementConstructionFamily.grade(
+            statementConstructionDefinition,
+            statementConstructionStudentResponse,
+          );
+          const statementConstructionFeedback = buildStatementConstructionReviewFeedback(
+            statementConstructionDefinition,
+            statementConstructionStudentResponse,
+            statementConstructionGradeResult,
+          );
+          const statementConstructionBlankCount = statementConstructionDefinition.parts.length;
+          const statementConstructionReviewCount = Object.values(statementConstructionFeedback).filter(
+            (feedback) => feedback?.status !== 'correct',
+          ).length;
+
+          return (
+            <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family E preview</p>
+                <h2 className="text-2xl font-semibold tracking-tight">Statement construction workbook</h2>
+                <p className="max-w-4xl text-sm text-slate-600">
+                  Family E asks students to place the correct account names from a bank into a blank statement template and finish the totals.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  <span>{statementConstructionDefinition.scaffolding.bankLabel}</span>
+                  <span>•</span>
+                  <span>{statementConstructionDefinition.scaffolding.statementLabel}</span>
+                  <span>•</span>
+                  <span>Seed 2026</span>
+                  <span>•</span>
+                  <span>{statementConstructionDefinition.miniLedger.companyType}</span>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {statementConstructionDefinition.accountBank.map((item) => (
+                    <Badge
+                      key={`${item.id}-${item.included ? 'included' : 'distractor'}`}
+                      variant={item.included ? 'secondary' : 'outline'}
+                      className="gap-1.5"
+                    >
+                      <span>{item.label}</span>
+                      <span className="text-[11px] font-normal opacity-80">{formatAccountingAmount(item.amount)}</span>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family E Guided Practice"
+                  description="Type the account names in the left-side blanks and complete the subtotals on the right."
+                  sections={statementConstructionDefinition.sections}
+                  defaultValues={Object.fromEntries(statementConstructionDefinition.parts.map((part) => [part.id, '']))}
+                  metadataBadges={[
+                    { label: statementConstructionDefinition.scaffolding.statementLabel, variant: 'secondary' },
+                    { label: `${statementConstructionBlankCount} blanks`, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={statementConstructionDefinition.scaffolding.guidance}
+                />
+
+                <StatementLayout
+                  title="Family E Teacher Review"
+                  description="Read-only evidence with row-level review feedback and the same bank of candidate accounts."
+                  sections={statementConstructionDefinition.sections}
+                  values={Object.fromEntries(
+                    statementConstructionDefinition.rows.map((row) => [row.id, String(statementConstructionStudentResponse[row.id] ?? '')]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: statementConstructionDefinition.scaffolding.statementLabel, variant: 'secondary' },
+                    { label: `${statementConstructionBlankCount} blanks`, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={statementConstructionDefinition.scaffolding.guidance}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${statementConstructionGradeResult.score}/${statementConstructionGradeResult.maxScore}`,
+                    },
+                    { label: 'Submitted', value: 'Preview sample' },
+                    { label: 'Needs review', value: String(statementConstructionReviewCount) },
+                  ]}
+                  rowFeedback={statementConstructionFeedback}
+                />
+              </div>
+            </section>
+          );
+        })()}
+
+        {(() => {
+          const statementSubtotalsDefinition = statementSubtotalsFamily.generate(2026, {
+            mode: 'guided_practice',
+            statementKind: 'income-statement',
+          });
+          const statementSubtotalsSolution = statementSubtotalsFamily.solve(statementSubtotalsDefinition);
+          const statementSubtotalsFirstPart = statementSubtotalsDefinition.parts[0];
+          const statementSubtotalsStudentResponse: StatementSubtotalsResponse = {
+            ...statementSubtotalsSolution,
+            ...(statementSubtotalsFirstPart
+              ? {
+                  [statementSubtotalsFirstPart.id]: Number(statementSubtotalsSolution[statementSubtotalsFirstPart.id] ?? 0) + 125,
+                }
+              : {}),
+          };
+          const statementSubtotalsGradeResult = statementSubtotalsFamily.grade(
+            statementSubtotalsDefinition,
+            statementSubtotalsStudentResponse,
+          );
+          const statementSubtotalsFeedback = buildStatementSubtotalsReviewFeedback(
+            statementSubtotalsDefinition,
+            statementSubtotalsStudentResponse,
+            statementSubtotalsGradeResult,
+          );
+          const statementSubtotalsBlankCount = statementSubtotalsDefinition.parts.length;
+          const statementSubtotalsReviewCount = Object.values(statementSubtotalsFeedback).filter(
+            (feedback) => feedback?.status !== 'correct',
+          ).length;
+
+          return (
+            <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family Q preview</p>
+                <h2 className="text-2xl font-semibold tracking-tight">Statement subtotal worksheet</h2>
+                <p className="max-w-4xl text-sm text-slate-600">
+                  Family Q keeps the statement structure visible but focuses on the dependent subtotals that tie the sections together.
+                </p>
+              </div>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family Q Guided Practice"
+                  description="Complete the missing subtotal lines after reading the prefilled statement rows."
+                  sections={statementSubtotalsDefinition.sections}
+                  defaultValues={Object.fromEntries(statementSubtotalsDefinition.parts.map((part) => [part.id, '']))}
+                  metadataBadges={[
+                    { label: statementSubtotalsDefinition.scaffolding.statementLabel, variant: 'secondary' },
+                    { label: `${statementSubtotalsBlankCount} blanks`, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={statementSubtotalsDefinition.scaffolding.guidance}
+                />
+
+                <StatementLayout
+                  title="Family Q Teacher Review"
+                  description="Read-only evidence with row-level review feedback and the same subtotal relationships."
+                  sections={statementSubtotalsDefinition.sections}
+                  values={Object.fromEntries(
+                    statementSubtotalsDefinition.rows
+                      .filter((row) => row.kind === 'editable')
+                      .map((row) => [row.id, String(statementSubtotalsStudentResponse[row.id] ?? '')]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: statementSubtotalsDefinition.scaffolding.statementLabel, variant: 'secondary' },
+                    { label: `${statementSubtotalsBlankCount} blanks`, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={statementSubtotalsDefinition.scaffolding.guidance}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${statementSubtotalsGradeResult.score}/${statementSubtotalsGradeResult.maxScore}`,
+                    },
+                    { label: 'Submitted', value: 'Preview sample' },
+                    { label: 'Needs review', value: String(statementSubtotalsReviewCount) },
+                  ]}
+                  rowFeedback={statementSubtotalsFeedback}
+                />
+              </div>
+            </section>
+          );
+        })()}
 
         <div className="grid gap-6 xl:grid-cols-2">
           <JournalEntryTable

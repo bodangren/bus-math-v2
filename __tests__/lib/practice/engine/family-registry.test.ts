@@ -7,6 +7,9 @@ import { journalEntryFamily } from '@/lib/practice/engine/families/journal-entry
 import { merchandisingEntriesFamily } from '@/lib/practice/engine/families/merchandising-entries';
 import { normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
 import { postingBalancesFamily } from '@/lib/practice/engine/families/posting-balances';
+import { statementConstructionFamily } from '@/lib/practice/engine/families/statement-construction';
+import { statementCompletionFamily } from '@/lib/practice/engine/families/statement-completion';
+import { statementSubtotalsFamily } from '@/lib/practice/engine/families/statement-subtotals';
 import { transactionEffectsFamily } from '@/lib/practice/engine/families/transaction-effects';
 import { transactionMatrixFamily } from '@/lib/practice/engine/families/transaction-matrix';
 import { getPracticeFamily, practiceFamilyRegistry } from '@/lib/practice/engine/family-registry';
@@ -45,6 +48,21 @@ describe('practice family registry', () => {
   it('registers the posting-balances family by familyKey', () => {
     expect(practiceFamilyRegistry['posting-balances']).toBe(postingBalancesFamily);
     expect(getPracticeFamily('posting-balances')).toBe(postingBalancesFamily);
+  });
+
+  it('registers the statement-construction family by familyKey', () => {
+    expect(practiceFamilyRegistry['statement-construction']).toBe(statementConstructionFamily);
+    expect(getPracticeFamily('statement-construction')).toBe(statementConstructionFamily);
+  });
+
+  it('registers the statement-completion family by familyKey', () => {
+    expect(practiceFamilyRegistry['statement-completion']).toBe(statementCompletionFamily);
+    expect(getPracticeFamily('statement-completion')).toBe(statementCompletionFamily);
+  });
+
+  it('registers the statement-subtotals family by familyKey', () => {
+    expect(practiceFamilyRegistry['statement-subtotals']).toBe(statementSubtotalsFamily);
+    expect(getPracticeFamily('statement-subtotals')).toBe(statementSubtotalsFamily);
   });
 
   it('registers the transaction-effects family by familyKey', () => {

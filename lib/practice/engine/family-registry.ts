@@ -5,6 +5,9 @@ import { journalEntryFamily } from './families/journal-entry';
 import { merchandisingEntriesFamily } from './families/merchandising-entries';
 import { normalBalanceFamily } from './families/normal-balance';
 import { postingBalancesFamily } from './families/posting-balances';
+import { statementConstructionFamily } from './families/statement-construction';
+import { statementCompletionFamily } from './families/statement-completion';
+import { statementSubtotalsFamily } from './families/statement-subtotals';
 import { transactionEffectsFamily } from './families/transaction-effects';
 import { transactionMatrixFamily } from './families/transaction-matrix';
 import { referenceAccountingEquationFamily } from './reference-family';
@@ -19,6 +22,9 @@ export const practiceFamilyRegistry = {
   'merchandising-entries': merchandisingEntriesFamily,
   'normal-balance': normalBalanceFamily,
   'posting-balances': postingBalancesFamily,
+  'statement-construction': statementConstructionFamily,
+  'statement-completion': statementCompletionFamily,
+  'statement-subtotals': statementSubtotalsFamily,
   'transaction-effects': transactionEffectsFamily,
   'transaction-matrix': transactionMatrixFamily,
 } as const satisfies Record<string, ProblemFamily<unknown, unknown, unknown>>;

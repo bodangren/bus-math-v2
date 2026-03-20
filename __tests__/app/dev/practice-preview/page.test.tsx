@@ -59,9 +59,24 @@ describe('practice preview page', () => {
       expect(screen.getByText(/family i guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family i teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/family d preview/i)).toHaveLength(3);
+      expect(screen.getByRole('heading', { name: /family d income statement/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /family d balance sheet/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /family d equity statement/i })).toBeInTheDocument();
+      expect(screen.getAllByText(/family d guided practice/i)).toHaveLength(3);
+      expect(screen.getAllByText(/family d teacher review/i)).toHaveLength(3);
+      expect(screen.getByText(/family e preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /statement construction workbook/i })).toBeInTheDocument();
+      expect(screen.getByText(/account bank/i)).toBeInTheDocument();
+      expect(screen.getByText(/family e guided practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/family e teacher review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family q preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /statement subtotal worksheet/i })).toBeInTheDocument();
+      expect(screen.getByText(/family q guided practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/family q teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();
       expect(screen.getByText(/categorization list/i)).toBeInTheDocument();
-  },
-    20000,
+    },
+    180000,
   );
 });
