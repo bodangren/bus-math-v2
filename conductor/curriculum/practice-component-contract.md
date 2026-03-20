@@ -211,7 +211,7 @@ Teacher surfaces should not be limited to spreadsheet activities.
 
 | familyKey | status | UI component dependency | generator dependency |
 |---|---|---|---|
-| `accounting-equation` | foundation | `StatementLayout` / numeric prompt | `mini-ledger` |
+| `accounting-equation` | implemented | `StatementLayout` / numeric prompt | `mini-ledger` |
 | `classification` | implemented | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
 | `transaction-effects` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `statement-completion` | implemented | `StatementLayout` | `mini-ledger` |
@@ -219,13 +219,13 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `transaction-matrix` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `trial-balance-errors` | planned | `SelectionMatrix` | `error-pattern-library` |
 | `journal-entry` | implemented | `JournalEntryTable` | `transaction-event-library` |
-| `posting-balances` | planned | `JournalEntryTable` | `transaction-event-library` |
-| `adjusting-calculations` | planned | `StatementLayout` + `JournalEntryTable` | `adjustment-scenario-generator` |
+| `posting-balances` | implemented | `JournalEntryTable` | `transaction-event-library` |
+| `adjusting-calculations` | implemented | `StatementLayout` + `JournalEntryTable` | `adjustment-scenario-generator` |
 | `adjustment-effects` | implemented | `SelectionMatrix` | `adjustment-scenario-generator` |
 | `cycle-decisions` | implemented | `SelectionMatrix` + `JournalEntryTable` | `transaction-event-library` |
 | `normal-balance` | implemented | `SelectionMatrix` | `account-ontology` |
-| `depreciation-presentation` | planned | `StatementLayout` | `asset-register` |
-| `merchandising-computation` | planned | `StatementLayout` | `mini-ledger` + `retail-calculator` |
+| `depreciation-presentation` | implemented | `StatementLayout` | `asset-register` |
+| `merchandising-computation` | implemented | `StatementLayout` | `mini-ledger` + `retail-calculator` |
 | `merchandising-entries` | implemented | `JournalEntryTable` | `transaction-event-library` |
 | `statement-subtotals` | implemented | `StatementLayout` | `mini-ledger` |
 

@@ -42,6 +42,7 @@
 - (2026-03-21, statement_completion_preview) Family D/E/Q previews read more like real worksheets when the preview shows separate guided and teacher-review panels for each statement type instead of a single generic example.
 - (2026-03-21, statement_computation_families_20260319) Depreciation preview consumers should derive original asset cost from `depreciableBase + salvageValue`; the adjustment scenario does not expose a raw `cost` field.
 - (2026-03-21, statement_computation_families_20260319) Duplicate variant headings in the dev preview are easiest to test with `getAllByText` counts instead of single-match queries.
+- (2026-03-21, statement_computation_families_20260319) Final verification should sync the contract registry before archive closeout; leaving completed families marked `planned` or `foundation` makes the active track look unfinished even when lint, test, and build are already green.
 ### Patterns Worth Repeating
 
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.
