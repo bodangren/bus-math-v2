@@ -217,7 +217,7 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `statement-completion` | implemented | `StatementLayout` | `mini-ledger` |
 | `statement-construction` | implemented | `StatementLayout` | `mini-ledger` |
 | `transaction-matrix` | implemented | `SelectionMatrix` | `transaction-event-library` |
-| `trial-balance-errors` | planned | `SelectionMatrix` | `error-pattern-library` |
+| `trial-balance-errors` | implemented | `TrialBalanceErrorMatrix` | `error-pattern-library` |
 | `journal-entry` | implemented | `JournalEntryTable` | `transaction-event-library` |
 | `posting-balances` | implemented | `JournalEntryTable` | `transaction-event-library` |
 | `adjusting-calculations` | implemented | `StatementLayout` + `JournalEntryTable` | `adjustment-scenario-generator` |
