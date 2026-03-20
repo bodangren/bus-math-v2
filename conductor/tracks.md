@@ -42,10 +42,6 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [~] **Track: Classification and Conceptual Practice Families (A, M, K)**
-  *Link: [./tracks/classification_conceptual_families_20260319/](./tracks/classification_conceptual_families_20260319/)*
-  *Status: Starts after Track 6; implements classification (A), normal-balance (M), and adjustment-effects (K) families using SelectionMatrix and CategorizationList.*
-
 - [ ] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
   *Link: [./tracks/journal_transaction_families_20260319/](./tracks/journal_transaction_families_20260319/)*
   *Status: Starts after Track 6; builds transaction event library and merchandising timeline generator; implements transaction-effects (C), transaction-matrix (F), journal-entry (H), cycle-decisions (L), and merchandising-entries (P) families.*
@@ -67,6 +63,10 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
 
 ## Archive Ledger
+
+- [x] **Track: Classification and Conceptual Practice Families**
+  *Link: [./archive/classification_conceptual_families_20260319/](./archive/classification_conceptual_families_20260319/)*
+  *Closeout: archived on 2026-03-20 after finishing the final verification pass for Families A, M, and K, confirming the shared `practice.v1` contract and preview surfaces, and verifying the work with full lint, test, and production build gates.*
 
 - [x] **Track: Accounting Domain Engine Foundation**
   *Link: [./archive/accounting_engine_foundation_20260319/](./archive/accounting_engine_foundation_20260319/)*
