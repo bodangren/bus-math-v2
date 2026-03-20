@@ -33,7 +33,8 @@ export const IDS = {
     5: 'd6b57545-65f6-4c39-80d5-000700000500',
     6: 'd6b57545-65f6-4c39-80d5-000700000600',
   },
-  ACTIVITY_SPREADSHEET: 'd6b57545-65f6-4c39-80d5-000700001001',
+  ACTIVITY_SPREADSHEET_GUIDED: 'd6b57545-65f6-4c39-80d5-000700001001',
+  ACTIVITY_SPREADSHEET_INDEPENDENT: 'd6b57545-65f6-4c39-80d5-000700001003',
   ACTIVITY_EXIT_TICKET: 'd6b57545-65f6-4c39-80d5-000700001002',
 } as const;
 
@@ -242,7 +243,7 @@ Before moving to Independent Practice, verify your chart has:
 - [ ] No legend (unnecessary for a two-variable chart)
 - [ ] Clean, professional appearance — no default "Chart 1" title
 - [ ] Equity note below or beside the chart`),
-        activity(IDS.ACTIVITY_SPREADSHEET, true),
+        activity(IDS.ACTIVITY_SPREADSHEET_GUIDED, true),
       ],
     },
     {
@@ -284,7 +285,7 @@ Now complete the class workbook build using \`unit_01_balance_snapshot_guided.xl
 | Current Net Income | $750 |
 
 Build your Balance Snapshot using the template below. First complete the foundational moves from \`unit_01_foundational_build_guide.pdf\`, then apply at least one improvement from \`unit_01_polish_guide.pdf\` before you submit Milestone ①.`),
-        activity(IDS.ACTIVITY_SPREADSHEET, true),
+        activity(IDS.ACTIVITY_SPREADSHEET_INDEPENDENT, true),
         text(`## Teacher Submission
 
 Submit the Balance Snapshot workbook and one exported PDF page showing chart labels, totals, and the equity note.
@@ -347,13 +348,49 @@ Lessons 8, 9, and 10 apply the same product structure in a project sequence:
   ],
   activities: [
     {
-      id: IDS.ACTIVITY_SPREADSHEET,
+      id: IDS.ACTIVITY_SPREADSHEET_GUIDED,
       componentKey: 'spreadsheet',
-      displayName: "TechStart Balance Snapshot v0.9",
-      description: "Build TechStart's Balance Snapshot: a formatted Balance Sheet with section subtotals and a bar chart comparing Total Assets vs Total Liabilities.",
+      displayName: "TechStart Balance Snapshot v0.9 Guided Build",
+      description: "Build TechStart's Balance Snapshot with the shared class dataset and guided workbook scaffold.",
       props: {
-        title: "TechStart Solutions — Balance Snapshot v0.9",
-        description: "Assemble the Balance Sheet from Month 3 data and insert a bar chart comparing Total Assets to Total Liabilities. Milestone ① submission.",
+        title: "TechStart Solutions — Balance Snapshot v0.9 Guided Build",
+        description: "Assemble the Balance Sheet from Month 3 data and insert a bar chart comparing Total Assets to Total Liabilities with the class scaffold.",
+        template: 'balance-sheet' as const,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 9000, max: 20000, step: 100 },
+            liabilities: { min: 2000, max: 12000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Build the snapshot with assets {{assets}} and liabilities {{liabilities}}.',
+          cellExpectations: [
+            { cellRef: 'B15', expectedFormula: 'assets', tolerance: 1 },
+            { cellRef: 'C15', expectedFormula: 'liabilities', tolerance: 1 },
+            { cellRef: 'D15', expectedFormula: 'assets - liabilities', tolerance: 1 },
+          ],
+          tolerance: 1,
+        },
+        allowFormulaEntry: true,
+        showColumnLabels: true,
+        showRowLabels: true,
+        readOnly: false,
+        validateFormulas: true,
+      },
+      gradingConfig: {
+        autoGrade: true,
+        passingScore: 60,
+        partialCredit: false,
+      },
+    },
+    {
+      id: IDS.ACTIVITY_SPREADSHEET_INDEPENDENT,
+      componentKey: 'spreadsheet',
+      displayName: "TechStart Balance Snapshot v0.9 Independent Draft",
+      description: "Finish the shared Balance Snapshot as an independent draft with no guided scaffold.",
+      props: {
+        title: "TechStart Solutions — Balance Snapshot v0.9 Independent Draft",
+        description: "Assemble the Balance Sheet from Month 3 data and insert a bar chart comparing Total Assets to Total Liabilities on your own. Milestone ① submission.",
         template: 'balance-sheet' as const,
         problemTemplate: {
           parameters: {

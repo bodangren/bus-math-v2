@@ -33,6 +33,7 @@ export const IDS = {
     6: 'd6b57545-65f6-4c39-80d5-000200000600',
   },
   ACTIVITY_CARD_SORT: 'd6b57545-65f6-4c39-80d5-000200001001',
+  ACTIVITY_CARD_SORT_INDEPENDENT: 'd6b57545-65f6-4c39-80d5-000200001003',
   ACTIVITY_EXIT_TICKET: 'd6b57545-65f6-4c39-80d5-000200001002',
 } as const;
 
@@ -284,7 +285,7 @@ After you finish:
 > Assets: $8,760 | Liabilities: $5,150 | Equity: $3,800 (note: does not balance — Sarah's Drawings must reduce Equity, not be classified as an Asset)
 
 If your equation doesn't balance, trace through the classification test for each account one more time.`),
-        activity(IDS.ACTIVITY_CARD_SORT, true),
+        activity(IDS.ACTIVITY_CARD_SORT_INDEPENDENT, true),
       ],
     },
     {
@@ -338,10 +339,10 @@ In **Lesson 3**, TechStart has five new transactions — and for each one, you'l
       id: IDS.ACTIVITY_CARD_SORT,
       componentKey: 'account-categorization',
       displayName: 'Sort TechStart Month 2 Accounts',
-      description: 'Drag each account into the correct category: Asset, Liability, or Equity.',
+      description: 'Drag each account into the correct category with the class model visible and hints turned on.',
       props: {
         title: 'Classify TechStart\'s Accounts',
-        description: "Drag each account into the correct bucket. Use the classification test: own it (Asset), owe it (Liability), or owner's stake (Equity).",
+        description: "Drag each account into the correct bucket with the class model visible. Use the classification test: own it (Asset), owe it (Liability), or owner's stake (Equity).",
         problemTemplate: {
           parameters: {
             assets: { min: 3500, max: 11000, step: 100 },
@@ -451,13 +452,146 @@ In **Lesson 3**, TechStart has five new transactions — and for each one, you'l
             hint: "Until the books are closed at month-end, current profit sits in Equity.",
           },
         ],
-        showHintsByDefault: false,
+        showHintsByDefault: true,
         shuffleItems: true,
       },
       gradingConfig: {
         autoGrade: true,
         passingScore: 80,
         partialCredit: true,
+      },
+    },
+    {
+      id: IDS.ACTIVITY_CARD_SORT_INDEPENDENT,
+      componentKey: 'account-categorization',
+      displayName: 'Classify TechStart Month 2 Accounts Without Hints',
+      description: 'Drag a fresh month-end account set into the correct category without opening the hint panel.',
+      props: {
+        title: 'Classify TechStart\'s Fresh Account Set',
+        description: "Sort a fresh Month 2 account set into Asset, Liability, or Equity without turning on hints.",
+        problemTemplate: {
+          parameters: {
+            assets: { min: 4200, max: 12500, step: 100 },
+            liabilities: { min: 1500, max: 8000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'With assets {{assets}} and liabilities {{liabilities}}, compute equity.',
+          tolerance: 1,
+        },
+        categories: [
+          {
+            id: 'assets',
+            name: 'Assets',
+            description: 'What TechStart owns or controls with future value',
+            whyItMatters: 'Assets are the resources that power TechStart\'s operations and growth.',
+          },
+          {
+            id: 'liabilities',
+            name: 'Liabilities',
+            description: 'What TechStart owes to others',
+            whyItMatters: 'Liabilities represent TechStart\'s obligations — money or services owed to creditors and clients.',
+          },
+          {
+            id: 'equity',
+            name: 'Equity',
+            description: "The owner's stake in TechStart",
+            whyItMatters: 'Equity is what remains for Sarah after all debts are paid — her real ownership of the business.',
+          },
+        ],
+        accounts: [
+          {
+            id: 'cash',
+            name: 'Cash',
+            description: 'TechStart\'s bank account balance',
+            categoryId: 'assets',
+            hint: 'TechStart controls this money and can spend it anytime.',
+          },
+          {
+            id: 'accounts-receivable',
+            name: 'Accounts Receivable',
+            description: 'Money clients owe TechStart for completed work',
+            categoryId: 'assets',
+            hint: 'TechStart has already delivered the service. The payment is coming to TechStart.',
+          },
+          {
+            id: 'office-supplies',
+            name: 'Office Supplies',
+            description: 'Paper, printer ink, and other small operating supplies',
+            categoryId: 'assets',
+            hint: 'These are resources TechStart still owns and will use in the business.',
+          },
+          {
+            id: 'prepaid-insurance',
+            name: 'Prepaid Insurance',
+            description: 'Six months of business insurance paid upfront',
+            categoryId: 'assets',
+            hint: 'The money is gone, but the benefit (coverage) hasn\'t been used yet. Future value = Asset.',
+          },
+          {
+            id: 'security-deposit',
+            name: 'Security Deposit',
+            description: 'Rent deposit TechStart expects to recover at lease end',
+            categoryId: 'assets',
+            hint: 'TechStart controls the deposit and should receive it back later.',
+          },
+          {
+            id: 'bank-loan',
+            name: 'Bank Loan',
+            description: 'Startup loan from First National Bank',
+            categoryId: 'liabilities',
+            hint: 'TechStart must repay this with interest. It\'s an obligation to the bank.',
+          },
+          {
+            id: 'accounts-payable',
+            name: 'Accounts Payable',
+            description: 'Unpaid vendor invoices (software subscriptions, supplies)',
+            categoryId: 'liabilities',
+            hint: 'TechStart received goods or services but hasn\'t paid yet. It owes the vendors.',
+          },
+          {
+            id: 'accrued-wages',
+            name: 'Accrued Wages',
+            description: 'Wages earned by part-time staff, not yet paid',
+            categoryId: 'liabilities',
+            hint: 'Staff worked this week. TechStart owes them payroll even though payday is Friday.',
+          },
+          {
+            id: 'deferred-consulting-revenue',
+            name: 'Deferred Consulting Revenue',
+            description: 'A client paid TechStart upfront for future consulting work',
+            categoryId: 'liabilities',
+            hint: 'TechStart has the cash but still owes the client the work.',
+          },
+          {
+            id: 'sarahs-capital',
+            name: "Sarah's Capital",
+            description: "Sarah's original $5,000 investment to launch TechStart",
+            categoryId: 'equity',
+            hint: "This is Sarah's personal claim on the business — her ownership stake.",
+          },
+          {
+            id: 'retained-earnings',
+            name: 'Retained Earnings',
+            description: "Profits from prior months kept in the business",
+            categoryId: 'equity',
+            hint: "These are profits Sarah chose not to withdraw. They belong to her as the owner.",
+          },
+          {
+            id: 'current-net-income',
+            name: 'Current Net Income',
+            description: "This month's profit (Revenue minus Expenses)",
+            categoryId: 'equity',
+            hint: "Until the books are closed at month-end, current profit sits in Equity.",
+          },
+        ],
+        showHintsByDefault: false,
+        shuffleItems: true,
+      },
+      gradingConfig: {
+        autoGrade: true,
+        passingScore: 80,
+        partialCredit: false,
       },
     },
     {

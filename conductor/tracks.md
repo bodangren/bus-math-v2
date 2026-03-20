@@ -42,7 +42,7 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [ ] **Track: Curriculum Guided/Independent Practice Rollout**
+- [~] **Track: Curriculum Guided/Independent Practice Rollout**
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
   *Status: Starts after Tracks 2+3 converge; owns lesson-source and manifest alignment. Consumes Track 3's audit mapping.*
 

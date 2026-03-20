@@ -284,6 +284,28 @@ describe('published curriculum manifest', () => {
       expect(lesson11Markdown).toContain('application');
     }
   });
+
+  it('keeps Unit 1 guided and independent practice activity ids distinct', () => {
+    const manifest = buildPublishedCurriculumManifest();
+
+    for (const slug of ['unit-1-lesson-2', 'unit-1-lesson-4', 'unit-1-lesson-7'] as const) {
+      const lesson = manifest.lessons.find((entry) => entry.slug === slug);
+      expect(lesson).toBeDefined();
+      expect(lesson?.activities).toHaveLength(3);
+
+      const guidedActivityId = getPhaseActivityId(lesson, 3);
+      const independentActivityId = getPhaseActivityId(lesson, 4);
+
+      expect(guidedActivityId).toBeTruthy();
+      expect(independentActivityId).toBeTruthy();
+      expect(guidedActivityId).not.toBe(independentActivityId);
+
+      const guidedActivity = lesson?.activities.find((activity) => activity.key === guidedActivityId);
+      const independentActivity = lesson?.activities.find((activity) => activity.key === independentActivityId);
+
+      expect(guidedActivity?.componentKey).toBe(independentActivity?.componentKey);
+    }
+  });
 });
 
 function readLessonMarkdown(
@@ -300,4 +322,28 @@ function readLessonMarkdown(
     .filter((section) => section.sectionType === 'text')
     .map((section) => String(section.content.markdown ?? ''))
     .join('\n');
+}
+
+function getPhaseActivityId(
+  lesson:
+    | ReturnType<typeof buildPublishedCurriculumManifest>['lessons'][number]
+    | undefined,
+  phaseNumber: number,
+): string | null {
+  if (!lesson) {
+    return null;
+  }
+
+  const phase = lesson.phases.find((entry) => entry.phaseNumber === phaseNumber);
+  if (!phase) {
+    return null;
+  }
+
+  const activitySection = phase.sections.find((section) => section.sectionType === 'activity');
+  if (!activitySection) {
+    return null;
+  }
+
+  const activityId = activitySection.content.activityId;
+  return typeof activityId === 'string' ? activityId : null;
 }

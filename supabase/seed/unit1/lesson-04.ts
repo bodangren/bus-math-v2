@@ -32,7 +32,8 @@ export const IDS = {
     5: 'd6b57545-65f6-4c39-80d5-000400000500',
     6: 'd6b57545-65f6-4c39-80d5-000400000600',
   },
-  ACTIVITY_SPREADSHEET: 'd6b57545-65f6-4c39-80d5-000400001001',
+  ACTIVITY_SPREADSHEET_GUIDED: 'd6b57545-65f6-4c39-80d5-000400001001',
+  ACTIVITY_SPREADSHEET_INDEPENDENT: 'd6b57545-65f6-4c39-80d5-000400001003',
   ACTIVITY_EXIT_TICKET: 'd6b57545-65f6-4c39-80d5-000400001002',
 } as const;
 
@@ -281,7 +282,7 @@ Once you've completed the mapping table:
 - Use **Accounting** number format for all dollar values
 - Use **bold** for section headers and totals
 - Use **double underline** for grand totals (Format → Cells → Border)`),
-        activity(IDS.ACTIVITY_SPREADSHEET, true),
+        activity(IDS.ACTIVITY_SPREADSHEET_GUIDED, true),
       ],
     },
     {
@@ -318,7 +319,7 @@ Time to build TechStart's complete Balance Sheet independently. Use the spreadsh
 | Current Net Income | $540 |
 
 Use the spreadsheet to draft your Balance Sheet. Your goal: Total Assets should equal Total Liabilities + Equity (both should be **$12,260**).`),
-        activity(IDS.ACTIVITY_SPREADSHEET, true),
+        activity(IDS.ACTIVITY_SPREADSHEET_INDEPENDENT, true),
       ],
     },
     {
@@ -374,13 +375,13 @@ In **Lesson 5**, you'll learn to:
   ],
   activities: [
     {
-      id: IDS.ACTIVITY_SPREADSHEET,
+      id: IDS.ACTIVITY_SPREADSHEET_GUIDED,
       componentKey: 'spreadsheet',
-      displayName: "TechStart Mini Balance Sheet Draft",
-      description: "Build TechStart's Balance Sheet using the balance-sheet template. Include at least 6 accounts organized into Current/Non-Current sections with subtotals.",
+      displayName: "TechStart Mini Balance Sheet Guided Build",
+      description: "Walk through TechStart's Balance Sheet using the shared guided scaffold and class prompts.",
       props: {
-        title: "TechStart Solutions — Balance Sheet Draft",
-        description: "Organize TechStart's accounts into a structured Balance Sheet. Use the template to add sections, subtotals, and verify Total Assets = Total Liabilities + Equity.",
+        title: "TechStart Solutions — Balance Sheet Guided Build",
+        description: "Organize TechStart's accounts into a structured Balance Sheet with the shared model. Use the template to add sections, subtotals, and verify Total Assets = Total Liabilities + Equity.",
         template: 'balance-sheet' as const,
         problemTemplate: {
           parameters: {
@@ -395,6 +396,37 @@ In **Lesson 5**, you'll learn to:
             { cellRef: 'C15', expectedFormula: 'liabilities', tolerance: 1 },
             { cellRef: 'D15', expectedFormula: 'assets - liabilities', tolerance: 1 },
           ],
+          tolerance: 1,
+        },
+        allowFormulaEntry: true,
+        showColumnLabels: true,
+        showRowLabels: true,
+        readOnly: false,
+        validateFormulas: true,
+      },
+      gradingConfig: {
+        autoGrade: false,
+        passingScore: 60,
+        partialCredit: false,
+      },
+    },
+    {
+      id: IDS.ACTIVITY_SPREADSHEET_INDEPENDENT,
+      componentKey: 'spreadsheet',
+      displayName: "TechStart Mini Balance Sheet Independent Draft",
+      description: "Build a fresh Balance Sheet draft independently from the guided scaffold.",
+      props: {
+        title: "TechStart Solutions — Balance Sheet Independent Draft",
+        description: "Organize TechStart's accounts into a structured Balance Sheet on your own. Use the template to add sections, subtotals, and verify Total Assets = Total Liabilities + Equity.",
+        template: 'balance-sheet' as const,
+        problemTemplate: {
+          parameters: {
+            assets: { min: 10000, max: 22000, step: 100 },
+            liabilities: { min: 2000, max: 12000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Given assets {{assets}} and liabilities {{liabilities}}, compute equity.',
           tolerance: 1,
         },
         allowFormulaEntry: true,

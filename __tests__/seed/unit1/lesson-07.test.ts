@@ -52,6 +52,27 @@ describe('Lesson 07 seed data — Balance Snapshot with Visual (ACC-1.7)', () =>
     expect(act?.componentKey).toBe('spreadsheet');
   });
 
+  it('guided and independent practice use distinct spreadsheet activities', () => {
+    const guided = LESSON_07_SEED_DATA.phases.find((phase) => phase.phaseNumber === 3);
+    const independent = LESSON_07_SEED_DATA.phases.find((phase) => phase.phaseNumber === 4);
+    const guidedSection = guided!.sections.find((section) => section.sectionType === 'activity');
+    const independentSection = independent!.sections.find((section) => section.sectionType === 'activity');
+
+    const guidedActivityId = (guidedSection!.content as Record<string, unknown>).activityId as string;
+    const independentActivityId = (independentSection!.content as Record<string, unknown>).activityId as string;
+
+    expect(guidedActivityId).not.toBe(independentActivityId);
+    expect(LESSON_07_SEED_DATA.activities).toHaveLength(3);
+
+    const guidedActivity = LESSON_07_SEED_DATA.activities.find((activity) => activity.id === guidedActivityId);
+    const independentActivity = LESSON_07_SEED_DATA.activities.find((activity) => activity.id === independentActivityId);
+
+    expect(guidedActivity?.componentKey).toBe('spreadsheet');
+    expect(independentActivity?.componentKey).toBe('spreadsheet');
+    expect(guidedActivity?.description?.toLowerCase()).toContain('guided');
+    expect(independentActivity?.description?.toLowerCase()).toContain('independent');
+  });
+
   it('Assessment phase (5) has a required comprehension-quiz activity', () => {
     const assessment = LESSON_07_SEED_DATA.phases.find(p => p.phaseNumber === 5);
     expect(assessment).toBeDefined();

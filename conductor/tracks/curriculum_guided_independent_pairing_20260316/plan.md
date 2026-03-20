@@ -2,17 +2,25 @@
 
 > Deconfliction note: use the outputs of the three earlier `practice_*` tracks as inputs to this rollout. If audit work uncovers contract, persistence, teacher-review, or component-family gaps, record them against the owning track instead of expanding this track back into umbrella cleanup.
 
+## Audit Notes
+
+- Unit 1 Lesson 2 reused the same account-categorization activity id in guided and independent practice; the guided and independent records need separate ids and distinct prompts.
+- Unit 1 Lesson 4 reused the same spreadsheet activity id in guided and independent practice; the independent workbook needs its own activity record instead of pointing at the guided scaffold.
+- Unit 1 Lesson 7 reused the same spreadsheet activity id in guided and independent practice; the independent balance-snapshot draft needs its own activity record and fresher draft prompt.
+- Unit 1 lessons 2, 4, and 7 now split guided and independent practice onto distinct activity ids, and the published-manifest regression suite guards the contract.
+- Units 2-8 currently publish authored phase sequences and lesson metadata through the curriculum manifest, but the duplicate-guided/independent drift is concentrated in the seeded Unit 1 exemplar lessons.
+
 ## Phase 1: Curriculum Audit and Mapping
 
 ### Tasks
 
 - [ ] **Task: Audit authored lesson practice-mode usage**
   - [ ] Start from the component-family-to-lesson mapping produced by the Legacy Backfill track (Track 3) Phase 1 audit — do not duplicate that discovery work
-  - [ ] Scan authored and generated curriculum sources for practice activities in instruction, guided practice, independent practice, and assessment phases
-  - [ ] Identify lessons where guided and independent phases reuse the same activity id or materially identical props
+  - [x] Scan authored and generated curriculum sources for practice activities in instruction, guided practice, independent practice, and assessment phases
+  - [x] Identify lessons where guided and independent phases reuse the same activity id or materially identical props
   - [ ] Identify lessons where a worked example or teacher model should exist in instruction but currently does not
   - [ ] Route any newly discovered contract/persistence/component blockers back to the owning `practice_*` track before editing lesson content
-  - [ ] Record unit-by-unit findings in the track notes before editing authored lesson content
+  - [x] Record unit-by-unit findings in the track notes before editing authored lesson content
 
 - [ ] **Task: Map practice families to curriculum phase roles**
   - [ ] Confirm which problem families are appropriate for worked example, guided practice, independent practice, and assessment per unit
@@ -24,10 +32,10 @@
 
 ### Tasks
 
-- [ ] **Task: Add failing regressions for mode-correct phase usage**
-  - [ ] Add tests that inspect published lesson output for instruction/guided/independent/assessment practice-mode assignments
-  - [ ] Fail when guided and independent practice share the same activity id without an approved exception
-  - [ ] Fail when an independent definition reuses guided scaffolds or identical data
+- [x] **Task: Add failing regressions for mode-correct phase usage**
+  - [x] Add tests that inspect published lesson output for instruction/guided/independent/assessment practice-mode assignments
+  - [x] Fail when guided and independent practice share the same activity id without an approved exception
+  - [x] Fail when an independent definition reuses guided scaffolds or identical data
 
 - [ ] **Task: Add red tests for worked-example presence where required**
   - [ ] Add focused curriculum assertions for units/lessons that should surface worked examples in instruction
@@ -37,10 +45,10 @@
 
 ### Tasks
 
-- [ ] **Task: Update Unit 1 as the rollout exemplar**
-  - [ ] Refactor Unit 1 instruction, guided, independent, and assessment phases to the final mode assignments
-  - [ ] Introduce new ids where independent-practice definitions materially diverge from guided practice
-  - [ ] Verify Unit 1 remains aligned with the accepted redesign contract
+- [x] **Task: Update Unit 1 as the rollout exemplar**
+  - [x] Refactor Unit 1 instruction, guided, independent, and assessment phases to the final mode assignments
+  - [x] Introduce new ids where independent-practice definitions materially diverge from guided practice
+  - [x] Verify Unit 1 remains aligned with the accepted redesign contract
 
 - [ ] **Task: Roll out authored practice modes through Units 2-4**
   - [ ] Update lesson sources and/or generated blueprint inputs for the first wave
@@ -56,14 +64,15 @@
 
 ### Tasks
 
-- [ ] **Task: Verify published-manifest alignment**
-  - [ ] Confirm authored lesson sources, published manifest output, and activity ids stay in sync
-  - [ ] Add or update regression helpers that assert mode-correct activity definitions across the rollout
+- [x] **Task: Verify published-manifest alignment**
+  - [x] Confirm authored lesson sources, published manifest output, and activity ids stay in sync
+  - [x] Add or update regression helpers that assert mode-correct activity definitions across the rollout
 
 - [ ] **Task: Run targeted curriculum verification**
-  - [ ] Run the relevant curriculum/runtime tests that cover published lessons and lesson-type requirements
+  - [x] Run the relevant curriculum/runtime tests that cover published lessons and lesson-type requirements
   - [ ] Run `npm run lint`
-  - [ ] Fix any regressions introduced by the rollout
+  - [x] Fix any regressions introduced by the rollout
+  - [x] Run the production build gate
 
 ## Phase 5: Student-Flow Spot Checks and Closeout
 

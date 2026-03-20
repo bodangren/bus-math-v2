@@ -17,6 +17,8 @@ This rollout now represents the residual authored-curriculum scope after the `pr
 4. assessment phases keep the right contract behavior
 5. manifest and curriculum regressions prevent future drift
 
+Verified slice: Unit 1 lessons 2, 4, and 7 now split guided and independent practice onto distinct activity ids, and the published-manifest regression suite guards that contract.
+
 This track no longer owns contract definition, normalized submission persistence, generic teacher review, or family-level component migrations. Those concerns belong to the preceding `practice_*` tracks.
 
 ## Dependencies

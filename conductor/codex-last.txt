@@ -1,17 +1,12 @@
-Implemented the current statement-family phase and pushed it to `origin/main`.
+Completed the Unit 1 guided/independent practice slice and verified the full test suite plus production build.
 
-- Updated the shared statement layout to support label-editable rows in [components/activities/shared/StatementLayout.tsx](/home/daniel-bo/Desktop/bus-math-v2/components/activities/shared/StatementLayout.tsx).
-- Added the new family engines in [lib/practice/engine/families/statement-construction.ts](/home/daniel-bo/Desktop/bus-math-v2/lib/practice/engine/families/statement-construction.ts) and [lib/practice/engine/families/statement-subtotals.ts](/home/daniel-bo/Desktop/bus-math-v2/lib/practice/engine/families/statement-subtotals.ts).
-- Wired the preview and registry updates through [app/dev/practice-preview/page.tsx](/home/daniel-bo/Desktop/bus-math-v2/app/dev/practice-preview/page.tsx), [lib/practice/engine/index.ts](/home/daniel-bo/Desktop/bus-math-v2/lib/practice/engine/index.ts), and [lib/practice/engine/family-registry.ts](/home/daniel-bo/Desktop/bus-math-v2/lib/practice/engine/family-registry.ts).
-- Updated the conductor artifacts in [conductor/tracks.md](/home/daniel-bo/Desktop/bus-math-v2/conductor/tracks.md), [conductor/tech-debt.md](/home/daniel-bo/Desktop/bus-math-v2/conductor/tech-debt.md), and [conductor/lessons-learned.md](/home/daniel-bo/Desktop/bus-math-v2/conductor/lessons-learned.md).
+- Updated Unit 1 authored lesson seeds so guided and independent practice use distinct activity ids in lessons 2, 4, and 7.
+- Regenerated the authored Unit 1 module and added regression tests for the published manifest and seed sources.
+- Recorded the verified slice in the active Conductor plan, tech-debt registry, and lessons-learned notes.
 
-Verification passed:
-- `npm test -- --testTimeout 600000`
-- `npm run lint`
+Verification:
+- `npm test`
 - `npm run build`
 
-Commits pushed:
-- `fe0e837` `feat(conductor): complete statement families phase (gpt-5.4-mini)`
-- `54f65da` `chore(conductor): record run log (gpt-5.4-mini)`
-
-I did not move the track to `conductor/archive/` because [conductor/tracks.md](/home/daniel-bo/Desktop/bus-math-v2/conductor/tracks.md) still has later phases open. The only remaining local drift is [conductor/codex-cron.log](/home/daniel-bo/Desktop/bus-math-v2/conductor/codex-cron.log), which is the auto-updating audit log.
+Track status:
+- left active for the remaining authored rollout work

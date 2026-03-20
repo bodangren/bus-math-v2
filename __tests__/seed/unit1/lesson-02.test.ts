@@ -50,6 +50,27 @@ describe('Lesson 02 seed data — Classify Accounts (ACC-1.2)', () => {
     expect(activity?.componentKey).toBe('account-categorization');
   });
 
+  it('guided and independent practice use distinct account-categorization activities', () => {
+    const guided = LESSON_02_SEED_DATA.phases.find((phase) => phase.phaseNumber === 3);
+    const independent = LESSON_02_SEED_DATA.phases.find((phase) => phase.phaseNumber === 4);
+    const guidedSection = guided!.sections.find((section) => section.sectionType === 'activity');
+    const independentSection = independent!.sections.find((section) => section.sectionType === 'activity');
+
+    const guidedActivityId = (guidedSection!.content as Record<string, unknown>).activityId as string;
+    const independentActivityId = (independentSection!.content as Record<string, unknown>).activityId as string;
+
+    expect(guidedActivityId).not.toBe(independentActivityId);
+    expect(LESSON_02_SEED_DATA.activities).toHaveLength(3);
+
+    const guidedActivity = LESSON_02_SEED_DATA.activities.find((activity) => activity.id === guidedActivityId);
+    const independentActivity = LESSON_02_SEED_DATA.activities.find((activity) => activity.id === independentActivityId);
+
+    expect(guidedActivity?.componentKey).toBe('account-categorization');
+    expect(independentActivity?.componentKey).toBe('account-categorization');
+    expect(guidedActivity?.props.showHintsByDefault).toBe(true);
+    expect(independentActivity?.props.showHintsByDefault).toBe(false);
+  });
+
   it('Assessment phase (5) has a required comprehension-quiz activity', () => {
     const assessment = LESSON_02_SEED_DATA.phases.find(p => p.phaseNumber === 5);
     const activitySection = assessment!.sections.find(s => s.sectionType === 'activity');
