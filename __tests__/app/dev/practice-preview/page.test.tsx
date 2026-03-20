@@ -28,6 +28,10 @@ describe('practice preview page', () => {
       expect(screen.getByRole('heading', { name: /effects of missing adjustments/i })).toBeInTheDocument();
       expect(screen.getByText(/family k guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family k teacher review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family g preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /trial balance error analysis/i })).toBeInTheDocument();
+      expect(screen.getByText(/family g guided practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/family g teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/transaction analysis/i)).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /transaction effects on accounts/i })).toBeInTheDocument();
       expect(screen.getByText(/family c guided practice/i)).toBeInTheDocument();

@@ -15,6 +15,7 @@ import { statementCompletionFamily } from '@/lib/practice/engine/families/statem
 import { statementSubtotalsFamily } from '@/lib/practice/engine/families/statement-subtotals';
 import { transactionEffectsFamily } from '@/lib/practice/engine/families/transaction-effects';
 import { transactionMatrixFamily } from '@/lib/practice/engine/families/transaction-matrix';
+import { trialBalanceErrorFamily } from '@/lib/practice/engine/families/trial-balance-errors';
 import { getPracticeFamily, practiceFamilyRegistry } from '@/lib/practice/engine/family-registry';
 
 describe('practice family registry', () => {
@@ -91,5 +92,10 @@ describe('practice family registry', () => {
   it('registers the transaction-matrix family by familyKey', () => {
     expect(practiceFamilyRegistry['transaction-matrix']).toBe(transactionMatrixFamily);
     expect(getPracticeFamily('transaction-matrix')).toBe(transactionMatrixFamily);
+  });
+
+  it('registers the trial-balance-errors family by familyKey', () => {
+    expect(practiceFamilyRegistry['trial-balance-errors']).toBe(trialBalanceErrorFamily);
+    expect(getPracticeFamily('trial-balance-errors')).toBe(trialBalanceErrorFamily);
   });
 });

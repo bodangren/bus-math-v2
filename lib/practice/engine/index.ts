@@ -21,6 +21,7 @@ export * from './families/statement-subtotals';
 export * from './families/transaction-analysis-utils';
 export * from './families/transaction-effects';
 export * from './families/transaction-matrix';
+export * from './families/trial-balance-errors';
 export * from './mini-ledger';
 export * from './merchandising';
 export * from './reference-family';

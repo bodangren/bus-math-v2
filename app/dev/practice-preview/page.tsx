@@ -8,6 +8,7 @@ import {
   JournalEntryTable,
   PostingBalanceList,
   SelectionMatrix,
+  TrialBalanceErrorMatrix,
   StatementLayout,
   type JournalEntryRowFeedback,
   type SelectionMatrixRowFeedback,
@@ -65,6 +66,11 @@ import {
   transactionMatrixFamily,
   type TransactionMatrixResponse,
 } from '@/lib/practice/engine/families/transaction-matrix';
+import {
+  buildTrialBalanceErrorScenarioReviewFeedback,
+  trialBalanceErrorFamily,
+  type TrialBalanceErrorResponse,
+} from '@/lib/practice/engine/families/trial-balance-errors';
 import {
   buildPostingBalanceReviewFeedback,
   postingBalancesFamily,
@@ -426,6 +432,33 @@ export default function PracticePreviewPage() {
         message: adjustmentEffectsFeedback[part.id]?.message,
       },
     ]),
+  );
+
+  const trialBalanceErrorDefinition = trialBalanceErrorFamily.generate(2026, {
+    mode: 'guided_practice',
+    scenarioCount: 4,
+    includeBalancedScenarios: true,
+  });
+  const trialBalanceErrorSolution = trialBalanceErrorFamily.solve(trialBalanceErrorDefinition);
+  const trialBalanceErrorFirstScenario = trialBalanceErrorDefinition.scenarios[0];
+  const trialBalanceErrorStudentResponse: TrialBalanceErrorResponse = trialBalanceErrorFirstScenario
+    ? {
+        ...trialBalanceErrorSolution,
+        [`${trialBalanceErrorFirstScenario.rowId}:balanced`]:
+          trialBalanceErrorFirstScenario.expectedBalanced === 'still-balances'
+            ? 'out-of-balance'
+            : 'still-balances',
+        [`${trialBalanceErrorFirstScenario.rowId}:difference`]:
+          trialBalanceErrorFirstScenario.expectedDifference + 9,
+        [`${trialBalanceErrorFirstScenario.rowId}:larger-column`]:
+          trialBalanceErrorFirstScenario.expectedLargerColumn === 'debit' ? 'credit' : 'debit',
+      }
+    : trialBalanceErrorSolution;
+  const trialBalanceErrorGrade = trialBalanceErrorFamily.grade(trialBalanceErrorDefinition, trialBalanceErrorStudentResponse);
+  const trialBalanceErrorRowFeedback = buildTrialBalanceErrorScenarioReviewFeedback(
+    trialBalanceErrorDefinition,
+    trialBalanceErrorStudentResponse,
+    trialBalanceErrorGrade,
   );
 
   const transactionEffectsDefinition = transactionEffectsFamily.generate(2026, {
@@ -998,6 +1031,54 @@ export default function PracticePreviewPage() {
                 misconceptionCount: new Set(
                   Object.values(adjustmentEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
                 ).size,
+              }}
+            />
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family G preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Trial balance error analysis</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              The same error pattern appears in a guided student state and a read-only teacher review with scenario-level feedback.
+            </p>
+          </div>
+
+          {trialBalanceErrorFirstScenario && (
+            <div className="rounded-2xl border bg-slate-50/80 p-4">
+              <div className="grid gap-3 sm:grid-cols-[132px_minmax(0,1fr)]">
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What happened</div>
+                <div className="text-sm text-slate-700">{trialBalanceErrorFirstScenario.whatHappened}</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Error type</div>
+                <div className="text-sm text-slate-700">{trialBalanceErrorFirstScenario.archetypeLabel}</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
+                <div className="text-sm text-slate-700">{trialBalanceErrorFirstScenario.whatToDecideFirst}</div>
+              </div>
+            </div>
+          )}
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <TrialBalanceErrorMatrix
+              title="Family G Guided Practice"
+              description="Read the scenario, decide whether the trial balance balances, then choose the difference and larger column."
+              scenarios={trialBalanceErrorDefinition.scenarios}
+              defaultValue={trialBalanceErrorSolution}
+            />
+
+            <TrialBalanceErrorMatrix
+              title="Family G Teacher Review"
+              description="Read-only review with row-level evidence and misconception tags."
+              scenarios={trialBalanceErrorDefinition.scenarios}
+              readOnly
+              teacherView
+              defaultValue={trialBalanceErrorStudentResponse}
+              rowFeedback={trialBalanceErrorRowFeedback}
+              submissionSummary={{
+                scoreLabel: `${trialBalanceErrorGrade.score}/${trialBalanceErrorGrade.maxScore} correct`,
+                attempts: 1,
+                submittedAt: '2026-03-20 09:25',
+                misconceptionCount: new Set(Object.values(trialBalanceErrorRowFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size,
               }}
             />
           </div>

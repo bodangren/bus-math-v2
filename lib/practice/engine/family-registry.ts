@@ -13,6 +13,7 @@ import { statementCompletionFamily } from './families/statement-completion';
 import { statementSubtotalsFamily } from './families/statement-subtotals';
 import { transactionEffectsFamily } from './families/transaction-effects';
 import { transactionMatrixFamily } from './families/transaction-matrix';
+import { trialBalanceErrorFamily } from './families/trial-balance-errors';
 import { referenceAccountingEquationFamily } from './reference-family';
 import type { ProblemFamily } from './types';
 
@@ -33,6 +34,7 @@ export const practiceFamilyRegistry = {
   'statement-subtotals': statementSubtotalsFamily,
   'transaction-effects': transactionEffectsFamily,
   'transaction-matrix': transactionMatrixFamily,
+  'trial-balance-errors': trialBalanceErrorFamily,
 } as const satisfies Record<string, ProblemFamily<unknown, unknown, unknown>>;
 
 export type PracticeFamilyRegistryKey = keyof typeof practiceFamilyRegistry;
