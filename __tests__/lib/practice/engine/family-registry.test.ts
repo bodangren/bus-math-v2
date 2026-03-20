@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { adjustmentEffectsFamily } from '@/lib/practice/engine/families/adjustment-effects';
 import { classificationFamily } from '@/lib/practice/engine/families/classification';
+import { journalEntryFamily } from '@/lib/practice/engine/families/journal-entry';
 import { normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
 import { transactionEffectsFamily } from '@/lib/practice/engine/families/transaction-effects';
 import { transactionMatrixFamily } from '@/lib/practice/engine/families/transaction-matrix';
@@ -11,6 +12,11 @@ describe('practice family registry', () => {
   it('registers the classification family by familyKey', () => {
     expect(practiceFamilyRegistry.classification).toBe(classificationFamily);
     expect(getPracticeFamily('classification')).toBe(classificationFamily);
+  });
+
+  it('registers the journal-entry family by familyKey', () => {
+    expect(practiceFamilyRegistry['journal-entry']).toBe(journalEntryFamily);
+    expect(getPracticeFamily('journal-entry')).toBe(journalEntryFamily);
   });
 
   it('registers the adjustment-effects family by familyKey', () => {

@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation';
 
+import { Badge } from '@/components/ui/badge';
 import {
   CategorizationList,
   JournalEntryTable,
   SelectionMatrix,
   StatementLayout,
+  type JournalEntryRowFeedback,
   type SelectionMatrixRowFeedback,
 } from '@/components/activities/shared';
 import { practiceAccounts } from '@/lib/practice/engine/accounts';
@@ -14,6 +16,11 @@ import {
   type AdjustmentEffectsResponse,
 } from '@/lib/practice/engine/families/adjustment-effects';
 import { buildNormalBalanceReviewFeedback, normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
+import {
+  buildJournalEntryReviewFeedback,
+  journalEntryFamily,
+  type JournalEntryResponse,
+} from '@/lib/practice/engine/families/journal-entry';
 import {
   buildTransactionEffectsReviewFeedback,
   transactionEffectsFamily,
@@ -387,6 +394,36 @@ export default function PracticePreviewPage() {
   const transactionMatrixScenario = transactionMatrixDefinition.event;
   const transactionMatrixReason = transactionMatrixDefinition.event.equityReason;
 
+  const journalEntryDefinition = journalEntryFamily.generate(2026, {
+    mode: 'guided_practice',
+    scenarioKey: 'return-allowance',
+  });
+  const journalEntrySolution = journalEntryFamily.solve(journalEntryDefinition);
+  const journalEntryStudentResponse: JournalEntryResponse = journalEntrySolution.map((line) => ({ ...line }));
+  if (journalEntryStudentResponse.length > 1) {
+    [journalEntryStudentResponse[0], journalEntryStudentResponse[1]] = [
+      journalEntryStudentResponse[1],
+      journalEntryStudentResponse[0],
+    ];
+  }
+  const journalEntryGrade = journalEntryFamily.grade(journalEntryDefinition, journalEntryStudentResponse);
+  const journalEntryFeedback = buildJournalEntryReviewFeedback(
+    journalEntryDefinition,
+    journalEntryStudentResponse,
+    journalEntryGrade,
+  );
+  const journalEntryRowFeedback: Record<string, JournalEntryRowFeedback> = Object.fromEntries(
+    journalEntryDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: (journalEntryFeedback[part.id]?.status ?? 'incorrect') as JournalEntryRowFeedback['status'],
+        message: journalEntryFeedback[part.id]?.message,
+        misconceptionTags: journalEntryFeedback[part.id]?.misconceptionTags ?? [],
+      },
+    ]),
+  );
+  const journalEntryEquivalentRows = Object.values(journalEntryFeedback).filter((feedback) => feedback.status === 'partial').length;
+
   const transactionEffectsRowFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
     transactionEffectsDefinition.rows.map((row) => [
       row.id,
@@ -680,6 +717,79 @@ export default function PracticePreviewPage() {
                     Object.values(transactionMatrixFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
                   ).size,
                 }}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family H preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Journal entry recording</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family H shows a multi-date merchandising return sequence with a teacher review that accepts equivalent line
+              order.
+            </p>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Expected lines: {journalEntryDefinition.expectedLineCount}</Badge>
+                <Badge variant="secondary">Mode: Guided practice</Badge>
+                <Badge variant="default">Balanced</Badge>
+                <Badge variant="outline">Dates: {journalEntryDefinition.scenario.dates.join(' • ')}</Badge>
+              </div>
+
+              <div className="grid gap-2 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                  <div className="text-sm text-slate-700">{journalEntryDefinition.scenario.narrative}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                  <div className="text-sm text-slate-700">
+                    The date column keeps the original sale, the return and allowance, and the final collection separate.
+                  </div>
+                </div>
+              </div>
+
+              <JournalEntryTable
+                title="Family H Guided Practice"
+                description="Record the journal lines in canonical order. The balance strip stays visible below the table."
+                availableAccounts={journalEntryDefinition.availableAccounts}
+                expectedLineCount={journalEntryDefinition.expectedLineCount}
+                defaultValue={journalEntrySolution}
+              />
+            </div>
+
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Score: {journalEntryGrade.score}/{journalEntryGrade.maxScore} correct</Badge>
+                <Badge variant="secondary">Attempts: 2</Badge>
+                <Badge variant="secondary">Submitted: 2026-03-20 09:40</Badge>
+                <Badge variant="outline">Equivalent rows: {journalEntryEquivalentRows}</Badge>
+              </div>
+
+              <div className="grid gap-2 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Teacher note</div>
+                  <div className="text-sm text-slate-700">
+                    The student entered the same accounting logic, but the first two lines were swapped. The review keeps the
+                    response readable and marks the equivalent ordering as accepted.
+                  </div>
+                </div>
+              </div>
+
+              <JournalEntryTable
+                title="Family H Teacher Review"
+                description="Read-only evidence with row-level feedback and equivalent-order acceptance."
+                availableAccounts={journalEntryDefinition.availableAccounts}
+                expectedLineCount={journalEntryDefinition.expectedLineCount}
+                defaultValue={journalEntryStudentResponse}
+                readOnly
+                teacherView
+                rowFeedback={journalEntryRowFeedback}
               />
             </div>
           </div>

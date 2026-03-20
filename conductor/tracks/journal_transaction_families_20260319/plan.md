@@ -44,23 +44,23 @@
 
 ## Phase 3 — Family H: Journal Entry Recording
 
-- [ ] Task: Build Family H transaction ontology and generator (`lib/practice/engine/families/journal-entry.ts`)
-    - [ ] Write unit tests: generates problems for each transaction category (service, owner, asset purchase, liability settlement, accrual/deferral, depreciation, closing, correcting, reversing, merchandising sale/purchase, return/allowance, discount)
-    - [ ] Implement generator with transaction-category config
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family H transaction ontology and generator (`lib/practice/engine/families/journal-entry.ts`)
+    - [x] Write unit tests: generates problems for each transaction category (service, owner, asset purchase, liability settlement, accrual/deferral, depreciation, closing, correcting, reversing, merchandising sale/purchase, return/allowance, discount)
+    - [x] Implement generator with transaction-category config
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family H solver and grader
-    - [ ] Write unit tests: balance checking, row-level grading, equivalent-entry tolerance for correcting entries, merchandising paired revenue/inventory entries
-    - [ ] Implement solver producing canonical journal lines
-    - [ ] Implement grader with row-level scoring and balance validation
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family H solver and grader
+    - [x] Write unit tests: balance checking, row-level grading, equivalent-entry tolerance for correcting entries, merchandising paired revenue/inventory entries
+    - [x] Implement solver producing canonical journal lines
+    - [x] Implement grader with row-level scoring and balance validation
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family H to practice.v1 envelope and JournalEntryTable UI
-    - [ ] Write integration test: full round-trip including multi-date entries
-    - [ ] Implement toEnvelope, register familyKey `journal-entry`
-    - [ ] Implement adapter from Family H definition to JournalEntryTable props
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family H to practice.v1 envelope and JournalEntryTable UI
+    - [x] Write integration test: full round-trip including multi-date entries
+    - [x] Implement toEnvelope, register familyKey `journal-entry`
+    - [x] Implement adapter from Family H definition to JournalEntryTable props
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 4 — Families L and P: Cycle Decisions and Merchandising Entries
 
