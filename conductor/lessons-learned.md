@@ -11,7 +11,6 @@
 
 ### Recurring Gotchas
 
-- (2026-03-11, replan) Old PRDs and migration-era docs look authoritative unless they are moved entirely out of the active Conductor surface.
 - (2026-03-11, replan) “Full curriculum” claims are misleading unless the seeded and published runtime content actually matches the planned curriculum count.
 - (2026-03-11, replan) Activity and standards contracts drift quickly when validators and Convex lookups use different identifiers.
 - (2026-03-12, curriculum_runtime_foundation) Public prerendered pages must tolerate empty Convex results so a clean production build does not depend on seeded local data.
@@ -28,14 +27,14 @@
 - (2026-03-19, practice_track_deconfliction) When the practice rollout is split into contract, evidence, and backfill tracks, older curriculum/teacher umbrella tracks must be narrowed to residual authored rollout and interpretation work instead of owning the same deliverables twice.
 - (2026-03-19, practice_contract_planning) A dedicated Convex validator for the shared `practice.v1` envelope keeps persistence, schema typing, and API mutations aligned without reintroducing `v.any()`.
 - (2026-03-19, practice_contract_planning) Teacher evidence UIs should stay read-only and union-typed from the start so spreadsheet and non-spreadsheet branches are both exercised by build-time type checking.
-- (2026-03-19, practice_component_legacy_backfill) Phase-1 backfill planning should be driven by generated curriculum and seed tests, not by registry shape alone, because the authored lessons reveal which practice families are actually on the student path.
-- (2026-03-19, practice_component_legacy_backfill) Structured-response families are the safest first migration wave; spreadsheet and simulation-backed families need their own pass because they carry artifact and storage assumptions that do not generalize cleanly.
+- (2026-03-19, practice_component_legacy_backfill) Phase-1 backfill planning should be driven by generated curriculum and seed tests, not by registry shape alone, because the authored lessons reveal which practice families are actually on the student path; structured-response families are the safest first migration wave, while spreadsheet and simulation-backed families need their own pass because they carry artifact and storage assumptions that do not generalize cleanly.
 - (2026-03-20, practice_component_legacy_backfill) Practice families should emit the canonical `practice.v1` envelope at the component boundary, especially for spreadsheet and simulation-backed activities, so the renderer only preserves compatibility and phase completion, not submission shape translation.
 - (2026-03-20, practice_component_legacy_backfill) Once the last live practice family is canonical, remove alias resolution and direct-completion shims together so docs, validation, and renderer behavior stay aligned on one contract.
 - (2026-03-20, practice_component_legacy_backfill) Legacy accounting-entry builders backfill cleanly when the student workbench keeps the account bank as an assistive input path and packages the submitted row snapshot directly into the practice artifact.
 - (2026-03-20, practice_component_legacy_backfill) Categorization and sequence practice families need separate serializers; inventory-style ordering does not share the same item shape as bucket-based drag/drop.
 - (2026-03-20, practice_component_legacy_backfill) Build-time type checks are useful for catching stale artifact metadata early, and they also catch registry typing issues; keep public string lookups and internal map keys aligned, and only serialize fields the source item actually owns.
 - (2026-03-20, practice_component_legacy_backfill) Keyboard-move fallback should live inside the shared categorization surface so teacher review annotations, keyboard controls, and drag/drop state stay synchronized.
+- (2026-03-20, normal_balance_family) Build-time type checks can catch readonly ontology union narrowing issues early; reuse existing helpers like `isContra` instead of probing optional fields directly in generator filters.
 
 ### Patterns Worth Repeating
 

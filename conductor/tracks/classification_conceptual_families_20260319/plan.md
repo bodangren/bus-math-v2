@@ -27,10 +27,10 @@
 
 ## Phase 2 — Family M: Normal Balances and Account Nature
 
-- [ ] Task: Build Family M generator, solver, and grader (`lib/practice/engine/families/normal-balance.ts`)
-    - [ ] Write unit tests: generates account lists with correct normal balances, handles contra accounts, deterministic per seed
-    - [ ] Implement generator, solver, and grader with contra-account misconception tags
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family M generator, solver, and grader (`lib/practice/engine/families/normal-balance.ts`)
+    - [x] Write unit tests: generates account lists with correct normal balances, handles contra accounts, deterministic per seed
+    - [x] Implement generator, solver, and grader with contra-account misconception tags
+    - [x] Verify: `npm run lint` and tests pass
 
 - [ ] Task: Wire Family M to practice.v1 envelope and SelectionMatrix UI
     - [ ] Write integration test: full round-trip and UI rendering with debit/credit columns
