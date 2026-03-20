@@ -3,6 +3,8 @@ export * from './family-registry';
 export * from './families/adjustment-effects';
 export * from './families/classification';
 export * from './families/journal-entry';
+export * from './families/cycle-decisions';
+export * from './families/merchandising-entries';
 export * from './families/normal-balance';
 export * from './families/transaction-analysis-utils';
 export * from './families/transaction-effects';

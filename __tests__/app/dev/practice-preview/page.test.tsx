@@ -40,6 +40,16 @@ describe('practice preview page', () => {
       expect(screen.getByRole('heading', { name: /journal entry recording/i })).toBeInTheDocument();
       expect(screen.getByText(/family h guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family h teacher review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family l preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /cycle decisions/i })).toBeInTheDocument();
+      expect(screen.getByText(/family l guided decision/i)).toBeInTheDocument();
+      expect(screen.getByText(/family l decision review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family l guided entry/i)).toBeInTheDocument();
+      expect(screen.getByText(/family l entry review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family p preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /merchandising entries/i })).toBeInTheDocument();
+      expect(screen.getByText(/family p guided practice/i)).toBeInTheDocument();
+      expect(screen.getByText(/family p teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
       expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();
       expect(screen.getByText(/categorization list/i)).toBeInTheDocument();

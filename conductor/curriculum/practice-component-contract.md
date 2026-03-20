@@ -218,15 +218,15 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `statement-construction` | planned | `StatementLayout` | `mini-ledger` |
 | `transaction-matrix` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `trial-balance-errors` | planned | `SelectionMatrix` | `error-pattern-library` |
-| `journal-entry` | planned | `JournalEntryTable` | `transaction-event-library` |
+| `journal-entry` | implemented | `JournalEntryTable` | `transaction-event-library` |
 | `posting-balances` | planned | `JournalEntryTable` | `transaction-event-library` |
 | `adjusting-calculations` | planned | `StatementLayout` + `JournalEntryTable` | `adjustment-scenario-generator` |
 | `adjustment-effects` | implemented | `SelectionMatrix` | `adjustment-scenario-generator` |
-| `closing-cycle` | planned | `SelectionMatrix` | `account-ontology` |
+| `cycle-decisions` | implemented | `SelectionMatrix` + `JournalEntryTable` | `transaction-event-library` |
 | `normal-balance` | implemented | `SelectionMatrix` | `account-ontology` |
 | `depreciation-presentation` | planned | `StatementLayout` | `asset-register` |
 | `merchandising-computation` | planned | `StatementLayout` | `mini-ledger` + `retail-calculator` |
-| `merchandising-entries` | planned | `JournalEntryTable` | `transaction-event-library` |
+| `merchandising-entries` | implemented | `JournalEntryTable` | `transaction-event-library` |
 | `statement-subtotals` | planned | `StatementLayout` | `mini-ledger` |
 
 ## Analysis Requirements

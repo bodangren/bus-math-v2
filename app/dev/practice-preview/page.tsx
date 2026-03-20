@@ -22,6 +22,16 @@ import {
   type JournalEntryResponse,
 } from '@/lib/practice/engine/families/journal-entry';
 import {
+  buildCycleDecisionReviewFeedback,
+  cycleDecisionsFamily,
+  type CycleDecisionResponse,
+} from '@/lib/practice/engine/families/cycle-decisions';
+import {
+  buildMerchandisingEntryReviewFeedback,
+  merchandisingEntriesFamily,
+  type MerchandisingEntryResponse,
+} from '@/lib/practice/engine/families/merchandising-entries';
+import {
   buildTransactionEffectsReviewFeedback,
   transactionEffectsFamily,
   type TransactionEffectsResponse,
@@ -424,6 +434,96 @@ export default function PracticePreviewPage() {
   );
   const journalEntryEquivalentRows = Object.values(journalEntryFeedback).filter((feedback) => feedback.status === 'partial').length;
 
+  const cycleDecisionSelectionDefinition = cycleDecisionsFamily.generate(2026, {
+    mode: 'guided_practice',
+    scenarioKey: 'reversing-selection',
+  });
+  const cycleDecisionSelectionSolution = cycleDecisionsFamily.solve(cycleDecisionSelectionDefinition);
+  const cycleDecisionSelectionStudentResponse: CycleDecisionResponse = {
+    selections: {
+      ...cycleDecisionSelectionSolution.selections,
+      'accrued-wages': 'do-not-reverse',
+    },
+    lines: [],
+  };
+  const cycleDecisionSelectionGrade = cycleDecisionsFamily.grade(
+    cycleDecisionSelectionDefinition,
+    cycleDecisionSelectionStudentResponse,
+  );
+  const cycleDecisionSelectionFeedback = buildCycleDecisionReviewFeedback(
+    cycleDecisionSelectionDefinition,
+    cycleDecisionSelectionStudentResponse,
+    cycleDecisionSelectionGrade,
+  );
+  const cycleDecisionSelectionRowFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
+    cycleDecisionSelectionDefinition.selectionRows.map((row) => [
+      row.id,
+      {
+        status: (cycleDecisionSelectionFeedback[row.id]?.status ?? 'incorrect') as SelectionMatrixRowFeedback['status'],
+        scoreLabel: cycleDecisionSelectionFeedback[row.id]?.scoreLabel ?? '0/1',
+        selectedLabel: cycleDecisionSelectionFeedback[row.id]?.selectedLabel ?? 'Not selected',
+        expectedLabel: cycleDecisionSelectionFeedback[row.id]?.expectedLabel ?? 'Unknown',
+        misconceptionTags: cycleDecisionSelectionFeedback[row.id]?.misconceptionTags ?? [],
+        message: cycleDecisionSelectionFeedback[row.id]?.message,
+      },
+    ]),
+  );
+
+  const cycleDecisionClosingDefinition = cycleDecisionsFamily.generate(2026, {
+    mode: 'guided_practice',
+    scenarioKey: 'closing-entry',
+  });
+  const cycleDecisionClosingSolution = cycleDecisionsFamily.solve(cycleDecisionClosingDefinition);
+  const cycleDecisionClosingStudentResponse: CycleDecisionResponse = {
+    selections: {},
+    lines: [cycleDecisionClosingSolution.lines[1], cycleDecisionClosingSolution.lines[0], ...cycleDecisionClosingSolution.lines.slice(2)],
+  };
+  const cycleDecisionClosingGrade = cycleDecisionsFamily.grade(cycleDecisionClosingDefinition, cycleDecisionClosingStudentResponse);
+  const cycleDecisionClosingFeedback = buildCycleDecisionReviewFeedback(
+    cycleDecisionClosingDefinition,
+    cycleDecisionClosingStudentResponse,
+    cycleDecisionClosingGrade,
+  );
+  const cycleDecisionClosingRowFeedback: Record<string, JournalEntryRowFeedback> = Object.fromEntries(
+    cycleDecisionClosingDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: (cycleDecisionClosingFeedback[part.id]?.status ?? 'incorrect') as JournalEntryRowFeedback['status'],
+        message: cycleDecisionClosingFeedback[part.id]?.message,
+        misconceptionTags: cycleDecisionClosingFeedback[part.id]?.misconceptionTags ?? [],
+      },
+    ]),
+  );
+  const cycleDecisionClosingEquivalentRows = Object.values(cycleDecisionClosingFeedback).filter((feedback) => feedback.status === 'partial').length;
+
+  const merchandisingEntryDefinition = merchandisingEntriesFamily.generate(2026, {
+    mode: 'guided_practice',
+    scenarioKey: 'seller-timeline',
+  });
+  const merchandisingEntrySolution = merchandisingEntriesFamily.solve(merchandisingEntryDefinition);
+  const merchandisingEntryStudentResponse: MerchandisingEntryResponse = [
+    merchandisingEntrySolution[1],
+    merchandisingEntrySolution[0],
+    ...merchandisingEntrySolution.slice(2),
+  ];
+  const merchandisingEntryGrade = merchandisingEntriesFamily.grade(merchandisingEntryDefinition, merchandisingEntryStudentResponse);
+  const merchandisingEntryFeedback = buildMerchandisingEntryReviewFeedback(
+    merchandisingEntryDefinition,
+    merchandisingEntryStudentResponse,
+    merchandisingEntryGrade,
+  );
+  const merchandisingEntryRowFeedback: Record<string, JournalEntryRowFeedback> = Object.fromEntries(
+    merchandisingEntryDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: (merchandisingEntryFeedback[part.id]?.status ?? 'incorrect') as JournalEntryRowFeedback['status'],
+        message: merchandisingEntryFeedback[part.id]?.message,
+        misconceptionTags: merchandisingEntryFeedback[part.id]?.misconceptionTags ?? [],
+      },
+    ]),
+  );
+  const merchandisingEntryEquivalentRows = Object.values(merchandisingEntryFeedback).filter((feedback) => feedback.status === 'partial').length;
+
   const transactionEffectsRowFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
     transactionEffectsDefinition.rows.map((row) => [
       row.id,
@@ -790,6 +890,208 @@ export default function PracticePreviewPage() {
                 readOnly
                 teacherView
                 rowFeedback={journalEntryRowFeedback}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family L preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Cycle decisions</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family L stacks the decision first and the entry second: the student chooses what should be reversed, then prepares
+              the closing entry from the adjusted trial balance.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Decision task</Badge>
+                <Badge variant="secondary">Period: 01/01</Badge>
+                <Badge variant="secondary">Policy: reversing recommended</Badge>
+                <Badge variant="outline">Rows: {cycleDecisionSelectionDefinition.selectionRows.length}</Badge>
+              </div>
+
+              <div className="grid gap-2 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                  <div className="text-sm text-slate-700">{cycleDecisionSelectionDefinition.scenario.narrative}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                  <div className="text-sm text-slate-700">
+                    Reverse the accrual that will be paid next period, but keep depreciation and closing entries in place.
+                  </div>
+                </div>
+              </div>
+
+              <SelectionMatrix
+                title="Family L Guided Decision"
+                description="Choose whether each candidate entry should be reversed in the next period."
+                rows={cycleDecisionSelectionDefinition.selectionRows}
+                columns={cycleDecisionSelectionDefinition.selectionColumns}
+                defaultValue={cycleDecisionSelectionSolution.selections}
+              />
+
+              <SelectionMatrix
+                title="Family L Decision Review"
+                description="Read-only review with the same reversal decisions and annotated misconception tags."
+                rows={cycleDecisionSelectionDefinition.selectionRows}
+                columns={cycleDecisionSelectionDefinition.selectionColumns}
+                readOnly
+                teacherView
+                defaultValue={cycleDecisionSelectionStudentResponse.selections}
+                rowFeedback={cycleDecisionSelectionRowFeedback}
+                submissionSummary={{
+                  scoreLabel: `${cycleDecisionSelectionGrade.score}/${cycleDecisionSelectionGrade.maxScore} correct`,
+                  attempts: 1,
+                  submittedAt: '2026-03-20 09:42',
+                  misconceptionCount: new Set(
+                    Object.values(cycleDecisionSelectionFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
+                  ).size,
+                }}
+              />
+            </div>
+
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Entry task</Badge>
+                <Badge variant="secondary">Date: 12/31</Badge>
+                <Badge variant="secondary">Adjusted trial balance</Badge>
+                <Badge variant="outline">Lines: {cycleDecisionClosingDefinition.expectedLineCount}</Badge>
+              </div>
+
+              <div className="grid gap-2 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                  <div className="text-sm text-slate-700">{cycleDecisionClosingDefinition.scenario.narrative}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                  <div className="text-sm text-slate-700">
+                    Closing entries always clear temporary accounts to retained earnings, and accepted equivalent logic is noted
+                    in teacher review.
+                  </div>
+                </div>
+              </div>
+
+              <JournalEntryTable
+                title="Family L Guided Entry"
+                description="Prepare the closing entry in canonical order."
+                availableAccounts={cycleDecisionClosingDefinition.availableAccounts}
+                expectedLineCount={cycleDecisionClosingDefinition.expectedLineCount}
+                defaultValue={cycleDecisionClosingSolution.lines}
+              />
+
+              <div className="rounded-2xl border bg-white/90 p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Score: {cycleDecisionClosingGrade.score}/{cycleDecisionClosingGrade.maxScore} correct</Badge>
+                  <Badge variant="secondary">Attempts: 1</Badge>
+                  <Badge variant="secondary">Submitted: 2026-03-20 09:44</Badge>
+                  <Badge variant="outline">Equivalent rows: {cycleDecisionClosingEquivalentRows}</Badge>
+                </div>
+                <p className="mt-3 text-sm text-slate-600">
+                  Accepted equivalent closing logic is called out here so teachers can see that the same accounting result was
+                  reached even when the closing lines were entered in a different order.
+                </p>
+              </div>
+
+              <JournalEntryTable
+                title="Family L Entry Review"
+                description="Read-only closing entry with row-level feedback and equivalent-order acceptance."
+                availableAccounts={cycleDecisionClosingDefinition.availableAccounts}
+                expectedLineCount={cycleDecisionClosingDefinition.expectedLineCount}
+                defaultValue={cycleDecisionClosingStudentResponse.lines}
+                readOnly
+                teacherView
+                rowFeedback={cycleDecisionClosingRowFeedback}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family P preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Merchandising entries</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family P makes the timeline explicit before the journal table so students read the merchandise story in order,
+              then translate that sequence into perpetual inventory entries.
+            </p>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Role: {merchandisingEntryDefinition.timeline.role}</Badge>
+                <Badge variant="secondary">Method: {merchandisingEntryDefinition.timeline.discountMethod}</Badge>
+                <Badge variant="secondary">Terms: {merchandisingEntryDefinition.timeline.paymentTiming}</Badge>
+                <Badge variant="secondary">FOB: {merchandisingEntryDefinition.timeline.fobCondition}</Badge>
+                <Badge variant="outline">Dates: {merchandisingEntryDefinition.scenario.dates.join(' • ')}</Badge>
+              </div>
+
+              <div className="grid gap-3 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                  <div className="text-sm text-slate-700">{merchandisingEntryDefinition.scenario.narrative}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                  <div className="text-sm text-slate-700">{merchandisingEntryDefinition.scenario.focus}</div>
+                </div>
+              </div>
+
+              <ol className="space-y-3">
+                {merchandisingEntryDefinition.events.map((event, index) => (
+                  <li key={event.id} className="rounded-2xl border bg-white/90 p-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="outline">{index + 1}</Badge>
+                      <Badge variant="secondary">{event.kind.replace(/-/g, ' ')}</Badge>
+                      <span className="text-xs uppercase tracking-[0.2em] text-slate-500">{event.date}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-slate-700">{event.narrative}</p>
+                  </li>
+                ))}
+              </ol>
+
+              <JournalEntryTable
+                title="Family P Guided Practice"
+                description="Record the seller-side perpetual entries in chronological order."
+                availableAccounts={merchandisingEntryDefinition.availableAccounts}
+                expectedLineCount={merchandisingEntryDefinition.expectedLineCount}
+                defaultValue={merchandisingEntrySolution}
+              />
+            </div>
+
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">Score: {merchandisingEntryGrade.score}/{merchandisingEntryGrade.maxScore} correct</Badge>
+                <Badge variant="secondary">Attempts: 1</Badge>
+                <Badge variant="secondary">Submitted: 2026-03-20 09:48</Badge>
+                <Badge variant="outline">Equivalent rows: {merchandisingEntryEquivalentRows}</Badge>
+              </div>
+
+              <div className="grid gap-3 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Teacher note</div>
+                  <div className="text-sm text-slate-700">
+                    The seller’s response is economically correct even though the first two journal rows were swapped, so the
+                    review keeps the work readable and labels the accepted equivalent ordering.
+                  </div>
+                </div>
+              </div>
+
+              <JournalEntryTable
+                title="Family P Teacher Review"
+                description="Read-only perpetual inventory evidence with row-level feedback and equivalent-order acceptance."
+                availableAccounts={merchandisingEntryDefinition.availableAccounts}
+                expectedLineCount={merchandisingEntryDefinition.expectedLineCount}
+                defaultValue={merchandisingEntryStudentResponse}
+                readOnly
+                teacherView
+                rowFeedback={merchandisingEntryRowFeedback}
               />
             </div>
           </div>
