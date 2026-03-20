@@ -42,10 +42,6 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
 
-- [~] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
-  *Link: [./tracks/statement_computation_families_20260319/](./tracks/statement_computation_families_20260319/)*
-  *Status: In Progress; phases 1-4 are complete, with final verification and closeout still pending.*
-
 - [ ] **Track: Trial Balance Error Analysis Family (G)**
   *Link: [./tracks/trial_balance_error_family_20260319/](./tracks/trial_balance_error_family_20260319/)*
   *Status: Starts after Track 6; builds error pattern library; implements trial-balance-errors (G) family.*
@@ -59,6 +55,10 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
 
 ## Archive Ledger
+
+- [x] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
+  *Link: [./archive/statement_computation_families_20260319/](./archive/statement_computation_families_20260319/)*
+  *Closeout: archived on 2026-03-21 after syncing the family key registry to `implemented`, confirming lint, full test, and production build gates, and closing Milestone 7 Phase 5 cleanly.*
 
 - [x] **Track: Journal Entry and Transaction Practice Families (C, F, H, L, P)**
   *Link: [./archive/journal_transaction_families_20260319/](./archive/journal_transaction_families_20260319/)*

@@ -126,8 +126,10 @@
 
 ## Phase 5 — Final Verification
 
-- [ ] Task: Update family key registry and final verification
-    - [ ] Update practice-component-contract.md: mark families B, D, E, I, J, N, O, Q as `implemented`
-    - [ ] Run `npm run lint`, `npm test`, and `vinext build`
-    - [ ] Verify all acceptance criteria are met
-    - [ ] Update lessons-learned.md and tech-debt.md if warranted
+- [x] Task: Update family key registry and final verification
+    - [x] Update practice-component-contract.md: mark families B, D, E, I, J, N, O, Q as `implemented`
+    - [x] Run `npm run lint`, `npm test`, and `vinext build`
+    - [x] Verify all acceptance criteria are met
+    - [x] Update lessons-learned.md and tech-debt.md if warranted
+
+- Phase 5 completed on 2026-03-21 after syncing the family registry, confirming the full lint/test/build gates, and preparing the track for archival.
