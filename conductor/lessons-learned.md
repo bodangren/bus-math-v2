@@ -4,12 +4,10 @@
 
 ### Architecture and Planning
 
-- (2026-03-11, replan) Convex must remain the only runtime source of truth or product, monitoring, and curriculum delivery drift immediately.
-- (2026-03-11, replan) Published lesson version helpers are foundational; student delivery and teacher monitoring must share them rather than recomputing progress independently.
+- (2026-03-11, replan) Convex must remain the only runtime source of truth, and published lesson version helpers must be shared rather than recomputed, or product, monitoring, and curriculum delivery drift immediately.
 ### Recurring Gotchas
 
-- (2026-03-11, replan) “Full curriculum” claims are misleading unless the seeded and published runtime content actually matches the planned curriculum count.
-- (2026-03-11, replan) Activity and standards contracts drift quickly when validators and Convex lookups use different identifiers.
+- (2026-03-11, replan) “Full curriculum” claims and activity/standards contracts are both misleading unless the seeded runtime content and lookup identifiers match the planned curriculum surface.
 - (2026-03-12, curriculum_runtime_foundation) Public prerendered pages must tolerate empty Convex results so a clean production build does not depend on seeded local data.
 - (2026-03-12, curriculum_runtime_foundation) Migration-era Supabase and seed utilities can still break the production TypeScript graph even after the active runtime has moved to Convex.
 - (2026-03-13, curriculum_authoring_publish_pipeline) Legacy authored lesson modules can block Convex/server bundling unless they are converted into a pure generated source module first.
@@ -35,6 +33,7 @@
 - (2026-03-20, adjustment_effects_family) Omission/consequence matrices work best when the scenario preamble is shown above the grid and the matrix auto-advances one row at a time; the prompt needs the classroom context before the choices.
 - (2026-03-20, journal_transaction_families_20260319) On-account purchases and expenses should increase Accounts Payable, while cash settlements decrease Cash; getting the sign right keeps transaction and merchandising journal lines balanced.
 - (2026-03-20, journal_transaction_families_20260319) Full-suite verification still emits the pre-existing `baseline-browser-mapping` warning, but it does not block the phase-1 practice engine slice.
+- (2026-03-20, journal_transaction_families_20260319) SelectionMatrix preview defaults should be row-only projections when a family response carries numeric metadata, or the matrix prop contract will reject the full envelope.
 ### Patterns Worth Repeating
 
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.

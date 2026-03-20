@@ -213,10 +213,10 @@ Teacher surfaces should not be limited to spreadsheet activities.
 |---|---|---|---|
 | `accounting-equation` | foundation | `StatementLayout` / numeric prompt | `mini-ledger` |
 | `classification` | implemented | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
-| `transaction-effects` | planned | `SelectionMatrix` | `transaction-event-library` |
+| `transaction-effects` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `statement-completion` | planned | `StatementLayout` | `mini-ledger` |
 | `statement-construction` | planned | `StatementLayout` | `mini-ledger` |
-| `transaction-matrix` | planned | `SelectionMatrix` | `transaction-event-library` |
+| `transaction-matrix` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `trial-balance-errors` | planned | `SelectionMatrix` | `error-pattern-library` |
 | `journal-entry` | planned | `JournalEntryTable` | `transaction-event-library` |
 | `posting-balances` | planned | `JournalEntryTable` | `transaction-event-library` |

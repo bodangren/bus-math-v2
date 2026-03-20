@@ -14,6 +14,16 @@ import {
   type AdjustmentEffectsResponse,
 } from '@/lib/practice/engine/families/adjustment-effects';
 import { buildNormalBalanceReviewFeedback, normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
+import {
+  buildTransactionEffectsReviewFeedback,
+  transactionEffectsFamily,
+  type TransactionEffectsResponse,
+} from '@/lib/practice/engine/families/transaction-effects';
+import {
+  buildTransactionMatrixReviewFeedback,
+  transactionMatrixFamily,
+  type TransactionMatrixResponse,
+} from '@/lib/practice/engine/families/transaction-matrix';
 import { generateMiniLedger } from '@/lib/practice/engine/mini-ledger';
 import { formatAccountingAmount } from '@/components/activities/shared/utils';
 
@@ -322,6 +332,89 @@ export default function PracticePreviewPage() {
     ]),
   );
 
+  const transactionEffectsDefinition = transactionEffectsFamily.generate(2026, {
+    mode: 'guided_practice',
+    archetypeId: 'earn-revenue',
+    context: 'service',
+    settlement: 'cash',
+  });
+  const transactionEffectsSolution = transactionEffectsFamily.solve(transactionEffectsDefinition);
+  const transactionEffectsStudentResponse: TransactionEffectsResponse = {
+    ...transactionEffectsSolution,
+    [transactionEffectsDefinition.event.effects[0]?.accountId ?? 'cash']:
+      transactionEffectsDefinition.event.effects[0]?.direction === 'increase' ? 'decrease' : 'increase',
+    equity: transactionEffectsDefinition.event.equityEffect === 'increases' ? 'decrease' : 'increase',
+    amount: transactionEffectsDefinition.event.amount,
+    'equity-reason': transactionEffectsSolution['equity-reason'],
+  };
+  const transactionEffectsMatrixValue = Object.fromEntries(
+    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsSolution[row.id]]),
+  ) as Record<string, string | string[]>;
+  const transactionEffectsMatrixStudentValue = Object.fromEntries(
+    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsStudentResponse[row.id]]),
+  ) as Record<string, string | string[]>;
+  const transactionEffectsGrade = transactionEffectsFamily.grade(transactionEffectsDefinition, transactionEffectsStudentResponse);
+  const transactionEffectsFeedback = buildTransactionEffectsReviewFeedback(
+    transactionEffectsDefinition,
+    transactionEffectsStudentResponse,
+    transactionEffectsGrade,
+  );
+
+  const transactionMatrixDefinition = transactionMatrixFamily.generate(2026, {
+    mode: 'guided_practice',
+    archetypeId: 'earn-revenue',
+    context: 'service',
+    settlement: 'cash',
+  });
+  const transactionMatrixSolution = transactionMatrixFamily.solve(transactionMatrixDefinition);
+  const transactionMatrixStudentResponse: TransactionMatrixResponse = {
+    ...transactionMatrixSolution,
+    'offset-account': 'equity-reason',
+    equity: 'direction',
+  };
+  const transactionMatrixMatrixValue = Object.fromEntries(
+    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixSolution[row.id]]),
+  ) as Record<string, string | string[]>;
+  const transactionMatrixMatrixStudentValue = Object.fromEntries(
+    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixStudentResponse[row.id]]),
+  ) as Record<string, string | string[]>;
+  const transactionMatrixGrade = transactionMatrixFamily.grade(transactionMatrixDefinition, transactionMatrixStudentResponse);
+  const transactionMatrixFeedback = buildTransactionMatrixReviewFeedback(
+    transactionMatrixDefinition,
+    transactionMatrixStudentResponse,
+    transactionMatrixGrade,
+  );
+  const transactionMatrixScenario = transactionMatrixDefinition.event;
+  const transactionMatrixReason = transactionMatrixDefinition.event.equityReason;
+
+  const transactionEffectsRowFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
+    transactionEffectsDefinition.rows.map((row) => [
+      row.id,
+      {
+        status: (transactionEffectsFeedback[row.id]?.status ?? 'incorrect') as SelectionMatrixRowFeedback['status'],
+        scoreLabel: transactionEffectsFeedback[row.id]?.scoreLabel ?? '0/1',
+        selectedLabel: transactionEffectsFeedback[row.id]?.selectedLabel ?? 'Not selected',
+        expectedLabel: transactionEffectsFeedback[row.id]?.expectedLabel ?? 'Unknown',
+        misconceptionTags: transactionEffectsFeedback[row.id]?.misconceptionTags ?? [],
+        message: transactionEffectsFeedback[row.id]?.message,
+      },
+    ]),
+  );
+
+  const transactionMatrixRowFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
+    transactionMatrixDefinition.rows.map((row) => [
+      row.id,
+      {
+        status: (transactionMatrixFeedback[row.id]?.status ?? 'incorrect') as SelectionMatrixRowFeedback['status'],
+        scoreLabel: transactionMatrixFeedback[row.id]?.scoreLabel ?? '0/1',
+        selectedLabel: transactionMatrixFeedback[row.id]?.selectedLabel ?? 'Not selected',
+        expectedLabel: transactionMatrixFeedback[row.id]?.expectedLabel ?? 'Unknown',
+        misconceptionTags: transactionMatrixFeedback[row.id]?.misconceptionTags ?? [],
+        message: transactionMatrixFeedback[row.id]?.message,
+      },
+    ]),
+  );
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -464,6 +557,131 @@ export default function PracticePreviewPage() {
                 ).size,
               }}
             />
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction analysis</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Families C and F</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Transaction-effects and transaction-matrix share the same narrative spine, but Family C stays close to the account
+              effects while Family F slows the reasoning down into a scaffolded decision path.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family C preview</p>
+                <h3 className="text-xl font-semibold tracking-tight">Transaction effects on accounts</h3>
+                <p className="max-w-4xl text-sm text-slate-600">
+                  Mark how each account or category changes because of this transaction.
+                </p>
+              </div>
+
+              <div className="grid gap-4 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
+                  <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.narrative}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Amount</div>
+                  <div className="text-sm text-slate-700">{formatAccountingAmount(transactionEffectsDefinition.event.amount)}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Why equity changes</div>
+                  <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.equityReason}</div>
+                </div>
+              </div>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <SelectionMatrix
+                  title="Family C Guided Practice"
+                  description="Select how the affected accounts and summary categories change."
+                  rows={transactionEffectsDefinition.rows}
+                  columns={transactionEffectsDefinition.columns}
+                  defaultValue={transactionEffectsMatrixValue}
+                />
+
+                <SelectionMatrix
+                  title="Family C Teacher Review"
+                  description="Read-only review with the same transaction and annotated misconceptions."
+                  rows={transactionEffectsDefinition.rows}
+                  columns={transactionEffectsDefinition.columns}
+                  readOnly
+                  teacherView
+                  defaultValue={transactionEffectsMatrixStudentValue}
+                  rowFeedback={transactionEffectsRowFeedback}
+                  submissionSummary={{
+                    scoreLabel: `${transactionEffectsGrade.score}/${transactionEffectsGrade.maxScore} correct`,
+                    attempts: 1,
+                    submittedAt: '2026-03-20 09:30',
+                    misconceptionCount: new Set(
+                      Object.values(transactionEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
+                    ).size,
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family F preview</p>
+                <h3 className="text-xl font-semibold tracking-tight">Transaction reasoning matrix</h3>
+                <p className="max-w-4xl text-sm text-slate-600">
+                  Work left to right: first identify whether the row is affected, then explain the change.
+                </p>
+              </div>
+
+              <div className="grid gap-4 rounded-2xl border bg-white/90 p-4">
+                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
+                  <div className="text-sm text-slate-700">{transactionMatrixScenario.narrative}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business context</div>
+                  <div className="text-sm text-slate-700">
+                    {transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}
+                  </div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Source document clue</div>
+                  <div className="text-sm text-slate-700">{transactionMatrixScenario.tags.join(' • ')}</div>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
+                  <div className="text-sm text-slate-700">{transactionMatrixReason}</div>
+                </div>
+              </div>
+
+              <SelectionMatrix
+                title="Family F Guided Practice"
+                description="Select the reasoning stage that matches each row."
+                rows={transactionMatrixDefinition.rows}
+                columns={transactionMatrixDefinition.columns}
+                defaultValue={transactionMatrixMatrixValue}
+              />
+
+              <SelectionMatrix
+                title="Family F Teacher Review"
+                description="Read-only review with the same reasoning stages and stage-level feedback."
+                rows={transactionMatrixDefinition.rows}
+                columns={transactionMatrixDefinition.columns}
+                readOnly
+                teacherView
+                defaultValue={transactionMatrixMatrixStudentValue}
+                rowFeedback={transactionMatrixRowFeedback}
+                submissionSummary={{
+                  scoreLabel: `${transactionMatrixGrade.score}/${transactionMatrixGrade.maxScore} correct`,
+                  attempts: 1,
+                  submittedAt: '2026-03-20 09:35',
+                  misconceptionCount: new Set(
+                    Object.values(transactionMatrixFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
+                  ).size,
+                }}
+              />
+            </div>
           </div>
         </section>
 

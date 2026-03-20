@@ -16,31 +16,31 @@
 
 ## Phase 2 — Families C and F: Transaction Analysis
 
-- [ ] Task: Build Family C generator, solver, and grader (`lib/practice/engine/families/transaction-effects.ts`)
-    - [ ] Write unit tests: generates transaction scenarios from event library, multi-output grading (accounts affected, direction, amount, equity reason)
-    - [ ] Implement generator drawing from transaction event library
-    - [ ] Implement solver and grader with per-output misconception tags
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family C generator, solver, and grader (`lib/practice/engine/families/transaction-effects.ts`)
+    - [x] Write unit tests: generates transaction scenarios from event library, multi-output grading (accounts affected, direction, amount, equity reason)
+    - [x] Implement generator drawing from transaction event library
+    - [x] Implement solver and grader with per-output misconception tags
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family C to practice.v1 envelope and SelectionMatrix UI
-    - [ ] Write integration test: full round-trip
-    - [ ] Implement toEnvelope, register familyKey `transaction-effects`
-    - [ ] Implement adapter to SelectionMatrix props (rows: accounts/categories, columns: increase/decrease/no effect)
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family C to practice.v1 envelope and SelectionMatrix UI
+    - [x] Write integration test: full round-trip
+    - [x] Implement toEnvelope, register familyKey `transaction-effects`
+    - [x] Implement adapter to SelectionMatrix props (rows: accounts/categories, columns: increase/decrease/no effect)
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family F generator, solver, and grader (`lib/practice/engine/families/transaction-matrix.ts`)
-    - [ ] Write unit tests: compound table output captures intermediate reasoning (account, direction, amount, equity reason)
-    - [ ] Implement generator reusing event library, exposing structured scaffold
-    - [ ] Implement solver and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family F generator, solver, and grader (`lib/practice/engine/families/transaction-matrix.ts`)
+    - [x] Write unit tests: compound table output captures intermediate reasoning (account, direction, amount, equity reason)
+    - [x] Implement generator reusing event library, exposing structured scaffold
+    - [x] Implement solver and grader
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family F to practice.v1 envelope and SelectionMatrix UI
-    - [ ] Write integration test: full round-trip
-    - [ ] Implement toEnvelope, register familyKey `transaction-matrix`
-    - [ ] Implement adapter to SelectionMatrix props (multi-column grid)
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family F to practice.v1 envelope and SelectionMatrix UI
+    - [x] Write integration test: full round-trip
+    - [x] Implement toEnvelope, register familyKey `transaction-matrix`
+    - [x] Implement adapter to SelectionMatrix props (multi-column grid)
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 3 — Family H: Journal Entry Recording
 
