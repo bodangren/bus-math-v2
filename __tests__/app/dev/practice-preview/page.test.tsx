@@ -18,6 +18,10 @@ describe('practice preview page', () => {
     expect(screen.getByRole('heading', { name: /classification and statement mapping/i })).toBeInTheDocument();
     expect(screen.getByText(/family a guided practice/i)).toBeInTheDocument();
     expect(screen.getByText(/family a teacher review/i)).toBeInTheDocument();
+    expect(screen.getByText(/family m preview/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /normal balances and account nature/i })).toBeInTheDocument();
+    expect(screen.getByText(/family m guided practice/i)).toBeInTheDocument();
+    expect(screen.getByText(/family m teacher review/i)).toBeInTheDocument();
     expect(screen.getByText(/selection matrix/i)).toBeInTheDocument();
     expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
     expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();

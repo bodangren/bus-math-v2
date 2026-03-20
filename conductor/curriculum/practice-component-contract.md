@@ -223,7 +223,7 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `adjusting-calculations` | planned | `StatementLayout` + `JournalEntryTable` | `adjustment-scenario-generator` |
 | `missing-adjustments-effects` | planned | `SelectionMatrix` | `adjustment-scenario-generator` |
 | `closing-cycle` | planned | `SelectionMatrix` | `account-ontology` |
-| `normal-balances` | planned | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
+| `normal-balance` | implemented | `SelectionMatrix` | `account-ontology` |
 | `depreciation-presentation` | planned | `StatementLayout` | `asset-register` |
 | `merchandising-computation` | planned | `StatementLayout` | `mini-ledger` + `retail-calculator` |
 | `merchandising-entries` | planned | `JournalEntryTable` | `transaction-event-library` |

@@ -34,4 +34,56 @@ describe('SelectionMatrix', () => {
       }),
     );
   });
+
+  it('renders teacher review summary and row feedback copy', () => {
+    render(
+      <SelectionMatrix
+        title="Normal balances"
+        teacherView
+        readOnly
+        rows={[
+          { id: 'cash', label: 'Cash', description: 'Current asset' },
+          { id: 'allowance', label: 'Allowance for Doubtful Accounts', description: 'Contra asset' },
+        ]}
+        columns={[
+          { id: 'debit', label: 'Debit' },
+          { id: 'credit', label: 'Credit' },
+        ]}
+        defaultValue={{
+          cash: 'debit',
+          allowance: 'debit',
+        }}
+        rowFeedback={{
+          cash: {
+            status: 'correct',
+            scoreLabel: '1/1',
+            selectedLabel: 'Debit',
+            expectedLabel: 'Debit',
+            misconceptionTags: [],
+          },
+          allowance: {
+            status: 'incorrect',
+            scoreLabel: '0/1',
+            selectedLabel: 'Debit',
+            expectedLabel: 'Credit',
+            misconceptionTags: ['contra-account-same-as-parent'],
+            message: 'Contra accounts use the opposite side from their parent account.',
+          },
+        }}
+        submissionSummary={{
+          scoreLabel: '1/2 correct',
+          attempts: 2,
+          submittedAt: '2026-03-20 09:15',
+          misconceptionCount: 1,
+        }}
+      />,
+    );
+
+    expect(screen.getByText(/score: 1\/2 correct/i)).toBeInTheDocument();
+    expect(screen.getByText(/attempts: 2/i)).toBeInTheDocument();
+    expect(screen.getByText(/submitted: 2026-03-20 09:15/i)).toBeInTheDocument();
+    expect(screen.getByText(/misconceptions: 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/your answer: debit\. expected: credit\./i)).toBeInTheDocument();
+    expect(screen.getByText(/contra-account-same-as-parent/i)).toBeInTheDocument();
+  });
 });

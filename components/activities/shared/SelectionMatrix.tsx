@@ -26,6 +26,16 @@ export interface SelectionMatrixRowFeedback {
   status: 'correct' | 'incorrect' | 'partial';
   scoreLabel?: string;
   misconceptionTags?: string[];
+  selectedLabel?: string;
+  expectedLabel?: string;
+  message?: string;
+}
+
+export interface SelectionMatrixReviewSummary {
+  scoreLabel?: string;
+  attempts?: number;
+  submittedAt?: string;
+  misconceptionCount?: number;
 }
 
 export interface SelectionMatrixProps {
@@ -39,6 +49,7 @@ export interface SelectionMatrixProps {
   readOnly?: boolean;
   teacherView?: boolean;
   rowFeedback?: Record<string, SelectionMatrixRowFeedback>;
+  submissionSummary?: SelectionMatrixReviewSummary;
 }
 
 function getSelectedValues(entry: string | string[] | undefined, selectionMode: SelectionMode) {
@@ -88,6 +99,7 @@ export function SelectionMatrix({
   readOnly = false,
   teacherView = false,
   rowFeedback = {},
+  submissionSummary,
 }: SelectionMatrixProps) {
   const [internalValue, setInternalValue] = useState<Record<string, string | string[]>>(defaultValue ?? {});
   const selectedValues = value ?? internalValue;
@@ -101,6 +113,13 @@ export function SelectionMatrix({
 
   const rowIndexes = useMemo(() => new Map(rows.map((row, index) => [row.id, index])), [rows]);
   const columnIndexes = useMemo(() => new Map(columns.map((column, index) => [column.id, index])), [columns]);
+  const columnLabels = useMemo(() => new Map(columns.map((column) => [column.id, column.label])), [columns]);
+  const summaryScoreLabel =
+    submissionSummary?.scoreLabel ??
+    `${Object.values(rowFeedback).filter((feedback) => feedback.status === 'correct').length}/${rows.length} correct`;
+  const summaryMisconceptionCount =
+    submissionSummary?.misconceptionCount ??
+    new Set(Object.values(rowFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size;
 
   const updateValue = (nextValue: Record<string, string | string[]>) => {
     if (value === undefined) {
@@ -180,7 +199,7 @@ export function SelectionMatrix({
           }
         }}
         className={cn(
-          'flex min-h-11 w-full items-center justify-center rounded-md border px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+          'flex min-h-11 w-full flex-col items-center justify-center rounded-md border px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
           isSelected ? 'border-primary bg-primary/10 text-foreground' : 'border-border bg-background hover:bg-accent/40',
           teacherView && feedback?.status === 'correct' && 'border-emerald-500 bg-emerald-50',
           teacherView && feedback?.status === 'incorrect' && 'border-destructive bg-destructive/10',
@@ -190,8 +209,11 @@ export function SelectionMatrix({
         <span className="sr-only">
           {selectionMode === 'multiple' ? 'Toggle' : 'Select'} {column.label}
         </span>
-        <span aria-hidden="true" className="font-medium">
+        <span aria-hidden="true" className="font-medium leading-none">
           {isSelected ? '●' : '○'}
+        </span>
+        <span aria-hidden="true" className="text-[11px] font-semibold uppercase tracking-[0.18em] text-current/90">
+          {column.label}
         </span>
       </button>
     );
@@ -199,70 +221,83 @@ export function SelectionMatrix({
 
   return (
     <Card className="w-full">
-      <CardHeader className="space-y-3">
+      <CardHeader className="space-y-4">
         <div className="space-y-1">
           <CardTitle className="text-2xl">{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
-        {teacherView && Object.keys(rowFeedback).length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(rowFeedback).map(([rowId, feedback]) => (
-              <Badge
-                key={rowId}
-                variant={feedback.status === 'correct' ? 'default' : feedback.status === 'incorrect' ? 'destructive' : 'secondary'}
-              >
-                {rowId}: {feedback.scoreLabel ?? feedback.status}
-              </Badge>
-            ))}
+        {teacherView && (
+          <div className="grid gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-2 xl:grid-cols-4">
+            <Badge variant="secondary" className="justify-start gap-2">
+              Score: {summaryScoreLabel}
+            </Badge>
+            <Badge variant="outline" className="justify-start gap-2">
+              Attempts: {submissionSummary?.attempts ?? '—'}
+            </Badge>
+            <Badge variant="outline" className="justify-start gap-2">
+              Submitted: {submissionSummary?.submittedAt ?? '—'}
+            </Badge>
+            <Badge variant="secondary" className="justify-start gap-2">
+              Misconceptions: {summaryMisconceptionCount}
+            </Badge>
           </div>
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="overflow-x-auto">
-          <div role="grid" className="min-w-[640px]">
-            <div className="grid grid-cols-[minmax(220px,1.2fr)_repeat(auto-fit,minmax(120px,1fr))] gap-2 pb-3">
-              <div className="text-sm font-medium text-muted-foreground">Prompt</div>
-              {columns.map((column) => (
-                <div key={column.id} className="text-center">
-                  <div className="text-sm font-medium">{column.label}</div>
-                  {column.description && <div className="text-xs text-muted-foreground">{column.description}</div>}
-                </div>
-              ))}
-            </div>
-            <div className="space-y-3">
-              {rows.map((row) => {
-                const feedback = rowFeedback[row.id];
-                return (
-                  <div
-                    key={row.id}
-                    className={cn(
-                      'grid grid-cols-[minmax(220px,1.2fr)_repeat(auto-fit,minmax(120px,1fr))] gap-2 rounded-lg border bg-background p-3',
-                      teacherView && feedback?.status === 'correct' && 'border-emerald-500/50 bg-emerald-50/50',
-                      teacherView && feedback?.status === 'incorrect' && 'border-destructive/60 bg-destructive/10',
-                      teacherView && feedback?.status === 'partial' && 'border-amber-500/60 bg-amber-50/70'
-                    )}
-                  >
-                    <div className="space-y-1">
-                      <div className="font-medium">{row.label}</div>
-                      {row.description && <div className="text-sm text-muted-foreground">{row.description}</div>}
-                      {row.hint && !readOnly && <div className="text-xs text-muted-foreground/80">{row.hint}</div>}
-                      {teacherView && feedback?.misconceptionTags?.length ? (
-                        <div className="text-xs text-muted-foreground">
-                          Tags: {feedback.misconceptionTags.join(', ')}
-                        </div>
-                      ) : null}
-                    </div>
-                    {columns.map((column) => renderCell(row, column))}
-                    {teacherView && feedback && (
-                      <div className="col-span-full pt-1 text-xs text-muted-foreground">
-                        {feedback.scoreLabel ?? feedback.status}
-                      </div>
-                    )}
+        <div className="space-y-3">
+          {rows.map((row) => {
+            const feedback = rowFeedback[row.id];
+            const selectedValue = selectedValues[row.id];
+            const selectedLabel =
+              feedback?.selectedLabel ??
+              (typeof selectedValue === 'string' ? columnLabels.get(selectedValue) : undefined) ??
+              'Not selected';
+            const expectedLabel = feedback?.expectedLabel ?? (feedback?.status === 'correct' ? selectedLabel : undefined);
+
+            return (
+              <div
+                key={row.id}
+                className={cn(
+                  'rounded-xl border bg-background p-4',
+                  teacherView && feedback?.status === 'correct' && 'border-emerald-500/50 bg-emerald-50/50',
+                  teacherView && feedback?.status === 'incorrect' && 'border-destructive/60 bg-destructive/10',
+                  teacherView && feedback?.status === 'partial' && 'border-amber-500/60 bg-amber-50/70'
+                )}
+              >
+                <div className="grid gap-3 md:grid-cols-[minmax(220px,1.2fr)_minmax(0,1fr)]">
+                  <div className="space-y-1">
+                    <div className="font-medium">{row.label}</div>
+                    {row.description && <div className="text-sm text-muted-foreground">{row.description}</div>}
+                    {row.hint && !readOnly && <div className="text-xs text-muted-foreground/80">{row.hint}</div>}
                   </div>
-                );
-              })}
-            </div>
-          </div>
+                  <div
+                    className="grid gap-2"
+                    style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
+                  >
+                    {columns.map((column) => renderCell(row, column))}
+                  </div>
+                </div>
+                {teacherView && feedback && (
+                  <div className="mt-3 space-y-2 rounded-lg border bg-muted/20 p-3">
+                    <p className="text-sm font-medium text-foreground">
+                      Your answer: {selectedLabel}.{expectedLabel ? ` Expected: ${expectedLabel}.` : ''}
+                    </p>
+                    {feedback.message && <p className="text-xs text-muted-foreground">{feedback.message}</p>}
+                    {feedback.scoreLabel && <p className="text-xs text-muted-foreground">{feedback.scoreLabel}</p>}
+                    {feedback.misconceptionTags?.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {feedback.misconceptionTags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

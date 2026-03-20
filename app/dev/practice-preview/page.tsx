@@ -1,6 +1,14 @@
 import { notFound } from 'next/navigation';
 
-import { CategorizationList, JournalEntryTable, SelectionMatrix, StatementLayout } from '@/components/activities/shared';
+import {
+  CategorizationList,
+  JournalEntryTable,
+  SelectionMatrix,
+  StatementLayout,
+  type SelectionMatrixRowFeedback,
+} from '@/components/activities/shared';
+import { practiceAccounts } from '@/lib/practice/engine/accounts';
+import { buildNormalBalanceReviewFeedback, normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
 import { generateMiniLedger } from '@/lib/practice/engine/mini-ledger';
 import { formatAccountingAmount } from '@/components/activities/shared/utils';
 
@@ -217,6 +225,56 @@ export default function PracticePreviewPage() {
     return acc;
   }, {});
 
+  const normalBalanceDefinition = normalBalanceFamily.generate(2026, {
+    accountCount: 8,
+    includeContraAccounts: true,
+    companyScope: 'retail',
+    mode: 'guided_practice',
+  });
+  const normalBalanceSolution = normalBalanceFamily.solve(normalBalanceDefinition);
+  const normalBalanceTarget = normalBalanceDefinition.parts.find((part) => part.details.isContraAccount) ?? normalBalanceDefinition.parts[0];
+  const normalBalanceWrongAnswer = (() => {
+    if (!normalBalanceTarget) {
+      return normalBalanceSolution;
+    }
+
+    const parentNormalBalance = normalBalanceTarget.details.contraOf
+      ? practiceAccounts.find((account) => account.id === normalBalanceTarget.details.contraOf)?.normalBalance
+      : null;
+    const nextSelection = parentNormalBalance ?? (normalBalanceTarget.targetId === 'debit' ? 'credit' : 'debit');
+
+    return {
+      ...normalBalanceSolution,
+      [normalBalanceTarget.id]: nextSelection,
+    };
+  })();
+  const normalBalanceGrade = normalBalanceFamily.grade(normalBalanceDefinition, normalBalanceWrongAnswer);
+  const normalBalanceFeedback = buildNormalBalanceReviewFeedback(normalBalanceDefinition, normalBalanceWrongAnswer, normalBalanceGrade);
+  const normalBalanceColumns = [
+    { id: 'debit', label: 'Debit', description: 'Normal balance on the left side' },
+    { id: 'credit', label: 'Credit', description: 'Normal balance on the right side' },
+  ];
+  const normalBalanceRows = normalBalanceDefinition.parts.map((part) => ({
+    id: part.id,
+    label: part.label,
+    description: `${part.details.accountType} account${part.details.isContraAccount && part.details.contraOf ? ` • contra to ${part.details.contraOf}` : ''}`,
+  }));
+  const normalBalanceReviewFeedback: Record<string, SelectionMatrixRowFeedback> = Object.fromEntries(
+    normalBalanceDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: (normalBalanceFeedback[part.id]?.status ?? 'incorrect') as SelectionMatrixRowFeedback['status'],
+        scoreLabel: normalBalanceFeedback[part.id]?.scoreLabel ?? '0/1',
+        selectedLabel:
+          normalBalanceFeedback[part.id]?.selectedBalanceLabel ??
+          (normalBalanceWrongAnswer[part.id] === 'debit' ? 'Debit' : 'Credit'),
+        expectedLabel: normalBalanceFeedback[part.id]?.expectedBalanceLabel ?? part.targetId.toUpperCase(),
+        misconceptionTags: normalBalanceFeedback[part.id]?.misconceptionTags ?? [],
+        message: normalBalanceFeedback[part.id]?.message,
+      },
+    ]),
+  );
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -263,6 +321,43 @@ export default function PracticePreviewPage() {
                 misconceptionCount: 2,
               }}
               showHintsByDefault
+            />
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family M preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Normal balances and account nature</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              The same account set appears in a guided student state and a read-only teacher review with annotated misconceptions.
+            </p>
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <SelectionMatrix
+              title="Family M Guided Practice"
+              description="Choose the debit or credit normal balance for each account."
+              rows={normalBalanceRows}
+              columns={normalBalanceColumns}
+              defaultValue={normalBalanceSolution}
+            />
+
+            <SelectionMatrix
+              title="Family M Teacher Review"
+              description="Read-only review with the same account set and misconception tags."
+              rows={normalBalanceRows}
+              columns={normalBalanceColumns}
+              readOnly
+              teacherView
+              defaultValue={normalBalanceWrongAnswer}
+              rowFeedback={normalBalanceReviewFeedback}
+              submissionSummary={{
+                scoreLabel: `${normalBalanceGrade.score}/${normalBalanceGrade.maxScore} correct`,
+                attempts: 1,
+                submittedAt: '2026-03-20 09:20',
+                misconceptionCount: new Set(Object.values(normalBalanceFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size,
+              }}
             />
           </div>
         </section>

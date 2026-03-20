@@ -32,12 +32,12 @@
     - [x] Implement generator, solver, and grader with contra-account misconception tags
     - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family M to practice.v1 envelope and SelectionMatrix UI
-    - [ ] Write integration test: full round-trip and UI rendering with debit/credit columns
-    - [ ] Implement toEnvelope mapping and register familyKey `normal-balance`
-    - [ ] Implement adapter from Family M definition to SelectionMatrix props
-    - [ ] Update preview route with Family M sample
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family M to practice.v1 envelope and SelectionMatrix UI
+    - [x] Write integration test: full round-trip and UI rendering with debit/credit columns
+    - [x] Implement toEnvelope mapping and register familyKey `normal-balance`
+    - [x] Implement adapter from Family M definition to SelectionMatrix props
+    - [x] Update preview route with Family M sample
+    - [x] Verify: `npm run lint` and tests pass
 
 ## Phase 3 — Family K: Effects of Missing Adjustments
 
