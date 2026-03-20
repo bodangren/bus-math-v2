@@ -40,6 +40,8 @@
 - (2026-03-20, journal_transaction_families_20260319) SelectionMatrix preview defaults should be row-only projections when a family response carries numeric metadata, or the matrix prop contract will reject the full envelope.
 - (2026-03-20, repo_wide_component_suite_regressions) A phase-specific slice can be green while the repo-wide Vitest run still fails in unrelated component suites; capture those failures in tech-debt before treating the branch as closed.
 - (2026-03-21, statement_completion_preview) Family D/E/Q previews read more like real worksheets when the preview shows separate guided and teacher-review panels for each statement type instead of a single generic example.
+- (2026-03-21, statement_computation_families_20260319) Depreciation preview consumers should derive original asset cost from `depreciableBase + salvageValue`; the adjustment scenario does not expose a raw `cost` field.
+- (2026-03-21, statement_computation_families_20260319) Duplicate variant headings in the dev preview are easiest to test with `getAllByText` counts instead of single-match queries.
 ### Patterns Worth Repeating
 
 - (2026-03-12, curriculum_runtime_foundation) Source-level guard tests are effective for catching stale runtime surfaces such as debug routes, legacy admin pages, and missing deployment scaffolding.

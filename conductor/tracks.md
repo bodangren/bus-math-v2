@@ -44,7 +44,7 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
 
 - [~] **Track: Statement and Computation Practice Families (B, D, E, I, J, N, O, Q)**
   *Link: [./tracks/statement_computation_families_20260319/](./tracks/statement_computation_families_20260319/)*
-  *Status: In Progress; phases 1-3 are complete, with the remaining statement families in the later phases.*
+  *Status: In Progress; phases 1-4 are complete, with final verification and closeout still pending.*
 
 - [ ] **Track: Trial Balance Error Analysis Family (G)**
   *Link: [./tracks/trial_balance_error_family_20260319/](./tracks/trial_balance_error_family_20260319/)*

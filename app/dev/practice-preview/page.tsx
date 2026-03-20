@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   AccountingEquationLayout,
   CategorizationList,
@@ -22,7 +23,18 @@ import {
   buildAdjustmentEffectsReviewFeedback,
   type AdjustmentEffectsResponse,
 } from '@/lib/practice/engine/families/adjustment-effects';
+import {
+  adjustingCalculationsFamily,
+  buildAdjustingCalculationsReviewFeedback,
+  type AdjustingCalculationsJournalLine,
+  type AdjustingCalculationsResponse,
+} from '@/lib/practice/engine/families/adjusting-calculations';
 import { buildNormalBalanceReviewFeedback, normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
+import {
+  buildDepreciationPresentationReviewFeedback,
+  depreciationPresentationFamily,
+  type DepreciationPresentationResponse,
+} from '@/lib/practice/engine/families/depreciation-presentation';
 import {
   buildJournalEntryReviewFeedback,
   journalEntryFamily,
@@ -38,6 +50,11 @@ import {
   merchandisingEntriesFamily,
   type MerchandisingEntryResponse,
 } from '@/lib/practice/engine/families/merchandising-entries';
+import {
+  buildMerchandisingComputationReviewFeedback,
+  merchandisingComputationFamily,
+  type MerchandisingComputationResponse,
+} from '@/lib/practice/engine/families/merchandising-computation';
 import {
   buildTransactionEffectsReviewFeedback,
   transactionEffectsFamily,
@@ -663,6 +680,183 @@ export default function PracticePreviewPage() {
     netPostingCue: row.details.postingLines[0]?.effectLabel ?? 'No postings',
     placeholder: '0',
   }));
+
+  const adjustingCalculationsCalculationDefinition = adjustingCalculationsFamily.generate(2026, {
+    mode: 'guided_practice',
+    presentation: 'calculation',
+    scenarioKind: 'deferral',
+    tolerance: 1,
+  });
+  const adjustingCalculationsCalculationSolution = adjustingCalculationsFamily.solve(
+    adjustingCalculationsCalculationDefinition,
+  ) as AdjustingCalculationsResponse;
+  const adjustingCalculationsCalculationPart = adjustingCalculationsCalculationDefinition.parts[0];
+  const adjustingCalculationsCalculationStudentResponse: AdjustingCalculationsResponse = adjustingCalculationsCalculationPart
+    ? {
+        ...adjustingCalculationsCalculationSolution,
+        [adjustingCalculationsCalculationPart.id]:
+          Number(adjustingCalculationsCalculationSolution[adjustingCalculationsCalculationPart.id] ?? 0) + 2,
+      }
+    : adjustingCalculationsCalculationSolution;
+  const adjustingCalculationsCalculationGrade = adjustingCalculationsFamily.grade(
+    adjustingCalculationsCalculationDefinition,
+    adjustingCalculationsCalculationStudentResponse,
+  );
+  const adjustingCalculationsCalculationFeedback = buildAdjustingCalculationsReviewFeedback(
+    adjustingCalculationsCalculationDefinition,
+    adjustingCalculationsCalculationStudentResponse,
+    adjustingCalculationsCalculationGrade,
+  );
+  const adjustingCalculationsNumericRows = adjustingCalculationsCalculationDefinition.parts.map((part) => ({
+    id: part.id,
+    label: part.label,
+    kind: 'editable' as const,
+    placeholder: '0',
+    note: part.details.explanation,
+  }));
+
+  const adjustingCalculationsEntryDefinition = adjustingCalculationsFamily.generate(2026, {
+    mode: 'guided_practice',
+    presentation: 'journal-entry',
+    scenarioKind: 'depreciation',
+    tolerance: 1,
+  });
+  const adjustingCalculationsEntrySolution = adjustingCalculationsFamily.solve(
+    adjustingCalculationsEntryDefinition,
+  ) as Record<string, AdjustingCalculationsJournalLine>;
+  const adjustingCalculationsEntryStudentResponse: AdjustingCalculationsResponse = {
+    ...adjustingCalculationsEntrySolution,
+    [adjustingCalculationsEntryDefinition.parts[0]?.id ?? 'line-1']: {
+      ...(adjustingCalculationsEntrySolution[adjustingCalculationsEntryDefinition.parts[0]?.id ?? 'line-1'] ?? {}),
+      memo: 'Incorrect memo',
+    } as AdjustingCalculationsJournalLine,
+  };
+  const adjustingCalculationsEntryGrade = adjustingCalculationsFamily.grade(
+    adjustingCalculationsEntryDefinition,
+    adjustingCalculationsEntryStudentResponse,
+  );
+  const adjustingCalculationsEntryFeedback = buildAdjustingCalculationsReviewFeedback(
+    adjustingCalculationsEntryDefinition,
+    adjustingCalculationsEntryStudentResponse,
+    adjustingCalculationsEntryGrade,
+  );
+  const adjustingCalculationsEntryRowFeedback: Record<string, JournalEntryRowFeedback> = Object.fromEntries(
+    adjustingCalculationsEntryDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: (adjustingCalculationsEntryFeedback[part.id]?.status ?? 'incorrect') as JournalEntryRowFeedback['status'],
+        message: adjustingCalculationsEntryFeedback[part.id]?.message,
+        misconceptionTags: adjustingCalculationsEntryFeedback[part.id]?.misconceptionTags ?? [],
+      },
+    ]),
+  );
+
+  const depreciationPresentationDirectDefinition = depreciationPresentationFamily.generate(2026, {
+    mode: 'guided_practice',
+    layout: 'direct',
+    tolerance: 1,
+  });
+  const depreciationPresentationDirectSolution = depreciationPresentationFamily.solve(
+    depreciationPresentationDirectDefinition,
+  ) as DepreciationPresentationResponse;
+  const depreciationPresentationDirectPart = depreciationPresentationDirectDefinition.parts[0];
+  const depreciationPresentationDirectStudentResponse: DepreciationPresentationResponse = depreciationPresentationDirectPart
+    ? {
+        ...depreciationPresentationDirectSolution,
+        [depreciationPresentationDirectPart.id]:
+          Number(depreciationPresentationDirectSolution[depreciationPresentationDirectPart.id] ?? 0) + 120,
+      }
+    : depreciationPresentationDirectSolution;
+  const depreciationPresentationDirectGrade = depreciationPresentationFamily.grade(
+    depreciationPresentationDirectDefinition,
+    depreciationPresentationDirectStudentResponse,
+  );
+  const depreciationPresentationDirectFeedback = buildDepreciationPresentationReviewFeedback(
+    depreciationPresentationDirectDefinition,
+    depreciationPresentationDirectStudentResponse,
+    depreciationPresentationDirectGrade,
+  );
+
+  const depreciationPresentationDerivedDefinition = depreciationPresentationFamily.generate(2026, {
+    mode: 'guided_practice',
+    layout: 'derived',
+    tolerance: 1,
+  });
+  const depreciationPresentationDerivedSolution = depreciationPresentationFamily.solve(
+    depreciationPresentationDerivedDefinition,
+  ) as DepreciationPresentationResponse;
+  const depreciationPresentationDerivedPart = depreciationPresentationDerivedDefinition.parts[0];
+  const depreciationPresentationDerivedStudentResponse: DepreciationPresentationResponse = depreciationPresentationDerivedPart
+    ? {
+        ...depreciationPresentationDerivedSolution,
+        [depreciationPresentationDerivedPart.id]:
+          Number(depreciationPresentationDerivedSolution[depreciationPresentationDerivedPart.id] ?? 0) + 120,
+      }
+    : depreciationPresentationDerivedSolution;
+  const depreciationPresentationDerivedGrade = depreciationPresentationFamily.grade(
+    depreciationPresentationDerivedDefinition,
+    depreciationPresentationDerivedStudentResponse,
+  );
+  const depreciationPresentationDerivedFeedback = buildDepreciationPresentationReviewFeedback(
+    depreciationPresentationDerivedDefinition,
+    depreciationPresentationDerivedStudentResponse,
+    depreciationPresentationDerivedGrade,
+  );
+
+  const merchandisingComputationNumericDefinition = merchandisingComputationFamily.generate(2026, {
+    mode: 'guided_practice',
+    presentation: 'numeric',
+    tolerance: 1,
+  });
+  const merchandisingComputationNumericSolution = merchandisingComputationFamily.solve(
+    merchandisingComputationNumericDefinition,
+  ) as MerchandisingComputationResponse;
+  const merchandisingComputationNumericPart = merchandisingComputationNumericDefinition.parts[0];
+  const merchandisingComputationNumericStudentResponse: MerchandisingComputationResponse = merchandisingComputationNumericPart
+    ? {
+        ...merchandisingComputationNumericSolution,
+        [merchandisingComputationNumericPart.id]:
+          Number(merchandisingComputationNumericSolution[merchandisingComputationNumericPart.id] ?? 0) + 5,
+      }
+    : merchandisingComputationNumericSolution;
+  const merchandisingComputationNumericGrade = merchandisingComputationFamily.grade(
+    merchandisingComputationNumericDefinition,
+    merchandisingComputationNumericStudentResponse,
+  );
+  const merchandisingComputationNumericFeedback = buildMerchandisingComputationReviewFeedback(
+    merchandisingComputationNumericDefinition,
+    merchandisingComputationNumericStudentResponse,
+    merchandisingComputationNumericGrade,
+  );
+
+  const merchandisingComputationStatementDefinition = merchandisingComputationFamily.generate(2026, {
+    mode: 'guided_practice',
+    presentation: 'statement',
+    tolerance: 1,
+  });
+  const merchandisingComputationStatementSolution = merchandisingComputationFamily.solve(
+    merchandisingComputationStatementDefinition,
+  ) as MerchandisingComputationResponse;
+  const merchandisingComputationStatementPart = merchandisingComputationStatementDefinition.parts[0];
+  const merchandisingComputationStatementStudentResponse: MerchandisingComputationResponse = merchandisingComputationStatementPart
+    ? {
+        ...merchandisingComputationStatementSolution,
+        [merchandisingComputationStatementPart.id]:
+          Number(merchandisingComputationStatementSolution[merchandisingComputationStatementPart.id] ?? 0) + 5,
+      }
+    : merchandisingComputationStatementSolution;
+  const merchandisingComputationStatementGrade = merchandisingComputationFamily.grade(
+    merchandisingComputationStatementDefinition,
+    merchandisingComputationStatementStudentResponse,
+  );
+  const merchandisingComputationStatementFeedback = buildMerchandisingComputationReviewFeedback(
+    merchandisingComputationStatementDefinition,
+    merchandisingComputationStatementStudentResponse,
+    merchandisingComputationStatementGrade,
+  );
+  const merchandisingComputationNarrative = merchandisingComputationNumericDefinition.timeline.events
+    .map((event) => event.narrative)
+    .join(' ');
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
@@ -1607,6 +1801,558 @@ export default function PracticePreviewPage() {
             </section>
           );
         })()}
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family J preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Adjusting calculations</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family J first asks for the adjustment amount, then shows the journal entry that records the same business fact.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="grid gap-6 xl:grid-cols-2">
+              <StatementLayout
+                title="Family J Guided Practice"
+                description="Compute the adjustment amount before recording the entry."
+                sections={[
+                  {
+                    id: 'adjustment-targets',
+                    label: 'Adjustment targets',
+                    description: 'Read the facts, then compute the number you would record.',
+                    rows: adjustingCalculationsNumericRows,
+                  },
+                ]}
+                defaultValues={Object.fromEntries(adjustingCalculationsNumericRows.map((row) => [row.id, '']))}
+                metadataBadges={[
+                  { label: adjustingCalculationsCalculationDefinition.scenario.kind.replace(/-/g, ' '), variant: 'secondary' },
+                  { label: adjustingCalculationsCalculationDefinition.scaffolding.modeLabel, variant: 'outline' },
+                  { label: 'guided practice', variant: 'outline' },
+                ]}
+                scaffoldText={adjustingCalculationsCalculationDefinition.scaffolding.bridgeText}
+              />
+
+              <StatementLayout
+                title="Family J Teacher Review"
+                description="Read-only evidence with the submitted calculation and a single review annotation."
+                sections={[
+                  {
+                    id: 'adjustment-targets',
+                    label: 'Adjustment targets',
+                    description: 'The same calculation target appears in the teacher review.',
+                    rows: adjustingCalculationsNumericRows,
+                  },
+                ]}
+                values={Object.fromEntries(
+                  adjustingCalculationsCalculationDefinition.parts.map((part) => [
+                    part.id,
+                    String(adjustingCalculationsCalculationStudentResponse[part.id] ?? ''),
+                  ]),
+                )}
+                readOnly
+                teacherView
+                metadataBadges={[
+                  { label: adjustingCalculationsCalculationDefinition.scenario.kind.replace(/-/g, ' '), variant: 'secondary' },
+                  { label: adjustingCalculationsCalculationDefinition.scaffolding.modeLabel, variant: 'outline' },
+                  { label: 'teacher review', variant: 'outline' },
+                ]}
+                scaffoldText={adjustingCalculationsCalculationDefinition.scaffolding.bridgeText}
+                reviewSummary={[
+                  { label: 'Attempt', value: '1' },
+                  {
+                    label: 'Score',
+                    value: `${adjustingCalculationsCalculationGrade.score}/${adjustingCalculationsCalculationGrade.maxScore}`,
+                  },
+                  { label: 'Needs review', value: String(Object.values(adjustingCalculationsCalculationFeedback).filter((item) => item.status !== 'correct').length) },
+                  { label: 'Adjustment type', value: adjustingCalculationsCalculationDefinition.scenario.kind.replace(/-/g, ' ') },
+                ]}
+                rowFeedback={Object.fromEntries(
+                  adjustingCalculationsCalculationDefinition.parts.map((part) => [
+                    part.id,
+                    {
+                      status: (adjustingCalculationsCalculationFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
+                      message: adjustingCalculationsCalculationFeedback[part.id]?.message,
+                      misconceptionTags: adjustingCalculationsCalculationFeedback[part.id]?.misconceptionTags ?? [],
+                    },
+                  ]),
+                )}
+              />
+            </div>
+
+            <div className="grid gap-6 xl:grid-cols-2">
+              <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Amount to record: {formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)}</Badge>
+                  <Badge variant="secondary">{adjustingCalculationsEntryDefinition.presentation}</Badge>
+                  <Badge variant="outline">{adjustingCalculationsEntryDefinition.scenario.reportingDate}</Badge>
+                </div>
+
+                <Card>
+                  <CardHeader className="space-y-2">
+                    <CardTitle className="text-lg">Adjustment facts</CardTitle>
+                    <CardDescription>{adjustingCalculationsEntryDefinition.scenario.stem}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Bridge</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.bridgeText}</div>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mode</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.modeLabel}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <JournalEntryTable
+                  title="Family J Guided Entry"
+                  description="Record the adjusting entry after computing the amount."
+                  availableAccounts={adjustingCalculationsEntryDefinition.availableAccounts}
+                  expectedLineCount={adjustingCalculationsEntryDefinition.entryLines.length}
+                  defaultValue={Object.values(adjustingCalculationsEntrySolution)}
+                />
+              </div>
+
+              <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Score: {adjustingCalculationsEntryGrade.score}/{adjustingCalculationsEntryGrade.maxScore}</Badge>
+                  <Badge variant="secondary">Attempts: 1</Badge>
+                  <Badge variant="outline">{adjustingCalculationsEntryDefinition.scenario.kind.replace(/-/g, ' ')}</Badge>
+                </div>
+
+                <Card>
+                  <CardHeader className="space-y-2">
+                    <CardTitle className="text-lg">Teacher note</CardTitle>
+                    <CardDescription>
+                      The student computed the adjustment amount, but the journal entry memo was altered to surface the review state.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Adjustment amount</div>
+                      <div className="text-sm text-slate-700">{formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)}</div>
+                    </div>
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Bridge</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.bridgeText}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <JournalEntryTable
+                  title="Family J Teacher Review"
+                  description="Read-only journal entry evidence with row-level feedback."
+                  availableAccounts={adjustingCalculationsEntryDefinition.availableAccounts}
+                  expectedLineCount={adjustingCalculationsEntryDefinition.entryLines.length}
+                  defaultValue={Object.values(adjustingCalculationsEntryStudentResponse as Record<string, AdjustingCalculationsJournalLine>)}
+                  readOnly
+                  teacherView
+                  rowFeedback={adjustingCalculationsEntryRowFeedback}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family N preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Depreciation presentation</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family N keeps land as the contrast case and lets students present the depreciable asset net of accumulated depreciation.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{depreciationPresentationDirectDefinition.layout}</Badge>
+                <Badge variant="secondary">{depreciationPresentationDirectDefinition.scenario.assetCategory}</Badge>
+                <Badge variant="outline">{depreciationPresentationDirectDefinition.scaffolding.sectionLabel}</Badge>
+              </div>
+
+              <Card>
+                <CardHeader className="space-y-2">
+                  <CardTitle className="text-lg">Asset register</CardTitle>
+                  <CardDescription>{depreciationPresentationDirectDefinition.scaffolding.registerCue}</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {depreciationPresentationDirectDefinition.assetRegister.map((item) => (
+                    <div key={item.id} className="rounded-xl border bg-background/90 p-3">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                      <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
+                      {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family N Guided Practice"
+                  description="Present the PP&E section with the direct depreciation amount already given."
+                  sections={depreciationPresentationDirectDefinition.sections}
+                  defaultValues={Object.fromEntries(
+                    depreciationPresentationDirectDefinition.rows.filter((row) => row.kind === 'editable').map((row) => [row.id, '']),
+                  )}
+                  metadataBadges={[
+                    { label: depreciationPresentationDirectDefinition.scenario.assetCategory, variant: 'secondary' },
+                    { label: depreciationPresentationDirectDefinition.layout, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={depreciationPresentationDirectDefinition.scaffolding.registerCue}
+                />
+
+                <StatementLayout
+                  title="Family N Teacher Review"
+                  description="Read-only PP&E presentation with the same direct depreciation facts."
+                  sections={depreciationPresentationDirectDefinition.sections}
+                  values={Object.fromEntries(
+                    depreciationPresentationDirectDefinition.rows
+                      .filter((row) => row.kind === 'editable')
+                      .map((row) => [row.id, String(depreciationPresentationDirectStudentResponse[row.id] ?? '')]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: depreciationPresentationDirectDefinition.scenario.assetCategory, variant: 'secondary' },
+                    { label: depreciationPresentationDirectDefinition.layout, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={depreciationPresentationDirectDefinition.scaffolding.registerCue}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${depreciationPresentationDirectGrade.score}/${depreciationPresentationDirectGrade.maxScore}`,
+                    },
+                    { label: 'Needs review', value: String(Object.values(depreciationPresentationDirectFeedback).filter((item) => item.status !== 'correct').length) },
+                    { label: 'Variant', value: depreciationPresentationDirectDefinition.layout },
+                  ]}
+                  rowFeedback={Object.fromEntries(
+                    depreciationPresentationDirectDefinition.parts.map((part) => [
+                      part.id,
+                      {
+                        status: (depreciationPresentationDirectFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
+                        message: depreciationPresentationDirectFeedback[part.id]?.message,
+                        misconceptionTags: depreciationPresentationDirectFeedback[part.id]?.misconceptionTags ?? [],
+                      },
+                    ]),
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{depreciationPresentationDerivedDefinition.layout}</Badge>
+                <Badge variant="secondary">{depreciationPresentationDerivedDefinition.scenario.assetCategory}</Badge>
+                <Badge variant="outline">{depreciationPresentationDerivedDefinition.scaffolding.sectionLabel}</Badge>
+              </div>
+
+              <Card>
+                <CardHeader className="space-y-2">
+                  <CardTitle className="text-lg">Asset register cue</CardTitle>
+                  <CardDescription>{depreciationPresentationDerivedDefinition.scaffolding.registerCue}</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  {depreciationPresentationDerivedDefinition.assetRegister.map((item) => (
+                    <div key={item.id} className="rounded-xl border bg-background/90 p-3">
+                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                      <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
+                      {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
+                    </div>
+                  ))}
+                  <div className="rounded-xl border border-dashed border-slate-300 bg-white/80 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Accumulated depreciation</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(depreciationPresentationDerivedDefinition.parts[0]?.targetId ?? 0)}
+                    </div>
+                    <div className="mt-1 text-xs text-slate-500">Compute this first, then present the net book value.</div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family N Guided Practice"
+                  description="Use the cue block to present the PP&E section for the derived variant."
+                  sections={depreciationPresentationDerivedDefinition.sections}
+                  defaultValues={Object.fromEntries(
+                    depreciationPresentationDerivedDefinition.rows.filter((row) => row.kind === 'editable').map((row) => [row.id, '']),
+                  )}
+                  metadataBadges={[
+                    { label: depreciationPresentationDerivedDefinition.scenario.assetCategory, variant: 'secondary' },
+                    { label: depreciationPresentationDerivedDefinition.layout, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={depreciationPresentationDerivedDefinition.scaffolding.registerCue}
+                />
+
+                <StatementLayout
+                  title="Family N Teacher Review"
+                  description="Read-only evidence with the same cue block and net presentation."
+                  sections={depreciationPresentationDerivedDefinition.sections}
+                  values={Object.fromEntries(
+                    depreciationPresentationDerivedDefinition.rows
+                      .filter((row) => row.kind === 'editable')
+                      .map((row) => [row.id, String(depreciationPresentationDerivedStudentResponse[row.id] ?? '')]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: depreciationPresentationDerivedDefinition.scenario.assetCategory, variant: 'secondary' },
+                    { label: depreciationPresentationDerivedDefinition.layout, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={depreciationPresentationDerivedDefinition.scaffolding.registerCue}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${depreciationPresentationDerivedGrade.score}/${depreciationPresentationDerivedGrade.maxScore}`,
+                    },
+                    { label: 'Needs review', value: String(Object.values(depreciationPresentationDerivedFeedback).filter((item) => item.status !== 'correct').length) },
+                    { label: 'Variant', value: depreciationPresentationDerivedDefinition.layout },
+                  ]}
+                  rowFeedback={Object.fromEntries(
+                    depreciationPresentationDerivedDefinition.parts.map((part) => [
+                      part.id,
+                      {
+                        status: (depreciationPresentationDerivedFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
+                        message: depreciationPresentationDerivedFeedback[part.id]?.message,
+                        misconceptionTags: depreciationPresentationDerivedFeedback[part.id]?.misconceptionTags ?? [],
+                      },
+                    ]),
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family O preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Merchandising computation</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Family O reuses the merchandising timeline facts for both a numeric computation list and a full retail income statement.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.role}</Badge>
+                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.discountMethod}</Badge>
+                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.paymentTiming}</Badge>
+                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.fobCondition}</Badge>
+                <Badge variant="outline">{merchandisingComputationNumericDefinition.scaffolding.factsLabel}</Badge>
+              </div>
+
+                <Card>
+                  <CardHeader className="space-y-2">
+                    <CardTitle className="text-lg">Merchandising facts</CardTitle>
+                  <CardDescription>{merchandisingComputationNarrative}</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  <div className="rounded-xl border bg-background/90 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Sale amount</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(merchandisingComputationNumericDefinition.timeline.saleAmount)}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border bg-background/90 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Cost amount</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(merchandisingComputationNumericDefinition.timeline.costAmount)}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border bg-background/90 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Freight</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(merchandisingComputationNumericDefinition.timeline.freightAmount)}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family O Guided Practice"
+                  description="Compute the merchandising amounts with a compact numeric list."
+                  sections={[
+                    {
+                      id: 'numeric-merchandising',
+                      label: 'Compute each amount',
+                      description: 'Read the facts and enter the numeric totals.',
+                      rows: merchandisingComputationNumericDefinition.questionRows.map((row) => ({
+                        id: row.id,
+                        label: row.label,
+                        kind: 'editable' as const,
+                        placeholder: '0',
+                        note: row.note,
+                      })),
+                    },
+                  ]}
+                  defaultValues={Object.fromEntries(
+                    merchandisingComputationNumericDefinition.questionRows.map((row) => [row.id, '']),
+                  )}
+                  metadataBadges={[
+                    { label: merchandisingComputationNumericDefinition.presentation, variant: 'secondary' },
+                    { label: merchandisingComputationNumericDefinition.scaffolding.statementLabel, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={merchandisingComputationNumericDefinition.scaffolding.guidance}
+                />
+
+                <StatementLayout
+                  title="Family O Teacher Review"
+                  description="Read-only evidence with row-level review feedback and the same numeric targets."
+                  sections={[
+                    {
+                      id: 'numeric-merchandising',
+                      label: 'Compute each amount',
+                      description: 'The same numeric targets appear in teacher review.',
+                      rows: merchandisingComputationNumericDefinition.questionRows.map((row) => ({
+                        id: row.id,
+                        label: row.label,
+                        kind: 'editable' as const,
+                        placeholder: '0',
+                        note: row.note,
+                      })),
+                    },
+                  ]}
+                  values={Object.fromEntries(
+                    merchandisingComputationNumericDefinition.parts.map((part) => [
+                      part.id,
+                      String(merchandisingComputationNumericStudentResponse[part.id] ?? ''),
+                    ]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: merchandisingComputationNumericDefinition.presentation, variant: 'secondary' },
+                    { label: merchandisingComputationNumericDefinition.scaffolding.statementLabel, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={merchandisingComputationNumericDefinition.scaffolding.guidance}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${merchandisingComputationNumericGrade.score}/${merchandisingComputationNumericGrade.maxScore}`,
+                    },
+                    { label: 'Needs review', value: String(Object.values(merchandisingComputationNumericFeedback).filter((item) => item.status !== 'correct').length) },
+                    { label: 'Variant', value: merchandisingComputationNumericDefinition.presentation },
+                  ]}
+                  rowFeedback={Object.fromEntries(
+                    merchandisingComputationNumericDefinition.parts.map((part) => [
+                      part.id,
+                      {
+                        status: (merchandisingComputationNumericFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
+                        message: merchandisingComputationNumericFeedback[part.id]?.message,
+                        misconceptionTags: merchandisingComputationNumericFeedback[part.id]?.misconceptionTags ?? [],
+                      },
+                    ]),
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{merchandisingComputationStatementDefinition.presentation}</Badge>
+                <Badge variant="secondary">{merchandisingComputationStatementDefinition.scaffolding.statementLabel}</Badge>
+                <Badge variant="outline">{merchandisingComputationStatementDefinition.timeline.discountMethod}</Badge>
+              </div>
+
+                <Card>
+                  <CardHeader className="space-y-2">
+                    <CardTitle className="text-lg">Statement facts</CardTitle>
+                  <CardDescription>{merchandisingComputationNarrative}</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                  <div className="rounded-xl border bg-background/90 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Sales returns</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(merchandisingComputationStatementDefinition.parts[0]?.targetId ?? 0)}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border bg-background/90 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Gross profit</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(merchandisingComputationStatementDefinition.parts[1]?.targetId ?? 0)}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border bg-background/90 p-3">
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Net income</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">
+                      {formatAccountingAmount(merchandisingComputationStatementDefinition.parts[2]?.targetId ?? 0)}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <StatementLayout
+                  title="Family O Statement Practice"
+                  description="Complete the retail income statement with the same merchandising facts."
+                  sections={merchandisingComputationStatementDefinition.sections}
+                  defaultValues={Object.fromEntries(
+                    merchandisingComputationStatementDefinition.parts.map((part) => [part.id, '']),
+                  )}
+                  metadataBadges={[
+                    { label: merchandisingComputationStatementDefinition.presentation, variant: 'secondary' },
+                    { label: merchandisingComputationStatementDefinition.scaffolding.statementLabel, variant: 'outline' },
+                    { label: 'guided practice', variant: 'outline' },
+                  ]}
+                  scaffoldText={merchandisingComputationStatementDefinition.scaffolding.guidance}
+                />
+
+                <StatementLayout
+                  title="Family O Teacher Review"
+                  description="Read-only income statement evidence with row-level review feedback."
+                  sections={merchandisingComputationStatementDefinition.sections}
+                  values={Object.fromEntries(
+                    merchandisingComputationStatementDefinition.parts.map((part) => [
+                      part.id,
+                      String(merchandisingComputationStatementStudentResponse[part.id] ?? ''),
+                    ]),
+                  )}
+                  readOnly
+                  teacherView
+                  metadataBadges={[
+                    { label: merchandisingComputationStatementDefinition.presentation, variant: 'secondary' },
+                    { label: merchandisingComputationStatementDefinition.scaffolding.statementLabel, variant: 'outline' },
+                    { label: 'teacher review', variant: 'outline' },
+                  ]}
+                  scaffoldText={merchandisingComputationStatementDefinition.scaffolding.guidance}
+                  reviewSummary={[
+                    { label: 'Attempt', value: '1' },
+                    {
+                      label: 'Score',
+                      value: `${merchandisingComputationStatementGrade.score}/${merchandisingComputationStatementGrade.maxScore}`,
+                    },
+                    { label: 'Needs review', value: String(Object.values(merchandisingComputationStatementFeedback).filter((item) => item.status !== 'correct').length) },
+                    { label: 'Variant', value: merchandisingComputationStatementDefinition.presentation },
+                  ]}
+                  rowFeedback={Object.fromEntries(
+                    merchandisingComputationStatementDefinition.parts.map((part) => [
+                      part.id,
+                      {
+                        status: (merchandisingComputationStatementFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
+                        message: merchandisingComputationStatementFeedback[part.id]?.message,
+                        misconceptionTags: merchandisingComputationStatementFeedback[part.id]?.misconceptionTags ?? [],
+                      },
+                    ]),
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div className="grid gap-6 xl:grid-cols-2">
           <JournalEntryTable

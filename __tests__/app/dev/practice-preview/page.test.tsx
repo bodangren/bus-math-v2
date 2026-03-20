@@ -74,6 +74,18 @@ describe('practice preview page', () => {
       expect(screen.getByRole('heading', { name: /statement subtotal worksheet/i })).toBeInTheDocument();
       expect(screen.getByText(/family q guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family q teacher review/i)).toBeInTheDocument();
+      expect(screen.getByText(/family j preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /adjusting calculations/i })).toBeInTheDocument();
+      expect(screen.getByText(/family j guided practice/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/family j teacher review/i)).toHaveLength(2);
+      expect(screen.getByText(/family n preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /depreciation presentation/i })).toBeInTheDocument();
+      expect(screen.getAllByText(/family n guided practice/i)).toHaveLength(2);
+      expect(screen.getAllByText(/family n teacher review/i)).toHaveLength(2);
+      expect(screen.getByText(/family o preview/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /merchandising computation/i })).toBeInTheDocument();
+      expect(screen.getByText(/family o guided practice/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/family o teacher review/i)).toHaveLength(2);
       expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();
       expect(screen.getByText(/categorization list/i)).toBeInTheDocument();
     },

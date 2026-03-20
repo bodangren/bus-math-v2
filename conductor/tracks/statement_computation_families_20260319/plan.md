@@ -83,44 +83,46 @@
 
 ## Phase 4 — Adjustment, Depreciation, and Merchandising Families (J, N, O)
 
-- [ ] Task: Build Family J generator, solver, and grader (`lib/practice/engine/families/adjusting-calculations.ts`)
-    - [ ] Write unit tests: generates deferral/accrual/depreciation scenarios, solver computes adjustment amounts, grader with numeric tolerance, delegates to JournalEntryTable when entry is required
-    - [ ] Implement generator consuming adjustment scenario generator
-    - [ ] Implement solver and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family J generator, solver, and grader (`lib/practice/engine/families/adjusting-calculations.ts`)
+    - [x] Write unit tests: generates deferral/accrual/depreciation scenarios, solver computes adjustment amounts, grader with numeric tolerance, delegates to JournalEntryTable when entry is required
+    - [x] Implement generator consuming adjustment scenario generator
+    - [x] Implement solver and grader
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family J to practice.v1 envelope and UI
-    - [ ] Write integration test: numeric-only and journal-entry variants
-    - [ ] Implement toEnvelope, register familyKey `adjusting-calculations`
-    - [ ] Implement dual UI mode: numeric fields for calculation problems, JournalEntryTable for entry problems
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family J to practice.v1 envelope and UI
+    - [x] Write integration test: numeric-only and journal-entry variants
+    - [x] Implement toEnvelope, register familyKey `adjusting-calculations`
+    - [x] Implement dual UI mode: numeric fields for calculation problems, JournalEntryTable for entry problems
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family N generator, solver, and grader (`lib/practice/engine/families/depreciation-presentation.ts`)
-    - [ ] Write unit tests: asset register generation, land contrast case, direct vs derived presentation, solver computes net book values and section totals
-    - [ ] Implement generator consuming adjustment scenario generator for depreciation
-    - [ ] Implement solver and grader
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family N generator, solver, and grader (`lib/practice/engine/families/depreciation-presentation.ts`)
+    - [x] Write unit tests: asset register generation, land contrast case, direct vs derived presentation, solver computes net book values and section totals
+    - [x] Implement generator consuming adjustment scenario generator for depreciation
+    - [x] Implement solver and grader
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family N to practice.v1 envelope and StatementLayout UI
-    - [ ] Write integration test: PP&E balance sheet section rendering
-    - [ ] Implement toEnvelope, register familyKey `depreciation-presentation`
-    - [ ] Implement adapter to StatementLayout props (PP&E section)
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family N to practice.v1 envelope and StatementLayout UI
+    - [x] Write integration test: PP&E balance sheet section rendering
+    - [x] Implement toEnvelope, register familyKey `depreciation-presentation`
+    - [x] Implement adapter to StatementLayout props (PP&E section)
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Build Family O generator, solver, and grader (`lib/practice/engine/families/merchandising-computation.ts`)
-    - [ ] Write unit tests: discount eligibility, freight allocation, amount due/received, net sales, gross profit, COGS under periodic inventory
-    - [ ] Implement generator consuming merchandising parameters (from Journal/Transaction track or local)
-    - [ ] Implement solver and grader for multi-step numeric results
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Build Family O generator, solver, and grader (`lib/practice/engine/families/merchandising-computation.ts`)
+    - [x] Write unit tests: discount eligibility, freight allocation, amount due/received, net sales, gross profit, COGS under periodic inventory
+    - [x] Implement generator consuming merchandising parameters (from Journal/Transaction track or local)
+    - [x] Implement solver and grader for multi-step numeric results
+    - [x] Verify: `npm run lint` and tests pass
 
-- [ ] Task: Wire Family O to practice.v1 envelope and UI
-    - [ ] Write integration test: numeric fields and multi-step income statement via StatementLayout
-    - [ ] Implement toEnvelope, register familyKey `merchandising-computation`
-    - [ ] Implement dual UI: numeric inputs for single-answer problems, StatementLayout for income statement problems
-    - [ ] Update preview route
-    - [ ] Verify: `npm run lint` and tests pass
+- [x] Task: Wire Family O to practice.v1 envelope and UI
+    - [x] Write integration test: numeric fields and multi-step income statement via StatementLayout
+    - [x] Implement toEnvelope, register familyKey `merchandising-computation`
+    - [x] Implement dual UI: numeric inputs for single-answer problems, StatementLayout for income statement problems
+    - [x] Update preview route
+    - [x] Verify: `npm run lint` and tests pass
+
+- Phase 4 completed on 2026-03-21 after wiring Families J, N, and O into the shared practice contract and preview surface, then verifying the slice with lint, full test, and production build gates.
 
 ## Phase 5 — Final Verification
 

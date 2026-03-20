@@ -1,8 +1,11 @@
 import { adjustmentEffectsFamily } from './families/adjustment-effects';
+import { adjustingCalculationsFamily } from './families/adjusting-calculations';
 import { cycleDecisionsFamily } from './families/cycle-decisions';
 import { classificationFamily } from './families/classification';
+import { depreciationPresentationFamily } from './families/depreciation-presentation';
 import { journalEntryFamily } from './families/journal-entry';
 import { merchandisingEntriesFamily } from './families/merchandising-entries';
+import { merchandisingComputationFamily } from './families/merchandising-computation';
 import { normalBalanceFamily } from './families/normal-balance';
 import { postingBalancesFamily } from './families/posting-balances';
 import { statementConstructionFamily } from './families/statement-construction';
@@ -16,10 +19,13 @@ import type { ProblemFamily } from './types';
 export const practiceFamilyRegistry = {
   'accounting-equation': referenceAccountingEquationFamily,
   'adjustment-effects': adjustmentEffectsFamily,
+  'adjusting-calculations': adjustingCalculationsFamily,
   classification: classificationFamily,
   'cycle-decisions': cycleDecisionsFamily,
+  'depreciation-presentation': depreciationPresentationFamily,
   'journal-entry': journalEntryFamily,
   'merchandising-entries': merchandisingEntriesFamily,
+  'merchandising-computation': merchandisingComputationFamily,
   'normal-balance': normalBalanceFamily,
   'posting-balances': postingBalancesFamily,
   'statement-construction': statementConstructionFamily,
