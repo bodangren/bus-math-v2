@@ -23,6 +23,7 @@ export interface AccountingEquationTerm {
   id: AccountingEquationTermId;
   label: string;
   value?: number | string;
+  hidden?: boolean;
   editable?: boolean;
   placeholder?: string;
   note?: string;

@@ -74,7 +74,7 @@ describe('merchandising timeline generator', () => {
 
     expect(returnEvent).toBeDefined();
     expect(paymentEvent).toBeDefined();
-    expect(returnEvent?.date < paymentEvent!.date).toBe(true);
+    expect(returnEvent!.date < paymentEvent!.date).toBe(true);
     expect(paymentEvent?.journalLines.find((line) => line.accountId === 'cash')?.debit).toBe(720);
   });
 

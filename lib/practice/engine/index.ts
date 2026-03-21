@@ -15,6 +15,7 @@ export * from './families/depreciation-presentation';
 export * from './families/merchandising-entries';
 export * from './families/merchandising-computation';
 export * from './families/normal-balance';
+export * from './families/posting-balances';
 export * from './families/statement-construction';
 export * from './families/statement-completion';
 export * from './families/statement-subtotals';

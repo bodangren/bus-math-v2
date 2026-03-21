@@ -24,7 +24,7 @@ describe('Lesson 03 seed data — Apply A/L/E to Business Events (ACC-1.4)', () 
   it('phase 2 (Intro) has no video section and contains text explaining the dual-impact principle', () => {
     const intro = LESSON_03_SEED_DATA.phases.find(p => p.phaseNumber === 2);
     expect(intro).toBeDefined();
-    expect(intro!.sections.find(s => s.sectionType === 'video')).toBeUndefined();
+    expect(intro!.sections.find(s => (s.sectionType as string) === 'video')).toBeUndefined();
     const textSections = intro!.sections.filter(s => s.sectionType === 'text');
     expect(textSections.length, 'at least 2 text sections in Phase 2').toBeGreaterThanOrEqual(2);
     const hasDualImpact = textSections.some(s =>

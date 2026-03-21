@@ -9,6 +9,7 @@ describe('NextLessonCard', () => {
       <NextLessonCard
         heading="Continue Learning"
         description="Pick up where progress left off."
+        emptyMessage="All published lessons are complete."
         lesson={{
           unitNumber: 2,
           title: 'Cash Controls',
@@ -49,6 +50,7 @@ describe('NextLessonCard', () => {
       <NextLessonCard
         heading="Continue Learning"
         description="Pick up where progress left off."
+        emptyMessage="All published lessons are complete."
         lesson={{
           unitNumber: 9,
           title: 'Capstone: Investor-Ready Plan',

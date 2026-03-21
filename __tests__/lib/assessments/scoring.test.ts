@@ -9,6 +9,7 @@ const baseTieredActivity: Activity = {
   componentKey: 'tiered-assessment',
   displayName: 'Tiered Assessment',
   description: 'Assessment with questions and application problems',
+  standardId: null,
   props: {
     tier: 'application',
     title: 'Application Tier',
@@ -60,11 +61,13 @@ function stableHash(value: string) {
 
 describe('calculateScore', () => {
   it('scores tiered-assessment application problems and includes them in maxScore', () => {
-    const problem = baseTieredActivity.props.applicationProblems?.[0];
+    const props = baseTieredActivity.props as Record<string, unknown>;
+    const applicationProblems = props.applicationProblems as Array<Record<string, unknown>>;
+    const problem = applicationProblems?.[0];
     expect(problem).toBeDefined();
 
     const expected = generateProblemInstance(
-      problem!.problemTemplate,
+      problem!.problemTemplate as Record<string, unknown>,
       stableHash(`${baseTieredActivity.id}:${problem!.id}`),
     ).correctAnswer;
 

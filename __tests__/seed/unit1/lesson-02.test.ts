@@ -67,8 +67,8 @@ describe('Lesson 02 seed data — Classify Accounts (ACC-1.2)', () => {
 
     expect(guidedActivity?.componentKey).toBe('account-categorization');
     expect(independentActivity?.componentKey).toBe('account-categorization');
-    expect(guidedActivity?.props.showHintsByDefault).toBe(true);
-    expect(independentActivity?.props.showHintsByDefault).toBe(false);
+    expect((guidedActivity?.props as Record<string, unknown>).showHintsByDefault).toBe(true);
+    expect((independentActivity?.props as Record<string, unknown>).showHintsByDefault).toBe(false);
   });
 
   it('Assessment phase (5) has a required comprehension-quiz activity', () => {

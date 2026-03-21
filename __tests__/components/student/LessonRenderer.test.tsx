@@ -350,6 +350,7 @@ describe('LessonRenderer', () => {
         phaseNumber: 1,
         title: 'Introduction',
         contentBlocks: [],
+        estimatedMinutes: null,
       },
     ];
     const mockCompletePhase = vi.fn();
@@ -366,13 +367,14 @@ describe('LessonRenderer', () => {
 
   it('disables Next Phase button when the current Do phase is not completed', () => {
     const mockPhases = [
-      { 
-        id: 'p1', 
-        phaseNumber: 1, 
+      {
+        id: 'p1',
+        phaseNumber: 1,
         title: 'P1',
-        contentBlocks: [{ id: 'b1', type: 'activity' as const, activityId: 'act1', required: true }]
+        contentBlocks: [{ id: 'b1', type: 'activity' as const, activityId: 'act1', required: true }],
+        estimatedMinutes: null,
       },
-      { id: 'p2', phaseNumber: 2, title: 'P2' },
+      { id: 'p2', phaseNumber: 2, title: 'P2', estimatedMinutes: null },
     ];
     // Mock progress showing phase 1 is NOT completed
     vi.mocked(usePhaseProgress).mockReturnValue({
@@ -389,8 +391,8 @@ describe('LessonRenderer', () => {
 
   it('enables Next Phase button when the current phase is completed', () => {
     const mockPhases = [
-      { id: 'p1', phaseNumber: 1, title: 'P1' },
-      { id: 'p2', phaseNumber: 2, title: 'P2' },
+      { id: 'p1', phaseNumber: 1, title: 'P1', estimatedMinutes: null },
+      { id: 'p2', phaseNumber: 2, title: 'P2', estimatedMinutes: null },
     ];
     // Mock progress showing phase 1 IS completed
     vi.mocked(usePhaseProgress).mockReturnValue({
@@ -407,8 +409,8 @@ describe('LessonRenderer', () => {
 
   it('enables Next Phase button for Read phases even if not completed in DB', () => {
     const mockPhases = [
-      { id: 'p1', phaseNumber: 1, title: 'P1', contentBlocks: [] }, // Read phase
-      { id: 'p2', phaseNumber: 2, title: 'P2' },
+      { id: 'p1', phaseNumber: 1, title: 'P1', contentBlocks: [], estimatedMinutes: null }, // Read phase
+      { id: 'p2', phaseNumber: 2, title: 'P2', estimatedMinutes: null },
     ];
     // Mock progress showing phase 1 is available (not yet completed)
     vi.mocked(usePhaseProgress).mockReturnValue({
@@ -425,9 +427,9 @@ describe('LessonRenderer', () => {
 
   it('shows a lesson completion panel with continue-learning actions on the final completed phase', () => {
     const mockPhases = [
-      { id: 'p1', phaseNumber: 1, title: 'P1' },
-      { id: 'p2', phaseNumber: 2, title: 'P2' },
-      { id: 'p3', phaseNumber: 3, title: 'P3' },
+      { id: 'p1', phaseNumber: 1, title: 'P1', estimatedMinutes: null },
+      { id: 'p2', phaseNumber: 2, title: 'P2', estimatedMinutes: null },
+      { id: 'p3', phaseNumber: 3, title: 'P3', estimatedMinutes: null },
     ];
 
     vi.mocked(usePhaseProgress).mockReturnValue({
@@ -450,6 +452,7 @@ describe('LessonRenderer', () => {
         lessonSlug="intro-to-financial-statements"
         isLessonComplete
         recommendedLesson={{
+          unitNumber: 1,
           title: 'Next Lesson',
           slug: 'next-lesson',
           actionLabel: 'Start Lesson',

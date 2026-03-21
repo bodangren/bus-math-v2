@@ -5,6 +5,7 @@ import {
   adjustingCalculationsFamily,
   buildAdjustingCalculationsReviewFeedback,
   type AdjustingCalculationsDefinition,
+  type AdjustingCalculationsJournalLine,
   type AdjustingCalculationsResponse,
 } from '@/lib/practice/engine/families/adjusting-calculations';
 import type { ProblemFamily } from '@/lib/practice/engine/types';
@@ -95,10 +96,11 @@ describe('adjusting calculations family', () => {
     });
     const entrySolution = adjustingCalculationsFamily.solve(entryDefinition);
     const entryLine = entryDefinition.parts[0];
+    const solutionLine = entrySolution[entryLine.id] as AdjustingCalculationsJournalLine;
     const entryResponse: AdjustingCalculationsResponse = {
       ...entrySolution,
       [entryLine.id]: {
-        ...(entrySolution[entryLine.id] as Record<string, unknown>),
+        ...solutionLine,
         memo: 'Wrong memo',
       },
     };

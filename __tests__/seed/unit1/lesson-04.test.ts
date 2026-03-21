@@ -24,7 +24,7 @@ describe('Lesson 04 seed data — Build the Balance Sheet (ACC-1.3)', () => {
   it('phase 2 (Intro) has no video section and contains Balance Sheet structure reference text', () => {
     const intro = LESSON_04_SEED_DATA.phases.find(p => p.phaseNumber === 2);
     expect(intro).toBeDefined();
-    expect(intro!.sections.find(s => s.sectionType === 'video')).toBeUndefined();
+    expect(intro!.sections.find(s => (s.sectionType as string) === 'video')).toBeUndefined();
     const textSections = intro!.sections.filter(s => s.sectionType === 'text');
     expect(textSections.length, 'at least 2 text sections in Phase 2').toBeGreaterThanOrEqual(2);
     const hasStructureContent = textSections.some(s =>

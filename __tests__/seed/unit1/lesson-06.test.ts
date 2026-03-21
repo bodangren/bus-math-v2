@@ -24,7 +24,7 @@ describe('Lesson 06 seed data — Data Validation and Integrity (ACC-1.6)', () =
   it('phase 2 (Intro) has no video section and contains text about Data Validation rules', () => {
     const intro = LESSON_06_SEED_DATA.phases.find(p => p.phaseNumber === 2);
     expect(intro).toBeDefined();
-    expect(intro!.sections.find(s => s.sectionType === 'video')).toBeUndefined();
+    expect(intro!.sections.find(s => (s.sectionType as string) === 'video')).toBeUndefined();
     const textSections = intro!.sections.filter(s => s.sectionType === 'text');
     expect(textSections.length, 'at least 2 text sections in Phase 2').toBeGreaterThanOrEqual(2);
     const hasValidationContent = textSections.some(s =>

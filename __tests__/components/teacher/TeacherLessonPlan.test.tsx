@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TeacherLessonPlan } from '../../../components/teacher/TeacherLessonPlan';
-import { type Lesson, type Phase } from '@/lib/db/schema/validators';
+import { type Lesson } from '@/lib/db/schema/validators';
+import type { TeacherPublishedPhase } from '@/lib/teacher/lesson-monitoring';
 
 describe('TeacherLessonPlan', () => {
   const mockLesson: Lesson = {
@@ -26,7 +27,7 @@ describe('TeacherLessonPlan', () => {
     updatedAt: new Date('2025-01-01'),
   };
 
-  const mockPhases: Phase[] = [
+  const mockPhases: TeacherPublishedPhase[] = [
     {
       id: 'phase-1',
       lessonId: mockLesson.id,
@@ -277,7 +278,7 @@ describe('TeacherLessonPlan', () => {
   });
 
   it('renders all six phase numbers with correct icons', () => {
-    const allPhases: Phase[] = [1, 2, 3, 4, 5, 6].map(num => ({
+    const allPhases: TeacherPublishedPhase[] = [1, 2, 3, 4, 5, 6].map(num => ({
       id: `phase-${num}`,
       lessonId: mockLesson.id,
       phaseNumber: num,

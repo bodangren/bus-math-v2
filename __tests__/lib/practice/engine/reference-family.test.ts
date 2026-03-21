@@ -44,10 +44,10 @@ describe('accounting equation family', () => {
 
     const solution = referenceAccountingEquationFamily.solve(definition);
     const studentResponse = {
-      equity: solution.equity + 1,
+      equity: solution.equity! + 1,
     };
     const wrongResponse = {
-      equity: solution.equity + 5,
+      equity: solution.equity! + 5,
     };
 
     const gradeResult = referenceAccountingEquationFamily.grade(definition, studentResponse);
