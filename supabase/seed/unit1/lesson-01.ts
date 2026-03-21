@@ -33,6 +33,7 @@ export const IDS = {
   },
   ACTIVITY_EXIT_TICKET: 'd6b57545-65f6-4c39-80d5-000100001001',
   ACTIVITY_NOTEBOOK_SIM: 'd6b57545-65f6-4c39-80d5-000100001002',
+  ACTIVITY_NOTEBOOK_SIM_INDEPENDENT: 'd6b57545-65f6-4c39-80d5-000100001003',
 } as const;
 
 // ─── Section helpers ──────────────────────────────────────────────────────────
@@ -192,7 +193,7 @@ Sarah has compiled her complete account list for Month 1. Work individually to c
 **Step 1:** Classify each account individually (2 minutes).
 **Step 2:** Compare with your partner. Discuss any differences.
 **Step 3:** Calculate the total for each category. Does A = L + E?`),
-        activity(IDS.ACTIVITY_NOTEBOOK_SIM, true),
+        activity(IDS.ACTIVITY_NOTEBOOK_SIM_INDEPENDENT, true),
         text(`## Share-Out Preparation
 
 After you finish the sort, prepare to share one insight with the class:
@@ -276,6 +277,43 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
           { id: 'item4', label: 'Sarah\'s Investment', amount: 5000, category: 'equity', description: 'Personal savings put into the business.', icon: 'owner' },
           { id: 'item5', label: 'Client Unpaid Invoice', amount: 1500, category: 'asset', description: 'Money a client owes TechStart.', icon: 'receivable' },
           { id: 'item6', label: 'Credit Card Bill', amount: 450, category: 'liability', description: 'Unpaid balance for office supplies.', icon: 'bill' },
+        ],
+      },
+      gradingConfig: {
+        autoGrade: true,
+        passingScore: 83,
+        partialCredit: false,
+      },
+    },
+    {
+      id: IDS.ACTIVITY_NOTEBOOK_SIM_INDEPENDENT,
+      componentKey: 'notebook-organizer',
+      displayName: 'Independent Notebook Sort',
+      description: 'Sort a larger set of accounts into A, L, and E categories without hints.',
+      props: {
+        title: 'Independent Notebook Sort',
+        description: "Classify each account into the correct accounting bucket — no hints this time.",
+        problemTemplate: {
+          parameters: {
+            assets: { min: 3000, max: 9000, step: 100 },
+            liabilities: { min: 1000, max: 5000, step: 100 },
+          },
+          answerFormula: 'assets - liabilities',
+          questionTemplate:
+            'Given assets {{assets}} and liabilities {{liabilities}}, compute equity.',
+          tolerance: 1,
+        },
+        successMessage: "Nice work! You classified every account correctly on your own.",
+        items: [
+          { id: 'item1', label: 'Cash in Bank', amount: 4200, category: 'asset', description: 'Money available for business use.', icon: 'cash' },
+          { id: 'item2', label: 'New Laptop', amount: 1200, category: 'asset', description: 'Computer used for client server work.', icon: 'equipment' },
+          { id: 'item3', label: 'Bank Loan', amount: 3000, category: 'liability', description: 'Money borrowed to buy equipment.', icon: 'bill' },
+          { id: 'item4', label: 'Sarah\'s Investment', amount: 5000, category: 'equity', description: 'Personal savings put into the business.', icon: 'owner' },
+          { id: 'item5', label: 'Client Unpaid Invoice', amount: 1500, category: 'asset', description: 'Money a client owes TechStart.', icon: 'receivable' },
+          { id: 'item6', label: 'Credit Card Bill', amount: 450, category: 'liability', description: 'Unpaid balance for office supplies.', icon: 'bill' },
+          { id: 'item7', label: 'Prepaid Insurance', amount: 600, category: 'asset', description: 'Insurance paid in advance for 6 months.', icon: 'receivable' },
+          { id: 'item8', label: 'Unearned Revenue', amount: 800, category: 'liability', description: 'Client deposit for services not yet performed.', icon: 'bill' },
+          { id: 'item9', label: 'Retained Earnings', amount: 960, category: 'equity', description: 'Profits kept in the business from prior months.', icon: 'owner' },
         ],
       },
       gradingConfig: {

@@ -362,8 +362,7 @@ function scoreJournalLine(expected: AdjustingCalculationsJournalLine, actual: un
   const dateMatches = line.date.trim().toLowerCase() === expected.date.trim().toLowerCase();
   const debitMatches = Math.abs(Number(line.debit ?? 0) - Number(expected.debit ?? 0)) <= tolerance;
   const creditMatches = Math.abs(Number(line.credit ?? 0) - Number(expected.credit ?? 0)) <= tolerance;
-  const memoMatches = line.memo.trim().toLowerCase() === expected.memo.trim().toLowerCase();
-  const isCorrect = accountMatches && dateMatches && debitMatches && creditMatches && memoMatches;
+  const isCorrect = accountMatches && dateMatches && debitMatches && creditMatches;
 
   return {
     isCorrect,

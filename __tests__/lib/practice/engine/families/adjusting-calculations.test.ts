@@ -109,10 +109,10 @@ describe('adjusting calculations family', () => {
     const entryFeedback = buildAdjustingCalculationsReviewFeedback(entryDefinition, entryResponse, entryGrade);
     const entryEnvelope = adjustingCalculationsFamily.toEnvelope(entryDefinition, entryResponse, entryGrade);
 
-    expect(entryGrade.score).toBeLessThan(entryGrade.maxScore);
+    // Bug 3 fix: wrong memo should NOT fail a journal line — only accounts/amounts matter
+    expect(entryGrade.parts[0].isCorrect).toBe(true);
     expect(entryFeedback[entryLine.id]).toMatchObject({
-      status: 'incorrect',
-      expectedLabel: expect.any(String),
+      status: 'correct',
     });
 
     const entryParsed = practiceSubmissionEnvelopeSchema.safeParse(entryEnvelope);
@@ -126,5 +126,43 @@ describe('adjusting calculations family', () => {
       memo: 'Wrong memo',
     });
     expect(entryParsed.data.parts).toHaveLength(entryDefinition.parts.length);
+  });
+
+  it('marks a journal line incorrect when the account is wrong (even with correct amounts)', () => {
+    const definition = adjustingCalculationsFamily.generate(2026, {
+      presentation: 'journal-entry',
+      scenarioKind: 'depreciation',
+      tolerance: 1,
+    });
+    const solution = adjustingCalculationsFamily.solve(definition);
+    const firstLine = definition.parts[0];
+    const solutionLine = solution[firstLine.id] as AdjustingCalculationsJournalLine;
+
+    const response: AdjustingCalculationsResponse = {
+      ...solution,
+      [firstLine.id]: {
+        ...solutionLine,
+        accountId: 'cash', // wrong account
+      },
+    };
+
+    const grade = adjustingCalculationsFamily.grade(definition, response);
+    expect(grade.parts[0].isCorrect).toBe(false);
+  });
+
+  it('expense-method deferral uses remainingAmount (unexpired portion) as the entry amount', () => {
+    // Use odd seed (produces expense method) and force deferral kind
+    const definition = adjustingCalculationsFamily.generate(43, {
+      presentation: 'calculation',
+      scenarioKind: 'deferral',
+    });
+
+    const scenario = definition.scenario as import('@/lib/practice/engine/adjustments').DeferralAdjustmentScenario;
+    expect(scenario.method).toBe('expense');
+    // For expense-method, the correcting entry moves the unexpired portion back to the asset
+    expect(scenario.amount).toBe(scenario.remainingAmount);
+    expect(scenario.entry.amount).toBe(scenario.remainingAmount);
+    // Verify it's different from the expired portion
+    expect(scenario.remainingAmount).not.toBe(scenario.adjustmentAmount);
   });
 });

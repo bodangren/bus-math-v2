@@ -23,18 +23,68 @@ describe('transaction matrix family', () => {
 
       expect(definition).toEqual(repeat);
       expect(definition.familyKey).toBe('transaction-matrix');
-      expect(definition.rows.map((row) => row.id)).toEqual(['cash', 'offset-account', 'income-statement', 'equity']);
+      // 4 real rows + 2 distractors = 6, shuffled
+      expect(definition.rows).toHaveLength(6);
       expect(definition.columns.map((column) => column.id)).toEqual([
         'affected',
         'direction',
         'amount-basis',
         'equity-reason',
+        'not-affected',
       ]);
-      expect(definition.parts).toHaveLength(4);
+      // 4 real parts + 2 distractor parts = 6
+      expect(definition.parts).toHaveLength(6);
     }
   });
 
-  it('scores reasoning stages and round-trips the practice envelope', () => {
+  it('includes distractor rows that are not part of the transaction effects', () => {
+    const definition = transactionMatrixFamily.generate(42, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+    });
+
+    const distractorParts = definition.parts.filter((p) => p.id.startsWith('distractor-'));
+    expect(distractorParts).toHaveLength(2);
+
+    for (const part of distractorParts) {
+      expect(part.targetId).toBe('not-affected');
+      expect(part.details.stage).toBe('distractor');
+      // distractor account should not be in the event effects
+      const involvedIds = definition.event.effects.map((e) => e.accountId);
+      expect(involvedIds).not.toContain(part.details.accountId);
+    }
+  });
+
+  it('shuffles row order so position is not deterministic across different seeds', () => {
+    const def1 = transactionMatrixFamily.generate(1, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+    });
+    const def2 = transactionMatrixFamily.generate(2, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+    });
+
+    const ids1 = def1.rows.map((r) => r.id);
+    const ids2 = def2.rows.map((r) => r.id);
+
+    // Both have the same set of real row IDs
+    const realIds = ['cash', 'offset-account', 'income-statement', 'equity'];
+    for (const id of realIds) {
+      expect(ids1).toContain(id);
+      expect(ids2).toContain(id);
+    }
+
+    // With different seeds, row order or distractor accounts should differ
+    // (extremely unlikely to be identical for different seeds)
+    const anyDifference = ids1.join(',') !== ids2.join(',');
+    expect(anyDifference).toBe(true);
+  });
+
+  it('scores reasoning stages including distractors and round-trips the practice envelope', () => {
     const definition: TransactionMatrixDefinition = transactionMatrixFamily.generate(2026, {
       archetypeId: 'earn-revenue',
       context: 'service',
@@ -43,17 +93,26 @@ describe('transaction matrix family', () => {
     });
 
     const solution = transactionMatrixFamily.solve(definition);
+
+    // Verify distractor solution is 'not-affected'
+    expect(solution['distractor-1']).toBe('not-affected');
+    expect(solution['distractor-2']).toBe('not-affected');
+
     const studentResponse: TransactionMatrixResponse = {
       ...solution,
       'offset-account': 'equity-reason',
       equity: 'direction',
+      'distractor-1': 'affected', // wrong — this account isn't involved
     };
 
     const gradeResult = transactionMatrixFamily.grade(definition, studentResponse);
     const reviewed = buildTransactionMatrixReviewFeedback(definition, studentResponse, gradeResult);
     const envelope = transactionMatrixFamily.toEnvelope(definition, studentResponse, gradeResult);
 
-    expect(gradeResult.score).toBeLessThan(gradeResult.maxScore);
+    // 3 wrong out of 6
+    expect(gradeResult.score).toBe(3);
+    expect(gradeResult.maxScore).toBe(6);
+
     expect(reviewed['offset-account']).toMatchObject({
       status: 'incorrect',
       expectedLabel: 'direction',
@@ -61,6 +120,10 @@ describe('transaction matrix family', () => {
     expect(reviewed.equity).toMatchObject({
       status: 'incorrect',
       message: expect.stringContaining('equity'),
+    });
+    expect(reviewed['distractor-1']).toMatchObject({
+      status: 'incorrect',
+      expectedLabel: 'not affected',
     });
 
     const parsed = practiceSubmissionEnvelopeSchema.safeParse(envelope);
@@ -78,5 +141,23 @@ describe('transaction matrix family', () => {
         archetypeId: 'earn-revenue',
       }),
     });
+  });
+
+  it('works with multiple archetypes', () => {
+    const archetypes = ['purchase-asset', 'pay-expense', 'owner-invests-cash'] as const;
+    for (const archetypeId of archetypes) {
+      const definition = transactionMatrixFamily.generate(100, {
+        archetypeId,
+        context: 'merchandise',
+        settlement: 'cash',
+      });
+
+      expect(definition.rows).toHaveLength(6);
+      expect(definition.parts).toHaveLength(6);
+
+      const solution = transactionMatrixFamily.solve(definition);
+      const grade = transactionMatrixFamily.grade(definition, solution);
+      expect(grade.score).toBe(grade.maxScore);
+    }
   });
 });

@@ -296,7 +296,7 @@ export function generateDeferralAdjustmentScenario(
       : {
           debitLabel: assetAccountLabel,
           creditLabel: expenseAccountLabel,
-          amount: adjustmentAmount,
+          amount: remainingAmount,
         };
 
   return {
@@ -306,9 +306,9 @@ export function generateDeferralAdjustmentScenario(
     stem:
       defaults.initialRecordingMethod === 'asset'
         ? `The business paid $${formatAmount(defaults.amount)} for ${defaults.accountLabel} in advance on ${defaults.startDate} and recorded it as an asset. Prepare the ${defaults.reportingDate} adjustment after ${elapsedMonths} of ${defaults.coverageMonths} months have passed.`
-        : `The business paid $${formatAmount(defaults.amount)} for ${defaults.accountLabel} in advance on ${defaults.startDate} but recorded it as expense immediately. Prepare the ${defaults.reportingDate} correcting adjustment after ${elapsedMonths} of ${defaults.coverageMonths} months have passed.`,
+        : `The business paid $${formatAmount(defaults.amount)} for ${defaults.accountLabel} in advance on ${defaults.startDate} but recorded it as expense immediately. Prepare the ${defaults.reportingDate} correcting adjustment to reclassify the unexpired portion after ${elapsedMonths} of ${defaults.coverageMonths} months have passed.`,
     reportingDate: defaults.reportingDate,
-    amount: adjustmentAmount,
+    amount: defaults.initialRecordingMethod === 'asset' ? adjustmentAmount : remainingAmount,
     entry,
     method: defaults.initialRecordingMethod,
     accountLabel: defaults.accountLabel,

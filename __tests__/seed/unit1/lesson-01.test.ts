@@ -87,6 +87,24 @@ describe('Lesson 01 seed data — Launch Unit: A=L+E', () => {
     expect(LESSON_01_SEED_DATA.lesson.slug).toBe('unit-1-lesson-1');
   });
 
+  it('guided and independent practice use distinct notebook-organizer activities', () => {
+    const guided = LESSON_01_SEED_DATA.phases.find(p => p.phaseNumber === 3);
+    const independent = LESSON_01_SEED_DATA.phases.find(p => p.phaseNumber === 4);
+    const guidedSection = guided!.sections.find(s => s.sectionType === 'activity');
+    const independentSection = independent!.sections.find(s => s.sectionType === 'activity');
+
+    const guidedActivityId = (guidedSection!.content as Record<string, unknown>).activityId as string;
+    const independentActivityId = (independentSection!.content as Record<string, unknown>).activityId as string;
+
+    expect(guidedActivityId).not.toBe(independentActivityId);
+
+    const guidedActivity = LESSON_01_SEED_DATA.activities.find(a => a.id === guidedActivityId);
+    const independentActivity = LESSON_01_SEED_DATA.activities.find(a => a.id === independentActivityId);
+
+    expect(guidedActivity?.componentKey).toBe('notebook-organizer');
+    expect(independentActivity?.componentKey).toBe('notebook-organizer');
+  });
+
   it('no section contains placeholder text', () => {
     for (const phase of LESSON_01_SEED_DATA.phases) {
       for (const section of phase.sections) {

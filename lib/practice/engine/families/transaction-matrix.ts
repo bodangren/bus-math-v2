@@ -1,5 +1,6 @@
 import { buildPracticeSubmissionEnvelope, normalizePracticeValue, type PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
+import { practiceAccounts } from '@/lib/practice/engine/accounts';
 import { buildTransactionEvent, type TransactionBuildOptions, type TransactionEvent } from '@/lib/practice/engine/transactions';
 import {
   buildEffectDescription,
@@ -31,7 +32,7 @@ export interface TransactionMatrixPart extends ProblemPartDefinition {
   description?: string;
   targetId: string;
   details: {
-    stage: 'cash' | 'offset' | 'income-statement' | 'equity';
+    stage: 'cash' | 'offset' | 'income-statement' | 'equity' | 'distractor';
     accountId?: string;
     accountLabel?: string;
     expectedColumnId: string;
@@ -71,9 +72,37 @@ const MATRIX_COLUMNS: TransactionMatrixColumn[] = [
   { id: 'direction', label: 'Direction', description: 'The account increases or decreases' },
   { id: 'amount-basis', label: 'Amount basis', description: 'The dollar amount comes from this row' },
   { id: 'equity-reason', label: 'Equity reason', description: 'This row explains the owner-claim effect' },
+  { id: 'not-affected', label: 'Not affected', description: 'This row is not part of the transaction' },
 ];
 
-function buildRows(event: TransactionEvent) {
+function mulberry32(seed: number) {
+  let t = seed >>> 0;
+  return () => {
+    t += 0x6d2b79f5;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffleArray<T>(arr: T[], rng: () => number): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function pickDistractorAccounts(event: TransactionEvent, seed: number): Array<{ id: string; label: string }> {
+  const involvedIds = new Set(event.effects.map((e) => e.accountId));
+  const candidates = practiceAccounts.filter((a) => !involvedIds.has(a.id) && a.retailApplicable);
+  const rng = mulberry32(seed ^ 0x3a7c9e1f);
+  const shuffled = shuffleArray(candidates, rng);
+  return shuffled.slice(0, 2).map((a) => ({ id: a.id, label: a.label }));
+}
+
+function buildRows(event: TransactionEvent, seed: number) {
   const cashEffect = event.effects.find((effect) => effect.accountId === 'cash') ?? event.effects[0];
   const offsetEffect = event.effects.find((effect) => effect.accountId !== 'cash') ?? event.effects[1] ?? event.effects[0];
   const equityDirection = event.equityEffect === 'increases' ? 'increase' : event.equityEffect === 'decreases' ? 'decrease' : 'no-effect';
@@ -105,14 +134,24 @@ function buildRows(event: TransactionEvent) {
     },
   ];
 
-  return effectRows;
+  const distractors = pickDistractorAccounts(event, seed);
+  const distractorRows: TransactionMatrixRow[] = distractors.map((account, index) => ({
+    id: `distractor-${index + 1}`,
+    label: account.label,
+    description: `${account.label} is not involved in this transaction.`,
+    hint: 'Determine whether this account is affected.',
+  }));
+
+  const rng = mulberry32(seed ^ 0x7b2d4e6a);
+  return shuffleArray([...effectRows, ...distractorRows], rng);
 }
 
-function buildParts(event: TransactionEvent): TransactionMatrixPart[] {
+function buildParts(event: TransactionEvent, seed: number): TransactionMatrixPart[] {
   const reason = transactionReasonColumns.find((entry) => entry.id === getReasonTag(event).slice('reason:'.length)) ?? transactionReasonColumns[1];
   const offsetEffect = event.effects[1] ?? event.effects[0];
+  const distractors = pickDistractorAccounts(event, seed);
 
-  return [
+  const realParts: TransactionMatrixPart[] = [
     {
       id: 'cash',
       kind: 'selection',
@@ -206,6 +245,30 @@ function buildParts(event: TransactionEvent): TransactionMatrixPart[] {
       },
     },
   ];
+
+  const distractorParts: TransactionMatrixPart[] = distractors.map((account, index) => ({
+    id: `distractor-${index + 1}`,
+    kind: 'selection' as const,
+    label: account.label,
+    description: 'Determine whether this account is part of the transaction.',
+    prompt: `Choose the reasoning stage for ${account.label}.`,
+    expectedAnswerShape: 'stage-id',
+    canonicalAnswer: 'not-affected',
+    explanation: `${account.label} is not involved in this transaction.`,
+    misconceptionTags: ['distractor-stage-error'],
+    standardCode: 'ACC-M7-TX-MATRIX',
+    artifactTarget: 'not-affected',
+    targetId: 'not-affected',
+    details: {
+      stage: 'distractor' as const,
+      accountId: account.id,
+      accountLabel: account.label,
+      expectedColumnId: 'not-affected',
+      explanation: `${account.label} is not involved in this transaction.`,
+    },
+  }));
+
+  return [...realParts, ...distractorParts];
 }
 
 function buildResponse(definition: TransactionMatrixDefinition): TransactionMatrixResponse {
@@ -269,8 +332,8 @@ export const transactionMatrixFamily: ProblemFamily<
       context: config.context ?? 'merchandise',
       settlement: config.settlement ?? 'on-account',
     });
-    const rows = buildRows(event);
-    const parts = buildParts(event);
+    const rows = buildRows(event, seed);
+    const parts = buildParts(event, seed);
 
     return {
       contractVersion: 'practice.v1',

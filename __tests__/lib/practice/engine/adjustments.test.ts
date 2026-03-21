@@ -53,10 +53,11 @@ describe('adjustment scenario generator', () => {
       adjustmentAmount: 300,
       elapsedMonths: 3,
       remainingAmount: 900,
+      amount: 900, // expense-method uses remainingAmount (unexpired portion)
       entry: {
         debitLabel: 'Prepaid Insurance',
         creditLabel: 'Insurance Expense',
-        amount: 300,
+        amount: 900, // correcting entry reclassifies the unexpired portion
       },
     });
   });
