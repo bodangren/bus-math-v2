@@ -1,12 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   BookOpen,
@@ -118,28 +111,32 @@ export default async function Home() {
       <Hero stats={stats} />
 
       {/* Search Section */}
-      <section aria-labelledby="search-heading" className="py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+      <section
+        aria-labelledby="search-heading"
+        className="py-14 bg-background border-b border-border/40"
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 id="search-heading" className="text-2xl md:text-3xl font-bold mb-4 text-foreground">
+            <span className="section-label">Find Anything</span>
+            <h2
+              id="search-heading"
+              className="font-display text-2xl md:text-3xl font-semibold mt-4 mb-3 text-foreground"
+            >
               Search Course Content
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-muted-foreground font-body max-w-md mx-auto">
               Find lessons, concepts, formulas, and examples instantly.
             </p>
           </div>
-          <div className="max-w-2xl mx-auto">
-            <div className="flex items-center space-x-2">
+          <div className="max-w-xl mx-auto">
+            <div className="flex items-center gap-2">
               <Input
                 type="search"
                 placeholder="Search for lessons, topics, formulas, or examples..."
-                className="flex-1 h-12 text-base border-border/50 bg-background/80 focus:bg-background transition-colors"
+                className="flex-1 h-11 text-base border-border/60 bg-background focus:bg-background transition-colors font-body"
               />
-              <Button
-                size="lg"
-                className="h-12 px-6 shrink-0"
-              >
-                <Search className="h-5 w-5 mr-2" />
+              <Button size="lg" className="h-11 px-5 shrink-0 gradient-financial text-white">
+                <Search className="h-4 w-4 mr-2" />
                 Search
               </Button>
             </div>
@@ -147,62 +144,69 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Table of Contents */}
-      <section aria-labelledby="course-structure-heading" className="py-16 bg-muted/10">
+      {/* Course Structure / Table of Contents */}
+      <section
+        aria-labelledby="course-structure-heading"
+        className="py-16 bg-muted/20 ledger-bg"
+      >
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 id="course-structure-heading" className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
+          <div className="text-center mb-12">
+            <span className="section-label">The Curriculum</span>
+            <h2
+              id="course-structure-heading"
+              className="font-display text-3xl md:text-4xl font-bold mt-4 mb-3 text-foreground"
+            >
               Course Structure
             </h2>
-            <p className="text-xl text-muted-foreground">
-              8 Units + Capstone
+            <p className="text-muted-foreground font-body text-lg">
+              8 Units + Capstone Project
             </p>
           </div>
 
-          {/* Desktop grid view */}
-          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {landingUnits.map((unit) => (
+          {/* Desktop grid */}
+          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {landingUnits.map((unit, index) => (
               <Link
                 key={unit.id}
                 href={`/student/lesson/${unit.slug}`}
                 className="group block outline-none focus-visible:outline-none"
+                style={{ animationDelay: `${index * 60}ms` }}
               >
-                <Card
-                  className="card-ledger h-full hover:shadow-lg transition-all duration-300 group-hover:scale-105 border-border/50 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                      Unit {unit.unit_number}: {unit.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">
+                <div className="card-workbook h-full p-5 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2">
+                  <p className="font-mono-num text-[10px] text-muted-foreground mb-2 tracking-widest uppercase">
+                    Unit {unit.unit_number}
+                  </p>
+                  <h3 className="font-display text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
+                    {unit.title}
+                  </h3>
+                  {unit.description && (
+                    <p className="text-xs text-muted-foreground font-body leading-relaxed mb-3">
                       {unit.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground font-medium">
-                        {unit.metadata?.duration || "2-3 weeks"}
+                    </p>
+                  )}
+                  <div className="flex justify-between items-center mt-auto pt-2">
+                    <span className="text-xs text-muted-foreground font-mono-num">
+                      {unit.metadata?.duration || "2–3 wks"}
+                    </span>
+                    {unit.metadata?.difficulty && (
+                      <span
+                        className={`px-2 py-0.5 rounded border text-[10px] font-mono-num font-medium ${getDifficultyColor(
+                          unit.metadata.difficulty
+                        )}`}
+                      >
+                        {formatDifficulty(unit.metadata.difficulty)}
                       </span>
-                      {unit.metadata?.difficulty && (
-                        <span
-                          className={`px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
-                            unit.metadata.difficulty
-                          )}`}
-                        >
-                          {formatDifficulty(unit.metadata.difficulty)}
-                        </span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                    )}
+                  </div>
+                </div>
               </Link>
             ))}
           </div>
 
-          {/* Mobile/Tablet carousel view */}
+          {/* Mobile/Tablet carousel */}
           <div className="lg:hidden">
-            <Carousel 
-              itemsPerView={1} 
+            <Carousel
+              itemsPerView={1}
               className="max-w-md mx-auto"
               gap="gap-4"
             >
@@ -212,94 +216,115 @@ export default async function Home() {
                   href={`/student/lesson/${unit.slug}`}
                   className="group block outline-none focus-visible:outline-none p-1"
                 >
-                  <Card
-                    className="card-ledger hover:shadow-lg transition-all duration-300 group-hover:scale-105 border-border/50 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                        Unit {unit.unit_number}: {unit.title}
-                      </CardTitle>
-                      <CardDescription className="text-sm text-muted-foreground">
+                  <div className="card-workbook p-5 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2">
+                    <p className="font-mono-num text-[10px] text-muted-foreground mb-2 tracking-widest uppercase">
+                      Unit {unit.unit_number}
+                    </p>
+                    <h3 className="font-display text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
+                      {unit.title}
+                    </h3>
+                    {unit.description && (
+                      <p className="text-xs text-muted-foreground font-body leading-relaxed mb-3">
                         {unit.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-muted-foreground font-medium">
-                          {unit.metadata?.duration || "2-3 weeks"}
+                      </p>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground font-mono-num">
+                        {unit.metadata?.duration || "2–3 wks"}
+                      </span>
+                      {unit.metadata?.difficulty && (
+                        <span
+                          className={`px-2 py-0.5 rounded border text-[10px] font-mono-num font-medium ${getDifficultyColor(
+                            unit.metadata.difficulty
+                          )}`}
+                        >
+                          {formatDifficulty(unit.metadata.difficulty)}
                         </span>
-                        {unit.metadata?.difficulty && (
-                          <span
-                            className={`px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
-                              unit.metadata.difficulty
-                            )}`}
-                          >
-                            {formatDifficulty(unit.metadata.difficulty)}
-                          </span>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                      )}
+                    </div>
+                  </div>
                 </Link>
               ))}
             </Carousel>
           </div>
 
-          <nav aria-labelledby="getting-started-heading" className="mt-12 grid grid-cols-1 md:grid-cols-1 gap-6">
-            <Card className="card-statement border-primary/20">
-              <CardHeader className="excel-header">
-                <CardTitle id="getting-started-heading" className="text-primary">Getting Started</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
+          {/* Getting Started nav */}
+          <nav
+            aria-labelledby="getting-started-heading"
+            className="mt-10 max-w-sm"
+          >
+            <div className="card-statement rounded-lg overflow-hidden">
+              <div className="excel-header px-5 py-3">
+                <h3
+                  id="getting-started-heading"
+                  className="font-display text-sm font-semibold text-primary"
+                >
+                  Getting Started
+                </h3>
+              </div>
+              <div className="px-5 py-3 space-y-1">
                 <Link
                   href="/preface"
-                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                  className="block text-sm font-body hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                 >
                   Preface
                 </Link>
                 <Link
                   href="/acknowledgments"
-                  className="block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                  className="block text-sm font-body hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                 >
                   Acknowledgments
                 </Link>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </nav>
         </div>
       </section>
 
       {/* Features highlight */}
-      <section aria-labelledby="features-heading" className="py-16 bg-gradient-to-br from-muted/10 via-background to-muted/5">
+      <section
+        aria-labelledby="features-heading"
+        className="py-16 bg-background"
+      >
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 id="features-heading" className="text-3xl md:text-4xl font-bold mb-6 text-foreground">
+          <div className="text-center mb-12">
+            <span className="section-label">What You Get</span>
+            <h2
+              id="features-heading"
+              className="font-display text-3xl md:text-4xl font-bold mt-4 mb-3 text-foreground"
+            >
               Interactive Learning Features
             </h2>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-muted-foreground font-body text-lg max-w-xl mx-auto">
               Everything you need for hands-on business math education with
               Excel integration.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
-              <Card
+              <div
                 key={index}
-                className="card-ledger text-center hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50 group"
+                className="card-workbook p-6 text-center group"
+                style={{ animationDelay: `${index * 80}ms` }}
               >
-                <CardContent className="pt-6">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center group-hover:from-primary/20 group-hover:to-accent/20 transition-colors">
-                    <feature.icon className="w-8 h-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 text-foreground">
-                    {feature.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+                <div
+                  className="w-14 h-14 mx-auto mb-4 rounded-lg flex items-center justify-center transition-colors"
+                  style={{
+                    background: "oklch(0.43 0.14 157 / 0.08)",
+                  }}
+                >
+                  <feature.icon
+                    className="w-7 h-7 text-primary"
+                  />
+                </div>
+                <h3 className="font-display text-lg font-semibold mb-2 text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground text-sm font-body leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
             ))}
           </div>
         </div>

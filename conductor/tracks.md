@@ -134,6 +134,6 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
 
 ---
 
-- [ ] **Track: Un-authed Pages Redesign**
+- [~] **Track: Un-authed Pages Redesign**
   *Link: [./tracks/unauthed_pages_redesign_20260322/](./tracks/unauthed_pages_redesign_20260322/)*
 

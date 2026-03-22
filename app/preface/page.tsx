@@ -246,15 +246,22 @@ export default async function PrefacePage() {
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <header className="border-b bg-white/70 backdrop-blur">
-        <div className="container mx-auto px-4 py-6 max-w-6xl">
+    <div className="min-h-screen bg-background">
+      <header className="hero-gradient relative overflow-hidden border-b border-white/[0.08]">
+        <div
+          className="absolute inset-0 accounting-grid-dark pointer-events-none"
+          aria-hidden="true"
+        />
+        <div className="relative container mx-auto px-4 py-10 max-w-6xl">
           <div className="text-center space-y-4">
-            <Badge className="bg-blue-100 text-blue-800 text-lg px-4 py-2">
-              <BookOpen className="inline-block mr-2 h-4 w-4" /> Preface: Welcome &amp; Syllabus
-            </Badge>
-            <h1 className="text-3xl md:text-4xl font-bold">Math for Business Operations: Applied Accounting with Excel</h1>
-            <p className="text-muted-foreground max-w-3xl mx-auto">
+            <span className="section-label section-label-light">
+              <BookOpen className="inline-block mr-2 h-3 w-3 -mt-0.5" />
+              Preface: Welcome &amp; Syllabus
+            </span>
+            <h1 className="font-display text-3xl md:text-4xl font-bold text-white mt-4">
+              Math for Business Operations: Applied Accounting with Excel
+            </h1>
+            <p className="text-white/65 font-body max-w-3xl mx-auto">
               This course turns spreadsheets into decision tools. You will build working Excel models,
               present to real audiences, and finish with a capstone that shows investor-level thinking.
             </p>
@@ -262,7 +269,7 @@ export default async function PrefacePage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-10 space-y-10 max-w-6xl">
+      <main className="container mx-auto px-4 py-10 space-y-10 max-w-6xl font-body">
         <section className="space-y-6">
           <Card>
             <CardHeader>
@@ -301,7 +308,7 @@ export default async function PrefacePage() {
 
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <Badge className="bg-blue-100 text-blue-800">Lesson Flow</Badge>
+            <Badge className="section-label">Lesson Flow</Badge>
             <h2 className="text-2xl font-semibold">Our Six-Phase Structure</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto">
               Each lesson follows a clear rhythm so you always know what&rsquo;s next. You&rsquo;ll read short explanations,
@@ -334,7 +341,7 @@ export default async function PrefacePage() {
 
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <Badge className="bg-blue-100 text-blue-800">Course Map</Badge>
+            <Badge className="section-label">Course Map</Badge>
             <h2 className="text-2xl font-semibold">8 Units + Capstone</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto">
               Semester 1 builds solid accounting and Excel skills. Semester 2 assembles a full startup model and prepares you for the capstone.
@@ -371,7 +378,7 @@ export default async function PrefacePage() {
 
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <Badge className="bg-blue-100 text-blue-800">Capstone</Badge>
+            <Badge className="section-label">Capstone</Badge>
             <h2 className="text-2xl font-semibold">Second-Semester Capstone: Investor-Ready</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto">
               Over 13 weeks you will extend your best mini-projects into one investor-ready business plan with a linked Excel workbook.
@@ -427,7 +434,7 @@ export default async function PrefacePage() {
 
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <Badge className="bg-blue-100 text-blue-800">Try It</Badge>
+            <Badge className="section-label">Try It</Badge>
             <h2 className="text-2xl font-semibold">How learning feels in this course</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto">A quick taste of our interactive checks and business simulations.</p>
           </div>
@@ -445,7 +452,7 @@ export default async function PrefacePage() {
 
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <Badge className="bg-blue-100 text-blue-800">Expectations</Badge>
+            <Badge className="section-label">Expectations</Badge>
             <h2 className="text-2xl font-semibold">How to succeed here</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4">

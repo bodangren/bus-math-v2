@@ -184,23 +184,27 @@ function SectionHeader({ label, title, description }: { label: string; title: st
 
 export default function CapstonePage() {
   return (
-    <main className="flex-1 bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <header className="border-b border-border/40 bg-white/80 backdrop-blur">
-        <div className="container mx-auto max-w-6xl px-4 py-12 text-center space-y-4">
-          <Badge className="mx-auto w-fit bg-primary/10 text-primary">Capstone Overview</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+    <main className="flex-1 bg-background">
+      <header className="hero-gradient relative overflow-hidden border-b border-white/[0.08]">
+        <div
+          className="absolute inset-0 accounting-grid-dark pointer-events-none"
+          aria-hidden="true"
+        />
+        <div className="relative container mx-auto max-w-6xl px-4 py-14 text-center space-y-4">
+          <span className="section-label section-label-light">Capstone Overview</span>
+          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mt-4">
             Investor-Ready Capstone Project
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto">
+          <p className="text-lg md:text-xl text-white/65 font-body max-w-4xl mx-auto">
             13 weeks of authentic business modeling where every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Need specifics? Review the <Link className="underline" href="/capstone/guidelines">Capstone Guidelines</Link> and <Link className="underline" href="/capstone/rubrics">Rubrics</Link> before Demo Day.
+          <p className="text-sm text-white/45 font-body">
+            Need specifics? Review the <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/guidelines">Capstone Guidelines</Link> and <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/rubrics">Rubrics</Link> before Demo Day.
           </p>
         </div>
       </header>
 
-      <div className="container mx-auto max-w-6xl px-4 py-12 space-y-12">
+      <div className="container mx-auto max-w-6xl px-4 py-12 space-y-12 font-body">
         <section className="space-y-6">
           <SectionHeader
             label="Curriculum Bridge"

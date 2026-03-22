@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Fira+Code:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,57 +7,61 @@
 @layer base {
   :root {
     --radius: 0.5rem;
-    /* Accounting & Excel Theme - Professional Financial Software Palette */
-    --background: 0.98 0.003 250;
-    --foreground: 0.15 0.015 250;
-    --card: 1 0.002 250;
-    --card-foreground: 0.15 0.015 250;
-    --popover: 1 0.002 250;
-    --popover-foreground: 0.15 0.015 250;
-    --primary: 0.47 0.13 220; /* Professional blue - Excel-like */
-    --primary-foreground: 0.98 0.003 250;
-    --secondary: 0.94 0.008 220; /* Light gray-blue */
-    --secondary-foreground: 0.15 0.015 250;
-    --muted: 0.96 0.006 220;
-    --muted-foreground: 0.45 0.01 220;
-    --accent: 0.52 0.15 200; /* Accent blue */
-    --accent-foreground: 0.98 0.003 250;
-    --destructive: 0.55 0.22 15; /* Professional red */
+    /* Font families */
+    --font-display: 'Lora', Georgia, 'Times New Roman', serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-mono-num: 'Fira Code', 'Courier New', monospace;
+
+    /* Digital Ledger Theme — spreadsheet green meets ledger paper */
+    --background: 0.985 0.006 85;       /* warm off-white, like quality ledger paper */
+    --foreground: 0.14 0.025 160;       /* deep forest ink */
+    --card: 1 0 0;
+    --card-foreground: 0.14 0.025 160;
+    --popover: 1 0 0;
+    --popover-foreground: 0.14 0.025 160;
+    --primary: 0.43 0.14 157;           /* Excel/accounting green */
+    --primary-foreground: 0.98 0.003 0;
+    --secondary: 0.95 0.009 130;        /* light sage */
+    --secondary-foreground: 0.26 0.05 157;
+    --muted: 0.955 0.006 90;
+    --muted-foreground: 0.48 0.016 130;
+    --accent: 0.72 0.16 72;             /* warm amber */
+    --accent-foreground: 0.13 0.025 60;
+    --destructive: 0.55 0.22 15;
     --destructive-foreground: 0.98 0.003 250;
-    --border: 0.88 0.01 220;
-    --input: 0.92 0.008 220;
-    --ring: 0.47 0.13 220;
-    /* Chart colors - Financial data visualization */
-    --chart-1: 0.47 0.13 220; /* Blue - Primary data */
-    --chart-2: 0.28 0.18 140; /* Green - Positive values */
-    --chart-3: 0.55 0.22 15; /* Red - Negative values */
-    --chart-4: 0.65 0.20 45; /* Orange - Warning/attention */
-    --chart-5: 0.38 0.16 280; /* Purple - Secondary data */
+    --border: 0.87 0.010 100;
+    --input: 0.92 0.008 100;
+    --ring: 0.43 0.14 157;
+    /* Chart colors — financial data visualization */
+    --chart-1: 0.43 0.14 157;           /* Green — primary */
+    --chart-2: 0.72 0.16 72;            /* Amber — secondary */
+    --chart-3: 0.55 0.22 15;            /* Red — negative */
+    --chart-4: 0.65 0.18 45;            /* Orange */
+    --chart-5: 0.38 0.16 280;           /* Purple */
   }
+
   .dark {
-    /* Dark mode - Excel-inspired dark theme */
-    --background: 0.11 0.01 230;
-    --foreground: 0.92 0.01 230;
-    --card: 0.13 0.012 230;
-    --card-foreground: 0.92 0.01 230;
-    --popover: 0.15 0.015 230;
-    --popover-foreground: 0.92 0.01 230;
-    --primary: 0.65 0.15 220; /* Brighter blue for dark mode */
-    --primary-foreground: 0.11 0.01 230;
-    --secondary: 0.18 0.02 220;
-    --secondary-foreground: 0.92 0.01 230;
-    --muted: 0.16 0.02 220;
-    --muted-foreground: 0.55 0.03 220;
-    --accent: 0.58 0.18 200;
-    --accent-foreground: 0.11 0.01 230;
-    --destructive: 0.65 0.25 15; /* Brighter red for dark mode */
-    --destructive-foreground: 0.92 0.01 230;
-    --border: 0.25 0.03 220;
-    --input: 0.22 0.025 220;
-    --ring: 0.65 0.15 220;
-    /* Dark mode chart colors */
-    --chart-1: 0.65 0.15 220;
-    --chart-2: 0.45 0.20 140;
+    --background: 0.12 0.012 160;
+    --foreground: 0.93 0.008 100;
+    --card: 0.15 0.016 160;
+    --card-foreground: 0.93 0.008 100;
+    --popover: 0.17 0.018 160;
+    --popover-foreground: 0.93 0.008 100;
+    --primary: 0.60 0.16 157;
+    --primary-foreground: 0.12 0.012 160;
+    --secondary: 0.19 0.022 160;
+    --secondary-foreground: 0.93 0.008 100;
+    --muted: 0.17 0.018 160;
+    --muted-foreground: 0.58 0.025 140;
+    --accent: 0.78 0.17 72;
+    --accent-foreground: 0.12 0.012 60;
+    --destructive: 0.65 0.25 15;
+    --destructive-foreground: 0.93 0.008 230;
+    --border: 0.24 0.024 160;
+    --input: 0.21 0.022 160;
+    --ring: 0.60 0.16 157;
+    --chart-1: 0.60 0.16 157;
+    --chart-2: 0.78 0.17 72;
     --chart-3: 0.65 0.25 15;
     --chart-4: 0.75 0.22 45;
     --chart-5: 0.55 0.20 280;
@@ -68,66 +74,139 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    line-height: 1.25;
   }
 }
 
 @layer utilities {
-  /* Accounting-specific utilities */
-  .accounting-grid {
+  /* ── Font helpers ── */
+  .font-display  { font-family: var(--font-display); }
+  .font-body     { font-family: var(--font-body); }
+  .font-mono-num { font-family: var(--font-mono-num); }
+
+  /* ── Dark chrome surfaces (header / footer / hero) ── */
+  .bg-forest-dark { background-color: oklch(0.17 0.04 160); }
+  .bg-forest-mid  { background-color: oklch(0.22 0.055 157); }
+
+  /* ── Hero gradient ── */
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(0.17 0.04 160) 0%,
+      oklch(0.21 0.055 157) 55%,
+      oklch(0.19 0.045 163) 100%
+    );
+  }
+
+  /* ── Ledger paper background — subtle ruled lines ── */
+  .ledger-bg {
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 27px,
+      oklch(var(--border) / 0.4) 27px,
+      oklch(var(--border) / 0.4) 28px
+    );
+  }
+
+  /* ── Subtle spreadsheet grid for dark sections ── */
+  .accounting-grid-dark {
     background-image:
-      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
-    background-size: 20px 20px;
+      linear-gradient(oklch(1 0 0 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(1 0 0 / 0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
   }
 
-  .excel-header {
-    @apply bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-b-2 border-blue-200 dark:border-blue-800;
+  /* ── Excel-column-header style section labels ── */
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-mono-num);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.65rem;
+    border-radius: 3px;
+    background-color: oklch(var(--primary) / 0.10);
+    color: oklch(var(--primary));
+    border: 1px solid oklch(var(--primary) / 0.25);
+  }
+  /* Variant for use on dark (hero/header) backgrounds */
+  .section-label-light {
+    background-color: oklch(1 0 0 / 0.10);
+    color: oklch(0.78 0.12 157);
+    border-color: oklch(1 0 0 / 0.18);
   }
 
-  .financial-positive {
-    @apply text-green-600 dark:text-green-400 font-medium;
+  /* ── Workbook-style card — animated left green accent on hover ── */
+  .card-workbook {
+    background: oklch(var(--card));
+    border: 1px solid oklch(var(--border));
+    border-left: 3px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 4px oklch(0 0 0 / 0.06);
+    transition: box-shadow 0.2s ease, border-left-color 0.2s ease, transform 0.2s ease;
+  }
+  .card-workbook:hover {
+    border-left-color: oklch(var(--primary));
+    box-shadow: 0 6px 20px oklch(var(--primary) / 0.12), 0 1px 4px oklch(0 0 0 / 0.08);
+    transform: translateY(-2px);
   }
 
-  .financial-negative {
-    @apply text-red-600 dark:text-red-400 font-medium;
-  }
+  /* ── Staggered fade-up entrance animation ── */
+  .animate-fade-up   { animation: fadeUp 0.5s ease both; }
+  .animate-fade-up-1 { animation: fadeUp 0.5s 0.07s ease both; }
+  .animate-fade-up-2 { animation: fadeUp 0.5s 0.14s ease both; }
+  .animate-fade-up-3 { animation: fadeUp 0.5s 0.21s ease both; }
+  .animate-fade-up-4 { animation: fadeUp 0.5s 0.28s ease both; }
+  .animate-fade-up-5 { animation: fadeUp 0.5s 0.35s ease both; }
+  .animate-fade-up-6 { animation: fadeUp 0.5s 0.42s ease both; }
+  .animate-fade-up-7 { animation: fadeUp 0.5s 0.49s ease both; }
 
-  .financial-neutral {
-    @apply text-muted-foreground;
-  }
-
-  /* Professional card variants */
-  .card-ledger {
-    @apply bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border shadow-sm;
-  }
-
-  .card-statement {
-    @apply bg-white dark:bg-gray-900 border-2 border-blue-200 dark:border-blue-800 shadow-md;
-  }
-
-  /* Excel-like cell styling */
-  .excel-cell {
-    @apply border border-border bg-card hover:bg-accent/50 transition-colors;
-  }
-
-  .excel-cell-header {
-    @apply bg-muted/80 font-semibold text-center border border-border;
-  }
-
-  .excel-cell-selected {
-    @apply bg-primary/10 border-primary ring-1 ring-primary/30;
-  }
-
-  /* Professional gradients */
+  /* ── Gradients ── */
   .gradient-financial {
-    background: linear-gradient(135deg, oklch(var(--primary)) 0%, oklch(var(--accent)) 100%);
+    background: linear-gradient(135deg, oklch(var(--primary)) 0%, oklch(0.55 0.16 157) 100%);
   }
-
+  .gradient-cta {
+    background: linear-gradient(135deg, oklch(var(--accent)) 0%, oklch(0.78 0.18 65) 100%);
+  }
   .gradient-success {
-    background: linear-gradient(135deg, oklch(0.28 0.18 140) 0%, oklch(0.35 0.15 145) 100%);
+    background: linear-gradient(135deg, oklch(0.42 0.145 157) 0%, oklch(0.52 0.15 155) 100%);
   }
-
   .gradient-danger {
     background: linear-gradient(135deg, oklch(0.55 0.22 15) 0%, oklch(0.60 0.18 20) 100%);
   }
+
+  /* ── Accounting utilities (preserved + updated to oklch) ── */
+  .accounting-grid {
+    background-image:
+      linear-gradient(oklch(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .excel-header {
+    background: oklch(var(--primary) / 0.06);
+    border-bottom: 2px solid oklch(var(--primary) / 0.25);
+  }
+  .financial-positive  { @apply text-green-600 dark:text-green-400 font-medium; }
+  .financial-negative  { @apply text-red-600 dark:text-red-400 font-medium; }
+  .financial-neutral   { @apply text-muted-foreground; }
+  .card-ledger         { @apply bg-card border shadow-sm; }
+  .card-statement {
+    background: oklch(var(--card));
+    border: 2px solid oklch(var(--primary) / 0.25);
+    box-shadow: 0 2px 8px oklch(var(--primary) / 0.08);
+  }
+  .excel-cell          { @apply border border-border bg-card hover:bg-accent/50 transition-colors; }
+  .excel-cell-header   { @apply bg-muted/80 font-semibold text-center border border-border; }
+  .excel-cell-selected { @apply bg-primary/10 border-primary ring-1 ring-primary/30; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
