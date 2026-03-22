@@ -1,6 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { practiceSubmissionEnvelopeValidator } from "./practice-submission";
+import { practiceSubmissionEnvelopeValidator } from "./practice_submission";
 
 export default defineSchema({
   organizations: defineTable({

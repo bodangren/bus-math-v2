@@ -46,9 +46,17 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
   *Status: Starts after Tracks 2+3 converge; owns lesson-source and manifest alignment. Consumes Track 3's audit mapping.*
 
+- [~] **Track: Practice Production Readiness**
+  *Link: [./tracks/practice_production_readiness_20260322/](./tracks/practice_production_readiness_20260322/)*
+  *Status: Implements all findings from the pedagogical review. Depends on family engine tracks (7a-7d) being complete. 6 phases: bug fixes → consolidation → integration → visual language → teaching mode → curriculum docs.*
+
 - [ ] **Track: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
   *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
+
+- [ ] **Track: Legacy Component Pruning and Simulation Rebuilds**
+  *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
+  *Status: Planned; handles deprecation of v1 activities, implementation of Families R-U, and contract-compliant simulation rebuilds.*
 
 ## Archive Ledger
 

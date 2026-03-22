@@ -12,6 +12,7 @@ import type * as activities from "../activities.js";
 import type * as api_ from "../api.js";
 import type * as auth from "../auth.js";
 import type * as dashboardHelpers from "../dashboardHelpers.js";
+import type * as practice_submission from "../practice_submission.js";
 import type * as public_ from "../public.js";
 import type * as seed from "../seed.js";
 import type * as student from "../student.js";
@@ -28,6 +29,7 @@ declare const fullApi: ApiFromModules<{
   api: typeof api_;
   auth: typeof auth;
   dashboardHelpers: typeof dashboardHelpers;
+  practice_submission: typeof practice_submission;
   public: typeof public_;
   seed: typeof seed;
   student: typeof student;

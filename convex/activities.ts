@@ -1,6 +1,6 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
-import { practiceSubmissionEnvelopeValidator } from "./practice-submission";
+import { practiceSubmissionEnvelopeValidator } from "./practice_submission";
 
 export const getSpreadsheetDraft = internalQuery({
   args: {

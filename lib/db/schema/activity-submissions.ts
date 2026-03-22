@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { activities } from './activities';
 import { profiles } from './profiles';
-import { practiceSubmissionEnvelopeSchema } from '@/lib/practice/contract';
+import { practiceSubmissionEnvelopeSchema } from '../../practice/contract';
 
 export const submissionDataSchema = practiceSubmissionEnvelopeSchema;
 

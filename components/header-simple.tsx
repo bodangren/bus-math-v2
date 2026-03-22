@@ -1,18 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Calculator, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Calculator, TrendingUp } from "lucide-react";
 import { UserMenu } from "@/components/user-menu";
 
 export function HeaderSimple() {
   return (
     <header role="banner" className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between gap-4">
+        <div className="flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2">
           {/* Logo */}
-          <div className="flex flex-col min-w-0">
+          <div className="flex flex-col min-w-0 flex-shrink-0">
             <Link
               href="/"
               className="flex items-center gap-2 text-lg md:text-xl font-bold text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
@@ -30,7 +28,7 @@ export function HeaderSimple() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-4 flex-shrink-0">
+          <nav className="hidden md:flex flex-wrap items-center gap-4 flex-shrink-0">
             <Link
               href="/"
               className="text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md"
@@ -69,23 +67,8 @@ export function HeaderSimple() {
             </Link>
           </nav>
 
-          {/* Search Bar & User Menu */}
-          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
-            <div className="flex items-center space-x-2">
-              <Input
-                type="search"
-                placeholder="Search lessons, concepts, formulas..."
-                className="w-32 sm:w-40 md:w-64 lg:w-80 border-border/50 bg-background/50 focus:bg-background transition-colors"
-              />
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-border/50 hover:bg-accent/50 shrink-0"
-              >
-                <Search className="h-4 w-4" />
-                <span className="hidden sm:inline ml-2">Search</span>
-              </Button>
-            </div>
+          {/* User Menu */}
+          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0 ml-auto">
             <UserMenu />
           </div>
         </div>

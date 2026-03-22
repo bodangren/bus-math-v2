@@ -1,0 +1,11 @@
+{
+  "track_id": "practice_production_readiness_20260322",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-03-22T18:00:00Z",
+  "updated_at": "2026-03-22T18:00:00Z",
+  "description": "Fix bugs, consolidate duplicate families, add visual language, teaching mode, feedback quality, and component integration across all 15 practice families based on the pedagogical review findings.",
+  "estimated_tasks": 29,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

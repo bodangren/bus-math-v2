@@ -203,7 +203,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
 
       const totalCost = product.cost * quantity
       if (prev.cash < totalCost) {
-        addNotification(`Insufficient funds! Need $${totalCost.toLocaleString()}`, 'error')
+        queueMicrotask(() => addNotification(`Insufficient funds! Need $${totalCost.toLocaleString()}`, 'error'))
         return prev
       }
 
@@ -217,10 +217,10 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
           : p
       )
 
-      addNotification(
+      queueMicrotask(() => addNotification(
         `Ordered ${quantity} ${product.name} for $${totalCost.toLocaleString()}`,
         'success'
-      )
+      ))
 
       return {
         ...prev,
@@ -233,6 +233,8 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
 
   const advanceDay = useCallback(() => {
     if (gameState.gameStatus !== 'playing') return
+
+    const pendingNotifications: Array<{ message: string; type: 'success' | 'warning' | 'error' | 'info' }> = []
 
     setGameState(prev => {
       const newDay = prev.day + 1
@@ -323,7 +325,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
       if (Math.random() < 0.2 && newMarketEvents.length < 2) {
         const newEvent = generateMarketEvent()
         newMarketEvents.push(newEvent)
-        addNotification(newEvent.message, 'info')
+        pendingNotifications.push({ message: newEvent.message, type: 'info' })
       }
 
       // Calculate new totals
@@ -332,17 +334,17 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
       const newTotalExpenses = prev.totalExpenses + storageExpense
       const newStorageCost = prev.storageCost + storageExpense
 
-      // Show day summary
+      // Collect day summary notifications
       salesReport.forEach(report => {
         if (report.includes('Sold')) {
-          addNotification(report, 'success')
+          pendingNotifications.push({ message: report, type: 'success' })
         } else {
-          addNotification(report, 'warning')
+          pendingNotifications.push({ message: report, type: 'warning' })
         }
       })
 
       if (storageExpense > 0) {
-        addNotification(`Storage costs: $${storageExpense.toLocaleString()}`, 'info')
+        pendingNotifications.push({ message: `Storage costs: $${storageExpense.toLocaleString()}`, type: 'info' })
       }
 
       // Check game status
@@ -371,6 +373,11 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
         gameStatus: newGameStatus
       }
     })
+
+    // Fire notifications outside the state updater
+    for (const n of pendingNotifications) {
+      addNotification(n.message, n.type)
+    }
   }, [gameState.gameStatus, simulateDemand, generateMarketEvent, addNotification])
 
   const resetGame = useCallback(() => {

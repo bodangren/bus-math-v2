@@ -304,6 +304,8 @@ export function StartupJourney({ activity, initialState, onStateChange }: Startu
   const advanceMonth = useCallback(() => {
     if (gameState.gameStatus !== 'playing') return
 
+    const pendingNotifications: Array<{ message: string; type: 'success' | 'warning' | 'error' | 'info' }> = []
+
     setGameState((prev) => {
       const newMonth = prev.month + 1
       const userGrowth = Math.floor(prev.users * prev.userGrowthRate)
@@ -315,30 +317,30 @@ export function StartupJourney({ activity, initialState, onStateChange }: Startu
       let newGameStatus = prev.gameStatus
       if (newFunding <= 0) {
         newGameStatus = 'lost'
-        addNotification('Out of funding! Your startup has failed.', 'error')
+        pendingNotifications.push({ message: 'Out of funding! Your startup has failed.', type: 'error' })
       } else if (prev.stage === winConditions.successStageId || newRevenue >= winConditions.successRevenueTarget) {
         newGameStatus = 'won'
-        addNotification('Congratulations! Your startup is successful!', 'success')
+        pendingNotifications.push({ message: 'Congratulations! Your startup is successful!', type: 'success' })
       } else {
         const timeLimit = Math.min(prev.maxMonths, winConditions.timeLimitMonths)
         if (newMonth >= timeLimit) {
           if (newRevenue >= winConditions.timeLimitRevenueTarget) {
             newGameStatus = 'won'
-            addNotification("Time's up! Your startup achieved sustainable revenue!", 'success')
+            pendingNotifications.push({ message: "Time's up! Your startup achieved sustainable revenue!", type: 'success' })
           } else {
             newGameStatus = 'lost'
-            addNotification("Time's up! Your startup didn't achieve sufficient traction.", 'error')
+            pendingNotifications.push({ message: "Time's up! Your startup didn't achieve sufficient traction.", type: 'error' })
           }
         }
       }
 
       if (userGrowth > 0) {
-        addNotification(`User base grew by ${userGrowth} users`, 'success')
+        pendingNotifications.push({ message: `User base grew by ${userGrowth} users`, type: 'success' })
       }
       if (monthlyRevenue > 0) {
-        addNotification(`Generated $${monthlyRevenue.toLocaleString()} in revenue`, 'success')
+        pendingNotifications.push({ message: `Generated $${monthlyRevenue.toLocaleString()} in revenue`, type: 'success' })
       }
-      addNotification(`Monthly burn: $${prev.monthlyBurn.toLocaleString()}`, 'info')
+      pendingNotifications.push({ message: `Monthly burn: $${prev.monthlyBurn.toLocaleString()}`, type: 'info' })
 
       return {
         ...prev,
@@ -349,6 +351,11 @@ export function StartupJourney({ activity, initialState, onStateChange }: Startu
         gameStatus: newGameStatus
       }
     })
+
+    // Fire notifications outside the state updater
+    for (const n of pendingNotifications) {
+      addNotification(n.message, n.type)
+    }
   }, [gameState.gameStatus, addNotification, winConditions])
 
   const resetGame = useCallback(() => {

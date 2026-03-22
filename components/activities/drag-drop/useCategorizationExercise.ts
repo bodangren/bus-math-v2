@@ -114,15 +114,13 @@ export function useCategorizationExercise<T extends CategorizationItem>(items: T
         updatedAvailable.splice(updatedAvailable.length, 0, movingItem);
       }
 
+      const upcomingAttempts = attempts + 1;
       setAvailableItems(updatedAvailable);
       setPlacements(updatedPlacements);
-      setAttempts((prev) => {
-        const upcomingAttempts = prev + 1;
-        evaluate(updatedPlacements, upcomingAttempts);
-        return upcomingAttempts;
-      });
+      setAttempts(upcomingAttempts);
+      evaluate(updatedPlacements, upcomingAttempts);
     },
-    [availableItems, evaluate, placements, zoneIds],
+    [attempts, availableItems, evaluate, placements, zoneIds],
   );
 
   const handleDragEnd = useCallback(
