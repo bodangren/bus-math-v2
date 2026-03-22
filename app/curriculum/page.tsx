@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { getConvexUrl } from "@/lib/convex/config";
@@ -40,21 +39,20 @@ export default async function CurriculumPage() {
             signing in to study each protected lesson.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Button
-              asChild
-              size="lg"
-              className="gradient-cta text-white font-body font-semibold shadow-md hover:opacity-90 transition-opacity"
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center h-11 px-6 rounded-md bg-white font-body font-semibold shadow-md hover:bg-white/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+              style={{ color: "oklch(0.22 0.05 157)" }}
             >
-              <Link href="/">Back to home</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-body transition-all"
+              Back to home
+            </Link>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center justify-center h-11 px-6 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
+              style={{ borderColor: "oklch(1 0 0 / 0.30)" }}
             >
-              <Link href="/auth/login">Student or teacher login</Link>
-            </Button>
+              Student or teacher login
+            </Link>
           </div>
         </div>
       </section>

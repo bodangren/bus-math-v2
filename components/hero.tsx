@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { BookOpen, Calculator, CheckSquare } from "lucide-react";
 
 interface CurriculumStats {
@@ -78,26 +77,20 @@ export function Hero({ stats }: HeroProps) {
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-3 pt-1">
-              <Button
-                asChild
-                size="lg"
-                className="gradient-cta text-white font-body font-semibold shadow-lg hover:opacity-90 transition-opacity"
+              <Link
+                href="/curriculum"
+                className="inline-flex items-center justify-center h-11 px-6 rounded-md bg-white font-body font-semibold shadow-md hover:bg-white/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+                style={{ color: "oklch(0.22 0.05 157)" }}
               >
-                <Link
-                  href="/curriculum"
-                  className="focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 rounded"
-                >
-                  Browse Units
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white/25 text-white hover:bg-white/10 hover:border-white/40 font-body transition-all"
+                Browse Units
+              </Link>
+              <Link
+                href="/preface"
+                className="inline-flex items-center justify-center h-11 px-6 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
+                style={{ borderColor: "oklch(1 0 0 / 0.30)" }}
               >
-                <Link href="/preface">Read Preface</Link>
-              </Button>
+                Read Preface
+              </Link>
             </div>
           </div>
 
