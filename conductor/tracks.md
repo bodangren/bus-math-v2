@@ -131,3 +131,9 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
 - [x] **Snapshot: Pre-Replan Active Conductor Surface**
   *Link: [./archive/conductor_replan_snapshot_20260311/](./archive/conductor_replan_snapshot_20260311/)*
   *Closeout: archived on 2026-03-11 before the student/teacher Cloudflare + Convex rebaseline.*
+
+---
+
+- [ ] **Track: Un-authed Pages Redesign**
+  *Link: [./tracks/unauthed_pages_redesign_20260322/](./tracks/unauthed_pages_redesign_20260322/)*
+
