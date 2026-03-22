@@ -1,60 +1,24 @@
 import Link from 'next/link';
-import { BookOpen, CalendarDays, School, Target, Users, CheckCircle2, Lightbulb } from 'lucide-react';
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "@/convex/_generated/api";
-import { getConvexUrl } from '@/lib/convex/config';
-
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowRight } from 'lucide-react';
 import { ComprehensionCheck, type ComprehensionCheckActivity } from '@/components/activities/quiz/ComprehensionCheck';
-import { FillInTheBlank, type FillInTheBlankActivity } from '@/components/activities/quiz/FillInTheBlank';
-import { ReflectionJournal } from '@/components/activities/quiz/ReflectionJournal';
 import { CashFlowChallenge } from '@/components/activities/simulations/CashFlowChallenge';
-import type {
-  CashFlowChallengeActivityProps,
-  ReflectionJournalActivityProps,
-} from '@/types/activities';
-import type { Activity } from '@/lib/db/schema/validators';
+import type { CashFlowChallengeActivityProps } from '@/types/activities';
 
 export const dynamic = 'force-dynamic';
 
-interface UnitSummary {
-  unitNumber: number;
-  title: string;
-  summary: string;
-}
-
-const DEFAULT_UNIT_SUMMARIES: UnitSummary[] = [
-  { unitNumber: 1, title: 'Balance by Design', summary: 'Build accounting equation fluency and set up clean ledger structures.' },
-  { unitNumber: 2, title: 'Flow of Transactions', summary: 'Track transaction lifecycles from source documents to journal entries.' },
-  { unitNumber: 3, title: 'Statements in Balance', summary: 'Assemble income statement, balance sheet, and cash flow connections.' },
-  { unitNumber: 4, title: 'Payroll in Motion', summary: 'Model payroll processing, compliance checks, and employer obligations.' },
-  { unitNumber: 5, title: 'Assets That Age', summary: 'Apply depreciation methods and interpret fixed-asset reporting impacts.' },
-  { unitNumber: 6, title: 'Inventory & Project Costing', summary: 'Manage inventory valuation and project-level costing decisions.' },
-  { unitNumber: 7, title: 'Financing the Future', summary: 'Compare funding structures and map repayment scenarios in Excel.' },
-  { unitNumber: 8, title: 'Integrated Model Sprint', summary: 'Link assumptions to 3-statement forecasts and stress-test decisions.' },
-];
-
-const lessonPhases = [
-  { n: 1, name: 'Hook', icon: '▶' },
-  { n: 2, name: 'Introduction', icon: '📘' },
-  { n: 3, name: 'Guided Practice', icon: '👥' },
-  { n: 4, name: 'Independent Practice', icon: '🎯' },
-  { n: 5, name: 'Assessment', icon: '✅' },
-  { n: 6, name: 'Closing', icon: '💡' },
-] as const;
+/* ── Static activity data (preface-only, not curriculum content) ── */
 
 const staticTimestamp = () => new Date('2024-01-01T00:00:00.000Z');
 
 const introQuizActivity: ComprehensionCheckActivity = {
   id: 'preface-intro-quiz',
   componentKey: 'comprehension-quiz',
-  displayName: 'Preface: Getting Started Quiz',
-  description: 'Check your understanding of the course structure and capstone.',
+  displayName: 'Quick Course Quiz',
+  description: 'See if you already know how this course works.',
   standardId: null,
   props: {
-    title: 'Getting Started Quiz',
-    description: 'Check your understanding of the course structure and capstone.',
+    title: 'Quick Course Quiz',
+    description: 'See if you already know how this course works.',
     allowRetry: true,
     showExplanations: true,
     questions: [
@@ -99,85 +63,8 @@ const introQuizActivity: ComprehensionCheckActivity = {
   updatedAt: staticTimestamp(),
 };
 
-const vocabWarmupActivity: FillInTheBlankActivity = {
-  id: 'preface-vocab-warmup',
-  componentKey: 'fill-in-the-blank',
-  displayName: 'Business Math Vocabulary Warm-Up',
-  standardId: null,
-  description: "Fill the blanks to preview key ideas we'll use often.",
-  props: {
-    title: 'Business Math Vocabulary Warm-Up',
-    description: "Fill the blanks to preview key ideas we'll use often.",
-    showHints: true,
-    showWordList: true,
-    randomizeWordOrder: true,
-    sentences: [
-      {
-        id: 's1',
-        text: 'Assets = {blank} + Equity',
-        answer: 'Liabilities',
-        hint: 'Money the business owes',
-      },
-      {
-        id: 's2',
-        text: 'A CVP model studies Cost-Volume-{blank}.',
-        answer: 'Profit',
-        hint: 'The “P” in CVP',
-      },
-      {
-        id: 's3',
-        text: "Excel's {blank} Manager lets you compare best, base, and worst cases.",
-        answer: 'Scenario',
-        hint: 'Used for what-if analysis',
-      },
-    ],
-  },
-  gradingConfig: null,
-  createdAt: staticTimestamp(),
-  updatedAt: staticTimestamp(),
-};
-
-type ReflectionJournalActivity = Omit<Activity, 'componentKey' | 'props'> & {
-  componentKey: 'reflection-journal';
-  props: ReflectionJournalActivityProps;
-};
-
-const reflectionJournalActivity: ReflectionJournalActivity = {
-  id: 'preface-reflection',
-  componentKey: 'reflection-journal',
-  displayName: 'Quick Reflection',
-  standardId: null,
-  description: 'Set goals for the semester using the CAP framework.',
-  props: {
-    unitTitle: 'My Starting Goals',
-    prompts: [
-      {
-        id: 'courage-1',
-        category: 'courage',
-        prompt: 'What was the most challenging part of this unit that required you to step outside your comfort zone?',
-        placeholder: 'Describe a specific moment when you had to take a risk or try something new...'
-      },
-      {
-        id: 'adaptability-1',
-        category: 'adaptability',
-        prompt: 'How did you adjust your approach when you encountered unexpected problems or feedback?',
-        placeholder: 'Think about times when you had to change your strategy or method...'
-      },
-      {
-        id: 'persistence-1',
-        category: 'persistence',
-        prompt: 'Describe a time when you wanted to give up but kept working. What motivated you to continue?',
-        placeholder: 'Reflect on your perseverance and what helped you push through...'
-      },
-    ],
-  },
-  gradingConfig: null,
-  createdAt: staticTimestamp(),
-  updatedAt: staticTimestamp(),
-};
-
 const cashFlowChallengeActivity: CashFlowChallengeActivityProps = {
-  title: '60-Second Simulation',
+  title: '60-Second Cash Flow Challenge',
   description: 'Keep your startup cash-positive for a month.',
   incomingFlows: [
     { id: 'incoming-0', description: 'Customer Payment A', amount: 15000, daysLeft: 5, type: 'incoming', canModify: true },
@@ -203,321 +90,200 @@ const cashFlowChallengeActivity: CashFlowChallengeActivityProps = {
   },
 };
 
-export default async function PrefacePage() {
-  const convex = new ConvexHttpClient(getConvexUrl());
+const lessonPhases = [
+  { name: 'Hook', desc: 'A scenario that pulls you in' },
+  { name: 'Instruction', desc: 'Plain-language teaching' },
+  { name: 'Guided Practice', desc: 'Build together with feedback' },
+  { name: 'Independent Practice', desc: 'Prove it on your own' },
+  { name: 'Assessment', desc: 'Quick checks for understanding' },
+  { name: 'Closing', desc: 'Reflect and preview next steps' },
+] as const;
 
-  let units: UnitSummary[] = [];
-  try {
-    const fetchedUnits = (await convex.query(api.public.getUnitSummaries)) as UnitSummary[];
-    units = fetchedUnits.map((u: UnitSummary) => ({
-      unitNumber: u.unitNumber,
-      title: u.title,
-      summary: u.summary
-    }));
-  } catch (err) {
-    console.error("Error fetching unit summaries from Convex", err);
-  }
+const valuePillars = [
+  {
+    number: '01',
+    headline: 'Build real workbooks',
+    detail: 'Every unit ends with an Excel artifact you designed, not a worksheet you filled in. Ledgers, dashboards, financial models — all yours.',
+  },
+  {
+    number: '02',
+    headline: 'Present to real audiences',
+    detail: 'Mock loan officers, mentor panels, and Demo Day judges. You learn to explain numbers the way professionals do.',
+  },
+  {
+    number: '03',
+    headline: 'Finish with a capstone',
+    detail: 'An investor-ready business plan, a linked workbook, and a pitch deck. 40% of your grade. One shot to prove it all connects.',
+  },
+];
 
-  const displayUnits = units.length > 0 ? units : DEFAULT_UNIT_SUMMARIES;
-  const unitGroups = [
-    {
-      title: 'Units 1–3 · Build the Financial Spine',
-      description: 'Balance by Design, Flow of Transactions, and Statements in Balance focus on the accounting equation, debit/credit fluency, and publishing clean statements for lenders.',
-      minUnit: 1,
-      maxUnit: 3,
-    },
-    {
-      title: 'Units 4–6 · Run Real Operations',
-      description: 'Payroll in Motion, Assets That Age, and Inventory & Project Costing push students into compliance-grade payroll, depreciation schedules, and inventory/project costing dashboards.',
-      minUnit: 4,
-      maxUnit: 6,
-    },
-    {
-      title: 'Units 7–8 · Finance & Forecast the Venture',
-      description: 'Financing the Future and Integrated Model Sprint layer financing models, loan amortization, and full 3-statement forecasting to prepare for investor scrutiny.',
-      minUnit: 7,
-      maxUnit: 8,
-    },
-  ].map((group) => ({
-    ...group,
-    units: displayUnits.filter(
-      (unit) => unit.unitNumber >= group.minUnit && unit.unitNumber <= group.maxUnit,
-    ),
-  }));
-
+export default function PrefacePage() {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="hero-gradient relative overflow-hidden border-b border-white/[0.08]">
+    <main className="flex-1 bg-background">
+
+      {/* ── Hero ── */}
+      <section className="hero-gradient relative overflow-hidden py-20 md:py-28 border-b border-white/[0.08]">
         <div
           className="absolute inset-0 accounting-grid-dark pointer-events-none"
           aria-hidden="true"
         />
-        <div className="relative container mx-auto px-4 py-10 max-w-6xl">
-          <div className="text-center space-y-4">
-            <span className="section-label section-label-light">
-              <BookOpen className="inline-block mr-2 h-3 w-3 -mt-0.5" />
-              Preface: Welcome &amp; Syllabus
-            </span>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-white mt-4">
-              Math for Business Operations: Applied Accounting with Excel
-            </h1>
-            <p className="text-white/65 font-body max-w-3xl mx-auto">
-              This course turns spreadsheets into decision tools. You will build working Excel models,
-              present to real audiences, and finish with a capstone that shows investor-level thinking.
-            </p>
+        <div className="relative container mx-auto px-4 text-center max-w-3xl space-y-6">
+          <span className="section-label section-label-light">Welcome</span>
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mt-4 leading-tight">
+            Spreadsheets become<br />
+            <span style={{ color: "oklch(0.68 0.17 157)" }}>decision tools.</span>
+          </h1>
+          <p className="text-lg text-white/70 font-body max-w-xl mx-auto">
+            Math for Business Operations is applied accounting with Excel.
+            You build working models, present to real audiences, and finish
+            with a capstone that shows investor-level thinking.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+            <Link
+              href="/curriculum"
+              className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+              style={{ color: "oklch(0.22 0.05 157)" }}
+            >
+              See the curriculum
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
+              style={{ borderColor: "oklch(1 0 0 / 0.25)" }}
+            >
+              Student or teacher login
+            </Link>
           </div>
         </div>
-      </header>
+      </section>
 
-      <main className="container mx-auto px-4 py-10 space-y-10 max-w-6xl font-body">
-        <section className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" /> Course Snapshot
-              </CardTitle>
-              <CardDescription>Your first-day overview at a glance</CardDescription>
-            </CardHeader>
-            <CardContent className="grid md:grid-cols-3 gap-6">
-              <div>
-                <h3 className="font-semibold mb-2">What you&rsquo;ll learn</h3>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Core accounting (ledger → statements → KPIs)</li>
-                  <li>Excel automation (tables, SUMIF/SUMIFS, Goal Seek, data tables, macros)</li>
-                  <li>Decision skills (pricing, forecasting, cash flow)</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">How the class runs</h3>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Six-phase lessons with frequent checks for understanding</li>
-                  <li>Team projects with public-facing demos</li>
-                  <li>Realistic datasets and authentic scenarios</li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-2">How you&rsquo;re graded</h3>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Formative: 60% (benchmarks, peer reviews, weekly reflections)</li>
-                  <li>Summative: 40% (capstone workbook, pitch, model-tour video)</li>
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="space-y-6">
-          <div className="text-center space-y-2">
-            <Badge className="section-label">Lesson Flow</Badge>
-            <h2 className="text-2xl font-semibold">Our Six-Phase Structure</h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto">
-              Each lesson follows a clear rhythm so you always know what&rsquo;s next. You&rsquo;ll read short explanations,
-              try a focused task, check your understanding, and reflect on what you learned.
-            </p>
+      {/* ── Value Pillars ── */}
+      <section className="py-16 md:py-20 bg-background ledger-bg">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12">
+            <span className="section-label">What makes this different</span>
+            <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mt-4">
+              Not a textbook. A workshop.
+            </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {lessonPhases.map((phase) => (
-              <Card key={phase.n}>
-                <CardHeader>
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span>{phase.icon}</span>
-                    Phase {phase.n}: {phase.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {phase.name === 'Hook' && 'A fast scenario or short video that pulls you into the problem.'}
-                    {phase.name === 'Introduction' && 'Plain-language teaching with examples that connect to real business.'}
-                    {phase.name === 'Guided Practice' && 'We build together. You get feedback as you go.'}
-                    {phase.name === 'Independent Practice' && 'You try it solo to show skill growth and confidence.'}
-                    {phase.name === 'Assessment' && 'Quick checks for understanding. Fix mistakes while they are small.'}
-                    {phase.name === 'Closing' && 'Reflect, summarize, and preview what comes next.'}
-                  </p>
-                </CardContent>
-              </Card>
+          <div className="grid md:grid-cols-3 gap-8">
+            {valuePillars.map((pillar) => (
+              <div key={pillar.number} className="relative">
+                <span
+                  className="font-display font-bold leading-none select-none block mb-3"
+                  style={{ fontSize: "2.5rem", color: "oklch(var(--primary) / 0.10)" }}
+                  aria-hidden="true"
+                >
+                  {pillar.number}
+                </span>
+                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+                  {pillar.headline}
+                </h3>
+                <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                  {pillar.detail}
+                </p>
+              </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="space-y-6">
-          <div className="text-center space-y-2">
-            <Badge className="section-label">Course Map</Badge>
-            <h2 className="text-2xl font-semibold">8 Units + Capstone</h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto">
-              Semester 1 builds solid accounting and Excel skills. Semester 2 assembles a full startup model and prepares you for the capstone.
-            </p>
+      {/* ── How Every Lesson Works — compact strip ── */}
+      <section className="py-14 bg-forest-dark relative overflow-hidden">
+        <div
+          className="absolute inset-0 accounting-grid-dark pointer-events-none"
+          aria-hidden="true"
+        />
+        <div className="relative container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-10">
+            <span className="section-label section-label-light">Lesson rhythm</span>
+            <h2 className="font-display text-2xl md:text-3xl font-semibold text-white mt-4">
+              Six phases, every class
+            </h2>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {unitGroups
-              .filter((group) => group.units.length > 0)
-              .map((group) => (
-                <Card key={group.title}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{group.title}</CardTitle>
-                    <CardDescription>{group.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="list-disc list-inside text-sm space-y-1">
-                      {group.units.map((unit) => (
-                        <li key={unit.unitNumber}>
-                          <strong>
-                            Unit {unit.unitNumber}
-                            {unit.title && unit.title !== `Unit ${unit.unitNumber}`
-                              ? `: ${unit.title}`
-                              : ''}
-                          </strong>
-                          {' '}- {unit.summary}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              ))}
-          </div>
-        </section>
-
-        <section className="space-y-6">
-          <div className="text-center space-y-2">
-            <Badge className="section-label">Capstone</Badge>
-            <h2 className="text-2xl font-semibold">Second-Semester Capstone: Investor-Ready</h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto">
-              Over 13 weeks you will extend your best mini-projects into one investor-ready business plan with a linked Excel workbook.
-              You&rsquo;ll deliver a 10-slide pitch, a 3-minute model-tour video, and a self-auditing dashboard.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2"><CalendarDays className="h-4 w-4" /> Timeline</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Weeks 1-2: Proposal + research</li>
-                  <li>Weeks 3-8: Build revenue, budget, payroll, inventory tabs</li>
-                  <li>Weeks 9-11: Integrate 3 statements + scenarios</li>
-                  <li>Weeks 12-13: Pitch, model tour, final reflection</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2"><Users className="h-4 w-4" /> Deliverables</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Linked Excel model with validation checks</li>
-                  <li>10-slide investor pitch (+ Q&amp;A)</li>
-                  <li>3-minute model-tour video</li>
-                  <li>Weekly CAP reflections + peer reviews</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> How it&rsquo;s graded</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Model fidelity &amp; automation (10)</li>
-                  <li>Analytic insight (10)</li>
-                  <li>Documentation &amp; sourcing (5)</li>
-                  <li>Pitch quality (10) + peer critique (2)</li>
-                </ul>
-                <p className="text-xs text-muted-foreground mt-2">See Capstone guidelines and rubrics for full details.</p>
-                <p className="text-xs mt-1">
-                  <Link href="/capstone" className="underline">Capstone Overview</Link>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {lessonPhases.map((phase, i) => (
+              <div
+                key={phase.name}
+                className="rounded-lg p-4 text-center"
+                style={{
+                  background: "oklch(1 0 0 / 0.05)",
+                  border: "1px solid oklch(1 0 0 / 0.08)",
+                }}
+              >
+                <span className="font-mono-num text-[10px] text-white/60 tracking-widest uppercase block mb-2">
+                  {i + 1}
+                </span>
+                <p className="font-display text-sm font-semibold text-white mb-1">
+                  {phase.name}
                 </p>
-              </CardContent>
-            </Card>
+                <p className="text-xs text-white/70 font-body leading-snug">
+                  {phase.desc}
+                </p>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="space-y-6">
-          <div className="text-center space-y-2">
-            <Badge className="section-label">Try It</Badge>
-            <h2 className="text-2xl font-semibold">How learning feels in this course</h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto">A quick taste of our interactive checks and business simulations.</p>
+      {/* ── Try It — Interactive Demo ── */}
+      <section className="py-16 md:py-20 bg-muted/20 ledger-bg">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-10">
+            <span className="section-label">Try it right now</span>
+            <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mt-4">
+              This is what class feels like
+            </h2>
+            <p className="text-muted-foreground font-body mt-2 max-w-lg mx-auto">
+              No login required. Try a quiz and a cash flow simulation
+              from the actual course.
+            </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6 items-start">
-            <div className="space-y-6">
-              <ComprehensionCheck activity={introQuizActivity} />
-              <FillInTheBlank activity={vocabWarmupActivity} />
-            </div>
-            <div className="space-y-4">
-              <CashFlowChallenge activity={cashFlowChallengeActivity} />
-            </div>
+          <div className="grid lg:grid-cols-2 gap-8 items-start">
+            <ComprehensionCheck activity={introQuizActivity} />
+            <CashFlowChallenge activity={cashFlowChallengeActivity} />
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="space-y-6">
-          <div className="text-center space-y-2">
-            <Badge className="section-label">Expectations</Badge>
-            <h2 className="text-2xl font-semibold">How to succeed here</h2>
+      {/* ── Final CTA ── */}
+      <section className="py-16 md:py-20 bg-forest-dark relative overflow-hidden">
+        <div
+          className="absolute inset-0 accounting-grid-dark pointer-events-none"
+          aria-hidden="true"
+        />
+        <div className="relative container mx-auto px-4 max-w-3xl text-center space-y-6">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
+            Ready to start building?
+          </h2>
+          <p className="text-white/70 font-body text-lg">
+            Log in to access your first unit, or browse the curriculum to see the full sequence.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
+              style={{ color: "oklch(0.22 0.05 157)" }}
+            >
+              Student or teacher login
+            </Link>
+            <Link
+              href="/curriculum"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
+              style={{ borderColor: "oklch(1 0 0 / 0.25)" }}
+            >
+              View the curriculum
+            </Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2"><School className="h-4 w-4" /> Daily Habits</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Bring your laptop and keep files organized</li>
-                  <li>Build every day; small steps add up</li>
-                  <li>Ask questions early and often</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2"><Users className="h-4 w-4" /> Teamwork</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>Share roles: modeler, designer, auditor</li>
-                  <li>Give kind, specific, helpful feedback</li>
-                  <li>Document sources and formulas</li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2"><Lightbulb className="h-4 w-4" /> Academic Integrity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside text-sm space-y-1">
-                  <li>No hard-coded totals-formulas must show your reasoning</li>
-                  <li>Cite data sources; summarize AI help you used</li>
-                  <li>Keep a clear change-log for major edits</li>
-                </ul>
-              </CardContent>
-            </Card>
+          <div className="flex items-center justify-center gap-4 pt-4 text-sm text-white/60 font-body">
+            <Link href="/capstone" className="hover:text-white/90 transition-colors">Capstone</Link>
+            <span>&middot;</span>
+            <Link href="/acknowledgments" className="hover:text-white/90 transition-colors">Acknowledgments</Link>
           </div>
-        </section>
-
-        <section className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Reflection</CardTitle>
-              <CardDescription>Set goals for the semester using the CAP framework.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ReflectionJournal activity={reflectionJournalActivity} />
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="space-y-3 text-center">
-          <p className="text-muted-foreground">Ready to start?</p>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Link href="/curriculum" className="underline">View Curriculum</Link>
-            <span>•</span>
-            <Link href="/capstone" className="underline">Preview the Capstone</Link>
-            <span>•</span>
-            <Link href="/acknowledgments" className="underline">Acknowledgments &amp; Author</Link>
-          </div>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+    </main>
   );
 }

@@ -94,6 +94,9 @@ type UnitPlan = {
   unitObjectives: string[];
   skillObjectives: string[];
   lessonTitles: string[];
+  accountingFocus: string;
+  excelFocus: string;
+  audience: string;
 };
 
 const UNIT_PLANS: UnitPlan[] = [
@@ -128,6 +131,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Group Project Day 3: Final Polish and Submit',
       'Individual Assessment: Balance by Design',
     ],
+    accountingFocus: 'Accounting equation, account types',
+    excelFocus: 'Excel tables, SUMIF, conditional formatting',
+    audience: 'PTA panel & local mentors',
   },
   {
     unitNumber: 2,
@@ -160,6 +166,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Audit Trail',
       'Summative: Transaction Flow Mastery',
     ],
+    accountingFocus: 'Debit/Credit logic, T-accounts',
+    excelFocus: 'IF, SWITCH, SUMIFS, conditional formats',
+    audience: 'Peer review teams',
   },
   {
     unitNumber: 3,
@@ -192,6 +201,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Findings',
       'Summative: Financial Statements Mastery',
     ],
+    accountingFocus: 'Income + balance sheet integration',
+    excelFocus: 'Named ranges, XLOOKUP, INDEX/MATCH',
+    audience: 'Mock bank loan officers',
   },
   {
     unitNumber: 4,
@@ -224,6 +236,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Controls',
       'Summative: Payroll Operations Mastery',
     ],
+    accountingFocus: 'Gross-to-net payroll & compliance',
+    excelFocus: 'XLOOKUP, rounding, formatting standards',
+    audience: 'School HR or finance staff',
   },
   {
     unitNumber: 5,
@@ -256,6 +271,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Recommendation',
       'Summative: Asset Accounting Mastery',
     ],
+    accountingFocus: 'Depreciation schedules, accumulated depreciation',
+    excelFocus: 'SLN, DDB, linked schedules',
+    audience: 'Accountant mentor feedback',
   },
   {
     unitNumber: 6,
@@ -288,6 +306,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Margin Story',
       'Summative: Costing Mastery',
     ],
+    accountingFocus: 'FIFO/LIFO, WIP costing, turnover KPIs',
+    excelFocus: 'INDEX/MATCH, dynamic arrays, sparklines',
+    audience: 'Retail managers & client panels',
   },
   {
     unitNumber: 7,
@@ -320,6 +341,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Recommendation',
       'Summative: Financing Mastery',
     ],
+    accountingFocus: 'Loans, member equity, financing options',
+    excelFocus: 'PMT, IPMT, CHOOSE, Goal Seek',
+    audience: 'Lender & advisor panel',
   },
   {
     unitNumber: 8,
@@ -352,6 +376,9 @@ const UNIT_PLANS: UnitPlan[] = [
       'Project Sprint Day 3: Present the Executive Story',
       'Summative: Integrated Model Mastery',
     ],
+    accountingFocus: '3-statement integration & scenarios',
+    excelFocus: 'Data tables, dashboards, KPI design',
+    audience: 'Entrepreneurs & investors',
   },
 ];
 
@@ -374,6 +401,9 @@ const CAPSTONE_PLAN = {
     'Present a final business case under scrutiny.',
   ],
   lessonTitle: 'Capstone: Investor-Ready Plan',
+  accountingFocus: 'Synthesize all reports into one model',
+  excelFocus: 'Story-driven dashboard + linked workbook',
+  audience: 'Live Demo Day judges',
 };
 
 const GENERATED_PHASE_SEQUENCES: Record<
@@ -471,6 +501,9 @@ function buildUnitContent(plan: {
   projectDeliverable: string;
   unitObjectives: string[];
   skillObjectives: string[];
+  accountingFocus?: string;
+  excelFocus?: string;
+  audience?: string;
 }, nextSectionHref?: string): UnitContent {
   return {
     drivingQuestion: {
@@ -615,6 +648,9 @@ function buildUnitContent(plan: {
         deliverables: [plan.projectDeliverable],
       },
       nextSectionHref,
+      ...(plan.accountingFocus ? { accountingFocus: plan.accountingFocus } : {}),
+      ...(plan.excelFocus ? { excelFocus: plan.excelFocus } : {}),
+      ...(plan.audience ? { audience: plan.audience } : {}),
     },
   };
 }

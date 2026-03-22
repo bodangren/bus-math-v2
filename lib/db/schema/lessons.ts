@@ -117,7 +117,10 @@ export const unitIntroductionSchema = z.object({
   entryEvent: unitEntryEventSchema,
   projectOverview: unitProjectOverviewSchema,
   learningObjectives: unitObjectivesSchema,
-  nextSectionHref: z.string().optional()
+  nextSectionHref: z.string().optional(),
+  accountingFocus: z.string().optional(),
+  excelFocus: z.string().optional(),
+  audience: z.string().optional(),
 });
 
 export const unitContentSchema = z.object({

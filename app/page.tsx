@@ -1,14 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  BookOpen,
-  Calculator,
-  CheckSquare,
-  Dice6,
-  TrendingUp,
-  Search,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
 import { Hero } from "@/components/hero";
 import { ConvexHttpClient } from "convex/browser";
@@ -21,63 +12,32 @@ interface LandingUnit {
   title: string;
   slug: string;
   description?: string | null;
-  metadata?: {
-    duration?: string;
-    difficulty?: string;
-  } | null;
 }
 
 function getConvexClient() {
   return new ConvexHttpClient(getConvexUrl());
 }
 
-const features = [
+const outcomes = [
   {
-    icon: BookOpen,
-    title: "Interactive Spreadsheets",
-    description: "Work with live Excel-like interfaces directly in your browser.",
+    number: "01",
+    headline: "Build real Excel models",
+    detail:
+      "Ledgers, dashboards, financial statements, amortization schedules — every unit produces a workbook you designed from scratch.",
   },
   {
-    icon: Calculator,
-    title: "Financial Calculators",
-    description: "Built-in calculators for NPV, loan payments, and more.",
+    number: "02",
+    headline: "Present to real audiences",
+    detail:
+      "Mock loan officers, mentor panels, and Demo Day judges. Learn to defend your numbers the way professionals do.",
   },
   {
-    icon: CheckSquare,
-    title: "Comprehension Checks",
-    description:
-      "Immediate feedback on your understanding after each section.",
-  },
-  {
-    icon: Dice6,
-    title: "Dynamic Exercises",
-    description: "Practice with different scenarios and data every time.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Progress Tracking",
-    description: "Monitor your learning journey and identify areas to review.",
+    number: "03",
+    headline: "Finish with an investor pitch",
+    detail:
+      "The capstone is a linked business plan, a 3-minute model tour, and a pitch deck. One shot to prove it all connects.",
   },
 ];
-
-const getDifficultyColor = (difficulty: string) => {
-  switch (difficulty) {
-    case "beginner":
-      return "text-green-700 dark:text-green-300 bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30";
-    case "intermediate":
-      return "text-primary bg-primary/5 border-primary/20 dark:bg-primary/10 dark:border-primary/30";
-    case "advanced":
-      return "text-orange-700 dark:text-orange-300 bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30";
-    case "expert":
-      return "text-red-700 dark:text-red-300 bg-red-50/50 dark:bg-red-950/20 border-red-200/50 dark:border-red-800/30";
-    default:
-      return "text-muted-foreground bg-muted/30 border-border/30";
-  }
-};
-
-const formatDifficulty = (difficulty: string) => {
-  return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-};
 
 export default async function Home() {
   const convex = getConvexClient();
@@ -110,222 +70,153 @@ export default async function Home() {
     <>
       <Hero stats={stats} />
 
-      {/* Search Section */}
-      <section
-        aria-labelledby="search-heading"
-        className="py-14 bg-background border-b border-border/40"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <span className="section-label">Find Anything</span>
-            <h2
-              id="search-heading"
-              className="font-display text-2xl md:text-3xl font-semibold mt-4 mb-3 text-foreground"
-            >
-              Search Course Content
-            </h2>
-            <p className="text-muted-foreground font-body max-w-md mx-auto">
-              Find lessons, concepts, formulas, and examples instantly.
-            </p>
-          </div>
-          <div className="max-w-xl mx-auto">
-            <div className="flex items-center gap-2">
-              <Input
-                type="search"
-                placeholder="Search for lessons, topics, formulas, or examples..."
-                className="flex-1 h-11 text-base border-border/60 bg-background focus:bg-background transition-colors font-body"
-              />
-              <Button size="lg" className="h-11 px-5 shrink-0 gradient-financial text-white">
-                <Search className="h-4 w-4 mr-2" />
-                Search
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Course Structure / Table of Contents */}
-      <section
-        aria-labelledby="course-structure-heading"
-        className="py-16 bg-muted/20 ledger-bg"
-      >
-        <div className="container mx-auto px-4">
+      {/* ── What students walk away with ── */}
+      <section className="py-16 md:py-20 bg-background ledger-bg">
+        <div className="container mx-auto px-4 max-w-5xl">
           <div className="text-center mb-12">
-            <span className="section-label">The Curriculum</span>
-            <h2
-              id="course-structure-heading"
-              className="font-display text-3xl md:text-4xl font-bold mt-4 mb-3 text-foreground"
-            >
-              Course Structure
+            <span className="section-label">Why this course</span>
+            <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mt-4">
+              Not worksheets. Workbooks.
             </h2>
-            <p className="text-muted-foreground font-body text-lg">
-              8 Units + Capstone Project
-            </p>
           </div>
-
-          {/* Desktop grid */}
-          <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {landingUnits.map((unit, index) => (
-              <Link
-                key={unit.id}
-                href={`/student/lesson/${unit.slug}`}
-                className="group block outline-none focus-visible:outline-none"
-                style={{ animationDelay: `${index * 60}ms` }}
-              >
-                <div className="card-workbook h-full p-5 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2">
-                  <p className="font-mono-num text-[10px] text-muted-foreground mb-2 tracking-widest uppercase">
-                    Unit {unit.unit_number}
-                  </p>
-                  <h3 className="font-display text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
-                    {unit.title}
-                  </h3>
-                  {unit.description && (
-                    <p className="text-xs text-muted-foreground font-body leading-relaxed mb-3">
-                      {unit.description}
-                    </p>
-                  )}
-                  <div className="flex justify-between items-center mt-auto pt-2">
-                    <span className="text-xs text-muted-foreground font-mono-num">
-                      {unit.metadata?.duration || "2–3 wks"}
-                    </span>
-                    {unit.metadata?.difficulty && (
-                      <span
-                        className={`px-2 py-0.5 rounded border text-[10px] font-mono-num font-medium ${getDifficultyColor(
-                          unit.metadata.difficulty
-                        )}`}
-                      >
-                        {formatDifficulty(unit.metadata.difficulty)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {/* Mobile/Tablet carousel */}
-          <div className="lg:hidden">
-            <Carousel
-              itemsPerView={1}
-              className="max-w-md mx-auto"
-              gap="gap-4"
-            >
-              {landingUnits.map((unit) => (
-                <Link
-                  key={unit.id}
-                  href={`/student/lesson/${unit.slug}`}
-                  className="group block outline-none focus-visible:outline-none p-1"
+          <div className="grid md:grid-cols-3 gap-8">
+            {outcomes.map((item) => (
+              <div key={item.number} className="relative">
+                <span
+                  className="font-display font-bold leading-none select-none block mb-3"
+                  style={{ fontSize: "2.5rem", color: "oklch(var(--primary) / 0.10)" }}
+                  aria-hidden="true"
                 >
-                  <div className="card-workbook p-5 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2">
-                    <p className="font-mono-num text-[10px] text-muted-foreground mb-2 tracking-widest uppercase">
-                      Unit {unit.unit_number}
-                    </p>
-                    <h3 className="font-display text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-2">
-                      {unit.title}
-                    </h3>
-                    {unit.description && (
-                      <p className="text-xs text-muted-foreground font-body leading-relaxed mb-3">
-                        {unit.description}
-                      </p>
-                    )}
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground font-mono-num">
-                        {unit.metadata?.duration || "2–3 wks"}
-                      </span>
-                      {unit.metadata?.difficulty && (
-                        <span
-                          className={`px-2 py-0.5 rounded border text-[10px] font-mono-num font-medium ${getDifficultyColor(
-                            unit.metadata.difficulty
-                          )}`}
-                        >
-                          {formatDifficulty(unit.metadata.difficulty)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </Carousel>
-          </div>
-
-          {/* Getting Started nav */}
-          <nav
-            aria-labelledby="getting-started-heading"
-            className="mt-10 max-w-sm"
-          >
-            <div className="card-statement rounded-lg overflow-hidden">
-              <div className="excel-header px-5 py-3">
-                <h3
-                  id="getting-started-heading"
-                  className="font-display text-sm font-semibold text-primary"
-                >
-                  Getting Started
+                  {item.number}
+                </span>
+                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+                  {item.headline}
                 </h3>
-              </div>
-              <div className="px-5 py-3 space-y-1">
-                <Link
-                  href="/preface"
-                  className="block text-sm font-body hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
-                >
-                  Preface
-                </Link>
-                <Link
-                  href="/acknowledgments"
-                  className="block text-sm font-body hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
-                >
-                  Acknowledgments
-                </Link>
-              </div>
-            </div>
-          </nav>
-        </div>
-      </section>
-
-      {/* Features highlight */}
-      <section
-        aria-labelledby="features-heading"
-        className="py-16 bg-background"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="section-label">What You Get</span>
-            <h2
-              id="features-heading"
-              className="font-display text-3xl md:text-4xl font-bold mt-4 mb-3 text-foreground"
-            >
-              Interactive Learning Features
-            </h2>
-            <p className="text-muted-foreground font-body text-lg max-w-xl mx-auto">
-              Everything you need for hands-on business math education with
-              Excel integration.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="card-workbook p-6 text-center group"
-                style={{ animationDelay: `${index * 80}ms` }}
-              >
-                <div
-                  className="w-14 h-14 mx-auto mb-4 rounded-lg flex items-center justify-center transition-colors"
-                  style={{
-                    background: "oklch(0.43 0.14 157 / 0.08)",
-                  }}
-                >
-                  <feature.icon
-                    className="w-7 h-7 text-primary"
-                  />
-                </div>
-                <h3 className="font-display text-lg font-semibold mb-2 text-foreground">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground text-sm font-body leading-relaxed">
-                  {feature.description}
+                <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                  {item.detail}
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Unit strip — compact teaser ── */}
+      {landingUnits.length > 0 && (
+        <section className="py-16 md:py-20 bg-forest-dark relative overflow-hidden">
+          <div
+            className="absolute inset-0 accounting-grid-dark pointer-events-none"
+            aria-hidden="true"
+          />
+          <div className="relative container mx-auto px-4 max-w-6xl">
+            <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
+              <div>
+                <span className="section-label section-label-light">The sequence</span>
+                <h2 className="font-display text-2xl md:text-3xl font-semibold text-white mt-4">
+                  8 units + capstone
+                </h2>
+              </div>
+              <Link
+                href="/curriculum"
+                className="inline-flex items-center gap-2 text-sm font-body font-medium transition-colors hover:text-white"
+                style={{ color: "oklch(0.68 0.17 157)" }}
+              >
+                See full curriculum <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {/* Desktop: horizontal strip */}
+            <div className="hidden md:grid md:grid-cols-4 xl:grid-cols-8 gap-3">
+              {landingUnits.slice(0, 8).map((unit, i) => (
+                <div
+                  key={unit.id}
+                  className="rounded-lg p-4 relative overflow-hidden group transition-all duration-200 hover:-translate-y-1"
+                  style={{
+                    background: "oklch(1 0 0 / 0.05)",
+                    border: "1px solid oklch(1 0 0 / 0.08)",
+                    animationDelay: `${i * 60}ms`,
+                  }}
+                >
+                  <span
+                    className="absolute -right-0.5 -top-2 font-display font-bold leading-none select-none pointer-events-none"
+                    style={{ fontSize: "3.5rem", color: "oklch(1 0 0 / 0.04)" }}
+                    aria-hidden="true"
+                  >
+                    {unit.unit_number}
+                  </span>
+                  <p className="font-mono-num text-[9px] text-white/60 tracking-widest uppercase mb-1.5">
+                    Unit {unit.unit_number}
+                  </p>
+                  <h3 className="font-display text-sm font-semibold text-white leading-snug group-hover:text-[oklch(0.68_0.17_157)] transition-colors">
+                    {unit.title}
+                  </h3>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile: carousel */}
+            <div className="md:hidden">
+              <Carousel itemsPerView={1} gap="gap-4" className="max-w-sm mx-auto">
+                {landingUnits.slice(0, 8).map((unit) => (
+                  <div key={unit.id} className="p-1">
+                    <div
+                      className="rounded-lg p-5 relative overflow-hidden"
+                      style={{
+                        background: "oklch(1 0 0 / 0.05)",
+                        border: "1px solid oklch(1 0 0 / 0.08)",
+                      }}
+                    >
+                      <span
+                        className="absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none"
+                        style={{ fontSize: "5rem", color: "oklch(1 0 0 / 0.04)" }}
+                        aria-hidden="true"
+                      >
+                        {unit.unit_number}
+                      </span>
+                      <p className="font-mono-num text-[10px] text-white/60 tracking-widest uppercase mb-2">
+                        Unit {unit.unit_number}
+                      </p>
+                      <h3 className="font-display text-lg font-semibold text-white leading-snug">
+                        {unit.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </Carousel>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Final CTA ── */}
+      <section className="py-16 md:py-20 bg-muted/20 ledger-bg">
+        <div className="container mx-auto px-4 max-w-3xl text-center space-y-6">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+            Ready to start building?
+          </h2>
+          <p className="text-muted-foreground font-body text-lg">
+            Log in to access your first unit, or try a simulation on the preface page.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-md gradient-financial text-white font-body font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              Student or teacher login
+            </Link>
+            <Link
+              href="/preface"
+              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border border-border/60 text-foreground font-body hover:bg-muted/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              Try it first
+            </Link>
+          </div>
+          <div className="flex items-center justify-center gap-4 pt-4 text-sm text-muted-foreground font-body">
+            <Link href="/curriculum" className="hover:text-foreground transition-colors">Curriculum</Link>
+            <span>&middot;</span>
+            <Link href="/capstone" className="hover:text-foreground transition-colors">Capstone</Link>
+            <span>&middot;</span>
+            <Link href="/acknowledgments" className="hover:text-foreground transition-colors">Acknowledgments</Link>
           </div>
         </div>
       </section>

@@ -4,15 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { KeyboardEvent } from "react";
 
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import type { UnitCurriculum } from "./types";
 import { formatCurriculumSegmentLabel } from "@/lib/curriculum/segment-labels";
 
@@ -39,80 +30,92 @@ export function CurriculumUnitCard({ unit }: CurriculumUnitCardProps) {
   };
 
   return (
-    <Card
-      className="border-border/40 shadow-sm hover:shadow-lg transition-all duration-200 hover:border-primary/30 hover:bg-accent/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 h-full cursor-pointer group"
+    <div
+      className="card-workbook p-0 relative overflow-hidden h-full cursor-pointer group transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       onClick={firstLesson ? handleCardClick : undefined}
       onKeyDown={firstLesson ? handleKeyDown : undefined}
       tabIndex={firstLesson ? 0 : -1}
       role={firstLesson ? "button" : undefined}
       aria-label={firstLesson ? `View ${unit.title}` : `${unit.title} (no lessons yet)`}
     >
-      <CardHeader>
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <Badge variant="outline">{formatCurriculumSegmentLabel(unit.unitNumber)}</Badge>
-          <span>
-            {unit.lessons.length} lesson{unit.lessons.length === 1 ? "" : "s"}
-          </span>
+      {/* Watermark unit number */}
+      <span
+        className="absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none"
+        style={{ fontSize: "5rem", color: "oklch(var(--primary) / 0.05)" }}
+        aria-hidden="true"
+      >
+        {unit.unitNumber}
+      </span>
+
+      {/* Excel-style header bar */}
+      <div className="excel-header px-5 py-3 flex items-center justify-between">
+        <span className="font-mono-num text-xs tracking-wider uppercase text-primary">
+          {formatCurriculumSegmentLabel(unit.unitNumber)}
+        </span>
+        <span className="font-mono-num text-[10px] text-muted-foreground">
+          {unit.lessons.length} lesson{unit.lessons.length === 1 ? "" : "s"}
+        </span>
+      </div>
+
+      <div className="px-5 py-4 space-y-4">
+        {/* Title & description */}
+        <div>
+          <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-1">
+            {unit.title}
+          </h3>
+          <p className="text-sm text-muted-foreground font-body leading-relaxed">
+            {unit.description}
+          </p>
         </div>
-        <CardTitle className="text-2xl group-hover:text-primary transition-colors">
-          {unit.title}
-        </CardTitle>
-        <CardDescription>{unit.description}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+
+        {/* Learning Objectives — compact */}
         {unit.objectives.length > 0 && (
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">
-              Learning Objectives
+            <p className="font-mono-num text-[10px] tracking-widest uppercase text-muted-foreground mb-2">
+              Objectives
             </p>
-            <ul className="space-y-2 text-sm text-foreground/90">
-              {unit.objectives.slice(0, 4).map((objective) => (
-                <li key={objective} className="flex gap-2">
-                  <span className="text-primary">•</span>
+            <ul className="space-y-1 text-sm text-foreground/90 font-body">
+              {unit.objectives.slice(0, 3).map((objective) => (
+                <li key={objective} className="flex gap-2 leading-snug">
+                  <span className="text-primary mt-0.5 shrink-0">&#x2022;</span>
                   <span>{objective}</span>
                 </li>
               ))}
-              {unit.objectives.length > 4 && (
-                <li className="text-muted-foreground text-xs">
-                  +{unit.objectives.length - 4} more objectives in lesson plans
+              {unit.objectives.length > 3 && (
+                <li className="text-muted-foreground text-xs font-body">
+                  +{unit.objectives.length - 3} more
                 </li>
               )}
             </ul>
           </div>
         )}
 
+        {/* Lesson list — compact ledger rows */}
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+          <p className="font-mono-num text-[10px] tracking-widest uppercase text-muted-foreground mb-2">
             Lessons
           </p>
-          <ol className="space-y-2">
+          <ol className="space-y-0.5">
             {unit.lessons.map((lesson) => (
               <li
                 key={lesson.id}
-                className="flex items-start justify-between gap-4"
+                className="flex items-baseline gap-3 py-1 border-b border-border/20 last:border-b-0"
                 onClick={(event) => event.stopPropagation()}
               >
-                <div>
-                  <Link
-                    href={`/student/lesson/${lesson.slug}`}
-                    className="font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-sm"
-                  >
-                    {lesson.title}
-                  </Link>
-                  {lesson.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {lesson.description}
-                    </p>
-                  )}
-                </div>
-                <span className="text-xs text-muted-foreground mt-1">
-                  L{lesson.orderIndex}
+                <span className="font-mono-num text-[10px] text-muted-foreground/60 shrink-0 w-5 text-right">
+                  {lesson.orderIndex}
                 </span>
+                <Link
+                  href={`/student/lesson/${lesson.slug}`}
+                  className="text-sm font-body text-foreground hover:text-primary transition-colors truncate focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded-sm"
+                >
+                  {lesson.title}
+                </Link>
               </li>
             ))}
           </ol>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

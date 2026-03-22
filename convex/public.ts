@@ -24,6 +24,17 @@ interface PublicCurriculumUnit {
   lessons: PublicCurriculumLesson[];
 }
 
+interface CapstoneUnitData {
+  unitNumber: number;
+  title: string;
+  drivingQuestion: string | null;
+  scenario: string | null;
+  deliverable: string | null;
+  accountingFocus: string | null;
+  excelFocus: string | null;
+  audience: string | null;
+}
+
 function isCapstoneLesson(lesson: { metadata?: { tags?: string[] | null } | null }) {
   return Boolean(lesson.metadata?.tags?.includes("capstone"));
 }
@@ -181,3 +192,58 @@ export const getCurriculum = query({
     return Array.from(units.values());
   },
 });
+
+/**
+ * Returns all unit-level data needed by the capstone overview page:
+ * - 8 instructional units with title, driving question, scenario, deliverable,
+ *   accounting/Excel focus, and audience
+ * - The capstone lesson's own driving question, scenario, and deliverable
+ */
+export const getCapstonePageData = query({
+  args: {},
+  handler: async (ctx) => {
+    const allLessons = await ctx.db.query("lessons").collect();
+
+    allLessons.sort((a, b) => {
+      if (a.unitNumber !== b.unitNumber) return a.unitNumber - b.unitNumber;
+      return a.orderIndex - b.orderIndex;
+    });
+
+    const units = new Map<number, CapstoneUnitData>();
+
+    for (const lesson of allLessons) {
+      if (units.has(lesson.unitNumber)) continue;
+
+      const intro = lesson.metadata?.unitContent?.introduction;
+      const dq = lesson.metadata?.unitContent?.drivingQuestion;
+      const obj = lesson.metadata?.unitContent?.objectives;
+
+      const isCapstone = isCapstoneLesson(lesson);
+
+      const title =
+        intro?.unitTitle ??
+        (isCapstone ? lesson.title : `Unit ${lesson.unitNumber}`);
+
+      units.set(lesson.unitNumber, {
+        unitNumber: lesson.unitNumber,
+        title,
+        drivingQuestion: dq?.question ?? null,
+        scenario: dq?.scenario ?? intro?.projectOverview?.scenario ?? null,
+        deliverable: obj?.deliverables?.[0] ?? intro?.projectOverview?.deliverable ?? null,
+        accountingFocus: intro?.accountingFocus ?? null,
+        excelFocus: intro?.excelFocus ?? null,
+        audience: intro?.audience ?? null,
+      });
+    }
+
+    const sorted = Array.from(units.values()).sort(
+      (a, b) => a.unitNumber - b.unitNumber,
+    );
+
+    return {
+      instructionalUnits: sorted.filter((u) => u.unitNumber <= 8),
+      capstone: sorted.find((u) => u.unitNumber === 9) ?? null,
+    };
+  },
+});
+
