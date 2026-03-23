@@ -1,0 +1,8 @@
+Track: practice_engine_stabilization_20260323 (complete)
+
+Phase 1 — 7 engine bugs fixed (G-1, J-1, J-2, J-3, N-5.3, O-4)
+Phase 2 — D→Q merge (density:low), O→Q merge (deleted), L rebuilt with mini-ledger closing entries
+Phase 3 — 4 new families: R (cvp-analysis), S (interest-schedules), T (depreciation-schedules), U (financial-analysis)
+
+Registry: 17 → 15 (consolidation) → 19 (new families)
+Tests: 253 files, 1324+ tests, 0 failures
