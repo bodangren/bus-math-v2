@@ -214,7 +214,6 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `accounting-equation` | implemented | `StatementLayout` / numeric prompt | `mini-ledger` |
 | `classification` | implemented | `SelectionMatrix` + `CategorizationList` | `account-ontology` |
 | `transaction-effects` | implemented | `SelectionMatrix` | `transaction-event-library` |
-| `statement-completion` | implemented | `StatementLayout` | `mini-ledger` |
 | `statement-construction` | implemented | `StatementLayout` | `mini-ledger` |
 | `transaction-matrix` | implemented | `SelectionMatrix` | `transaction-event-library` |
 | `trial-balance-errors` | implemented | `TrialBalanceErrorMatrix` | `error-pattern-library` |
@@ -225,7 +224,6 @@ Teacher surfaces should not be limited to spreadsheet activities.
 | `cycle-decisions` | implemented | `SelectionMatrix` + `JournalEntryTable` | `transaction-event-library` |
 | `normal-balance` | implemented | `SelectionMatrix` | `account-ontology` |
 | `depreciation-presentation` | implemented | `StatementLayout` | `asset-register` |
-| `merchandising-computation` | implemented | `StatementLayout` | `mini-ledger` + `retail-calculator` |
 | `merchandising-entries` | implemented | `JournalEntryTable` | `transaction-event-library` |
 | `statement-subtotals` | implemented | `StatementLayout` | `mini-ledger` |
 

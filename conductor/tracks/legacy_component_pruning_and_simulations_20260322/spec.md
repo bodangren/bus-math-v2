@@ -1,4 +1,14 @@
-# Specification: Legacy Component Pruning and Simulation Rebuilds
+# Specification: Legacy Cleanup — Component Pruning, Chart Refactor, and Simulation Rebuilds
+
+> Families R-U creation moved to Practice Engine Stabilization track.
+> This track handles deletion of superseded components, chart refactoring, and simulation rebuilds.
+
+## Dependencies
+
+Do not start this track until:
+- Practice Engine Stabilization is complete (Families R-U exist as replacements)
+- Curriculum Rollout is complete (lessons are wired to new family keys, safe to delete old components)
+- Practice Visual & Teaching Upgrade is complete (simulations benefit from the redesigned shared components)
 
 ## 1. Pruning Obsolete Components
 The following legacy components are superseded by Families A-Q and must be deleted:
@@ -8,7 +18,14 @@ The following legacy components are superseded by Families A-Q and must be delet
 - `drag-drop/GeneralDragAndDrop.tsx`
 - `simulations/LedgerHero.tsx`
 
-## 2. Refactoring Display Components
+## 2. Pruning Legacy Interactive Builders
+The following legacy interactive builders are superseded by Families R-U and must be deleted:
+- `BreakEvenCalculator.tsx`, `BreakEvenComponents.tsx` (replaced by Family R)
+- `InterestBuilder.tsx` (replaced by Family S)
+- `DepreciationBuilder.tsx` (replaced by Family T)
+- `RatioMatching.tsx`, `BudgetCategorySort.tsx` (replaced by Family U)
+
+## 3. Refactoring Display Components
 The following display components are buggy and need to be refactored for reliability. They are for display/worked-examples only and do not emit student submissions.
 - `charts/BarChart.tsx`
 - `charts/BreakEvenChart.tsx`
@@ -18,31 +35,8 @@ The following display components are buggy and need to be refactored for reliabi
 - `charts/FinancialDashboard.tsx`
 - `charts/chart-types.ts`
 
-## 3. New Practice Families (R-U)
-These new algorithmic families will be built on the `practice.v1` contract, replacing older legacy interactive builders.
-
-### Family R: Cost-Volume-Profit (CVP) Analysis
-- **Replaces:** `BreakEvenCalculator.tsx`, `BreakEvenComponents.tsx`
-- **Pedagogical Purpose:** Teach break-even points, contribution margin, and target profit.
-- **Generator:** `cvp-scenario-generator`
-
-### Family S: Time Value of Money & Interest Schedules
-- **Replaces:** `InterestBuilder.tsx`
-- **Pedagogical Purpose:** Calculate simple and compound interest, loan amortization.
-- **Generator:** `interest-scenario-generator`
-
-### Family T: Multi-Year Depreciation Schedules
-- **Replaces:** `DepreciationBuilder.tsx`
-- **Pedagogical Purpose:** Build depreciation schedules (Straight-line, DDB, UOP) over an asset's useful life.
-- **Generator:** `asset-schedule-generator`
-
-### Family U: Financial Statement Analysis (Ratios)
-- **Replaces:** `RatioMatching.tsx`, `BudgetCategorySort.tsx` (adapted)
-- **Pedagogical Purpose:** Compute and interpret liquidity, solvency, and profitability ratios.
-- **Generator:** `mini-ledger` (balanced financial statements)
-
 ## 4. Simulation Rebuilds
 8 core simulations will be rebuilt to be `practice.v1` compliant. They will be placed in Lesson 1 (Discovery) and Lesson 7/8 (Synthesis) of each unit.
-- **Contract compliance:** 
+- **Contract compliance:**
   - `parts`: Key game decisions/milestones.
   - `artifact`: A static, teacher-readable summary report of the student's performance (e.g., Monthly Performance Report, Cash Runway chart).

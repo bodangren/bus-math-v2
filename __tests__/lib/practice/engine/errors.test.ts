@@ -41,6 +41,18 @@ describe('trial balance error pattern library', () => {
     });
   });
 
+  it('includes the error side in transposition and slide narratives', () => {
+    const transposition = buildTrialBalanceErrorScenario(2026, {
+      archetypeId: 'transposition',
+    });
+    const slide = buildTrialBalanceErrorScenario(2027, {
+      archetypeId: 'slide',
+    });
+
+    expect(transposition.narrative).toMatch(/\b(debit|credit)\b/i);
+    expect(slide.narrative).toMatch(/\b(debit|credit)\b/i);
+  });
+
   it('generates deterministic scenario batches within the requested bounds', () => {
     const first = generateTrialBalanceErrorScenarios(17, {
       scenarioCount: 5,

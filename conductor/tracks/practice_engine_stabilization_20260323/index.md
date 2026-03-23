@@ -1,4 +1,4 @@
-# Practice Production Readiness
+# Practice Engine Stabilization
 
 - **Specification**: [./spec.md](./spec.md)
 - **Implementation Plan**: [./plan.md](./plan.md)

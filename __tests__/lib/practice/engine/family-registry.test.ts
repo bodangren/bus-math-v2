@@ -2,16 +2,18 @@ import { describe, expect, it } from 'vitest';
 
 import { adjustmentEffectsFamily } from '@/lib/practice/engine/families/adjustment-effects';
 import { adjustingCalculationsFamily } from '@/lib/practice/engine/families/adjusting-calculations';
+import { cvpAnalysisFamily } from '@/lib/practice/engine/families/cvp-analysis';
 import { cycleDecisionsFamily } from '@/lib/practice/engine/families/cycle-decisions';
 import { classificationFamily } from '@/lib/practice/engine/families/classification';
+import { depreciationPresentationFamily } from '@/lib/practice/engine/families/depreciation-presentation';
+import { depreciationSchedulesFamily } from '@/lib/practice/engine/families/depreciation-schedules';
+import { financialAnalysisFamily } from '@/lib/practice/engine/families/financial-analysis';
+import { interestSchedulesFamily } from '@/lib/practice/engine/families/interest-schedules';
 import { journalEntryFamily } from '@/lib/practice/engine/families/journal-entry';
 import { merchandisingEntriesFamily } from '@/lib/practice/engine/families/merchandising-entries';
-import { merchandisingComputationFamily } from '@/lib/practice/engine/families/merchandising-computation';
 import { normalBalanceFamily } from '@/lib/practice/engine/families/normal-balance';
-import { depreciationPresentationFamily } from '@/lib/practice/engine/families/depreciation-presentation';
 import { postingBalancesFamily } from '@/lib/practice/engine/families/posting-balances';
 import { statementConstructionFamily } from '@/lib/practice/engine/families/statement-construction';
-import { statementCompletionFamily } from '@/lib/practice/engine/families/statement-completion';
 import { statementSubtotalsFamily } from '@/lib/practice/engine/families/statement-subtotals';
 import { transactionEffectsFamily } from '@/lib/practice/engine/families/transaction-effects';
 import { transactionMatrixFamily } from '@/lib/practice/engine/families/transaction-matrix';
@@ -64,11 +66,6 @@ describe('practice family registry', () => {
     expect(getPracticeFamily('statement-construction')).toBe(statementConstructionFamily);
   });
 
-  it('registers the statement-completion family by familyKey', () => {
-    expect(practiceFamilyRegistry['statement-completion']).toBe(statementCompletionFamily);
-    expect(getPracticeFamily('statement-completion')).toBe(statementCompletionFamily);
-  });
-
   it('registers the statement-subtotals family by familyKey', () => {
     expect(practiceFamilyRegistry['statement-subtotals']).toBe(statementSubtotalsFamily);
     expect(getPracticeFamily('statement-subtotals')).toBe(statementSubtotalsFamily);
@@ -77,11 +74,6 @@ describe('practice family registry', () => {
   it('registers the depreciation-presentation family by familyKey', () => {
     expect(practiceFamilyRegistry['depreciation-presentation']).toBe(depreciationPresentationFamily);
     expect(getPracticeFamily('depreciation-presentation')).toBe(depreciationPresentationFamily);
-  });
-
-  it('registers the merchandising-computation family by familyKey', () => {
-    expect(practiceFamilyRegistry['merchandising-computation']).toBe(merchandisingComputationFamily);
-    expect(getPracticeFamily('merchandising-computation')).toBe(merchandisingComputationFamily);
   });
 
   it('registers the transaction-effects family by familyKey', () => {
@@ -97,5 +89,25 @@ describe('practice family registry', () => {
   it('registers the trial-balance-errors family by familyKey', () => {
     expect(practiceFamilyRegistry['trial-balance-errors']).toBe(trialBalanceErrorFamily);
     expect(getPracticeFamily('trial-balance-errors')).toBe(trialBalanceErrorFamily);
+  });
+
+  it('registers the cvp-analysis family by familyKey', () => {
+    expect(practiceFamilyRegistry['cvp-analysis']).toBe(cvpAnalysisFamily);
+    expect(getPracticeFamily('cvp-analysis')).toBe(cvpAnalysisFamily);
+  });
+
+  it('registers the interest-schedules family by familyKey', () => {
+    expect(practiceFamilyRegistry['interest-schedules']).toBe(interestSchedulesFamily);
+    expect(getPracticeFamily('interest-schedules')).toBe(interestSchedulesFamily);
+  });
+
+  it('registers the depreciation-schedules family by familyKey', () => {
+    expect(practiceFamilyRegistry['depreciation-schedules']).toBe(depreciationSchedulesFamily);
+    expect(getPracticeFamily('depreciation-schedules')).toBe(depreciationSchedulesFamily);
+  });
+
+  it('registers the financial-analysis family by familyKey', () => {
+    expect(practiceFamilyRegistry['financial-analysis']).toBe(financialAnalysisFamily);
+    expect(getPracticeFamily('financial-analysis')).toBe(financialAnalysisFamily);
   });
 });

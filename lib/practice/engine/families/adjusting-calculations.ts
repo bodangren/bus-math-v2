@@ -285,6 +285,58 @@ function buildJournalEntryLines(scenario: AdjustmentScenario): AdjustingCalculat
   ];
 }
 
+function shuffleAccounts<T>(items: readonly T[], rng: () => number) {
+  const nextItems = [...items];
+  for (let index = nextItems.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(rng() * (index + 1));
+    [nextItems[index], nextItems[swapIndex]] = [nextItems[swapIndex], nextItems[index]];
+  }
+
+  return nextItems;
+}
+
+function buildAvailableAccounts(seed: number, entryLines: AdjustingCalculationsJournalLine[]) {
+  const usedAccountIds = new Set(entryLines.map((line) => line.accountId));
+  const usedAccountTypes = new Set(
+    entryLines
+      .map((line) => getAccountById(line.accountId)?.accountType)
+      .filter((accountType): accountType is (typeof practiceAccounts)[number]['accountType'] => Boolean(accountType)),
+  );
+  const usedNormalBalances = new Set(
+    entryLines
+      .map((line) => getAccountById(line.accountId)?.normalBalance)
+      .filter((normalBalance): normalBalance is (typeof practiceAccounts)[number]['normalBalance'] => Boolean(normalBalance)),
+  );
+
+  const primaryPool = practiceAccounts.filter(
+    (account) => !usedAccountIds.has(account.id) && usedAccountTypes.has(account.accountType),
+  );
+  const secondaryPool = practiceAccounts.filter(
+    (account) => !usedAccountIds.has(account.id) && usedNormalBalances.has(account.normalBalance),
+  );
+  const fallbackPool = practiceAccounts.filter((account) => !usedAccountIds.has(account.id));
+  const neighborhoodPool = primaryPool.length >= 3 ? primaryPool : secondaryPool.length >= 3 ? secondaryPool : fallbackPool;
+  const rng = mulberry32(seed ^ 0x3b9aca6d ^ entryLines.length);
+  const distractorCount = Math.min(5, 3 + Math.floor(rng() * 3));
+  const distractors = shuffleAccounts(neighborhoodPool, rng).slice(0, distractorCount).map((account) => ({
+    id: account.id,
+    label: account.label,
+  }));
+
+  return Array.from(
+    new Map(
+      [...entryLines, ...distractors].map((lineOrAccount) => {
+        if ('debit' in lineOrAccount) {
+          const account = getAccountById(lineOrAccount.accountId);
+          return [lineOrAccount.accountId, { id: lineOrAccount.accountId, label: account?.label ?? lineOrAccount.accountId }] as const;
+        }
+
+        return [lineOrAccount.id, lineOrAccount] as const;
+      }),
+    ).values(),
+  );
+}
+
 function buildEntryPart(line: AdjustingCalculationsJournalLine, lineIndex: number, scenario: AdjustmentScenario, tolerance: number): AdjustingCalculationsPart {
   const account = getAccountById(line.accountId);
   const lineRole = line.debit > 0 ? 'debit' : 'credit';
@@ -467,11 +519,7 @@ function buildCalculationDefinition(seed: number, config: AdjustingCalculationsC
 function buildJournalEntryDefinition(seed: number, config: AdjustingCalculationsConfig, scenario: AdjustmentScenario) {
   const entryLines = buildJournalEntryLines(scenario);
   const parts = entryLines.map((line, index) => buildEntryPart(line, index, scenario, config.tolerance ?? 0));
-  const availableAccounts = Array.from(
-    new Map(
-      entryLines.map((line) => [line.accountId, { id: line.accountId, label: getAccountById(line.accountId)?.label ?? line.accountId }] as const),
-    ).values(),
-  );
+  const availableAccounts = buildAvailableAccounts(seed, entryLines);
 
   return {
     contractVersion: 'practice.v1',

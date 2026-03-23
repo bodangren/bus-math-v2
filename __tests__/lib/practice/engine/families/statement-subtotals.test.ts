@@ -10,6 +10,52 @@ import {
 import type { ProblemFamily } from '@/lib/practice/engine/types';
 
 describe('statement subtotals family', () => {
+  it('accepts density low config and produces fewer blanks for income-statement', () => {
+    const lowDef = statementSubtotalsFamily.generate(42, {
+      mode: 'guided_practice',
+      statementKind: 'income-statement',
+      density: 'low',
+    });
+    const stdDef = statementSubtotalsFamily.generate(42, {
+      mode: 'guided_practice',
+      statementKind: 'income-statement',
+    });
+
+    // Low density: only net income is editable (1 blank)
+    expect(lowDef.parts.length).toBe(1);
+    expect(lowDef.parts[0].id).toBe('net-income');
+    expect(lowDef.scaffolding.blanks).toBe(1);
+
+    // Standard density: 3 blanks (total revenue, total expenses, net income)
+    expect(stdDef.parts.length).toBe(3);
+    expect(stdDef.scaffolding.blanks).toBe(3);
+
+    // Both should still generate valid definitions
+    expect(lowDef.familyKey).toBe('statement-subtotals');
+    expect(lowDef.statementKind).toBe('income-statement');
+
+    // Low density solve/grade still works
+    const solution = statementSubtotalsFamily.solve(lowDef);
+    const grade = statementSubtotalsFamily.grade(lowDef, solution);
+    expect(grade.score).toBe(grade.maxScore);
+  });
+
+  it('density low has no effect on balance-sheet and equity-statement (already minimal)', () => {
+    for (const kind of ['balance-sheet', 'equity-statement'] as const) {
+      const lowDef = statementSubtotalsFamily.generate(42, {
+        mode: 'guided_practice',
+        statementKind: kind,
+        density: 'low',
+      });
+      const stdDef = statementSubtotalsFamily.generate(42, {
+        mode: 'guided_practice',
+        statementKind: kind,
+      });
+
+      expect(lowDef.parts.length).toBe(stdDef.parts.length);
+    }
+  });
+
   it('generates deterministic subtotal statements across all statement kinds', () => {
     const family: ProblemFamily<
       StatementSubtotalsDefinition,

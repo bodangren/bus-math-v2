@@ -150,6 +150,16 @@ describe('adjusting calculations family', () => {
     expect(grade.parts[0].isCorrect).toBe(false);
   });
 
+  it('adds distractor accounts to the journal-entry presentation', () => {
+    const definition = adjustingCalculationsFamily.generate(2026, {
+      presentation: 'journal-entry',
+      scenarioKind: 'accrual',
+    });
+
+    expect(definition.availableAccounts.length).toBeGreaterThanOrEqual(4);
+    expect(definition.availableAccounts.some((account) => !definition.entryLines.some((line) => line.accountId === account.id))).toBe(true);
+  });
+
   it('expense-method deferral uses remainingAmount (unexpired portion) as the entry amount', () => {
     // Use odd seed (produces expense method) and force deferral kind
     const definition = adjustingCalculationsFamily.generate(43, {

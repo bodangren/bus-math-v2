@@ -12,7 +12,6 @@ vi.mock('next/link', () => ({
   )
 }));
 
-// Mock next/image since it's hard to test in Vitest
 vi.mock('next/image', () => ({
   __esModule: true,
   // eslint-disable-next-line @next/next/no-img-element
@@ -28,7 +27,9 @@ describe('Hero', () => {
 
   it('renders the main heading', () => {
     render(<Hero stats={null} />);
-    expect(screen.getByText(/Math for Business Operations/i)).toBeInTheDocument();
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toBeInTheDocument();
+    expect(heading.textContent).toMatch(/Math for Business/i);
   });
 
   it('renders the "Browse Units" CTA', () => {

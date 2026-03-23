@@ -52,11 +52,6 @@ import {
   type MerchandisingEntryResponse,
 } from '@/lib/practice/engine/families/merchandising-entries';
 import {
-  buildMerchandisingComputationReviewFeedback,
-  merchandisingComputationFamily,
-  type MerchandisingComputationResponse,
-} from '@/lib/practice/engine/families/merchandising-computation';
-import {
   buildTransactionEffectsReviewFeedback,
   transactionEffectsFamily,
   type TransactionEffectsResponse,
@@ -77,12 +72,6 @@ import {
   type PostingBalanceResponse,
 } from '@/lib/practice/engine/families/posting-balances';
 import {
-  buildStatementCompletionReviewFeedback,
-  statementCompletionFamily,
-  type StatementCompletionKind,
-  type StatementCompletionResponse,
-} from '@/lib/practice/engine/families/statement-completion';
-import {
   buildStatementConstructionReviewFeedback,
   statementConstructionFamily,
   type StatementConstructionResponse,
@@ -92,6 +81,26 @@ import {
   statementSubtotalsFamily,
   type StatementSubtotalsResponse,
 } from '@/lib/practice/engine/families/statement-subtotals';
+import {
+  buildCvpAnalysisReviewFeedback,
+  cvpAnalysisFamily,
+  type CvpAnalysisResponse,
+} from '@/lib/practice/engine/families/cvp-analysis';
+import {
+  buildInterestSchedulesReviewFeedback,
+  interestSchedulesFamily,
+  type InterestSchedulesResponse,
+} from '@/lib/practice/engine/families/interest-schedules';
+import {
+  buildDepreciationSchedulesReviewFeedback,
+  depreciationSchedulesFamily,
+  type DepreciationSchedulesResponse,
+} from '@/lib/practice/engine/families/depreciation-schedules';
+import {
+  buildFinancialAnalysisReviewFeedback,
+  financialAnalysisFamily,
+  type FinancialAnalysisResponse,
+} from '@/lib/practice/engine/families/financial-analysis';
 import { generateMiniLedger } from '@/lib/practice/engine/mini-ledger';
 import { formatAccountingAmount } from '@/components/activities/shared/utils';
 
@@ -249,39 +258,6 @@ export default function PracticePreviewPage() {
     },
   ];
 
-  const statementCompletionPreviewVariants: Array<{
-    statementKind: StatementCompletionKind;
-    label: string;
-    heading: string;
-    description: string;
-    studentDescription: string;
-    teacherDescription: string;
-  }> = [
-    {
-      statementKind: 'income-statement',
-      label: 'Income statement',
-      heading: 'Family D Income Statement',
-      description: 'One missing bottom-line amount keeps the revenue-minus-expense flow visible.',
-      studentDescription: 'Family D keeps the income statement structure visible while asking for Net Income.',
-      teacherDescription: 'Read-only evidence with row-level review feedback and the same income-statement structure.',
-    },
-    {
-      statementKind: 'balance-sheet',
-      label: 'Balance sheet',
-      heading: 'Family D Balance Sheet',
-      description: 'Two totals stay visible so students can read the assets-versus-claims structure.',
-      studentDescription: 'Family D keeps the balance sheet structure visible while asking for the section total and final equality line.',
-      teacherDescription: 'Read-only evidence with row-level review feedback and the same balance-sheet structure.',
-    },
-    {
-      statementKind: 'equity-statement',
-      label: "Owner's equity statement",
-      heading: 'Family D Equity Statement',
-      description: 'The rollforward ties beginning capital, net income, and withdrawals to the ending balance.',
-      studentDescription: 'Family D keeps the equity statement structure visible while asking for the ending rollforward amount.',
-      teacherDescription: 'Read-only evidence with row-level review feedback and the same equity-statement structure.',
-    },
-  ] as const;
 
   const journalTotal = miniLedger.totals.liabilities + miniLedger.totals.endingCapital;
   const journalLines = [
@@ -836,60 +812,45 @@ export default function PracticePreviewPage() {
     depreciationPresentationDerivedGrade,
   );
 
-  const merchandisingComputationNumericDefinition = merchandisingComputationFamily.generate(2026, {
-    mode: 'guided_practice',
-    presentation: 'numeric',
-    tolerance: 1,
-  });
-  const merchandisingComputationNumericSolution = merchandisingComputationFamily.solve(
-    merchandisingComputationNumericDefinition,
-  ) as MerchandisingComputationResponse;
-  const merchandisingComputationNumericPart = merchandisingComputationNumericDefinition.parts[0];
-  const merchandisingComputationNumericStudentResponse: MerchandisingComputationResponse = merchandisingComputationNumericPart
-    ? {
-        ...merchandisingComputationNumericSolution,
-        [merchandisingComputationNumericPart.id]:
-          Number(merchandisingComputationNumericSolution[merchandisingComputationNumericPart.id] ?? 0) + 5,
-      }
-    : merchandisingComputationNumericSolution;
-  const merchandisingComputationNumericGrade = merchandisingComputationFamily.grade(
-    merchandisingComputationNumericDefinition,
-    merchandisingComputationNumericStudentResponse,
-  );
-  const merchandisingComputationNumericFeedback = buildMerchandisingComputationReviewFeedback(
-    merchandisingComputationNumericDefinition,
-    merchandisingComputationNumericStudentResponse,
-    merchandisingComputationNumericGrade,
-  );
+  // Family R: CVP Analysis
+  const cvpDefinition = cvpAnalysisFamily.generate(2026, { mode: 'guided_practice', variant: 'break-even-units', tolerance: 1 });
+  const cvpSolution = cvpAnalysisFamily.solve(cvpDefinition);
+  const cvpFirstPart = cvpDefinition.parts[0];
+  const cvpStudentResponse: CvpAnalysisResponse = cvpFirstPart
+    ? { ...cvpSolution, [cvpFirstPart.id]: (cvpSolution[cvpFirstPart.id] ?? 0) + 50 }
+    : cvpSolution;
+  const cvpGrade = cvpAnalysisFamily.grade(cvpDefinition, cvpStudentResponse);
+  const cvpFeedback = buildCvpAnalysisReviewFeedback(cvpDefinition, cvpStudentResponse, cvpGrade);
 
-  const merchandisingComputationStatementDefinition = merchandisingComputationFamily.generate(2026, {
-    mode: 'guided_practice',
-    presentation: 'statement',
-    tolerance: 1,
-  });
-  const merchandisingComputationStatementSolution = merchandisingComputationFamily.solve(
-    merchandisingComputationStatementDefinition,
-  ) as MerchandisingComputationResponse;
-  const merchandisingComputationStatementPart = merchandisingComputationStatementDefinition.parts[0];
-  const merchandisingComputationStatementStudentResponse: MerchandisingComputationResponse = merchandisingComputationStatementPart
-    ? {
-        ...merchandisingComputationStatementSolution,
-        [merchandisingComputationStatementPart.id]:
-          Number(merchandisingComputationStatementSolution[merchandisingComputationStatementPart.id] ?? 0) + 5,
-      }
-    : merchandisingComputationStatementSolution;
-  const merchandisingComputationStatementGrade = merchandisingComputationFamily.grade(
-    merchandisingComputationStatementDefinition,
-    merchandisingComputationStatementStudentResponse,
-  );
-  const merchandisingComputationStatementFeedback = buildMerchandisingComputationReviewFeedback(
-    merchandisingComputationStatementDefinition,
-    merchandisingComputationStatementStudentResponse,
-    merchandisingComputationStatementGrade,
-  );
-  const merchandisingComputationNarrative = merchandisingComputationNumericDefinition.timeline.events
-    .map((event) => event.narrative)
-    .join(' ');
+  // Family S: Interest Schedules
+  const interestDefinition = interestSchedulesFamily.generate(2026, { mode: 'guided_practice', variant: 'compound-interest', tolerance: 1 });
+  const interestSolution = interestSchedulesFamily.solve(interestDefinition);
+  const interestFirstPart = interestDefinition.parts[0];
+  const interestStudentResponse: InterestSchedulesResponse = interestFirstPart
+    ? { ...interestSolution, [interestFirstPart.id]: (interestSolution[interestFirstPart.id] ?? 0) + 200 }
+    : interestSolution;
+  const interestGrade = interestSchedulesFamily.grade(interestDefinition, interestStudentResponse);
+  const interestFeedback = buildInterestSchedulesReviewFeedback(interestDefinition, interestStudentResponse, interestGrade);
+
+  // Family T: Depreciation Schedules
+  const depScheduleDefinition = depreciationSchedulesFamily.generate(2026, { mode: 'guided_practice', method: 'double-declining', tolerance: 1 });
+  const depScheduleSolution = depreciationSchedulesFamily.solve(depScheduleDefinition);
+  const depScheduleFirstPart = depScheduleDefinition.parts[0];
+  const depScheduleStudentResponse: DepreciationSchedulesResponse = depScheduleFirstPart
+    ? { ...depScheduleSolution, [depScheduleFirstPart.id]: (depScheduleSolution[depScheduleFirstPart.id] ?? 0) + 300 }
+    : depScheduleSolution;
+  const depScheduleGrade = depreciationSchedulesFamily.grade(depScheduleDefinition, depScheduleStudentResponse);
+  const depScheduleFeedback = buildDepreciationSchedulesReviewFeedback(depScheduleDefinition, depScheduleStudentResponse, depScheduleGrade);
+
+  // Family U: Financial Analysis
+  const finAnalysisDefinition = financialAnalysisFamily.generate(2026, { mode: 'guided_practice', variant: 'profitability', tolerance: 0.01 });
+  const finAnalysisSolution = financialAnalysisFamily.solve(finAnalysisDefinition);
+  const finAnalysisFirstPart = finAnalysisDefinition.parts[0];
+  const finAnalysisStudentResponse: FinancialAnalysisResponse = finAnalysisFirstPart
+    ? { ...finAnalysisSolution, [finAnalysisFirstPart.id]: (finAnalysisSolution[finAnalysisFirstPart.id] ?? 0) + 0.5 }
+    : finAnalysisSolution;
+  const finAnalysisGrade = financialAnalysisFamily.grade(finAnalysisDefinition, finAnalysisStudentResponse);
+  const finAnalysisFeedback = buildFinancialAnalysisReviewFeedback(finAnalysisDefinition, finAnalysisStudentResponse, finAnalysisGrade);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
@@ -1593,91 +1554,6 @@ export default function PracticePreviewPage() {
           />
         </div>
 
-        {statementCompletionPreviewVariants.map((variant) => {
-          const statementCompletionDefinition = statementCompletionFamily.generate(2026, {
-            mode: 'guided_practice',
-            statementKind: variant.statementKind,
-          });
-          const statementCompletionSolution = statementCompletionFamily.solve(statementCompletionDefinition);
-          const statementCompletionFirstPart = statementCompletionDefinition.parts[0];
-          const statementCompletionStudentResponse: StatementCompletionResponse = {
-            ...statementCompletionSolution,
-            ...(statementCompletionFirstPart
-              ? {
-                  [statementCompletionFirstPart.id]: (statementCompletionSolution[statementCompletionFirstPart.id] ?? 0) + 125,
-                }
-              : {}),
-          };
-          const statementCompletionGradeResult = statementCompletionFamily.grade(
-            statementCompletionDefinition,
-            statementCompletionStudentResponse,
-          );
-          const statementCompletionFeedback = buildStatementCompletionReviewFeedback(
-            statementCompletionDefinition,
-            statementCompletionStudentResponse,
-            statementCompletionGradeResult,
-          );
-          const statementCompletionBlankCount = statementCompletionDefinition.parts.length;
-          const statementCompletionReviewCount = Object.values(statementCompletionFeedback).filter(
-            (feedback) => feedback?.status !== 'correct',
-          ).length;
-
-          return (
-            <section key={variant.statementKind} className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
-              <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family D preview</p>
-                <h2 className="text-2xl font-semibold tracking-tight">{variant.heading}</h2>
-                <p className="max-w-4xl text-sm text-slate-600">{variant.description}</p>
-              </div>
-
-              <div className="grid gap-6 xl:grid-cols-2">
-                <StatementLayout
-                  title="Family D Guided Practice"
-                  description={variant.studentDescription}
-                  sections={statementCompletionDefinition.sections}
-                  defaultValues={Object.fromEntries(statementCompletionDefinition.parts.map((part) => [part.id, '']))}
-                  metadataBadges={[
-                    { label: variant.label, variant: 'outline' },
-                    { label: statementCompletionDefinition.scaffolding.statementLabel, variant: 'secondary' },
-                    { label: `${statementCompletionBlankCount} blanks`, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
-                  scaffoldText={statementCompletionDefinition.scaffolding.guidance}
-                />
-
-                <StatementLayout
-                  title="Family D Teacher Review"
-                  description={variant.teacherDescription}
-                  sections={statementCompletionDefinition.sections}
-                  values={Object.fromEntries(
-                    statementCompletionDefinition.rows
-                      .filter((row) => row.kind === 'editable')
-                      .map((row) => [row.id, String(statementCompletionStudentResponse[row.id] ?? '')]),
-                  )}
-                  readOnly
-                  teacherView
-                  metadataBadges={[
-                    { label: variant.label, variant: 'outline' },
-                    { label: statementCompletionDefinition.scaffolding.statementLabel, variant: 'secondary' },
-                    { label: `${statementCompletionBlankCount} blanks`, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
-                  scaffoldText={statementCompletionDefinition.scaffolding.guidance}
-                  reviewSummary={[
-                    { label: 'Attempt', value: '1' },
-                    {
-                      label: 'Score',
-                      value: `${statementCompletionGradeResult.score}/${statementCompletionGradeResult.maxScore}`,
-                    },
-                    { label: 'Submitted', value: 'Preview sample' },
-                    { label: 'Needs review', value: String(statementCompletionReviewCount) },
-                  ]}
-                  rowFeedback={statementCompletionFeedback}
-                />
-              </div>
-            </section>
-          );
-        })}
 
         {(() => {
           const statementConstructionDefinition = statementConstructionFamily.generate(2026, {
@@ -2146,11 +2022,9 @@ export default function PracticePreviewPage() {
                     </div>
                   ))}
                   <div className="rounded-xl border border-dashed border-slate-300 bg-white/80 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Accumulated depreciation</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(depreciationPresentationDerivedDefinition.parts[0]?.targetId ?? 0)}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-500">Compute this first, then present the net book value.</div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Compute first</div>
+                    <div className="mt-1 text-sm font-medium text-slate-800">Compute accumulated depreciation.</div>
+                    <div className="mt-1 text-xs text-slate-500">Use that amount to present the asset at net book value.</div>
                   </div>
                 </CardContent>
               </Card>
@@ -2213,225 +2087,316 @@ export default function PracticePreviewPage() {
           </div>
         </section>
 
+
         <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
           <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family O preview</p>
-            <h2 className="text-2xl font-semibold tracking-tight">Merchandising computation</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family R preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">CVP Analysis</h2>
             <p className="max-w-4xl text-sm text-slate-600">
-              Family O reuses the merchandising timeline facts for both a numeric computation list and a full retail income statement.
+              Break-even units variant with contribution margin and unit computations.
             </p>
           </div>
 
-          <div className="space-y-6">
-            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.role}</Badge>
-                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.discountMethod}</Badge>
-                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.paymentTiming}</Badge>
-                <Badge variant="secondary">{merchandisingComputationNumericDefinition.timeline.fobCondition}</Badge>
-                <Badge variant="outline">{merchandisingComputationNumericDefinition.scaffolding.factsLabel}</Badge>
+          <Card>
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-lg">Scenario</CardTitle>
+              <CardDescription>{cvpDefinition.prompt.stem}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Variant</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{cvpDefinition.variant}</div>
               </div>
-
-                <Card>
-                  <CardHeader className="space-y-2">
-                    <CardTitle className="text-lg">Merchandising facts</CardTitle>
-                  <CardDescription>{merchandisingComputationNarrative}</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  <div className="rounded-xl border bg-background/90 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Sale amount</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(merchandisingComputationNumericDefinition.timeline.saleAmount)}
-                    </div>
-                  </div>
-                  <div className="rounded-xl border bg-background/90 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Cost amount</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(merchandisingComputationNumericDefinition.timeline.costAmount)}
-                    </div>
-                  </div>
-                  <div className="rounded-xl border bg-background/90 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Freight</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(merchandisingComputationNumericDefinition.timeline.freightAmount)}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <div className="grid gap-6 xl:grid-cols-2">
-                <StatementLayout
-                  title="Family O Guided Practice"
-                  description="Compute the merchandising amounts with a compact numeric list."
-                  sections={[
-                    {
-                      id: 'numeric-merchandising',
-                      label: 'Compute each amount',
-                      description: 'Read the facts and enter the numeric totals.',
-                      rows: merchandisingComputationNumericDefinition.questionRows.map((row) => ({
-                        id: row.id,
-                        label: row.label,
-                        kind: 'editable' as const,
-                        placeholder: '0',
-                        note: row.note,
-                      })),
-                    },
-                  ]}
-                  defaultValues={Object.fromEntries(
-                    merchandisingComputationNumericDefinition.questionRows.map((row) => [row.id, '']),
-                  )}
-                  metadataBadges={[
-                    { label: merchandisingComputationNumericDefinition.presentation, variant: 'secondary' },
-                    { label: merchandisingComputationNumericDefinition.scaffolding.statementLabel, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
-                  scaffoldText={merchandisingComputationNumericDefinition.scaffolding.guidance}
-                />
-
-                <StatementLayout
-                  title="Family O Teacher Review"
-                  description="Read-only evidence with row-level review feedback and the same numeric targets."
-                  sections={[
-                    {
-                      id: 'numeric-merchandising',
-                      label: 'Compute each amount',
-                      description: 'The same numeric targets appear in teacher review.',
-                      rows: merchandisingComputationNumericDefinition.questionRows.map((row) => ({
-                        id: row.id,
-                        label: row.label,
-                        kind: 'editable' as const,
-                        placeholder: '0',
-                        note: row.note,
-                      })),
-                    },
-                  ]}
-                  values={Object.fromEntries(
-                    merchandisingComputationNumericDefinition.parts.map((part) => [
-                      part.id,
-                      String(merchandisingComputationNumericStudentResponse[part.id] ?? ''),
-                    ]),
-                  )}
-                  readOnly
-                  teacherView
-                  metadataBadges={[
-                    { label: merchandisingComputationNumericDefinition.presentation, variant: 'secondary' },
-                    { label: merchandisingComputationNumericDefinition.scaffolding.statementLabel, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
-                  scaffoldText={merchandisingComputationNumericDefinition.scaffolding.guidance}
-                  reviewSummary={[
-                    { label: 'Attempt', value: '1' },
-                    {
-                      label: 'Score',
-                      value: `${merchandisingComputationNumericGrade.score}/${merchandisingComputationNumericGrade.maxScore}`,
-                    },
-                    { label: 'Needs review', value: String(Object.values(merchandisingComputationNumericFeedback).filter((item) => item.status !== 'correct').length) },
-                    { label: 'Variant', value: merchandisingComputationNumericDefinition.presentation },
-                  ]}
-                  rowFeedback={Object.fromEntries(
-                    merchandisingComputationNumericDefinition.parts.map((part) => [
-                      part.id,
-                      {
-                        status: (merchandisingComputationNumericFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
-                        message: merchandisingComputationNumericFeedback[part.id]?.message,
-                        misconceptionTags: merchandisingComputationNumericFeedback[part.id]?.misconceptionTags ?? [],
-                      },
-                    ]),
-                  )}
-                />
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Score</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{cvpGrade.score}/{cvpGrade.maxScore}</div>
               </div>
-            </div>
-
-            <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{merchandisingComputationStatementDefinition.presentation}</Badge>
-                <Badge variant="secondary">{merchandisingComputationStatementDefinition.scaffolding.statementLabel}</Badge>
-                <Badge variant="outline">{merchandisingComputationStatementDefinition.timeline.discountMethod}</Badge>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Guidance</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{cvpDefinition.scaffolding.guidance}</div>
               </div>
+            </CardContent>
+          </Card>
 
-                <Card>
-                  <CardHeader className="space-y-2">
-                    <CardTitle className="text-lg">Statement facts</CardTitle>
-                  <CardDescription>{merchandisingComputationNarrative}</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  <div className="rounded-xl border bg-background/90 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Sales returns</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(merchandisingComputationStatementDefinition.parts[0]?.targetId ?? 0)}
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Guided Practice</CardTitle>
+                <CardDescription>Compute the CVP values from the scenario data.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {cvpDefinition.parts.map((part) => (
+                  <div key={part.id} className="flex items-center justify-between rounded-xl border bg-background/90 p-3">
+                    <div>
+                      <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                      <div className="text-xs text-slate-500">{part.prompt}</div>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400">
+                      enter value
                     </div>
                   </div>
-                  <div className="rounded-xl border bg-background/90 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Gross profit</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(merchandisingComputationStatementDefinition.parts[1]?.targetId ?? 0)}
-                    </div>
-                  </div>
-                  <div className="rounded-xl border bg-background/90 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Net income</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">
-                      {formatAccountingAmount(merchandisingComputationStatementDefinition.parts[2]?.targetId ?? 0)}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                ))}
+              </CardContent>
+            </Card>
 
-              <div className="grid gap-6 xl:grid-cols-2">
-                <StatementLayout
-                  title="Family O Statement Practice"
-                  description="Complete the retail income statement with the same merchandising facts."
-                  sections={merchandisingComputationStatementDefinition.sections}
-                  defaultValues={Object.fromEntries(
-                    merchandisingComputationStatementDefinition.parts.map((part) => [part.id, '']),
-                  )}
-                  metadataBadges={[
-                    { label: merchandisingComputationStatementDefinition.presentation, variant: 'secondary' },
-                    { label: merchandisingComputationStatementDefinition.scaffolding.statementLabel, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
-                  scaffoldText={merchandisingComputationStatementDefinition.scaffolding.guidance}
-                />
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Teacher Review</CardTitle>
+                <CardDescription>Graded responses with feedback for each ratio.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {cvpDefinition.parts.map((part) => {
+                  const fb = cvpFeedback[part.id];
+                  return (
+                    <div key={part.id} className={`rounded-xl border p-3 ${fb?.status === 'correct' ? 'border-green-200 bg-green-50/50' : 'border-red-200 bg-red-50/50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                        <Badge variant={fb?.status === 'correct' ? 'default' : 'destructive'}>{fb?.status}</Badge>
+                      </div>
+                      <div className="mt-1 flex gap-4 text-xs text-slate-600">
+                        <span>Student: {fb?.selectedLabel ?? '—'}</span>
+                        <span>Expected: {fb?.expectedLabel ?? '—'}</span>
+                      </div>
+                      {fb?.message && <div className="mt-1 text-xs text-slate-500">{fb.message}</div>}
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
-                <StatementLayout
-                  title="Family O Teacher Review"
-                  description="Read-only income statement evidence with row-level review feedback."
-                  sections={merchandisingComputationStatementDefinition.sections}
-                  values={Object.fromEntries(
-                    merchandisingComputationStatementDefinition.parts.map((part) => [
-                      part.id,
-                      String(merchandisingComputationStatementStudentResponse[part.id] ?? ''),
-                    ]),
-                  )}
-                  readOnly
-                  teacherView
-                  metadataBadges={[
-                    { label: merchandisingComputationStatementDefinition.presentation, variant: 'secondary' },
-                    { label: merchandisingComputationStatementDefinition.scaffolding.statementLabel, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
-                  scaffoldText={merchandisingComputationStatementDefinition.scaffolding.guidance}
-                  reviewSummary={[
-                    { label: 'Attempt', value: '1' },
-                    {
-                      label: 'Score',
-                      value: `${merchandisingComputationStatementGrade.score}/${merchandisingComputationStatementGrade.maxScore}`,
-                    },
-                    { label: 'Needs review', value: String(Object.values(merchandisingComputationStatementFeedback).filter((item) => item.status !== 'correct').length) },
-                    { label: 'Variant', value: merchandisingComputationStatementDefinition.presentation },
-                  ]}
-                  rowFeedback={Object.fromEntries(
-                    merchandisingComputationStatementDefinition.parts.map((part) => [
-                      part.id,
-                      {
-                        status: (merchandisingComputationStatementFeedback[part.id]?.status ?? 'incorrect') as 'correct' | 'incorrect' | 'partial',
-                        message: merchandisingComputationStatementFeedback[part.id]?.message,
-                        misconceptionTags: merchandisingComputationStatementFeedback[part.id]?.misconceptionTags ?? [],
-                      },
-                    ]),
-                  )}
-                />
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family S preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Interest Schedules</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Compound interest variant with future value and total interest computations.
+            </p>
+          </div>
+
+          <Card>
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-lg">Scenario</CardTitle>
+              <CardDescription>{interestDefinition.prompt.stem}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Variant</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{interestDefinition.variant}</div>
               </div>
-            </div>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Score</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{interestGrade.score}/{interestGrade.maxScore}</div>
+              </div>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Guidance</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{interestDefinition.scaffolding.guidance}</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Guided Practice</CardTitle>
+                <CardDescription>Compute the interest values from the scenario data.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {interestDefinition.parts.map((part) => (
+                  <div key={part.id} className="flex items-center justify-between rounded-xl border bg-background/90 p-3">
+                    <div>
+                      <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                      <div className="text-xs text-slate-500">{part.prompt}</div>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400">
+                      enter value
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Teacher Review</CardTitle>
+                <CardDescription>Graded responses with feedback for each computation.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {interestDefinition.parts.map((part) => {
+                  const fb = interestFeedback[part.id];
+                  return (
+                    <div key={part.id} className={`rounded-xl border p-3 ${fb?.status === 'correct' ? 'border-green-200 bg-green-50/50' : 'border-red-200 bg-red-50/50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                        <Badge variant={fb?.status === 'correct' ? 'default' : 'destructive'}>{fb?.status}</Badge>
+                      </div>
+                      <div className="mt-1 flex gap-4 text-xs text-slate-600">
+                        <span>Student: {fb?.selectedLabel ?? '—'}</span>
+                        <span>Expected: {fb?.expectedLabel ?? '—'}</span>
+                      </div>
+                      {fb?.message && <div className="mt-1 text-xs text-slate-500">{fb.message}</div>}
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family T preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Depreciation Schedules</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Double-declining balance method with depreciable base, year-1 depreciation, and book value computations.
+            </p>
+          </div>
+
+          <Card>
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-lg">Scenario</CardTitle>
+              <CardDescription>{depScheduleDefinition.prompt.stem}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Method</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{depScheduleDefinition.method}</div>
+              </div>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Score</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{depScheduleGrade.score}/{depScheduleGrade.maxScore}</div>
+              </div>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Guidance</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{depScheduleDefinition.scaffolding.guidance}</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Guided Practice</CardTitle>
+                <CardDescription>Compute the depreciation values from the asset data.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {depScheduleDefinition.parts.map((part) => (
+                  <div key={part.id} className="flex items-center justify-between rounded-xl border bg-background/90 p-3">
+                    <div>
+                      <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                      <div className="text-xs text-slate-500">{part.prompt}</div>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400">
+                      enter value
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Teacher Review</CardTitle>
+                <CardDescription>Graded responses with feedback for each computation.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {depScheduleDefinition.parts.map((part) => {
+                  const fb = depScheduleFeedback[part.id];
+                  return (
+                    <div key={part.id} className={`rounded-xl border p-3 ${fb?.status === 'correct' ? 'border-green-200 bg-green-50/50' : 'border-red-200 bg-red-50/50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                        <Badge variant={fb?.status === 'correct' ? 'default' : 'destructive'}>{fb?.status}</Badge>
+                      </div>
+                      <div className="mt-1 flex gap-4 text-xs text-slate-600">
+                        <span>Student: {fb?.selectedLabel ?? '—'}</span>
+                        <span>Expected: {fb?.expectedLabel ?? '—'}</span>
+                      </div>
+                      {fb?.message && <div className="mt-1 text-xs text-slate-500">{fb.message}</div>}
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Family U preview</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Financial Statement Analysis</h2>
+            <p className="max-w-4xl text-sm text-slate-600">
+              Profitability variant with profit margin and return on assets from mini-ledger data.
+            </p>
+          </div>
+
+          <Card>
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-lg">Scenario</CardTitle>
+              <CardDescription>{finAnalysisDefinition.prompt.stem}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Variant</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{finAnalysisDefinition.variant}</div>
+              </div>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Score</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{finAnalysisGrade.score}/{finAnalysisGrade.maxScore}</div>
+              </div>
+              <div className="rounded-xl border bg-background/90 p-3">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Guidance</div>
+                <div className="mt-1 text-sm font-medium text-slate-800">{finAnalysisDefinition.scaffolding.guidance}</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 xl:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Guided Practice</CardTitle>
+                <CardDescription>Compute the financial ratios from the statement data.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {finAnalysisDefinition.parts.map((part) => (
+                  <div key={part.id} className="flex items-center justify-between rounded-xl border bg-background/90 p-3">
+                    <div>
+                      <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                      <div className="text-xs text-slate-500">{part.prompt}</div>
+                    </div>
+                    <div className="rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400">
+                      enter value
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Teacher Review</CardTitle>
+                <CardDescription>Graded responses with feedback for each ratio.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {finAnalysisDefinition.parts.map((part) => {
+                  const fb = finAnalysisFeedback[part.id];
+                  return (
+                    <div key={part.id} className={`rounded-xl border p-3 ${fb?.status === 'correct' ? 'border-green-200 bg-green-50/50' : 'border-red-200 bg-red-50/50'}`}>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium text-slate-800">{part.label}</div>
+                        <Badge variant={fb?.status === 'correct' ? 'default' : 'destructive'}>{fb?.status}</Badge>
+                      </div>
+                      <div className="mt-1 flex gap-4 text-xs text-slate-600">
+                        <span>Student: {fb?.selectedLabel ?? '—'}</span>
+                        <span>Expected: {fb?.expectedLabel ?? '—'}</span>
+                      </div>
+                      {fb?.message && <div className="mt-1 text-xs text-slate-500">{fb.message}</div>}
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
           </div>
         </section>
 

@@ -18,12 +18,16 @@ vi.mock("@/convex/_generated/api", () => ({
   },
 }));
 
+vi.mock("@/components/ui/carousel", () => ({
+  Carousel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 describe("CurriculumPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders units with their lessons from Convex", async () => {
+  it("renders units with their titles from Convex", async () => {
     mockQuery.mockResolvedValueOnce([
       {
         unitNumber: 1,
@@ -52,16 +56,8 @@ describe("CurriculumPage", () => {
     const page = await CurriculumPage();
     render(page);
 
-    expect(screen.getByText("Balance by Design")).toBeInTheDocument();
-    expect(screen.getByText("Lesson 1")).toHaveAttribute(
-      "href",
-      "/student/lesson/lesson-1"
-    );
-    expect(screen.getByText("Lesson 2")).toHaveAttribute(
-      "href",
-      "/student/lesson/lesson-2"
-    );
-    expect(screen.getByText("2 lessons")).toBeInTheDocument();
+    expect(screen.getAllByText("Balance by Design").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("2 lessons").length).toBeGreaterThan(0);
   });
 
   it("labels the capstone as a distinct culminating experience instead of Unit 9", async () => {
@@ -86,33 +82,29 @@ describe("CurriculumPage", () => {
     const page = await CurriculumPage();
     render(page);
 
-    expect(screen.getByText(/^Capstone$/)).toBeInTheDocument();
     expect(screen.queryByText(/^Unit 9$/)).not.toBeInTheDocument();
-    expect(screen.getAllByText("Capstone: Investor-Ready Plan").length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Capstone: Investor-Ready Plan/i).length).toBeGreaterThan(0);
   });
 
-  it("shows empty state when no lessons exist", async () => {
+  it("renders the CTA section even when no units exist", async () => {
     mockQuery.mockResolvedValueOnce([]);
 
     const page = await CurriculumPage();
     render(page);
 
     expect(
-      screen.getByText(/Curriculum data isn't available yet/i)
+      screen.getByRole("heading", { name: /Ready to start building/i })
     ).toBeInTheDocument();
   });
 
-  it("describes the curriculum as browsable before sign-in instead of claiming lesson study is public", async () => {
+  it("shows login link in final CTA", async () => {
     mockQuery.mockResolvedValueOnce([]);
 
     const page = await CurriculumPage();
     render(page);
 
     expect(
-      screen.getByText(/browse the sequence before signing in to study/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/jump into any lesson without signing in/i)
-    ).not.toBeInTheDocument();
+      screen.getByRole("link", { name: /Student or teacher login/i })
+    ).toHaveAttribute("href", "/auth/login");
   });
 });

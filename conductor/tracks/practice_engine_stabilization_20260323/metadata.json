@@ -1,0 +1,11 @@
+{
+  "track_id": "practice_engine_stabilization_20260323",
+  "type": "feature",
+  "status": "complete",
+  "created_at": "2026-03-23T00:00:00Z",
+  "updated_at": "2026-03-23T00:00:00Z",
+  "description": "Fix engine bugs, consolidate duplicate families (D→Q, O→Q, rebuild L), and build new Families R-U. Stabilizes the full family registry before curriculum rollout.",
+  "estimated_tasks": 14,
+  "actual_tasks": 14,
+  "deviation_notes": "Split from practice_production_readiness_20260322 (Phases 1-2) + Families R-U from legacy_component_pruning_and_simulations_20260322 (Phase 3)."
+}

@@ -51,6 +51,8 @@ export interface StatementSubtotalsConfig extends MiniLedgerConfig {
   mode?: ProblemDefinition['mode'];
   statementKind?: StatementSubtotalsKind;
   tolerance?: number;
+  /** 'low' produces fewer blanks (e.g. income-statement: only net income is editable). Default: 'standard'. */
+  density?: 'low' | 'standard';
 }
 
 export interface StatementSubtotalsReviewFeedback {
@@ -459,7 +461,70 @@ function buildRetailIncomeStatement(seed: number, ledger: MiniLedger, tolerance:
   };
 }
 
-function buildStatementBody(kind: StatementSubtotalsKind, seed: number, ledger: MiniLedger, tolerance: number) {
+function buildLowDensityIncomeStatement(ledger: MiniLedger, tolerance: number) {
+  const revenueAccounts = ledger.accounts.filter((account) => account.accountType === 'revenue');
+  const expenseAccounts = ledger.accounts.filter((account) => account.accountType === 'expense');
+
+  const revenueRows = revenueAccounts.map((account) =>
+    createPrefilledRow('income-statement', `revenue-${account.id}`, account.label, account.statementBalance, 'Revenue recognized in the period.'),
+  );
+  const expenseRows = expenseAccounts.map((account) =>
+    createPrefilledRow('income-statement', `expense-${account.id}`, account.label, Math.abs(account.statementBalance), 'Expense recognized in the period.'),
+  );
+
+  const totalRevenue = revenueRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const totalExpenses = expenseRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const netIncome = totalRevenue - totalExpenses;
+
+  // Low density: section totals are prefilled, only net income is editable
+  const totalRevenueRow = createPrefilledRow('income-statement', 'total-revenue', 'Total Revenues', totalRevenue, 'Add the revenue lines above.');
+  const totalExpensesRow = createPrefilledRow('income-statement', 'total-expenses', 'Total Expenses', totalExpenses, 'Add the expense lines above.');
+  const netIncomeRow = createEditableSubtotalRow({
+    statementKind: 'income-statement',
+    sectionId: 'bottom-line',
+    id: 'net-income',
+    label: 'Net Income',
+    expectedValue: netIncome,
+    sumOf: [totalRevenueRow.id, totalExpensesRow.id],
+    tolerance,
+    explanation: 'Subtract total expenses from total revenues.',
+    note: 'Use the section totals to find the bottom line.',
+  });
+
+  const sections: StatementSubtotalsSection[] = [
+    {
+      id: 'revenues',
+      label: 'Revenues',
+      description: 'Revenue lines and total are already given.',
+      rows: [...revenueRows, totalRevenueRow],
+    },
+    {
+      id: 'expenses',
+      label: 'Expenses',
+      description: 'Expense lines and total are already given.',
+      rows: [...expenseRows, totalExpensesRow],
+    },
+    {
+      id: 'bottom-line',
+      label: 'Bottom Line',
+      description: 'Use the totals above to finish the income statement.',
+      rows: [netIncomeRow],
+    },
+  ];
+
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows),
+    parts: [netIncomeRow],
+    scaffolding: {
+      statementLabel: 'Income statement',
+      guidance: 'Use the totals above to complete the bottom line.',
+      blanks: 1,
+    },
+  };
+}
+
+function buildStatementBody(kind: StatementSubtotalsKind, seed: number, ledger: MiniLedger, tolerance: number, density: 'low' | 'standard' = 'standard') {
   if (kind === 'balance-sheet') {
     return buildBalanceSheetSubtotals(ledger, tolerance);
   }
@@ -470,6 +535,10 @@ function buildStatementBody(kind: StatementSubtotalsKind, seed: number, ledger: 
 
   if (kind === 'retail-income-statement') {
     return buildRetailIncomeStatement(seed, ledger, tolerance);
+  }
+
+  if (density === 'low') {
+    return buildLowDensityIncomeStatement(ledger, tolerance);
   }
 
   return buildServiceIncomeStatement(ledger, tolerance);
@@ -536,7 +605,8 @@ export const statementSubtotalsFamily: ProblemFamily<
       capitalMode: 'ending',
     });
     const tolerance = config.tolerance ?? 0;
-    const body = buildStatementBody(statementKind, seed, miniLedger, tolerance);
+    const density = config.density ?? 'standard';
+    const body = buildStatementBody(statementKind, seed, miniLedger, tolerance, density);
 
     return {
       contractVersion: 'practice.v1',

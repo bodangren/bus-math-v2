@@ -1,9 +1,10 @@
 import { buildPracticeSubmissionEnvelope, normalizePracticeValue, type PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import { getAccountById } from '@/lib/practice/engine/accounts';
+import { generateMiniLedger, type MiniLedger } from '@/lib/practice/engine/mini-ledger';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
 import type { JournalEntryAccountOption, JournalEntryLine } from './journal-entry';
 
-export type CycleDecisionScenarioKind = 'reversing-selection' | 'closing-entry' | 'correcting-entry' | 'reversing-entry';
+export type CycleDecisionScenarioKind = 'reversing-selection' | 'closing-entry';
 export type CycleDecisionSelectionChoice = 'reverse' | 'do-not-reverse';
 
 export interface CycleDecisionSelectionRow {
@@ -51,6 +52,7 @@ export interface CycleDecisionScenario {
   selectionColumns: CycleDecisionSelectionColumn[];
   journalLines: JournalEntryLine[];
   availableAccounts: JournalEntryAccountOption[];
+  miniLedger?: MiniLedger;
   tags: string[];
 }
 
@@ -208,20 +210,45 @@ function buildReversingSelectionScenario(seed: number): CycleDecisionScenario {
 }
 
 function buildClosingScenario(seed: number): CycleDecisionScenario {
-  const rng = mulberry32(seed ^ 0x51ed270b);
-  const revenue = pick([4800, 5400, 6000, 7200], rng);
-  const expense = pick([2100, 2400, 3000, 3600], rng);
-  const dividends = pick([300, 450, 600], rng);
-  const lines = [
-    buildLine('line-1', '12/31', 'service-revenue', revenue, 0, 'Close revenue to retained earnings'),
-    buildLine('line-2', '12/31', 'retained-earnings', 0, revenue, 'Close revenue to retained earnings'),
-    buildLine('line-3', '12/31', 'retained-earnings', expense, 0, 'Close expense to retained earnings'),
-    buildLine('line-4', '12/31', 'rent-expense', 0, expense, 'Close expense to retained earnings'),
-    buildLine('line-5', '12/31', 'retained-earnings', dividends, 0, 'Close dividends to retained earnings'),
-    buildLine('line-6', '12/31', 'dividends', 0, dividends, 'Close dividends to retained earnings'),
+  const ledger = generateMiniLedger(seed, {
+    companyType: 'service',
+    includeContraAccounts: false,
+    capitalMode: 'ending',
+  });
+
+  const revenueAccounts = ledger.accounts.filter((a) => a.accountType === 'revenue');
+  const expenseAccounts = ledger.accounts.filter((a) => a.accountType === 'expense');
+  const dividends = ledger.totals.dividends;
+
+  const lines: JournalEntryLine[] = [];
+  let lineIndex = 1;
+
+  // Close each revenue account: debit revenue, credit retained earnings
+  for (const acct of revenueAccounts) {
+    const amount = Math.abs(acct.statementBalance);
+    lines.push(buildLine(`line-${lineIndex++}`, '12/31', acct.id, amount, 0, `Close ${acct.label} to retained earnings`));
+    lines.push(buildLine(`line-${lineIndex++}`, '12/31', 'retained-earnings', 0, amount, `Close ${acct.label} to retained earnings`));
+  }
+
+  // Close each expense account: debit retained earnings, credit expense
+  for (const acct of expenseAccounts) {
+    const amount = Math.abs(acct.statementBalance);
+    lines.push(buildLine(`line-${lineIndex++}`, '12/31', 'retained-earnings', amount, 0, `Close ${acct.label} to retained earnings`));
+    lines.push(buildLine(`line-${lineIndex++}`, '12/31', acct.id, 0, amount, `Close ${acct.label} to retained earnings`));
+  }
+
+  // Close dividends: debit retained earnings, credit dividends
+  lines.push(buildLine(`line-${lineIndex++}`, '12/31', 'retained-earnings', dividends, 0, 'Close dividends to retained earnings'));
+  lines.push(buildLine(`line-${lineIndex++}`, '12/31', 'dividends', 0, dividends, 'Close dividends to retained earnings'));
+
+  const accountIds = [
+    ...revenueAccounts.map((a) => a.id),
+    ...expenseAccounts.map((a) => a.id),
+    'retained-earnings',
+    'dividends',
   ];
 
-  const narrative = `Close temporary accounts from the adjusted trial balance before the next period opens.`;
+  const narrative = `Close all temporary accounts from the adjusted trial balance before the next period opens. The ledger has ${revenueAccounts.length} revenue and ${expenseAccounts.length} expense accounts to close.`;
 
   return {
     kind: 'closing-entry',
@@ -232,64 +259,15 @@ function buildClosingScenario(seed: number): CycleDecisionScenario {
     selectionRows: [],
     selectionColumns: [],
     journalLines: lines,
-    availableAccounts: buildAccountOptions(['service-revenue', 'retained-earnings', 'rent-expense', 'dividends']),
+    availableAccounts: buildAccountOptions(accountIds),
+    miniLedger: ledger,
     tags: ['closing-entry', 'adjusted-trial-balance', 'temporary-accounts'],
-  };
-}
-
-function buildCorrectingScenario(seed: number): CycleDecisionScenario {
-  const rng = mulberry32(seed ^ 0x94d049bb);
-  const amount = pick([300, 450, 600, 750, 900], rng);
-  const lines = [
-    buildLine('line-1', '03/23', 'supplies', amount, 0, 'Correct the original misclassification'),
-    buildLine('line-2', '03/23', 'supplies-expense', 0, amount, 'Correct the original misclassification'),
-  ];
-
-  const narrative = `Reclassify the earlier expense so the asset is recorded correctly.`;
-
-  return {
-    kind: 'correcting-entry',
-    title: 'Prepare the correcting entry',
-    stem: narrative,
-    narrative,
-    dates: ['03/23'],
-    selectionRows: [],
-    selectionColumns: [],
-    journalLines: lines,
-    availableAccounts: buildAccountOptions(['supplies', 'supplies-expense']),
-    tags: ['correcting-entry', 'reclassification'],
-  };
-}
-
-function buildReversingEntryScenario(seed: number): CycleDecisionScenario {
-  const rng = mulberry32(seed ^ 0x2545f491);
-  const amount = pick([240, 360, 480, 600, 750], rng);
-  const lines = [
-    buildLine('line-1', '01/01', 'salaries-payable', amount, 0, 'Reverse the accrued liability'),
-    buildLine('line-2', '01/01', 'salaries-expense', 0, amount, 'Reverse the accrued liability'),
-  ];
-
-  const narrative = `Reverse the prior accrual on the first day of the new period so the later cash payment is easier to post.`;
-
-  return {
-    kind: 'reversing-entry',
-    title: 'Prepare the reversing entry',
-    stem: narrative,
-    narrative,
-    dates: ['01/01'],
-    selectionRows: [],
-    selectionColumns: [],
-    journalLines: lines,
-    availableAccounts: buildAccountOptions(['salaries-payable', 'salaries-expense']),
-    tags: ['reversing-entry', 'accrual'],
   };
 }
 
 export const cycleDecisionScenarioCatalog = [
   { kind: 'reversing-selection', build: buildReversingSelectionScenario },
   { kind: 'closing-entry', build: buildClosingScenario },
-  { kind: 'correcting-entry', build: buildCorrectingScenario },
-  { kind: 'reversing-entry', build: buildReversingEntryScenario },
 ] as const satisfies readonly CycleDecisionScenarioBuilder[];
 
 function pickScenarioKind(seed: number) {

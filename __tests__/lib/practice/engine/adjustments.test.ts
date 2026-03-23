@@ -64,14 +64,14 @@ describe('adjustment scenario generator', () => {
 
   it('builds accrual scenarios for both revenue and expense adjustments', () => {
     const revenue = generateAccrualAdjustmentScenario(11, {
-      amount: 800,
+      amount: 120,
       accrualKind: 'revenue',
       accountLabel: 'Service Revenue',
       incurredDate: '2026-03-28',
       reportingDate: '2026-03-31',
     });
     const expense = generateAccrualAdjustmentScenario(11, {
-      amount: 540,
+      amount: 90,
       accrualKind: 'expense',
       accountLabel: 'Wages Expense',
       incurredDate: '2026-03-27',
@@ -81,23 +81,29 @@ describe('adjustment scenario generator', () => {
     expect(revenue).toMatchObject({
       kind: 'accrual',
       accrualKind: 'revenue',
-      amount: 800,
+      amount: 480,
+      dailyRate: 120,
+      daysAccrued: 4,
       entry: {
         debitLabel: 'Accounts Receivable',
         creditLabel: 'Service Revenue',
-        amount: 800,
+        amount: 480,
       },
     });
     expect(expense).toMatchObject({
       kind: 'accrual',
       accrualKind: 'expense',
-      amount: 540,
+      amount: 450,
+      dailyRate: 90,
+      daysAccrued: 5,
       entry: {
         debitLabel: 'Wages Expense',
         creditLabel: 'Wages Payable',
-        amount: 540,
+        amount: 450,
       },
     });
+    expect(revenue.stem).toMatch(/per day/i);
+    expect(revenue.stem).toMatch(/days have been earned but not billed/i);
   });
 
   it('builds depreciation scenarios with straight-line and variable salvage methods', () => {
@@ -133,6 +139,7 @@ describe('adjustment scenario generator', () => {
         amount: 900,
       },
     });
+    expect(straightLine.stem).toMatch(/12-month/i);
     expect(variableSalvage).toMatchObject({
       kind: 'depreciation',
       method: 'variable-salvage',
@@ -146,5 +153,6 @@ describe('adjustment scenario generator', () => {
         amount: 1260,
       },
     });
+    expect(variableSalvage.stem).toMatch(/10-month/i);
   });
 });

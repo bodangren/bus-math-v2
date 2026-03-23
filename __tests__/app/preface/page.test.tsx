@@ -1,34 +1,17 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import PrefacePage from '../../../app/preface/page';
 
-const mockQuery = vi.fn();
-vi.mock("convex/browser", () => ({
-  ConvexHttpClient: class {
-    constructor() {}
-    query = mockQuery;
-  },
-}));
-
-vi.mock("@/convex/_generated/api", () => ({
-  api: {
-    public: {
-      getUnitSummaries: "api.public.getUnitSummaries",
-    },
-  },
+vi.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ children, href, ...rest }: { children: React.ReactNode; href: string }) => (
+    <a href={href} {...rest}>{children}</a>
+  ),
 }));
 
 vi.mock('@/components/activities/quiz/ComprehensionCheck', () => ({
   ComprehensionCheck: () => <div data-testid="comprehension-check" />,
-}));
-
-vi.mock('@/components/activities/quiz/FillInTheBlank', () => ({
-  FillInTheBlank: () => <div data-testid="fill-in-the-blank" />,
-}));
-
-vi.mock('@/components/activities/quiz/ReflectionJournal', () => ({
-  ReflectionJournal: () => <div data-testid="reflection-journal" />,
 }));
 
 vi.mock('@/components/activities/simulations/CashFlowChallenge', () => ({
@@ -36,19 +19,29 @@ vi.mock('@/components/activities/simulations/CashFlowChallenge', () => ({
 }));
 
 describe('PrefacePage', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+  it('renders value pillars and lesson phases', () => {
+    render(<PrefacePage />);
+
+    expect(screen.getByRole('heading', { name: /Build real workbooks/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Present to real audiences/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Finish with a capstone/i })).toBeInTheDocument();
   });
 
-  it('renders fallback unit summaries when seeded lessons are missing', async () => {
-    // Return empty array to trigger fallback behavior
-    mockQuery.mockResolvedValueOnce([]);
+  it('shows the six lesson phases', () => {
+    render(<PrefacePage />);
 
-    const result = await PrefacePage();
-    render(result);
+    expect(screen.getByText('Hook')).toBeInTheDocument();
+    expect(screen.getByText('Instruction')).toBeInTheDocument();
+    expect(screen.getByText('Guided Practice')).toBeInTheDocument();
+    expect(screen.getByText('Independent Practice')).toBeInTheDocument();
+    expect(screen.getByText('Assessment')).toBeInTheDocument();
+    expect(screen.getByText('Closing')).toBeInTheDocument();
+  });
 
-    expect(screen.queryByText(/curriculum data isn't available yet/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Unit 1: Balance by Design/i)).toBeInTheDocument();
-    expect(screen.getByText(/Unit 8: Integrated Model Sprint/i)).toBeInTheDocument();
+  it('renders interactive demo components', () => {
+    render(<PrefacePage />);
+
+    expect(screen.getByTestId('comprehension-check')).toBeInTheDocument();
+    expect(screen.getByTestId('cash-flow-challenge')).toBeInTheDocument();
   });
 });

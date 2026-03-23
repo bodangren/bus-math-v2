@@ -39,6 +39,7 @@ export interface AccrualAdjustmentScenario extends AdjustmentScenarioBase {
   accountLabel: string;
   incurredDate: string;
   daysAccrued: number;
+  dailyRate: number;
 }
 
 export interface DepreciationAdjustmentScenario extends AdjustmentScenarioBase {
@@ -73,6 +74,7 @@ export interface DeferralAdjustmentConfig {
 export interface AccrualAdjustmentConfig {
   accountLabel?: string;
   amount?: number;
+  dailyRate?: number;
   accrualKind?: AccrualRecordingKind;
   incurredDate?: string;
   reportingDate?: string;
@@ -100,7 +102,7 @@ const DEFAULT_ACCRUAL_REVENUE_LABELS = ['Service Revenue', 'Consulting Revenue',
 const DEFAULT_ACCRUAL_EXPENSE_LABELS = ['Wages Expense', 'Utilities Expense', 'Insurance Expense'] as const;
 const DEFAULT_ASSET_CATEGORIES = ['Equipment', 'Office Furniture', 'Computers', 'Delivery Truck'] as const;
 const DEFAULT_DEFERRAL_AMOUNTS = [600, 900, 1200, 1800, 2400] as const;
-const DEFAULT_ACCRUAL_AMOUNTS = [240, 360, 480, 600, 720, 840] as const;
+const DEFAULT_ACCRUAL_DAILY_RATES = [60, 90, 120, 150, 180, 210] as const;
 const DEFAULT_DEPRECIATION_COSTS = [2400, 3600, 4800, 7200, 9600] as const;
 const DEFAULT_COVERAGE_MONTHS = [6, 9, 12] as const;
 const DEFAULT_USEFUL_LIFE_MONTHS = [12, 24, 36, 60] as const;
@@ -237,13 +239,14 @@ function buildAccrualDefaults(seed: number, config: AccrualAdjustmentConfig = {}
     (accrualKind === 'revenue'
       ? pick(DEFAULT_ACCRUAL_REVENUE_LABELS, rng)
       : pick(DEFAULT_ACCRUAL_EXPENSE_LABELS, rng));
-  const amount = config.amount ?? pick(DEFAULT_ACCRUAL_AMOUNTS, rng);
+  const dailyRate = config.dailyRate ?? config.amount ?? pick(DEFAULT_ACCRUAL_DAILY_RATES, rng);
   const reportingDate = config.reportingDate ?? '2026-03-31';
   const incurredDate = config.incurredDate ?? addDays(reportingDate, -randomInt(rng, 1, 5));
 
   return {
     accountLabel,
-    amount,
+    amount: dailyRate,
+    dailyRate,
     accrualKind,
     incurredDate,
     reportingDate,
@@ -329,17 +332,18 @@ export function generateAccrualAdjustmentScenario(
 ): AccrualAdjustmentScenario {
   const defaults = buildAccrualDefaults(seed, config);
   const daysAccrued = differenceInDays(defaults.incurredDate, defaults.reportingDate);
+  const amount = Math.max(1, Math.round(defaults.dailyRate * daysAccrued));
   const entry =
     defaults.accrualKind === 'revenue'
       ? {
           debitLabel: 'Accounts Receivable',
           creditLabel: defaults.accountLabel,
-          amount: defaults.amount,
+          amount,
         }
       : {
           debitLabel: defaults.accountLabel,
           creditLabel: buildAccrualCounterLabel(defaults.accountLabel),
-          amount: defaults.amount,
+          amount,
         };
 
   return {
@@ -351,15 +355,16 @@ export function generateAccrualAdjustmentScenario(
         : `Record accrued ${defaults.accountLabel.replace(/ expense$/i, '').trim()}`,
     stem:
       defaults.accrualKind === 'revenue'
-        ? `The business earned $${formatAmount(defaults.amount)} of ${defaults.accountLabel} on ${defaults.incurredDate}, but the customer had not yet been billed by ${defaults.reportingDate}.`
-        : `The business incurred $${formatAmount(defaults.amount)} of ${defaults.accountLabel} on ${defaults.incurredDate}, but the payable was not yet recorded by ${defaults.reportingDate}.`,
+        ? `The business earns $${formatAmount(defaults.dailyRate)} per day of ${defaults.accountLabel}. As of ${defaults.reportingDate}, ${daysAccrued} days have been earned but not billed.`
+        : `The business incurs $${formatAmount(defaults.dailyRate)} per day of ${defaults.accountLabel}. As of ${defaults.reportingDate}, ${daysAccrued} days have been incurred but not yet recorded.`,
     reportingDate: defaults.reportingDate,
-    amount: defaults.amount,
+    amount,
     entry,
     accrualKind: defaults.accrualKind,
     accountLabel: defaults.accountLabel,
     incurredDate: defaults.incurredDate,
     daysAccrued,
+    dailyRate: defaults.dailyRate,
   };
 }
 
@@ -384,8 +389,8 @@ export function generateDepreciationAdjustmentScenario(
     title: `Record depreciation for ${defaults.assetCategory}`,
     stem:
       defaults.method === 'straight-line'
-        ? `The business purchased ${defaults.assetCategory} on ${defaults.purchaseDate} for $${formatAmount(defaults.cost)} with $${formatAmount(defaults.salvageValue)} salvage value. Prepare the ${defaults.reportingDate} straight-line depreciation adjustment.`
-        : `The business purchased ${defaults.assetCategory} on ${defaults.purchaseDate} for $${formatAmount(defaults.cost)} and the asset has a variable salvage estimate of $${formatAmount(defaults.salvageValue)}. Prepare the ${defaults.reportingDate} depreciation adjustment.`,
+        ? `The business purchased ${defaults.assetCategory} on ${defaults.purchaseDate} for $${formatAmount(defaults.cost)} with $${formatAmount(defaults.salvageValue)} salvage value and a ${defaults.usefulLifeMonths}-month useful life. Prepare the ${defaults.reportingDate} straight-line depreciation adjustment.`
+        : `The business purchased ${defaults.assetCategory} on ${defaults.purchaseDate} for $${formatAmount(defaults.cost)} and the asset has a variable salvage estimate of $${formatAmount(defaults.salvageValue)} across a ${defaults.usefulLifeMonths}-month useful life. Prepare the ${defaults.reportingDate} depreciation adjustment.`,
     reportingDate: defaults.reportingDate,
     amount: depreciationExpense,
     entry: {

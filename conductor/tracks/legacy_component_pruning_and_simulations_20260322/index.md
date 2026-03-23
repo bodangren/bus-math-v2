@@ -1,8 +1,9 @@
-# Track: Legacy Component Pruning and Simulation Rebuilds
+# Track: Legacy Cleanup — Component Pruning, Chart Refactor, and Simulation Rebuilds
 
 ## Core Objective
-Consolidate and prune v1 legacy components. Create new practice families (R-U) for remaining core calculations and rebuild 8 core simulations to comply with the `practice.v1` contract.
+Prune obsolete v1 components and legacy interactive builders (now replaced by Families A-U), refactor display charts, and rebuild 8 core simulations on the `practice.v1` contract.
 
 ## Context
-- See `spec.md` for the component inventory and technical design of the new families and simulations.
+- Families R-U are created in the Practice Engine Stabilization track; this track handles deletion of the components they replace.
+- See `spec.md` for the component inventory and simulation design.
 - See `plan.md` for the implementation phases.

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import PracticePreviewPage from '@/app/dev/practice-preview/page';
@@ -63,12 +63,6 @@ describe('practice preview page', () => {
       expect(screen.getByText(/family i guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family i teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
-      expect(screen.getAllByText(/family d preview/i)).toHaveLength(3);
-      expect(screen.getByRole('heading', { name: /family d income statement/i })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: /family d balance sheet/i })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: /family d equity statement/i })).toBeInTheDocument();
-      expect(screen.getAllByText(/family d guided practice/i)).toHaveLength(3);
-      expect(screen.getAllByText(/family d teacher review/i)).toHaveLength(3);
       expect(screen.getByText(/family e preview/i)).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /statement construction workbook/i })).toBeInTheDocument();
       expect(screen.getByText(/account bank/i)).toBeInTheDocument();
@@ -86,10 +80,13 @@ describe('practice preview page', () => {
       expect(screen.getByRole('heading', { name: /depreciation presentation/i })).toBeInTheDocument();
       expect(screen.getAllByText(/family n guided practice/i)).toHaveLength(2);
       expect(screen.getAllByText(/family n teacher review/i)).toHaveLength(2);
-      expect(screen.getByText(/family o preview/i)).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: /merchandising computation/i })).toBeInTheDocument();
-      expect(screen.getByText(/family o guided practice/i)).toBeInTheDocument();
-      expect(screen.getAllByText(/family o teacher review/i)).toHaveLength(2);
+      const familyNCueHeading = screen.getByText(/compute first/i);
+      const familyNCueCard = familyNCueHeading.closest('div')?.parentElement?.parentElement;
+      expect(familyNCueCard).toBeTruthy();
+      if (familyNCueCard) {
+        expect(within(familyNCueCard).getByText(/compute accumulated depreciation/i)).toBeInTheDocument();
+        expect(within(familyNCueCard).queryByText(/\$[0-9,]+/)).not.toBeInTheDocument();
+      }
       expect(screen.getByText(/journal entry table/i)).toBeInTheDocument();
       expect(screen.getByText(/categorization list/i)).toBeInTheDocument();
     },

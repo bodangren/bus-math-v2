@@ -32,13 +32,16 @@ vi.mock("@/components/hero", () => ({
   ),
 }));
 
+vi.mock("@/components/ui/carousel", () => ({
+  Carousel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 describe("Home page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("uses Convex query stats", async () => {
-    // Mock the Promise.all array order: [stats, units]
     mockQuery.mockImplementation((apiRoute) => {
       if (apiRoute === "api.public.getCurriculumStats") {
         return Promise.resolve({
@@ -50,11 +53,11 @@ describe("Home page", () => {
       if (apiRoute === "api.public.getUnits") {
         return Promise.resolve([
           {
-            id: "lesson-1",
+            id: "unit-1",
             unit_number: 1,
-            title: "Lesson 1",
-            slug: "lesson-1",
-            description: "Desc",
+            title: "Balance by Design",
+            slug: "balance-by-design",
+            description: "How do we keep the books balanced?",
             order_index: 1,
             metadata: {},
           },
@@ -67,7 +70,7 @@ describe("Home page", () => {
     render(page);
 
     expect(screen.getByTestId("hero-stats")).toHaveTextContent("8|40|120");
-    expect(screen.getAllByText("Unit 1: Lesson 1").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Balance by Design").length).toBeGreaterThan(0);
   });
 
   it("falls back to empty landing data when Convex is unavailable", async () => {
@@ -80,7 +83,7 @@ describe("Home page", () => {
 
     expect(screen.getByTestId("hero-stats")).toHaveTextContent("no-stats");
     expect(
-      screen.getByRole("heading", { name: /course structure/i }),
+      screen.getByRole("heading", { name: /Ready to start building/i }),
     ).toBeInTheDocument();
     expect(consoleErrorSpy).toHaveBeenCalled();
 

@@ -16,23 +16,22 @@ This file is the source of truth for active execution order. Archived tracks liv
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
-Standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable `practice.v1` contract with teacher-visible evidence. Build algorithmic practice families (A-Q) from the BM Accounting Problems spec as reusable generator/solver/grader engines on the shared contract. The `practice_*` tracks are the controlling decomposition; older curriculum and teacher tracks retain only residual scope.
+Standardize practice components so worked examples, guided practice, independent practice, and assessments share one reusable `practice.v1` contract with teacher-visible evidence. Build algorithmic practice families (A-U) from the BM Accounting Problems spec as reusable generator/solver/grader engines on the shared contract.
 
-**Execution graph** (not fully serial):
+**Execution graph** (remaining tracks, strictly serial):
 ```
-Track 1 (Contract Foundation, DONE)
-  ├──→ Track 2 (Evidence) ──────────────→ Track 8 (Curriculum Rollout)
-  ├──→ Track 3 (Legacy Backfill) ────────↗        ↕ (parallel)
-  │      Track 2 + 3 done ──────────────→ Track 9 (Teacher Error Analysis)
-  │
-  └──→ Track 6 (Engine Foundation)
-         ├──→ Track 7a (Classification Families A,M,K)
-         ├──→ Track 7b (Journal/Transaction Families C,F,H,L,P)
-         ├──→ Track 7c (Statement/Computation Families B,D,E,I,J,N,O,Q)
-         └──→ Track 7d (Trial Balance Error Family G)
+Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] → Legacy Cleanup [8] → Teacher Error [5]
+         │                         │                        │                       │
+   bug fixes, D→Q,          wire all units          component UX,          prune old components,
+   O→Q, rebuild L,          to stable keys          visual redesign,       refactor charts,
+   new families R-U                                 teaching mode          rebuild simulations
 ```
 
-Tracks 6-7d form a serial chain (Foundation first, then families in parallel). The evidence/backfill/rollout chain (Tracks 2-3-8-9) runs independently but must converge before families can be wired into curriculum lessons.
+**Rationale for serial ordering (2026-03-23 replan):**
+- Engine Stabilization consolidates family keys (D→Q, O→Q) and creates R-U. Curriculum Rollout must wait for final keys.
+- Curriculum Rollout wires lessons to families. Legacy Cleanup deletes old components — safe only after curriculum points to replacements.
+- Visual/Teaching redesigns shared components. Simulations in Legacy Cleanup benefit from those redesigned components.
+- Teacher Error Analysis aggregates misconception tags. Teaching mode (Phase 3 of Visual/Teaching) changes tag generation — wait for stability.
 
 **Exit gate**: reusable practice families can be authored once and reused across lesson modes without storage or teacher-review drift; teachers can inspect actual student practice work; algorithmic generators produce infinite variant problems on the shared contract; curriculum runtime, docs, and persistence all describe the same contract.
 
@@ -40,25 +39,37 @@ Tracks 6-7d form a serial chain (Foundation first, then families in parallel). T
 
 ## Planned Queue
 
-The `practice_*` split is now the governing execution sequence for Milestone 7. The evidence/backfill chain (Tracks 2-3) runs in parallel after Track 1. The engine foundation (Track 6) also starts after Track 1, with family tracks (7a-7d) in parallel after Track 6. Curriculum rollout (Track 8) and teacher error analysis (Track 9) start after Tracks 2+3 converge.
+Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Curriculum Guided/Independent Practice Rollout**
+- [ ] **Track 1: Practice Engine Stabilization**
+  *Link: [./tracks/practice_engine_stabilization_20260323/](./tracks/practice_engine_stabilization_20260323/)*
+  *Status: Next up. Fix 7 engine bugs, consolidate D→Q/O→Q/rebuild L, build Families R-U. Stabilizes the full family registry.*
+
+- [~] **Track 2: Curriculum Guided/Independent Practice Rollout**
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
-  *Status: Starts after Tracks 2+3 converge; owns lesson-source and manifest alignment. Consumes Track 3's audit mapping.*
+  *Status: Phase 1 audit partially complete, Phase 2-3 Unit 1 exemplar done. Remaining: finish audit, roll out Units 2-8 with stable family keys (including R-U). Blocked on Track 1.*
 
-- [~] **Track: Practice Production Readiness**
-  *Link: [./tracks/practice_production_readiness_20260322/](./tracks/practice_production_readiness_20260322/)*
-  *Status: Implements all findings from the pedagogical review. Depends on family engine tracks (7a-7d) being complete. 6 phases: bug fixes → consolidation → integration → visual language → teaching mode → curriculum docs.*
+- [ ] **Track 3: Practice Visual & Teaching Upgrade**
+  *Link: [./tracks/practice_visual_teaching_upgrade_20260323/](./tracks/practice_visual_teaching_upgrade_20260323/)*
+  *Status: Component integration, accounting visual language, teaching mode, computation-chain feedback, curriculum sequencing docs. Blocked on Tracks 1+2.*
 
-- [ ] **Track: Teacher Practice Error Analysis**
-  *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
-  *Status: Parallel with Track 8 after Tracks 2+3; owns misconception-tag population logic and cross-submission aggregation. Does not depend on Track 8.*
-
-- [ ] **Track: Legacy Component Pruning and Simulation Rebuilds**
+- [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
-  *Status: Planned; handles deprecation of v1 activities, implementation of Families R-U, and contract-compliant simulation rebuilds.*
+  *Status: Delete superseded components (safe after curriculum rewired), refactor charts, rebuild 8 simulations on practice.v1. Blocked on Tracks 1+2+3.*
+
+- [ ] **Track 5: Teacher Practice Error Analysis**
+  *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
+  *Status: Misconception-tag aggregation and AI-assisted teacher interpretation. Blocked on Track 3 (teaching mode stabilizes tag generation).*
 
 ## Archive Ledger
+
+- [x] **Track: Un-authed Pages Redesign**
+  *Link: [./archive/unauthed_pages_redesign_20260322/](./archive/unauthed_pages_redesign_20260322/)*
+  *Closeout: archived on 2026-03-23 after completing the Digital Ledger theme redesign across home, curriculum, preface, and capstone pages with DB-driven content, responsive layouts, and production build verification.*
+
+- [x] **Track: Practice Production Readiness (superseded)**
+  *Link: [./archive/practice_production_readiness_20260322/](./archive/practice_production_readiness_20260322/)*
+  *Closeout: archived on 2026-03-23 — split into Practice Engine Stabilization (Phases 1-2 + Families R-U) and Practice Visual & Teaching Upgrade (Phases 3-6) for clearer dependency ordering.*
 
 - [x] **Track: Trial Balance Error Analysis Family (G)**
   *Link: [./archive/trial_balance_error_family_20260319/](./archive/trial_balance_error_family_20260319/)*
@@ -132,8 +143,4 @@ The `practice_*` split is now the governing execution sequence for Milestone 7. 
   *Link: [./archive/conductor_replan_snapshot_20260311/](./archive/conductor_replan_snapshot_20260311/)*
   *Closeout: archived on 2026-03-11 before the student/teacher Cloudflare + Convex rebaseline.*
 
----
-
-- [~] **Track: Un-authed Pages Redesign**
-  *Link: [./tracks/unauthed_pages_redesign_20260322/](./tracks/unauthed_pages_redesign_20260322/)*
 
