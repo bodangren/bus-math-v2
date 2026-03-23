@@ -28,3 +28,4 @@
 - (2026-03-20, classification_conceptual_families) Final verification is easiest when the family registry, preview samples, and plan are already aligned; archive only after lint, full test, and build all pass against the same shared practice contract surface.
 - (2026-03-23, practice_engine_stabilization_20260323) Preview copy should expose source facts and prompts, not answer-bearing legacy ids, or the dev surface leaks solved state back into the contract.
 - (2026-03-23, practice_engine_stabilization_20260323) Phase 1 closure still needs a repo-wide test pass; keep baseline failures separate from the phase artifact when they are outside the practice-engine slice.
+- (2026-03-23, curriculum_guided_independent_pairing_20260316) When an instruction phase reuses a practice family, make the worked example explicit in source and manifest tests so the intro reads as teaching, not hidden submission reuse.

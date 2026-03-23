@@ -8,6 +8,7 @@
 - Unit 1 Lesson 4 reused the same spreadsheet activity id in guided and independent practice; the independent workbook needs its own activity record instead of pointing at the guided scaffold.
 - Unit 1 Lesson 7 reused the same spreadsheet activity id in guided and independent practice; the independent balance-snapshot draft needs its own activity record and fresher draft prompt.
 - Unit 1 lessons 2, 4, and 7 now split guided and independent practice onto distinct activity ids, and the published-manifest regression suite guards the contract.
+- Unit 1 lessons 2 and 7 now surface explicit worked-example callouts in instruction so the intro phases model the reasoning before guided practice.
 - Units 2-8 currently publish authored phase sequences and lesson metadata through the curriculum manifest, but the duplicate-guided/independent drift is concentrated in the seeded Unit 1 exemplar lessons.
 
 ## Phase 1: Curriculum Audit and Mapping
@@ -38,8 +39,8 @@
   - [x] Fail when an independent definition reuses guided scaffolds or identical data
 
 - [ ] **Task: Add red tests for worked-example presence where required**
-  - [ ] Add focused curriculum assertions for units/lessons that should surface worked examples in instruction
-  - [ ] Verify worked examples remain non-blocking unless a lesson explicitly requires interaction
+  - [x] Add focused curriculum assertions for units/lessons that should surface worked examples in instruction
+  - [x] Verify worked examples remain non-blocking unless a lesson explicitly requires interaction
 
 ## Phase 3: Authored Curriculum Refactor
 
@@ -70,7 +71,7 @@
 
 - [ ] **Task: Run targeted curriculum verification**
   - [x] Run the relevant curriculum/runtime tests that cover published lessons and lesson-type requirements
-  - [ ] Run `npm run lint`
+  - [x] Run `npm run lint`
   - [x] Fix any regressions introduced by the rollout
   - [x] Run the production build gate
 

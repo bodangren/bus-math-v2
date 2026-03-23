@@ -540,6 +540,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
             }
           },
           {
+            "sectionType": "callout",
+            "content": {
+              "variant": "example",
+              "content": "**Worked Example: Prepaid Insurance vs. Deferred Revenue**\n\nIf TechStart has already paid for six months of insurance, that future coverage is still an **Asset** because the business can use it later.\n\nIf a client has paid TechStart in advance for work that has not been delivered yet, that obligation is a **Liability** because the service is still owed.\n\nThe account name alone is not enough. Ask who still has the claim."
+            }
+          },
+          {
             "sectionType": "text",
             "content": {
               "markdown": "## The Gray Zone: Tricky Accounts\n\nSome accounts look like they could go two ways. Here's how to handle the most common ones:\n\n**Prepaid Expenses** (e.g., Prepaid Insurance, Prepaid Rent)\n→ **Asset.** TechStart paid cash but hasn't used the benefit yet. The future benefit is the asset.\n\n**Deferred Revenue** (e.g., a client pays for 3 months of consulting upfront)\n→ **Liability.** TechStart received the cash but hasn't done the work. The obligation to deliver is the liability.\n\n**Accrued Wages**\n→ **Liability.** Employees worked; TechStart owes the payroll but hasn't paid yet.\n\n**Owner Drawings / Withdrawals**\n→ **Reduces Equity.** When Sarah takes money out for personal use, it lowers her equity stake.\n\n**Memory trick:** If someone else can knock on TechStart's door and demand something, it's probably a Liability. If TechStart can walk in the door and use it, it's probably an Asset."
@@ -2579,6 +2586,13 @@ export const AUTHORED_UNIT_1_LESSONS = [
             "sectionType": "text",
             "content": {
               "markdown": "## The Guided Build Walkthrough\n\n### Step 1: Create a Summary Table\n\nSomewhere below your Balance Sheet data, create a small table:\n\n| Label | Value |\n|-------|-------|\n| Total Assets | =[cell with Total Assets formula] |\n| Total Liabilities | =[cell with Total Liabilities formula] |\n\nUse cell references — don't type the numbers. This way the chart updates automatically if your data changes.\n\n### Step 2: Insert the Column Chart\n\n1. Select the two value cells (not the labels)\n2. Insert tab → Charts → 2-D Column Chart\n3. Excel creates a two-bar chart\n\n### Step 3: Format the Chart\n\n1. Click the chart title → rename to: **TechStart Financial Position — [Date]**\n2. Click a bar → right-click → Add Data Labels\n3. Click the Legend → Delete (the bars are self-explanatory)\n4. Resize the chart to fit neatly next to your Balance Sheet\n\n### Step 4: Foundational Completion\n\nUse `unit_01_foundational_build_guide.pdf` to verify the non-negotiables:\n- the Balance Sheet sections are complete\n- totals reconcile to the accounting equation\n- the chart uses linked values rather than typed numbers\n\n### Step 5: Print Layout\n\n1. Page Layout tab → Orientation: **Landscape**\n2. Margins: **Narrow**\n3. Scale: Fit to **1 page**\n4. Add a header: *TechStart Solutions | Balance Snapshot v0.9*\n5. File → Print Preview — confirm the layout looks professional\n\n### Step 6: Advanced Polish\n\nUse `unit_01_polish_guide.pdf` to add chart labels, layout hierarchy, and audience-facing notes.\n\nBelow the chart (or in a text box), add:\n\n> *TechStart Equity: $[amount] — [Date]*\n\nThis contextualizes the gap between the bars for anyone who reads the document."
+            }
+          },
+          {
+            "sectionType": "callout",
+            "content": {
+              "variant": "example",
+              "content": "**Worked Example: Reading the Gap**\n\nIf TechStart's chart shows Total Assets of **$11,960** and Total Liabilities of **$6,230**, the difference is **$5,730**.\n\nThat gap is **Equity**. It tells the reader how much of the business Sarah truly owns after creditors are accounted for."
             }
           }
         ]

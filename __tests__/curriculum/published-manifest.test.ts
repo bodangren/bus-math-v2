@@ -195,6 +195,27 @@ describe('published curriculum manifest', () => {
     expect(readLessonMarkdown(lesson11).toLowerCase()).toContain('application');
   });
 
+  it('surfaces worked-example callouts in the Unit 1 instruction phases that need them', () => {
+    const manifest = buildPublishedCurriculumManifest();
+
+    for (const slug of ['unit-1-lesson-2', 'unit-1-lesson-7'] as const) {
+      const lesson = manifest.lessons.find((entry) => entry.slug === slug);
+      expect(lesson).toBeDefined();
+
+      const instructionPhase = lesson?.phases.find((phase) => phase.phaseNumber === 2);
+      expect(instructionPhase).toBeDefined();
+
+      const exampleCallout = instructionPhase?.sections.find(
+        (section) =>
+          section.sectionType === 'callout' &&
+          (section.content as Record<string, unknown>).variant === 'example',
+      );
+
+      expect(exampleCallout, `${slug} instruction worked example`).toBeDefined();
+      expect(JSON.stringify(exampleCallout?.content)).toContain('Worked Example');
+    }
+  });
+
   it('keeps Wave 1 authored lessons aligned to the canonical archetype phase sequences', () => {
     const manifest = buildPublishedCurriculumManifest();
     const sampleLessons = [

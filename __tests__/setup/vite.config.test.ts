@@ -8,7 +8,9 @@ describe('Vite Config Initialization', () => {
     const configContent = fs.readFileSync(configPath, 'utf8');
     
     expect(configContent).toContain('import vinext from "vinext";');
-    expect(configContent).toContain('plugins: [vinext()]');
+    expect(configContent).toContain('vinext()');
+    expect(configContent).toContain('cloudflare({');
+    expect(configContent).toContain('viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] }');
   });
 
   it('should keep spreadsheet parser dependencies bundled for SSR', () => {

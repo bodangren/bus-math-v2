@@ -47,7 +47,7 @@ Strictly serial. Complete and archive each track before starting the next.
 
 - [~] **Track 2: Curriculum Guided/Independent Practice Rollout**
   *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
-  *Status: Phase 1 audit partially complete, Phase 2-3 Unit 1 exemplar done. Remaining: finish audit, roll out Units 2-8 with stable family keys (including R-U). Blocked on Track 1.*
+  *Status: Phase 1 audit partially complete, Phase 2 worked-example assertions added, and Phase 3 Unit 1 exemplar done. Remaining: finish audit, roll out Units 2-8 with stable family keys (including R-U). Blocked on Track 1.*
 
 - [ ] **Track 3: Practice Visual & Teaching Upgrade**
   *Link: [./tracks/practice_visual_teaching_upgrade_20260323/](./tracks/practice_visual_teaching_upgrade_20260323/)*
@@ -142,5 +142,4 @@ Strictly serial. Complete and archive each track before starting the next.
 - [x] **Snapshot: Pre-Replan Active Conductor Surface**
   *Link: [./archive/conductor_replan_snapshot_20260311/](./archive/conductor_replan_snapshot_20260311/)*
   *Closeout: archived on 2026-03-11 before the student/teacher Cloudflare + Convex rebaseline.*
-
 

@@ -41,6 +41,18 @@ describe('Lesson 07 seed data — Balance Snapshot with Visual (ACC-1.7)', () =>
     expect(hasChartContent, 'Phase 2 covers chart and visual communication').toBe(true);
   });
 
+  it('phase 2 includes an explicit worked example callout for the visual balance gap', () => {
+    const intro = LESSON_07_SEED_DATA.phases.find((phase) => phase.phaseNumber === 2);
+    const exampleCallout = intro?.sections.find(
+      (section) =>
+        section.sectionType === 'callout' &&
+        (section.content as Record<string, unknown>).variant === 'example',
+    );
+
+    expect(exampleCallout).toBeDefined();
+    expect(JSON.stringify(exampleCallout?.content)).toContain('Worked Example');
+  });
+
   it('Independent Practice phase (4) has a required spreadsheet activity', () => {
     const indep = LESSON_07_SEED_DATA.phases.find(p => p.phaseNumber === 4);
     expect(indep).toBeDefined();

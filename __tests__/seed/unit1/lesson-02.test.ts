@@ -31,6 +31,18 @@ describe('Lesson 02 seed data — Classify Accounts (ACC-1.2)', () => {
     expect(hasClassificationContent, 'Phase 2 intro covers A/L/E classification').toBe(true);
   });
 
+  it('phase 2 includes an explicit worked example callout for gray-zone accounts', () => {
+    const intro = LESSON_02_SEED_DATA.phases.find((phase) => phase.phaseNumber === 2);
+    const exampleCallout = intro?.sections.find(
+      (section) =>
+        section.sectionType === 'callout' &&
+        (section.content as Record<string, unknown>).variant === 'example',
+    );
+
+    expect(exampleCallout).toBeDefined();
+    expect(JSON.stringify(exampleCallout?.content)).toContain('Worked Example');
+  });
+
   it('phase 1 contains an activator question about Sarah\'s Uncle', () => {
     const hook = LESSON_02_SEED_DATA.phases.find(p => p.phaseNumber === 1);
     const textSections = hook!.sections.filter(s => s.sectionType === 'text');

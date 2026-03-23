@@ -194,6 +194,14 @@ Below the chart (or in a text box), add:
 > *TechStart Equity: $[amount] — [Date]*
 
 This contextualizes the gap between the bars for anyone who reads the document.`),
+        callout(
+          'example',
+          `**Worked Example: Reading the Gap**
+
+If TechStart's chart shows Total Assets of **$11,960** and Total Liabilities of **$6,230**, the difference is **$5,730**.
+
+That gap is **Equity**. It tells the reader how much of the business Sarah truly owns after creditors are accounted for.`,
+        ),
       ],
     },
     {

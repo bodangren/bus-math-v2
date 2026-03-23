@@ -180,6 +180,16 @@ Every account passes exactly one of these tests. If you're unsure, work through 
 | Sarah's Capital | Her original investment in TechStart |
 | Retained Earnings | Profits kept in the business from prior periods |
 | Current Month Net Income | This period's profit (before closing to retained earnings) |`),
+        callout(
+          'example',
+          `**Worked Example: Prepaid Insurance vs. Deferred Revenue**
+
+If TechStart has already paid for six months of insurance, that future coverage is still an **Asset** because the business can use it later.
+
+If a client has paid TechStart in advance for work that has not been delivered yet, that obligation is a **Liability** because the service is still owed.
+
+The account name alone is not enough. Ask who still has the claim.`,
+        ),
         text(`## The Gray Zone: Tricky Accounts
 
 Some accounts look like they could go two ways. Here's how to handle the most common ones:
