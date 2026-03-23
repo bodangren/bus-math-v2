@@ -216,6 +216,27 @@ describe('published curriculum manifest', () => {
     }
   });
 
+  it('surfaces teacher-model callouts in later authored instruction phases', () => {
+    const manifest = buildPublishedCurriculumManifest();
+
+    for (const slug of ['unit-2-lesson-1', 'unit-3-lesson-1', 'unit-5-lesson-7', 'unit-7-lesson-1'] as const) {
+      const lesson = manifest.lessons.find((entry) => entry.slug === slug);
+      expect(lesson).toBeDefined();
+
+      const instructionPhase = lesson?.phases.find((phase) => phase.phaseNumber === 2);
+      expect(instructionPhase).toBeDefined();
+
+      const exampleCallout = instructionPhase?.sections.find(
+        (section) =>
+          section.sectionType === 'callout' &&
+          (section.content as Record<string, unknown>).variant === 'example',
+      );
+
+      expect(exampleCallout, `${slug} instruction teacher model`).toBeDefined();
+      expect(JSON.stringify(exampleCallout?.content)).toContain('Worked Example');
+    }
+  });
+
   it('keeps Wave 1 authored lessons aligned to the canonical archetype phase sequences', () => {
     const manifest = buildPublishedCurriculumManifest();
     const sampleLessons = [

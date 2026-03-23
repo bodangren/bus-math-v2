@@ -15,19 +15,19 @@
 
 ### Tasks
 
-- [ ] **Task: Audit authored lesson practice-mode usage**
-  - [ ] Start from the component-family-to-lesson mapping produced by the Legacy Backfill track (Track 3) Phase 1 audit — do not duplicate that discovery work
+- [x] **Task: Audit authored lesson practice-mode usage**
+  - [x] Start from the component-family-to-lesson mapping produced by the Legacy Backfill track (Track 3) Phase 1 audit — do not duplicate that discovery work
   - [x] Scan authored and generated curriculum sources for practice activities in instruction, guided practice, independent practice, and assessment phases
   - [x] Identify lessons where guided and independent phases reuse the same activity id or materially identical props
-  - [ ] Identify lessons where a worked example or teacher model should exist in instruction but currently does not
-  - [ ] Route any newly discovered contract/persistence/component blockers back to the owning `practice_*` track before editing lesson content
+  - [x] Identify lessons where a worked example or teacher model should exist in instruction but currently does not
+  - [x] Route any newly discovered contract/persistence/component blockers back to the owning `practice_*` track before editing lesson content
   - [x] Record unit-by-unit findings in the track notes before editing authored lesson content
 
-- [ ] **Task: Map practice families to curriculum phase roles**
-  - [ ] Confirm which problem families are appropriate for worked example, guided practice, independent practice, and assessment per unit
-  - [ ] Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context
-  - [ ] Note any lessons that intentionally skip a reusable practice family
-  - [ ] Document any required curriculum exceptions before implementation begins
+- [x] **Task: Map practice families to curriculum phase roles**
+  - [x] Confirm which problem families are appropriate for worked example, guided practice, independent practice, and assessment per unit
+  - [x] Consult `conductor/BM-Accounting-Problems.pdf` and `conductor/BM-Accounting-Problems-Spec-Sheet` for accounting domain context
+  - [x] Note any lessons that intentionally skip a reusable practice family
+  - [x] Document any required curriculum exceptions before implementation begins
 
 ## Phase 2: Red Tests for Curriculum Contract Drift
 
@@ -51,15 +51,15 @@
   - [x] Introduce new ids where independent-practice definitions materially diverge from guided practice
   - [x] Verify Unit 1 remains aligned with the accepted redesign contract
 
-- [ ] **Task: Roll out authored practice modes through Units 2-4**
-  - [ ] Update lesson sources and/or generated blueprint inputs for the first wave
-  - [ ] Preserve workbook, dataset, and lesson-objective expectations while changing practice definitions
-  - [ ] Keep assessment phases aligned to lesson-type requirements
+- [x] **Task: Roll out authored practice modes through Units 2-4**
+  - [x] Update lesson sources and/or generated blueprint inputs for the first wave
+  - [x] Preserve workbook, dataset, and lesson-objective expectations while changing practice definitions
+  - [x] Keep assessment phases aligned to lesson-type requirements
 
-- [ ] **Task: Roll out authored practice modes through Units 5-8**
-  - [ ] Repeat the same contract alignment for later-wave units
-  - [ ] Remove remaining duplicate guided/independent activity pairings
-  - [ ] Document any later-unit exceptions explicitly if a problem family does not fit a unit
+- [x] **Task: Roll out authored practice modes through Units 5-8**
+  - [x] Repeat the same contract alignment for later-wave units
+  - [x] Remove remaining duplicate guided/independent activity pairings
+  - [x] Document any later-unit exceptions explicitly if a problem family does not fit a unit
 
 ## Phase 4: Publish-Surface and Manifest Verification
 
@@ -69,7 +69,7 @@
   - [x] Confirm authored lesson sources, published manifest output, and activity ids stay in sync
   - [x] Add or update regression helpers that assert mode-correct activity definitions across the rollout
 
-- [ ] **Task: Run targeted curriculum verification**
+- [x] **Task: Run targeted curriculum verification**
   - [x] Run the relevant curriculum/runtime tests that cover published lessons and lesson-type requirements
   - [x] Run `npm run lint`
   - [x] Fix any regressions introduced by the rollout
@@ -79,12 +79,12 @@
 
 ### Tasks
 
-- [ ] **Task: Spot-check representative student lesson flows**
-  - [ ] Verify at least one representative lesson per unit archetype in the student runtime
-  - [ ] Confirm instruction shows worked-example or teacher-model content where expected
-  - [ ] Confirm guided practice is scaffolded and independent practice is distinct and fresher
+- [x] **Task: Spot-check representative student lesson flows**
+  - [x] Verify at least one representative lesson per unit archetype in the student runtime
+  - [x] Confirm instruction shows worked-example or teacher-model content where expected
+  - [x] Confirm guided practice is scaffolded and independent practice is distinct and fresher
 
-- [ ] **Task: Update planning docs and close out**
-  - [ ] Update Conductor docs if any curriculum contract text changed during the rollout
-  - [ ] Record lessons learned from the practice-mode rollout
-  - [ ] Run final verification for the track scope before archival
+- [x] **Task: Update planning docs and close out**
+  - [x] Update Conductor docs if any curriculum contract text changed during the rollout
+  - [x] Record lessons learned from the practice-mode rollout
+  - [x] Run final verification for the track scope before archival

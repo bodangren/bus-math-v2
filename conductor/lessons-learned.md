@@ -29,3 +29,4 @@
 - (2026-03-23, practice_engine_stabilization_20260323) Preview copy should expose source facts and prompts, not answer-bearing legacy ids, or the dev surface leaks solved state back into the contract.
 - (2026-03-23, practice_engine_stabilization_20260323) Phase 1 closure still needs a repo-wide test pass; keep baseline failures separate from the phase artifact when they are outside the practice-engine slice.
 - (2026-03-23, curriculum_guided_independent_pairing_20260316) When an instruction phase reuses a practice family, make the worked example explicit in source and manifest tests so the intro reads as teaching, not hidden submission reuse.
+- (2026-03-24, curriculum_guided_independent_pairing_20260316) Later authored units benefit from the same explicit teacher-model callouts as the Unit 1 exemplar; otherwise the manifest can look correct while the lesson prose still feels generic.

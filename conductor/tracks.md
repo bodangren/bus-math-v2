@@ -45,23 +45,23 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/practice_engine_stabilization_20260323/](./tracks/practice_engine_stabilization_20260323/)*
   *Status: Next up. Fix 7 engine bugs, consolidate D→Q/O→Q/rebuild L, build Families R-U. Stabilizes the full family registry.*
 
-- [~] **Track 2: Curriculum Guided/Independent Practice Rollout**
-  *Link: [./tracks/curriculum_guided_independent_pairing_20260316/](./tracks/curriculum_guided_independent_pairing_20260316/)*
-  *Status: Phase 1 audit partially complete, Phase 2 worked-example assertions added, and Phase 3 Unit 1 exemplar done. Remaining: finish audit, roll out Units 2-8 with stable family keys (including R-U). Blocked on Track 1.*
-
 - [ ] **Track 3: Practice Visual & Teaching Upgrade**
   *Link: [./tracks/practice_visual_teaching_upgrade_20260323/](./tracks/practice_visual_teaching_upgrade_20260323/)*
-  *Status: Component integration, accounting visual language, teaching mode, computation-chain feedback, curriculum sequencing docs. Blocked on Tracks 1+2.*
+  *Status: Component integration, accounting visual language, teaching mode, computation-chain feedback, curriculum sequencing docs. Blocked on Track 1.*
 
 - [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
-  *Status: Delete superseded components (safe after curriculum rewired), refactor charts, rebuild 8 simulations on practice.v1. Blocked on Tracks 1+2+3.*
+  *Status: Delete superseded components (safe after curriculum rewired), refactor charts, rebuild 8 simulations on practice.v1. Blocked on Tracks 1+3.*
 
 - [ ] **Track 5: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
   *Status: Misconception-tag aggregation and AI-assisted teacher interpretation. Blocked on Track 3 (teaching mode stabilizes tag generation).*
 
 ## Archive Ledger
+
+- [x] **Track: Curriculum Guided/Independent Practice Rollout**
+  *Link: [./archive/curriculum_guided_independent_pairing_20260316/](./archive/curriculum_guided_independent_pairing_20260316/)*
+  *Closeout: archived on 2026-03-24 after rolling out explicit worked-example / teacher-model callouts through the authored Units 2-8 manifest, locking the manifest regressions, and verifying the repo with lint, full test, and production build gates.*
 
 - [x] **Track: Un-authed Pages Redesign**
   *Link: [./archive/unauthed_pages_redesign_20260322/](./archive/unauthed_pages_redesign_20260322/)*
@@ -142,4 +142,3 @@ Strictly serial. Complete and archive each track before starting the next.
 - [x] **Snapshot: Pre-Replan Active Conductor Surface**
   *Link: [./archive/conductor_replan_snapshot_20260311/](./archive/conductor_replan_snapshot_20260311/)*
   *Closeout: archived on 2026-03-11 before the student/teacher Cloudflare + Convex rebaseline.*
-

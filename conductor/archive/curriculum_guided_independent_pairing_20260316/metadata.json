@@ -1,11 +1,11 @@
 {
   "track_id": "curriculum_guided_independent_pairing_20260316",
   "type": "feature",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-03-16T12:00:00Z",
-  "updated_at": "2026-03-23T00:00:00Z",
+  "updated_at": "2026-03-24T00:00:00Z",
   "description": "Residual authored-curriculum rollout after the practice_* foundation/evidence/backfill sequence; align lesson sources and manifest expectations so instruction, guided practice, independent practice, and assessment use the finalized contract correctly",
   "estimated_tasks": 20,
-  "actual_tasks": null,
+  "actual_tasks": 20,
   "deviation_notes": "Narrowed on 2026-03-19 so this track owns authored lesson and manifest rollout only; contract definition, teacher evidence, submission persistence, and family-level component migrations now belong to the preceding practice_* tracks."
 }

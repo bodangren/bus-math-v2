@@ -452,11 +452,14 @@ function cleanAuthoringText(value: string | null | undefined): string {
     .trim();
 }
 
-function calloutSection(content: string): PublishedSection {
+function calloutSection(
+  content: string,
+  variant: 'why-this-matters' | 'example' = 'why-this-matters',
+): PublishedSection {
   return {
     sectionType: 'callout',
     content: {
-      variant: 'why-this-matters',
+      variant,
       content,
     },
   };
@@ -809,6 +812,10 @@ function buildWave1PhaseSections(
         textSection(
           `## What strong work looks like\n\nStudents should leave this phase ready to build ${formativeProduct.toLowerCase()} without losing sight of the unit deliverable.`,
         ),
+        calloutSection(
+          `Worked Example: model one complete ${accountingFocus.toLowerCase()} step with the class before students try ${guidedPractice || title.toLowerCase()} on their own.`,
+          'example',
+        ),
       ];
     case 'guided_practice':
       return [
@@ -1002,6 +1009,10 @@ function buildWave2PhaseSections(
           textSection(
             `## What strong work looks like\n\nStudents should leave this phase ready to build ${formativeProduct.toLowerCase()} without losing sight of the unit deliverable.`,
           ),
+          calloutSection(
+            `Worked Example: model one complete ${accountingFocus.toLowerCase()} step with the class before students try ${guidedPractice || title.toLowerCase()} on their own.`,
+            'example',
+          ),
         ];
       case 'guided_practice':
         return [
@@ -1068,6 +1079,10 @@ function buildWave2PhaseSections(
           ),
           calloutSection(
             `Lesson 7 is the canonical scaffold. Students should keep the same workbook structure for the group sprint that follows.`,
+          ),
+          calloutSection(
+            `Worked Example: demonstrate the full class build with ${unitBlueprint.classDataset} and ${unitBlueprint.guidedWorkbook} so every later team can reuse the same structure.`,
+            'example',
           ),
         ];
       case 'guided_practice':
