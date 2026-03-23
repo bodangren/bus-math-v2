@@ -92,7 +92,7 @@ export function AccountCategorization({ activity, onSubmit }: AccountCategorizat
         whyItMatters: category.whyItMatters,
         emoji: category.emoji,
       }))}
-      showHintsByDefault={activity.props.showHintsByDefault}
+      mode={practiceMode}
       shuffleItems={activity.props.shuffleItems}
       resetKey={activity.id}
       onComplete={handleCompletion}

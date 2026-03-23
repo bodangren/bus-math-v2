@@ -51,7 +51,12 @@ describe('StatementLayout', () => {
             ],
           },
         ]}
-        metadataBadges={[{ label: 'Balance sheet', variant: 'secondary' }]}
+        scenarioPanel={
+          <div className="rounded-lg border bg-muted/20 p-3">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Scenario</div>
+            <div>Panel note: complete the missing amount after reading the section totals.</div>
+          </div>
+        }
         scaffoldText="Use the section totals to complete the missing amount."
         reviewSummary={[
           { label: 'Attempt', value: '1' },
@@ -66,8 +71,7 @@ describe('StatementLayout', () => {
       />,
     );
 
-    expect(screen.getByText('Balance sheet')).toBeInTheDocument();
-    expect(screen.getByText('Use the section totals to complete the missing amount.')).toBeInTheDocument();
+    expect(screen.getByText('Panel note: complete the missing amount after reading the section totals.')).toBeInTheDocument();
     expect(screen.getByText('Attempt')).toBeInTheDocument();
     expect(screen.getByText('0/1')).toBeInTheDocument();
     expect(screen.getAllByText('Total assets should equal the section total.')[0]).toBeInTheDocument();

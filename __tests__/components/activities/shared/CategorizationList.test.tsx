@@ -22,6 +22,26 @@ const dragToZone = (itemId: string, zoneId: string) =>
   });
 
 describe('CategorizationList', () => {
+  it('shows hints based on mode without rendering a toggle', () => {
+    render(
+      <CategorizationList
+        title="Guided categorization"
+        mode="guided_practice"
+        readOnly
+        items={[
+          { id: 'cash', label: 'Cash', description: 'Asset', targetId: 'assets', details: { tip: 'cash is a resource' } },
+        ]}
+        zones={[
+          { id: 'assets', label: 'Assets', description: 'Resources', emoji: '💼', whyItMatters: 'Resources belong on the left.' },
+        ]}
+      />,
+    );
+
+    expect(screen.queryByLabelText(/show context hints/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/cash is a resource/i)).toBeInTheDocument();
+    expect(screen.getByText(/resources belong on the left/i)).toBeInTheDocument();
+  });
+
   it('completes a generic drag-and-drop review', async () => {
     const onComplete = vi.fn();
 
@@ -53,6 +73,25 @@ describe('CategorizationList', () => {
         }),
       );
     });
+  });
+
+  it('hides hints for independent practice mode', () => {
+    render(
+      <CategorizationList
+        title="Independent categorization"
+        mode="independent_practice"
+        readOnly
+        items={[
+          { id: 'cash', label: 'Cash', description: 'Asset', targetId: 'assets', details: { tip: 'cash is a resource' } },
+        ]}
+        zones={[
+          { id: 'assets', label: 'Assets', description: 'Resources', emoji: '💼', whyItMatters: 'Resources belong on the left.' },
+        ]}
+      />,
+    );
+
+    expect(screen.queryByText(/cash is a resource/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/resources belong on the left/i)).not.toBeInTheDocument();
   });
 
   it('supports keyboard-friendly move controls', async () => {

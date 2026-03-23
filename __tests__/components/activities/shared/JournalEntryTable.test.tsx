@@ -8,6 +8,12 @@ describe('JournalEntryTable', () => {
     render(
       <JournalEntryTable
         title="Journal entry"
+        scenarioPanel={
+          <div className="rounded-lg border bg-muted/20 p-3">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Scenario</div>
+            <div>Record the journal lines in canonical order.</div>
+          </div>
+        }
         availableAccounts={[
           { id: 'cash', label: 'Cash' },
           { id: 'revenue', label: 'Revenue' },
@@ -20,6 +26,7 @@ describe('JournalEntryTable', () => {
       />,
     );
 
+    expect(screen.getByText('Record the journal lines in canonical order.')).toBeInTheDocument();
     expect(screen.getByText(/journal entry balances/i)).toBeInTheDocument();
     expect(screen.getAllByText('Cash').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Revenue').length).toBeGreaterThan(0);

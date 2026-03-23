@@ -879,7 +879,7 @@ export default function PracticePreviewPage() {
               items={familyAItems.map((item) => ({ ...item }))}
               zones={familyACategories.map((category) => ({ ...category }))}
               shuffleItems={false}
-              showHintsByDefault={false}
+              mode="independent_practice"
             />
 
             <CategorizationList
@@ -889,6 +889,7 @@ export default function PracticePreviewPage() {
               zones={familyACategories.map((category) => ({ ...category }))}
               readOnly
               teacherView
+              mode="teaching"
               reviewPlacements={familyATeacherPlacements}
               reviewFeedback={familyATeacherFeedback}
               submissionSummary={{
@@ -897,7 +898,6 @@ export default function PracticePreviewPage() {
                 submittedAt: '2026-03-20 09:15',
                 misconceptionCount: 2,
               }}
-              showHintsByDefault
             />
           </div>
         </section>
@@ -948,25 +948,6 @@ export default function PracticePreviewPage() {
             </p>
           </div>
 
-          <div className="grid gap-4 rounded-2xl border bg-slate-50/80 p-4">
-            <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
-              <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.scenario}</div>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What was missed</div>
-              <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.missedAdjustment}</div>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Assumption</div>
-              <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.periodEndAssumption}</div>
-            </div>
-          </div>
-
-          <p className="text-xs text-slate-500">
-            Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements.
-          </p>
-
           <div className="grid gap-6 xl:grid-cols-2">
             <SelectionMatrix
               title="Family K Guided Practice"
@@ -974,6 +955,21 @@ export default function PracticePreviewPage() {
               rows={adjustmentEffectsDefinition.rows}
               columns={adjustmentEffectsDefinition.columns}
               defaultValue={adjustmentEffectsSolution}
+              scenarioPanel={
+                <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                  <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.scenario}</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What was missed</div>
+                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.missedAdjustment}</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Assumption</div>
+                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.periodEndAssumption}</div>
+                  </div>
+                  <p className="mt-3 text-xs text-slate-500">
+                    Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements.
+                  </p>
+                </div>
+              }
             />
 
             <SelectionMatrix
@@ -993,6 +989,21 @@ export default function PracticePreviewPage() {
                   Object.values(adjustmentEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
                 ).size,
               }}
+              scenarioPanel={
+                <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                  <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.scenario}</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What was missed</div>
+                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.missedAdjustment}</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Assumption</div>
+                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.periodEndAssumption}</div>
+                  </div>
+                  <p className="mt-3 text-xs text-slate-500">
+                    Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements.
+                  </p>
+                </div>
+              }
             />
           </div>
         </section>
@@ -1065,21 +1076,6 @@ export default function PracticePreviewPage() {
                 </p>
               </div>
 
-              <div className="grid gap-4 rounded-2xl border bg-white/90 p-4">
-                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
-                  <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.narrative}</div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Amount</div>
-                  <div className="text-sm text-slate-700">{formatAccountingAmount(transactionEffectsDefinition.event.amount)}</div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Why equity changes</div>
-                  <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.equityReason}</div>
-                </div>
-              </div>
-
               <div className="grid gap-6 xl:grid-cols-2">
                 <SelectionMatrix
                   title="Family C Guided Practice"
@@ -1087,6 +1083,18 @@ export default function PracticePreviewPage() {
                   rows={transactionEffectsDefinition.rows}
                   columns={transactionEffectsDefinition.columns}
                   defaultValue={transactionEffectsMatrixValue}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
+                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.narrative}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Amount</div>
+                        <div className="text-sm text-slate-700">{formatAccountingAmount(transactionEffectsDefinition.event.amount)}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Why equity changes</div>
+                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.equityReason}</div>
+                      </div>
+                    </div>
+                  }
                 />
 
                 <SelectionMatrix
@@ -1106,6 +1114,18 @@ export default function PracticePreviewPage() {
                       Object.values(transactionEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
                     ).size,
                   }}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
+                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.narrative}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Amount</div>
+                        <div className="text-sm text-slate-700">{formatAccountingAmount(transactionEffectsDefinition.event.amount)}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Why equity changes</div>
+                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.equityReason}</div>
+                      </div>
+                    </div>
+                  }
                 />
               </div>
             </div>
@@ -1119,33 +1139,28 @@ export default function PracticePreviewPage() {
                 </p>
               </div>
 
-              <div className="grid gap-4 rounded-2xl border bg-white/90 p-4">
-                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
-                  <div className="text-sm text-slate-700">{transactionMatrixScenario.narrative}</div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business context</div>
-                  <div className="text-sm text-slate-700">
-                    {transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}
-                  </div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Source document clue</div>
-                  <div className="text-sm text-slate-700">{transactionMatrixScenario.tags.join(' • ')}</div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
-                  <div className="text-sm text-slate-700">{transactionMatrixReason}</div>
-                </div>
-              </div>
-
               <SelectionMatrix
                 title="Family F Guided Practice"
                 description="Select the reasoning stage that matches each row."
                 rows={transactionMatrixDefinition.rows}
                 columns={transactionMatrixDefinition.columns}
                 defaultValue={transactionMatrixMatrixValue}
+                scenarioPanel={
+                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
+                      <div className="text-sm text-slate-700">{transactionMatrixScenario.narrative}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business context</div>
+                      <div className="text-sm text-slate-700">
+                        {transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}
+                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Source document clue</div>
+                      <div className="text-sm text-slate-700">{transactionMatrixScenario.tags.join(' • ')}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
+                      <div className="text-sm text-slate-700">{transactionMatrixReason}</div>
+                    </div>
+                  </div>
+                }
               />
 
               <SelectionMatrix
@@ -1165,6 +1180,22 @@ export default function PracticePreviewPage() {
                     Object.values(transactionMatrixFeedback).flatMap((feedback) => feedback.misconceptionTags ?? []),
                   ).size,
                 }}
+                scenarioPanel={
+                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
+                      <div className="text-sm text-slate-700">{transactionMatrixScenario.narrative}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business context</div>
+                      <div className="text-sm text-slate-700">
+                        {transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}
+                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Source document clue</div>
+                      <div className="text-sm text-slate-700">{transactionMatrixScenario.tags.join(' • ')}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
+                      <div className="text-sm text-slate-700">{transactionMatrixReason}</div>
+                    </div>
+                  </div>
+                }
               />
             </div>
           </div>
@@ -1182,32 +1213,30 @@ export default function PracticePreviewPage() {
 
           <div className="grid gap-6 xl:grid-cols-2">
             <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">Expected lines: {journalEntryDefinition.expectedLineCount}</Badge>
-                <Badge variant="secondary">Mode: Guided practice</Badge>
-                <Badge variant="default">Balanced</Badge>
-                <Badge variant="outline">Dates: {journalEntryDefinition.scenario.dates.join(' • ')}</Badge>
-              </div>
-
-              <div className="grid gap-2 rounded-2xl border bg-white/90 p-4">
-                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
-                  <div className="text-sm text-slate-700">{journalEntryDefinition.scenario.narrative}</div>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
-                  <div className="text-sm text-slate-700">
-                    The date column keeps the original sale, the return and allowance, and the final collection separate.
-                  </div>
-                </div>
-              </div>
-
               <JournalEntryTable
                 title="Family H Guided Practice"
                 description="Record the journal lines in canonical order. The balance strip stays visible below the table."
                 availableAccounts={journalEntryDefinition.availableAccounts}
                 expectedLineCount={journalEntryDefinition.expectedLineCount}
                 defaultValue={journalEntrySolution}
+                scenarioPanel={
+                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary">Expected lines: {journalEntryDefinition.expectedLineCount}</Badge>
+                      <Badge variant="secondary">Mode: Guided practice</Badge>
+                      <Badge variant="default">Balanced</Badge>
+                      <Badge variant="outline">Dates: {journalEntryDefinition.scenario.dates.join(' • ')}</Badge>
+                    </div>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                      <div className="text-sm text-slate-700">{journalEntryDefinition.scenario.narrative}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                      <div className="text-sm text-slate-700">
+                        The date column keeps the original sale, the return and allowance, and the final collection separate.
+                      </div>
+                    </div>
+                  </div>
+                }
               />
             </div>
 
@@ -1238,6 +1267,24 @@ export default function PracticePreviewPage() {
                 readOnly
                 teacherView
                 rowFeedback={journalEntryRowFeedback}
+                scenarioPanel={
+                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="secondary">Expected lines: {journalEntryDefinition.expectedLineCount}</Badge>
+                      <Badge variant="secondary">Mode: Guided practice</Badge>
+                      <Badge variant="default">Balanced</Badge>
+                      <Badge variant="outline">Dates: {journalEntryDefinition.scenario.dates.join(' • ')}</Badge>
+                    </div>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                      <div className="text-sm text-slate-700">{journalEntryDefinition.scenario.narrative}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                      <div className="text-sm text-slate-700">
+                        The date column keeps the original sale, the return and allowance, and the final collection separate.
+                      </div>
+                    </div>
+                  </div>
+                }
               />
             </div>
           </div>
@@ -1589,7 +1636,6 @@ export default function PracticePreviewPage() {
             statementConstructionStudentResponse,
             statementConstructionGradeResult,
           );
-          const statementConstructionBlankCount = statementConstructionDefinition.parts.length;
           const statementConstructionReviewCount = Object.values(statementConstructionFeedback).filter(
             (feedback) => feedback?.status !== 'correct',
           ).length;
@@ -1604,41 +1650,37 @@ export default function PracticePreviewPage() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  <span>{statementConstructionDefinition.scaffolding.bankLabel}</span>
-                  <span>•</span>
-                  <span>{statementConstructionDefinition.scaffolding.statementLabel}</span>
-                  <span>•</span>
-                  <span>Seed 2026</span>
-                  <span>•</span>
-                  <span>{statementConstructionDefinition.miniLedger.companyType}</span>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {statementConstructionDefinition.accountBank.map((item) => (
-                    <Badge
-                      key={`${item.id}-${item.included ? 'included' : 'distractor'}`}
-                      variant={item.included ? 'secondary' : 'outline'}
-                      className="gap-1.5"
-                    >
-                      <span>{item.label}</span>
-                      <span className="text-[11px] font-normal opacity-80">{formatAccountingAmount(item.amount)}</span>
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
               <div className="grid gap-6 xl:grid-cols-2">
                 <StatementLayout
                   title="Family E Guided Practice"
                   description="Type the account names in the left-side blanks and complete the subtotals on the right."
                   sections={statementConstructionDefinition.sections}
                   defaultValues={Object.fromEntries(statementConstructionDefinition.parts.map((part) => [part.id, '']))}
-                  metadataBadges={[
-                    { label: statementConstructionDefinition.scaffolding.statementLabel, variant: 'secondary' },
-                    { label: `${statementConstructionBlankCount} blanks`, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        <span>{statementConstructionDefinition.scaffolding.bankLabel}</span>
+                        <span>•</span>
+                        <span>{statementConstructionDefinition.scaffolding.statementLabel}</span>
+                        <span>•</span>
+                        <span>Seed 2026</span>
+                        <span>•</span>
+                        <span>{statementConstructionDefinition.miniLedger.companyType}</span>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {statementConstructionDefinition.accountBank.map((item) => (
+                          <Badge
+                            key={`${item.id}-${item.included ? 'included' : 'distractor'}`}
+                            variant={item.included ? 'secondary' : 'outline'}
+                            className="gap-1.5"
+                          >
+                            <span>{item.label}</span>
+                            <span className="text-[11px] font-normal opacity-80">{formatAccountingAmount(item.amount)}</span>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  }
                   scaffoldText={statementConstructionDefinition.scaffolding.guidance}
                 />
 
@@ -1651,11 +1693,31 @@ export default function PracticePreviewPage() {
                   )}
                   readOnly
                   teacherView
-                  metadataBadges={[
-                    { label: statementConstructionDefinition.scaffolding.statementLabel, variant: 'secondary' },
-                    { label: `${statementConstructionBlankCount} blanks`, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        <span>{statementConstructionDefinition.scaffolding.bankLabel}</span>
+                        <span>•</span>
+                        <span>{statementConstructionDefinition.scaffolding.statementLabel}</span>
+                        <span>•</span>
+                        <span>Seed 2026</span>
+                        <span>•</span>
+                        <span>{statementConstructionDefinition.miniLedger.companyType}</span>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {statementConstructionDefinition.accountBank.map((item) => (
+                          <Badge
+                            key={`${item.id}-${item.included ? 'included' : 'distractor'}`}
+                            variant={item.included ? 'secondary' : 'outline'}
+                            className="gap-1.5"
+                          >
+                            <span>{item.label}</span>
+                            <span className="text-[11px] font-normal opacity-80">{formatAccountingAmount(item.amount)}</span>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  }
                   scaffoldText={statementConstructionDefinition.scaffolding.guidance}
                   reviewSummary={[
                     { label: 'Attempt', value: '1' },
@@ -1718,11 +1780,18 @@ export default function PracticePreviewPage() {
                   description="Complete the missing subtotal lines after reading the prefilled statement rows."
                   sections={statementSubtotalsDefinition.sections}
                   defaultValues={Object.fromEntries(statementSubtotalsDefinition.parts.map((part) => [part.id, '']))}
-                  metadataBadges={[
-                    { label: statementSubtotalsDefinition.scaffolding.statementLabel, variant: 'secondary' },
-                    { label: `${statementSubtotalsBlankCount} blanks`, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Statement type</div>
+                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.statementLabel}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Blanks</div>
+                        <div className="text-sm text-slate-700">{statementSubtotalsBlankCount}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.guidance}</div>
+                      </div>
+                    </div>
+                  }
                   scaffoldText={statementSubtotalsDefinition.scaffolding.guidance}
                 />
 
@@ -1737,11 +1806,18 @@ export default function PracticePreviewPage() {
                   )}
                   readOnly
                   teacherView
-                  metadataBadges={[
-                    { label: statementSubtotalsDefinition.scaffolding.statementLabel, variant: 'secondary' },
-                    { label: `${statementSubtotalsBlankCount} blanks`, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Statement type</div>
+                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.statementLabel}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Blanks</div>
+                        <div className="text-sm text-slate-700">{statementSubtotalsBlankCount}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
+                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.guidance}</div>
+                      </div>
+                    </div>
+                  }
                   scaffoldText={statementSubtotalsDefinition.scaffolding.guidance}
                   reviewSummary={[
                     { label: 'Attempt', value: '1' },
@@ -1782,11 +1858,19 @@ export default function PracticePreviewPage() {
                   },
                 ]}
                 defaultValues={Object.fromEntries(adjustingCalculationsNumericRows.map((row) => [row.id, '']))}
-                metadataBadges={[
-                  { label: adjustingCalculationsCalculationDefinition.scenario.kind.replace(/-/g, ' '), variant: 'secondary' },
-                  { label: adjustingCalculationsCalculationDefinition.scaffolding.modeLabel, variant: 'outline' },
-                  { label: 'guided practice', variant: 'outline' },
-                ]}
+                scenarioPanel={
+                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsCalculationDefinition.scenario.stem}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Adjustment amount</div>
+                      <div className="text-sm text-slate-700">{formatAccountingAmount(adjustingCalculationsCalculationDefinition.scenario.amount)}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mode</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsCalculationDefinition.scaffolding.modeLabel}</div>
+                    </div>
+                    <p className="mt-3 text-sm text-slate-700">{adjustingCalculationsCalculationDefinition.scaffolding.bridgeText}</p>
+                  </div>
+                }
                 scaffoldText={adjustingCalculationsCalculationDefinition.scaffolding.bridgeText}
               />
 
@@ -1809,11 +1893,19 @@ export default function PracticePreviewPage() {
                 )}
                 readOnly
                 teacherView
-                metadataBadges={[
-                  { label: adjustingCalculationsCalculationDefinition.scenario.kind.replace(/-/g, ' '), variant: 'secondary' },
-                  { label: adjustingCalculationsCalculationDefinition.scaffolding.modeLabel, variant: 'outline' },
-                  { label: 'teacher review', variant: 'outline' },
-                ]}
+                scenarioPanel={
+                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsCalculationDefinition.scenario.stem}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Adjustment amount</div>
+                      <div className="text-sm text-slate-700">{formatAccountingAmount(adjustingCalculationsCalculationDefinition.scenario.amount)}</div>
+                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mode</div>
+                      <div className="text-sm text-slate-700">{adjustingCalculationsCalculationDefinition.scaffolding.modeLabel}</div>
+                    </div>
+                    <p className="mt-3 text-sm text-slate-700">{adjustingCalculationsCalculationDefinition.scaffolding.bridgeText}</p>
+                  </div>
+                }
                 scaffoldText={adjustingCalculationsCalculationDefinition.scaffolding.bridgeText}
                 reviewSummary={[
                   { label: 'Attempt', value: '1' },
@@ -1839,35 +1931,29 @@ export default function PracticePreviewPage() {
 
             <div className="grid gap-6 xl:grid-cols-2">
               <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Amount to record: {formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)}</Badge>
-                  <Badge variant="secondary">{adjustingCalculationsEntryDefinition.presentation}</Badge>
-                  <Badge variant="outline">{adjustingCalculationsEntryDefinition.scenario.reportingDate}</Badge>
-                </div>
-
-                <Card>
-                  <CardHeader className="space-y-2">
-                    <CardTitle className="text-lg">Adjustment facts</CardTitle>
-                    <CardDescription>{adjustingCalculationsEntryDefinition.scenario.stem}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Bridge</div>
-                      <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.bridgeText}</div>
-                    </div>
-                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mode</div>
-                      <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.modeLabel}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-
                 <JournalEntryTable
                   title="Family J Guided Entry"
                   description="Record the adjusting entry after computing the amount."
                   availableAccounts={adjustingCalculationsEntryDefinition.availableAccounts}
                   expectedLineCount={adjustingCalculationsEntryDefinition.entryLines.length}
                   defaultValue={Object.values(adjustingCalculationsEntrySolution)}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">Amount to record: {formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)}</Badge>
+                        <Badge variant="secondary">{adjustingCalculationsEntryDefinition.presentation}</Badge>
+                        <Badge variant="outline">{adjustingCalculationsEntryDefinition.scenario.reportingDate}</Badge>
+                      </div>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                        <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scenario.stem}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Bridge</div>
+                        <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.bridgeText}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mode</div>
+                        <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.modeLabel}</div>
+                      </div>
+                    </div>
+                  }
                 />
               </div>
 
@@ -1906,6 +1992,23 @@ export default function PracticePreviewPage() {
                   readOnly
                   teacherView
                   rowFeedback={adjustingCalculationsEntryRowFeedback}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">Amount to record: {formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)}</Badge>
+                        <Badge variant="secondary">{adjustingCalculationsEntryDefinition.presentation}</Badge>
+                        <Badge variant="outline">{adjustingCalculationsEntryDefinition.scenario.reportingDate}</Badge>
+                      </div>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
+                        <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scenario.stem}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Bridge</div>
+                        <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.bridgeText}</div>
+                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Mode</div>
+                        <div className="text-sm text-slate-700">{adjustingCalculationsEntryDefinition.scaffolding.modeLabel}</div>
+                      </div>
+                    </div>
+                  }
                 />
               </div>
             </div>
@@ -1923,28 +2026,6 @@ export default function PracticePreviewPage() {
 
           <div className="space-y-6">
             <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{depreciationPresentationDirectDefinition.layout}</Badge>
-                <Badge variant="secondary">{depreciationPresentationDirectDefinition.scenario.assetCategory}</Badge>
-                <Badge variant="outline">{depreciationPresentationDirectDefinition.scaffolding.sectionLabel}</Badge>
-              </div>
-
-              <Card>
-                <CardHeader className="space-y-2">
-                  <CardTitle className="text-lg">Asset register</CardTitle>
-                  <CardDescription>{depreciationPresentationDirectDefinition.scaffolding.registerCue}</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {depreciationPresentationDirectDefinition.assetRegister.map((item) => (
-                    <div key={item.id} className="rounded-xl border bg-background/90 p-3">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
-                      <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
-                      {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
               <div className="grid gap-6 xl:grid-cols-2">
                 <StatementLayout
                   title="Family N Guided Practice"
@@ -1953,11 +2034,25 @@ export default function PracticePreviewPage() {
                   defaultValues={Object.fromEntries(
                     depreciationPresentationDirectDefinition.rows.filter((row) => row.kind === 'editable').map((row) => [row.id, '']),
                   )}
-                  metadataBadges={[
-                    { label: depreciationPresentationDirectDefinition.scenario.assetCategory, variant: 'secondary' },
-                    { label: depreciationPresentationDirectDefinition.layout, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">{depreciationPresentationDirectDefinition.layout}</Badge>
+                        <Badge variant="secondary">{depreciationPresentationDirectDefinition.scenario.assetCategory}</Badge>
+                        <Badge variant="outline">{depreciationPresentationDirectDefinition.scaffolding.sectionLabel}</Badge>
+                      </div>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        {depreciationPresentationDirectDefinition.assetRegister.map((item) => (
+                          <div key={item.id} className="rounded-xl border bg-background/90 p-3">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                            <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
+                            {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-3 text-sm text-slate-700">{depreciationPresentationDirectDefinition.scaffolding.registerCue}</p>
+                    </div>
+                  }
                   scaffoldText={depreciationPresentationDirectDefinition.scaffolding.registerCue}
                 />
 
@@ -1972,11 +2067,25 @@ export default function PracticePreviewPage() {
                   )}
                   readOnly
                   teacherView
-                  metadataBadges={[
-                    { label: depreciationPresentationDirectDefinition.scenario.assetCategory, variant: 'secondary' },
-                    { label: depreciationPresentationDirectDefinition.layout, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">{depreciationPresentationDirectDefinition.layout}</Badge>
+                        <Badge variant="secondary">{depreciationPresentationDirectDefinition.scenario.assetCategory}</Badge>
+                        <Badge variant="outline">{depreciationPresentationDirectDefinition.scaffolding.sectionLabel}</Badge>
+                      </div>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        {depreciationPresentationDirectDefinition.assetRegister.map((item) => (
+                          <div key={item.id} className="rounded-xl border bg-background/90 p-3">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                            <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
+                            {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-3 text-sm text-slate-700">{depreciationPresentationDirectDefinition.scaffolding.registerCue}</p>
+                    </div>
+                  }
                   scaffoldText={depreciationPresentationDirectDefinition.scaffolding.registerCue}
                   reviewSummary={[
                     { label: 'Attempt', value: '1' },
@@ -2002,33 +2111,6 @@ export default function PracticePreviewPage() {
             </div>
 
             <div className="space-y-4 rounded-2xl border bg-slate-50/80 p-4">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{depreciationPresentationDerivedDefinition.layout}</Badge>
-                <Badge variant="secondary">{depreciationPresentationDerivedDefinition.scenario.assetCategory}</Badge>
-                <Badge variant="outline">{depreciationPresentationDerivedDefinition.scaffolding.sectionLabel}</Badge>
-              </div>
-
-              <Card>
-                <CardHeader className="space-y-2">
-                  <CardTitle className="text-lg">Asset register cue</CardTitle>
-                  <CardDescription>{depreciationPresentationDerivedDefinition.scaffolding.registerCue}</CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {depreciationPresentationDerivedDefinition.assetRegister.map((item) => (
-                    <div key={item.id} className="rounded-xl border bg-background/90 p-3">
-                      <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
-                      <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
-                      {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
-                    </div>
-                  ))}
-                  <div className="rounded-xl border border-dashed border-slate-300 bg-white/80 p-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Compute first</div>
-                    <div className="mt-1 text-sm font-medium text-slate-800">Compute accumulated depreciation.</div>
-                    <div className="mt-1 text-xs text-slate-500">Use that amount to present the asset at net book value.</div>
-                  </div>
-                </CardContent>
-              </Card>
-
               <div className="grid gap-6 xl:grid-cols-2">
                 <StatementLayout
                   title="Family N Guided Practice"
@@ -2037,11 +2119,29 @@ export default function PracticePreviewPage() {
                   defaultValues={Object.fromEntries(
                     depreciationPresentationDerivedDefinition.rows.filter((row) => row.kind === 'editable').map((row) => [row.id, '']),
                   )}
-                  metadataBadges={[
-                    { label: depreciationPresentationDerivedDefinition.scenario.assetCategory, variant: 'secondary' },
-                    { label: depreciationPresentationDerivedDefinition.layout, variant: 'outline' },
-                    { label: 'guided practice', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">{depreciationPresentationDerivedDefinition.layout}</Badge>
+                        <Badge variant="secondary">{depreciationPresentationDerivedDefinition.scenario.assetCategory}</Badge>
+                        <Badge variant="outline">{depreciationPresentationDerivedDefinition.scaffolding.sectionLabel}</Badge>
+                      </div>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        {depreciationPresentationDerivedDefinition.assetRegister.map((item) => (
+                          <div key={item.id} className="rounded-xl border bg-background/90 p-3">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                            <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
+                            {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
+                          </div>
+                        ))}
+                        <div className="rounded-xl border border-dashed border-slate-300 bg-white/80 p-3">
+                          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Compute first</div>
+                          <div className="mt-1 text-sm font-medium text-slate-800">Compute accumulated depreciation.</div>
+                          <div className="mt-1 text-xs text-slate-500">Use that amount to present the asset at net book value.</div>
+                        </div>
+                      </div>
+                    </div>
+                  }
                   scaffoldText={depreciationPresentationDerivedDefinition.scaffolding.registerCue}
                 />
 
@@ -2056,11 +2156,29 @@ export default function PracticePreviewPage() {
                   )}
                   readOnly
                   teacherView
-                  metadataBadges={[
-                    { label: depreciationPresentationDerivedDefinition.scenario.assetCategory, variant: 'secondary' },
-                    { label: depreciationPresentationDerivedDefinition.layout, variant: 'outline' },
-                    { label: 'teacher review', variant: 'outline' },
-                  ]}
+                  scenarioPanel={
+                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary">{depreciationPresentationDerivedDefinition.layout}</Badge>
+                        <Badge variant="secondary">{depreciationPresentationDerivedDefinition.scenario.assetCategory}</Badge>
+                        <Badge variant="outline">{depreciationPresentationDerivedDefinition.scaffolding.sectionLabel}</Badge>
+                      </div>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        {depreciationPresentationDerivedDefinition.assetRegister.map((item) => (
+                          <div key={item.id} className="rounded-xl border bg-background/90 p-3">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                            <div className="mt-1 text-sm font-medium text-slate-800">{formatAccountingAmount(item.value)}</div>
+                            {item.note && <div className="mt-1 text-xs text-slate-500">{item.note}</div>}
+                          </div>
+                        ))}
+                        <div className="rounded-xl border border-dashed border-slate-300 bg-white/80 p-3">
+                          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Compute first</div>
+                          <div className="mt-1 text-sm font-medium text-slate-800">Compute accumulated depreciation.</div>
+                          <div className="mt-1 text-xs text-slate-500">Use that amount to present the asset at net book value.</div>
+                        </div>
+                      </div>
+                    </div>
+                  }
                   scaffoldText={depreciationPresentationDerivedDefinition.scaffolding.registerCue}
                   reviewSummary={[
                     { label: 'Attempt', value: '1' },
@@ -2429,8 +2547,8 @@ export default function PracticePreviewPage() {
               { id: 'expenses', label: 'Expenses', description: 'Outflows and costs', emoji: '📉' },
             ]}
             readOnly
+            mode="teaching"
             reviewPlacements={categorizationPlacements}
-            showHintsByDefault
           />
         </div>
       </div>

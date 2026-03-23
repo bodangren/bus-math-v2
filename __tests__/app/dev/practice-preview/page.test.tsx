@@ -65,7 +65,7 @@ describe('practice preview page', () => {
       expect(screen.getByText(/statement layout/i)).toBeInTheDocument();
       expect(screen.getByText(/family e preview/i)).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /statement construction workbook/i })).toBeInTheDocument();
-      expect(screen.getByText(/account bank/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/account bank/i).length).toBeGreaterThan(0);
       expect(screen.getByText(/family e guided practice/i)).toBeInTheDocument();
       expect(screen.getByText(/family e teacher review/i)).toBeInTheDocument();
       expect(screen.getByText(/family q preview/i)).toBeInTheDocument();
@@ -80,7 +80,7 @@ describe('practice preview page', () => {
       expect(screen.getByRole('heading', { name: /depreciation presentation/i })).toBeInTheDocument();
       expect(screen.getAllByText(/family n guided practice/i)).toHaveLength(2);
       expect(screen.getAllByText(/family n teacher review/i)).toHaveLength(2);
-      const familyNCueHeading = screen.getByText(/compute first/i);
+      const familyNCueHeading = screen.getAllByText(/compute first/i)[0];
       const familyNCueCard = familyNCueHeading.closest('div')?.parentElement?.parentElement;
       expect(familyNCueCard).toBeTruthy();
       if (familyNCueCard) {

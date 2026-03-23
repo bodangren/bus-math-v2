@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,6 +43,7 @@ export interface SelectionMatrixProps {
   description?: string;
   rows: SelectionMatrixRow[];
   columns: SelectionMatrixColumn[];
+  scenarioPanel?: ReactNode;
   defaultValue?: Record<string, string | string[]>;
   value?: Record<string, string | string[]>;
   onValueChange?: (value: Record<string, string | string[]>) => void;
@@ -93,6 +94,7 @@ export function SelectionMatrix({
   description,
   rows,
   columns,
+  scenarioPanel,
   defaultValue,
   value,
   onValueChange,
@@ -258,6 +260,7 @@ export function SelectionMatrix({
           <CardTitle className="text-2xl">{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
+        {scenarioPanel && <div className="space-y-3">{scenarioPanel}</div>}
         {teacherView && (
           <div className="grid gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-2 xl:grid-cols-4">
             <Badge variant="secondary" className="justify-start gap-2">

@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import { HelpCircle, RotateCcw, Target } from 'lucide-react';
+import { RotateCcw, Target } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,11 +49,14 @@ export interface CategorizationListReviewSummary {
   misconceptionCount?: number;
 }
 
+export type CategorizationListMode = 'guided_practice' | 'independent_practice' | 'assessment' | 'teaching';
+
 export interface CategorizationListProps<T extends CategorizationListItem> {
   title: string;
   description?: string;
   items: T[];
   zones: CategorizationListZone[];
+  mode?: CategorizationListMode;
   showHintsByDefault?: boolean;
   shuffleItems?: boolean;
   resetKey?: string;
@@ -71,12 +74,14 @@ function CategorizationReview<T extends CategorizationListItem>({
   description,
   items,
   zones,
+  mode,
   showHintsByDefault = false,
   teacherView = false,
   reviewPlacements,
   reviewFeedback = {},
   submissionSummary,
 }: CategorizationListProps<T>) {
+  const showHints = mode ? mode === 'guided_practice' || mode === 'teaching' : showHintsByDefault;
   const placements = reviewPlacements ?? zones.reduce<ZonePlacements<T>>((acc, zone) => {
     acc[zone.id] = [];
     return acc;
@@ -132,7 +137,7 @@ function CategorizationReview<T extends CategorizationListItem>({
                 <div key={item.id} className="rounded-lg border bg-card p-3 shadow-sm">
                   <p className="font-semibold">{item.label}</p>
                   {item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}
-                  {showHintsByDefault && item.details && (
+                  {showHints && item.details && (
                     <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">{JSON.stringify(item.details, null, 2)}</pre>
                   )}
                   {teacherView && reviewFeedback[item.id] && (
@@ -190,7 +195,7 @@ function CategorizationReview<T extends CategorizationListItem>({
                     </p>
                   </div>
                   <p className="text-sm text-muted-foreground">{zone.description}</p>
-                  {showHintsByDefault && zone.whyItMatters && (
+                  {showHints && zone.whyItMatters && (
                     <p className="text-xs text-muted-foreground/80">Why it matters: {zone.whyItMatters}</p>
                   )}
                 </div>
@@ -259,13 +264,14 @@ function CategorizationInteractive<T extends CategorizationListItem>({
   description,
   items,
   zones,
+  mode,
   showHintsByDefault = false,
   shuffleItems = true,
   resetKey,
   onComplete,
   describeItem,
 }: CategorizationListProps<T>) {
-  const [showHints, setShowHints] = useState(showHintsByDefault);
+  const showHints = mode ? mode === 'guided_practice' || mode === 'teaching' : showHintsByDefault;
   const zoneIds = useMemo(() => zones.map((zone) => zone.id), [zones]);
   const normalizedItems = useMemo(
     () =>
@@ -330,16 +336,14 @@ function CategorizationInteractive<T extends CategorizationListItem>({
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-          <label className="inline-flex items-center gap-2">
-            <input type="checkbox" checked={showHints} onChange={() => setShowHints((prev) => !prev)} className="h-4 w-4" />
-            Show context hints
-          </label>
-          <div className="inline-flex items-center gap-2">
-            <HelpCircle className="h-4 w-4" />
-            Drag each item into the correct category.
-          </div>
+        <div className="rounded-xl border bg-muted/20 p-3 text-sm text-muted-foreground">
+          Drag each item into the correct category.
         </div>
+        {showHints && (
+          <div className="rounded-xl border border-dashed bg-background/80 p-3 text-xs text-muted-foreground">
+            Context hints are visible for this mode.
+          </div>
+        )}
 
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="grid gap-6 lg:grid-cols-[minmax(280px,1fr)_minmax(0,2fr)]">

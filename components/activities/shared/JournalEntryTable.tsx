@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,7 @@ export interface JournalEntryTableProps {
   description?: string;
   availableAccounts: JournalEntryAccountOption[];
   expectedLineCount: number;
+  scenarioPanel?: ReactNode;
   showDates?: boolean;
   defaultValue?: JournalEntryLine[];
   value?: JournalEntryLine[];
@@ -60,6 +61,7 @@ export function JournalEntryTable({
   description,
   availableAccounts,
   expectedLineCount,
+  scenarioPanel,
   showDates = true,
   defaultValue,
   value,
@@ -106,6 +108,7 @@ export function JournalEntryTable({
           <CardTitle className="text-2xl">{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
+        {scenarioPanel && <div className="space-y-3">{scenarioPanel}</div>}
         <div className="flex flex-wrap gap-2">
           <Badge variant="secondary">Expected lines: {expectedLineCount}</Badge>
           <Badge variant={balanced ? 'default' : 'destructive'}>

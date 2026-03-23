@@ -1,15 +1,15 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bus-math-v2",
-  "main": "./cloudflare/worker.ts",
+  "main": "vinext/server/app-router-entry",
   "compatibility_date": "2026-03-12",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "./public",
+    "not_found_handling": "none",
     "binding": "ASSETS"
   },
   "vars": {
-    "NEXT_PUBLIC_CONVEX_URL": "set-per-environment"
+    "NEXT_PUBLIC_CONVEX_URL": "https://quiet-swan-141.convex.cloud"
   },
   // Required secrets via `wrangler secret put`:
   // - CONVEX_DEPLOY_KEY

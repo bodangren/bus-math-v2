@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,11 +33,6 @@ export interface StatementLayoutFeedback {
   misconceptionTags?: string[];
 }
 
-export interface StatementLayoutMetadataBadge {
-  label: string;
-  variant?: 'default' | 'secondary' | 'outline';
-}
-
 export interface StatementLayoutSummaryItem {
   label: string;
   value: string;
@@ -53,7 +48,7 @@ export interface StatementLayoutProps {
   readOnly?: boolean;
   teacherView?: boolean;
   rowFeedback?: Record<string, StatementLayoutFeedback>;
-  metadataBadges?: StatementLayoutMetadataBadge[];
+  scenarioPanel?: ReactNode;
   scaffoldText?: string;
   reviewSummary?: StatementLayoutSummaryItem[];
 }
@@ -101,7 +96,7 @@ export function StatementLayout({
   readOnly = false,
   teacherView = false,
   rowFeedback = {},
-  metadataBadges = [],
+  scenarioPanel,
   scaffoldText,
   reviewSummary,
 }: StatementLayoutProps) {
@@ -193,15 +188,7 @@ export function StatementLayout({
           <CardTitle className="text-2xl">{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
-        {metadataBadges.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {metadataBadges.map((badge) => (
-              <Badge key={`${badge.variant ?? 'secondary'}-${badge.label}`} variant={badge.variant ?? 'secondary'}>
-                {badge.label}
-              </Badge>
-            ))}
-          </div>
-        )}
+        {scenarioPanel && <div className="space-y-3">{scenarioPanel}</div>}
         {scaffoldText && (
           <div className="rounded-2xl border bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
             {scaffoldText}

@@ -62,6 +62,12 @@ describe('SelectionMatrix', () => {
     render(
       <SelectionMatrix
         title="Normal balances"
+        scenarioPanel={
+          <div className="rounded-lg border bg-muted/20 p-3">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Scenario</div>
+            <div>Choose the debit or credit normal balance for each account.</div>
+          </div>
+        }
         teacherView
         readOnly
         rows={[
@@ -102,6 +108,7 @@ describe('SelectionMatrix', () => {
       />,
     );
 
+    expect(screen.getByText('Choose the debit or credit normal balance for each account.')).toBeInTheDocument();
     expect(screen.getByText(/score: 1\/2 correct/i)).toBeInTheDocument();
     expect(screen.getByText(/attempts: 2/i)).toBeInTheDocument();
     expect(screen.getByText(/submitted: 2026-03-20 09:15/i)).toBeInTheDocument();
