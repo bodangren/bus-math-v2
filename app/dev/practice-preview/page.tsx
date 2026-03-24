@@ -6,10 +6,10 @@ import {
   AccountingEquationLayout,
   CategorizationList,
   JournalEntryTable,
-  PostingBalanceList,
   SelectionMatrix,
   TrialBalanceErrorMatrix,
   StatementLayout,
+  TAccountInteractive,
   type JournalEntryRowFeedback,
   type SelectionMatrixRowFeedback,
 } from '@/components/activities/shared';
@@ -1537,7 +1537,7 @@ export default function PracticePreviewPage() {
           </div>
 
           <div className="grid gap-6 xl:grid-cols-2">
-            <PostingBalanceList
+            <TAccountInteractive
               title="Family I Guided Practice"
               description="Use the posting trail and starting balance to compute each ending balance."
               referenceTitle={postingBalancesDefinition.scaffolding.referenceTitle}
@@ -1547,7 +1547,7 @@ export default function PracticePreviewPage() {
               defaultValues={Object.fromEntries(postingBalancesRows.map((row) => [row.id, '']))}
             />
 
-            <PostingBalanceList
+            <TAccountInteractive
               title="Family I Teacher Review"
               description="Read-only evidence with row-level review feedback and posting tags."
               referenceTitle={postingBalancesDefinition.scaffolding.referenceTitle}

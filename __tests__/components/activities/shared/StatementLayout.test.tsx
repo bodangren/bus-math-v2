@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
-import { StatementLayout } from '@/components/activities/shared';
+import { StatementLayout } from '@/components/activities/shared/StatementLayout';
 
 describe('StatementLayout', () => {
   it('tracks editable rows and computes subtotals', async () => {
@@ -36,8 +36,33 @@ describe('StatementLayout', () => {
     expect(screen.getAllByText('1,000')[0]).toBeInTheDocument();
   });
 
-  it('renders statement metadata, review summary, and inline teacher feedback', () => {
+  it('renders statement amounts with accounting negatives and a double underline on the final total', () => {
     render(
+      <StatementLayout
+        title="Balance Sheet"
+        sections={[
+          {
+            id: 'ppe',
+            label: 'Property, Plant & Equipment',
+            rows: [
+              { id: 'equipment', label: 'Equipment', kind: 'prefilled', value: 4800 },
+              { id: 'accumulated-depreciation', label: 'Less: Accumulated Depreciation', kind: 'prefilled', value: -480 },
+              { id: 'net-book-value', label: 'Net Book Value', kind: 'subtotal', sumOf: ['equipment', 'accumulated-depreciation'] },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getAllByText('(480)')[0]).toBeInTheDocument();
+
+    const totalRow = screen.getAllByText('Net Book Value')[0].closest('[data-row-id="net-book-value"]');
+    expect(totalRow).not.toBeNull();
+    expect(totalRow).toHaveAttribute('data-row-rule', 'double');
+  });
+
+  it('renders statement metadata, review summary, and inline teacher feedback', () => {
+    const { container } = render(
       <StatementLayout
         title="Balance Sheet"
         description="Complete the statement totals."
@@ -71,6 +96,7 @@ describe('StatementLayout', () => {
       />,
     );
 
+    expect(container.querySelector('[data-layout="statement-sheet"]')).toBeInTheDocument();
     expect(screen.getByText('Panel note: complete the missing amount after reading the section totals.')).toBeInTheDocument();
     expect(screen.getByText('Attempt')).toBeInTheDocument();
     expect(screen.getByText('0/1')).toBeInTheDocument();

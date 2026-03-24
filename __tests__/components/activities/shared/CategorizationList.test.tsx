@@ -39,7 +39,36 @@ describe('CategorizationList', () => {
 
     expect(screen.queryByLabelText(/show context hints/i)).not.toBeInTheDocument();
     expect(screen.getByText(/cash is a resource/i)).toBeInTheDocument();
-    expect(screen.getByText(/resources belong on the left/i)).toBeInTheDocument();
+    expect(screen.getByText(/why it matters:/i)).toBeInTheDocument();
+  });
+
+  it('renders the account-type layout as an accounting board with assets separated from liabilities and equity', () => {
+    const { container } = render(
+      <CategorizationList
+        title="Account type categorization"
+        items={[
+          { id: 'cash', label: 'Cash', description: 'Asset', targetId: 'assets' },
+          { id: 'notes-payable', label: 'Notes Payable', description: 'Liability', targetId: 'liabilities' },
+          { id: 'common-stock', label: 'Common Stock', description: 'Equity', targetId: 'equity' },
+        ]}
+        zones={[
+          { id: 'assets', label: 'Assets', description: 'Resources', emoji: '💼' },
+          { id: 'liabilities', label: 'Liabilities', description: 'Obligations', emoji: '🧾' },
+          { id: 'equity', label: 'Equity', description: 'Owner claim', emoji: '🧭' },
+          { id: 'revenue', label: 'Revenue', description: 'Inflows', emoji: '📈' },
+          { id: 'expenses', label: 'Expenses', description: 'Outflows', emoji: '📉' },
+        ]}
+        readOnly
+        mode="teaching"
+      />,
+    );
+
+    expect(container.querySelector('[data-layout="account-type"]')).toBeInTheDocument();
+    expect(screen.getByText('Assets')).toBeInTheDocument();
+    expect(screen.getByText('Liabilities')).toBeInTheDocument();
+    expect(screen.getAllByText('Equity').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Revenue').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Expenses').length).toBeGreaterThan(0);
   });
 
   it('completes a generic drag-and-drop review', async () => {

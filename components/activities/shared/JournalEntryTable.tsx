@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import type { PracticeMode } from '@/lib/practice/engine/types';
 
 import { formatAccountingAmount, toNumber } from './utils';
 
@@ -43,6 +44,7 @@ export interface JournalEntryTableProps {
   readOnly?: boolean;
   teacherView?: boolean;
   rowFeedback?: Record<string, JournalEntryRowFeedback>;
+  mode?: PracticeMode;
 }
 
 function createBlankLine(index: number): JournalEntryLine {
@@ -54,6 +56,26 @@ function createBlankLine(index: number): JournalEntryLine {
     credit: '',
     memo: '',
   };
+}
+
+function getLineSide(line: JournalEntryLine) {
+  if (toNumber(line.debit) > 0 && toNumber(line.credit) === 0) {
+    return 'debit';
+  }
+
+  if (toNumber(line.credit) > 0 && toNumber(line.debit) === 0) {
+    return 'credit';
+  }
+
+  return 'neutral';
+}
+
+function renderAmount(value: string | number | undefined) {
+  if (value === '' || value === undefined) {
+    return '—';
+  }
+
+  return formatAccountingAmount(value);
 }
 
 export function JournalEntryTable({
@@ -69,6 +91,7 @@ export function JournalEntryTable({
   readOnly = false,
   teacherView = false,
   rowFeedback = {},
+  mode = 'guided_practice',
 }: JournalEntryTableProps) {
   const [internalValue, setInternalValue] = useState<JournalEntryLine[]>(
     defaultValue ?? Array.from({ length: expectedLineCount }, (_, index) => createBlankLine(index)),
@@ -101,15 +124,24 @@ export function JournalEntryTable({
   const difference = totalDebit - totalCredit;
   const balanced = difference === 0;
 
+  const rowPrompts =
+    mode === 'teaching'
+      ? ['1. Record the debit side first.', '2. Mirror the credit on the opposite side.', '3. Confirm the entry balances.']
+      : [];
+
   return (
-    <Card className="w-full">
-      <CardHeader className="space-y-2">
+    <Card data-layout="general-journal" className="w-full overflow-hidden border-border/70 bg-gradient-to-b from-background to-muted/10 shadow-sm">
+      <CardHeader className="space-y-3 border-b border-border/70 bg-muted/20 px-6 py-6 text-center">
         <div className="space-y-1">
-          <CardTitle className="text-2xl">{title}</CardTitle>
-          {description && <CardDescription>{description}</CardDescription>}
+          <CardTitle className="text-pretty text-3xl font-semibold uppercase tracking-[0.24em]">{title}</CardTitle>
+          {description && <CardDescription className="text-sm uppercase tracking-[0.18em]">{description}</CardDescription>}
         </div>
-        {scenarioPanel && <div className="space-y-3">{scenarioPanel}</div>}
-        <div className="flex flex-wrap gap-2">
+        {scenarioPanel && (
+          <div className="mx-auto w-full max-w-5xl rounded-2xl border border-border/70 bg-card p-4 text-left shadow-sm">
+            {scenarioPanel}
+          </div>
+        )}
+        <div className="flex flex-wrap items-center justify-center gap-2">
           <Badge variant="secondary">Expected lines: {expectedLineCount}</Badge>
           <Badge variant={balanced ? 'default' : 'destructive'}>
             {balanced ? 'Balanced' : `Out by ${formatAccountingAmount(Math.abs(difference))}`}
@@ -125,81 +157,111 @@ export function JournalEntryTable({
             ))}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+
+      <CardContent className="space-y-4 px-6 py-6">
+        {mode === 'teaching' && (
+          <div className="rounded-2xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-sm text-blue-900">
+            <div className="font-semibold uppercase tracking-[0.18em] text-blue-700">Teaching mode</div>
+            <div className="mt-1 flex flex-wrap gap-3">
+              {rowPrompts.map((prompt) => (
+                <span key={prompt} className="rounded-full border border-blue-200 bg-white/80 px-3 py-1 text-xs font-medium">
+                  {prompt}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b">
-                {showDates && <th className="px-3 py-2 text-left font-medium text-muted-foreground">Date</th>}
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Account</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Debit</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Credit</th>
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Memo</th>
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Status</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="min-w-[920px] overflow-hidden rounded-2xl border border-border/80 bg-white shadow-sm" data-layout="general-journal">
+            <div className="grid grid-cols-[88px_minmax(240px,1.2fr)_88px_120px_120px_minmax(160px,0.8fr)_150px] border-b border-border/70 bg-muted/30 px-4 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+              {showDates && <div>Date</div>}
+              <div>Account title</div>
+              <div>PR</div>
+              <div className="text-right">Debit</div>
+              <div className="text-right">Credit</div>
+              <div>Memo</div>
+              <div>Status</div>
+            </div>
+
+            <div className="divide-y divide-border/70">
               {normalizedLines.map((line, index) => {
                 const feedback = rowFeedback[line.id];
+                const lineSide = getLineSide(line);
+                const previousDate = index > 0 ? normalizedLines[index - 1]?.date ?? '' : '';
+                const showDateCell = !showDates || index === 0 || line.date !== previousDate;
+
                 return (
-                  <tr
+                  <div
                     key={line.id}
+                    data-line-id={line.id}
+                    data-line-side={lineSide}
                     className={cn(
-                      'border-b last:border-b-0',
+                      'grid grid-cols-[88px_minmax(240px,1.2fr)_88px_120px_120px_minmax(160px,0.8fr)_150px] items-start gap-3 px-4 py-4 transition-colors',
                       teacherView && feedback?.status === 'correct' && 'bg-emerald-50/60',
-                      teacherView && feedback?.status === 'incorrect' && 'bg-destructive/10',
-                      teacherView && feedback?.status === 'partial' && 'bg-amber-50/70'
+                      teacherView && feedback?.status === 'incorrect' && 'bg-rose-50/70',
+                      teacherView && feedback?.status === 'partial' && 'bg-amber-50/70',
+                      lineSide === 'debit' && 'bg-blue-50/[0.04]',
+                      lineSide === 'credit' && 'bg-rose-50/[0.04]',
                     )}
                   >
-                    {showDates && (
-                      <td className="px-3 py-2 align-top">
+                    {showDates ? (
+                      <div className={cn('pt-1 text-sm text-muted-foreground', !showDateCell && 'text-transparent')} aria-hidden={!showDateCell}>
+                        {showDateCell ? line.date || '—' : '—'}
+                      </div>
+                    ) : null}
+
+                    <div className="space-y-2">
+                      <div
+                        className={cn(
+                          'rounded-xl border border-border/80 bg-background px-3 py-2 shadow-inner',
+                          lineSide === 'credit' && 'pl-6',
+                        )}
+                      >
                         {readOnly ? (
-                          <span>{line.date || '—'}</span>
+                          <span className="block text-sm font-medium text-foreground">
+                            {availableAccounts.find((account) => account.id === line.accountId)?.label ?? line.accountId ?? '—'}
+                          </span>
                         ) : (
-                          <Input
-                            type="text"
-                            value={line.date ?? ''}
+                          <select
+                            className="min-h-11 w-full rounded-md border-0 bg-transparent px-0 text-sm font-medium shadow-none focus-visible:outline-none focus-visible:ring-0"
+                            value={line.accountId ?? ''}
+                            aria-label={`Account for line ${index + 1}`}
                             onChange={(event) => {
                               const nextLines = [...normalizedLines];
-                              nextLines[index] = { ...line, date: event.target.value };
+                              nextLines[index] = { ...line, accountId: event.target.value };
                               updateLines(nextLines);
                             }}
-                            className="w-28"
-                            placeholder="MM/DD"
-                          />
+                          >
+                            <option value="">Select account</option>
+                            {availableAccounts.map((account) => (
+                              <option key={account.id} value={account.id}>
+                                {account.label}
+                              </option>
+                            ))}
+                          </select>
                         )}
-                      </td>
-                    )}
-                    <td className="px-3 py-2 align-top">
-                      {readOnly ? (
-                        <span>{availableAccounts.find((account) => account.id === line.accountId)?.label ?? line.accountId ?? '—'}</span>
-                      ) : (
-                        <select
-                          className="h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                          value={line.accountId ?? ''}
-                          onChange={(event) => {
-                            const nextLines = [...normalizedLines];
-                            nextLines[index] = { ...line, accountId: event.target.value };
-                            updateLines(nextLines);
-                          }}
-                        >
-                          <option value="">Select account</option>
-                          {availableAccounts.map((account) => (
-                            <option key={account.id} value={account.id}>
-                              {account.label}
-                            </option>
-                          ))}
-                        </select>
+                      </div>
+                      {mode === 'teaching' && (
+                        <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                          {lineSide === 'credit' ? 'Credit line' : 'Debit line'}
+                        </div>
                       )}
-                    </td>
-                    <td className="px-3 py-2 align-top">
+                    </div>
+
+                    <div className="pt-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                      {index + 1}
+                    </div>
+
+                    <div>
                       {readOnly ? (
-                        <span className="tabular-nums">{formatAccountingAmount(line.debit)}</span>
+                        <div className="pt-2 text-right font-mono text-sm tabular-nums">{renderAmount(line.debit)}</div>
                       ) : (
                         <Input
                           type="text"
                           inputMode="decimal"
-                          className="w-28 text-right tabular-nums"
+                          className="h-11 w-full text-right tabular-nums"
+                          aria-label={`Debit for line ${index + 1}`}
                           value={line.debit ?? ''}
                           onChange={(event) => {
                             const nextLines = [...normalizedLines];
@@ -208,15 +270,17 @@ export function JournalEntryTable({
                           }}
                         />
                       )}
-                    </td>
-                    <td className="px-3 py-2 align-top">
+                    </div>
+
+                    <div>
                       {readOnly ? (
-                        <span className="tabular-nums">{formatAccountingAmount(line.credit)}</span>
+                        <div className="pt-2 text-right font-mono text-sm tabular-nums">{renderAmount(line.credit)}</div>
                       ) : (
                         <Input
                           type="text"
                           inputMode="decimal"
-                          className="w-28 text-right tabular-nums"
+                          className="h-11 w-full text-right tabular-nums"
+                          aria-label={`Credit for line ${index + 1}`}
                           value={line.credit ?? ''}
                           onChange={(event) => {
                             const nextLines = [...normalizedLines];
@@ -225,14 +289,14 @@ export function JournalEntryTable({
                           }}
                         />
                       )}
-                    </td>
-                    <td className="px-3 py-2 align-top">
-                      {readOnly ? (
-                        <span>{line.memo || '—'}</span>
-                      ) : (
+                    </div>
+
+                    <div className="pt-2 text-sm text-muted-foreground">
+                      {readOnly ? <span>{line.memo || '—'}</span> : (
                         <Input
                           type="text"
                           value={line.memo ?? ''}
+                          aria-label={`Memo for line ${index + 1}`}
                           onChange={(event) => {
                             const nextLines = [...normalizedLines];
                             nextLines[index] = { ...line, memo: event.target.value };
@@ -240,22 +304,50 @@ export function JournalEntryTable({
                           }}
                         />
                       )}
-                    </td>
-                    <td className="px-3 py-2 align-top text-xs text-muted-foreground">
-                      {feedback ? feedback.message ?? feedback.status : index < expectedLineCount ? `Line ${index + 1}` : 'Optional'}
-                    </td>
-                  </tr>
+                    </div>
+
+                    <div className="space-y-2 pt-2 text-xs text-muted-foreground">
+                      {feedback ? (
+                        <div
+                          className={cn(
+                            'font-medium',
+                            feedback.status === 'correct' && 'text-emerald-700',
+                            feedback.status === 'incorrect' && 'text-rose-700',
+                            feedback.status === 'partial' && 'text-amber-700',
+                          )}
+                        >
+                          {feedback.message ?? feedback.status}
+                        </div>
+                      ) : (
+                        <div>{index < expectedLineCount ? `Line ${index + 1}` : 'Optional'}</div>
+                      )}
+                      {teacherView && feedback?.misconceptionTags?.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {feedback.misconceptionTags.map((tag) => (
+                            <Badge key={tag} variant="secondary">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-muted/20 p-3 text-sm">
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/80 bg-muted/20 px-4 py-3 text-sm">
           <div className="flex flex-wrap gap-3">
             <span>Debit total: {formatAccountingAmount(totalDebit)}</span>
             <span>Credit total: {formatAccountingAmount(totalCredit)}</span>
           </div>
-          <div aria-live="polite" className={cn('font-medium', balanced ? 'text-emerald-700' : 'text-destructive')}>
+          <div
+            aria-live="polite"
+            className={cn('font-medium', balanced ? 'text-emerald-700' : 'text-rose-700')}
+            data-balance-state={balanced ? 'balanced' : 'out-of-balance'}
+          >
             {balanced ? 'Journal entry balances.' : `Difference: ${formatAccountingAmount(Math.abs(difference))}`}
           </div>
           {!readOnly && (
@@ -269,8 +361,9 @@ export function JournalEntryTable({
             </Button>
           )}
         </div>
+
         {teacherView && (
-          <div className="rounded-lg border bg-background p-3 text-sm text-muted-foreground">
+          <div className="rounded-2xl border border-border/80 bg-background p-3 text-sm text-muted-foreground">
             <div className="flex flex-wrap gap-3">
               <span>Balanced: {balanced ? 'yes' : 'no'}</span>
               <span>Rows scored: {Object.keys(rowFeedback).length}</span>

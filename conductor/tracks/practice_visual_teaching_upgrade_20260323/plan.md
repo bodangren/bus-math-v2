@@ -51,45 +51,45 @@
 
 ### Tasks
 
-- [ ] **Task: CX-5 — Redesign StatementLayout**
-  - [ ] Study 1ed components (`IncomeStatementSimple`, `BalanceSheetSimple`) for visual conventions
-  - [ ] Write snapshot/visual test for the redesigned layout
-  - [ ] Implement indentation hierarchy: line items indented under section headers, subtotals outdented
-  - [ ] Implement two-column amount layout: inner column for line items, outer column for section totals
-  - [ ] Implement single/double underline convention: single before subtotal, double under final total
-  - [ ] Implement centered header block: company name, statement name, period
-  - [ ] Apply `tabular-nums` formatting and parenthesized negatives
-  - [ ] Verify all StatementLayout consumers (Q, E, N, J-calculation) render correctly
+- [x] **Task: CX-5 — Redesign StatementLayout**
+  - [x] Study 1ed components (`IncomeStatementSimple`, `BalanceSheetSimple`) for visual conventions
+  - [x] Write snapshot/visual test for the redesigned layout
+  - [x] Implement indentation hierarchy: line items indented under section headers, subtotals outdented
+  - [x] Implement two-column amount layout: inner column for line items, outer column for section totals
+  - [x] Implement single/double underline convention: single before subtotal, double under final total
+  - [x] Implement centered header block: company name, statement name, period
+  - [x] Apply `tabular-nums` formatting and parenthesized negatives
+  - [x] Verify all StatementLayout consumers (Q, E, N, J-calculation) render correctly
 
-- [ ] **Task: CX-5 — Redesign JournalEntryTable**
-  - [ ] Study real journal page conventions for visual reference
-  - [ ] Write snapshot/visual test for the redesigned layout
-  - [ ] Implement debit account at normal indent, credit account indented further
-  - [ ] Implement two-column amount layout (debit column, credit column)
-  - [ ] Implement ruling lines between journal entries
-  - [ ] Implement date column with grouped-date header treatment
-  - [ ] Verify all JournalEntryTable consumers (H, J-journal, L, P) render correctly
+- [x] **Task: CX-5 — Redesign JournalEntryTable**
+  - [x] Study real journal page conventions for visual reference
+  - [x] Write snapshot/visual test for the redesigned layout
+  - [x] Implement debit account at normal indent, credit account indented further
+  - [x] Implement two-column amount layout (debit column, credit column)
+  - [x] Implement ruling lines between journal entries
+  - [x] Implement date column with grouped-date header treatment
+  - [x] Verify all JournalEntryTable consumers (H, J-journal, L, P) render correctly
 
-- [ ] **Task: A-1 — Redesign CategorizationList for A=L+E layout**
-  - [ ] Write failing test: account-type categorySet renders Assets in left column, L+E stacked in right column
-  - [ ] Implement two-column layout for `account-type` (5 buckets): Assets left, Liabilities/Equity right, Revenue/Expenses below equity
-  - [ ] Implement two-column layout for `statement-placement` (3 buckets): Balance Sheet left, Income Statement right
-  - [ ] Keep `permanent-temporary` (2 buckets) as left/right split
-  - [ ] CX-3: Add subtle zone tint colors per category
-  - [ ] Verify drag-and-drop and keyboard select still work in the new layout
+- [x] **Task: A-1 — Redesign CategorizationList for A=L+E layout**
+  - [x] Write failing test: account-type categorySet renders Assets in left column, L+E stacked in right column
+  - [x] Implement two-column layout for `account-type` (5 buckets): Assets left, Liabilities/Equity right, Revenue/Expenses below equity
+  - [x] Implement two-column layout for `statement-placement` (3 buckets): Balance Sheet left, Income Statement right
+  - [x] Keep `permanent-temporary` (2 buckets) as left/right split
+  - [x] CX-3: Add subtle zone tint colors per category
+  - [x] Verify drag-and-drop and keyboard select still work in the new layout
 
-- [ ] **Task: I-1 — Build interactive T-account component**
-  - [ ] Write failing tests for T-account rendering and interaction
-  - [ ] Build `TAccountInteractive` component: debit-left / credit-right spatial layout, classic T shape
-  - [ ] Support editable balance cells with numeric input
-  - [ ] Replace PostingBalanceList with TAccountInteractive in Family I
-  - [ ] Update family registry and preview page
+- [x] **Task: I-1 — Build interactive T-account component**
+  - [x] Write failing tests for T-account rendering and interaction
+  - [x] Build `TAccountInteractive` component: debit-left / credit-right spatial layout, classic T shape
+  - [x] Support editable balance cells with numeric input
+  - [x] Replace PostingBalanceList with TAccountInteractive in Family I
+  - [x] Update family registry and preview page
 
-- [ ] **Task: Phase 2 verification**
-  - [ ] Run `npm run lint`
-  - [ ] Run `npm test`
-  - [ ] Run `npm run build`
-  - [ ] Visual review of all redesigned components in the preview page
+- [x] **Task: Phase 2 verification**
+  - [x] Run `npm run lint`
+  - [x] Run `npm test`
+  - [x] Run `npm run build`
+  - [x] Visual review of all redesigned components in the preview page
 
 ## Phase 3: Teaching Mode and Feedback Quality
 
