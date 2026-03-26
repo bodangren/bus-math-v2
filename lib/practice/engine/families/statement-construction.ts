@@ -512,11 +512,22 @@ function buildStatementConstructionBody(kind: StatementConstructionKind, ledger:
 }
 
 function buildReviewFeedback(
+  definition: StatementConstructionDefinition,
   part: StatementConstructionRow,
   studentResponse: StatementConstructionResponse,
   gradeResultPart: GradeResult['parts'][number],
 ): StatementConstructionReviewFeedback {
   const selectedValue = studentResponse[part.id];
+  const totalRevenue = definition.parts.find((entry) => entry.id === 'total-revenue');
+  const totalExpenses = definition.parts.find((entry) => entry.id === 'total-expenses');
+  const netIncome = definition.parts.find((entry) => entry.id === 'net-income');
+  const rowValues = part.sumOf?.map((rowId) => Number(definition.parts.find((entry) => entry.id === rowId)?.targetId ?? 0)) ?? [];
+  const subtotalChain =
+    part.id === 'net-income' && totalRevenue && totalExpenses && netIncome
+      ? `Total Revenues (${Number(totalRevenue.targetId).toLocaleString('en-US')}) - Total Expenses (${Number(totalExpenses.targetId).toLocaleString('en-US')}) = Net Income (${Number(netIncome.targetId).toLocaleString('en-US')})`
+      : rowValues.length > 0
+        ? `${rowValues.map((value) => value.toLocaleString('en-US')).join(' + ')} = ${Number(part.targetId).toLocaleString('en-US')}`
+        : '';
   return {
     status: gradeResultPart.isCorrect ? 'correct' : 'incorrect',
     selectedLabel:
@@ -527,9 +538,9 @@ function buildReviewFeedback(
         : String(part.targetId),
     misconceptionTags: gradeResultPart.misconceptionTags,
     message: gradeResultPart.isCorrect
-      ? `${part.label} is correct.`
+      ? `${part.label} is correct.${subtotalChain ? ` ${subtotalChain}.` : ''}`
       : part.details.expectedAnswerType === 'number'
-        ? `${part.label} should be ${formatAmount(part.targetId as number)}.`
+        ? `${part.label} should be ${formatAmount(part.targetId as number)}.${subtotalChain ? ` ${subtotalChain}.` : ''}`
         : `Use ${part.details.expectedLabel} on this line.`,
   };
 }
@@ -555,7 +566,7 @@ export function buildStatementConstructionReviewFeedback(
         ] as const;
       }
 
-      return [part.id, buildReviewFeedback(part, studentResponse, partResult)] as const;
+      return [part.id, buildReviewFeedback(definition, part, studentResponse, partResult)] as const;
     }),
   ) as Record<string, StatementConstructionReviewFeedback>;
 }

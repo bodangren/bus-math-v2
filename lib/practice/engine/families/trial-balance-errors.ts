@@ -114,6 +114,14 @@ function formatSelectionValue(value: string | number | undefined) {
     .join(' ');
 }
 
+function explainScenario(scenario: TrialBalanceErrorScenario) {
+  if (scenario.archetypeId === 'transposition') {
+    return `${scenario.narrative} The digit swap follows 10a + b vs 10b + a, so the difference is 9|a - b|.`;
+  }
+
+  return scenario.narrative;
+}
+
 function buildScenarioParts(scenario: TrialBalanceErrorScenario): TrialBalanceErrorPart[] {
   return [
     {
@@ -247,10 +255,10 @@ function buildPartFeedback(
         ? `The difference is ${formatTrialBalanceDifference(scenario.expectedDifference)}.`
         : `${formatTrialBalanceLargerColumn(scenario.expectedLargerColumn)} is larger.`
     : answerKind === 'balanced'
-      ? `This scenario ${scenario.balance.balanced ? 'still balances' : 'is out of balance'} because ${scenario.narrative.toLowerCase()}.`
+      ? `This scenario ${scenario.balance.balanced ? 'still balances' : 'is out of balance'} because ${explainScenario(scenario).toLowerCase()}.`
       : answerKind === 'difference'
-        ? `The difference is ${formatTrialBalanceDifference(scenario.expectedDifference)} because ${scenario.narrative.toLowerCase()}.`
-        : `${formatTrialBalanceLargerColumn(scenario.expectedLargerColumn)} is larger because ${scenario.narrative.toLowerCase()}.`;
+        ? `The difference is ${formatTrialBalanceDifference(scenario.expectedDifference)} because ${explainScenario(scenario).toLowerCase()}.`
+        : `${formatTrialBalanceLargerColumn(scenario.expectedLargerColumn)} is larger because ${explainScenario(scenario).toLowerCase()}.`;
 
   return {
     status: gradeResultPart.isCorrect ? 'correct' : 'incorrect',

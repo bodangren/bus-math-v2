@@ -424,11 +424,21 @@ function scoreJournalLine(expected: AdjustingCalculationsJournalLine, actual: un
 }
 
 function buildReviewFeedback(
+  definition: AdjustingCalculationsDefinition,
   part: AdjustingCalculationsPart,
   studentResponse: AdjustingCalculationsResponse,
   gradeResultPart: GradeResult['parts'][number],
 ): AdjustingCalculationsReviewFeedback {
   const selectedValue = studentResponse[part.id];
+  const scenario = definition.scenario as AdjustmentScenario;
+  const chain =
+    scenario.kind === 'deferral'
+      ? scenario.method === 'asset'
+        ? `$${formatAmount(scenario.originalAmount)} × (${scenario.elapsedMonths}/${scenario.coverageMonths}) = $${formatAmount(scenario.amount)}`
+        : `$${formatAmount(scenario.originalAmount)} − $${formatAmount(scenario.adjustmentAmount)} = $${formatAmount(scenario.remainingAmount)}`
+      : scenario.kind === 'accrual'
+        ? `$${formatAmount(scenario.dailyRate)} × ${scenario.daysAccrued} = $${formatAmount(scenario.amount)}`
+        : `($${formatAmount(scenario.depreciableBase)} ÷ ${scenario.usefulLifeMonths}) × ${scenario.monthsUsed} = $${formatAmount(scenario.depreciationExpense)}`;
 
   if (part.kind === 'numeric') {
     return {
@@ -436,7 +446,9 @@ function buildReviewFeedback(
       selectedLabel: selectedValue === undefined ? 'Not entered' : formatAmount(Number(selectedValue)),
       expectedLabel: formatAmount(Number(part.targetId)),
       misconceptionTags: gradeResultPart.misconceptionTags,
-      message: gradeResultPart.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${formatAmount(Number(part.targetId))}.`,
+      message: gradeResultPart.isCorrect
+        ? `${part.label} is correct. ${chain}.`
+        : `${part.label} should be ${formatAmount(Number(part.targetId))}. ${chain}.`,
     };
   }
 
@@ -449,8 +461,8 @@ function buildReviewFeedback(
     expectedLabel: formatJournalEntryLine(part.canonicalAnswer as AdjustingCalculationsJournalLine),
     misconceptionTags: gradeResultPart.misconceptionTags,
     message: gradeResultPart.isCorrect
-      ? `${part.label} is correct.`
-      : `${part.label} should be ${formatJournalEntryLine(part.canonicalAnswer as AdjustingCalculationsJournalLine)}.`,
+      ? `${part.label} is correct. ${chain}.`
+      : `${part.label} should be ${formatJournalEntryLine(part.canonicalAnswer as AdjustingCalculationsJournalLine)}. ${chain}.`,
   };
 }
 
@@ -475,7 +487,7 @@ export function buildAdjustingCalculationsReviewFeedback(
         ] as const;
       }
 
-      return [part.id, buildReviewFeedback(part, studentResponse, partResult)] as const;
+      return [part.id, buildReviewFeedback(definition, part, studentResponse, partResult)] as const;
     }),
   );
 }

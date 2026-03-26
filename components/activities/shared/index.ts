@@ -6,4 +6,5 @@ export * from './PostingBalanceList';
 export * from './SelectionMatrix';
 export * from './TrialBalanceErrorMatrix';
 export * from './StatementLayout';
+export * from './TeachingModePanel';
 export * from './utils';

@@ -140,4 +140,26 @@ describe('StatementLayout', () => {
     );
     expect(screen.getAllByText('1,200').length).toBeGreaterThan(0);
   });
+
+  it('shows teaching-mode narration and a next-step control', () => {
+    render(
+      <StatementLayout
+        title="Income Statement"
+        mode="teaching"
+        sections={[
+          {
+            id: 'income',
+            label: 'Income Statement',
+            rows: [
+              { id: 'revenue', label: 'Revenue', kind: 'prefilled', value: 1200 },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText(/teaching mode/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /next step/i })).toBeInTheDocument();
+    expect(screen.getByText(/read the section heading/i)).toBeInTheDocument();
+  });
 });

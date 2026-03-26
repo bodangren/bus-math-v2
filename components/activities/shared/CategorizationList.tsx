@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { TeachingModePanel } from './TeachingModePanel';
 
 import {
   AVAILABLE_ITEMS_DROPPABLE,
@@ -367,6 +368,7 @@ function CategorizationReview<T extends CategorizationListItem>({
   const misconceptionCount =
     submissionSummary?.misconceptionCount ??
     new Set(Object.values(reviewFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size;
+  const teachingSteps = ['Read the row label and the short clue.', 'Match the item to the zone that follows the accounting rule.', 'Use the misconception tags to revisit any miss.'];
 
   const renderZone = (zone: CategorizationListZone) => (
     <div className="space-y-3 rounded-2xl border border-dashed border-slate-200 bg-white/70 p-3">
@@ -412,6 +414,13 @@ function CategorizationReview<T extends CategorizationListItem>({
             Read-only review
           </Badge>
         </div>
+        {mode === 'teaching' && (
+          <TeachingModePanel
+            title="Sorting walkthrough"
+            summary="Work through the classification rule before moving items on the board."
+            steps={teachingSteps}
+          />
+        )}
       </CardHeader>
       <CardContent className="space-y-6 px-6 py-6">
         <div className="grid gap-6 xl:grid-cols-[minmax(280px,0.95fr)_minmax(0,1.55fr)]">
@@ -605,6 +614,11 @@ function CategorizationInteractive<T extends CategorizationListItem>({
         {showHints && (
           <div className="rounded-[1.25rem] border border-dashed border-slate-300 bg-white/80 p-3 text-xs text-slate-600">
             Context hints are visible for this mode.
+          </div>
+        )}
+        {mode === 'teaching' && (
+          <div className="rounded-[1.25rem] border border-blue-200 bg-blue-50/70 p-3 text-sm text-blue-950">
+            Classification rule: keep the account bank and the target zone in view together.
           </div>
         )}
 

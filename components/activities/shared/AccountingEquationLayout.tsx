@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import type { PracticeMode } from '@/lib/practice/engine/types';
 
 import { formatAccountingAmount } from './utils';
+import { TeachingModePanel } from './TeachingModePanel';
 
 export type AccountingEquationTermId = 'assets' | 'liabilities' | 'equity';
 const ACCOUNTING_TERM_ORDER: AccountingEquationTermId[] = ['assets', 'liabilities', 'equity'];
@@ -158,6 +159,7 @@ export function AccountingEquationLayout({
   const helper = mode === 'guided_practice' ? helperText : undefined;
   const teacherRows = teacherView ? editableTermIds.map((termId) => [termId, feedback[termId] ?? null] as const) : [];
   const teacherSummary = teacherRows.find(([, rowFeedback]) => Boolean(rowFeedback))?.[1];
+  const teachingSteps = ['Start with the given facts.', 'Solve the missing term from left to right.', 'Check that assets equal liabilities plus equity.'];
 
   return (
     <Card className="w-full">
@@ -174,6 +176,13 @@ export function AccountingEquationLayout({
             </Badge>
           ))}
         </div>
+        {mode === 'teaching' && (
+          <TeachingModePanel
+            title="Equation walkthrough"
+            summary="Start from the given facts and solve the missing term step by step."
+            steps={teachingSteps}
+          />
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {helper && (

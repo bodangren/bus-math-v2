@@ -7,6 +7,7 @@ export const PRACTICE_MODE_VALUES = [
   'guided_practice',
   'independent_practice',
   'assessment',
+  'teaching',
 ] as const;
 
 export const PRACTICE_SUBMISSION_STATUS_VALUES = [

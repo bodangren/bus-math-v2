@@ -57,4 +57,26 @@ describe('JournalEntryTable', () => {
     expect(debitRow).toHaveAttribute('data-line-side', 'debit');
     expect(creditRow).toHaveAttribute('data-line-side', 'credit');
   });
+
+  it('shows teaching-mode steps and next-step control', () => {
+    render(
+      <JournalEntryTable
+        title="Journal entry"
+        mode="teaching"
+        availableAccounts={[
+          { id: 'cash', label: 'Cash' },
+          { id: 'revenue', label: 'Revenue' },
+        ]}
+        expectedLineCount={2}
+        defaultValue={[
+          { id: 'line-1', accountId: 'cash', debit: 100, credit: '', memo: 'cash sale' },
+          { id: 'line-2', accountId: 'revenue', debit: '', credit: 100, memo: 'sale revenue' },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText(/teaching mode/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /next step/i })).toBeInTheDocument();
+    expect(screen.getByText(/record the debit side first/i)).toBeInTheDocument();
+  });
 });

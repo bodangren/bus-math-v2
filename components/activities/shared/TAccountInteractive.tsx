@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import type { PracticeMode } from '@/lib/practice/engine/types';
 
 import { formatAccountingAmount } from './utils';
+import { TeachingModePanel } from './TeachingModePanel';
 
 export interface PostingBalanceReferenceLine {
   id: string;
@@ -114,6 +115,14 @@ export function TAccountInteractive({
     () => Array.from(new Set(Object.values(rowFeedback).flatMap((feedback) => feedback?.misconceptionTags ?? []))),
     [rowFeedback],
   );
+  const teachingSteps = useMemo(
+    () => [
+      'Read the posting trail before solving each ending balance.',
+      'Move the posting cue to the normal side first.',
+      'Check the ending balance against the T-account board.',
+    ],
+    [],
+  );
 
   return (
     <Card className="w-full overflow-hidden border-border/70 bg-gradient-to-b from-background to-muted/10 shadow-sm">
@@ -155,10 +164,11 @@ export function TAccountInteractive({
         </div>
 
         {mode === 'teaching' && (
-          <div className="rounded-2xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-sm text-blue-900">
-            <div className="font-semibold uppercase tracking-[0.18em] text-blue-700">Teaching mode</div>
-            <div className="mt-1 text-xs text-blue-900/90">Show the posting side, then balance each T-account from the normal side.</div>
-          </div>
+          <TeachingModePanel
+            title="Posting walkthrough"
+            summary="Trace each posting from the trail into the T-account and verify the ending balance."
+            steps={teachingSteps}
+          />
         )}
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">

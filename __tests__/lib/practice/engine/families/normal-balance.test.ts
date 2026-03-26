@@ -105,6 +105,7 @@ describe('normal balance family', () => {
       expectedBalanceLabel: contraPart.targetId.toUpperCase(),
       selectedBalanceLabel: parentBalance.toUpperCase(),
     });
+    expect(reviewed[contraPart.id].message).toContain('contra');
 
     const parsed = practiceSubmissionEnvelopeSchema.safeParse(envelope);
     expect(parsed.success).toBe(true);
@@ -119,5 +120,22 @@ describe('normal balance family', () => {
       family: 'normal-balance',
       companyScope: 'service',
     });
+  });
+
+  it('explains the normal-balance rule for non-contra accounts', () => {
+    const definition = normalBalanceFamily.generate(22, {
+      accountCount: 8,
+      includeContraAccounts: false,
+      companyScope: 'service',
+      mode: 'assessment',
+    });
+    const solution = normalBalanceFamily.solve(definition);
+    const part = definition.parts[0];
+    const wrongBalance = part.targetId === 'debit' ? 'credit' : 'debit';
+    const response: NormalBalanceResponse = { ...solution, [part.id]: wrongBalance };
+    const gradeResult = normalBalanceFamily.grade(definition, response);
+    const reviewed = buildNormalBalanceReviewFeedback(definition, response, gradeResult);
+
+    expect(reviewed[part.id].message?.toLowerCase()).toMatch(/because|equity|debit|credit/);
   });
 });

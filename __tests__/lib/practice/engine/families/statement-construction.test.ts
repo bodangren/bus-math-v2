@@ -79,4 +79,32 @@ describe('statement construction family', () => {
     expect(parsed.data.answers[amountPart.id]).toBe(studentResponse[amountPart.id]);
     expect(parsed.data.parts).toHaveLength(definition.parts.length);
   });
+
+  it('spells out the subtotal chain in income statement feedback', () => {
+    const definition = statementConstructionFamily.generate(2026, {
+      mode: 'assessment',
+      statementKind: 'income-statement',
+      tolerance: 1,
+    });
+
+    const solution = statementConstructionFamily.solve(definition);
+    const netIncomePart = definition.parts.find((part) => part.id === 'net-income');
+    if (!netIncomePart) {
+      throw new Error('Expected an income-statement net-income part');
+    }
+
+    const studentResponse: StatementConstructionResponse = {
+      ...solution,
+      [netIncomePart.id]: Number(solution[netIncomePart.id] ?? 0) + 1,
+    };
+    const gradeResult = statementConstructionFamily.grade(definition, studentResponse);
+    const reviewed = buildStatementConstructionReviewFeedback(definition, studentResponse, gradeResult);
+    const totalRevenue = Number(solution['total-revenue'] ?? 0);
+    const totalExpenses = Number(solution['total-expenses'] ?? 0);
+    const netIncome = Number(solution[netIncomePart.id] ?? 0);
+
+    expect(reviewed[netIncomePart.id].message).toContain(
+      `Total Revenues (${totalRevenue.toLocaleString('en-US')}) - Total Expenses (${totalExpenses.toLocaleString('en-US')}) = Net Income (${netIncome.toLocaleString('en-US')})`,
+    );
+  });
 });

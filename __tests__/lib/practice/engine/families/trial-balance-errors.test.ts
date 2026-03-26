@@ -44,7 +44,7 @@ describe('trial balance error analysis family', () => {
     });
 
     const solution = trialBalanceErrorFamily.solve(definition);
-    const firstScenario = definition.scenarios[0];
+    const firstScenario = definition.scenarios.find((scenario) => scenario.archetypeId === 'transposition') ?? definition.scenarios[0];
     const studentResponse: TrialBalanceErrorResponse = {
       ...solution,
       [`${firstScenario.rowId}:balanced`]: firstScenario.expectedBalanced === 'still-balances' ? 'out-of-balance' : 'still-balances',
@@ -62,6 +62,9 @@ describe('trial balance error analysis family', () => {
       expectedLabel: expect.stringMatching(/still balances|out of balance/i),
     });
     expect(reviewed[`${firstScenario.rowId}:difference`].message).toContain('difference');
+    if (firstScenario.archetypeId === 'transposition') {
+      expect(reviewed[`${firstScenario.rowId}:difference`].message).toContain('10a + b');
+    }
 
     const parsed = practiceSubmissionEnvelopeSchema.safeParse(envelope);
     expect(parsed.success).toBe(true);

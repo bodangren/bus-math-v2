@@ -5,9 +5,11 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import type { PracticeMode } from '@/lib/practice/engine/types';
 import { cn } from '@/lib/utils';
 
 import { formatAccountingAmount, toNumber } from './utils';
+import { TeachingModePanel } from './TeachingModePanel';
 
 export interface StatementLayoutRow {
   id: string;
@@ -51,6 +53,7 @@ export interface StatementLayoutProps {
   scenarioPanel?: ReactNode;
   scaffoldText?: string;
   reviewSummary?: StatementLayoutSummaryItem[];
+  mode?: PracticeMode;
 }
 
 function getRowStatusClasses(status?: StatementLayoutFeedback['status']) {
@@ -120,6 +123,7 @@ export function StatementLayout({
   scenarioPanel,
   scaffoldText,
   reviewSummary,
+  mode = 'guided_practice',
 }: StatementLayoutProps) {
   const [internalValues, setInternalValues] = useState<Record<string, string>>(defaultValues ?? {});
   const currentValues = values ?? internalValues;
@@ -142,6 +146,14 @@ export function StatementLayout({
   const rowLookup = useMemo(() => {
     return new Map(sections.flatMap((section) => section.rows.map((row) => [row.id, row] as const)));
   }, [sections]);
+  const teachingSteps = useMemo(
+    () => [
+      'Read the section heading, then trace the line items from top to bottom.',
+      'Fill each line item before you move to the subtotal line.',
+      'Use the inner amount for row work and the outer total column for the final total.',
+    ],
+    [],
+  );
 
   const resolvedReviewSummary = useMemo(() => {
     if (reviewSummary && reviewSummary.length > 0) {
@@ -480,6 +492,13 @@ export function StatementLayout({
           <div className="mx-auto w-full max-w-4xl rounded-2xl border border-dashed border-border/70 bg-background/90 px-4 py-3 text-left text-sm text-muted-foreground shadow-sm">
             {scaffoldText}
           </div>
+        )}
+        {mode === 'teaching' && (
+          <TeachingModePanel
+            title="Statement walkthrough"
+            summary="Walk the class through the statement from the heading down to the total line."
+            steps={teachingSteps}
+          />
         )}
       </CardHeader>
       <CardContent className="space-y-8 px-6 py-6">

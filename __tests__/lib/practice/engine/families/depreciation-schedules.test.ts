@@ -53,6 +53,8 @@ describe('depreciation schedules family', () => {
 
     const reviewed = buildDepreciationSchedulesReviewFeedback(definition, wrongResponse, wrongGrade);
     expect(reviewed[firstKey]).toMatchObject({ status: 'incorrect' });
+    const chainKey = definition.parts.find((part) => part.id === 'year-1-depreciation' || part.id === 'rate-per-unit')?.id ?? firstKey;
+    expect(reviewed[chainKey].message).toContain('÷');
 
     const envelope = depreciationSchedulesFamily.toEnvelope(definition, solution, grade);
     expect(practiceSubmissionEnvelopeSchema.safeParse(envelope).success).toBe(true);

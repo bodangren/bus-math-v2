@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { TeachingModePanel } from './TeachingModePanel';
 import { cn } from '@/lib/utils';
 import type { PracticeMode } from '@/lib/practice/engine/types';
 
@@ -160,16 +161,11 @@ export function JournalEntryTable({
 
       <CardContent className="space-y-4 px-6 py-6">
         {mode === 'teaching' && (
-          <div className="rounded-2xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-sm text-blue-900">
-            <div className="font-semibold uppercase tracking-[0.18em] text-blue-700">Teaching mode</div>
-            <div className="mt-1 flex flex-wrap gap-3">
-              {rowPrompts.map((prompt) => (
-                <span key={prompt} className="rounded-full border border-blue-200 bg-white/80 px-3 py-1 text-xs font-medium">
-                  {prompt}
-                </span>
-              ))}
-            </div>
-          </div>
+          <TeachingModePanel
+            title="Journal workflow"
+            summary="Project the journal line by line and keep debits and credits in balance."
+            steps={rowPrompts}
+          />
         )}
 
         <div className="overflow-x-auto">

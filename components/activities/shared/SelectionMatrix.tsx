@@ -4,7 +4,10 @@ import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'rea
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import type { PracticeMode } from '@/lib/practice/engine/types';
 import { cn } from '@/lib/utils';
+
+import { TeachingModePanel } from './TeachingModePanel';
 
 type SelectionMode = 'single' | 'multiple';
 
@@ -44,6 +47,7 @@ export interface SelectionMatrixProps {
   rows: SelectionMatrixRow[];
   columns: SelectionMatrixColumn[];
   scenarioPanel?: ReactNode;
+  mode?: PracticeMode;
   defaultValue?: Record<string, string | string[]>;
   value?: Record<string, string | string[]>;
   onValueChange?: (value: Record<string, string | string[]>) => void;
@@ -95,6 +99,7 @@ export function SelectionMatrix({
   rows,
   columns,
   scenarioPanel,
+  mode = 'guided_practice',
   defaultValue,
   value,
   onValueChange,
@@ -125,6 +130,14 @@ export function SelectionMatrix({
   const summaryMisconceptionCount =
     submissionSummary?.misconceptionCount ??
     new Set(Object.values(rowFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size;
+  const teachingSteps = useMemo(
+    () => [
+      'Read each row label and any short hint before choosing.',
+      'Compare the row to the column labels and pick the best match.',
+      'Review the misconception tags to see why the choice matters.',
+    ],
+    [],
+  );
 
   const updateValue = (nextValue: Record<string, string | string[]>) => {
     if (value === undefined) {
@@ -261,6 +274,13 @@ export function SelectionMatrix({
           {description && <CardDescription>{description}</CardDescription>}
         </div>
         {scenarioPanel && <div className="space-y-3">{scenarioPanel}</div>}
+        {mode === 'teaching' && (
+          <TeachingModePanel
+            title="Classification walkthrough"
+            summary="Guide the class from the row label to the correct column choice."
+            steps={teachingSteps}
+          />
+        )}
         {teacherView && (
           <div className="grid gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-2 xl:grid-cols-4">
             <Badge variant="secondary" className="justify-start gap-2">

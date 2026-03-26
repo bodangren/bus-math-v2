@@ -116,4 +116,25 @@ describe('SelectionMatrix', () => {
     expect(screen.getByText(/your answer: debit\. expected: credit\./i)).toBeInTheDocument();
     expect(screen.getByText(/contra-account-same-as-parent/i)).toBeInTheDocument();
   });
+
+  it('shows teaching narration and a next-step control', () => {
+    render(
+      <SelectionMatrix
+        title="Normal balances"
+        mode="teaching"
+        rows={[
+          { id: 'cash', label: 'Cash', description: 'Current asset' },
+        ]}
+        columns={[
+          { id: 'debit', label: 'Debit' },
+          { id: 'credit', label: 'Credit' },
+        ]}
+        defaultValue={{ cash: 'debit' }}
+      />,
+    );
+
+    expect(screen.getByText(/teaching mode/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /next step/i })).toBeInTheDocument();
+    expect(screen.getByText(/read each row label/i)).toBeInTheDocument();
+  });
 });

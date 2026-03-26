@@ -30,6 +30,7 @@
 - (2026-03-20, classification_conceptual_families) Final verification is easiest when the family registry, preview samples, and plan are already aligned; archive only after lint, full test, and build all pass against the same shared practice contract surface.
 - (2026-03-23, practice_engine_stabilization_20260323) Preview copy should expose source facts and prompts, not answer-bearing legacy ids, or the dev surface leaks solved state back into the contract.
 - (2026-03-23, practice_engine_stabilization_20260323) Phase 1 closure still needs a repo-wide test pass; keep baseline failures separate from the phase artifact when they are outside the practice-engine slice.
+- (2026-03-27, practice_visual_teaching_upgrade_20260323) Teaching mode works best as runtime presentation, not persisted submission state; the shared component seam can carry narration without polluting `practice.v1`.
 - (2026-03-24, practice_visual_teaching_upgrade_20260323) Visual practice components read better when the layout preset is derived from the zone set and the details render as human-readable lines, not raw JSON.
 - (2026-03-24, practice_visual_teaching_upgrade_20260323) Replacing a flat posting-balance list with a T-account board keeps the arithmetic task intact while restoring debit-left / credit-right spatial reasoning.
 - (2026-03-24, practice_visual_teaching_upgrade_20260323) Statement and journal previews work best when they borrow ledger conventions directly, such as centered headers, grouped dates, and ruling lines, instead of generic table chrome.

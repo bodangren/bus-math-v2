@@ -27,7 +27,7 @@ describe('types/activities exports', () => {
     expectTypeOf<ActivitySubmissionData>().toMatchTypeOf<{
       contractVersion: 'practice.v1';
       activityId: string;
-      mode: 'worked_example' | 'guided_practice' | 'independent_practice' | 'assessment';
+      mode: 'worked_example' | 'guided_practice' | 'independent_practice' | 'assessment' | 'teaching';
       status: string;
       attemptNumber: number;
       submittedAt: string;

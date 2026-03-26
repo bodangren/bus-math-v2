@@ -78,6 +78,7 @@ describe('adjusting calculations family', () => {
       status: 'incorrect',
       expectedLabel: expect.any(String),
     });
+    expect(calculationFeedback[calculationPart.id].message).toContain('×');
 
     const calculationParsed = practiceSubmissionEnvelopeSchema.safeParse(calculationEnvelope);
     expect(calculationParsed.success).toBe(true);
@@ -126,6 +127,50 @@ describe('adjusting calculations family', () => {
       memo: 'Wrong memo',
     });
     expect(entryParsed.data.parts).toHaveLength(entryDefinition.parts.length);
+  });
+
+  it('uses full chains in the calculation feedback copy for deferrals and depreciation', () => {
+    const deferralDefinition = adjustingCalculationsFamily.generate(2026, {
+      mode: 'assessment',
+      presentation: 'calculation',
+      scenarioKind: 'deferral',
+      tolerance: 1,
+    });
+    const deferralSolution = adjustingCalculationsFamily.solve(deferralDefinition);
+    const deferralPart = deferralDefinition.parts[0];
+    const deferralResponse: AdjustingCalculationsResponse = {
+      ...deferralSolution,
+      [deferralPart.id]: Number(deferralSolution[deferralPart.id] ?? 0) + 1,
+    };
+    const deferralGrade = adjustingCalculationsFamily.grade(deferralDefinition, deferralResponse);
+    const deferralFeedback = buildAdjustingCalculationsReviewFeedback(deferralDefinition, deferralResponse, deferralGrade);
+    const deferralScenario = deferralDefinition.scenario as import('@/lib/practice/engine/adjustments').DeferralAdjustmentScenario;
+    const deferralChain = `$${deferralScenario.originalAmount.toLocaleString('en-US')} × (${deferralScenario.elapsedMonths}/${deferralScenario.coverageMonths}) = $${deferralScenario.amount.toLocaleString('en-US')}`;
+
+    expect(deferralFeedback[deferralPart.id].message).toContain(deferralChain);
+
+    const depreciationDefinition = adjustingCalculationsFamily.generate(2026, {
+      mode: 'assessment',
+      presentation: 'calculation',
+      scenarioKind: 'depreciation',
+      tolerance: 1,
+    });
+    const depreciationSolution = adjustingCalculationsFamily.solve(depreciationDefinition);
+    const depreciationPart = depreciationDefinition.parts[0];
+    const depreciationResponse: AdjustingCalculationsResponse = {
+      ...depreciationSolution,
+      [depreciationPart.id]: Number(depreciationSolution[depreciationPart.id] ?? 0) + 1,
+    };
+    const depreciationGrade = adjustingCalculationsFamily.grade(depreciationDefinition, depreciationResponse);
+    const depreciationFeedback = buildAdjustingCalculationsReviewFeedback(
+      depreciationDefinition,
+      depreciationResponse,
+      depreciationGrade,
+    );
+    const depreciationScenario = depreciationDefinition.scenario as import('@/lib/practice/engine/adjustments').DepreciationAdjustmentScenario;
+    const depreciationChain = `($${depreciationScenario.depreciableBase.toLocaleString('en-US')} ÷ ${depreciationScenario.usefulLifeMonths}) × ${depreciationScenario.monthsUsed} = $${depreciationScenario.depreciationExpense.toLocaleString('en-US')}`;
+
+    expect(depreciationFeedback[depreciationPart.id].message).toContain(depreciationChain);
   });
 
   it('marks a journal line incorrect when the account is wrong (even with correct amounts)', () => {

@@ -255,6 +255,49 @@ function scoreNumericPart(expected: number, actual: unknown, tolerance: number) 
   return { isCorrect, score: isCorrect ? 1 : 0, normalizedAnswer: normalizePracticeValue(parsed) };
 }
 
+function buildChainText(definition: DepreciationSchedulesDefinition, part: DepreciationSchedulesPart) {
+  const asset = definition.asset;
+  const depreciableBase = asset.cost - asset.salvageValue;
+  const annualDepreciation = Math.round(depreciableBase / asset.usefulLifeYears);
+  const slRate = 1 / asset.usefulLifeYears;
+  const ddbRate = slRate * 2;
+  const year1Ddb = Math.round(asset.cost * ddbRate);
+  const bookValueYear1 = asset.cost - year1Ddb;
+  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
+  const year1Units = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
+
+  if (part.id === 'depreciable-base') {
+    return `$${formatAmount(asset.cost)} − $${formatAmount(asset.salvageValue)} = $${formatAmount(depreciableBase)}`;
+  }
+
+  if (part.id === 'year-1-depreciation') {
+    if (definition.method === 'straight-line') {
+      return `$${formatAmount(depreciableBase)} ÷ ${asset.usefulLifeYears} = $${formatAmount(annualDepreciation)}`;
+    }
+
+    if (definition.method === 'double-declining') {
+      return `$${formatAmount(asset.cost)} × ${(ddbRate * 100).toFixed(1)}% = $${formatAmount(year1Ddb)}`;
+    }
+
+    return `$${ratePerUnitRounded.toFixed(2)} × ${formatAmount(asset.unitsYear1 ?? 0)} = $${formatAmount(year1Units)}`;
+  }
+
+  if (part.id === 'book-value-year-1') {
+    if (definition.method === 'double-declining') {
+      return `$${formatAmount(asset.cost)} − $${formatAmount(year1Ddb)} = $${formatAmount(bookValueYear1)}`;
+    }
+
+    return `$${formatAmount(asset.cost)} − $${formatAmount(annualDepreciation)} = $${formatAmount(asset.cost - annualDepreciation)}`;
+  }
+
+  if (part.id === 'rate-per-unit') {
+    return `$${formatAmount(depreciableBase)} ÷ ${formatAmount(asset.totalUnits ?? 0)} = $${ratePerUnitRounded.toFixed(2)}`;
+  }
+
+  return `$${formatAmount(asset.cost)} − $${formatAmount(asset.salvageValue)} ÷ ${asset.usefulLifeYears} = $${formatAmount(part.targetValue)}`;
+}
+
 const GUIDANCE: Record<DepreciationMethod, string> = {
   'straight-line': 'Compute the depreciable base, then divide by the useful life.',
   'double-declining': 'Apply double the straight-line rate to the beginning book value each year.',
@@ -278,18 +321,20 @@ export function buildDepreciationSchedulesReviewFeedback(
       if (!part) {
         return [partResult.partId, { status: 'incorrect' as const, message: 'Review data unavailable.' }] as const;
       }
-      return [
-        part.id,
-        {
-          status: partResult.isCorrect ? ('correct' as const) : ('incorrect' as const),
-          selectedLabel: studentResponse[part.id] === undefined ? 'Not entered' : formatAmount(Number(studentResponse[part.id])),
-          expectedLabel: formatAmount(part.targetValue),
-          misconceptionTags: partResult.misconceptionTags,
-          message: partResult.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${formatAmount(part.targetValue)}. ${part.details.explanation}`,
-        },
-      ] as const;
-    }),
-  );
+    return [
+      part.id,
+      {
+        status: partResult.isCorrect ? ('correct' as const) : ('incorrect' as const),
+        selectedLabel: studentResponse[part.id] === undefined ? 'Not entered' : formatAmount(Number(studentResponse[part.id])),
+        expectedLabel: formatAmount(part.targetValue),
+        misconceptionTags: partResult.misconceptionTags,
+        message: partResult.isCorrect
+          ? `${part.label} is correct. ${buildChainText(definition, part)}.`
+          : `${part.label} should be ${formatAmount(part.targetValue)}. ${buildChainText(definition, part)}.`,
+      },
+    ] as const;
+  }),
+);
 }
 
 export const depreciationSchedulesFamily: ProblemFamily<DepreciationSchedulesDefinition, DepreciationSchedulesResponse, DepreciationSchedulesConfig> = {

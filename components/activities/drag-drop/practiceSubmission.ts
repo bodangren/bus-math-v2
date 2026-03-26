@@ -22,7 +22,7 @@ type ZoneMetadata = {
   description?: string;
 };
 
-type PracticeMode = 'worked_example' | 'guided_practice' | 'independent_practice' | 'assessment';
+type PracticeMode = 'worked_example' | 'guided_practice' | 'independent_practice' | 'assessment' | 'teaching';
 
 export type CategorizationSupportedModes = readonly ['guided_practice', 'independent_practice'];
 export const CATEGORIZATION_SUPPORTED_MODES = ['guided_practice', 'independent_practice'] as const satisfies CategorizationSupportedModes;

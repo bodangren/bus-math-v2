@@ -185,6 +185,27 @@ function getContraParentBalance(part: NormalBalancePart) {
   return practiceAccounts.find((account) => account.id === part.details.contraOf)?.normalBalance ?? null;
 }
 
+function explainNormalBalance(part: NormalBalancePart) {
+  if (part.details.isContraAccount && part.details.contraOf) {
+    return `${part.label} is a contra account, so it uses the opposite side from ${part.details.contraOf}.`;
+  }
+
+  switch (part.details.accountType) {
+    case 'asset':
+      return 'Assets increase on the debit side.';
+    case 'liability':
+      return 'Liabilities increase on the credit side.';
+    case 'equity':
+      return 'Equity increases on the credit side.';
+    case 'revenue':
+      return 'Revenue increases equity, so it uses the credit side.';
+    case 'expense':
+      return 'Expenses increase on the debit side.';
+    default:
+      return `This account uses the ${part.targetId} side.`;
+  }
+}
+
 function buildPartFeedback(part: NormalBalancePart, studentResponse: NormalBalanceResponse, gradeResult: GradeResult['parts'][number]) {
   const selectedBalance = normalizePracticeValue(studentResponse[part.id]) as NormalBalanceSide;
   const expectedBalance = part.targetId;
@@ -198,10 +219,10 @@ function buildPartFeedback(part: NormalBalancePart, studentResponse: NormalBalan
     expectedBalanceLabel: expectedBalance.toUpperCase(),
     misconceptionTags: gradeResult.misconceptionTags,
     message: isCorrect
-      ? 'Correct normal balance.'
+      ? `Correct normal balance. ${explainNormalBalance(part)}`
       : part.details.isContraAccount && contraParentBalance && selectedBalance === contraParentBalance
-        ? `This contra account should not use the same side as ${part.details.contraOf}.`
-        : `Expected ${expectedBalance.toUpperCase()}.`,
+        ? `This contra account should not use the same side as ${part.details.contraOf}. ${explainNormalBalance(part)}`
+        : `Expected ${expectedBalance.toUpperCase()}. ${explainNormalBalance(part)}`,
   };
 }
 
