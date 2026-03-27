@@ -1,16 +1,4 @@
-Implemented the Unit 1 guided/independent practice slice and pushed it.
+Phase 3 teaching-mode work is in the tree: shared practice shells now have runtime teaching chrome, the key accounting feedback builders emit computation chains, and the conductor notes were updated (`tech-debt`, `lessons-learned`, and the track metadata/current-state note). Full `npm test` passed (`254` files, `1342` tests), and `npm run build` completed successfully.
 
-- `supabase/seed/unit1/lesson-02.ts`, `supabase/seed/unit1/lesson-04.ts`, `supabase/seed/unit1/lesson-07.ts`: split guided and independent practice onto distinct activity ids and fresher prompts/data.
-- `__tests__/seed/unit1/lesson-02.test.ts`, `__tests__/seed/unit1/lesson-04.test.ts`, `__tests__/seed/unit1/lesson-07.test.ts`, `__tests__/curriculum/published-manifest.test.ts`: added regressions so the published manifest and seed sources catch guided/independent drift.
-- `lib/curriculum/generated/unit1-authored.ts`: regenerated the authored Unit 1 module.
-- `conductor/tracks/curriculum_guided_independent_pairing_20260316/index.md`, `plan.md`, `conductor/tech-debt.md`, `conductor/lessons-learned.md`: recorded the verified slice and the new guardrail.
-- I did not archive the track folder because the broader rollout still has open phases in the plan.
-
-Verification:
-- `npm test` passed: 251 test files, 1301 tests.
-- `npm run build` passed. It emitted the expected Convex fetch warning during static generation because local Convex was not listening, but the build exited successfully.
-
-Commits pushed to `origin/main`:
-- `bf3d848` `feat(conductor): verify Unit 1 guided/independent slice with GPT-5.4`
-- `1bfc6fd` `chore(conductor): record run log for Unit 1 slice with GPT-5.4`
+I committed that slice as `ce923d1` (`feat(practice): teaching-mode overlay and chain feedback (gpt-5.4)`). `git push` failed from this environment because `github.com` could not be resolved, so the commit is local only. The worktree still has pre-existing drift in `conductor/codex-*`, `dist/`, and `package.json` / `package-lock.json` that I left out of the commit.
 

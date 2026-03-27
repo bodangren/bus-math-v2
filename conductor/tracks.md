@@ -45,10 +45,6 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/practice_engine_stabilization_20260323/](./tracks/practice_engine_stabilization_20260323/)*
   *Status: Next up. Fix 7 engine bugs, consolidate D→Q/O→Q/rebuild L, build Families R-U. Stabilizes the full family registry.*
 
-- [~] **Track 3: Practice Visual & Teaching Upgrade**
-  *Link: [./tracks/practice_visual_teaching_upgrade_20260323/](./tracks/practice_visual_teaching_upgrade_20260323/)*
-  *Status: Component integration in progress; later visual language, teaching mode, feedback, and sequencing phases remain blocked on this track.*
-
 - [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
   *Status: Delete superseded components (safe after curriculum rewired), refactor charts, rebuild 8 simulations on practice.v1. Blocked on Tracks 1+3.*
@@ -58,6 +54,14 @@ Strictly serial. Complete and archive each track before starting the next.
   *Status: Misconception-tag aggregation and AI-assisted teacher interpretation. Blocked on Track 3 (teaching mode stabilizes tag generation).*
 
 ## Archive Ledger
+
+- [x] **Track: Practice Visual & Teaching Upgrade**
+  *Link: [./archive/practice_visual_teaching_upgrade_20260323/](./archive/practice_visual_teaching_upgrade_20260323/)*
+  *Closeout: archived on 2026-03-28 after completing teaching mode integration, computation-chain feedback for Families J/Q/G/N/M, DEA-LER mnemonic scaffolding, and curriculum sequencing documentation, verified with lint, test, and production build gates.*
+
+- [x] **Track: Practice Family Pedagogical Review**
+  *Link: [./archive/practice_family_pedagogical_review_20260322/](./archive/practice_family_pedagogical_review_20260322/)*
+  *Closeout: archived on 2026-03-28 after the review findings were documented in `conductor/curriculum/practice-family-progressions.md` and incorporated into the Visual & Teaching Upgrade track.*
 
 - [x] **Track: Curriculum Guided/Independent Practice Rollout**
   *Link: [./archive/curriculum_guided_independent_pairing_20260316/](./archive/curriculum_guided_independent_pairing_20260316/)*
