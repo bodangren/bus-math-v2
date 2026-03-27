@@ -80,6 +80,46 @@ function formatAmount(amount: number) {
   return amount.toLocaleString('en-US');
 }
 
+function buildDepreciationChain(scenario: DepreciationAdjustmentScenario): string {
+  const originalCost = scenario.depreciableBase + scenario.salvageValue;
+  return `($${formatAmount(originalCost)} − $${formatAmount(scenario.salvageValue)}) ÷ ${scenario.usefulLifeMonths} × ${scenario.monthsUsed} = $${formatAmount(scenario.accumulatedDepreciation)}`;
+}
+
+function buildNetBookValueChain(scenario: DepreciationAdjustmentScenario): string {
+  const originalCost = scenario.depreciableBase + scenario.salvageValue;
+  return `$${formatAmount(originalCost)} − $${formatAmount(scenario.accumulatedDepreciation)} = $${formatAmount(scenario.carryingAmount)}`;
+}
+
+function buildReviewFeedback(
+  definition: DepreciationPresentationDefinition,
+  part: DepreciationPresentationPart,
+  studentResponse: DepreciationPresentationResponse,
+  gradeResultPart: GradeResult['parts'][number],
+): DepreciationPresentationReviewFeedback {
+  const selectedValue = studentResponse[part.id];
+  const scenario = definition.scenario;
+
+  let chain: string | null = null;
+  if (part.details.rowRole === 'accumulated-depreciation') {
+    chain = buildDepreciationChain(scenario);
+  } else if (part.details.rowRole === 'net-presentation') {
+    chain = buildNetBookValueChain(scenario);
+  }
+
+  const baseMessage = gradeResultPart.isCorrect
+    ? `${part.label} is correct.`
+    : `${part.label} should be $${formatAmount(part.targetId)}.`;
+  const message = chain ? `${baseMessage} ${chain}` : baseMessage;
+
+  return {
+    status: gradeResultPart.isCorrect ? 'correct' : 'incorrect',
+    selectedLabel: selectedValue === undefined ? 'Not entered' : formatAmount(Number(selectedValue)),
+    expectedLabel: formatAmount(part.targetId),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message,
+  };
+}
+
 function mulberry32(seed: number) {
   let t = seed >>> 0;
   return () => {
@@ -291,23 +331,6 @@ function buildStatementSections(
   };
 }
 
-function buildReviewFeedback(
-  part: DepreciationPresentationPart,
-  studentResponse: DepreciationPresentationResponse,
-  gradeResultPart: GradeResult['parts'][number],
-): DepreciationPresentationReviewFeedback {
-  const selectedValue = studentResponse[part.id];
-  return {
-    status: gradeResultPart.isCorrect ? 'correct' : 'incorrect',
-    selectedLabel: selectedValue === undefined ? 'Not entered' : formatAmount(Number(selectedValue)),
-    expectedLabel: formatAmount(part.targetId),
-    misconceptionTags: gradeResultPart.misconceptionTags,
-    message: gradeResultPart.isCorrect
-      ? `${part.label} is correct.`
-      : `${part.label} should be ${formatAmount(part.targetId)}.`,
-  };
-}
-
 export function buildDepreciationPresentationReviewFeedback(
   definition: DepreciationPresentationDefinition,
   studentResponse: DepreciationPresentationResponse,
@@ -329,7 +352,7 @@ export function buildDepreciationPresentationReviewFeedback(
         ] as const;
       }
 
-      return [part.id, buildReviewFeedback(part, studentResponse, partResult)] as const;
+      return [part.id, buildReviewFeedback(definition, part, studentResponse, partResult)] as const;
     }),
   );
 }

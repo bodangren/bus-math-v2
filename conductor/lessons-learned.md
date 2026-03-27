@@ -35,4 +35,6 @@
 - (2026-03-24, practice_visual_teaching_upgrade_20260323) Replacing a flat posting-balance list with a T-account board keeps the arithmetic task intact while restoring debit-left / credit-right spatial reasoning.
 - (2026-03-24, practice_visual_teaching_upgrade_20260323) Statement and journal previews work best when they borrow ledger conventions directly, such as centered headers, grouped dates, and ruling lines, instead of generic table chrome.
 - (2026-03-23, curriculum_guided_independent_pairing_20260316) When an instruction phase reuses a practice family, make the worked example explicit in source and manifest tests so the intro reads as teaching, not hidden submission reuse.
+- (2026-03-28, practice_visual_teaching_upgrade_20260323) Computation-chain feedback is more valuable when it shows actual scenario values rather than generic formulas; students can verify their arithmetic against the exact numbers.
+- (2026-03-28, practice_visual_teaching_upgrade_20260323) The DEA-LER mnemonic is best stored in scaffolding so components can render it at appropriate detail levels by mode.
 - (2026-03-24, curriculum_guided_independent_pairing_20260316) Later authored units benefit from the same explicit teacher-model callouts as the Unit 1 exemplar; otherwise the manifest can look correct while the lesson prose still feels generic.

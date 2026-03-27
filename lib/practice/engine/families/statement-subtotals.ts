@@ -544,20 +544,109 @@ function buildStatementBody(kind: StatementSubtotalsKind, seed: number, ledger: 
   return buildServiceIncomeStatement(ledger, tolerance);
 }
 
+function buildComputationChain(
+  definition: StatementSubtotalsDefinition,
+  part: StatementSubtotalsRow,
+): string | null {
+  const statementKind = definition.statementKind;
+  const rows = definition.rows;
+
+  if (part.id === 'net-income' && (statementKind === 'income-statement' || statementKind === 'retail-income-statement')) {
+    const totalRevenueRow = rows.find((row) => row.id === 'total-revenue');
+    const totalExpensesRow = rows.find((row) => row.id === 'total-expenses');
+    if (totalRevenueRow && totalExpensesRow) {
+      const revenue = totalRevenueRow.value ?? 0;
+      const expenses = totalExpensesRow.value ?? 0;
+      const netIncome = part.targetId as number;
+      return `Total Revenues ($${formatAmount(revenue)}) − Total Expenses ($${formatAmount(expenses)}) = Net Income ($${formatAmount(netIncome)})`;
+    }
+  }
+
+  if (part.id === 'retail-net-income' && statementKind === 'retail-income-statement') {
+    const grossProfitRow = rows.find((row) => row.id === 'gross-profit');
+    const operatingExpensesRow = rows.find((row) => row.id === 'operating-expenses');
+    if (grossProfitRow && operatingExpensesRow) {
+      const grossProfit = grossProfitRow.value ?? 0;
+      const operatingExpenses = operatingExpensesRow.value ?? 0;
+      const netIncome = part.targetId as number;
+      return `Gross Profit ($${formatAmount(grossProfit)}) − Operating Expenses ($${formatAmount(operatingExpenses)}) = Net Income ($${formatAmount(netIncome)})`;
+    }
+  }
+
+  if (part.id === 'gross-profit' && statementKind === 'retail-income-statement') {
+    const netSalesRow = rows.find((row) => row.id === 'net-sales');
+    const cogsRow = rows.find((row) => row.id === 'cogs');
+    if (netSalesRow && cogsRow) {
+      const netSales = netSalesRow.value ?? 0;
+      const cogs = cogsRow.value ?? 0;
+      const grossProfit = part.targetId as number;
+      return `Net Sales ($${formatAmount(netSales)}) − Cost of Goods Sold ($${formatAmount(cogs)}) = Gross Profit ($${formatAmount(grossProfit)})`;
+    }
+  }
+
+  if (part.id === 'total-assets' && statementKind === 'balance-sheet') {
+    const assetRows = rows.filter((row) => row.id.startsWith('asset-') && row.kind === 'prefilled');
+    const total = assetRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+    const totalAssets = part.targetId as number;
+    return `Sum of all asset line items ($${formatAmount(total)}) = Total Assets ($${formatAmount(totalAssets)})`;
+  }
+
+  if (part.id === 'total-liabilities-equity' && statementKind === 'balance-sheet') {
+    const liabilityRows = rows.filter((row) => row.id.startsWith('liability-') && row.kind === 'prefilled');
+    const equityRows = rows.filter((row) => row.id.startsWith('equity-') && row.kind === 'prefilled');
+    const total = [...liabilityRows, ...equityRows].reduce((sum, row) => sum + (row.value ?? 0), 0);
+    const totalClaims = part.targetId as number;
+    return `Sum of all liability and equity line items ($${formatAmount(total)}) = Total Liabilities and Equity ($${formatAmount(totalClaims)})`;
+  }
+
+  if (part.id === 'ending-capital' && statementKind === 'equity-statement') {
+    const beginningCapitalRow = rows.find((row) => row.id === 'beginning-capital');
+    const netIncomeRow = rows.find((row) => row.id === 'net-income');
+    const dividendsRow = rows.find((row) => row.id === 'dividends');
+    if (beginningCapitalRow && netIncomeRow && dividendsRow) {
+      const beginningCapital = beginningCapitalRow.value ?? 0;
+      const netIncome = netIncomeRow.value ?? 0;
+      const dividends = dividendsRow.value ?? 0;
+      const endingCapital = part.targetId as number;
+      return `Beginning Capital ($${formatAmount(beginningCapital)}) + Net Income ($${formatAmount(netIncome)}) − Dividends ($${formatAmount(dividends)}) = Ending Capital ($${formatAmount(endingCapital)})`;
+    }
+  }
+
+  if (part.sumOf && part.sumOf.length > 0) {
+    const sumRows = part.sumOf.map((sumId) => rows.find((row) => row.id === sumId)).filter((row): row is StatementSubtotalsRow => Boolean(row));
+    if (sumRows.length > 0) {
+      const values = sumRows.map((row) => row.value ?? 0);
+      const total = values.reduce((sum, val) => sum + val, 0);
+      const expected = part.targetId as number;
+      if (values.length === 2) {
+        return `${sumRows[0].label} ($${formatAmount(values[0])}) ${values[1] >= 0 ? '+' : '−'} ${sumRows[1].label} ($${formatAmount(Math.abs(values[1]))}) = ${part.label} ($${formatAmount(expected)})`;
+      }
+      return `Sum of ${sumRows.map((row) => row.label).join(', ')} ($${formatAmount(total)}) = ${part.label} ($${formatAmount(expected)})`;
+    }
+  }
+
+  return null;
+}
+
 function buildReviewFeedback(
+  definition: StatementSubtotalsDefinition,
   part: StatementSubtotalsRow,
   studentResponse: StatementSubtotalsResponse,
   gradeResultPart: GradeResult['parts'][number],
 ): StatementSubtotalsReviewFeedback {
   const selectedValue = studentResponse[part.id];
+  const chain = buildComputationChain(definition, part);
+  const baseMessage = gradeResultPart.isCorrect
+    ? `${part.label} is correct.`
+    : `${part.label} should be ${formatAmount(part.targetId)}.`;
+  const message = chain ? `${baseMessage} ${chain}` : baseMessage;
+
   return {
     status: gradeResultPart.isCorrect ? 'correct' : 'incorrect',
     selectedLabel: selectedValue === undefined ? 'Not entered' : formatAmount(Number(selectedValue)),
     expectedLabel: formatAmount(part.targetId),
     misconceptionTags: gradeResultPart.misconceptionTags,
-    message: gradeResultPart.isCorrect
-      ? `${part.label} is correct.`
-      : `${part.label} should be ${formatAmount(part.targetId)}.`,
+    message,
   };
 }
 
@@ -582,7 +671,7 @@ export function buildStatementSubtotalsReviewFeedback(
         ] as const;
       }
 
-      return [part.id, buildReviewFeedback(part, studentResponse, partResult)] as const;
+      return [part.id, buildReviewFeedback(definition, part, studentResponse, partResult)] as const;
     }),
   ) as Record<string, StatementSubtotalsReviewFeedback>;
 }

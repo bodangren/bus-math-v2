@@ -77,4 +77,54 @@ describe('depreciation presentation family', () => {
     expect(parsed.data.answers[changedPart.id]).toBe(studentResponse[changedPart.id]);
     expect(parsed.data.parts).toHaveLength(definition.parts.length);
   });
+
+  it('includes full depreciation chain in feedback for derived layout', () => {
+    const definition = depreciationPresentationFamily.generate(2026, {
+      mode: 'assessment',
+      layout: 'derived',
+      tolerance: 1,
+    });
+
+    const solution = depreciationPresentationFamily.solve(definition);
+    const accumulatedPart = definition.parts.find((part) => part.details.rowRole === 'accumulated-depreciation');
+    if (!accumulatedPart) {
+      throw new Error('Expected accumulated-depreciation part in derived layout');
+    }
+
+    const studentResponse: DepreciationPresentationResponse = {
+      ...solution,
+      [accumulatedPart.id]: Number(solution[accumulatedPart.id] ?? 0) + 100,
+    };
+
+    const gradeResult = depreciationPresentationFamily.grade(definition, studentResponse);
+    const reviewed = buildDepreciationPresentationReviewFeedback(definition, studentResponse, gradeResult);
+
+    expect(reviewed[accumulatedPart.id].message).toContain('$');
+    expect(reviewed[accumulatedPart.id].message).toMatch(/\(.*\$[\d,]+.*−.*\$[\d,]+.*\).*÷.*\d+.*×.*\d+.*=.*\$[\d,]+/);
+  });
+
+  it('includes net book value chain in feedback for direct layout', () => {
+    const definition = depreciationPresentationFamily.generate(2026, {
+      mode: 'assessment',
+      layout: 'direct',
+      tolerance: 1,
+    });
+
+    const solution = depreciationPresentationFamily.solve(definition);
+    const netBookValuePart = definition.parts.find((part) => part.details.rowRole === 'net-presentation');
+    if (!netBookValuePart) {
+      throw new Error('Expected net-presentation part in direct layout');
+    }
+
+    const studentResponse: DepreciationPresentationResponse = {
+      ...solution,
+      [netBookValuePart.id]: Number(solution[netBookValuePart.id] ?? 0) + 100,
+    };
+
+    const gradeResult = depreciationPresentationFamily.grade(definition, studentResponse);
+    const reviewed = buildDepreciationPresentationReviewFeedback(definition, studentResponse, gradeResult);
+
+    expect(reviewed[netBookValuePart.id].message).toContain('$');
+    expect(reviewed[netBookValuePart.id].message).toMatch(/\$[\d,]+.*−.*\$[\d,]+.*=.*\$[\d,]+/);
+  });
 });

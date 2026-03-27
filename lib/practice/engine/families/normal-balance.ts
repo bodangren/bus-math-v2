@@ -291,6 +291,11 @@ export const normalBalanceFamily: ProblemFamily<
         showBalanceLegend: true,
         includeContraAccounts,
         companyScope,
+        mnemonic: {
+          debit: 'DEA: Dividends, Expenses, Assets',
+          credit: 'LER: Liabilities, Equity, Revenue',
+          hint: 'Debit increases what you own (DEA); Credit increases what you owe or own (LER)',
+        },
       },
       grading: {
         strategy: 'exact',

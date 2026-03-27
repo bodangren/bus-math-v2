@@ -118,4 +118,57 @@ describe('statement subtotals family', () => {
     expect(parsed.data.answers[changedPart.id]).toBe(studentResponse[changedPart.id]);
     expect(parsed.data.parts).toHaveLength(definition.parts.length);
   });
+
+  it('includes computation-chain feedback for income-statement net income', () => {
+    const definition = statementSubtotalsFamily.generate(2026, {
+      mode: 'assessment',
+      statementKind: 'income-statement',
+      tolerance: 1,
+    });
+
+    const solution = statementSubtotalsFamily.solve(definition);
+    const netIncomePart = definition.parts.find((part) => part.id === 'net-income');
+    if (!netIncomePart) {
+      throw new Error('Expected net-income part in income-statement');
+    }
+
+    const studentResponse: StatementSubtotalsResponse = {
+      ...solution,
+      [netIncomePart.id]: Number(solution[netIncomePart.id] ?? 0) + 100,
+    };
+
+    const gradeResult = statementSubtotalsFamily.grade(definition, studentResponse);
+    const reviewed = buildStatementSubtotalsReviewFeedback(definition, studentResponse, gradeResult);
+
+    expect(reviewed[netIncomePart.id].message).toContain('Total Revenues');
+    expect(reviewed[netIncomePart.id].message).toContain('Total Expenses');
+    expect(reviewed[netIncomePart.id].message).toContain('Net Income');
+    expect(reviewed[netIncomePart.id].message).toMatch(/\$[\d,]+.*\$[\d,]+.*=.*\$[\d,]+/);
+  });
+
+  it('includes computation-chain feedback for retail-income-statement dependent subtotals', () => {
+    const definition = statementSubtotalsFamily.generate(2026, {
+      mode: 'assessment',
+      statementKind: 'retail-income-statement',
+      tolerance: 1,
+    });
+
+    const solution = statementSubtotalsFamily.solve(definition);
+    const netIncomePart = definition.parts.find((part) => part.id === 'retail-net-income');
+    if (!netIncomePart) {
+      throw new Error('Expected retail-net-income part in retail-income-statement');
+    }
+
+    const studentResponse: StatementSubtotalsResponse = {
+      ...solution,
+      [netIncomePart.id]: Number(solution[netIncomePart.id] ?? 0) + 100,
+    };
+
+    const gradeResult = statementSubtotalsFamily.grade(definition, studentResponse);
+    const reviewed = buildStatementSubtotalsReviewFeedback(definition, studentResponse, gradeResult);
+
+    expect(reviewed[netIncomePart.id].message).toContain('Gross Profit');
+    expect(reviewed[netIncomePart.id].message).toContain('Operating Expenses');
+    expect(reviewed[netIncomePart.id].message).toMatch(/Gross Profit.*Operating Expenses.*Net Income/);
+  });
 });

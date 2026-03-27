@@ -97,42 +97,42 @@
 
 ### Tasks
 
-- [ ] **Task: CX-1 — Add teaching mode to engine and components**
-  - [ ] Add `'teaching'` to the mode union type in `ProblemDefinition`
-  - [ ] Define teaching mode behavior: all hints/explanations always visible, step-by-step annotations, "next step" control for instructor
-  - [ ] Write failing tests: teaching mode definition includes visible hints and narration steps
-  - [ ] Implement teaching mode in engine config across all families
-  - [ ] Update shared components to render teaching chrome when `mode === 'teaching'`
+- [x] **Task: CX-1 — Add teaching mode to engine and components**
+  - [x] Add `'teaching'` to the mode union type in `ProblemDefinition`
+  - [x] Define teaching mode behavior: all hints/explanations always visible, step-by-step annotations, "next step" control for instructor
+  - [x] Write failing tests: teaching mode definition includes visible hints and narration steps
+  - [x] Implement teaching mode in engine config across all families
+  - [x] Update shared components to render teaching chrome when `mode === 'teaching'`
 
-- [ ] **Task: Implement computation-chain feedback — Families J, Q**
-  - [ ] Write failing test: J deferral feedback includes intermediate values ("$1,200 × (3/12) = $300")
-  - [ ] Write failing test: J depreciation feedback includes the full chain ("($4,800 − $480) ÷ 36 × 3 = $360")
-  - [ ] Write failing test: Q feedback includes dependent chain ("Total Revenues ($8,400) − Total Expenses ($5,250) = Net Income ($3,150)")
-  - [ ] Update feedback builders to interpolate scenario/definition intermediate values
-  - [ ] Implement for Q retail variant (conditional discount reasoning from O-5)
+- [x] **Task: Implement computation-chain feedback — Families J, Q**
+  - [x] Write failing test: J deferral feedback includes intermediate values ("$1,200 × (3/12) = $300")
+  - [x] Write failing test: J depreciation feedback includes the full chain ("($4,800 − $480) ÷ 36 × 3 = $360")
+  - [x] Write failing test: Q feedback includes dependent chain ("Total Revenues ($8,400) − Total Expenses ($5,250) = Net Income ($3,150)")
+  - [x] Update feedback builders to interpolate scenario/definition intermediate values
+  - [x] Implement for Q retail variant (conditional discount reasoning from O-5)
 
-- [ ] **Task: Implement computation-chain feedback — Families G, N, M**
-  - [ ] Write failing test: G transposition feedback explains divisible-by-9 rule with the actual numbers
-  - [ ] Write failing test: N derived feedback shows full depreciation chain
-  - [ ] Write failing test: M non-contra feedback explains the normal balance rule ("Revenue increases equity → credit side")
-  - [ ] Update feedback builders for G, N, M
+- [x] **Task: Implement computation-chain feedback — Families G, N, M**
+  - [x] Write failing test: G transposition feedback explains divisible-by-9 rule with the actual numbers
+  - [x] Write failing test: N derived feedback shows full depreciation chain
+  - [x] Write failing test: M non-contra feedback explains the normal balance rule ("Revenue increases equity → credit side")
+  - [x] Update feedback builders for G, N, M
 
-- [ ] **Task: Per-family pedagogical enhancements**
-  - [ ] M-1: Add DEA-LER mnemonic rendering at three detail levels by mode
-  - [ ] G-3: Add divisible-by-9 explanation in teaching mode ("10a + b vs 10b + a → 9|a−b|")
-  - [ ] K-1: Implement row subsetting (3–4 of 6 elements per instance) and directional variations (over-adjustment, double-recording)
-  - [ ] G-2: Suppress `whatToDecideFirst` hints in independent/assessment modes
-  - [ ] N-1: Default derived layout; reserve direct for teaching/warm-up only
-  - [ ] N-3: Expand asset categories from 2 to 4+ (add Vehicles, Furniture, Computers)
-  - [ ] H-1: Add difficulty progression metadata (`lineComplexity` or `eventCount`)
-  - [ ] I-2: Support multiple postings per account in Family I engine
-  - [ ] J-5: Add paired asset-vs-expense method comparison mode for teaching demos
+- [x] **Task: Per-family pedagogical enhancements**
+  - [x] M-1: Add DEA-LER mnemonic rendering at three detail levels by mode
+  - [x] G-3: Add divisible-by-9 explanation in teaching mode ("10a + b vs 10b + a → 9|a−b|")
+  - [x] K-1: Implement row subsetting (3–4 of 6 elements per instance) and directional variations (over-adjustment, double-recording)
+  - [x] G-2: Suppress `whatToDecideFirst` hints in independent/assessment modes
+  - [x] N-1: Default derived layout; reserve direct for teaching/warm-up only
+  - [x] N-3: Expand asset categories from 2 to 4+ (add Vehicles, Furniture, Computers)
+  - [x] H-1: Add difficulty progression metadata (`lineComplexity` or `eventCount`)
+  - [x] I-2: Support multiple postings per account in Family I engine
+  - [x] J-5: Add paired asset-vs-expense method comparison mode for teaching demos
 
-- [ ] **Task: Phase 3 verification**
-  - [ ] Run `npm run lint`
-  - [ ] Run `npm test` — full suite
-  - [ ] Run `npm run build`
-  - [ ] Visual review of teaching mode in the preview page
+- [x] **Task: Phase 3 verification**
+  - [x] Run `npm run lint`
+  - [x] Run `npm test` — full suite
+  - [x] Run `npm run build`
+  - [x] Visual review of teaching mode in the preview page
 
 ## Phase 4: Curriculum Sequencing Documentation
 

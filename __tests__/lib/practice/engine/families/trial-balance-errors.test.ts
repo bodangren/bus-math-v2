@@ -79,4 +79,30 @@ describe('trial balance error analysis family', () => {
       family: 'trial-balance-errors',
     });
   });
+
+  it('includes actual digit values in transposition feedback', () => {
+    const definition: TrialBalanceErrorDefinition = trialBalanceErrorFamily.generate(2026, {
+      mode: 'assessment',
+      scenarioCount: 10,
+      includeBalancedScenarios: true,
+    });
+
+    const transpositionScenario = definition.scenarios.find((scenario) => scenario.archetypeId === 'transposition');
+    if (!transpositionScenario) {
+      return;
+    }
+
+    const solution = trialBalanceErrorFamily.solve(definition);
+    const studentResponse: TrialBalanceErrorResponse = {
+      ...solution,
+      [`${transpositionScenario.rowId}:difference`]: transpositionScenario.expectedDifference + 9,
+    };
+
+    const gradeResult = trialBalanceErrorFamily.grade(definition, studentResponse);
+    const reviewed = buildTrialBalanceErrorReviewFeedback(definition, studentResponse, gradeResult);
+
+    const feedbackMessage = reviewed[`${transpositionScenario.rowId}:difference`].message;
+    expect(feedbackMessage).toContain('$');
+    expect(feedbackMessage).toMatch(/\$\d+/);
+  });
 });
