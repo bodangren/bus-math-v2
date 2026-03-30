@@ -2,11 +2,20 @@
 
 ## Phase 1: Audit Current Curriculum Wiring
 
+### Current Findings
+
+**Practice Engine Status**: 19 families registered and ready (A-U complete)
+**Activity Integration Status**: Partial
+- TrialBalanceErrorMatrix uses practice families directly ✓
+- Most drag-drop activities use `activity.componentKey` as family key
+- JournalEntryActivity hardcodes 'journal-entry-building' family
+- Activities use PracticeMode types but mostly static scenarios
+
 ### Tasks
 
-- [ ] **Task: Audit Unit 1-2 family key references**
-  - [ ] Review all activities in Units 1-2
-  - [ ] Document current family key usage
+- [~] **Task: Audit Unit 1-2 family key references**
+  - [x] Review all activities in Units 1-2
+  - [x] Document current family key usage
   - [ ] Identify any deprecated keys (D, O standalone)
 
 - [ ] **Task: Audit Unit 3-4 family key references**
