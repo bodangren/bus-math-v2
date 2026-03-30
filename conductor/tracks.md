@@ -41,9 +41,9 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [ ] **Track 1: Practice Engine Stabilization**
-  *Link: [./tracks/practice_engine_stabilization_20260323/](./tracks/practice_engine_stabilization_20260323/)*
-  *Status: Next up. Fix 7 engine bugs, consolidate D→Q/O→Q/rebuild L, build Families R-U. Stabilizes the full family registry.*
+- [x] **Track 1: Practice Engine Stabilization**
+  *Link: [./archive/practice_engine_stabilization_20260323/](./archive/practice_engine_stabilization_20260323/)*
+  *Status: Complete. All 14 tasks finished: 7 engine bugs fixed, families D→Q/O→Q consolidated, L rebuilt, Families R-U built. Family registry stabilized with 19 entries.*
 
 - [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
