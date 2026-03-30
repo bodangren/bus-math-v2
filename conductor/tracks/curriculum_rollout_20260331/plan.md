@@ -1,6 +1,6 @@
 # Implementation Plan: Curriculum Rollout
 
-## Phase 1: Audit Current Curriculum Wiring
+## Phase 1: Audit Current Curriculum Wiring ✅ COMPLETE
 
 ### Current Findings
 
@@ -11,77 +11,68 @@
 - JournalEntryActivity hardcodes 'journal-entry-building' family
 - Activities use PracticeMode types but mostly static scenarios
 
-### Tasks
+**Key Discovery**: Curriculum uses activity component keys (e.g., 'journal-entry-building', 'account-categorization') which are mapped to family keys in submissions. No direct family key references in curriculum manifests.
 
-- [~] **Task: Audit Unit 1-2 family key references**
-  - [x] Review all activities in Units 1-2
-  - [x] Document current family key usage
-  - [ ] Identify any deprecated keys (D, O standalone)
+### Audit Results
 
-- [ ] **Task: Audit Unit 3-4 family key references**
-  - [ ] Review all activities in Units 3-4
-  - [ ] Document current family key usage
-  - [ ] Identify gaps where new families R-U should be used
+- [x] **Task: Audit Unit 1-8 + Capstone family key references**
+  - [x] Reviewed curriculum manifest structure
+  - [x] Documented activity-to-family mapping approach
+  - [x] Verified: No deprecated keys (D, O standalone) in live code
+  - [x] Verified: All curriculum config tests pass
+  - [x] Finding: Component keys used, family keys assigned at submission layer
 
-- [ ] **Task: Audit Unit 5-6 family key references**
-  - [ ] Review all activities in Units 5-6
-  - [ ] Document current family key usage
-  - [ ] Verify merchandising content uses consolidated Q family
+## Phase 2: Verify Activity-to-Family Wiring
 
-- [ ] **Task: Audit Unit 7-8 + Capstone family key references**
-  - [ ] Review all activities in Units 7-8 and Capstone
-  - [ ] Document current family key usage
-  - [ ] Identify where financial analysis (Family U) should be integrated
+### Goal
 
-## Phase 2: Update Family Key References
+Ensure all activity components use the correct family keys in their practice submissions.
 
 ### Tasks
 
-- [ ] **Task: Update Units 1-2 to stable keys**
-  - [ ] Replace any D references with Q (statement-subtotals)
-  - [ ] Replace any O references with Q (retail-income-statement)
-  - [ ] Update L references to use rebuilt closing-entry variant
-  - [ ] Verify guided vs independent mode configuration
+- [~] **Task: Verify drag-drop activities use correct family keys**
+  - [ ] AccountCategorization → 'account-categorization' ✓
+  - [ ] FinancialStatementMatching → 'financial-statement-matching' (should be 'statement-construction'?)
+  - [ ] TrialBalanceSorting → 'trial-balance-sorting' (should be 'trial-balance-errors'?)
+  - [ ] GeneralDragAndDrop → uses componentKey dynamically
+  - [ ] BreakEvenComponents → 'break-even-components' (should be 'cvp-analysis'?)
+  - [ ] BudgetCategorySort → 'budget-category-sort' (should be 'financial-analysis'?)
+  - [ ] CashFlowTimeline → 'cash-flow-timeline' 
+  - [ ] InventoryFlowDiagram → 'inventory-flow-diagram'
+  - [ ] PercentageCalculationSorting → 'percentage-calculation-sorting'
+  - [ ] RatioMatching → 'ratio-matching' (should be 'financial-analysis'?)
 
-- [ ] **Task: Update Units 3-4 to stable keys**
-  - [ ] Apply family key updates
-  - [ ] Add Families R-S where appropriate for interest/CVP content
-  - [ ] Test activity loading
+- [ ] **Task: Verify specialized activities**
+  - [ ] JournalEntryActivity currently hardcodes 'journal-entry-building'
+  - [ ] Should use 'journal-entry' family from registry
+  - [ ] Check if activity props should include familyKey
 
-- [ ] **Task: Update Units 5-6 to stable keys**
-  - [ ] Apply family key updates
-  - [ ] Ensure merchandising lessons use correct Q configurations
-  - [ ] Test activity loading
+- [ ] **Task: Create family key alignment report**
+  - [ ] Document current componentKey → family mappings
+  - [ ] Identify mismatches between component and family names
+  - [ ] Propose alignment strategy
 
-- [ ] **Task: Update Units 7-8 + Capstone to stable keys**
-  - [ ] Apply family key updates
-  - [ ] Integrate Families T-U for depreciation and financial analysis
-  - [ ] Test activity loading
-
-## Phase 3: Verification and Regression Testing
-
-### Tasks
-
-- [ ] **Task: Validate all family references**
-  - [ ] Run family key validation script against all lessons
-  - [ ] Ensure no orphaned references remain
-
-- [ ] **Task: Run full test suite**
-  - [ ] Execute `npm run lint`
-  - [ ] Execute `npm test` — all tests must pass
-  - [ ] Execute `npm run build` — production build must succeed
-
-- [ ] **Task: Manual verification**
-  - [ ] Spot-check lessons from each unit load correctly
-  - [ ] Verify practice activities render with correct generators
-
-## Phase 4: Finalize and Archive
+## Phase 3: Alignment Implementation (if needed)
 
 ### Tasks
 
-- [ ] **Task: Update curriculum documentation**
-  - [ ] Document final family key assignments per unit
-  - [ ] Update any architecture docs referencing family usage
+- [ ] **Task: Align component family keys with practice registry**
+  - [ ] Update activities to use canonical family keys from registry
+  - [ ] Ensure backward compatibility for existing submissions
+  - [ ] Update component props schemas if needed
+
+- [ ] **Task: Add family key validation**
+  - [ ] Create validation to ensure all family keys exist in registry
+  - [ ] Add tests for family key consistency
+
+## Phase 4: Verification and Finalization
+
+### Tasks
+
+- [ ] **Task: Full regression test**
+  - [ ] Run `npm run lint`
+  - [ ] Run `npm test` — all tests must pass
+  - [ ] Run `npm run build` — production build must succeed
 
 - [ ] **Task: Archive track**
   - [ ] Move track folder to `conductor/archive/`
