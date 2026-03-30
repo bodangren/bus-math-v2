@@ -45,9 +45,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/practice_engine_stabilization_20260323/](./archive/practice_engine_stabilization_20260323/)*
   *Status: Complete. All 14 tasks finished: 7 engine bugs fixed, families D→Q/O→Q consolidated, L rebuilt, Families R-U built. Family registry stabilized with 19 entries.*
 
-- [~] **Track 3: Curriculum Rollout**
-  *Link: [./tracks/curriculum_rollout_20260331/](./tracks/curriculum_rollout_20260331/)*
-  *Status: In Progress. Wiring all units to stable family keys. Unblocks Legacy Cleanup and Teacher Error Analysis.*
+- [x] **Track 3: Curriculum Rollout**
+  *Link: [./archive/curriculum_rollout_20260331/](./archive/curriculum_rollout_20260331/)*
+  *Status: Complete. All curriculum units verified to use stable activity components with proper family keys. Unblocks Legacy Cleanup and Teacher Error Analysis.*
 
 - [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
@@ -58,6 +58,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Status: Misconception-tag aggregation and AI-assisted teacher interpretation. Blocked on Track 3 (teaching mode stabilizes tag generation).*
 
 ## Archive Ledger
+
+- [x] **Track: Curriculum Rollout**
+  *Link: [./archive/curriculum_rollout_20260331/](./archive/curriculum_rollout_20260331/)*
+  *Closeout: archived on 2026-03-31 after verifying curriculum units use stable activity components with proper family keys, completing audit documentation, and passing all verification gates (lint, test, build).*
 
 - [x] **Track: Practice Visual & Teaching Upgrade**
   *Link: [./archive/practice_visual_teaching_upgrade_20260323/](./archive/practice_visual_teaching_upgrade_20260323/)*
