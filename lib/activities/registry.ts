@@ -1,8 +1,6 @@
 import { ComponentType } from 'react';
 
 import { FinancialDashboard } from '@/components/activities/charts/FinancialDashboard';
-import { FinancialStatementMatching } from '@/components/activities/drag-drop/FinancialStatementMatching';
-import { TrialBalanceSorting } from '@/components/activities/drag-drop/TrialBalanceSorting';
 import { CashFlowChallenge } from '@/components/activities/simulations/CashFlowChallenge';
 import { BudgetBalancer } from '@/components/activities/simulations/BudgetBalancer';
 import { InventoryManager } from '@/components/activities/simulations/InventoryManager';
@@ -10,14 +8,9 @@ import { LemonadeStand } from '@/components/activities/simulations/LemonadeStand
 import { PitchPresentationBuilder } from '@/components/activities/simulations/PitchPresentationBuilder';
 import { StartupJourney } from '@/components/activities/simulations/StartupJourney';
 import { DataCleaningActivity } from '@/components/activities/spreadsheet/DataCleaningActivity';
-import { BreakEvenComponents } from '@/components/activities/drag-drop/BreakEvenComponents';
-import { BudgetCategorySort } from '@/components/activities/drag-drop/BudgetCategorySort';
 import { CashFlowTimeline } from '@/components/activities/drag-drop/CashFlowTimeline';
 import { InventoryFlowDiagram } from '@/components/activities/drag-drop/InventoryFlowDiagram';
 import { PercentageCalculationSorting } from '@/components/activities/drag-drop/PercentageCalculationSorting';
-import { RatioMatching } from '@/components/activities/drag-drop/RatioMatching';
-import { AccountCategorization } from '@/components/activities/drag-drop/AccountCategorization';
-import { GeneralDragAndDrop } from '@/components/activities/drag-drop/GeneralDragAndDrop';
 import { FillInTheBlank } from '@/components/activities/quiz/FillInTheBlank';
 import { JournalEntryActivity } from '@/components/activities/accounting/JournalEntryActivity';
 import { ComprehensionCheck } from '@/components/activities/quiz/ComprehensionCheck';
@@ -27,10 +20,9 @@ import { ReflectionJournal } from '@/components/activities/quiz/ReflectionJourna
 import { SpreadsheetEvaluator } from '@/components/activities/spreadsheet/SpreadsheetEvaluator';
 import { SpreadsheetActivityAdapter } from '@/components/activities/spreadsheet/SpreadsheetActivityAdapter';
 
-// New simulations
+// Simulations
 import { CafeSupplyChaos } from '@/components/activities/simulations/CafeSupplyChaos';
 import { NotebookOrganizer } from '@/components/activities/simulations/NotebookOrganizer';
-import { LedgerHero } from '@/components/activities/simulations/LedgerHero';
 import { GrowthPuzzle } from '@/components/activities/simulations/GrowthPuzzle';
 import { AssetTimeMachine } from '@/components/activities/simulations/AssetTimeMachine';
 import { CapitalNegotiation } from '@/components/activities/simulations/CapitalNegotiation';
@@ -48,16 +40,9 @@ import type { ActivityComponentKey } from '@/types/activities';
 export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> = {
   'comprehension-quiz': ComprehensionCheck,
   'tiered-assessment': TieredAssessment,
-  'drag-and-drop': GeneralDragAndDrop,
-  'account-categorization': AccountCategorization,
-  'budget-category-sort': BudgetCategorySort,
   'percentage-calculation-sorting': PercentageCalculationSorting,
   'inventory-flow-diagram': InventoryFlowDiagram,
-  'ratio-matching': RatioMatching,
-  'break-even-components': BreakEvenComponents,
   'cash-flow-timeline': CashFlowTimeline,
-  'financial-statement-matching': FinancialStatementMatching,
-  'trial-balance-sorting': TrialBalanceSorting,
   'fill-in-the-blank': FillInTheBlank,
   'journal-entry-building': JournalEntryActivity,
   'reflection-journal': ReflectionJournal,
@@ -73,7 +58,6 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'pitch': PitchPresentationBuilder, // Alias for pitch-presentation-builder
   'cafe-supply-chaos': CafeSupplyChaos,
   'notebook-organizer': NotebookOrganizer,
-  'ledger-hero': LedgerHero,
   'growth-puzzle': GrowthPuzzle,
   'asset-time-machine': AssetTimeMachine,
   'capital-negotiation': CapitalNegotiation,

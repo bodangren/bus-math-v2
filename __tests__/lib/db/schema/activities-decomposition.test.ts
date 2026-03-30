@@ -37,8 +37,9 @@ describe('activities schema decomposition', () => {
   });
 
   it('exports categorization schemas', () => {
-    expect(categorizationActivityPropsSchemas['drag-and-drop']).toBeDefined();
-    expect(categorizationActivityPropsSchemas['account-categorization']).toBeDefined();
+    expect(categorizationActivityPropsSchemas['percentage-calculation-sorting']).toBeDefined();
+    expect(categorizationActivityPropsSchemas['inventory-flow-diagram']).toBeDefined();
+    expect(categorizationActivityPropsSchemas['cash-flow-timeline']).toBeDefined();
   });
 
   it('exports simulation schemas', () => {
@@ -49,7 +50,7 @@ describe('activities schema decomposition', () => {
   it('aggregates all domains through activities barrel', () => {
     expect(activityPropsSchemas['comprehension-quiz']).toBeDefined();
     expect(activityPropsSchemas['spreadsheet']).toBeDefined();
-    expect(activityPropsSchemas['drag-and-drop']).toBeDefined();
+    expect(activityPropsSchemas['percentage-calculation-sorting']).toBeDefined();
     expect(activityPropsSchemas['lemonade-stand']).toBeDefined();
 
     expect(barrelActivities).toBe(activities);

@@ -5,16 +5,16 @@
 
 ## Phase 1: Pruning Obsolete Components
 
-- [ ] **Task: Delete superseded drag-drop and simulation components**
-  - [ ] Delete `AccountCategorization`, `FinancialStatementMatching`, `TrialBalanceSorting`, `GeneralDragAndDrop`, `LedgerHero`
-  - [ ] Remove all references to deleted components in the codebase
+- [x] **Task: Delete superseded drag-drop and simulation components**
+  - [x] Delete `AccountCategorization`, `FinancialStatementMatching`, `TrialBalanceSorting`, `GeneralDragAndDrop`, `LedgerHero`
+  - [x] Remove all references to deleted components in the codebase
 
-- [ ] **Task: Delete legacy interactive builders replaced by Families R-U**
-  - [ ] Delete `BreakEvenCalculator`, `BreakEvenComponents` (replaced by Family R)
-  - [ ] Delete `InterestBuilder` (replaced by Family S)
-  - [ ] Delete `DepreciationBuilder` (replaced by Family T)
-  - [ ] Delete `RatioMatching`, `BudgetCategorySort` (replaced by Family U)
-  - [ ] Remove all references to deleted builders in the codebase
+- [x] **Task: Delete legacy interactive builders replaced by Families R-U**
+  - [x] Delete `BreakEvenCalculator`, `BreakEvenComponents` (replaced by Family R)
+  - [x] Delete `InterestBuilder` (replaced by Family S)
+  - [x] Delete `DepreciationBuilder` (replaced by Family T)
+  - [x] Delete `RatioMatching`, `BudgetCategorySort` (replaced by Family U)
+  - [x] Remove all references to deleted builders in the codebase
 
 ## Phase 2: Refactor Display Components
 

@@ -101,16 +101,9 @@ export type ActivityProps = {
 }[ActivityComponentKey];
 
 export type ComprehensionQuizActivityProps = z.infer<typeof activityPropsSchemas['comprehension-quiz']>;
-export type DragAndDropActivityProps = z.infer<typeof activityPropsSchemas['drag-and-drop']>;
-export type AccountCategorizationActivityProps = z.infer<typeof activityPropsSchemas['account-categorization']>;
-export type BudgetCategorySortActivityProps = z.infer<typeof activityPropsSchemas['budget-category-sort']>;
 export type PercentageCalculationSortingActivityProps = z.infer<typeof activityPropsSchemas['percentage-calculation-sorting']>;
 export type InventoryFlowDiagramActivityProps = z.infer<typeof activityPropsSchemas['inventory-flow-diagram']>;
-export type RatioMatchingActivityProps = z.infer<typeof activityPropsSchemas['ratio-matching']>;
-export type BreakEvenComponentsActivityProps = z.infer<typeof activityPropsSchemas['break-even-components']>;
 export type CashFlowTimelineActivityProps = z.infer<typeof activityPropsSchemas['cash-flow-timeline']>;
-export type FinancialStatementMatchingActivityProps = z.infer<typeof activityPropsSchemas['financial-statement-matching']>;
-export type TrialBalanceSortingActivityProps = z.infer<typeof activityPropsSchemas['trial-balance-sorting']>;
 export type FillInTheBlankActivityProps = z.infer<typeof activityPropsSchemas['fill-in-the-blank']>;
 export type JournalEntryActivityProps = z.infer<typeof activityPropsSchemas['journal-entry-building']>;
 export type ReflectionJournalActivityProps = z.infer<typeof activityPropsSchemas['reflection-journal']>;

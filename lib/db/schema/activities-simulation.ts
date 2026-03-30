@@ -710,31 +710,6 @@ export const simulationActivityPropsSchemas = {
     initialMessage: z.string().optional(),
     successMessage: z.string().optional(),
   }),
-  'ledger-hero': z.object({
-    title: z.string().default('Ledger Hero'),
-    description: z.string().default('Master the double impact of business events using the DEA LER logic.'),
-    scenarios: z.array(z.object({
-      id: z.string(),
-      event: z.string(),
-      description: z.string(),
-      impacts: z.array(z.object({
-        account: z.string(),
-        category: z.enum(['asset', 'liability', 'equity', 'revenue', 'expense']),
-        type: z.enum(['debit', 'credit']),
-        amount: z.number(),
-      })),
-      hint: z.string().optional(),
-    })).default([]),
-    initialState: z.object({
-      currentScenarioIndex: z.number().int().default(0),
-      score: z.number().int().default(0),
-      completed: z.boolean().default(false),
-    }).default({
-      currentScenarioIndex: 0,
-      score: 0,
-      completed: false,
-    }),
-  }),
   'growth-puzzle': z.object({
     title: z.string().default('The Growth Puzzle'),
     description: z.string().default('Decide how to use your profits to grow Sarah’s business or handle personal needs.'),

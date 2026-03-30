@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import { TieredAssessment } from '@/components/activities/quiz/TieredAssessment';
 import { ComprehensionCheck } from '@/components/activities/quiz/ComprehensionCheck';
-import { GeneralDragAndDrop } from '@/components/activities/drag-drop/GeneralDragAndDrop';
 import { JournalEntryActivity } from '@/components/activities/accounting/JournalEntryActivity';
 import { DataCleaningActivity } from '@/components/activities/spreadsheet/DataCleaningActivity';
 import { SpreadsheetActivityAdapter } from '@/components/activities/spreadsheet/SpreadsheetActivityAdapter';
@@ -15,10 +14,6 @@ describe('activityRegistry', () => {
 
   it('maps tiered-assessment to TieredAssessment', () => {
     expect(getActivityComponent('tiered-assessment')).toBe(TieredAssessment);
-  });
-
-  it('maps canonical drag-and-drop keys', () => {
-    expect(getActivityComponent('drag-and-drop')).toBe(GeneralDragAndDrop);
   });
 
   it('maps canonical journal-entry and data-cleaning keys', () => {
