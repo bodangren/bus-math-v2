@@ -45,6 +45,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/practice_engine_stabilization_20260323/](./archive/practice_engine_stabilization_20260323/)*
   *Status: Complete. All 14 tasks finished: 7 engine bugs fixed, families D→Q/O→Q consolidated, L rebuilt, Families R-U built. Family registry stabilized with 19 entries.*
 
+- [~] **Track 3: Curriculum Rollout**
+  *Link: [./tracks/curriculum_rollout_20260331/](./tracks/curriculum_rollout_20260331/)*
+  *Status: In Progress. Wiring all units to stable family keys. Unblocks Legacy Cleanup and Teacher Error Analysis.*
+
 - [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
   *Status: Delete superseded components (safe after curriculum rewired), refactor charts, rebuild 8 simulations on practice.v1. Blocked on Tracks 1+3.*
