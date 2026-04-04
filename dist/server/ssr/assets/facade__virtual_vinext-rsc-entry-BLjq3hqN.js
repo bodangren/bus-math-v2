@@ -39872,6 +39872,7 @@ const getIconForProduct = (iconName) => {
 };
 function InventoryManager({ activity, onSubmit }) {
   const runtimeIdCounterRef = useRef(0);
+  const [submitted, setSubmitted] = useState(false);
   const generateRuntimeId = useCallback$1((prefix2) => {
     runtimeIdCounterRef.current += 1;
     return `${prefix2}-${Date.now()}-${runtimeIdCounterRef.current}`;
@@ -40133,6 +40134,7 @@ function InventoryManager({ activity, onSubmit }) {
     addNotification("Game reset successfully", "info");
   }, [activity, addNotification]);
   const handleSubmit = useCallback$1(() => {
+    if (submitted) return;
     if (onSubmit && gameState.gameStatus !== "playing") {
       const finalProfit = gameState.totalRevenue - gameState.totalExpenses;
       const answers = {
@@ -40176,9 +40178,10 @@ function InventoryManager({ activity, onSubmit }) {
         }
       });
       onSubmit(envelope);
+      setSubmitted(true);
       addNotification("Results submitted as practice evidence!", "success");
     }
-  }, [gameState, onSubmit, addNotification, activity.title]);
+  }, [submitted, gameState, onSubmit, addNotification, activity.title]);
   const profit = gameState.totalRevenue - gameState.totalExpenses;
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + p.quantity * p.cost, 0);
   const inventoryTurnover = gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(totalInventoryValue, 1) : 0;
@@ -40332,7 +40335,7 @@ function InventoryManager({ activity, onSubmit }) {
         /* @__PURE__ */ jsx("h3", { className: `text-2xl font-bold ${gameState.gameStatus === "won" ? "text-green-800" : "text-red-800"}`, children: gameState.gameStatus === "won" ? "Business Success!" : "Game Over" })
       ] }),
       /* @__PURE__ */ jsx("p", { className: `text-lg ${gameState.gameStatus === "won" ? "text-green-700" : "text-red-700"}`, children: gameState.gameStatus === "won" ? `Achieved $${profit.toLocaleString()} profit! Target was $${gameState.profitTarget.toLocaleString()}.` : profit < gameState.profitTarget ? `Only made $${profit.toLocaleString()} profit. Target was $${gameState.profitTarget.toLocaleString()}.` : "Ran out of cash! Better inventory management needed." }),
-      onSubmit && /* @__PURE__ */ jsx(Button, { onClick: handleSubmit, className: "mt-4", size: "lg", children: "Submit Results" })
+      onSubmit && /* @__PURE__ */ jsx(Button, { onClick: handleSubmit, className: "mt-4", size: "lg", disabled: submitted, children: submitted ? "Results Submitted" : "Submit Results" })
     ] }) }),
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 md:grid-cols-4 gap-4", children: [
       /* @__PURE__ */ jsx(Card, { className: "bg-gradient-to-br from-green-50 to-green-100 border-green-200", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
@@ -41280,6 +41283,7 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
     feedbackScore: 0
   });
   const [showInstructions, setShowInstructions] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const timerRef = useRef(null);
   const calculateCompleteness = useCallback$1((content, speakingNotes, title) => {
     let score = 0;
@@ -41373,6 +41377,7 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
     URL.revokeObjectURL(url);
   }, [pitchState]);
   const handleSubmit = useCallback$1(() => {
+    if (submitted) return;
     if (onSubmit) {
       const overallProgress2 = calculateOverallProgress();
       const sections = Object.entries(pitchState.sections);
@@ -41414,8 +41419,9 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
         }
       });
       onSubmit(envelope);
+      setSubmitted(true);
     }
-  }, [pitchState, onSubmit, calculateOverallProgress, activity]);
+  }, [submitted, pitchState, onSubmit, calculateOverallProgress, activity]);
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -41809,9 +41815,9 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
           /* @__PURE__ */ jsx(Save, { className: "w-5 h-5 mr-2" }),
           "Save Progress"
         ] }),
-        onSubmit && /* @__PURE__ */ jsxs(Button, { onClick: handleSubmit, size: "lg", className: "bg-green-600 hover:bg-green-700", children: [
+        onSubmit && /* @__PURE__ */ jsxs(Button, { onClick: handleSubmit, size: "lg", className: "bg-green-600 hover:bg-green-700", disabled: submitted, children: [
           /* @__PURE__ */ jsx(CircleCheckBig, { className: "w-5 h-5 mr-2" }),
-          "Submit Results"
+          submitted ? "Results Submitted" : "Submit Results"
         ] })
       ] })
     ] })
@@ -58363,6 +58369,7 @@ const commissionSheet = (inputs, result) => [
 ];
 function PayStructureDecisionLab({ onSubmit }) {
   const [current2, setCurrent] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
   const [hourlyInputs, setHourlyInputs] = useState(initialHourly);
   const [salaryInputs, setSalaryInputs] = useState(initialSalary);
   const [commissionInputs, setCommissionInputs] = useState(initialCommission);
@@ -58551,6 +58558,7 @@ function PayStructureDecisionLab({ onSubmit }) {
               Button,
               {
                 onClick: () => {
+                  if (submitted) return;
                   const answers = {
                     hourlyGross: hourlyResult.gross,
                     hourlyNet: hourlyResult.net,
@@ -58587,11 +58595,14 @@ function PayStructureDecisionLab({ onSubmit }) {
                     }
                   });
                   onSubmit(envelope);
+                  setSubmitted(true);
                 },
+                disabled: submitted,
                 className: "flex items-center gap-1 bg-green-600 hover:bg-green-700",
                 children: [
                   /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4" }),
-                  " Submit"
+                  " ",
+                  submitted ? "Submitted" : "Submit"
                 ]
               }
             ),

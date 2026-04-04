@@ -89,6 +89,7 @@ const getIconForProduct = (iconName: string) => {
 
 export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) {
   const runtimeIdCounterRef = useRef(0)
+  const [submitted, setSubmitted] = useState(false)
 
   const generateRuntimeId = useCallback((prefix: 'event' | 'notification') => {
     runtimeIdCounterRef.current += 1
@@ -403,6 +404,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
   }, [activity, addNotification])
 
   const handleSubmit = useCallback(() => {
+    if (submitted) return
     if (onSubmit && gameState.gameStatus !== 'playing') {
       const finalProfit = gameState.totalRevenue - gameState.totalExpenses
       const answers: Record<string, unknown> = {
@@ -446,9 +448,10 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
         },
       })
       onSubmit(envelope)
+      setSubmitted(true)
       addNotification('Results submitted as practice evidence!', 'success')
     }
-  }, [gameState, onSubmit, addNotification, activity.title])
+  }, [submitted, gameState, onSubmit, addNotification, activity.title])
 
   const profit = gameState.totalRevenue - gameState.totalExpenses
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + (p.quantity * p.cost), 0)
@@ -618,8 +621,8 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
               }
             </p>
             {onSubmit && (
-              <Button onClick={handleSubmit} className="mt-4" size="lg">
-                Submit Results
+              <Button onClick={handleSubmit} className="mt-4" size="lg" disabled={submitted}>
+                {submitted ? 'Results Submitted' : 'Submit Results'}
               </Button>
             )}
           </CardContent>

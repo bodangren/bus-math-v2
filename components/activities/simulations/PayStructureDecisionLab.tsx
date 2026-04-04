@@ -329,6 +329,7 @@ export interface PayStructureDecisionLabProps {
 
 export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabProps) {
   const [current, setCurrent] = useState(0)
+  const [submitted, setSubmitted] = useState(false)
   const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(initialHourly)
   const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(initialSalary)
   const [commissionInputs, setCommissionInputs] = useState<CommissionInputs>(initialCommission)
@@ -520,6 +521,7 @@ export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabPro
               {current === scenarios.length - 1 && onSubmit && (
                 <Button
                   onClick={() => {
+                    if (submitted) return
                     const answers: Record<string, unknown> = {
                       hourlyGross: hourlyResult.gross,
                       hourlyNet: hourlyResult.net,
@@ -556,10 +558,12 @@ export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabPro
                       },
                     })
                     onSubmit(envelope)
+                    setSubmitted(true)
                   }}
+                  disabled={submitted}
                   className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
                 >
-                  <CheckCircle2 className="h-4 w-4" /> Submit
+                  <CheckCircle2 className="h-4 w-4" /> {submitted ? 'Submitted' : 'Submit'}
                 </Button>
               )}
               <Button

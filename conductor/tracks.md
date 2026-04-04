@@ -67,6 +67,14 @@ Strictly serial. Complete and archive each track before starting the next.
 
 ## Archive Ledger
 
+- [x] **Track: Simulation Contract Hardening**
+  *Link: [./archive/ — moved to archive/ during code review audit]*
+  *Note: metadata updated to status: complete. Directory still in tracks/ pending final archival after Phase 4 verification.*
+
+- [x] **Track: Teacher Practice Error Analysis**
+  *Link: [./archive/teacher_practice_error_analysis_20260319/](./archive/teacher_practice_error_analysis_20260319/)*
+  *Closeout: archived on 2026-04-04 after code review audit. All 4 phases complete: deterministic summary layer, AI-assisted interpretation pipeline with graceful fallback, and full verification (tests, lint, build).*
+
 - [x] **Track: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./archive/legacy_component_pruning_and_simulations_20260322/](./archive/legacy_component_pruning_and_simulations_20260322/)*
   *Closeout: archived on 2026-04-04 after completing all 4 phases: pruning obsolete drag-drop/builder components, refactoring chart components, rebuilding 8 simulations with practice.v1 envelopes, and verifying clean lint/test/build. Fixed pre-existing build failure by making @cloudflare/vite-plugin optional.*

@@ -175,6 +175,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
   })
 
   const [showInstructions, setShowInstructions] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const calculateCompleteness = useCallback((content: string, speakingNotes: string, title: string) => {
@@ -286,6 +287,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
   }, [pitchState])
 
   const handleSubmit = useCallback(() => {
+    if (submitted) return
     if (onSubmit) {
       const overallProgress = calculateOverallProgress()
       const sections = Object.entries(pitchState.sections)
@@ -329,8 +331,9 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
         },
       })
       onSubmit(envelope)
+      setSubmitted(true)
     }
-  }, [pitchState, onSubmit, calculateOverallProgress, activity])
+  }, [submitted, pitchState, onSubmit, calculateOverallProgress, activity])
 
   useEffect(() => {
     return () => {
@@ -797,9 +800,9 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
               Save Progress
             </Button>
             {onSubmit && (
-              <Button onClick={handleSubmit} size="lg" className="bg-green-600 hover:bg-green-700">
+              <Button onClick={handleSubmit} size="lg" className="bg-green-600 hover:bg-green-700" disabled={submitted}>
                 <CheckCircle className="w-5 h-5 mr-2" />
-                Submit Results
+                {submitted ? 'Results Submitted' : 'Submit Results'}
               </Button>
             )}
           </div>
