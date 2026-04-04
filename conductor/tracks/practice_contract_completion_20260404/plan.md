@@ -112,13 +112,13 @@
 ### Tasks
 
 1. **SpreadsheetActivity practice.v1 path**
-   - [ ] Read `SpreadsheetActivity.tsx` and `SpreadsheetActivityAdapter`
-   - [ ] Add `practice.v1` envelope emission alongside legacy persistence
-   - [ ] Write test: envelope emission with spreadsheet artifact data
+   - [x] Read `SpreadsheetActivity.tsx` and `SpreadsheetActivityAdapter`
+   - [x] Add `practice.v1` envelope emission alongside legacy persistence
+   - [x] Write test: envelope emission with spreadsheet artifact data
 
 2. **Final verification**
-   - [ ] Run `npm run lint`
-   - [ ] Run full test suite
-   - [ ] Run `npm run build`
-   - [ ] Verify all 5 acceptance criteria
-   - [ ] Commit, push, and archive track
+   - [x] Run `npm run lint`
+   - [x] Run full test suite
+   - [x] Run `npm run build`
+   - [x] Verify all 5 acceptance criteria
+   - [x] Commit, push, and archive track

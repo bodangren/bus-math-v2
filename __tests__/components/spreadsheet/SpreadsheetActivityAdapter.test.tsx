@@ -92,4 +92,87 @@ describe('SpreadsheetActivityAdapter', () => {
     await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
     // No assertion needed — just verifying no uncaught error
   });
+
+  it('emits practice.v1 envelope on submit', async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+    const handleComplete = vi.fn();
+
+    render(
+      <SpreadsheetActivityAdapter
+        activity={buildActivity()}
+        onSubmit={handleSubmit}
+        onComplete={handleComplete}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
+
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    const envelope = handleSubmit.mock.calls[0][0];
+    expect(envelope.contractVersion).toBe('practice.v1');
+    expect(envelope.activityId).toBe('activity-spreadsheet-1');
+    expect(envelope.mode).toBe('guided_practice');
+    expect(envelope.status).toBe('submitted');
+    expect(envelope.parts).toHaveLength(4);
+    expect(envelope.artifact).toMatchObject({
+      kind: 'spreadsheet',
+      title: 'TechStart Balance Sheet',
+      template: 'balance-sheet',
+    });
+    expect(handleComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('includes spreadsheet data in envelope artifact', async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+
+    render(
+      <SpreadsheetActivityAdapter activity={buildActivity()} onSubmit={handleSubmit} />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
+
+    const envelope = handleSubmit.mock.calls[0][0];
+    expect(envelope.artifact.data).toEqual([[{ value: 'test' }]]);
+    expect(envelope.answers.spreadsheetData).toEqual([[{ value: 'test' }]]);
+    expect(envelope.analytics.cellCount).toBe(1);
+    expect(envelope.analytics.filledCells).toBe(1);
+  });
+
+  it('guards against duplicate envelope emission', async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+    const handleComplete = vi.fn();
+
+    render(
+      <SpreadsheetActivityAdapter
+        activity={buildActivity()}
+        onSubmit={handleSubmit}
+        onComplete={handleComplete}
+      />,
+    );
+
+    const button = screen.getByRole('button', { name: 'Submit Spreadsheet' });
+    await user.click(button);
+    await user.click(button);
+
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls back to activity id when activity.id is missing', async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn();
+    const activityWithoutId = { ...buildActivity(), id: '' };
+
+    render(
+      <SpreadsheetActivityAdapter activity={activityWithoutId} onSubmit={handleSubmit} />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
+
+    const envelope = handleSubmit.mock.calls[0][0];
+    expect(envelope.activityId).toBe('spreadsheet');
+  });
 });

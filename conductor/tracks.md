@@ -61,9 +61,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/simulation_contract_hardening_20260404/](./tracks/simulation_contract_hardening_20260404/)*
   *Status: Complete. All 4 phases finished: envelope emission tests for all simulations, bankruptcy path coverage, verified lint/test/build. CashFlowChallenge hardcoded activityId deferred (props refactor needed).*
 
-- [~] **Track 7: Practice Contract Completion -- Remaining Components and Evidence Wiring**
+- [x] **Track 7: Practice Contract Completion -- Remaining Components and Evidence Wiring**
   *Link: [./tracks/practice_contract_completion_20260404/](./tracks/practice_contract_completion_20260404/)*
-  *Status: In Progress. Phase 1 complete: all 6 components converted to practice.v1, CashFlowChallenge legacy path removed. Phase 2: misconception tag taxonomy and family engine integration. Phase 3: teacher error summary dashboard. Phase 4: SpreadsheetActivity practice.v1 path and full verification.*
+  *Status: Complete. All 4 phases finished: all components emit practice.v1 envelopes, misconception taxonomy wired into family engines, teacher error summary dashboard integrated, SpreadsheetActivity practice.v1 path added. All acceptance criteria met. Verified lint, test, build.*
 
 ## Archive Ledger
 

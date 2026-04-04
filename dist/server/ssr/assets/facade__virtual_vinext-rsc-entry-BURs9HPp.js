@@ -56524,12 +56524,59 @@ const SpreadsheetActivity = ({
 };
 function SpreadsheetActivityAdapter({
   activity,
+  onSubmit,
   onComplete
 }) {
   const props = activity.props;
-  const handleSubmit = () => {
-    onComplete?.();
-  };
+  const [submitted, setSubmitted] = useState(false);
+  const handleSubmit = useCallback$1(
+    (data) => {
+      if (submitted) return;
+      const cellCount = data.spreadsheetData.flat().length;
+      const filledCells = data.spreadsheetData.flat().filter(
+        (cell) => cell && cell.value !== "" && cell.value !== void 0 && cell.value !== null
+      ).length;
+      const answers = {
+        cellCount,
+        filledCells,
+        completionRate: cellCount > 0 ? filledCells / cellCount : 0,
+        spreadsheetData: data.spreadsheetData
+      };
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: filledCells > 0,
+        score: filledCells > 0 ? 1 : 0,
+        maxScore: 1
+      }));
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id || "spreadsheet",
+        mode: "guided_practice",
+        status: "submitted",
+        attemptNumber: 1,
+        submittedAt: /* @__PURE__ */ new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: "spreadsheet",
+          title: props.title ?? "Spreadsheet Activity",
+          template: props.template,
+          cellCount,
+          filledCells,
+          completionRate: cellCount > 0 ? filledCells / cellCount : 0,
+          data: data.spreadsheetData
+        },
+        analytics: {
+          cellCount,
+          filledCells,
+          completionRate: cellCount > 0 ? filledCells / cellCount : 0
+        }
+      });
+      onSubmit?.(envelope);
+      setSubmitted(true);
+      onComplete?.();
+    },
+    [activity.id, onSubmit, onComplete, props.title, props.template, submitted]
+  );
   return /* @__PURE__ */ jsx(SpreadsheetActivity, { ...props, onSubmit: handleSubmit });
 }
 function CafeSupplyChaos({ activity, onComplete, onSubmit }) {

@@ -1,11 +1,19 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import { SpreadsheetActivity } from './SpreadsheetActivity';
 import type { Activity } from '@/lib/db/schema/validators';
 import type { SpreadsheetActivityProps } from '@/types/activities';
+import {
+  buildPracticeSubmissionEnvelope,
+  buildPracticeSubmissionParts,
+  type PracticeSubmissionCallbackPayload,
+} from '@/lib/practice/contract';
+import type { SpreadsheetData } from './index';
 
 interface SpreadsheetActivityAdapterProps {
   activity: Activity;
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void;
   onComplete?: () => void;
 }
 
@@ -20,18 +28,71 @@ interface SpreadsheetActivityAdapterProps {
  *
  * This adapter:
  *  1. Extracts activity.props and spreads them as flat props.
- *  2. Treats spreadsheet submission as a direct completion signal so the
- *     renderer can advance the phase without a legacy completion payload shim.
+ *  2. Builds a practice.v1 envelope from the spreadsheet data and emits it
+ *     via onSubmit so the ActivityRenderer can persist the submission.
+ *  3. Calls onComplete to advance the phase.
  */
 export function SpreadsheetActivityAdapter({
   activity,
+  onSubmit,
   onComplete,
 }: SpreadsheetActivityAdapterProps) {
   const props = activity.props as SpreadsheetActivityProps;
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = () => {
-    onComplete?.();
-  };
+  const handleSubmit = useCallback(
+    (data: { spreadsheetData: SpreadsheetData }) => {
+      if (submitted) return;
+
+      const cellCount = data.spreadsheetData.flat().length;
+      const filledCells = data.spreadsheetData.flat().filter(
+        (cell) => cell && cell.value !== '' && cell.value !== undefined && cell.value !== null,
+      ).length;
+
+      const answers: Record<string, unknown> = {
+        cellCount,
+        filledCells,
+        completionRate: cellCount > 0 ? filledCells / cellCount : 0,
+        spreadsheetData: data.spreadsheetData,
+      };
+
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: filledCells > 0,
+        score: filledCells > 0 ? 1 : 0,
+        maxScore: 1,
+      }));
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id || 'spreadsheet',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'spreadsheet',
+          title: props.title ?? 'Spreadsheet Activity',
+          template: props.template,
+          cellCount,
+          filledCells,
+          completionRate: cellCount > 0 ? filledCells / cellCount : 0,
+          data: data.spreadsheetData,
+        },
+        analytics: {
+          cellCount,
+          filledCells,
+          completionRate: cellCount > 0 ? filledCells / cellCount : 0,
+        },
+      });
+
+      onSubmit?.(envelope);
+      setSubmitted(true);
+      onComplete?.();
+    },
+    [activity.id, onSubmit, onComplete, props.title, props.template, submitted],
+  );
 
   return <SpreadsheetActivity {...props} onSubmit={handleSubmit} />;
 }
