@@ -36,9 +36,11 @@ export function buildChartConfig(series: ChartSeries[]): ChartConfig {
   }, {});
 }
 
-export const formatCurrency = (value: number, currency = "USD") =>
-  new Intl.NumberFormat("en-US", {
+export const formatCurrency = (value: number, currency = "USD"): string => {
+  if (!Number.isFinite(value)) return "—";
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
     maximumFractionDigits: 0
   }).format(value);
+};

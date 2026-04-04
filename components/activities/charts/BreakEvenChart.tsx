@@ -123,7 +123,10 @@ export function BreakEvenChart({
               type="number"
               min={0}
               value={fixedCosts}
-              onChange={(event) => setFixedCosts(Number(event.target.value) || 0)}
+              onChange={(event) => {
+                const raw = Number(event.target.value) || 0;
+                setFixedCosts(Math.max(raw, 0));
+              }}
             />
           </div>
           <div className="space-y-1">
@@ -135,7 +138,10 @@ export function BreakEvenChart({
               max={1}
               step={0.01}
               value={variableCostRate}
-              onChange={(event) => setVariableCostRate(Number(event.target.value) || 0)}
+              onChange={(event) => {
+                const raw = Number(event.target.value) || 0;
+                setVariableCostRate(Math.min(Math.max(raw, 0), 1));
+              }}
             />
           </div>
           <div className="space-y-1">
@@ -145,7 +151,10 @@ export function BreakEvenChart({
               type="number"
               min={0}
               value={sellingPrice}
-              onChange={(event) => setSellingPrice(Number(event.target.value) || 0)}
+              onChange={(event) => {
+                const raw = Number(event.target.value) || 0;
+                setSellingPrice(Math.max(raw, 0));
+              }}
             />
           </div>
           <div className="flex items-end">

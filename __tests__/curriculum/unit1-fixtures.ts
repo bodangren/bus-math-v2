@@ -107,7 +107,6 @@ export function isInteractiveComponent(componentKey: string): boolean {
     'fill-in-the-blank',
     'spreadsheet',
     'spreadsheet-evaluator',
-    'account-categorization',
     'peer-critique-form',
     'reflection-journal',
     'tiered-assessment',

@@ -93,7 +93,7 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
 
   const [showInstructions, setShowInstructions] = useState(false)
   const [actionsLog, setActionsLog] = useState<string[]>([])
-
+  const [submitted, setSubmitted] = useState(false)
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
     const id = Date.now().toString()
     setNotifications(prev => [...prev, { id, message, type }])
@@ -113,12 +113,13 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
   const advanceDay = useCallback(() => {
     if (gameState.gameStatus !== 'playing') return
 
+    const pendingNotifications: Array<{ message: string; type: 'success' | 'warning' | 'error' | 'info' }> = []
+
     setGameState(prev => {
       const newDay = prev.day + 1
       let cashChange = 0
       const dayNotifications: string[] = []
 
-      // Process incoming flows
       const newIncomingFlows = prev.incomingFlows.map(flow => {
         const newFlow = { ...flow, daysLeft: Math.max(0, flow.daysLeft - 1) }
         if (flow.daysLeft === 1) {
@@ -129,7 +130,6 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
         return newFlow
       }).filter(flow => flow.daysLeft !== -1)
 
-      // Process outgoing flows
       const newOutgoingFlows = prev.outgoingFlows.map(flow => {
         const newFlow = { ...flow, daysLeft: Math.max(0, flow.daysLeft - 1) }
         if (flow.daysLeft === 1) {
@@ -140,13 +140,11 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
         return newFlow
       }).filter(flow => flow.daysLeft !== -1)
 
-      // Apply daily interest on credit used
       const dailyInterest = prev.creditUsed * (prev.creditInterestRate / 365)
       cashChange -= dailyInterest
 
       const newCashPosition = prev.cashPosition + cashChange
 
-      // Determine game status
       let newGameStatus = prev.gameStatus
       if (newCashPosition < 0) {
         newGameStatus = 'lost'
@@ -154,17 +152,15 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
         newGameStatus = 'won'
       }
 
-      // Show notifications
       dayNotifications.forEach(msg => {
-        if (msg.includes('+$')) {
-          addNotification(msg, 'success')
-        } else {
-          addNotification(msg, 'info')
-        }
+        pendingNotifications.push({
+          message: msg,
+          type: msg.includes('+$') ? 'success' : 'info',
+        })
       })
 
       if (dailyInterest > 0) {
-        addNotification(`Credit interest: -$${dailyInterest.toFixed(2)}`, 'warning')
+        pendingNotifications.push({ message: `Credit interest: -$${dailyInterest.toFixed(2)}`, type: 'warning' })
       }
 
       return {
@@ -176,6 +172,10 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
         gameStatus: newGameStatus
       }
     })
+
+    for (const n of pendingNotifications) {
+      addNotification(n.message, n.type)
+    }
   }, [gameState.gameStatus, addNotification])
 
   const requestPayment = useCallback(() => {
@@ -351,7 +351,9 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
   }, [activity, addNotification])
 
   const handleSubmit = useCallback(() => {
+    if (submitted) return
     if ((onSubmit || onSubmitLegacy) && gameState.gameStatus !== 'playing') {
+      setSubmitted(true)
       const initialCash = activity.initialState.cashPosition
       const finalProfit = gameState.cashPosition - initialCash
       const legacyData = {
@@ -374,7 +376,7 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
       }))
 
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: activity.title ?? 'cash-flow-challenge',
+        activityId: 'cash-flow-challenge',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
@@ -402,7 +404,7 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
       onSubmitLegacy?.(legacyData)
       addNotification('Results submitted successfully!', 'success')
     }
-  }, [gameState, actionsLog, onSubmit, onSubmitLegacy, activity, addNotification])
+  }, [submitted, gameState, actionsLog, onSubmit, onSubmitLegacy, activity, addNotification])
 
   const healthStatus = getCashHealthStatus(gameState.cashPosition)
   const totalIncoming = gameState.incomingFlows.reduce((sum, flow) => sum + flow.amount, 0)
@@ -456,7 +458,7 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
               }
             </p>
             {(onSubmit || onSubmitLegacy) && (
-              <Button onClick={handleSubmit} className="mt-4" size="lg">
+              <Button onClick={handleSubmit} className="mt-4" size="lg" disabled={submitted}>
                 Submit Results
               </Button>
             )}

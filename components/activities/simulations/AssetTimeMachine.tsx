@@ -88,18 +88,20 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
       value: nextValue
     }
 
+    const updatedTotalExpenses = totalExpenses + cost
+
     setHistory(prev => [...prev, entry])
-    setTotalExpenses(prev => prev + cost)
+    setTotalExpenses(updatedTotalExpenses)
     setCurrentValue(nextValue)
     
     if (nextYear >= years) {
-      const result: AssetTimeMachineResult = { totalExpenses, finalValue: nextValue, history: [...history, entry] }
+      const result: AssetTimeMachineResult = { totalExpenses: updatedTotalExpenses, finalValue: nextValue, history: [...history, entry] }
       setIsComplete(true)
 
       const answers = Object.fromEntries(
         result.history.map((h) => [h.year.toString(), h.action])
       )
-      const parts = buildPracticeSubmissionParts(answers).map((part, index) => ({
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
         ...part,
         isCorrect: true,
         score: 1,

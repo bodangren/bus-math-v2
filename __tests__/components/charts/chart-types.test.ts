@@ -58,4 +58,13 @@ describe('formatCurrency', () => {
     const result = formatCurrency(1000, 'EUR');
     expect(result).toContain('1,000');
   });
+
+  it('returns fallback for NaN', () => {
+    expect(formatCurrency(NaN)).toBe('—');
+  });
+
+  it('returns fallback for Infinity', () => {
+    expect(formatCurrency(Infinity)).toBe('—');
+    expect(formatCurrency(-Infinity)).toBe('—');
+  });
 });

@@ -56,11 +56,14 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
   const [activeDisaster, setActiveDisaster] = useState<Disaster | null>(null)
   const [isGameOver, setIsGameOver] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   const profit = revenue - expenses
 
   const handleNextRound = () => {
+    if (submitted) return
     if (round >= disasters.length) {
+      setSubmitted(true)
       const finalCash = cash
       const roundsSurvived = round
       setIsComplete(true)
@@ -132,10 +135,49 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
   }
 
   useEffect(() => {
-    if (cash <= 0 && !isGameOver) {
+    if (cash <= 0 && !isGameOver && !submitted) {
       setIsGameOver(true)
+      setSubmitted(true)
+
+      const answers: Record<string, unknown> = {
+        finalCash: 0,
+        roundsSurvived: round,
+        survivedAll: false,
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id ?? 'business-stress-test',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'business_stress_test',
+          title: activity.title ?? 'Business Stress Test',
+          finalCash: 0,
+          roundsSurvived: round,
+          totalRounds: disasters.length,
+          survivedAll: false,
+        },
+        analytics: {
+          finalCash: 0,
+          roundsSurvived: round,
+          survivalRate: round / disasters.length,
+        },
+      })
+
+      onSubmit?.(envelope)
+      onComplete?.({ finalCash: 0, roundsSurvived: round })
     }
-  }, [cash, isGameOver])
+  }, [cash, isGameOver, submitted, round, activity, disasters.length, onSubmit, onComplete])
 
   const reset = () => {
     setCash(initialState.cash)
@@ -145,6 +187,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
     setActiveDisaster(null)
     setIsGameOver(false)
     setIsComplete(false)
+    setSubmitted(false)
   }
 
   return (

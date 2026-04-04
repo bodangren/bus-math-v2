@@ -23,7 +23,6 @@ describe('docs/components.yaml activity keys', () => {
     const documentedKeys = new Set(readComponentKeysFromDocs());
 
     const canonicalKeys = [
-      'drag-and-drop',
       'journal-entry-building',
       'spreadsheet',
       'data-cleaning',

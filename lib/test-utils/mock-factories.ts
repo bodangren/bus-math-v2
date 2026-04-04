@@ -280,21 +280,6 @@ export function buildActivityInput(overrides: Partial<NewActivity> = {}): NewAct
             allowNegative: false,
             currency: 'USD'
           };
-        case 'drag-and-drop':
-          return {
-            title: 'Match Terms',
-            description: 'Pair each accounting term with its definition.',
-            showHints: false,
-            shuffleItems: false,
-            leftColumnTitle: 'Terms',
-            rightColumnTitle: 'Definitions',
-            items: [
-              { id: 'term-assets', content: 'Assets', matchId: 'def-assets' },
-              { id: 'def-assets', content: 'Resources owned', matchId: 'term-assets' },
-              { id: 'term-liabilities', content: 'Liabilities', matchId: 'def-liabilities' },
-              { id: 'def-liabilities', content: 'Amounts owed', matchId: 'term-liabilities' }
-            ]
-          };
         case 'fill-in-the-blank':
           return {
             title: 'Complete Each Equation',

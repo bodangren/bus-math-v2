@@ -654,130 +654,112 @@ export const AUTHORED_UNIT_1_LESSONS = [
     "activities": [
       {
         "id": "d6b57545-65f6-4c39-80d5-000200001001",
-        "componentKey": "account-categorization",
+        "componentKey": "notebook-organizer",
         "displayName": "Sort TechStart Month 2 Accounts",
         "description": "Drag each account into the correct category with the class model visible and hints turned on.",
         "props": {
           "title": "Classify TechStart's Accounts",
           "description": "Drag each account into the correct bucket with the class model visible. Use the classification test: own it (Asset), owe it (Liability), or owner's stake (Equity).",
-          "problemTemplate": {
-            "parameters": {
-              "assets": {
-                "min": 3500,
-                "max": 11000,
-                "step": 100
-              },
-              "liabilities": {
-                "min": 1200,
-                "max": 7000,
-                "step": 100
-              }
-            },
-            "answerFormula": "assets - liabilities",
-            "questionTemplate": "With assets {{assets}} and liabilities {{liabilities}}, compute equity.",
-            "tolerance": 1
-          },
-          "categories": [
-            {
-              "id": "assets",
-              "name": "Assets",
-              "description": "What TechStart owns or controls with future value",
-              "whyItMatters": "Assets are the resources that power TechStart's operations and growth."
-            },
-            {
-              "id": "liabilities",
-              "name": "Liabilities",
-              "description": "What TechStart owes to others",
-              "whyItMatters": "Liabilities represent TechStart's obligations — money or services owed to creditors and clients."
-            },
-            {
-              "id": "equity",
-              "name": "Equity",
-              "description": "The owner's stake in TechStart",
-              "whyItMatters": "Equity is what remains for Sarah after all debts are paid — her real ownership of the business."
-            }
-          ],
-          "accounts": [
+          "items": [
             {
               "id": "cash",
-              "name": "Cash",
+              "label": "Cash",
+              "amount": 3200,
+              "category": "asset",
               "description": "TechStart's bank account balance",
-              "categoryId": "assets",
-              "hint": "TechStart controls this money and can spend it anytime."
+              "icon": "cash"
             },
             {
               "id": "accounts-receivable",
-              "name": "Accounts Receivable",
+              "label": "Accounts Receivable",
+              "amount": 1800,
+              "category": "asset",
               "description": "Money clients owe TechStart for completed work",
-              "categoryId": "assets",
-              "hint": "TechStart has already delivered the service. The payment is coming to TechStart."
+              "icon": "receivable"
             },
             {
               "id": "office-equipment",
-              "name": "Office Equipment",
+              "label": "Office Equipment",
+              "amount": 2500,
+              "category": "asset",
               "description": "Laptops and monitors purchased for client work",
-              "categoryId": "assets",
-              "hint": "TechStart owns these and uses them to generate revenue."
+              "icon": "equipment"
             },
             {
               "id": "prepaid-insurance",
-              "name": "Prepaid Insurance",
+              "label": "Prepaid Insurance",
+              "amount": 1200,
+              "category": "asset",
               "description": "Six months of business insurance paid upfront",
-              "categoryId": "assets",
-              "hint": "The money is gone, but the benefit (coverage) hasn't been used yet. Future value = Asset."
+              "icon": "bill"
             },
             {
               "id": "bank-loan",
-              "name": "Bank Loan",
+              "label": "Bank Loan",
+              "amount": 4000,
+              "category": "liability",
               "description": "Startup loan from First National Bank",
-              "categoryId": "liabilities",
-              "hint": "TechStart must repay this with interest. It's an obligation to the bank."
+              "icon": "bill"
             },
             {
               "id": "accounts-payable",
-              "name": "Accounts Payable",
+              "label": "Accounts Payable",
+              "amount": 900,
+              "category": "liability",
               "description": "Unpaid vendor invoices (software subscriptions, supplies)",
-              "categoryId": "liabilities",
-              "hint": "TechStart received goods or services but hasn't paid yet. It owes the vendors."
+              "icon": "bill"
             },
             {
               "id": "accrued-wages",
-              "name": "Accrued Wages",
+              "label": "Accrued Wages",
+              "amount": 600,
+              "category": "liability",
               "description": "Wages earned by part-time staff, not yet paid",
-              "categoryId": "liabilities",
-              "hint": "Staff worked this week. TechStart owes them payroll even though payday is Friday."
+              "icon": "bill"
             },
             {
               "id": "deferred-revenue",
-              "name": "Deferred Revenue",
+              "label": "Deferred Revenue",
+              "amount": 2400,
+              "category": "liability",
               "description": "A client paid 3 months of retainer upfront",
-              "categoryId": "liabilities",
-              "hint": "TechStart has the cash but hasn't done the work yet. It owes the client a service."
+              "icon": "bill"
             },
             {
               "id": "sarahs-capital",
-              "name": "Sarah's Capital",
+              "label": "Sarah's Capital",
+              "amount": 5000,
+              "category": "equity",
               "description": "Sarah's original $5,000 investment to launch TechStart",
-              "categoryId": "equity",
-              "hint": "This is Sarah's personal claim on the business — her ownership stake."
+              "icon": "owner"
             },
             {
               "id": "retained-earnings",
-              "name": "Retained Earnings",
+              "label": "Retained Earnings",
+              "amount": 1500,
+              "category": "equity",
               "description": "Profits from prior months kept in the business",
-              "categoryId": "equity",
-              "hint": "These are profits Sarah chose not to withdraw. They belong to her as the owner."
+              "icon": "owner"
             },
             {
               "id": "net-income",
-              "name": "Current Net Income",
+              "label": "Current Net Income",
+              "amount": 800,
+              "category": "equity",
               "description": "This month's profit (Revenue minus Expenses)",
-              "categoryId": "equity",
-              "hint": "Until the books are closed at month-end, current profit sits in Equity."
+              "icon": "owner"
             }
           ],
           "showHintsByDefault": true,
-          "shuffleItems": true
+          "problemTemplate": {
+            "parameters": {
+              "assets": { "min": 3000, "max": 9000, "step": 100 },
+              "liabilities": { "min": 1000, "max": 5000, "step": 100 }
+            },
+            "answerFormula": "assets - liabilities",
+            "questionTemplate": "Given assets {{assets}} and liabilities {{liabilities}}, compute equity.",
+            "tolerance": 1
+          }
         },
         "gradingConfig": {
           "autoGrade": true,
@@ -787,137 +769,120 @@ export const AUTHORED_UNIT_1_LESSONS = [
       },
       {
         "id": "d6b57545-65f6-4c39-80d5-000200001003",
-        "componentKey": "account-categorization",
+        "componentKey": "notebook-organizer",
         "displayName": "Classify TechStart Month 2 Accounts Without Hints",
         "description": "Drag a fresh month-end account set into the correct category without opening the hint panel.",
         "props": {
           "title": "Classify TechStart's Fresh Account Set",
           "description": "Sort a fresh Month 2 account set into Asset, Liability, or Equity without turning on hints.",
-          "problemTemplate": {
-            "parameters": {
-              "assets": {
-                "min": 4200,
-                "max": 12500,
-                "step": 100
-              },
-              "liabilities": {
-                "min": 1500,
-                "max": 8000,
-                "step": 100
-              }
-            },
-            "answerFormula": "assets - liabilities",
-            "questionTemplate": "With assets {{assets}} and liabilities {{liabilities}}, compute equity.",
-            "tolerance": 1
-          },
-          "categories": [
-            {
-              "id": "assets",
-              "name": "Assets",
-              "description": "What TechStart owns or controls with future value",
-              "whyItMatters": "Assets are the resources that power TechStart's operations and growth."
-            },
-            {
-              "id": "liabilities",
-              "name": "Liabilities",
-              "description": "What TechStart owes to others",
-              "whyItMatters": "Liabilities represent TechStart's obligations — money or services owed to creditors and clients."
-            },
-            {
-              "id": "equity",
-              "name": "Equity",
-              "description": "The owner's stake in TechStart",
-              "whyItMatters": "Equity is what remains for Sarah after all debts are paid — her real ownership of the business."
-            }
-          ],
-          "accounts": [
+          "items": [
             {
               "id": "cash",
-              "name": "Cash",
+              "label": "Cash",
+              "amount": 4100,
+              "category": "asset",
               "description": "TechStart's bank account balance",
-              "categoryId": "assets",
-              "hint": "TechStart controls this money and can spend it anytime."
+              "icon": "cash"
             },
             {
               "id": "accounts-receivable",
-              "name": "Accounts Receivable",
+              "label": "Accounts Receivable",
+              "amount": 2200,
+              "category": "asset",
               "description": "Money clients owe TechStart for completed work",
-              "categoryId": "assets",
-              "hint": "TechStart has already delivered the service. The payment is coming to TechStart."
+              "icon": "receivable"
             },
             {
               "id": "office-supplies",
-              "name": "Office Supplies",
+              "label": "Office Supplies",
+              "amount": 350,
+              "category": "asset",
               "description": "Paper, printer ink, and other small operating supplies",
-              "categoryId": "assets",
-              "hint": "These are resources TechStart still owns and will use in the business."
+              "icon": "equipment"
             },
             {
               "id": "prepaid-insurance",
-              "name": "Prepaid Insurance",
+              "label": "Prepaid Insurance",
+              "amount": 900,
+              "category": "asset",
               "description": "Six months of business insurance paid upfront",
-              "categoryId": "assets",
-              "hint": "The money is gone, but the benefit (coverage) hasn't been used yet. Future value = Asset."
+              "icon": "bill"
             },
             {
               "id": "security-deposit",
-              "name": "Security Deposit",
+              "label": "Security Deposit",
+              "amount": 500,
+              "category": "asset",
               "description": "Rent deposit TechStart expects to recover at lease end",
-              "categoryId": "assets",
-              "hint": "TechStart controls the deposit and should receive it back later."
+              "icon": "cash"
             },
             {
               "id": "bank-loan",
-              "name": "Bank Loan",
+              "label": "Bank Loan",
+              "amount": 3500,
+              "category": "liability",
               "description": "Startup loan from First National Bank",
-              "categoryId": "liabilities",
-              "hint": "TechStart must repay this with interest. It's an obligation to the bank."
+              "icon": "bill"
             },
             {
               "id": "accounts-payable",
-              "name": "Accounts Payable",
+              "label": "Accounts Payable",
+              "amount": 1100,
+              "category": "liability",
               "description": "Unpaid vendor invoices (software subscriptions, supplies)",
-              "categoryId": "liabilities",
-              "hint": "TechStart received goods or services but hasn't paid yet. It owes the vendors."
+              "icon": "bill"
             },
             {
               "id": "accrued-wages",
-              "name": "Accrued Wages",
+              "label": "Accrued Wages",
+              "amount": 750,
+              "category": "liability",
               "description": "Wages earned by part-time staff, not yet paid",
-              "categoryId": "liabilities",
-              "hint": "Staff worked this week. TechStart owes them payroll even though payday is Friday."
+              "icon": "bill"
             },
             {
               "id": "deferred-consulting-revenue",
-              "name": "Deferred Consulting Revenue",
+              "label": "Deferred Consulting Revenue",
+              "amount": 1800,
+              "category": "liability",
               "description": "A client paid TechStart upfront for future consulting work",
-              "categoryId": "liabilities",
-              "hint": "TechStart has the cash but still owes the client the work."
+              "icon": "bill"
             },
             {
               "id": "sarahs-capital",
-              "name": "Sarah's Capital",
+              "label": "Sarah's Capital",
+              "amount": 5000,
+              "category": "equity",
               "description": "Sarah's original $5,000 investment to launch TechStart",
-              "categoryId": "equity",
-              "hint": "This is Sarah's personal claim on the business — her ownership stake."
+              "icon": "owner"
             },
             {
               "id": "retained-earnings",
-              "name": "Retained Earnings",
+              "label": "Retained Earnings",
+              "amount": 2000,
+              "category": "equity",
               "description": "Profits from prior months kept in the business",
-              "categoryId": "equity",
-              "hint": "These are profits Sarah chose not to withdraw. They belong to her as the owner."
+              "icon": "owner"
             },
             {
               "id": "current-net-income",
-              "name": "Current Net Income",
+              "label": "Current Net Income",
+              "amount": 1100,
+              "category": "equity",
               "description": "This month's profit (Revenue minus Expenses)",
-              "categoryId": "equity",
-              "hint": "Until the books are closed at month-end, current profit sits in Equity."
+              "icon": "owner"
             }
           ],
           "showHintsByDefault": false,
-          "shuffleItems": true
+          "problemTemplate": {
+            "parameters": {
+              "assets": { "min": 3000, "max": 12000, "step": 100 },
+              "liabilities": { "min": 800, "max": 7000, "step": 100 }
+            },
+            "answerFormula": "assets - liabilities",
+            "questionTemplate": "Given assets {{assets}} and liabilities {{liabilities}}, compute equity.",
+            "tolerance": 1
+          }
         },
         "gradingConfig": {
           "autoGrade": true,

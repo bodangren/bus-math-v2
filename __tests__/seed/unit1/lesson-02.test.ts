@@ -53,16 +53,16 @@ describe('Lesson 02 seed data — Classify Accounts (ACC-1.2)', () => {
     expect(hasQuestion, 'activator question in Phase 1').toBe(true);
   });
 
-  it('Guided Practice phase (3) has a required account-categorization activity', () => {
+  it('Guided Practice phase (3) has a required notebook-organizer activity', () => {
     const guided = LESSON_02_SEED_DATA.phases.find(p => p.phaseNumber === 3);
     const activitySection = guided!.sections.find(s => s.sectionType === 'activity');
     expect(activitySection).toBeDefined();
     const content = activitySection!.content as Record<string, unknown>;
     const activity = LESSON_02_SEED_DATA.activities.find(a => a.id === content.activityId);
-    expect(activity?.componentKey).toBe('account-categorization');
+    expect(activity?.componentKey).toBe('notebook-organizer');
   });
 
-  it('guided and independent practice use distinct account-categorization activities', () => {
+  it('guided and independent practice use distinct notebook-organizer activities', () => {
     const guided = LESSON_02_SEED_DATA.phases.find((phase) => phase.phaseNumber === 3);
     const independent = LESSON_02_SEED_DATA.phases.find((phase) => phase.phaseNumber === 4);
     const guidedSection = guided!.sections.find((section) => section.sectionType === 'activity');
@@ -77,8 +77,8 @@ describe('Lesson 02 seed data — Classify Accounts (ACC-1.2)', () => {
     const guidedActivity = LESSON_02_SEED_DATA.activities.find((activity) => activity.id === guidedActivityId);
     const independentActivity = LESSON_02_SEED_DATA.activities.find((activity) => activity.id === independentActivityId);
 
-    expect(guidedActivity?.componentKey).toBe('account-categorization');
-    expect(independentActivity?.componentKey).toBe('account-categorization');
+    expect(guidedActivity?.componentKey).toBe('notebook-organizer');
+    expect(independentActivity?.componentKey).toBe('notebook-organizer');
     expect((guidedActivity?.props as Record<string, unknown>).showHintsByDefault).toBe(true);
     expect((independentActivity?.props as Record<string, unknown>).showHintsByDefault).toBe(false);
   });

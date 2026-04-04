@@ -415,6 +415,7 @@ export function StartupJourney({ activity, initialState, onStateChange, onSubmit
   }, [gameState.gameStatus, addNotification, winConditions])
 
   const resetGame = useCallback(() => {
+    submittedRef.current = false
     setGameState(cloneStateFromConfig(activity.props.initialState))
     setNotifications([])
     addNotification('Game reset successfully', 'info')
