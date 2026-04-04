@@ -12505,7 +12505,7 @@ function TrialBalanceErrorMatrix({
     ] })
   ] });
 }
-function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }) {
+function CashFlowChallenge({ activity, onSubmit }) {
   const [gameState, setGameState] = useState({
     cashPosition: activity.initialState.cashPosition,
     day: activity.initialState.day,
@@ -12742,15 +12742,10 @@ function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }) {
   }, [activity, addNotification]);
   const handleSubmit = useCallback$1(() => {
     if (submitted) return;
-    if ((onSubmit || onSubmitLegacy) && gameState.gameStatus !== "playing") {
+    if (onSubmit && gameState.gameStatus !== "playing") {
       setSubmitted(true);
       const initialCash = activity.initialState.cashPosition;
       const finalProfit = gameState.cashPosition - initialCash;
-      const legacyData = {
-        ...gameState,
-        finalProfit,
-        actionsLog
-      };
       const answers = {
         finalCash: gameState.cashPosition,
         finalProfit,
@@ -12764,7 +12759,7 @@ function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }) {
         maxScore: 1
       }));
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: "cash-flow-challenge",
+        activityId: activity.id ?? "cash-flow-challenge",
         mode: "guided_practice",
         status: "submitted",
         attemptNumber: 1,
@@ -12787,11 +12782,10 @@ function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }) {
           won: gameState.gameStatus === "won"
         }
       });
-      onSubmit?.(envelope);
-      onSubmitLegacy?.(legacyData);
+      onSubmit(envelope);
       addNotification("Results submitted successfully!", "success");
     }
-  }, [submitted, gameState, actionsLog, onSubmit, onSubmitLegacy, activity, addNotification]);
+  }, [submitted, gameState, actionsLog, onSubmit, activity, addNotification]);
   const healthStatus = getCashHealthStatus(gameState.cashPosition);
   const totalIncoming = gameState.incomingFlows.reduce((sum, flow) => sum + flow.amount, 0);
   const totalOutgoing = gameState.outgoingFlows.reduce((sum, flow) => sum + flow.amount, 0);
@@ -12823,7 +12817,7 @@ function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }) {
         /* @__PURE__ */ jsx("h3", { className: `text-2xl font-bold ${gameState.gameStatus === "won" ? "text-green-800" : "text-red-800"}`, children: gameState.gameStatus === "won" ? "Challenge Complete!" : "Game Over" })
       ] }),
       /* @__PURE__ */ jsx("p", { className: `text-lg ${gameState.gameStatus === "won" ? "text-green-700" : "text-red-700"}`, children: gameState.gameStatus === "won" ? `Successfully managed cash flow for ${gameState.maxDays} days with $${gameState.cashPosition.toLocaleString()} remaining!` : "Ran out of cash! Better luck next time." }),
-      (onSubmit || onSubmitLegacy) && /* @__PURE__ */ jsx(Button, { onClick: handleSubmit, className: "mt-4", size: "lg", disabled: submitted, children: "Submit Results" })
+      onSubmit && /* @__PURE__ */ jsx(Button, { onClick: handleSubmit, className: "mt-4", size: "lg", disabled: submitted, children: "Submit Results" })
     ] }) }),
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-4 gap-4", children: [
       /* @__PURE__ */ jsx(Card, { className: `${healthStatus.bgColor} border-2`, children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
