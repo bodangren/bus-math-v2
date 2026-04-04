@@ -35,19 +35,19 @@
 
 ### Tasks
 
-- [ ] **Task: Implement AI-summary pipeline**
-  - [ ] Assemble model inputs from stored evidence plus deterministic summaries
-  - [ ] Generate concise teacher-facing interpretation with explicit evidence grounding
-  - [ ] Add safe fallback behavior when the AI layer is unavailable
+- [x] **Task: Implement AI-summary pipeline** (SHA: pending)
+  - [x] Assemble model inputs from stored evidence plus deterministic summaries
+  - [x] Generate concise teacher-facing interpretation with explicit evidence grounding
+  - [x] Add safe fallback behavior when the AI layer is unavailable
 
 ## Phase 4: Verification and Closeout
 
 ### Tasks
 
-- [ ] **Task: Run verification**
-  - [ ] Run targeted tests for summary assembly, authorization, and fallback behavior
-  - [ ] Run `npm run lint`
-  - [ ] Fix regressions
+- [x] **Task: Run verification** (SHA: pending)
+  - [x] Run targeted tests for summary assembly, authorization, and fallback behavior
+  - [x] Run `npm run lint`
+  - [x] Fix regressions
 
-- [ ] **Task: Update Conductor docs if new operational requirements exist**
-  - [ ] Record any AI-provider or evidence-retention requirements that become part of the active operating model
+- [x] **Task: Update Conductor docs if new operational requirements exist**
+  - [x] Record any AI-provider or evidence-retention requirements that become part of the active operating model

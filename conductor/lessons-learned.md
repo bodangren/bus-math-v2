@@ -47,3 +47,4 @@
 - (2026-04-04, teacher_practice_error_analysis) Practice submission parts have optional `misconceptionTags`; always use `?? []` when aggregating to avoid undefined iteration errors in summary assembly.
 - (2026-04-04, code_review_track5_phase1) Error analysis utilities that aggregate per-student data should accept an explicit `studentIdMap` parameter since `PracticeSubmissionEnvelope` has no student ID field; falling back to `activityId` is acceptable but must be documented.
 - (2026-04-04, code_review_track5_phase1) When adding interactive component keys to a helper list, include simulation components alongside quiz/spreadsheet keys, or tests that gate on interactivity will silently skip entire categories.
+- (2026-04-04, teacher_practice_error_analysis) AI provider adapters work best as injectable functions `(prompt) => Promise<string>` so the core logic is testable with mocks and the system degrades gracefully to null when no provider is configured.
