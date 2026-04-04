@@ -10,6 +10,7 @@ import {
   type TeacherLessonMonitoringViewModel,
 } from '@/lib/teacher/lesson-monitoring';
 import { TeacherLessonPlan } from '@/components/teacher/TeacherLessonPlan';
+import { LessonErrorSummary } from '@/components/teacher/LessonErrorSummary';
 
 type TeacherLessonPlanPageContentProps = TeacherLessonMonitoringViewModel;
 
@@ -84,6 +85,8 @@ export function TeacherLessonPlanPageContent({
             navigateToHref(direction === 'prev' ? previousLessonHref : nextLessonHref)
           }
         />
+
+        {!empty ? <LessonErrorSummary lessonId={lesson.id} /> : null}
       </div>
     </main>
   );

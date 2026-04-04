@@ -130,7 +130,7 @@ const createLucideIcon = (iconName, iconNode) => {
   Component2.displayName = toPascalCase(iconName);
   return Component2;
 };
-const __iconNode$1A = [
+const __iconNode$1B = [
   [
     "path",
     {
@@ -139,45 +139,45 @@ const __iconNode$1A = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$1A);
-const __iconNode$1z = [
+const Activity = createLucideIcon("activity", __iconNode$1B);
+const __iconNode$1A = [
   ["path", { d: "m7 7 10 10", key: "1fmybs" }],
   ["path", { d: "M17 7v10H7", key: "6fjiku" }]
 ];
-const ArrowDownRight = createLucideIcon("arrow-down-right", __iconNode$1z);
-const __iconNode$1y = [
+const ArrowDownRight = createLucideIcon("arrow-down-right", __iconNode$1A);
+const __iconNode$1z = [
   ["path", { d: "M12 5v14", key: "s699le" }],
   ["path", { d: "m19 12-7 7-7-7", key: "1idqje" }]
 ];
-const ArrowDown = createLucideIcon("arrow-down", __iconNode$1y);
-const __iconNode$1x = [
+const ArrowDown = createLucideIcon("arrow-down", __iconNode$1z);
+const __iconNode$1y = [
   ["path", { d: "m12 19-7-7 7-7", key: "1l729n" }],
   ["path", { d: "M19 12H5", key: "x3x0zl" }]
 ];
-const ArrowLeft = createLucideIcon("arrow-left", __iconNode$1x);
-const __iconNode$1w = [
+const ArrowLeft = createLucideIcon("arrow-left", __iconNode$1y);
+const __iconNode$1x = [
   ["path", { d: "M5 12h14", key: "1ays0h" }],
   ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$1w);
-const __iconNode$1v = [
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$1x);
+const __iconNode$1w = [
   ["path", { d: "m21 16-4 4-4-4", key: "f6ql7i" }],
   ["path", { d: "M17 20V4", key: "1ejh1v" }],
   ["path", { d: "m3 8 4-4 4 4", key: "11wl7u" }],
   ["path", { d: "M7 4v16", key: "1glfcx" }]
 ];
-const ArrowUpDown = createLucideIcon("arrow-up-down", __iconNode$1v);
-const __iconNode$1u = [
+const ArrowUpDown = createLucideIcon("arrow-up-down", __iconNode$1w);
+const __iconNode$1v = [
   ["path", { d: "M7 7h10v10", key: "1tivn9" }],
   ["path", { d: "M7 17 17 7", key: "1vkiza" }]
 ];
-const ArrowUpRight = createLucideIcon("arrow-up-right", __iconNode$1u);
-const __iconNode$1t = [
+const ArrowUpRight = createLucideIcon("arrow-up-right", __iconNode$1v);
+const __iconNode$1u = [
   ["path", { d: "m5 12 7-7 7 7", key: "hav0vg" }],
   ["path", { d: "M12 19V5", key: "x0mq9r" }]
 ];
-const ArrowUp = createLucideIcon("arrow-up", __iconNode$1t);
-const __iconNode$1s = [
+const ArrowUp = createLucideIcon("arrow-up", __iconNode$1u);
+const __iconNode$1t = [
   [
     "path",
     {
@@ -187,8 +187,8 @@ const __iconNode$1s = [
   ],
   ["path", { d: "m9 9.5 2 2 4-4", key: "1dth82" }]
 ];
-const BookCheck = createLucideIcon("book-check", __iconNode$1s);
-const __iconNode$1r = [
+const BookCheck = createLucideIcon("book-check", __iconNode$1t);
+const __iconNode$1s = [
   ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
@@ -198,7 +198,31 @@ const __iconNode$1r = [
     }
   ]
 ];
-const BookOpen = createLucideIcon("book-open", __iconNode$1r);
+const BookOpen = createLucideIcon("book-open", __iconNode$1s);
+const __iconNode$1r = [
+  [
+    "path",
+    {
+      d: "M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z",
+      key: "l5xja"
+    }
+  ],
+  [
+    "path",
+    {
+      d: "M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z",
+      key: "ep3f8r"
+    }
+  ],
+  ["path", { d: "M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4", key: "1p4c4q" }],
+  ["path", { d: "M17.599 6.5a3 3 0 0 0 .399-1.375", key: "tmeiqw" }],
+  ["path", { d: "M6.003 5.125A3 3 0 0 0 6.401 6.5", key: "105sqy" }],
+  ["path", { d: "M3.477 10.896a4 4 0 0 1 .585-.396", key: "ql3yin" }],
+  ["path", { d: "M19.938 10.5a4 4 0 0 1 .585.396", key: "1qfode" }],
+  ["path", { d: "M6 18a4 4 0 0 1-1.967-.516", key: "2e4loj" }],
+  ["path", { d: "M19.967 17.484A4 4 0 0 1 18 18", key: "159ez6" }]
+];
+const Brain = createLucideIcon("brain", __iconNode$1r);
 const __iconNode$1q = [
   ["path", { d: "M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16", key: "jecpp" }],
   ["rect", { width: "20", height: "14", x: "2", y: "6", rx: "2", key: "i6l2r4" }]
@@ -62440,6 +62464,208 @@ function TeacherGuidance({ phaseNumber }) {
     ] })
   ] }) });
 }
+const MISCONCEPTION_TAGS = {
+  "debit-credit-reversal": {
+    slug: "debit-credit-reversal",
+    label: "Debit/Credit Reversal",
+    description: "Student debited an account that should have been credited, or vice versa.",
+    category: "mechanics"
+  },
+  "omitted-entry": {
+    slug: "omitted-entry",
+    label: "Omitted Entry",
+    description: "Student left out a required journal line, table row, or response part.",
+    category: "completeness"
+  },
+  "wrong-normal-balance": {
+    slug: "wrong-normal-balance",
+    label: "Wrong Normal Balance",
+    description: "Student selected the wrong normal balance side (debit vs credit) for an account.",
+    category: "mechanics"
+  },
+  "sign-error": {
+    slug: "sign-error",
+    label: "Sign Error",
+    description: "Student used the wrong sign or direction for an amount (e.g., negative where positive expected).",
+    category: "computation"
+  },
+  "classification-error": {
+    slug: "classification-error",
+    label: "Classification Error",
+    description: "Student placed an account in the wrong category (account type, statement placement, or permanent/temporary).",
+    category: "classification"
+  },
+  "wrong-account-type": {
+    slug: "wrong-account-type",
+    label: "Wrong Account Type",
+    description: "Student confused the account type (e.g., treated a liability as equity, or an expense as an asset).",
+    category: "classification"
+  },
+  "computation-error": {
+    slug: "computation-error",
+    label: "Computation Error",
+    description: "Student performed an arithmetic or formula error when calculating a subtotal, ratio, or derived value.",
+    category: "computation"
+  },
+  "incomplete-entry": {
+    slug: "incomplete-entry",
+    label: "Incomplete Entry",
+    description: "Student provided a partial answer that is missing required fields (e.g., journal line without amount, or matrix cell left blank).",
+    category: "completeness"
+  }
+};
+function getMisconceptionTag(slug) {
+  return MISCONCEPTION_TAGS[slug];
+}
+function formatAccuracy(rate) {
+  return `${(rate * 100).toFixed(0)}%`;
+}
+function accuracyColor(rate) {
+  if (rate >= 0.8) return "text-green-700";
+  if (rate >= 0.6) return "text-amber-600";
+  return "text-red-600";
+}
+function progressColor(rate) {
+  if (rate >= 0.8) return "[&>div]:bg-green-500";
+  if (rate >= 0.6) return "[&>div]:bg-amber-500";
+  return "[&>div]:bg-red-500";
+}
+function MisconceptionRow({
+  misconception
+}) {
+  const tagDef = getMisconceptionTag(misconception.tag);
+  const label = tagDef?.label ?? misconception.tag;
+  const category = tagDef?.category ?? "mechanics";
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-3 rounded-lg border border-border bg-background px-3 py-2.5", children: [
+    /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
+        /* @__PURE__ */ jsx("span", { className: "text-sm font-medium text-foreground", children: label }),
+        /* @__PURE__ */ jsx(Badge, { variant: "secondary", className: "text-[10px] uppercase", children: category })
+      ] }),
+      tagDef?.description ? /* @__PURE__ */ jsx("p", { className: "mt-0.5 text-xs text-muted-foreground", children: tagDef.description }) : null
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "shrink-0 text-right", children: [
+      /* @__PURE__ */ jsx("div", { className: "text-sm font-semibold text-foreground", children: misconception.count }),
+      /* @__PURE__ */ jsxs("div", { className: "text-[10px] text-muted-foreground", children: [
+        misconception.affectedStudents.length,
+        " student",
+        misconception.affectedStudents.length === 1 ? "" : "s"
+      ] })
+    ] })
+  ] });
+}
+function PartAccuracyRow({ part }) {
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-1.5", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between gap-2", children: [
+      /* @__PURE__ */ jsx("span", { className: "truncate text-sm text-foreground", children: part.partId }),
+      /* @__PURE__ */ jsx("span", { className: `text-sm font-medium tabular-nums ${accuracyColor(part.accuracyRate)}`, children: formatAccuracy(part.accuracyRate) })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+      /* @__PURE__ */ jsx(
+        Progress,
+        {
+          value: part.accuracyRate * 100,
+          className: `h-1.5 flex-1 ${progressColor(part.accuracyRate)}`
+        }
+      ),
+      /* @__PURE__ */ jsxs("span", { className: "w-20 text-right text-[11px] text-muted-foreground", children: [
+        part.correctCount,
+        "/",
+        part.totalAttempts,
+        " correct"
+      ] })
+    ] })
+  ] });
+}
+function LessonErrorSummary({ lessonId }) {
+  const [summary, setSummary] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error2, setError] = useState(null);
+  useEffect(() => {
+    let cancelled2 = false;
+    setIsLoading(true);
+    setError(null);
+    setSummary(null);
+    fetch(`/api/teacher/error-summary?lessonId=${encodeURIComponent(lessonId)}`).then((res) => {
+      if (res.status === 404) {
+        return null;
+      }
+      if (!res.ok) {
+        return res.json().then((body) => {
+          throw new Error(body?.error ?? `HTTP ${res.status}`);
+        });
+      }
+      return res.json();
+    }).then((data) => {
+      if (!cancelled2) {
+        setSummary(data);
+        setIsLoading(false);
+      }
+    }).catch((err) => {
+      if (!cancelled2) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    });
+    return () => {
+      cancelled2 = true;
+    };
+  }, [lessonId]);
+  if (isLoading) {
+    return /* @__PURE__ */ jsx(Card, { className: "border-border/80", children: /* @__PURE__ */ jsxs(CardContent, { className: "flex items-center justify-center gap-2 py-8 text-muted-foreground", children: [
+      /* @__PURE__ */ jsx(LoaderCircle, { className: "size-4 animate-spin", "aria-hidden": "true" }),
+      /* @__PURE__ */ jsx("span", { className: "text-sm", children: "Loading error summary…" })
+    ] }) });
+  }
+  if (error2) {
+    return /* @__PURE__ */ jsx(Card, { className: "border-border/80", children: /* @__PURE__ */ jsx(CardContent, { className: "py-6 text-sm text-destructive", children: error2 }) });
+  }
+  if (!summary) {
+    return /* @__PURE__ */ jsx(Card, { className: "border-border/80 border-dashed", children: /* @__PURE__ */ jsxs(CardContent, { className: "py-8 text-center", children: [
+      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "No practice submissions recorded for this lesson yet." }),
+      /* @__PURE__ */ jsx("p", { className: "mt-1 text-xs text-muted-foreground", children: "Error analysis will appear once students submit practice work." })
+    ] }) });
+  }
+  const hasPartSummaries = summary.partSummaries.length > 0;
+  const hasMisconceptions = summary.topMisconceptions.length > 0;
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsxs("div", { className: "grid gap-3 sm:grid-cols-3", children: [
+      /* @__PURE__ */ jsx(Card, { className: "border-border/80", children: /* @__PURE__ */ jsxs(CardContent, { className: "px-4 py-3", children: [
+        /* @__PURE__ */ jsx("div", { className: "text-[11px] uppercase tracking-wide text-muted-foreground", children: "Students" }),
+        /* @__PURE__ */ jsxs("div", { className: "mt-1 flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(Users, { className: "size-4 text-muted-foreground" }),
+          /* @__PURE__ */ jsx("span", { className: "text-lg font-semibold text-foreground", children: summary.studentCount })
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsx(Card, { className: "border-border/80", children: /* @__PURE__ */ jsxs(CardContent, { className: "px-4 py-3", children: [
+        /* @__PURE__ */ jsx("div", { className: "text-[11px] uppercase tracking-wide text-muted-foreground", children: "Class Accuracy" }),
+        /* @__PURE__ */ jsx("div", { className: `mt-1 text-lg font-semibold ${accuracyColor(summary.averageAccuracy)}`, children: formatAccuracy(summary.averageAccuracy) })
+      ] }) }),
+      /* @__PURE__ */ jsx(Card, { className: "border-border/80", children: /* @__PURE__ */ jsxs(CardContent, { className: "px-4 py-3", children: [
+        /* @__PURE__ */ jsx("div", { className: "text-[11px] uppercase tracking-wide text-muted-foreground", children: "Top Misconception" }),
+        /* @__PURE__ */ jsx("div", { className: "mt-1 text-sm font-medium text-foreground", children: hasMisconceptions ? getMisconceptionTag(summary.topMisconceptions[0].tag)?.label ?? summary.topMisconceptions[0].tag : "None detected" })
+      ] }) })
+    ] }),
+    hasMisconceptions ? /* @__PURE__ */ jsxs(Card, { className: "border-border/80", children: [
+      /* @__PURE__ */ jsx(CardHeader, { className: "px-4 py-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(ChartColumn, { className: "size-4 text-muted-foreground" }),
+        /* @__PURE__ */ jsx(CardTitle, { className: "text-sm font-semibold", children: "Misconception Overview" })
+      ] }) }),
+      /* @__PURE__ */ jsx(CardContent, { className: "space-y-2 px-4 pb-4", children: summary.topMisconceptions.map((misconception) => /* @__PURE__ */ jsx(MisconceptionRow, { misconception }, misconception.tag)) })
+    ] }) : null,
+    hasPartSummaries ? /* @__PURE__ */ jsxs(Card, { className: "border-border/80", children: [
+      /* @__PURE__ */ jsx(CardHeader, { className: "px-4 py-3", children: /* @__PURE__ */ jsx(CardTitle, { className: "text-sm font-semibold", children: "Per-Part Accuracy" }) }),
+      /* @__PURE__ */ jsx(CardContent, { className: "space-y-3 px-4 pb-4", children: summary.partSummaries.map((part) => /* @__PURE__ */ jsx(PartAccuracyRow, { part }, part.partId)) })
+    ] }) : null,
+    /* @__PURE__ */ jsx(Card, { className: "border-border/80 border-dashed", children: /* @__PURE__ */ jsxs(CardContent, { className: "flex items-start gap-3 px-4 py-4", children: [
+      /* @__PURE__ */ jsx(Brain, { className: "size-4 shrink-0 text-muted-foreground mt-0.5" }),
+      /* @__PURE__ */ jsxs("div", { className: "text-sm text-muted-foreground", children: [
+        /* @__PURE__ */ jsx("span", { className: "font-medium text-foreground", children: "AI Insights" }),
+        " are available per-student through the submission detail view. Open a student's submission in the gradebook to see AI-assisted error analysis and suggested interventions."
+      ] })
+    ] }) })
+  ] });
+}
 function TeacherLessonPlanPageContent({
   lesson,
   phases,
@@ -62487,7 +62713,8 @@ function TeacherLessonPlanPageContent({
         onLessonChange: handleLessonChange,
         onNavigate: (direction) => navigateToHref(direction === "prev" ? previousLessonHref : nextLessonHref)
       }
-    )
+    ),
+    !empty2 ? /* @__PURE__ */ jsx(LessonErrorSummary, { lessonId: lesson.id }) : null
   ] }) });
 }
 function Carousel({

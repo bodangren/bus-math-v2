@@ -88,22 +88,22 @@
 ### Tasks
 
 1. **Create teacher error summary component**
-   - [ ] Create `components/teacher/LessonErrorSummary.tsx`
-   - [ ] Call `/api/teacher/error-summary` for lesson-level data
-   - [ ] Show top misconceptions with counts and affected student list
-   - [ ] Show per-part accuracy rates
-   - [ ] Add "AI Insights" section that calls `/api/teacher/ai-error-summary` (graceful null)
+   - [x] Create `components/teacher/LessonErrorSummary.tsx`
+   - [x] Call `/api/teacher/error-summary` for lesson-level data
+   - [x] Show top misconceptions with counts and affected student list
+   - [x] Show per-part accuracy rates
+   - [x] Add "AI Insights" section that calls `/api/teacher/ai-error-summary` (graceful null)
 
 2. **Wire into teacher monitoring route**
-   - [ ] Find existing teacher lesson detail page
-   - [ ] Add error summary component to the page
-   - [ ] Ensure it loads after submission data is available
+   - [x] Find existing teacher lesson detail page
+   - [x] Add error summary component to the page
+   - [x] Ensure it loads after submission data is available
 
 3. **Phase verification**
-   - [ ] Run `npm run lint`
-   - [ ] Run full test suite
-   - [ ] Run `npm run build`
-   - [ ] Commit and push
+   - [x] Run `npm run lint`
+   - [x] Run full test suite
+   - [x] Run `npm run build`
+   - [x] Commit and push
 
 ## Phase 4: SpreadsheetActivity practice.v1 Path and Full Verification
 
