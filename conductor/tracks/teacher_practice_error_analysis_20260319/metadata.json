@@ -1,11 +1,11 @@
 {
   "track_id": "teacher_practice_error_analysis_20260319",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-03-19T12:00:00Z",
-  "updated_at": "2026-03-19T12:00:00Z",
+  "updated_at": "2026-04-04T12:00:00Z",
   "description": "Residual post-evidence interpretation layer after practice contract, evidence, backfill, and curriculum rollout work are stable; add deterministic and AI-assisted teacher summaries without re-owning baseline teacher review",
   "estimated_tasks": 16,
   "actual_tasks": null,
-  "deviation_notes": "Narrowed on 2026-03-19 so this track owns interpretation only; generic teacher evidence, submission persistence, and component migration work now belong to the earlier practice_* tracks. Dependency on Curriculum Rollout (Track 4) relaxed on 2026-03-19: error analysis operates on stored submissions, not authored lesson files. May run in parallel with Track 4."
+  "deviation_notes": "Narrowed on 2026-03-19 so this track owns interpretation only; generic teacher evidence, submission persistence, and component migration work now belong to the earlier practice_* tracks. Dependency on Curriculum Rollout (Track 4) relaxed on 2026-03-19: error analysis operates on stored submissions, not authored lesson files. May run in parallel with Track 4. Phase 1 complete: implemented error analysis module with deterministic summary assembly, AI-assisted interpretation with graceful fallback, and teacher access authorization."
 }

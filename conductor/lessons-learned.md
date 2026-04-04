@@ -44,3 +44,4 @@
 - (2026-04-04, code_review_legacy_cleanup) Side effects like addNotification must never fire inside a setState updater; collect them into a local array and fire after the updater completes.
 - (2026-04-04, code_review_legacy_cleanup) When deleting components, audit seed data, generated curriculum, test fixtures, mock factories, docs, and the catalog test for dangling references to the deleted keys.
 - (2026-04-04, legacy_cleanup_phase4) Optional build plugins should use dynamic imports with try/catch so local builds don't fail when deployment-only packages are absent.
+- (2026-04-04, teacher_practice_error_analysis) Practice submission parts have optional `misconceptionTags`; always use `?? []` when aggregating to avoid undefined iteration errors in summary assembly.

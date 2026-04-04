@@ -6,13 +6,13 @@
 
 ### Tasks
 
-- [ ] **Task: Add failing tests for deterministic error summaries**
-  - [ ] Cover summary assembly from stored part-level evidence and misconception tags
-  - [ ] Cover lesson-level and student-level teacher access boundaries
+- [x] **Task: Add failing tests for deterministic error summaries**
+  - [x] Cover summary assembly from stored part-level evidence and misconception tags
+  - [x] Cover lesson-level and student-level teacher access boundaries
 
-- [ ] **Task: Add failing tests for AI-summary fallback behavior**
-  - [ ] Assert that teacher evidence still works when AI analysis is unavailable
-  - [ ] Assert that AI output never replaces raw evidence access
+- [x] **Task: Add failing tests for AI-summary fallback behavior**
+  - [x] Assert that teacher evidence still works when AI analysis is unavailable
+  - [x] Assert that AI output never replaces raw evidence access
 
 ## Phase 2: Deterministic Summary Layer
 
