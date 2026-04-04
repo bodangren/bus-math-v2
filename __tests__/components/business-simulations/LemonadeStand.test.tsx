@@ -116,6 +116,29 @@ describe('LemonadeStand', () => {
     expect(dayLabel.parentElement).toHaveTextContent('5')
   })
 
+  it('emits a practice.v1 envelope on Submit Results', async () => {
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      initialState: {
+        cash: 50,
+        revenue: 25,
+        inventory: { lemons: 10, sugar: 10, cups: 20 }
+      }
+    })
+
+    render(<LemonadeStand activity={activity} onSubmit={onSubmit} />)
+
+    const submitButton = await screen.findByRole('button', { name: /submit results/i })
+    await userEvent.click(submitButton)
+
+    expect(onSubmit).toHaveBeenCalled()
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('artifact.kind', 'lemonade_stand')
+    expect(envelope).toHaveProperty('activityId', 'activity-lemonade')
+    expect(envelope).toHaveProperty('mode', 'guided_practice')
+  })
+
   it('calls onStateChange when supplies are purchased', async () => {
     const onStateChange = vi.fn()
     const activity = buildActivity({

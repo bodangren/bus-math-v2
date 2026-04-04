@@ -10,10 +10,10 @@
 - [x] Verify tests pass, lint passes, build passes
 
 ## Phase 2: Envelope Tests for Existing Tested Simulations
-- [ ] Write envelope emission test for StartupJourney
-- [ ] Write envelope emission test for BudgetBalancer
-- [ ] Write envelope emission test for LemonadeStand
-- [ ] Verify tests pass, lint passes, build passes
+- [x] Write envelope emission test for StartupJourney
+- [x] Write envelope emission test for BudgetBalancer
+- [x] Write envelope emission test for LemonadeStand
+- [x] Verify tests pass, lint passes, build passes
 
 ## Phase 3: Test Coverage for BusinessStressTest Edge Cases
 - [ ] Write envelope emission test for BusinessStressTest bankruptcy path

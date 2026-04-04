@@ -112,6 +112,46 @@ describe('StartupJourney', () => {
     expect(screen.getByText('$50,000')).toBeInTheDocument()
   })
 
+  it('emits a practice.v1 envelope when game ends', async () => {
+    const onSubmit = vi.fn()
+    const winningActivity = buildActivity({
+      initialState: {
+        stage: 'success',
+        funding: 50000,
+        monthlyBurn: 2000,
+        users: 500,
+        month: 12,
+        revenue: 60000,
+        maxMonths: 24,
+        decisions: [],
+        currentDecisionId: 'initial-funding',
+        userGrowthRate: 0.1,
+        revenuePerUser: 10,
+        gameStatus: 'playing' as const
+      }
+    })
+
+    render(<StartupJourney activity={winningActivity} onSubmit={onSubmit} />)
+
+    // Make a decision to trigger state change and game end detection
+    await screen.findByRole('heading', { name: /Strategic Decision/i })
+    const optionButtons = await screen.findAllByRole('button', { name: /Choose This Option/i })
+    await userEvent.click(optionButtons[0])
+
+    // Advance month to trigger win condition
+    const advanceButton = screen.getByRole('button', { name: /advance month/i })
+    await userEvent.click(advanceButton)
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled()
+    })
+
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('artifact.kind', 'startup_journey')
+    expect(envelope).toHaveProperty('mode', 'guided_practice')
+  })
+
   it('updates funding and notifies parent when a decision is made', async () => {
     const onStateChange = vi.fn()
     const activity = buildActivity()

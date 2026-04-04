@@ -67,6 +67,31 @@ describe('BudgetBalancer', () => {
     expect(await screen.findByText('$6,500')).toBeInTheDocument()
   })
 
+  it('emits a practice.v1 envelope on Submit Results', async () => {
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      initialState: {
+        monthlyIncome: 5000,
+        month: 2,
+        totalSavings: 5000,
+        emergencyFund: 500,
+        financialHealth: 80
+      }
+    })
+
+    render(<BudgetBalancer activity={activity} onSubmit={onSubmit} />)
+
+    const submitButton = await screen.findByRole('button', { name: /submit results/i })
+    await userEvent.click(submitButton)
+
+    expect(onSubmit).toHaveBeenCalled()
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('artifact.kind', 'budget_balancer')
+    expect(envelope).toHaveProperty('activityId', 'activity-budget')
+    expect(envelope).toHaveProperty('mode', 'guided_practice')
+  })
+
   it('applies expense updates and calls onStateChange', async () => {
     const onStateChange = vi.fn()
     const activity = buildActivity()
