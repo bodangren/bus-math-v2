@@ -1,0 +1,11 @@
+{
+  "track_id": "curriculum_rollout_20260331",
+  "type": "feature",
+  "status": "complete",
+  "created_at": "2026-03-31T00:00:00Z",
+  "updated_at": "2026-03-31T01:10:00Z",
+  "description": "Wire all curriculum units to stable practice family keys. Connect lessons to the stabilized family registry so guided and independent practice use the correct algorithmic generators.",
+  "estimated_tasks": 8,
+  "actual_tasks": 8,
+  "deviation_notes": "Track completed successfully. Curriculum properly wired to activity components which use family keys in practice submissions. All verification gates passed (lint, test, build)."
+}

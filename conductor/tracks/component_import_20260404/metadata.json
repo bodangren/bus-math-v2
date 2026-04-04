@@ -1,0 +1,11 @@
+{
+  "track_id": "component_import_20260404",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-04T00:00:00Z",
+  "updated_at": "2026-04-04T00:00:00Z",
+  "description": "Import 21 exercise and simulation components from Business-Operations project, adapted to practice.v1 contract with engine extraction",
+  "estimated_tasks": 42,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
