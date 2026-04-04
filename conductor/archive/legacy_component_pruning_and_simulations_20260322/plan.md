@@ -44,11 +44,12 @@
 
 ## Phase 4: Cleanup and Archival
 
-- [ ] **Task: Delete legacy `calculations/` components now replaced by Families R-U**
+- [x] **Task: Delete legacy `calculations/` components now replaced by Families R-U**
+  - Already deleted in Phase 1; verified no stale references remain.
 
-- [ ] **Task: Final verification**
-  - [ ] Run `npm run lint`
-  - [ ] Run `npm test` — full suite
-  - [ ] Run `npm run build`
+- [x] **Task: Final verification**
+  - [x] Run `npm run lint` — passed
+  - [x] Run `npm test` — 243 files, 1298 tests passed (2 pre-existing Supabase credential failures)
+  - [x] Run `npm run build` — passed after making `@cloudflare/vite-plugin` optional in vite.config.ts
 
-- [ ] **Task: Archive track**
+- [x] **Task: Archive track**

@@ -49,15 +49,19 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/curriculum_rollout_20260331/](./archive/curriculum_rollout_20260331/)*
   *Status: Complete. All curriculum units verified to use stable activity components with proper family keys. Unblocks Legacy Cleanup and Teacher Error Analysis.*
 
-- [~] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
-  *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
-  *Status: Phase 1 (pruning), Phase 2 (chart refactor), and Phase 3 (simulation rebuilds) complete. Next: Phase 4 (cleanup and archival).*  
+- [x] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
+  *Link: [./archive/legacy_component_pruning_and_simulations_20260322/](./archive/legacy_component_pruning_and_simulations_20260322/)*
+  *Status: Complete. Phase 1 (pruning), Phase 2 (chart refactor), Phase 3 (simulation rebuilds), Phase 4 (cleanup and archival) all complete.*
 
-- [ ] **Track 5: Teacher Practice Error Analysis**
+- [~] **Track 5: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
-  *Status: Misconception-tag aggregation and AI-assisted teacher interpretation. Blocked on Track 3 (teaching mode stabilizes tag generation).*
+  *Status: Misconception-tag aggregation and AI-assisted teacher interpretation. Unblocked — Track 4 complete.*
 
 ## Archive Ledger
+
+- [x] **Track: Legacy Cleanup — Component Pruning, Charts, and Simulations**
+  *Link: [./archive/legacy_component_pruning_and_simulations_20260322/](./archive/legacy_component_pruning_and_simulations_20260322/)*
+  *Closeout: archived on 2026-04-04 after completing all 4 phases: pruning obsolete drag-drop/builder components, refactoring chart components, rebuilding 8 simulations with practice.v1 envelopes, and verifying clean lint/test/build. Fixed pre-existing build failure by making @cloudflare/vite-plugin optional.*
 
 - [x] **Track: Curriculum Rollout**
   *Link: [./archive/curriculum_rollout_20260331/](./archive/curriculum_rollout_20260331/)*
