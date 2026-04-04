@@ -303,9 +303,14 @@ describe('PitchPresentationBuilder', () => {
     await user.click(submitButton)
 
     expect(onSubmit).toHaveBeenCalled()
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('overallProgress', 0)
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('businessModel')
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('sections')
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('activityId', 'pitch-presentation-builder')
+    expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope).toHaveProperty('parts')
+    expect(envelope).toHaveProperty('artifact')
+    expect(envelope.artifact).toHaveProperty('overallProgress')
   })
 
   it('toggles instructions panel', async () => {

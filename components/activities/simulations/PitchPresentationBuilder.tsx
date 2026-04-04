@@ -93,6 +93,7 @@ import {
   PieChart
 } from 'lucide-react'
 import type { PitchPresentationBuilderActivityProps } from '@/types/activities'
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 
 type PitchSection = 'problem' | 'solution' | 'market' | 'business-model' | 'financials' | 'ask'
 type BusinessType = 'saas' | 'ecommerce' | 'fintech' | 'healthtech' | 'marketplace' | 'ai-ml'
@@ -138,7 +139,7 @@ interface PitchState {
 
 interface PitchPresentationBuilderProps {
   activity: PitchPresentationBuilderActivityProps
-  onSubmit?: (data: PitchState & { overallProgress: number }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 const BUSINESS_TYPES: Record<BusinessType, { name: string; icon: React.ReactNode; description: string }> = {
@@ -287,12 +288,49 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
   const handleSubmit = useCallback(() => {
     if (onSubmit) {
       const overallProgress = calculateOverallProgress()
-      onSubmit({
-        ...pitchState,
-        overallProgress
+      const sections = Object.entries(pitchState.sections)
+      const sectionAnswers: Record<string, unknown> = {}
+      sections.forEach(([key, section]) => {
+        sectionAnswers[`${key}_title`] = section.title
+        sectionAnswers[`${key}_completeness`] = section.completeness
       })
+      sectionAnswers.overallProgress = overallProgress
+      sectionAnswers.businessType = pitchState.businessModel.type
+      sectionAnswers.businessName = pitchState.businessModel.name
+
+      const parts = buildPracticeSubmissionParts(sectionAnswers).map((part) => ({
+        ...part,
+        isCorrect: overallProgress >= 80,
+        score: overallProgress >= 80 ? 1 : 0,
+        maxScore: 1,
+      }))
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: 'pitch-presentation-builder',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers: sectionAnswers,
+        parts,
+        artifact: {
+          kind: 'pitch_presentation',
+          title: activity.title,
+          businessModel: pitchState.businessModel,
+          sections: pitchState.sections,
+          financials: pitchState.financials,
+          overallProgress,
+        },
+        analytics: {
+          overallProgress,
+          completedSections: pitchState.completedSections.size,
+          totalSections: sections.length,
+          totalPracticeTime: pitchState.totalPracticeTime,
+        },
+      })
+      onSubmit(envelope)
     }
-  }, [pitchState, onSubmit, calculateOverallProgress])
+  }, [pitchState, onSubmit, calculateOverallProgress, activity])
 
   useEffect(() => {
     return () => {

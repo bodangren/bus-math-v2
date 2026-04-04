@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 import {
   type LucideIcon,
   TrendingUp,
@@ -45,6 +46,7 @@ export interface GrowthPuzzleProps {
     }
   }
   onComplete?: (results: { selections: string[]; stats: { reinvestment: number; distribution: number } }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -58,7 +60,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   user: User
 }
 
-export function GrowthPuzzle({ activity, onComplete }: GrowthPuzzleProps) {
+export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzleProps) {
   const { totalProfit, options, successMessage } = activity.props
   const [selections, setSelections] = useState<string[]>([])
   const [showInstructions, setShowInstructions] = useState(false)
@@ -97,6 +99,45 @@ export function GrowthPuzzle({ activity, onComplete }: GrowthPuzzleProps) {
   const handleFinalize = () => {
     setIsComplete(true)
     onComplete?.({ selections, stats })
+
+    if (onSubmit) {
+      const answers: Record<string, unknown> = {
+        totalProfit,
+        reinvestment: stats.reinvestment,
+        distribution: stats.distribution,
+        selections: selections.join(', '),
+        selectionCount: selections.length,
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: 'growth-puzzle',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'growth_puzzle',
+          title: activity.title ?? 'The Growth Puzzle',
+          selections,
+          stats,
+          totalProfit,
+          remainingProfit,
+        },
+        analytics: {
+          reinvestmentRate: totalProfit > 0 ? stats.reinvestment / totalProfit : 0,
+          distributionRate: totalProfit > 0 ? stats.distribution / totalProfit : 0,
+          selectionCount: selections.length,
+        },
+      })
+      onSubmit(envelope)
+    }
   }
 
   const resetGame = () => {

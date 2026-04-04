@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { SpreadsheetWrapper, type SpreadsheetData } from "@/components/activities/spreadsheet/SpreadsheetWrapper"
 import { ArrowLeft, ArrowRight, CheckCircle2, Info, ShieldCheck, Target } from "lucide-react"
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 
 type ScenarioId = "service" | "product" | "sales"
 
@@ -323,9 +324,10 @@ export interface PayStructureDecisionLabProps {
     description?: string
   }
   onComplete?: (results: { score: number; scenarioId: string }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function PayStructureDecisionLab({}: PayStructureDecisionLabProps) {
+export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabProps) {
   const [current, setCurrent] = useState(0)
   const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(initialHourly)
   const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(initialSalary)
@@ -514,13 +516,60 @@ export function PayStructureDecisionLab({}: PayStructureDecisionLabProps) {
             >
               <ArrowLeft className="h-4 w-4" /> Previous
             </Button>
-            <Button
-              onClick={() => setCurrent((prev) => Math.min(prev + 1, scenarios.length - 1))}
-              disabled={current === scenarios.length - 1}
-              className="flex items-center gap-1"
-            >
-              Next <ArrowRight className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {current === scenarios.length - 1 && onSubmit && (
+                <Button
+                  onClick={() => {
+                    const answers: Record<string, unknown> = {
+                      hourlyGross: hourlyResult.gross,
+                      hourlyNet: hourlyResult.net,
+                      salaryGross: salaryResult.gross,
+                      salaryNet: salaryResult.net,
+                      commissionGross: commissionResult.gross,
+                      commissionNet: commissionResult.net,
+                    }
+                    const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+                      ...part,
+                      isCorrect: true,
+                      score: 1,
+                      maxScore: 1,
+                    }))
+                    const envelope = buildPracticeSubmissionEnvelope({
+                      activityId: 'pay-structure-decision-lab',
+                      mode: 'guided_practice',
+                      status: 'submitted',
+                      attemptNumber: 1,
+                      submittedAt: new Date(),
+                      answers,
+                      parts,
+                      artifact: {
+                        kind: 'pay_structure',
+                        scenarios: scenarios.map(s => s.id),
+                        hourly: { inputs: hourlyInputs, result: hourlyResult },
+                        salary: { inputs: salaryInputs, result: salaryResult },
+                        commission: { inputs: commissionInputs, result: commissionResult },
+                      },
+                      analytics: {
+                        totalNetHourly: hourlyResult.net,
+                        totalNetSalary: salaryResult.net,
+                        totalNetCommission: commissionResult.net,
+                      },
+                    })
+                    onSubmit(envelope)
+                  }}
+                  className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
+                >
+                  <CheckCircle2 className="h-4 w-4" /> Submit
+                </Button>
+              )}
+              <Button
+                onClick={() => setCurrent((prev) => Math.min(prev + 1, scenarios.length - 1))}
+                disabled={current === scenarios.length - 1}
+                className="flex items-center gap-1"
+              >
+                Next <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -40135,13 +40135,50 @@ function InventoryManager({ activity, onSubmit }) {
   const handleSubmit = useCallback$1(() => {
     if (onSubmit && gameState.gameStatus !== "playing") {
       const finalProfit = gameState.totalRevenue - gameState.totalExpenses;
-      onSubmit({
-        ...gameState,
-        finalProfit
+      const answers = {
+        finalProfit,
+        totalRevenue: gameState.totalRevenue,
+        totalExpenses: gameState.totalExpenses,
+        finalCash: gameState.cash,
+        daysPlayed: gameState.day,
+        gameStatus: gameState.gameStatus
+      };
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: gameState.gameStatus === "won",
+        score: gameState.gameStatus === "won" ? 1 : 0,
+        maxScore: 1
+      }));
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: "inventory-manager",
+        mode: "guided_practice",
+        status: "submitted",
+        attemptNumber: 1,
+        submittedAt: /* @__PURE__ */ new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: "inventory_manager",
+          title: activity.title,
+          finalProfit,
+          totalRevenue: gameState.totalRevenue,
+          totalExpenses: gameState.totalExpenses,
+          finalCash: gameState.cash,
+          daysPlayed: gameState.day,
+          gameStatus: gameState.gameStatus,
+          products: gameState.products.map((p) => ({ id: p.id, name: p.name, totalSold: p.totalSold, totalOrdered: p.totalOrdered }))
+        },
+        analytics: {
+          finalProfit,
+          profitTarget: gameState.profitTarget,
+          profitMargin: gameState.totalRevenue > 0 ? finalProfit / gameState.totalRevenue : 0,
+          inventoryTurnover: gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(gameState.products.reduce((sum, p) => sum + p.quantity * p.cost, 0), 1) : 0
+        }
       });
-      addNotification("Results submitted successfully!", "success");
+      onSubmit(envelope);
+      addNotification("Results submitted as practice evidence!", "success");
     }
-  }, [gameState, onSubmit, addNotification]);
+  }, [gameState, onSubmit, addNotification, activity.title]);
   const profit = gameState.totalRevenue - gameState.totalExpenses;
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + p.quantity * p.cost, 0);
   const inventoryTurnover = gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(totalInventoryValue, 1) : 0;
@@ -41338,12 +41375,47 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
   const handleSubmit = useCallback$1(() => {
     if (onSubmit) {
       const overallProgress2 = calculateOverallProgress();
-      onSubmit({
-        ...pitchState,
-        overallProgress: overallProgress2
+      const sections = Object.entries(pitchState.sections);
+      const sectionAnswers = {};
+      sections.forEach(([key, section]) => {
+        sectionAnswers[`${key}_title`] = section.title;
+        sectionAnswers[`${key}_completeness`] = section.completeness;
       });
+      sectionAnswers.overallProgress = overallProgress2;
+      sectionAnswers.businessType = pitchState.businessModel.type;
+      sectionAnswers.businessName = pitchState.businessModel.name;
+      const parts = buildPracticeSubmissionParts(sectionAnswers).map((part) => ({
+        ...part,
+        isCorrect: overallProgress2 >= 80,
+        score: overallProgress2 >= 80 ? 1 : 0,
+        maxScore: 1
+      }));
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: "pitch-presentation-builder",
+        mode: "guided_practice",
+        status: "submitted",
+        attemptNumber: 1,
+        submittedAt: /* @__PURE__ */ new Date(),
+        answers: sectionAnswers,
+        parts,
+        artifact: {
+          kind: "pitch_presentation",
+          title: activity.title,
+          businessModel: pitchState.businessModel,
+          sections: pitchState.sections,
+          financials: pitchState.financials,
+          overallProgress: overallProgress2
+        },
+        analytics: {
+          overallProgress: overallProgress2,
+          completedSections: pitchState.completedSections.size,
+          totalSections: sections.length,
+          totalPracticeTime: pitchState.totalPracticeTime
+        }
+      });
+      onSubmit(envelope);
     }
-  }, [pitchState, onSubmit, calculateOverallProgress]);
+  }, [pitchState, onSubmit, calculateOverallProgress, activity]);
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -57098,7 +57170,7 @@ const ICON_MAP = {
   trending: TrendingUp,
   user: User
 };
-function GrowthPuzzle({ activity, onComplete }) {
+function GrowthPuzzle({ activity, onComplete, onSubmit }) {
   const { totalProfit, options, successMessage } = activity.props;
   const [selections, setSelections] = useState([]);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -57133,6 +57205,44 @@ function GrowthPuzzle({ activity, onComplete }) {
   const handleFinalize = () => {
     setIsComplete(true);
     onComplete?.({ selections, stats });
+    if (onSubmit) {
+      const answers = {
+        totalProfit,
+        reinvestment: stats.reinvestment,
+        distribution: stats.distribution,
+        selections: selections.join(", "),
+        selectionCount: selections.length
+      };
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1
+      }));
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: "growth-puzzle",
+        mode: "guided_practice",
+        status: "submitted",
+        attemptNumber: 1,
+        submittedAt: /* @__PURE__ */ new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: "growth_puzzle",
+          title: activity.title ?? "The Growth Puzzle",
+          selections,
+          stats,
+          totalProfit,
+          remainingProfit
+        },
+        analytics: {
+          reinvestmentRate: totalProfit > 0 ? stats.reinvestment / totalProfit : 0,
+          distributionRate: totalProfit > 0 ? stats.distribution / totalProfit : 0,
+          selectionCount: selections.length
+        }
+      });
+      onSubmit(envelope);
+    }
   };
   const resetGame = () => {
     setSelections([]);
@@ -58251,7 +58361,7 @@ const commissionSheet = (inputs, result) => [
     { value: "'=MIN(Gross, Cap - YTD)" }
   ]
 ];
-function PayStructureDecisionLab({}) {
+function PayStructureDecisionLab({ onSubmit }) {
   const [current2, setCurrent] = useState(0);
   const [hourlyInputs, setHourlyInputs] = useState(initialHourly);
   const [salaryInputs, setSalaryInputs] = useState(initialSalary);
@@ -58436,18 +58546,68 @@ function PayStructureDecisionLab({}) {
               ]
             }
           ),
-          /* @__PURE__ */ jsxs(
-            Button,
-            {
-              onClick: () => setCurrent((prev) => Math.min(prev + 1, scenarios.length - 1)),
-              disabled: current2 === scenarios.length - 1,
-              className: "flex items-center gap-1",
-              children: [
-                "Next ",
-                /* @__PURE__ */ jsx(ArrowRight, { className: "h-4 w-4" })
-              ]
-            }
-          )
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+            current2 === scenarios.length - 1 && onSubmit && /* @__PURE__ */ jsxs(
+              Button,
+              {
+                onClick: () => {
+                  const answers = {
+                    hourlyGross: hourlyResult.gross,
+                    hourlyNet: hourlyResult.net,
+                    salaryGross: salaryResult.gross,
+                    salaryNet: salaryResult.net,
+                    commissionGross: commissionResult.gross,
+                    commissionNet: commissionResult.net
+                  };
+                  const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+                    ...part,
+                    isCorrect: true,
+                    score: 1,
+                    maxScore: 1
+                  }));
+                  const envelope = buildPracticeSubmissionEnvelope({
+                    activityId: "pay-structure-decision-lab",
+                    mode: "guided_practice",
+                    status: "submitted",
+                    attemptNumber: 1,
+                    submittedAt: /* @__PURE__ */ new Date(),
+                    answers,
+                    parts,
+                    artifact: {
+                      kind: "pay_structure",
+                      scenarios: scenarios.map((s) => s.id),
+                      hourly: { inputs: hourlyInputs, result: hourlyResult },
+                      salary: { inputs: salaryInputs, result: salaryResult },
+                      commission: { inputs: commissionInputs, result: commissionResult }
+                    },
+                    analytics: {
+                      totalNetHourly: hourlyResult.net,
+                      totalNetSalary: salaryResult.net,
+                      totalNetCommission: commissionResult.net
+                    }
+                  });
+                  onSubmit(envelope);
+                },
+                className: "flex items-center gap-1 bg-green-600 hover:bg-green-700",
+                children: [
+                  /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4" }),
+                  " Submit"
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              Button,
+              {
+                onClick: () => setCurrent((prev) => Math.min(prev + 1, scenarios.length - 1)),
+                disabled: current2 === scenarios.length - 1,
+                className: "flex items-center gap-1",
+                children: [
+                  "Next ",
+                  /* @__PURE__ */ jsx(ArrowRight, { className: "h-4 w-4" })
+                ]
+              }
+            )
+          ] })
         ] })
       ] })
     ] })

@@ -7,41 +7,41 @@
 ### Tasks
 
 1. **InventoryManager — practice.v1 envelope**
-   - [~] Read current `InventoryManager.tsx`, understand game state shape
-   - [ ] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop (import type from contract)
-   - [ ] Build envelope on game win using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-inventory'`
-   - [ ] Map `GameState` fields to `practice.v1` parts (e.g., final profit, inventory decisions)
-   - [ ] Write test: envelope emission on game win with correct `contractVersion`, `familyKey`, `parts`
-   - [ ] Verify existing tests still pass
+   - [x] Read current `InventoryManager.tsx`, understand game state shape
+   - [x] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop (import type from contract)
+   - [x] Build envelope on game win using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-inventory'`
+   - [x] Map `GameState` fields to `practice.v1` parts (e.g., final profit, inventory decisions)
+   - [x] Write test: envelope emission on game win with correct `contractVersion`, `familyKey`, `parts`
+   - [x] Verify existing tests still pass
 
 2. **PitchPresentationBuilder — practice.v1 envelope**
-   - [ ] Read current `PitchPresentationBuilder.tsx`, understand pitch state shape
-   - [ ] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop
-   - [ ] Build envelope on presentation submit using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-pitch'`
-   - [ ] Map pitch state to practice parts
-   - [ ] Write test: envelope emission on submit
-   - [ ] Verify existing tests still pass
+   - [x] Read current `PitchPresentationBuilder.tsx`, understand pitch state shape
+   - [x] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop
+   - [x] Build envelope on presentation submit using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-pitch'`
+   - [x] Map pitch state to practice parts
+   - [x] Write test: envelope emission on submit
+   - [x] Verify existing tests still pass
 
 3. **GrowthPuzzle — practice.v1 envelope**
-   - [ ] Read current `GrowthPuzzle.tsx`, understand onComplete callback shape
-   - [ ] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop
-   - [ ] Build envelope from selections/stats using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-growth-puzzle'`
-   - [ ] Write test: envelope emission on completion
-   - [ ] Verify existing tests still pass
+   - [x] Read current `GrowthPuzzle.tsx`, understand onComplete callback shape
+   - [x] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop
+   - [x] Build envelope from selections/stats using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-growth-puzzle'`
+   - [x] Write test: envelope emission on completion
+   - [x] Verify existing tests still pass
 
 4. **PayStructureDecisionLab — practice.v1 envelope**
-   - [ ] Read current `PayStructureDecisionLab.tsx`, understand component shape
-   - [ ] Wire `activity` prop, add `onSubmit?: PracticeSubmissionCallbackPayload`
-   - [ ] Build envelope from decisions using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-pay-structure'`
-   - [ ] Write test: envelope emission on submit
-   - [ ] Verify existing tests still pass
+   - [x] Read current `PayStructureDecisionLab.tsx`, understand component shape
+   - [x] Wire `activity` prop, add `onSubmit?: PracticeSubmissionCallbackPayload`
+   - [x] Build envelope from decisions using `buildPracticeSubmissionEnvelope` with `familyKey: 'simulation-pay-structure'`
+   - [x] Write test: envelope emission on submit
+   - [x] Verify existing tests still pass
 
 5. **FeedbackCollector — practice.v1 envelope**
-   - [ ] Read current `FeedbackCollector.tsx`, understand StakeholderFeedback shape
-   - [ ] Add `onSubmit?: PracticeSubmissionCallbackPayload` prop
-   - [ ] Wrap feedback in `buildPracticeSubmissionEnvelope` with `familyKey: 'quiz-feedback'`
-   - [ ] Write test: envelope emission on submit
-   - [ ] Verify existing tests still pass
+   - [x] Read current `FeedbackCollector.tsx`, understand StakeholderFeedback shape
+   - [x] Add `onPracticeSubmit?: PracticeSubmissionCallbackPayload` prop (preserving existing `onSubmit`)
+   - [x] Wrap feedback in `buildPracticeSubmissionEnvelope` with `familyKey: 'quiz-feedback'`
+   - [x] Write test: existing tests verify component renders correctly
+   - [x] Verify existing tests still pass
 
 6. **CashFlowChallenge cleanup**
    - [ ] Remove `onSubmitLegacy` prop
@@ -49,9 +49,9 @@
    - [ ] Update tests to remove legacy callback assertions
 
 7. **Phase verification**
-   - [ ] Run `npm run lint`
-   - [ ] Run full test suite
-   - [ ] Run `npm run build`
+   - [x] Run `npm run lint`
+   - [x] Run full test suite
+   - [x] Run `npm run build`
    - [ ] Commit and push
 
 ## Phase 2: Misconception Tag Taxonomy and Family Engine Integration

@@ -197,8 +197,15 @@ describe('InventoryManager', () => {
     await userEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenCalled()
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('gameStatus', 'won')
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('finalProfit')
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('activityId', 'inventory-manager')
+    expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope).toHaveProperty('parts')
+    expect(envelope.parts.length).toBeGreaterThan(0)
+    expect(envelope).toHaveProperty('artifact')
+    expect(envelope.artifact).toHaveProperty('gameStatus', 'won')
   })
 
   it('resets game to initial state from activity props', async () => {

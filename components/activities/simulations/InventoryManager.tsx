@@ -31,6 +31,7 @@ import {
   BarChart3
 } from 'lucide-react'
 import type { InventoryManagerActivityProps } from '@/types/activities'
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 
 interface Product {
   id: string
@@ -70,7 +71,7 @@ interface GameState {
 
 interface InventoryManagerProps {
   activity: InventoryManagerActivityProps
-  onSubmit?: (data: GameState & { finalProfit: number }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 const getIconForProduct = (iconName: string) => {
@@ -404,13 +405,50 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
   const handleSubmit = useCallback(() => {
     if (onSubmit && gameState.gameStatus !== 'playing') {
       const finalProfit = gameState.totalRevenue - gameState.totalExpenses
-      onSubmit({
-        ...gameState,
-        finalProfit
+      const answers: Record<string, unknown> = {
+        finalProfit,
+        totalRevenue: gameState.totalRevenue,
+        totalExpenses: gameState.totalExpenses,
+        finalCash: gameState.cash,
+        daysPlayed: gameState.day,
+        gameStatus: gameState.gameStatus,
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: gameState.gameStatus === 'won',
+        score: gameState.gameStatus === 'won' ? 1 : 0,
+        maxScore: 1,
+      }))
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: 'inventory-manager',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'inventory_manager',
+          title: activity.title,
+          finalProfit,
+          totalRevenue: gameState.totalRevenue,
+          totalExpenses: gameState.totalExpenses,
+          finalCash: gameState.cash,
+          daysPlayed: gameState.day,
+          gameStatus: gameState.gameStatus,
+          products: gameState.products.map(p => ({ id: p.id, name: p.name, totalSold: p.totalSold, totalOrdered: p.totalOrdered })),
+        },
+        analytics: {
+          finalProfit,
+          profitTarget: gameState.profitTarget,
+          profitMargin: gameState.totalRevenue > 0 ? finalProfit / gameState.totalRevenue : 0,
+          inventoryTurnover: gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(gameState.products.reduce((sum, p) => sum + (p.quantity * p.cost), 0), 1) : 0,
+        },
       })
-      addNotification('Results submitted successfully!', 'success')
+      onSubmit(envelope)
+      addNotification('Results submitted as practice evidence!', 'success')
     }
-  }, [gameState, onSubmit, addNotification])
+  }, [gameState, onSubmit, addNotification, activity.title])
 
   const profit = gameState.totalRevenue - gameState.totalExpenses
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + (p.quantity * p.cost), 0)

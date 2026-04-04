@@ -111,6 +111,7 @@ import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 import {
   UserCheck,
   FileText,
@@ -185,6 +186,7 @@ interface FeedbackCollectorProps {
   unitNumber?: number
   studentName?: string
   onSubmit?: (feedback: StakeholderFeedback) => void
+  onPracticeSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
   className?: string
 }
 
@@ -353,6 +355,7 @@ export default function FeedbackCollector({
   unitNumber,
   studentName = "Student",
   onSubmit,
+  onPracticeSubmit,
   className = ""
 }: FeedbackCollectorProps) {
   const [ratings, setRatings] = useState<StakeholderFeedback['ratings']>({
@@ -417,8 +420,54 @@ export default function FeedbackCollector({
       onSubmit(feedback)
     }
 
+    if (onPracticeSubmit) {
+      const ratingValues = Object.entries(ratings).map(([key, rating]) => ({
+        [key]: RATING_LEVELS[rating].value,
+      }))
+      const computedAverageRating = Object.values(ratings).reduce((sum, rating) => sum + RATING_LEVELS[rating].value, 0) / FEEDBACK_CATEGORIES.length
+      const computedCompletedComments = Object.values(comments).filter(comment => comment.trim().length > 0).length
+      const answers: Record<string, unknown> = {
+        averageRating: computedAverageRating,
+        stakeholderType,
+        projectTitle,
+        studentName,
+        ...Object.assign({}, ...ratingValues),
+        overallRecommendations: overallRecommendations.substring(0, 200),
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: 'feedback-collector',
+        mode: 'independent_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'stakeholder_feedback',
+          projectTitle,
+          stakeholderType,
+          ratings,
+          comments,
+          overallRecommendations,
+          followUpInterest,
+        },
+        analytics: {
+          averageRating: computedAverageRating,
+          completedComments: computedCompletedComments,
+          totalCategories: FEEDBACK_CATEGORIES.length,
+        },
+      })
+      onPracticeSubmit(envelope)
+    }
+
     setIsSubmitted(true)
-  }, [projectTitle, stakeholderType, stakeholderName, stakeholderCompany, studentName, unitNumber, ratings, comments, overallRecommendations, mentorshipOffers, careerGuidance, followUpInterest, onSubmit])
+  }, [projectTitle, stakeholderType, stakeholderName, stakeholderCompany, studentName, unitNumber, ratings, comments, overallRecommendations, mentorshipOffers, careerGuidance, followUpInterest, onSubmit, onPracticeSubmit])
 
   // Calculate completion statistics
   const completedComments = Object.values(comments).filter(comment => comment.trim().length > 0).length
