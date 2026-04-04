@@ -16,13 +16,13 @@
 - [x] Verify tests pass, lint passes, build passes
 
 ## Phase 3: Test Coverage for BusinessStressTest Edge Cases
-- [ ] Write envelope emission test for BusinessStressTest bankruptcy path
-- [ ] Write render test for BusinessStressTest
-- [ ] Verify tests pass, lint passes, build passes
+- [x] Write envelope emission test for BusinessStressTest bankruptcy path
+- [x] Write render test for BusinessStressTest (already existed from Phase 1)
+- [x] Verify tests pass, lint passes, build passes
 
 ## Phase 4: Verification and Cleanup
-- [ ] Run full test suite
-- [ ] Run npm run build
-- [ ] Update tech-debt.md (close resolved items)
-- [ ] Update lessons-learned.md
-- [ ] Commit checkpoint
+- [x] Run full test suite (1373 passed, 2 pre-existing Supabase failures)
+- [x] Run npm run build
+- [x] Update tech-debt.md (no new items needed; all resolved items already closed)
+- [x] Update lessons-learned.md (no new lessons; bankruptcy envelope follows established pattern)
+- [x] Commit checkpoint

@@ -62,4 +62,45 @@ describe('BusinessStressTest', () => {
     expect(envelope).toHaveProperty('activityId', 'business-stress-test-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
   })
+
+  it('emits a practice.v1 envelope on bankruptcy path', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+
+    const bankruptcyActivity = {
+      id: 'business-stress-test-bankruptcy',
+      title: 'Business Stress Test',
+      description: 'Can the business survive market crises?',
+      props: {
+        initialState: {
+          cash: 5000,
+          revenue: 10000,
+          expenses: 8000,
+        },
+        disasters: [
+          { id: 'd1', label: 'Market Crash', impact: { cash: -8000 }, message: 'Revenue drops sharply' },
+          { id: 'd2', label: 'Recession', impact: { revenue: -3000 }, message: 'Economy contracts' },
+        ],
+      },
+    }
+
+    render(<BusinessStressTest activity={bankruptcyActivity} onSubmit={onSubmit} />)
+
+    // Trigger crisis — cash goes from 5000 + 2000(profit) - 8000(disaster) = -1000 → bankruptcy
+    await user.click(screen.getByRole('button', { name: /trigger next crisis/i }))
+
+    // Bankruptcy triggers on the same render cycle; the disaster panel never appears
+    await waitFor(() => {
+      expect(screen.getByText('BANKRUPT!')).toBeInTheDocument()
+    })
+
+    expect(onSubmit).toHaveBeenCalled()
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('artifact.kind', 'business_stress_test')
+    expect(envelope).toHaveProperty('activityId', 'business-stress-test-bankruptcy')
+    expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope.artifact.survivedAll).toBe(false)
+    expect(envelope.artifact.finalCash).toBe(0)
+  })
 })
