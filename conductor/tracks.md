@@ -49,9 +49,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/curriculum_rollout_20260331/](./archive/curriculum_rollout_20260331/)*
   *Status: Complete. All curriculum units verified to use stable activity components with proper family keys. Unblocks Legacy Cleanup and Teacher Error Analysis.*
 
-- [ ] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
+- [~] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
-  *Status: Delete superseded components (safe after curriculum rewired), refactor charts, rebuild 8 simulations on practice.v1. Blocked on Tracks 1+3.*
+  *Status: Phase 1 (pruning) and Phase 2 (chart refactor) complete. Next: Phase 3 (simulation rebuilds).*  
 
 - [ ] **Track 5: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*

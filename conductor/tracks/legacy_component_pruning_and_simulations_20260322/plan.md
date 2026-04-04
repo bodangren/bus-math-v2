@@ -18,9 +18,11 @@
 
 ## Phase 2: Refactor Display Components
 
-- [ ] **Task: Refactor the `charts/` directory components**
-  - [ ] Fix bugs in BarChart, BreakEvenChart, DoughnutChart, LineChart, PieChart, FinancialDashboard
-  - [ ] Align chart components visually with the Accounting Pedagogy Visual Language Standard
+- [x] **Task: Refactor the `charts/` directory components**
+  - [x] Fix BreakEvenChart prop/state sync bug (useState never re-synced on prop change) and add variableCostRate clamping to [0, 1]
+  - [x] Fix FinancialDashboard inconsistent currency formatting (line chart showed cents, summary footer used raw toLocaleString) — unified via shared formatCurrency
+  - [x] Add barrel export index.ts for charts directory
+  - [x] Add chart-types.ts unit tests for buildChartConfig and formatCurrency
 
 ## Phase 3: Rebuild 8 Core Simulations
 

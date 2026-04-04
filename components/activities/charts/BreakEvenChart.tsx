@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart as RechartsLineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 
 import { Button } from "@/components/ui/button";
@@ -50,8 +50,22 @@ export function BreakEvenChart({
   const [variableCostRate, setVariableCostRate] = useState(defaultVariableRate);
   const [sellingPrice, setSellingPrice] = useState(defaultSellingPrice);
 
+  useEffect(() => {
+    setFixedCosts(defaultFixedCosts);
+  }, [defaultFixedCosts]);
+
+  useEffect(() => {
+    setVariableCostRate(defaultVariableRate);
+  }, [defaultVariableRate]);
+
+  useEffect(() => {
+    setSellingPrice(defaultSellingPrice);
+  }, [defaultSellingPrice]);
+
+  const clampedVariableRate = Math.min(Math.max(variableCostRate, 0), 1);
+
   const summary = useMemo(() => {
-    const contributionMargin = sellingPrice - sellingPrice * variableCostRate;
+    const contributionMargin = sellingPrice - sellingPrice * clampedVariableRate;
     const breakEvenUnits = contributionMargin > 0 ? Math.ceil(fixedCosts / contributionMargin) : 0;
     const breakEvenRevenue = breakEvenUnits * sellingPrice;
 
@@ -61,7 +75,7 @@ export function BreakEvenChart({
       breakEvenUnits,
       breakEvenRevenue
     };
-  }, [fixedCosts, variableCostRate, sellingPrice]);
+  }, [fixedCosts, clampedVariableRate, sellingPrice]);
 
   const chartData = useMemo<BreakEvenDataPoint[]>(() => {
     const maxUnits = Math.max(summary.breakEvenUnits * 2, 100);
@@ -70,7 +84,7 @@ export function BreakEvenChart({
 
     for (let units = 0; units <= maxUnits; units += step) {
       const revenue = units * sellingPrice;
-      const totalCosts = fixedCosts + units * sellingPrice * variableCostRate;
+      const totalCosts = fixedCosts + units * sellingPrice * clampedVariableRate;
       points.push({
         units,
         revenue,
@@ -80,7 +94,7 @@ export function BreakEvenChart({
     }
 
     return points;
-  }, [fixedCosts, variableCostRate, sellingPrice, summary.breakEvenUnits]);
+  }, [fixedCosts, clampedVariableRate, sellingPrice, summary.breakEvenUnits]);
 
   const chartConfig = useMemo(
     () =>

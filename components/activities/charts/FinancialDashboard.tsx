@@ -12,6 +12,7 @@ import { DoughnutChart } from "./DoughnutChart";
 import { LineChart } from "./LineChart";
 import { PieChart } from "./PieChart";
 import type { ChartDataPoint, ChartSegment, ChartSeries } from "./chart-types";
+import { formatCurrency } from "./chart-types";
 
 interface FinancialKpi {
   title: string;
@@ -177,9 +178,7 @@ export function FinancialDashboard({
               xAxisKey="month"
               showCard={false}
               className="rounded-xl border border-gray-200 bg-white p-4"
-              formatValue={(value) =>
-                new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value)
-              }
+              formatValue={(value) => formatCurrency(value)}
             />
           </div>
           <div>
@@ -202,11 +201,7 @@ export function FinancialDashboard({
             xAxisKey="month"
             showCard={false}
             className="rounded-xl border border-gray-200 bg-white p-4"
-            formatValue={(value) =>
-              new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(
-                value
-              )
-            }
+            formatValue={(value) => formatCurrency(value)}
           />
           <DoughnutChart
             title="Working Capital"
@@ -223,16 +218,15 @@ export function FinancialDashboard({
         >
           Latest month revenue:{" "}
           <span className="font-semibold text-foreground">
-            $
-            {Number(totals.latestRevenue).toLocaleString()}
+            {formatCurrency(Number(totals.latestRevenue))}
           </span>
           , profit{" "}
           <span className="font-semibold text-foreground">
-            ${Number(totals.latestProfit).toLocaleString()}
+            {formatCurrency(Number(totals.latestProfit))}
           </span>
           . Six-month revenue total:{" "}
           <span className="font-semibold text-foreground">
-            ${Number(totals.cumulativeRevenue).toLocaleString()}
+            {formatCurrency(Number(totals.cumulativeRevenue))}
           </span>
           .
         </div>
