@@ -63,7 +63,7 @@ Strictly serial. Complete and archive each track before starting the next.
 
 - [~] **Track 7: Practice Contract Completion -- Remaining Components and Evidence Wiring**
   *Link: [./tracks/practice_contract_completion_20260404/](./tracks/practice_contract_completion_20260404/)*
-  *Status: In Progress. Phase 1: convert 5 remaining components to practice.v1 envelopes. Phase 2: misconception tag taxonomy and family engine integration. Phase 3: teacher error summary dashboard. Phase 4: SpreadsheetActivity practice.v1 path and full verification.*
+  *Status: In Progress. Phase 1 complete: all 6 components converted to practice.v1, CashFlowChallenge legacy path removed. Phase 2: misconception tag taxonomy and family engine integration. Phase 3: teacher error summary dashboard. Phase 4: SpreadsheetActivity practice.v1 path and full verification.*
 
 ## Archive Ledger
 

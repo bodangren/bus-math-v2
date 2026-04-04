@@ -44,15 +44,15 @@
    - [x] Verify existing tests still pass
 
 6. **CashFlowChallenge cleanup**
-   - [ ] Remove `onSubmitLegacy` prop
-   - [ ] Replace hardcoded `activityId: 'cash-flow-challenge'` with `activity.id`
-   - [ ] Update tests to remove legacy callback assertions
+   - [x] Remove `onSubmitLegacy` prop
+   - [x] Replace hardcoded `activityId: 'cash-flow-challenge'` with `activity.id ?? 'cash-flow-challenge'`
+   - [x] Update tests to remove legacy callback assertions
 
 7. **Phase verification**
    - [x] Run `npm run lint`
    - [x] Run full test suite
    - [x] Run `npm run build`
-   - [ ] Commit and push
+   - [x] Commit and push
 
 ## Phase 2: Misconception Tag Taxonomy and Family Engine Integration
 

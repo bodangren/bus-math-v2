@@ -138,6 +138,39 @@ describe('CashFlowChallenge', () => {
     const envelope = onSubmit.mock.calls[0][0]
     expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
     expect(envelope).toHaveProperty('artifact.kind', 'cash_flow_challenge')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
+    expect(envelope).toHaveProperty('activityId', 'cash-flow-challenge')
+  })
+
+  it('uses activity.id for activityId when provided', async () => {
+    const onSubmit = vi.fn()
+    const winningActivity = {
+      ...mockActivity,
+      id: 'custom-cash-flow-id',
+      initialState: {
+        ...mockActivity.initialState,
+        cashPosition: 50000,
+        day: 30,
+        maxDays: 30
+      }
+    }
+
+    render(<CashFlowChallenge activity={winningActivity} onSubmit={onSubmit} />)
+
+    const advanceButton = screen.getByRole('button', { name: /run simulation/i })
+    await userEvent.click(advanceButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Challenge Complete!/i)).toBeInTheDocument()
+    })
+
+    const submitButton = screen.getByRole('button', { name: /submit results/i })
+    await userEvent.click(submitButton)
+
+    expect(onSubmit).toHaveBeenCalled()
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('activityId', 'custom-cash-flow-id')
   })
 
   it('resets game to initial state from activity props', async () => {

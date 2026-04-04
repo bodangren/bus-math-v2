@@ -60,12 +60,11 @@ interface GameState {
 }
 
 interface CashFlowChallengeProps {
-  activity: CashFlowChallengeActivityProps
-  onSubmitLegacy?: (data: GameState & { finalProfit: number; actionsLog: string[] }) => void
+  activity: CashFlowChallengeActivityProps & { id?: string }
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFlowChallengeProps) {
+export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps) {
   const [gameState, setGameState] = useState<GameState>({
     cashPosition: activity.initialState.cashPosition,
     day: activity.initialState.day,
@@ -352,15 +351,10 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
 
   const handleSubmit = useCallback(() => {
     if (submitted) return
-    if ((onSubmit || onSubmitLegacy) && gameState.gameStatus !== 'playing') {
+    if (onSubmit && gameState.gameStatus !== 'playing') {
       setSubmitted(true)
       const initialCash = activity.initialState.cashPosition
       const finalProfit = gameState.cashPosition - initialCash
-      const legacyData = {
-        ...gameState,
-        finalProfit,
-        actionsLog
-      }
 
       const answers: Record<string, unknown> = {
         finalCash: gameState.cashPosition,
@@ -376,7 +370,7 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
       }))
 
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: 'cash-flow-challenge',
+        activityId: activity.id ?? 'cash-flow-challenge',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
@@ -400,11 +394,10 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
         },
       })
 
-      onSubmit?.(envelope)
-      onSubmitLegacy?.(legacyData)
+      onSubmit(envelope)
       addNotification('Results submitted successfully!', 'success')
     }
-  }, [submitted, gameState, actionsLog, onSubmit, onSubmitLegacy, activity, addNotification])
+  }, [submitted, gameState, actionsLog, onSubmit, activity, addNotification])
 
   const healthStatus = getCashHealthStatus(gameState.cashPosition)
   const totalIncoming = gameState.incomingFlows.reduce((sum, flow) => sum + flow.amount, 0)
@@ -457,7 +450,7 @@ export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFl
                 : 'Ran out of cash! Better luck next time.'
               }
             </p>
-            {(onSubmit || onSubmitLegacy) && (
+            {onSubmit && (
               <Button onClick={handleSubmit} className="mt-4" size="lg" disabled={submitted}>
                 Submit Results
               </Button>
