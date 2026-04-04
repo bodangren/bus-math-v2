@@ -87,7 +87,7 @@ export async function GET(request: Request) {
 
     if (provider && envelopes.length > 0) {
       const latestSubmission = envelopes.reduce((a, b) =>
-        a.attemptNumber >= b.attemptNumber ? a : b,
+        a.submittedAt >= b.submittedAt ? a : b,
       );
 
       aiSummary = await generateAISummary(
@@ -113,7 +113,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('[ai-error-summary] Unexpected error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unexpected error' },
+      { error: 'Internal server error' },
       { status: 500 },
     );
   }

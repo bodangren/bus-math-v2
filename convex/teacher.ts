@@ -812,8 +812,24 @@ export const getLessonErrorSummary = internalQuery({
 
     if (completions.length === 0) return null;
 
-    const activityIds = [...new Set(completions.map((c) => c.activityId))];
     const studentIds = [...new Set(completions.map((c) => c.studentId))];
+
+    const orgStudentIds: string[] = [];
+    await Promise.all(
+      studentIds.map(async (sid) => {
+        const profile = await ctx.db.get(sid as Id<"profiles">);
+        if (profile && profile.organizationId === args.teacherOrgId) {
+          orgStudentIds.push(sid);
+        }
+      }),
+    );
+
+    if (orgStudentIds.length === 0) return null;
+
+    const orgCompletions = completions.filter((c) =>
+      orgStudentIds.includes(c.studentId),
+    );
+    const activityIds = [...new Set(orgCompletions.map((c) => c.activityId))];
 
     const submissionRows = await ctx.db
       .query("activity_submissions")
@@ -834,7 +850,7 @@ export const getLessonErrorSummary = internalQuery({
     const flatSubmissions = [...submissionRows, ...allSubmissions.flat()];
 
     const studentSubmissions = flatSubmissions.filter((row) =>
-      studentIds.includes(row.userId),
+      orgStudentIds.includes(row.userId),
     );
 
     if (studentSubmissions.length === 0) return null;

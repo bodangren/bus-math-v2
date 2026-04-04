@@ -17690,7 +17690,7 @@ const mod_4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   __proto__: null,
   POST: POST$b
 }, Symbol.toStringTag, { value: "Module" }));
-async function GET$7() {
+async function GET$8() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) {
@@ -17735,7 +17735,7 @@ async function GET$7() {
 }
 const mod_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  GET: GET$7
+  GET: GET$8
 }, Symbol.toStringTag, { value: "Module" }));
 const parameterDefSchema$1 = z.object({
   min: z.number(),
@@ -19492,6 +19492,9 @@ const practiceSubmissionEnvelopeSchema = z.object({
   studentFeedback: z.string().optional(),
   teacherSummary: z.string().optional()
 });
+function isPracticeSubmissionEnvelope(value) {
+  return typeof value === "object" && value !== null && "contractVersion" in value && value.contractVersion === PRACTICE_CONTRACT_VERSION;
+}
 const practiceSubmissionInputSchema = z.object({
   contractVersion: z.literal(PRACTICE_CONTRACT_VERSION).optional(),
   activityId: z.string().trim().min(1).optional(),
@@ -20135,6 +20138,323 @@ const mod_8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   __proto__: null,
   POST: POST$9
 }, Symbol.toStringTag, { value: "Module" }));
+function aggregateMisconceptionTags(submissions, studentIdMap) {
+  const tagMap = /* @__PURE__ */ new Map();
+  for (const submission of submissions) {
+    const studentId = studentIdMap?.get(submission.activityId) ?? submission.activityId;
+    for (const part of submission.parts) {
+      for (const tag of part.misconceptionTags ?? []) {
+        const existing = tagMap.get(tag);
+        if (existing) {
+          existing.count++;
+          if (!existing.affectedParts.includes(part.partId)) {
+            existing.affectedParts.push(part.partId);
+          }
+          if (!existing.affectedStudents.includes(studentId)) {
+            existing.affectedStudents.push(studentId);
+          }
+        } else {
+          tagMap.set(tag, {
+            tag,
+            count: 1,
+            affectedParts: [part.partId],
+            affectedStudents: [studentId]
+          });
+        }
+      }
+    }
+  }
+  return Array.from(tagMap.values()).sort((a, b) => b.count - a.count);
+}
+function summarizePartOutcomes(submissions, studentIdMap) {
+  const partMap = /* @__PURE__ */ new Map();
+  for (const submission of submissions) {
+    const studentId = studentIdMap?.get(submission.activityId) ?? submission.activityId;
+    for (const part of submission.parts) {
+      const existing = partMap.get(part.partId);
+      if (existing) {
+        existing.totalAttempts++;
+        if (part.isCorrect) {
+          existing.correctCount++;
+        } else {
+          existing.incorrectCount++;
+        }
+        existing.accuracyRate = existing.correctCount / existing.totalAttempts;
+        for (const tag of part.misconceptionTags ?? []) {
+          const misExisting = existing.commonMisconceptions.find((m) => m.tag === tag);
+          if (misExisting) {
+            misExisting.count++;
+            if (!misExisting.affectedParts.includes(part.partId)) {
+              misExisting.affectedParts.push(part.partId);
+            }
+            if (!misExisting.affectedStudents.includes(studentId)) {
+              misExisting.affectedStudents.push(studentId);
+            }
+          } else {
+            existing.commonMisconceptions.push({
+              tag,
+              count: 1,
+              affectedParts: [part.partId],
+              affectedStudents: [studentId]
+            });
+          }
+        }
+      } else {
+        partMap.set(part.partId, {
+          partId: part.partId,
+          totalAttempts: 1,
+          correctCount: part.isCorrect ? 1 : 0,
+          incorrectCount: part.isCorrect ? 0 : 1,
+          accuracyRate: part.isCorrect ? 1 : 0,
+          commonMisconceptions: (part.misconceptionTags ?? []).map((tag) => ({
+            tag,
+            count: 1,
+            affectedParts: [part.partId],
+            affectedStudents: [studentId]
+          }))
+        });
+      }
+    }
+  }
+  return Array.from(partMap.values());
+}
+function buildStudentProfiles(submissions, studentIdMap) {
+  return submissions.map((submission) => {
+    const studentId = studentIdMap?.get(submission.activityId) ?? submission.activityId;
+    const correctParts = submission.parts.filter((p) => p.isCorrect).length;
+    const misconceptions = submission.parts.flatMap((p) => p.misconceptionTags ?? []);
+    return {
+      studentId,
+      submissionId: `${submission.activityId}-${submission.attemptNumber}`,
+      activityId: submission.activityId,
+      totalParts: submission.parts.length,
+      correctParts,
+      incorrectParts: submission.parts.length - correctParts,
+      misconceptions: Array.from(new Set(misconceptions)),
+      submittedAt: submission.submittedAt
+    };
+  });
+}
+function buildDeterministicSummary(lessonId, submissions, studentIdMap) {
+  const partSummaries = summarizePartOutcomes(submissions, studentIdMap);
+  const topMisconceptions = aggregateMisconceptionTags(submissions, studentIdMap);
+  const studentProfiles = buildStudentProfiles(submissions, studentIdMap);
+  const totalParts = partSummaries.reduce((sum, p) => sum + p.totalAttempts, 0);
+  const totalCorrect = partSummaries.reduce((sum, p) => sum + p.correctCount, 0);
+  return {
+    type: "deterministic",
+    lessonId,
+    generatedAt: Date.now(),
+    partSummaries,
+    topMisconceptions: topMisconceptions.slice(0, 10),
+    studentCount: studentProfiles.length,
+    averageAccuracy: totalParts > 0 ? totalCorrect / totalParts : 0
+  };
+}
+async function generateAISummary(input, aiProvider) {
+  if (!aiProvider) {
+    return null;
+  }
+  try {
+    const prompt = buildAIPrompt(input);
+    const response = await aiProvider(prompt);
+    return parseAIResponse(response, input);
+  } catch {
+    return null;
+  }
+}
+function buildAIPrompt(input) {
+  const { submission, deterministicSummary, rawEvidence } = input;
+  return `
+Analyze this student practice submission and provide teacher-facing feedback.
+
+Submission ID: ${submission.activityId}-${submission.attemptNumber}
+Activity: ${submission.activityId}
+Mode: ${submission.mode}
+
+Student Answers:
+${JSON.stringify(rawEvidence.answers, null, 2)}
+
+Part Results:
+${submission.parts.map((p) => `- ${p.partId}: ${p.isCorrect ? "Correct" : "Incorrect"} (Score: ${p.score}/${p.maxScore})`).join("\n")}
+
+Misconception Tags:
+${submission.parts.flatMap((p) => p.misconceptionTags).join(", ") || "None"}
+
+Class Average Accuracy: ${(deterministicSummary.averageAccuracy * 100).toFixed(1)}%
+
+Provide:
+1. Likely misunderstanding (1-2 sentences)
+2. Evidence observed in the submission (reference specific answers)
+3. Suggested reteach or intervention direction
+`.trim();
+}
+function parseAIResponse(response, input) {
+  const lines = response.split("\n").filter((l) => l.trim());
+  const misconceptionTags = Array.from(new Set(input.submission.parts.flatMap((p) => p.misconceptionTags ?? [])));
+  return {
+    type: "ai-assisted",
+    likelyMisunderstanding: lines[0] || "Unable to determine misunderstanding",
+    evidenceObserved: lines[1] || "No specific evidence identified",
+    suggestedIntervention: lines[2] || "Review with student individually",
+    sourceSubmissionId: `${input.submission.activityId}-${input.submission.attemptNumber}`,
+    sourceEvidence: {
+      partIds: input.submission.parts.map((p) => p.partId),
+      misconceptionTags
+    },
+    generatedAt: Date.now()
+  };
+}
+const OPENAI_API_BASE = "https://api.openai.com/v1";
+function createOpenAIProvider(options) {
+  const { apiKey, model = "gpt-4o-mini", baseUrl = OPENAI_API_BASE, timeoutMs = 15e3 } = options;
+  return async function openAIProvider(prompt) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(`${baseUrl}/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert accounting teacher analyzing student practice submissions. Respond with exactly three lines: 1) the likely misunderstanding (1-2 sentences), 2) evidence observed (reference specific answers), 3) suggested reteach or intervention direction (1-2 sentences). No numbering, no extra text."
+            },
+            { role: "user", content: prompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 300
+        }),
+        signal: controller.signal
+      });
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      if (typeof content !== "string" || content.trim().length === 0) {
+        throw new Error("Empty response from AI provider");
+      }
+      return content.trim();
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
+}
+function resolveAIProviderFromEnv() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey || apiKey.trim().length === 0) {
+    return null;
+  }
+  return createOpenAIProvider({
+    apiKey,
+    model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+    baseUrl: process.env.OPENAI_API_BASE || OPENAI_API_BASE
+  });
+}
+const querySchema$2 = z.object({
+  lessonId: z.string().trim().min(1, "lessonId is required"),
+  studentId: z.string().trim().min(1, "studentId is required")
+});
+async function GET$7(request) {
+  try {
+    const claims = await getRequestSessionClaims(request);
+    if (!claims) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { searchParams } = new URL(request.url);
+    const parsed = querySchema$2.safeParse({
+      lessonId: searchParams.get("lessonId"),
+      studentId: searchParams.get("studentId")
+    });
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid parameters", details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
+    const { lessonId, studentId } = parsed.data;
+    const teacher = await fetchInternalQuery(internal.teacher.getProfileWithOrg, {
+      userId: claims.sub
+    });
+    if (!teacher || teacher.role !== "teacher" && teacher.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    const student = await fetchInternalQuery(internal.activities.getProfileById, {
+      profileId: studentId
+    });
+    if (!student || student.role !== "student" || student.organizationId !== teacher.organizationId) {
+      return NextResponse.json({ error: "Student not found" }, { status: 404 });
+    }
+    const detail = await fetchInternalQuery(internal.teacher.getSubmissionDetail, {
+      studentId,
+      lessonId,
+      studentName: student.displayName ?? student.username ?? "Unknown"
+    });
+    if (!detail) {
+      return NextResponse.json(
+        { error: "No submissions found for this student in this lesson" },
+        { status: 404 }
+      );
+    }
+    const envelopes = [];
+    for (const phase of detail.phases) {
+      if (!phase.evidence) continue;
+      for (const ev of phase.evidence) {
+        if (ev.kind !== "practice" || !ev.submissionData) continue;
+        const data = ev.submissionData;
+        if (isPracticeSubmissionEnvelope(data)) {
+          envelopes.push(data);
+        }
+      }
+    }
+    const deterministicSummary = buildDeterministicSummary(
+      lessonId,
+      envelopes,
+      new Map(envelopes.map((e) => [e.activityId, studentId]))
+    );
+    let aiSummary = null;
+    const provider = resolveAIProviderFromEnv();
+    if (provider && envelopes.length > 0) {
+      const latestSubmission = envelopes.reduce(
+        (a, b) => a.submittedAt >= b.submittedAt ? a : b
+      );
+      aiSummary = await generateAISummary(
+        {
+          submission: latestSubmission,
+          deterministicSummary,
+          rawEvidence: {
+            answers: latestSubmission.answers,
+            artifact: latestSubmission.artifact
+          }
+        },
+        provider
+      );
+    }
+    return NextResponse.json({
+      studentName: detail.studentName,
+      lessonTitle: detail.lessonTitle,
+      deterministicSummary,
+      aiSummary,
+      aiEnabled: provider !== null
+    });
+  } catch (error) {
+    console.error("[ai-error-summary] Unexpected error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+const mod_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  GET: GET$7
+}, Symbol.toStringTag, { value: "Module" }));
 const querySchema$1 = z.object({
   lessonId: z.string().trim().min(1, "lessonId is required")
 });
@@ -20175,12 +20495,12 @@ async function GET$6(request) {
   } catch (error) {
     console.error("[error-summary] Unexpected error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unexpected error" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
-const mod_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$6
 }, Symbol.toStringTag, { value: "Module" }));
@@ -20239,7 +20559,7 @@ async function GET$5(request) {
     );
   }
 }
-const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$5
 }, Symbol.toStringTag, { value: "Module" }));
@@ -20624,7 +20944,7 @@ async function POST$8(request) {
     );
   }
 }
-const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$8,
   dynamic: dynamic$5
@@ -20859,7 +21179,7 @@ async function POST$7(request) {
     );
   }
 }
-const mod_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$7,
   dynamic: dynamic$4
@@ -20995,7 +21315,7 @@ async function POST$6(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$6
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21065,7 +21385,7 @@ async function POST$5(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_15 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$5
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21113,7 +21433,7 @@ async function POST$4() {
     return NextResponse.json({ error: "Failed to ensure demo credentials" }, { status: 500 });
   }
 }
-const mod_15 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$4
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21180,7 +21500,7 @@ async function POST$3(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21251,7 +21571,7 @@ async function POST$2(request) {
     return Response.json({ error: "Unexpected error" }, { status: 500 });
   }
 }
-const mod_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21348,7 +21668,7 @@ async function POST$1(request, { params }) {
     );
   }
 }
-const mod_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$4,
   POST: POST$1
@@ -21745,7 +22065,7 @@ async function POST(request, { params }) {
     );
   }
 }
-const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$3,
   POST
@@ -21753,7 +22073,7 @@ const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 async function GET$2() {
   redirect("/auth/login?message=Email confirmation is not used in this system");
 }
-const mod_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21823,7 +22143,7 @@ async function Page$3({
     ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "An unspecified error occurred." }) })
   ] }) }) }) });
 }
-const mod_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21833,7 +22153,7 @@ const ForgotPasswordForm = /* @__PURE__ */ registerClientReference(() => {
 function Page$2() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ForgotPasswordForm, {}) }) });
 }
-const mod_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -21843,14 +22163,14 @@ const LoginForm = /* @__PURE__ */ registerClientReference(() => {
 function Page$1() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(react_reactServerExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { children: "Loading..." }), children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(LoginForm, {}) }) }) });
 }
-const mod_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$1
 }, Symbol.toStringTag, { value: "Module" }));
 function Page() {
   redirect("/settings");
 }
-const mod_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page
 }, Symbol.toStringTag, { value: "Module" }));
@@ -32960,7 +33280,7 @@ function PracticePreviewPage() {
     ] })
   ] }) });
 }
-const mod_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: PracticePreviewPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -33591,7 +33911,7 @@ async function StudentDashboard() {
     ] }, unit.unitNumber)) })
   ] }) }) });
 }
-const mod_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_27 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: StudentDashboard,
   dynamic: dynamic$3
@@ -33628,11 +33948,11 @@ async function TeacherDashboardPage() {
     }
   );
 }
-const mod_42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
-const mod_27 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -33670,7 +33990,7 @@ async function CourseGradebookPage() {
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": "Course overview gradebook", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CourseOverviewGrid, { rows, units }) })
   ] }) });
 }
-const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CourseGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -33742,7 +34062,7 @@ function redactSensitiveFields(value) {
   }
   return value;
 }
-const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$1
 }, Symbol.toStringTag, { value: "Module" }));
@@ -33792,7 +34112,7 @@ async function GET(request, { params }) {
     );
   }
 }
-const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34145,7 +34465,7 @@ async function LessonPage({ params, searchParams }) {
     }
   );
 }
-const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LessonPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34179,7 +34499,7 @@ function LessonLoading() {
     ] }, i)) })
   ] }) });
 }
-const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_33 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LessonLoading
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34473,7 +34793,7 @@ async function TeacherStudentDetailPage({
     ] })
   ] }) });
 }
-const mod_33 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherStudentDetailPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34530,7 +34850,7 @@ async function UnitGradebookPage({ params }) {
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": `${formatCurriculumSegmentLabel(unitNumber)} gradebook`, children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(GradebookGrid, { rows, lessons: lessons2, unitNumber }) })
   ] }) });
 }
-const mod_34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: UnitGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34621,7 +34941,7 @@ async function TeacherLessonPage({
   const viewModel = buildTeacherLessonMonitoringViewModel(result);
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(TeacherLessonPlanPageContent, { ...viewModel });
 }
-const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherLessonPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34692,7 +35012,7 @@ function AcknowledgmentsPage() {
     ] })
   ] });
 }
-const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_37 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: AcknowledgmentsPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -34861,7 +35181,7 @@ async function CapstonePage() {
     ] }) }) })
   ] });
 }
-const mod_37 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_38 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CapstonePage,
   dynamic: dynamic$2
@@ -35045,7 +35365,7 @@ function UnitTeaserDark({ unit, delay }) {
     }
   );
 }
-const mod_38 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CurriculumPage,
   dynamic: dynamic$1
@@ -35305,7 +35625,7 @@ function PrefacePage() {
     ] })
   ] });
 }
-const mod_39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: PrefacePage,
   dynamic
@@ -35380,14 +35700,14 @@ async function SettingsPage() {
     )
   ] }) });
 }
-const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_41 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: SettingsPage
 }, Symbol.toStringTag, { value: "Module" }));
 async function StudentIndexPage() {
   redirect(studentDashboardPath());
 }
-const mod_41 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: StudentIndexPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -35885,7 +36205,7 @@ async function Home() {
     ] }) })
   ] });
 }
-const mod_43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Home
 }, Symbol.toStringTag, { value: "Module" }));
@@ -36050,7 +36370,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/teacher/error-summary",
+    pattern: "/api/teacher/ai-error-summary",
     isDynamic: false,
     params: [],
     page: null,
@@ -36068,7 +36388,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/teacher/submission-detail",
+    pattern: "/api/teacher/error-summary",
     isDynamic: false,
     params: [],
     page: null,
@@ -36086,7 +36406,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/test/cleanup-e2e",
+    pattern: "/api/teacher/submission-detail",
     isDynamic: false,
     params: [],
     page: null,
@@ -36104,7 +36424,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/test/seed-e2e",
+    pattern: "/api/test/cleanup-e2e",
     isDynamic: false,
     params: [],
     page: null,
@@ -36122,7 +36442,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/bulk-create-students",
+    pattern: "/api/test/seed-e2e",
     isDynamic: false,
     params: [],
     page: null,
@@ -36140,7 +36460,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/create-student",
+    pattern: "/api/users/bulk-create-students",
     isDynamic: false,
     params: [],
     page: null,
@@ -36158,7 +36478,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/ensure-demo",
+    pattern: "/api/users/create-student",
     isDynamic: false,
     params: [],
     page: null,
@@ -36176,7 +36496,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/reset-student-password",
+    pattern: "/api/users/ensure-demo",
     isDynamic: false,
     params: [],
     page: null,
@@ -36194,7 +36514,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/users/update-student",
+    pattern: "/api/users/reset-student-password",
     isDynamic: false,
     params: [],
     page: null,
@@ -36212,9 +36532,9 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/activities/spreadsheet/:activityId/draft",
-    isDynamic: true,
-    params: ["activityId"],
+    pattern: "/api/users/update-student",
+    isDynamic: false,
+    params: [],
     page: null,
     routeHandler: mod_18,
     layouts: [mod_1],
@@ -36230,7 +36550,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/api/activities/spreadsheet/:activityId/submit",
+    pattern: "/api/activities/spreadsheet/:activityId/draft",
     isDynamic: true,
     params: ["activityId"],
     page: null,
@@ -36248,9 +36568,9 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/confirm",
-    isDynamic: false,
-    params: [],
+    pattern: "/api/activities/spreadsheet/:activityId/submit",
+    isDynamic: true,
+    params: ["activityId"],
     page: null,
     routeHandler: mod_20,
     layouts: [mod_1],
@@ -36266,11 +36586,11 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/error",
+    pattern: "/auth/confirm",
     isDynamic: false,
     params: [],
-    page: mod_21,
-    routeHandler: null,
+    page: null,
+    routeHandler: mod_21,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -36284,7 +36604,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/forgot-password",
+    pattern: "/auth/error",
     isDynamic: false,
     params: [],
     page: mod_22,
@@ -36302,7 +36622,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/login",
+    pattern: "/auth/forgot-password",
     isDynamic: false,
     params: [],
     page: mod_23,
@@ -36320,7 +36640,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/auth/update-password",
+    pattern: "/auth/login",
     isDynamic: false,
     params: [],
     page: mod_24,
@@ -36338,7 +36658,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/dev/practice-preview",
+    pattern: "/auth/update-password",
     isDynamic: false,
     params: [],
     page: mod_25,
@@ -36356,7 +36676,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/student/dashboard",
+    pattern: "/dev/practice-preview",
     isDynamic: false,
     params: [],
     page: mod_26,
@@ -36374,7 +36694,7 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/teacher/dashboard",
+    pattern: "/student/dashboard",
     isDynamic: false,
     params: [],
     page: mod_27,
@@ -36392,10 +36712,28 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/teacher/gradebook",
+    pattern: "/teacher/dashboard",
     isDynamic: false,
     params: [],
     page: mod_28,
+    routeHandler: null,
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
+    templates: [],
+    errors: [null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
+    pattern: "/teacher/gradebook",
+    isDynamic: false,
+    params: [],
+    page: mod_29,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36414,7 +36752,7 @@ const routes = [
     isDynamic: true,
     params: ["activityId"],
     page: null,
-    routeHandler: mod_29,
+    routeHandler: mod_30,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -36432,7 +36770,7 @@ const routes = [
     isDynamic: true,
     params: ["lessonId"],
     page: null,
-    routeHandler: mod_30,
+    routeHandler: mod_31,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -36449,14 +36787,14 @@ const routes = [
     pattern: "/student/lesson/:lessonSlug",
     isDynamic: true,
     params: ["lessonSlug"],
-    page: mod_31,
+    page: mod_32,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
     errors: [null],
     slots: {},
-    loading: mod_32,
+    loading: mod_33,
     error: null,
     notFound: null,
     notFounds: [null],
@@ -36467,7 +36805,7 @@ const routes = [
     pattern: "/teacher/students/:studentId",
     isDynamic: true,
     params: ["studentId"],
-    page: mod_33,
+    page: mod_34,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36485,7 +36823,7 @@ const routes = [
     pattern: "/teacher/units/:unitNumber",
     isDynamic: true,
     params: ["unitNumber"],
-    page: mod_34,
+    page: mod_35,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36503,7 +36841,7 @@ const routes = [
     pattern: "/teacher/units/:unitNumber/lessons/:lessonId",
     isDynamic: true,
     params: ["unitNumber", "lessonId"],
-    page: mod_35,
+    page: mod_36,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36521,7 +36859,7 @@ const routes = [
     pattern: "/acknowledgments",
     isDynamic: false,
     params: [],
-    page: mod_36,
+    page: mod_37,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36539,7 +36877,7 @@ const routes = [
     pattern: "/capstone",
     isDynamic: false,
     params: [],
-    page: mod_37,
+    page: mod_38,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36557,7 +36895,7 @@ const routes = [
     pattern: "/curriculum",
     isDynamic: false,
     params: [],
-    page: mod_38,
+    page: mod_39,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36575,7 +36913,7 @@ const routes = [
     pattern: "/preface",
     isDynamic: false,
     params: [],
-    page: mod_39,
+    page: mod_40,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36593,7 +36931,7 @@ const routes = [
     pattern: "/settings",
     isDynamic: false,
     params: [],
-    page: mod_40,
+    page: mod_41,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36611,7 +36949,7 @@ const routes = [
     pattern: "/student",
     isDynamic: false,
     params: [],
-    page: mod_41,
+    page: mod_42,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36629,7 +36967,7 @@ const routes = [
     pattern: "/teacher",
     isDynamic: false,
     params: [],
-    page: mod_42,
+    page: mod_43,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -36647,7 +36985,7 @@ const routes = [
     pattern: "/",
     isDynamic: false,
     params: [],
-    page: mod_43,
+    page: mod_44,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
