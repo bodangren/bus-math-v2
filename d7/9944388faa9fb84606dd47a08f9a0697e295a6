@@ -1,0 +1,1 @@
+phase-4: SpreadsheetActivity practice.v1 envelope emission. Adapter emits practice.v1 envelopes with spreadsheet artifact data (cellCount, filledCells, completionRate, data). Submitted guard prevents duplicates. 5 new tests covering envelope shape, artifact data, duplicate guard, and ID fallback. Lint, test (24/24), build all pass. Track 7 COMPLETE — all 4 phases finished.
