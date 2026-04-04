@@ -57532,7 +57532,13 @@ function AssetTimeMachine({ activity, onComplete, onSubmit }) {
         /* @__PURE__ */ jsx("strong", { children: "Depreciation" }),
         "—spreading the cost over the life of the asset."
       ] }),
-      /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-blue-600 hover:bg-blue-700 w-full h-14 text-xl", onClick: () => setIsComplete(false), children: "Back to Lesson" })
+      /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-blue-600 hover:bg-blue-700 w-full h-14 text-xl", onClick: () => {
+        setIsComplete(false);
+        setCurrentYear(0);
+        setCurrentValue(initialCost);
+        setTotalExpenses(0);
+        setHistory([]);
+      }, children: "Back to Lesson" })
     ] }) })
   ] });
 }
