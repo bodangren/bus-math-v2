@@ -26,13 +26,21 @@
 
 ## Phase 3: Rebuild 8 Core Simulations
 
-- [ ] **Task: Define the 8 core simulations for the curriculum**
-  - [ ] Identify which units/lessons need Discovery (Lesson 1) and Synthesis (Lesson 7/8) simulations
-  - [ ] Spec each simulation's `parts` and `artifact` contract
+- [x] **Task: Define the 8 core simulations for the curriculum**
+  - [x] Identified 8 simulations mapped to Unit 1-8 Lesson 1 (Discovery) slots
+  - [x] Spec'd `practice.v1` envelope with `parts` (per-decision) and `artifact` (simulation summary report) for each
 
-- [ ] **Task: Implement Simulations 1-4 with `practice.v1` wrapper and artifact generation**
+- [x] **Task: Implement Simulations 1-4 with `practice.v1` wrapper and artifact generation**
+  - [x] LemonadeStand (Unit 1): added `onSubmit`, Submit Results button, `lemonade_stand` artifact
+  - [x] StartupJourney (Unit 2): added `onSubmit`, auto-submits on won/lost, `startup_journey` artifact
+  - [x] BudgetBalancer (Unit 3): added `onSubmit`, Submit Results button, `budget_balancer` artifact
+  - [x] CashFlowChallenge (Unit 4): wrapped existing `onSubmit` with `practice.v1` envelope, `cash_flow_challenge` artifact
 
-- [ ] **Task: Implement Simulations 5-8 with `practice.v1` wrapper and artifact generation**
+- [x] **Task: Implement Simulations 5-8 with `practice.v1` wrapper and artifact generation**
+  - [x] AssetTimeMachine (Unit 5): added `onSubmit`, emits on completion, `asset_time_machine` artifact
+  - [x] CafeSupplyChaos (Unit 6): added `onSubmit`, emits on completion, `cafe_supply_chaos` artifact
+  - [x] CapitalNegotiation (Unit 7): added `onSubmit`, emits on finalize, `capital_negotiation` artifact
+  - [x] BusinessStressTest (Unit 8): added `onSubmit`, emits on all-rounds-complete, `business_stress_test` artifact
 
 ## Phase 4: Cleanup and Archival
 

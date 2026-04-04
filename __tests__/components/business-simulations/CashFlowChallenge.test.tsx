@@ -135,8 +135,9 @@ describe('CashFlowChallenge', () => {
     await userEvent.click(submitButton)
 
     expect(onSubmit).toHaveBeenCalled()
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('gameStatus', 'won')
-    expect(onSubmit.mock.calls[0][0]).toHaveProperty('finalProfit')
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
+    expect(envelope).toHaveProperty('artifact.kind', 'cash_flow_challenge')
   })
 
   it('resets game to initial state from activity props', async () => {

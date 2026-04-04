@@ -113,6 +113,8 @@ import {
 import type { Activity } from '@/lib/db/schema/validators'
 import type { LemonadeStandActivityProps } from '@/types/activities'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export type LemonadeStandActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'lemonade-stand'
   props: LemonadeStandActivityProps
@@ -148,6 +150,7 @@ interface LemonadeStandProps {
   activity: LemonadeStandActivity
   initialState?: Partial<LemonadeStandState>
   onStateChange?: (state: LemonadeStandState) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 type SupplyId = LemonadeStandActivityProps['supplyOptions'][number]['id']
@@ -191,7 +194,7 @@ const mergeState = (base: LemonadeStandState, override?: Partial<LemonadeStandSt
   }
 }
 
-export function LemonadeStand({ activity, initialState, onStateChange }: LemonadeStandProps) {
+export function LemonadeStand({ activity, initialState, onStateChange, onSubmit }: LemonadeStandProps) {
   const baseState = useMemo(() => cloneStateFromConfig(activity.props.initialState), [activity.props.initialState])
   const [gameState, setGameState] = useState<LemonadeStandState>(() => mergeState(baseState, initialState))
   const [showInstructions, setShowInstructions] = useState(false)
@@ -201,6 +204,7 @@ export function LemonadeStand({ activity, initialState, onStateChange }: Lemonad
     type: 'success' | 'warning' | 'error' | 'info'
   }>>([])
   const [salesProgress, setSalesProgress] = useState(0)
+  const [submitted, setSubmitted] = useState(false)
   const salesIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const heroDescription = activity.description ?? activity.props.description
@@ -426,8 +430,61 @@ export function LemonadeStand({ activity, initialState, onStateChange }: Lemonad
     setGameState(cloneStateFromConfig(activity.props.initialState))
     setSalesProgress(0)
     setNotifications([])
+    setSubmitted(false)
     addNotification('Game reset successfully!', 'info')
   }, [activity.props.initialState, addNotification])
+
+  const handleSubmitResults = useCallback(() => {
+    if (submitted || gameState.revenue === 0) return
+
+    const totalExpenses = gameState.expenses
+    const totalProfit = gameState.revenue - totalExpenses
+
+    const answers: Record<string, unknown> = {
+      totalRevenue: gameState.revenue,
+      totalExpenses,
+      totalProfit,
+      finalCash: gameState.cash,
+      daysPlayed: gameState.day,
+    }
+    const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+      ...part,
+      isCorrect: true,
+      score: 1,
+      maxScore: 1,
+    }))
+
+    const envelope = buildPracticeSubmissionEnvelope({
+      activityId: activity.id ?? activity.componentKey ?? 'lemonade-stand',
+      mode: 'guided_practice',
+      status: 'submitted',
+      attemptNumber: 1,
+      submittedAt: new Date(),
+      answers,
+      parts,
+      artifact: {
+        kind: 'lemonade_stand',
+        title: activity.props.title ?? 'Lemonade Stand',
+        finalCash: gameState.cash,
+        totalRevenue: gameState.revenue,
+        totalExpenses,
+        totalProfit,
+        daysPlayed: gameState.day,
+        inventory: gameState.inventory,
+        recipe: gameState.recipe,
+        customerSatisfaction: gameState.customerSatisfaction,
+      },
+      analytics: {
+        totalRevenue: gameState.revenue,
+        totalProfit,
+        profitMargin: gameState.revenue > 0 ? totalProfit / gameState.revenue : 0,
+      },
+    })
+
+    setSubmitted(true)
+    onSubmit?.(envelope)
+    addNotification('Results submitted as practice evidence!', 'success')
+  }, [submitted, gameState, activity, onSubmit, addNotification])
 
   const profit = gameState.revenue - gameState.expenses
   const recipeFeedback = getRecipeFeedback()
@@ -857,6 +914,16 @@ export function LemonadeStand({ activity, initialState, onStateChange }: Lemonad
           <RefreshCw className="w-4 h-4 mr-2" />
           Reset Game
         </Button>
+        {onSubmit && gameState.revenue > 0 && (
+          <Button
+            onClick={handleSubmitResults}
+            size="lg"
+            variant={submitted ? 'outline' : 'default'}
+            disabled={submitted}
+          >
+            {submitted ? 'Submitted' : 'Submit Results'}
+          </Button>
+        )}
       </div>
 
       {/* Notifications */}

@@ -89,6 +89,8 @@ import {
 import type { Activity } from '@/lib/db/schema/validators'
 import type { BudgetBalancerActivityProps } from '@/types/activities'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export type BudgetBalancerActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'budget-balancer'
   props: BudgetBalancerActivityProps
@@ -115,6 +117,7 @@ interface BudgetBalancerProps {
   activity: BudgetBalancerActivity
   initialState?: Partial<BudgetBalancerState>
   onStateChange?: (state: BudgetBalancerState) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 const EXPENSE_ICONS: Record<string, LucideIcon> = {
@@ -192,7 +195,7 @@ const mergeBudgetState = (
   }
 }
 
-export function BudgetBalancer({ activity, initialState, onStateChange }: BudgetBalancerProps) {
+export function BudgetBalancer({ activity, initialState, onStateChange, onSubmit }: BudgetBalancerProps) {
   const baseState = useMemo(
     () => cloneBudgetStateFromConfig(activity.props.initialState, activity.props.expenses),
     [activity.props.initialState, activity.props.expenses]
@@ -203,6 +206,7 @@ export function BudgetBalancer({ activity, initialState, onStateChange }: Budget
   )
 
   const [showInstructions, setShowInstructions] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
     const merged = mergeBudgetState(baseState, initialState)
@@ -273,6 +277,58 @@ export function BudgetBalancer({ activity, initialState, onStateChange }: Budget
     const resetState = cloneBudgetStateFromConfig(activity.props.initialState, activity.props.expenses)
     setGameState(resetState)
     setTempExpenses(Object.fromEntries(Object.entries(resetState.expenses).map(([key, expense]) => [key, expense.amount])))
+    setSubmitted(false)
+  }
+
+  const handleSubmitResults = () => {
+    if (submitted) return
+
+    const answers: Record<string, unknown> = {
+      totalSavings: gameState.totalSavings,
+      emergencyFund: gameState.emergencyFund,
+      financialHealth: gameState.financialHealth,
+      monthsPlayed: gameState.month,
+    }
+    const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+      ...part,
+      isCorrect: true,
+      score: 1,
+      maxScore: 1,
+    }))
+
+    const expenseEntries = Object.entries(gameState.expenses).map(([key, exp]) => ({
+      id: key,
+      amount: exp.amount,
+      required: exp.required,
+    }))
+
+    const envelope = buildPracticeSubmissionEnvelope({
+      activityId: activity.id ?? activity.componentKey ?? 'budget-balancer',
+      mode: 'guided_practice',
+      status: 'submitted',
+      attemptNumber: 1,
+      submittedAt: new Date(),
+      answers,
+      parts,
+      artifact: {
+        kind: 'budget_balancer',
+        title: activity.props.title ?? 'Budget Balancer',
+        monthlyIncome: gameState.monthlyIncome,
+        totalSavings: gameState.totalSavings,
+        emergencyFund: gameState.emergencyFund,
+        financialHealth: gameState.financialHealth,
+        monthsPlayed: gameState.month,
+        expenses: expenseEntries,
+      },
+      analytics: {
+        totalSavings: gameState.totalSavings,
+        financialHealth: gameState.financialHealth,
+        savingsRate: gameState.monthlyIncome > 0 ? (gameState.monthlyIncome - totalExpenses) / gameState.monthlyIncome : 0,
+      },
+    })
+
+    setSubmitted(true)
+    onSubmit?.(envelope)
   }
 
   const getHealthColor = (health: number) => {
@@ -699,6 +755,16 @@ export function BudgetBalancer({ activity, initialState, onStateChange }: Budget
         >
           Reset Game
         </Button>
+        {onSubmit && gameState.month > 1 && (
+          <Button
+            onClick={handleSubmitResults}
+            size="lg"
+            variant={submitted ? 'outline' : 'default'}
+            disabled={submitted}
+          >
+            {submitted ? 'Submitted' : 'Submit Results'}
+          </Button>
+        )}
       </div>
     </div>
   )

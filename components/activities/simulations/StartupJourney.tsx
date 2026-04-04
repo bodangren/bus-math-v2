@@ -70,7 +70,7 @@
 
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -101,6 +101,8 @@ import {
 import type { Activity } from '@/lib/db/schema/validators'
 import type { StartupJourneyActivityProps } from '@/types/activities'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export type StartupJourneyActivity = Omit<Activity, 'componentKey' | 'props'> & {
   componentKey: 'startup-journey'
   props: StartupJourneyActivityProps
@@ -125,6 +127,7 @@ interface StartupJourneyProps {
   activity: StartupJourneyActivity
   initialState?: Partial<StartupJourneyState>
   onStateChange?: (state: StartupJourneyState) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 const STAGE_ICONS: Record<string, LucideIcon> = {
@@ -169,7 +172,7 @@ const mergeStartupState = (base: StartupJourneyState, override?: Partial<Startup
   }
 }
 
-export function StartupJourney({ activity, initialState, onStateChange }: StartupJourneyProps) {
+export function StartupJourney({ activity, initialState, onStateChange, onSubmit }: StartupJourneyProps) {
   const baseState = useMemo(() => cloneStateFromConfig(activity.props.initialState), [activity.props.initialState])
   const [gameState, setGameState] = useState<StartupJourneyState>(() => mergeStartupState(baseState, initialState))
   const [notifications, setNotifications] = useState<Array<{
@@ -195,6 +198,59 @@ export function StartupJourney({ activity, initialState, onStateChange }: Startu
   useEffect(() => {
     onStateChange?.(gameState)
   }, [gameState, onStateChange])
+
+  const submittedRef = useRef(false)
+  useEffect(() => {
+    if (
+      onSubmit &&
+      !submittedRef.current &&
+      (gameState.gameStatus === 'won' || gameState.gameStatus === 'lost')
+    ) {
+      submittedRef.current = true
+
+      const answers: Record<string, unknown> = {
+        finalFunding: gameState.funding,
+        finalUsers: gameState.users,
+        finalRevenue: gameState.revenue,
+        monthsPlayed: gameState.month,
+        gameStatus: gameState.gameStatus,
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id ?? activity.componentKey ?? 'startup-journey',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'startup_journey',
+          title: activity.props.title ?? 'Startup Journey',
+          finalFunding: gameState.funding,
+          finalUsers: gameState.users,
+          finalRevenue: gameState.revenue,
+          monthsPlayed: gameState.month,
+          stage: gameState.stage,
+          decisions: gameState.decisions,
+          gameStatus: gameState.gameStatus,
+        },
+        analytics: {
+          gameStatus: gameState.gameStatus,
+          finalRevenue: gameState.revenue,
+          finalFunding: gameState.funding,
+        },
+      })
+
+      onSubmit(envelope)
+    }
+  }, [gameState.gameStatus, gameState.funding, gameState.users, gameState.revenue, gameState.month, gameState.stage, gameState.decisions, activity, onSubmit])
 
   const getStageBadgeClass = useCallback(
     (stageId: string) => stageMap.get(stageId)?.badgeClassName ?? 'bg-slate-100 text-slate-800 border-slate-300',

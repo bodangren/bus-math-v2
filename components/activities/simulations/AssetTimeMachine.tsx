@@ -15,6 +15,8 @@ import {
   Zap
 } from 'lucide-react'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export interface AssetYearScenario {
   year: number
   event: string
@@ -25,6 +27,7 @@ export interface AssetYearScenario {
 
 export interface AssetTimeMachineProps {
   activity: {
+    id?: string
     title?: string
     description?: string
     props: {
@@ -35,6 +38,7 @@ export interface AssetTimeMachineProps {
     }
   }
   onComplete?: (results: AssetTimeMachineResult) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 interface AssetHistoryEntry {
@@ -50,7 +54,7 @@ interface AssetTimeMachineResult {
   history: AssetHistoryEntry[]
 }
 
-export function AssetTimeMachine({ activity, onComplete }: AssetTimeMachineProps) {
+export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMachineProps) {
   const { assetName, initialCost, years, scenarios } = activity.props
   const [currentYear, setCurrentYear] = useState(0)
   const [currentValue, setCurrentValue] = useState(initialCost)
@@ -89,8 +93,45 @@ export function AssetTimeMachine({ activity, onComplete }: AssetTimeMachineProps
     setCurrentValue(nextValue)
     
     if (nextYear >= years) {
+      const result: AssetTimeMachineResult = { totalExpenses, finalValue: nextValue, history: [...history, entry] }
       setIsComplete(true)
-      onComplete?.({ totalExpenses, finalValue: nextValue, history: [...history, entry] })
+
+      const answers = Object.fromEntries(
+        result.history.map((h) => [h.year.toString(), h.action])
+      )
+      const parts = buildPracticeSubmissionParts(answers).map((part, index) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id ?? 'asset-time-machine',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'asset_time_machine',
+          title: activity.title ?? 'The Asset Time-Machine',
+          assetName: activity.props.assetName,
+          initialCost: activity.props.initialCost,
+          totalExpenses: result.totalExpenses,
+          finalValue: result.finalValue,
+          history: result.history,
+        },
+        analytics: {
+          totalExpenses: result.totalExpenses,
+          finalValue: result.finalValue,
+          valueRetention: result.finalValue / activity.props.initialCost,
+        },
+      })
+
+      onSubmit?.(envelope)
+      onComplete?.(result)
     } else {
       setCurrentYear(nextYear)
     }

@@ -16,6 +16,8 @@ import {
   CheckCircle
 } from 'lucide-react'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export interface InventoryBatch {
   id: string
   quantity: number
@@ -33,6 +35,7 @@ export interface CafeSupplyChaosResult {
 
 export interface CafeSupplyChaosProps {
   activity: {
+    id?: string
     title?: string
     description?: string
     props: {
@@ -42,9 +45,10 @@ export interface CafeSupplyChaosProps {
     }
   }
   onComplete?: (results: { method: 'FIFO' | 'LIFO'; sales: CafeSupplyChaosResult[] }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function CafeSupplyChaos({ activity, onComplete }: CafeSupplyChaosProps) {
+export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyChaosProps) {
   const { days, shipments, orders } = activity.props
   const [currentDay, setCurrentDay] = useState(1)
   const [inventory, setInventory] = useState<InventoryBatch[]>([])
@@ -124,8 +128,50 @@ export function CafeSupplyChaos({ activity, onComplete }: CafeSupplyChaosProps) 
     setInventory(tempInventory)
 
     if (nextDay > days) {
+      const allSales = [...sales, dailyResult]
       setIsComplete(true)
-      onComplete?.({ method, sales: [...sales, dailyResult] })
+
+      const answers = Object.fromEntries(
+        allSales.map((s) => [`day-${s.day}`, `${s.revenue}-${s.cogs}-${s.profit}`])
+      )
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+
+      const totalRevenue = allSales.reduce((sum, s) => sum + s.revenue, 0)
+      const totalCogs = allSales.reduce((sum, s) => sum + s.cogs, 0)
+      const totalProfit = totalRevenue - totalCogs
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id ?? 'cafe-supply-chaos',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'cafe_supply_chaos',
+          title: activity.title ?? 'Cafe Supply Chaos',
+          method: method!,
+          sales: allSales,
+          totalRevenue,
+          totalCogs,
+          totalProfit,
+        },
+        analytics: {
+          method: method!,
+          totalRevenue,
+          totalCogs,
+          totalProfit,
+        },
+      })
+
+      onSubmit?.(envelope)
+      onComplete?.({ method: method!, sales: allSales })
     } else {
       setCurrentDay(nextDay)
     }

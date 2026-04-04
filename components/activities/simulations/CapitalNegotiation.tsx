@@ -17,6 +17,8 @@ import {
   ThumbsDown
 } from 'lucide-react'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export interface CapitalTerm {
   label: string
   value: string
@@ -34,6 +36,7 @@ export interface CapitalOption {
 
 export interface CapitalNegotiationProps {
   activity: {
+    id?: string
     title?: string
     description?: string
     props: {
@@ -41,9 +44,10 @@ export interface CapitalNegotiationProps {
     }
   }
   onComplete?: (results: { selection?: string }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function CapitalNegotiation({ activity, onComplete }: CapitalNegotiationProps) {
+export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNegotiationProps) {
   const { options } = activity.props
   const [selectedOption, setSelectedOption] = useState<CapitalOption | null>(null)
   const [revealedTerms, setRevealedTerms] = useState<string[]>([])
@@ -64,7 +68,45 @@ export function CapitalNegotiation({ activity, onComplete }: CapitalNegotiationP
 
   const handleFinalize = () => {
     setIsComplete(true)
-    onComplete?.({ selection: selectedOption?.id })
+
+    const selection = selectedOption?.id ?? ''
+    const answers: Record<string, unknown> = {
+      selection,
+      termsReviewed: revealedTerms.length,
+      optionType: selectedOption?.type ?? 'unknown',
+    }
+    const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+      ...part,
+      isCorrect: true,
+      score: 1,
+      maxScore: 1,
+    }))
+
+    const envelope = buildPracticeSubmissionEnvelope({
+      activityId: activity.id ?? 'capital-negotiation',
+      mode: 'guided_practice',
+      status: 'submitted',
+      attemptNumber: 1,
+      submittedAt: new Date(),
+      answers,
+      parts,
+      artifact: {
+        kind: 'capital_negotiation',
+        title: activity.title ?? 'Capital Negotiation',
+        selectedOption: selection,
+        optionType: selectedOption?.type ?? 'unknown',
+        termsReviewed: revealedTerms,
+        revealedCount: revealedTerms.length,
+      },
+      analytics: {
+        selectedOption: selection,
+        optionType: selectedOption?.type ?? 'unknown',
+        termsReviewedCount: revealedTerms.length,
+      },
+    })
+
+    onSubmit?.(envelope)
+    onComplete?.({ selection })
   }
 
   const reset = () => {

@@ -30,6 +30,8 @@ import {
 } from 'lucide-react'
 import type { CashFlowChallengeActivityProps } from '@/types/activities'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 interface CashFlow {
   id: string
   description: string
@@ -59,10 +61,11 @@ interface GameState {
 
 interface CashFlowChallengeProps {
   activity: CashFlowChallengeActivityProps
-  onSubmit?: (data: GameState & { finalProfit: number; actionsLog: string[] }) => void
+  onSubmitLegacy?: (data: GameState & { finalProfit: number; actionsLog: string[] }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps) {
+export function CashFlowChallenge({ activity, onSubmitLegacy, onSubmit }: CashFlowChallengeProps) {
   const [gameState, setGameState] = useState<GameState>({
     cashPosition: activity.initialState.cashPosition,
     day: activity.initialState.day,
@@ -348,17 +351,58 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
   }, [activity, addNotification])
 
   const handleSubmit = useCallback(() => {
-    if (onSubmit && gameState.gameStatus !== 'playing') {
+    if ((onSubmit || onSubmitLegacy) && gameState.gameStatus !== 'playing') {
       const initialCash = activity.initialState.cashPosition
       const finalProfit = gameState.cashPosition - initialCash
-      onSubmit({
+      const legacyData = {
         ...gameState,
         finalProfit,
         actionsLog
+      }
+
+      const answers: Record<string, unknown> = {
+        finalCash: gameState.cashPosition,
+        finalProfit,
+        won: gameState.gameStatus === 'won',
+        actionsUsed: JSON.stringify(gameState.actionsUsed),
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.title ?? 'cash-flow-challenge',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'cash_flow_challenge',
+          title: activity.title ?? 'Cash Flow Challenge',
+          finalCash: gameState.cashPosition,
+          finalProfit,
+          gameStatus: gameState.gameStatus,
+          creditUsed: gameState.creditUsed,
+          actionsUsed: gameState.actionsUsed,
+          actionsLog,
+        },
+        analytics: {
+          finalCash: gameState.cashPosition,
+          finalProfit,
+          won: gameState.gameStatus === 'won',
+        },
       })
+
+      onSubmit?.(envelope)
+      onSubmitLegacy?.(legacyData)
       addNotification('Results submitted successfully!', 'success')
     }
-  }, [gameState, actionsLog, onSubmit, activity, addNotification])
+  }, [gameState, actionsLog, onSubmit, onSubmitLegacy, activity, addNotification])
 
   const healthStatus = getCashHealthStatus(gameState.cashPosition)
   const totalIncoming = gameState.incomingFlows.reduce((sum, flow) => sum + flow.amount, 0)
@@ -411,7 +455,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
                 : 'Ran out of cash! Better luck next time.'
               }
             </p>
-            {onSubmit && (
+            {(onSubmit || onSubmitLegacy) && (
               <Button onClick={handleSubmit} className="mt-4" size="lg">
                 Submit Results
               </Button>

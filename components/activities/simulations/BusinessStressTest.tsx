@@ -16,6 +16,8 @@ import {
   ShieldCheck
 } from 'lucide-react'
 
+import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
 export interface Disaster {
   id: string
   label: string
@@ -29,6 +31,7 @@ export interface Disaster {
 
 export interface BusinessStressTestProps {
   activity: {
+    id?: string
     title?: string
     description?: string
     props: {
@@ -41,9 +44,10 @@ export interface BusinessStressTestProps {
     }
   }
   onComplete?: (results: { finalCash: number; roundsSurvived: number }) => void
+  onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function BusinessStressTest({ activity, onComplete }: BusinessStressTestProps) {
+export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessStressTestProps) {
   const { initialState, disasters } = activity.props
   const [cash, setCash] = useState(initialState.cash)
   const [revenue, setRevenue] = useState(initialState.revenue)
@@ -57,8 +61,47 @@ export function BusinessStressTest({ activity, onComplete }: BusinessStressTestP
 
   const handleNextRound = () => {
     if (round >= disasters.length) {
+      const finalCash = cash
+      const roundsSurvived = round
       setIsComplete(true)
-      onComplete?.({ finalCash: cash, roundsSurvived: round })
+
+      const answers: Record<string, unknown> = {
+        finalCash,
+        roundsSurvived,
+        survivedAll: roundsSurvived >= disasters.length,
+      }
+      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+        ...part,
+        isCorrect: true,
+        score: 1,
+        maxScore: 1,
+      }))
+
+      const envelope = buildPracticeSubmissionEnvelope({
+        activityId: activity.id ?? 'business-stress-test',
+        mode: 'guided_practice',
+        status: 'submitted',
+        attemptNumber: 1,
+        submittedAt: new Date(),
+        answers,
+        parts,
+        artifact: {
+          kind: 'business_stress_test',
+          title: activity.title ?? 'Business Stress Test',
+          finalCash,
+          roundsSurvived,
+          totalRounds: disasters.length,
+          survivedAll: roundsSurvived >= disasters.length,
+        },
+        analytics: {
+          finalCash,
+          roundsSurvived,
+          survivalRate: roundsSurvived / disasters.length,
+        },
+      })
+
+      onSubmit?.(envelope)
+      onComplete?.({ finalCash, roundsSurvived })
       return
     }
 
