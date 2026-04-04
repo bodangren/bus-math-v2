@@ -51,7 +51,7 @@ Strictly serial. Complete and archive each track before starting the next.
 
 - [~] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
   *Link: [./tracks/legacy_component_pruning_and_simulations_20260322/](./tracks/legacy_component_pruning_and_simulations_20260322/)*
-  *Status: Phase 1 (pruning) and Phase 2 (chart refactor) complete. Next: Phase 3 (simulation rebuilds).*  
+  *Status: Phase 1 (pruning), Phase 2 (chart refactor), and Phase 3 (simulation rebuilds) complete. Next: Phase 4 (cleanup and archival).*  
 
 - [ ] **Track 5: Teacher Practice Error Analysis**
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*

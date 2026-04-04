@@ -6,6 +6,6 @@
   "updated_at": "2026-04-04T00:00:00Z",
   "description": "Delete obsolete drag-drop components and legacy interactive builders replaced by Families A-U, refactor chart components, and rebuild 8 core simulations on the practice.v1 contract.",
   "estimated_tasks": 8,
-  "actual_tasks": 3,
-  "deviation_notes": "Phase 1 complete: Deleted 11 obsolete components and 10 test files. Phase 2 complete: Fixed BreakEvenChart prop/state sync bug, variableCostRate clamping, FinancialDashboard currency formatting unification, added charts barrel export and chart-types unit tests."
+  "actual_tasks": 6,
+  "deviation_notes": "Phase 1 complete: Deleted 11 obsolete components and 10 test files. Phase 2 complete: Fixed BreakEvenChart prop/state sync bug, variableCostRate clamping, FinancialDashboard currency formatting unification, added charts barrel export and chart-types unit tests. Phase 3 complete: Rebuilt 8 simulations (LemonadeStand, StartupJourney, BudgetBalancer, CashFlowChallenge, AssetTimeMachine, CafeSupplyChaos, CapitalNegotiation, BusinessStressTest) with practice.v1 envelope emission, parts, and artifact generation."
 }
