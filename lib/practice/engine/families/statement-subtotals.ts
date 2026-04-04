@@ -1,5 +1,6 @@
 import { buildPracticeSubmissionEnvelopeFromGrade, type GradeResult, type ProblemDefinition, type ProblemFamily, type ProblemPartDefinition } from '@/lib/practice/engine/types';
 import { normalizePracticeValue } from '@/lib/practice/contract';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import { generateMiniLedger, type MiniLedger, type MiniLedgerConfig } from '@/lib/practice/engine/mini-ledger';
 import { generateMerchandisingTimeline } from '@/lib/practice/engine/merchandising';
 
@@ -732,6 +733,16 @@ export const statementSubtotalsFamily: ProblemFamily<
   grade(definition, studentResponse) {
     const parts = definition.parts.map((part) => {
       const scoreResult = scoreNumericPart(part.targetId, studentResponse[part.id], part.details.tolerance);
+      const parsed = Number(studentResponse[part.id]);
+      const tags: string[] = [];
+      if (!scoreResult.isCorrect) {
+        if (Number.isFinite(parsed) && part.targetId !== 0 && Math.sign(parsed) !== Math.sign(part.targetId)) {
+          tags.push(...misconceptionTags('sign-error', part.details.statementKind, `${part.details.sectionId}-subtotal-error`));
+        } else {
+          tags.push(...misconceptionTags('computation-error', part.details.statementKind, `${part.details.sectionId}-subtotal-error`));
+        }
+      }
+
       return {
         partId: part.id,
         rawAnswer: studentResponse[part.id],
@@ -739,7 +750,7 @@ export const statementSubtotalsFamily: ProblemFamily<
         isCorrect: scoreResult.isCorrect,
         score: scoreResult.score,
         maxScore: 1,
-        misconceptionTags: scoreResult.isCorrect ? [] : [part.details.statementKind, `${part.details.sectionId}-subtotal-error`],
+        misconceptionTags: tags,
       };
     });
 

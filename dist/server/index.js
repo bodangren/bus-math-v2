@@ -20291,7 +20291,7 @@ Provide:
 }
 function parseAIResponse(response, input) {
   const lines = response.split("\n").filter((l) => l.trim());
-  const misconceptionTags = Array.from(new Set(input.submission.parts.flatMap((p) => p.misconceptionTags ?? [])));
+  const misconceptionTags2 = Array.from(new Set(input.submission.parts.flatMap((p) => p.misconceptionTags ?? [])));
   return {
     type: "ai-assisted",
     likelyMisunderstanding: lines[0] || "Unable to determine misunderstanding",
@@ -20300,7 +20300,7 @@ function parseAIResponse(response, input) {
     sourceSubmissionId: `${input.submission.activityId}-${input.submission.attemptNumber}`,
     sourceEvidence: {
       partIds: input.submission.parts.map((p) => p.partId),
-      misconceptionTags
+      misconceptionTags: misconceptionTags2
     },
     generatedAt: Date.now()
   };
@@ -24289,6 +24289,10 @@ const adjustingCalculationsFamily = {
     );
   }
 };
+function misconceptionTags(canonical, ...context) {
+  const slugs = Array.isArray(canonical) ? canonical : [canonical];
+  return [...slugs, ...context];
+}
 function mulberry32$f(seed) {
   let t = seed >>> 0;
   return () => {
@@ -24514,7 +24518,8 @@ const normalBalanceFamily = {
         score: isCorrect ? 1 : 0,
         maxScore: 1,
         misconceptionTags: isCorrect ? [] : [
-          ...isContraAccountError ? ["contra-account-same-as-parent"] : ["normal-balance-error"],
+          ...misconceptionTags("wrong-normal-balance"),
+          ...isContraAccountError ? ["contra-account-same-as-parent"] : [],
           ...part.details.contraOf ? [`contra-of:${part.details.contraOf}`] : []
         ]
       };
@@ -25735,6 +25740,21 @@ const journalEntryFamily = {
       const exactMatch = lineMatches$2(expectedLine, rawAnswer);
       const presentAnywhere = rawAnswer ? linePresentAnywhere$2(expectedLine, studentResponse) : false;
       const isCorrect = exactMatch || presentAnywhere;
+      const tags = [];
+      if (!isCorrect) {
+        if (!rawAnswer) {
+          tags.push(...misconceptionTags("omitted-entry", `journal-entry:${definition.scenario.kind}:${part.id}`));
+        } else {
+          tags.push(`journal-entry:${definition.scenario.kind}:${part.id}`);
+          if (rawAnswer.accountId === expectedLine.accountId) {
+            tags.push(...misconceptionTags("debit-credit-reversal"));
+          } else if (rawAnswer.debit === 0 && rawAnswer.credit === 0) {
+            tags.push(...misconceptionTags("incomplete-entry"));
+          } else {
+            tags.push(...misconceptionTags("wrong-account-type"));
+          }
+        }
+      }
       return {
         partId: part.id,
         rawAnswer,
@@ -25742,7 +25762,7 @@ const journalEntryFamily = {
         isCorrect,
         score: isCorrect ? 1 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect ? [] : [`journal-entry:${definition.scenario.kind}:${part.id}`]
+        misconceptionTags: tags
       };
     });
     const score = parts.reduce((sum, part) => sum + part.score, 0);
@@ -27296,6 +27316,17 @@ const transactionEffectsFamily = {
       const normalizedAnswer = normalizePracticeValue(rawAnswer);
       const expectedAnswer = part.kind === "numeric" ? normalizePracticeValue(part.targetId) : normalizePracticeValue(part.targetId);
       const isCorrect = normalizedAnswer === expectedAnswer;
+      const tags = [];
+      if (!isCorrect) {
+        const contextTag = `transaction-effects:${part.id}`;
+        if (part.details.kind === "effect") {
+          tags.push(...misconceptionTags("debit-credit-reversal", contextTag));
+        } else if (part.details.kind === "amount") {
+          tags.push(...misconceptionTags("computation-error", contextTag));
+        } else {
+          tags.push(contextTag);
+        }
+      }
       return {
         partId: part.id,
         rawAnswer,
@@ -27303,7 +27334,7 @@ const transactionEffectsFamily = {
         isCorrect,
         score: isCorrect ? 1 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect ? [] : [`transaction-effects:${part.id}`]
+        misconceptionTags: tags
       };
     });
     const score = parts.reduce((sum, part) => sum + part.score, 0);
@@ -27649,6 +27680,17 @@ const transactionMatrixFamily = {
       const normalizedAnswer = normalizePracticeValue(rawAnswer);
       const expectedAnswer = normalizePracticeValue(part.targetId);
       const isCorrect = normalizedAnswer === expectedAnswer;
+      const tags = [];
+      if (!isCorrect) {
+        const contextTag = `transaction-matrix:${part.id}`;
+        if (part.details.stage === "cash" || part.details.stage === "offset") {
+          tags.push(...misconceptionTags("debit-credit-reversal", contextTag));
+        } else if (part.details.stage === "income-statement") {
+          tags.push(...misconceptionTags("computation-error", contextTag));
+        } else {
+          tags.push(contextTag);
+        }
+      }
       return {
         partId: part.id,
         rawAnswer,
@@ -27656,7 +27698,7 @@ const transactionMatrixFamily = {
         isCorrect,
         score: isCorrect ? 1 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect ? [] : [`transaction-matrix:${part.id}`]
+        misconceptionTags: tags
       };
     });
     const score = parts.reduce((sum, part) => sum + part.score, 0);
@@ -28316,7 +28358,7 @@ function buildTrialBalanceErrorScenarioReviewFeedback(definition, studentRespons
       }).filter((entry) => !!entry).join(" · ");
       const score = parts.reduce((sum, part) => sum + part.score, 0);
       const maxScore = parts.reduce((sum, part) => sum + part.maxScore, 0);
-      const misconceptionTags = Array.from(new Set(parts.flatMap((part) => part.misconceptionTags)));
+      const misconceptionTags2 = Array.from(new Set(parts.flatMap((part) => part.misconceptionTags)));
       const firstIncorrectPart = partIds.map((partId) => gradeResult.parts.find((part) => part.partId === partId)).find((part) => part && !part.isCorrect);
       const firstIncorrectDefinition = firstIncorrectPart ? definition.parts.find((part) => part.id === firstIncorrectPart.partId) : void 0;
       const selectedScenario = definition.scenarios.find((entry) => entry.rowId === scenario.rowId) ?? scenario;
@@ -28327,7 +28369,7 @@ function buildTrialBalanceErrorScenarioReviewFeedback(definition, studentRespons
           scoreLabel: `${score}/${maxScore}`,
           selectedLabel: selectedSummary,
           expectedLabel: expectedSummary,
-          misconceptionTags,
+          misconceptionTags: misconceptionTags2,
           message: firstIncorrectDefinition ? `${firstIncorrectDefinition.label}: ${selectedScenario.narrative}` : `${scenario.rowLabel} is correct.`
         }
       ];
@@ -28693,6 +28735,15 @@ const postingBalancesFamily = {
   grade(definition, studentResponse) {
     const parts = definition.parts.map((part) => {
       const scoreResult = scoreNumericPart$6(part.targetId, studentResponse[part.id], part.details.tolerance);
+      const parsed = Number(studentResponse[part.id]);
+      const tags = [];
+      if (!scoreResult.isCorrect) {
+        if (Number.isFinite(parsed) && part.targetId !== 0 && Math.sign(parsed) !== Math.sign(part.targetId)) {
+          tags.push(...misconceptionTags("sign-error", "posting-side-error", `${part.id}-ending-balance-error`));
+        } else {
+          tags.push(...misconceptionTags("computation-error", "posting-side-error", `${part.id}-ending-balance-error`));
+        }
+      }
       return {
         partId: part.id,
         rawAnswer: studentResponse[part.id],
@@ -28700,7 +28751,7 @@ const postingBalancesFamily = {
         isCorrect: scoreResult.isCorrect,
         score: scoreResult.score,
         maxScore: 1,
-        misconceptionTags: scoreResult.isCorrect ? [] : ["posting-side-error", `${part.id}-ending-balance-error`]
+        misconceptionTags: tags
       };
     });
     return {
@@ -29779,6 +29830,15 @@ const statementSubtotalsFamily = {
   grade(definition, studentResponse) {
     const parts = definition.parts.map((part) => {
       const scoreResult = scoreNumericPart$4(part.targetId, studentResponse[part.id], part.details.tolerance);
+      const parsed = Number(studentResponse[part.id]);
+      const tags = [];
+      if (!scoreResult.isCorrect) {
+        if (Number.isFinite(parsed) && part.targetId !== 0 && Math.sign(parsed) !== Math.sign(part.targetId)) {
+          tags.push(...misconceptionTags("sign-error", part.details.statementKind, `${part.details.sectionId}-subtotal-error`));
+        } else {
+          tags.push(...misconceptionTags("computation-error", part.details.statementKind, `${part.details.sectionId}-subtotal-error`));
+        }
+      }
       return {
         partId: part.id,
         rawAnswer: studentResponse[part.id],
@@ -29786,7 +29846,7 @@ const statementSubtotalsFamily = {
         isCorrect: scoreResult.isCorrect,
         score: scoreResult.score,
         maxScore: 1,
-        misconceptionTags: scoreResult.isCorrect ? [] : [part.details.statementKind, `${part.details.sectionId}-subtotal-error`]
+        misconceptionTags: tags
       };
     });
     return {

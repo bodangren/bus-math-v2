@@ -89,4 +89,61 @@ describe('journal entry family', () => {
       }),
     });
   });
+
+  it('emits omission and wrong-account-type tags for incorrect lines', () => {
+    const definition: JournalEntryDefinition = journalEntryFamily.generate(200, {
+      scenarioKey: 'service-revenue',
+      mode: 'assessment',
+    });
+
+    const solution = journalEntryFamily.solve(definition);
+    // Submit with wrong account on first line (replaces correct account)
+    const wrongLine = { ...solution[0], accountId: 'rent-expense' };
+    const studentResponse: JournalEntryResponse = [wrongLine, ...solution.slice(1)];
+
+    const gradeResult = journalEntryFamily.grade(definition, studentResponse);
+    const partResult = gradeResult.parts[0];
+
+    expect(partResult.isCorrect).toBe(false);
+    expect(partResult.misconceptionTags).toContain('wrong-account-type');
+  });
+
+  it('emits incomplete-entry tag when student submits a blank line', () => {
+    const definition: JournalEntryDefinition = journalEntryFamily.generate(201, {
+      scenarioKey: 'service-revenue',
+      mode: 'assessment',
+    });
+
+    const solution = journalEntryFamily.solve(definition);
+    const studentResponse: JournalEntryResponse = [...solution];
+    studentResponse[0] = { id: '', date: '', accountId: '', debit: 0, credit: 0, memo: '' };
+
+    const gradeResult = journalEntryFamily.grade(definition, studentResponse);
+    const partResult = gradeResult.parts[0];
+
+    expect(partResult.isCorrect).toBe(false);
+    expect(partResult.misconceptionTags).toContain('incomplete-entry');
+  });
+
+  it('emits debit-credit-reversal tag when student swaps debit and credit on correct account', () => {
+    const definition: JournalEntryDefinition = journalEntryFamily.generate(300, {
+      scenarioKey: 'service-revenue',
+      mode: 'assessment',
+    });
+
+    const solution = journalEntryFamily.solve(definition);
+    const expectedLine = solution[0];
+    const reversedLine = {
+      ...expectedLine,
+      debit: expectedLine.credit,
+      credit: expectedLine.debit,
+    };
+    const studentResponse: JournalEntryResponse = [reversedLine, ...solution.slice(1)];
+
+    const gradeResult = journalEntryFamily.grade(definition, studentResponse);
+    const partResult = gradeResult.parts[0];
+
+    expect(partResult.isCorrect).toBe(false);
+    expect(partResult.misconceptionTags).toContain('debit-credit-reversal');
+  });
 });

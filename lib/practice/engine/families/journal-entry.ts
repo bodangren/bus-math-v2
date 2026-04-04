@@ -1,5 +1,6 @@
 import { buildPracticeSubmissionEnvelope, type PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import { getAccountById } from '@/lib/practice/engine/accounts';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import { buildTransactionEvent, type TransactionBuildOptions, type TransactionEvent } from '@/lib/practice/engine/transactions';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
 
@@ -667,6 +668,22 @@ export const journalEntryFamily: ProblemFamily<JournalEntryDefinition, JournalEn
       const presentAnywhere = rawAnswer ? linePresentAnywhere(expectedLine, studentResponse) : false;
       const isCorrect = exactMatch || presentAnywhere;
 
+      const tags: string[] = [];
+      if (!isCorrect) {
+        if (!rawAnswer) {
+          tags.push(...misconceptionTags('omitted-entry', `journal-entry:${definition.scenario.kind}:${part.id}`));
+        } else {
+          tags.push(`journal-entry:${definition.scenario.kind}:${part.id}`);
+          if (rawAnswer.accountId === expectedLine.accountId) {
+            tags.push(...misconceptionTags('debit-credit-reversal'));
+          } else if (rawAnswer.debit === 0 && rawAnswer.credit === 0) {
+            tags.push(...misconceptionTags('incomplete-entry'));
+          } else {
+            tags.push(...misconceptionTags('wrong-account-type'));
+          }
+        }
+      }
+
       return {
         partId: part.id,
         rawAnswer,
@@ -674,7 +691,7 @@ export const journalEntryFamily: ProblemFamily<JournalEntryDefinition, JournalEn
         isCorrect,
         score: isCorrect ? 1 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect ? [] : [`journal-entry:${definition.scenario.kind}:${part.id}`],
+        misconceptionTags: tags,
       };
     });
 

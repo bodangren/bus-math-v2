@@ -1,6 +1,7 @@
 import { buildPracticeSubmissionEnvelope, normalizePracticeValue, type PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
 import { practiceAccounts } from '@/lib/practice/engine/accounts';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import { buildTransactionEvent, type TransactionBuildOptions, type TransactionEvent } from '@/lib/practice/engine/transactions';
 import {
   buildEffectDescription,
@@ -388,6 +389,18 @@ export const transactionMatrixFamily: ProblemFamily<
       const expectedAnswer = normalizePracticeValue(part.targetId);
       const isCorrect = normalizedAnswer === expectedAnswer;
 
+      const tags: string[] = [];
+      if (!isCorrect) {
+        const contextTag = `transaction-matrix:${part.id}`;
+        if (part.details.stage === 'cash' || part.details.stage === 'offset') {
+          tags.push(...misconceptionTags('debit-credit-reversal', contextTag));
+        } else if (part.details.stage === 'income-statement') {
+          tags.push(...misconceptionTags('computation-error', contextTag));
+        } else {
+          tags.push(contextTag);
+        }
+      }
+
       return {
         partId: part.id,
         rawAnswer,
@@ -395,7 +408,7 @@ export const transactionMatrixFamily: ProblemFamily<
         isCorrect,
         score: isCorrect ? 1 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect ? [] : [`transaction-matrix:${part.id}`],
+        misconceptionTags: tags,
       };
     });
 

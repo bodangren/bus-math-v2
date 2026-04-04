@@ -126,4 +126,27 @@ describe('classification family', () => {
       categorySet: 'statement-placement',
     });
   });
+
+  it('emits canonical classification-error tag when student places an account in the wrong category', () => {
+    const definition = classificationFamily.generate(42, {
+      categorySet: 'account-type',
+      itemCount: 6,
+      mode: 'assessment',
+    });
+
+    const solution = classificationFamily.solve(definition);
+    const wrongPart = definition.parts[0];
+    const wrongCategories = definition.categories.filter((cat) => cat.id !== wrongPart.targetId);
+    const wrongResponse: ClassificationResponse = {
+      ...solution,
+      [wrongPart.id]: wrongCategories[0].id,
+    };
+
+    const gradeResult = classificationFamily.grade(definition, wrongResponse);
+    const partResult = gradeResult.parts.find((p) => p.partId === wrongPart.id);
+
+    expect(partResult).toBeDefined();
+    expect(partResult?.isCorrect).toBe(false);
+    expect(partResult?.misconceptionTags).toContain('classification-error');
+  });
 });

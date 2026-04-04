@@ -4,6 +4,7 @@ import {
   type PracticeSubmissionEnvelope,
 } from '@/lib/practice/contract';
 import { isContra, practiceAccounts, type PracticeAccount } from '@/lib/practice/engine/accounts';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
 
 export type NormalBalanceSide = 'debit' | 'credit';
@@ -337,7 +338,8 @@ export const normalBalanceFamily: ProblemFamily<
         misconceptionTags: isCorrect
           ? []
           : [
-              ...(isContraAccountError ? ['contra-account-same-as-parent'] : ['normal-balance-error']),
+              ...misconceptionTags('wrong-normal-balance'),
+              ...(isContraAccountError ? ['contra-account-same-as-parent'] : []),
               ...(part.details.contraOf ? [`contra-of:${part.details.contraOf}`] : []),
             ],
       };

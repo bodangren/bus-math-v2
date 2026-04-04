@@ -1,5 +1,6 @@
 import { buildPracticeSubmissionEnvelopeFromGrade, type GradeResult, type ProblemDefinition, type ProblemFamily, type ProblemPartDefinition } from '@/lib/practice/engine/types';
 import { normalizePracticeValue } from '@/lib/practice/contract';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import { generateMiniLedger, type MiniLedger, type MiniLedgerCompanyType, type MiniLedgerConfig } from '@/lib/practice/engine/mini-ledger';
 
 export type PostingBalanceAccountId = string;
@@ -320,6 +321,16 @@ export const postingBalancesFamily: ProblemFamily<
   grade(definition, studentResponse) {
     const parts = definition.parts.map((part) => {
       const scoreResult = scoreNumericPart(part.targetId, studentResponse[part.id], part.details.tolerance);
+      const parsed = Number(studentResponse[part.id]);
+      const tags: string[] = [];
+      if (!scoreResult.isCorrect) {
+        if (Number.isFinite(parsed) && part.targetId !== 0 && Math.sign(parsed) !== Math.sign(part.targetId)) {
+          tags.push(...misconceptionTags('sign-error', 'posting-side-error', `${part.id}-ending-balance-error`));
+        } else {
+          tags.push(...misconceptionTags('computation-error', 'posting-side-error', `${part.id}-ending-balance-error`));
+        }
+      }
+
       return {
         partId: part.id,
         rawAnswer: studentResponse[part.id],
@@ -327,7 +338,7 @@ export const postingBalancesFamily: ProblemFamily<
         isCorrect: scoreResult.isCorrect,
         score: scoreResult.score,
         maxScore: 1,
-        misconceptionTags: scoreResult.isCorrect ? [] : ['posting-side-error', `${part.id}-ending-balance-error`],
+        misconceptionTags: tags,
       };
     });
 

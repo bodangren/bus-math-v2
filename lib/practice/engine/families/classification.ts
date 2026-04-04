@@ -4,6 +4,7 @@ import {
   type PracticeSubmissionEnvelope,
 } from '@/lib/practice/contract';
 import { practiceAccounts, type PracticeAccount } from '@/lib/practice/engine/accounts';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
 
 type ClassificationCategorySetKey = 'account-type' | 'statement-placement' | 'permanent-temporary';
@@ -370,6 +371,21 @@ export const classificationFamily: ProblemFamily<ClassificationDefinition, Class
       );
       const isPartial = !isCorrect && expectedPartnerCategoryIds.has(normalizedAnswer);
 
+      const tags: string[] = [];
+      if (!isCorrect) {
+        tags.push(...misconceptionTags('classification-error'));
+        if (isPartial) {
+          tags.push(`confused-with:${normalizedAnswer}`);
+        }
+        if (definition.categorySet === 'account-type' && normalizedAnswer) {
+          const answerAccount = practiceAccounts.find((a) => a.id === normalizedAnswer);
+          if (answerAccount && answerAccount.accountType !== part.targetId) {
+            tags.push('wrong-account-type');
+          }
+        }
+        tags.push(...(part.details.commonConfusionPairs ?? []).map((confusionId) => `confused-with:${confusionId}`));
+      }
+
       return {
         partId: part.id,
         rawAnswer,
@@ -377,12 +393,7 @@ export const classificationFamily: ProblemFamily<ClassificationDefinition, Class
         isCorrect,
         score: isCorrect ? 1 : isPartial ? 0.5 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect
-          ? []
-          : [
-              ...(isPartial ? [`confused-with:${normalizedAnswer}`] : ['classification-error']),
-              ...((part.details.commonConfusionPairs ?? []).map((confusionId) => `confused-with:${confusionId}`)),
-            ],
+        misconceptionTags: tags,
       };
     });
 

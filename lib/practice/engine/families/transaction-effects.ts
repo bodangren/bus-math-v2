@@ -1,5 +1,6 @@
 import { buildPracticeSubmissionEnvelope, normalizePracticeValue, type PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
+import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import { buildTransactionEvent, type TransactionBuildOptions, type TransactionEffect, type TransactionEvent } from '@/lib/practice/engine/transactions';
 import {
   buildAccountEffectSummary,
@@ -396,6 +397,18 @@ export const transactionEffectsFamily: ProblemFamily<
           : normalizePracticeValue(part.targetId);
       const isCorrect = normalizedAnswer === expectedAnswer;
 
+      const tags: string[] = [];
+      if (!isCorrect) {
+        const contextTag = `transaction-effects:${part.id}`;
+        if (part.details.kind === 'effect') {
+          tags.push(...misconceptionTags('debit-credit-reversal', contextTag));
+        } else if (part.details.kind === 'amount') {
+          tags.push(...misconceptionTags('computation-error', contextTag));
+        } else {
+          tags.push(contextTag);
+        }
+      }
+
       return {
         partId: part.id,
         rawAnswer,
@@ -403,7 +416,7 @@ export const transactionEffectsFamily: ProblemFamily<
         isCorrect,
         score: isCorrect ? 1 : 0,
         maxScore: 1,
-        misconceptionTags: isCorrect ? [] : [`transaction-effects:${part.id}`],
+        misconceptionTags: tags,
       };
     });
 

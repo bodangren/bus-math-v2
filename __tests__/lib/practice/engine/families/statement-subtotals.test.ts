@@ -171,4 +171,51 @@ describe('statement subtotals family', () => {
     expect(reviewed[netIncomePart.id].message).toContain('Operating Expenses');
     expect(reviewed[netIncomePart.id].message).toMatch(/Gross Profit.*Operating Expenses.*Net Income/);
   });
+
+  it('emits computation-error tag when student enters an incorrect numeric value', () => {
+    const definition = statementSubtotalsFamily.generate(50, {
+      mode: 'assessment',
+      statementKind: 'income-statement',
+    });
+
+    const solution = statementSubtotalsFamily.solve(definition);
+    const wrongPart = definition.parts[0];
+    const wrongValue = Number(solution[wrongPart.id]) + 9999;
+    const studentResponse: StatementSubtotalsResponse = {
+      ...solution,
+      [wrongPart.id]: wrongValue,
+    };
+
+    const gradeResult = statementSubtotalsFamily.grade(definition, studentResponse);
+    const partResult = gradeResult.parts.find((p) => p.partId === wrongPart.id);
+
+    expect(partResult).toBeDefined();
+    expect(partResult?.isCorrect).toBe(false);
+    expect(partResult?.misconceptionTags).toContain('computation-error');
+  });
+
+  it('emits sign-error tag when student enters the opposite sign', () => {
+    const definition = statementSubtotalsFamily.generate(51, {
+      mode: 'assessment',
+      statementKind: 'income-statement',
+    });
+
+    const solution = statementSubtotalsFamily.solve(definition);
+    const positivePart = definition.parts.find((p) => (p.targetId as number) > 0);
+    if (!positivePart) {
+      return;
+    }
+
+    const studentResponse: StatementSubtotalsResponse = {
+      ...solution,
+      [positivePart.id]: -(positivePart.targetId as number),
+    };
+
+    const gradeResult = statementSubtotalsFamily.grade(definition, studentResponse);
+    const partResult = gradeResult.parts.find((p) => p.partId === positivePart.id);
+
+    expect(partResult).toBeDefined();
+    expect(partResult?.isCorrect).toBe(false);
+    expect(partResult?.misconceptionTags).toContain('sign-error');
+  });
 });

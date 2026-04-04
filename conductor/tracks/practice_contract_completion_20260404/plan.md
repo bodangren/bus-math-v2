@@ -61,22 +61,25 @@
 ### Tasks
 
 1. **Create misconception taxonomy**
-   - [ ] Create `lib/practice/misconception-taxonomy.ts` with tag definitions
-   - [ ] Include tags: debit-credit-reversal, omitted-entry, wrong-normal-balance, sign-error, classification-error, wrong-account-type, computation-error, incomplete-entry
-   - [ ] Export type-safe tag constants and a lookup helper
+   - [x] Create `lib/practice/misconception-taxonomy.ts` with tag definitions
+   - [x] Include tags: debit-credit-reversal, omitted-entry, wrong-normal-balance, sign-error, classification-error, wrong-account-type, computation-error, incomplete-entry
+   - [x] Export type-safe tag constants and a lookup helper
 
 2. **Wire taxonomy into top family engines**
-   - [ ] Statement completion families (D, Q): detect debit/credit reversals, wrong account types
-   - [ ] Classification families (A, M, K): detect classification errors
-   - [ ] Journal entry families (C, F, H, L, P): detect reversals, omissions, sign errors
-   - [ ] Computation families (B, E, I, J, N, O): detect computation errors, sign errors
-   - [ ] Write tests for at least 3 families asserting specific misconception tags
+   - [x] Statement completion families (D, Q): computation-error, sign-error
+   - [x] Classification families (A, M, K): classification-error, wrong-account-type
+   - [x] Journal entry families (C, F, H, L, P): debit-credit-reversal, omission, wrong-account-type, incomplete-entry
+   - [x] Transaction matrix (C): debit-credit-reversal, computation-error
+   - [x] Transaction effects (F): debit-credit-reversal, computation-error
+   - [x] Normal balance (M): wrong-normal-balance
+   - [x] Posting balances (I): computation-error, sign-error
+   - [x] Write tests for at least 3 families asserting specific misconception tags
 
 3. **Phase verification**
-   - [ ] Run `npm run lint`
-   - [ ] Run full test suite
-   - [ ] Run `npm run build`
-   - [ ] Commit and push
+   - [x] Run `npm run lint`
+   - [x] Run full test suite
+   - [x] Run `npm run build`
+   - [x] Commit and push
 
 ## Phase 3: Teacher Error Summary Dashboard
 
