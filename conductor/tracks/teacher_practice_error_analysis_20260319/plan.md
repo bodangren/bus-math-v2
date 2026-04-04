@@ -18,9 +18,18 @@
 
 ### Tasks
 
-- [ ] **Task: Implement teacher-facing deterministic summaries**
-  - [ ] Aggregate misconception tags and per-part outcomes into concise summaries
-  - [ ] Expose those summaries through the teacher review flow
+- [x] **Task: Implement teacher-facing deterministic summaries**
+  - [x] Aggregate misconception tags and per-part outcomes into concise summaries
+  - [x] Expose those summaries through the teacher review flow
+
+- [x] **Task: Add lesson-level error summary Convex query**
+  - [x] Added `getLessonErrorSummary` internal query in `convex/teacher.ts`
+  - [x] Aggregates all practice.v1 submissions for a lesson into a `DeterministicErrorSummary`
+  - [x] Added `/api/teacher/error-summary` API route with auth/org guard
+
+- [x] **Task: Wire per-student error summary into submission detail**
+  - [x] Extended `getSubmissionDetail` to include `studentErrorSummary` field
+  - [x] Builds deterministic summary from student's practice.v1 envelopes
 
 ## Phase 3: AI-Assisted Interpretation
 

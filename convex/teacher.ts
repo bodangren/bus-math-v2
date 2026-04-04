@@ -736,10 +736,44 @@ export const getSubmissionDetail = internalQuery({
         };
       });
 
+    const practiceEnvelopes = [];
+    for (const evidenceList of evidenceByPhaseNumber.values()) {
+      for (const evidence of evidenceList) {
+        if (evidence.kind === 'practice' && evidence.submissionData) {
+          const data = evidence.submissionData as Record<string, unknown>;
+          if (data.contractVersion === 'practice.v1') {
+            practiceEnvelopes.push(data);
+          }
+        }
+      }
+    }
+
+    let studentErrorSummary = null;
+    if (practiceEnvelopes.length > 0) {
+      const { buildDeterministicSummary } = await import(
+        "../lib/practice/error-analysis"
+      );
+
+      const studentIdMap = new Map<string, string>();
+      for (const env of practiceEnvelopes) {
+        studentIdMap.set(
+          env.activityId as string,
+          args.studentId,
+        );
+      }
+
+      studentErrorSummary = buildDeterministicSummary(
+        args.lessonId,
+        practiceEnvelopes as never,
+        studentIdMap,
+      );
+    }
+
     return {
       studentName: args.studentName,
       lessonTitle: lesson.title,
       phases,
+      studentErrorSummary,
     };
   },
 });
@@ -759,5 +793,91 @@ export const getProfileWithOrg = internalQuery({
       username: profile.username,
       displayName: profile.displayName,
     };
+  },
+});
+
+export const getLessonErrorSummary = internalQuery({
+  args: {
+    lessonId: v.id("lessons"),
+    teacherOrgId: v.id("organizations"),
+  },
+  handler: async (ctx, args) => {
+    const lesson = await ctx.db.get(args.lessonId);
+    if (!lesson) return null;
+
+    const completions = await ctx.db
+      .query("activity_completions")
+      .withIndex("by_lesson", (q) => q.eq("lessonId", args.lessonId))
+      .collect();
+
+    if (completions.length === 0) return null;
+
+    const activityIds = [...new Set(completions.map((c) => c.activityId))];
+    const studentIds = [...new Set(completions.map((c) => c.studentId))];
+
+    const submissionRows = await ctx.db
+      .query("activity_submissions")
+      .withIndex("by_activity", (q) =>
+        q.eq("activityId", activityIds[0] as Id<"activities">),
+      )
+      .collect();
+
+    const allSubmissions = await Promise.all(
+      activityIds.slice(1).map((activityId) =>
+        ctx.db
+          .query("activity_submissions")
+          .withIndex("by_activity", (q) => q.eq("activityId", activityId))
+          .collect(),
+      ),
+    );
+
+    const flatSubmissions = [...submissionRows, ...allSubmissions.flat()];
+
+    const studentSubmissions = flatSubmissions.filter((row) =>
+      studentIds.includes(row.userId),
+    );
+
+    if (studentSubmissions.length === 0) return null;
+
+    const latestByStudentAndActivity = new Map<
+      string,
+      (typeof studentSubmissions)[number]
+    >();
+    for (const row of studentSubmissions) {
+      const key = `${row.userId}:${row.activityId}`;
+      const current = latestByStudentAndActivity.get(key);
+      if (
+        !current ||
+        row.submittedAt > current.submittedAt ||
+        (row.submittedAt === current.submittedAt &&
+          row.updatedAt >= current.updatedAt)
+      ) {
+        latestByStudentAndActivity.set(key, row);
+      }
+    }
+
+    const envelopes = [];
+    const studentIdMap = new Map<string, string>();
+
+    for (const [key, row] of latestByStudentAndActivity.entries()) {
+      const data = row.submissionData as Record<string, unknown>;
+      if (data.contractVersion === "practice.v1") {
+        envelopes.push(data);
+        const [, studentId] = key.split(":");
+        studentIdMap.set(data.activityId as string, studentId as string);
+      }
+    }
+
+    if (envelopes.length === 0) return null;
+
+    const { buildDeterministicSummary } = await import(
+      "../lib/practice/error-analysis"
+    );
+
+    return buildDeterministicSummary(
+      args.lessonId,
+      envelopes as never,
+      studentIdMap,
+    );
   },
 });
