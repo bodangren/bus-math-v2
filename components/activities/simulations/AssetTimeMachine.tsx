@@ -253,7 +253,13 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
               In accounting, we call this <strong>Depreciation</strong>—spreading the cost over the life of the asset.
             </p>
 
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 w-full h-14 text-xl" onClick={() => setIsComplete(false)}>
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 w-full h-14 text-xl" onClick={() => {
+              setIsComplete(false)
+              setCurrentYear(0)
+              setCurrentValue(initialCost)
+              setTotalExpenses(0)
+              setHistory([])
+            }}>
               Back to Lesson
             </Button>
           </CardContent>

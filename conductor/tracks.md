@@ -57,6 +57,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
   *Status: Complete. All 4 phases finished: deterministic summary layer, AI-assisted interpretation pipeline with graceful fallback, and full verification (tests, lint, build).*
 
+- [~] **Track 6: Practice Simulation Contract Hardening**
+  *Link: [./tracks/simulation_contract_hardening_20260404/](./tracks/simulation_contract_hardening_20260404/)*
+  *Status: In Progress. Adding practice.v1 envelope emission tests for all simulations, fixing contract compliance gaps.*
+
 ## Archive Ledger
 
 - [x] **Track: Legacy Cleanup — Component Pruning, Charts, and Simulations**
