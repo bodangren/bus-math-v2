@@ -1,7 +1,7 @@
 /**
  * CashFlowChallenge Component (v2 - Database-driven)
  *
- * Migrated from v1 to work with Supabase activity props.
+ * Migrated from v1 to work with Convex activity props.
  * Game configurations come from database instead of hardcoded constants.
  */
 

@@ -111,6 +111,18 @@ export function isInteractiveComponent(componentKey: string): boolean {
     'reflection-journal',
     'tiered-assessment',
     'notebook-organizer',
+    'cash-flow-challenge',
+    'startup-journey',
+    'budget-balancer',
+    'lemonade-stand',
+    'asset-time-machine',
+    'business-stress-test',
+    'inventory-manager',
+    'pitch-presentation-builder',
+    'cafe-supply-chaos',
+    'growth-puzzle',
+    'capital-negotiation',
+    'pay-structure-lab',
   ].includes(componentKey);
 }
 

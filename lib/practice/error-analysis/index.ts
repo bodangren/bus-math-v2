@@ -116,11 +116,13 @@ export function canTeacherAccessLessonSummary(
 // ── Deterministic Summary Assembly ─────────────────────────────────────────
 
 export function aggregateMisconceptionTags(
-  submissions: PracticeSubmissionEnvelope[]
+  submissions: PracticeSubmissionEnvelope[],
+  studentIdMap?: Map<string, string>
 ): MisconceptionSummary[] {
   const tagMap = new Map<string, MisconceptionSummary>();
 
   for (const submission of submissions) {
+    const studentId = studentIdMap?.get(submission.activityId) ?? submission.activityId;
     for (const part of submission.parts) {
       for (const tag of part.misconceptionTags ?? []) {
         const existing = tagMap.get(tag);
@@ -129,15 +131,15 @@ export function aggregateMisconceptionTags(
           if (!existing.affectedParts.includes(part.partId)) {
             existing.affectedParts.push(part.partId);
           }
-          if (!existing.affectedStudents.includes(submission.activityId)) {
-            existing.affectedStudents.push(submission.activityId);
+          if (!existing.affectedStudents.includes(studentId)) {
+            existing.affectedStudents.push(studentId);
           }
         } else {
           tagMap.set(tag, {
             tag,
             count: 1,
             affectedParts: [part.partId],
-            affectedStudents: [submission.activityId],
+            affectedStudents: [studentId],
           });
         }
       }
@@ -148,11 +150,13 @@ export function aggregateMisconceptionTags(
 }
 
 export function summarizePartOutcomes(
-  submissions: PracticeSubmissionEnvelope[]
+  submissions: PracticeSubmissionEnvelope[],
+  studentIdMap?: Map<string, string>
 ): PartOutcomeSummary[] {
   const partMap = new Map<string, PartOutcomeSummary>();
 
   for (const submission of submissions) {
+    const studentId = studentIdMap?.get(submission.activityId) ?? submission.activityId;
     for (const part of submission.parts) {
       const existing = partMap.get(part.partId);
       if (existing) {
@@ -164,7 +168,6 @@ export function summarizePartOutcomes(
         }
         existing.accuracyRate = existing.correctCount / existing.totalAttempts;
 
-        // Merge misconception tags
         for (const tag of part.misconceptionTags ?? []) {
           const misExisting = existing.commonMisconceptions.find(m => m.tag === tag);
           if (misExisting) {
@@ -172,15 +175,15 @@ export function summarizePartOutcomes(
             if (!misExisting.affectedParts.includes(part.partId)) {
               misExisting.affectedParts.push(part.partId);
             }
-            if (!misExisting.affectedStudents.includes(submission.activityId)) {
-              misExisting.affectedStudents.push(submission.activityId);
+            if (!misExisting.affectedStudents.includes(studentId)) {
+              misExisting.affectedStudents.push(studentId);
             }
           } else {
             existing.commonMisconceptions.push({
               tag,
               count: 1,
               affectedParts: [part.partId],
-              affectedStudents: [submission.activityId],
+              affectedStudents: [studentId],
             });
           }
         }
@@ -195,7 +198,7 @@ export function summarizePartOutcomes(
             tag,
             count: 1,
             affectedParts: [part.partId],
-            affectedStudents: [submission.activityId],
+            affectedStudents: [studentId],
           })),
         });
       }
@@ -206,14 +209,16 @@ export function summarizePartOutcomes(
 }
 
 export function buildStudentProfiles(
-  submissions: PracticeSubmissionEnvelope[]
+  submissions: PracticeSubmissionEnvelope[],
+  studentIdMap?: Map<string, string>
 ): StudentErrorProfile[] {
   return submissions.map(submission => {
+    const studentId = studentIdMap?.get(submission.activityId) ?? submission.activityId;
     const correctParts = submission.parts.filter(p => p.isCorrect).length;
     const misconceptions = submission.parts.flatMap(p => p.misconceptionTags ?? []);
 
     return {
-      studentId: submission.activityId,
+      studentId,
       submissionId: `${submission.activityId}-${submission.attemptNumber}`,
       activityId: submission.activityId,
       totalParts: submission.parts.length,
@@ -227,11 +232,12 @@ export function buildStudentProfiles(
 
 export function buildDeterministicSummary(
   lessonId: string,
-  submissions: PracticeSubmissionEnvelope[]
+  submissions: PracticeSubmissionEnvelope[],
+  studentIdMap?: Map<string, string>
 ): DeterministicErrorSummary {
-  const partSummaries = summarizePartOutcomes(submissions);
-  const topMisconceptions = aggregateMisconceptionTags(submissions);
-  const studentProfiles = buildStudentProfiles(submissions);
+  const partSummaries = summarizePartOutcomes(submissions, studentIdMap);
+  const topMisconceptions = aggregateMisconceptionTags(submissions, studentIdMap);
+  const studentProfiles = buildStudentProfiles(submissions, studentIdMap);
 
   const totalParts = partSummaries.reduce((sum, p) => sum + p.totalAttempts, 0);
   const totalCorrect = partSummaries.reduce((sum, p) => sum + p.correctCount, 0);

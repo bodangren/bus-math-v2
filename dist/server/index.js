@@ -2,7 +2,7 @@ import require$$0, { AsyncLocalStorage as AsyncLocalStorage$1 } from "node:async
 import assetsManifest from "./__vite_rsc_assets_manifest.js";
 import { z } from "zod";
 import { pgTable, timestamp, jsonb, text, uuid, pgEnum, boolean, integer, check, unique, index, uniqueIndex } from "drizzle-orm/pg-core";
-import { sql, relations, eq, count } from "drizzle-orm";
+import { sql, relations, eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { createClient } from "@supabase/supabase-js";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -231,9 +231,9 @@ function requireReact_reactServer_production() {
   }
   function mapChildren(children, func, context) {
     if (null == children) return children;
-    var result = [], count2 = 0;
+    var result = [], count = 0;
     mapIntoArray(children, result, "", "", function(child) {
-      return func.call(context, child, count2++);
+      return func.call(context, child, count++);
     });
     return result;
   }
@@ -397,8 +397,8 @@ function requireReact_reactServer_production() {
   react_reactServer_production.useId = function() {
     return ReactSharedInternals.H.useId();
   };
-  react_reactServer_production.useMemo = function(create2, deps) {
-    return ReactSharedInternals.H.useMemo(create2, deps);
+  react_reactServer_production.useMemo = function(create, deps) {
+    return ReactSharedInternals.H.useMemo(create, deps);
   };
   react_reactServer_production.version = "19.2.4";
   return react_reactServer_production;
@@ -705,9 +705,9 @@ function requireReact_reactServer_development() {
     }
     function mapChildren(children, func, context) {
       if (null == children) return children;
-      var result = [], count2 = 0;
+      var result = [], count = 0;
       mapIntoArray(children, result, "", "", function(child) {
-        return func.call(context, child, count2++);
+        return func.call(context, child, count++);
       });
       return result;
     }
@@ -1027,8 +1027,8 @@ function requireReact_reactServer_development() {
     react_reactServer_development.useId = function() {
       return resolveDispatcher().useId();
     };
-    react_reactServer_development.useMemo = function(create2, deps) {
-      return resolveDispatcher().useMemo(create2, deps);
+    react_reactServer_development.useMemo = function(create, deps) {
+      return resolveDispatcher().useMemo(create, deps);
     };
     react_reactServer_development.version = "19.2.4";
   })();
@@ -10659,10 +10659,10 @@ function requireReactServerDomWebpackClient_edge_development() {
           )), boundPromise;
       }
     }
-    function createFakeServerFunction(name, filename, sourceMap, line, col, environmentName, innerFunction) {
+    function createFakeServerFunction(name, filename, sourceMap, line2, col, environmentName, innerFunction) {
       name || (name = "<anonymous>");
       var encodedName = JSON.stringify(name);
-      1 >= line ? (line = encodedName.length + 7, col = "s=>({" + encodedName + " ".repeat(col < line ? 0 : col - line) + ":(...args) => s(...args)})\n/* This module is a proxy to a Server Action. Turn on Source Maps to see the server source. */") : col = "/* This module is a proxy to a Server Action. Turn on Source Maps to see the server source. */" + "\n".repeat(line - 2) + "server=>({" + encodedName + ":\n" + " ".repeat(1 > col ? 0 : col - 1) + "(...args) => server(...args)})";
+      1 >= line2 ? (line2 = encodedName.length + 7, col = "s=>({" + encodedName + " ".repeat(col < line2 ? 0 : col - line2) + ":(...args) => s(...args)})\n/* This module is a proxy to a Server Action. Turn on Source Maps to see the server source. */") : col = "/* This module is a proxy to a Server Action. Turn on Source Maps to see the server source. */" + "\n".repeat(line2 - 2) + "server=>({" + encodedName + ":\n" + " ".repeat(1 > col ? 0 : col - 1) + "(...args) => server(...args)})";
       filename.startsWith("/") && (filename = "file://" + filename);
       sourceMap ? (col += "\n//# sourceURL=about://React/" + encodeURIComponent(environmentName) + "/" + encodeURI(filename) + "?s" + fakeServerFunctionIdx++, col += "\n//# sourceMappingURL=" + sourceMap) : filename && (col += "\n//# sourceURL=" + filename);
       try {
@@ -10725,7 +10725,7 @@ function requireReactServerDomWebpackClient_edge_development() {
       }
       var id = metaData.id, bound = metaData.bound, location = metaData.location;
       if (location) {
-        var functionName2 = metaData.name || "", filename = location[1], line = location[2];
+        var functionName2 = metaData.name || "", filename = location[1], line2 = location[2];
         location = location[3];
         metaData = metaData.env || "Server";
         findSourceMapURL = null == findSourceMapURL ? null : findSourceMapURL(filename, metaData);
@@ -10733,7 +10733,7 @@ function requireReactServerDomWebpackClient_edge_development() {
           functionName2,
           filename,
           findSourceMapURL,
-          line,
+          line2,
           location,
           metaData,
           action
@@ -10771,14 +10771,14 @@ function requireReactServerDomWebpackClient_edge_development() {
       }
       var location = parseStackLocation(Error("react-stack-top-frame"));
       if (null !== location) {
-        var filename = location[1], line = location[2];
+        var filename = location[1], line2 = location[2];
         location = location[3];
         findSourceMapURL = null == findSourceMapURL ? null : findSourceMapURL(filename, "Client");
         action = createFakeServerFunction(
           "",
           filename,
           findSourceMapURL,
-          line,
+          line2,
           location,
           "Client",
           action
@@ -12421,16 +12421,16 @@ function requireReactServerDomWebpackClient_edge_development() {
       error.environmentName = env;
       return error;
     }
-    function createFakeFunction(name, filename, sourceMap, line, col, enclosingLine, enclosingCol, environmentName) {
+    function createFakeFunction(name, filename, sourceMap, line2, col, enclosingLine, enclosingCol, environmentName) {
       name || (name = "<anonymous>");
       var encodedName = JSON.stringify(name);
       1 > enclosingLine ? enclosingLine = 0 : enclosingLine--;
       1 > enclosingCol ? enclosingCol = 0 : enclosingCol--;
-      1 > line ? line = 0 : line--;
+      1 > line2 ? line2 = 0 : line2--;
       1 > col ? col = 0 : col--;
-      if (line < enclosingLine || line === enclosingLine && col < enclosingCol)
+      if (line2 < enclosingLine || line2 === enclosingLine && col < enclosingCol)
         enclosingCol = enclosingLine = 0;
-      1 > line ? (line = encodedName.length + 3, enclosingCol -= line, 0 > enclosingCol && (enclosingCol = 0), col = col - enclosingCol - line - 3, 0 > col && (col = 0), encodedName = "({" + encodedName + ":" + " ".repeat(enclosingCol) + "_=>" + " ".repeat(col) + "_()})") : 1 > enclosingLine ? (enclosingCol -= encodedName.length + 3, 0 > enclosingCol && (enclosingCol = 0), encodedName = "({" + encodedName + ":" + " ".repeat(enclosingCol) + "_=>" + "\n".repeat(line - enclosingLine) + " ".repeat(col) + "_()})") : enclosingLine === line ? (col = col - enclosingCol - 3, 0 > col && (col = 0), encodedName = "\n".repeat(enclosingLine - 1) + "({" + encodedName + ":\n" + " ".repeat(enclosingCol) + "_=>" + " ".repeat(col) + "_()})") : encodedName = "\n".repeat(enclosingLine - 1) + "({" + encodedName + ":\n" + " ".repeat(enclosingCol) + "_=>" + "\n".repeat(line - enclosingLine) + " ".repeat(col) + "_()})";
+      1 > line2 ? (line2 = encodedName.length + 3, enclosingCol -= line2, 0 > enclosingCol && (enclosingCol = 0), col = col - enclosingCol - line2 - 3, 0 > col && (col = 0), encodedName = "({" + encodedName + ":" + " ".repeat(enclosingCol) + "_=>" + " ".repeat(col) + "_()})") : 1 > enclosingLine ? (enclosingCol -= encodedName.length + 3, 0 > enclosingCol && (enclosingCol = 0), encodedName = "({" + encodedName + ":" + " ".repeat(enclosingCol) + "_=>" + "\n".repeat(line2 - enclosingLine) + " ".repeat(col) + "_()})") : enclosingLine === line2 ? (col = col - enclosingCol - 3, 0 > col && (col = 0), encodedName = "\n".repeat(enclosingLine - 1) + "({" + encodedName + ":\n" + " ".repeat(enclosingCol) + "_=>" + " ".repeat(col) + "_()})") : encodedName = "\n".repeat(enclosingLine - 1) + "({" + encodedName + ":\n" + " ".repeat(enclosingCol) + "_=>" + "\n".repeat(line2 - enclosingLine) + " ".repeat(col) + "_()})";
       encodedName = 1 > enclosingLine ? encodedName + "\n/* This module was rendered by a Server Component. Turn on Source Maps to see the server source. */" : "/* This module was rendered by a Server Component. Turn on Source Maps to see the server source. */" + encodedName;
       filename.startsWith("/") && (filename = "file://" + filename);
       sourceMap ? (encodedName += "\n//# sourceURL=about://React/" + encodeURIComponent(environmentName) + "/" + encodeURI(filename) + "?" + fakeFunctionIdx++, encodedName += "\n//# sourceMappingURL=" + sourceMap) : encodedName = filename ? encodedName + ("\n//# sourceURL=" + encodeURI(filename)) : encodedName + "\n//# sourceURL=<anonymous>";
@@ -12448,7 +12448,7 @@ function requireReactServerDomWebpackClient_edge_development() {
         var frame = stack[i], frameKey = frame.join("-") + "-" + environmentName + (useEnclosingLine ? "-e" : "-n"), fn = fakeFunctionCache.get(frameKey);
         if (void 0 === fn) {
           fn = frame[0];
-          var filename = frame[1], line = frame[2], col = frame[3], enclosingLine = frame[4];
+          var filename = frame[1], line2 = frame[2], col = frame[3], enclosingLine = frame[4];
           frame = frame[5];
           var findSourceMapURL = response._debugFindSourceMapURL;
           findSourceMapURL = findSourceMapURL ? findSourceMapURL(filename, environmentName) : null;
@@ -12456,9 +12456,9 @@ function requireReactServerDomWebpackClient_edge_development() {
             fn,
             filename,
             findSourceMapURL,
-            line,
+            line2,
             col,
-            useEnclosingLine ? line : enclosingLine,
+            useEnclosingLine ? line2 : enclosingLine,
             useEnclosingLine ? col : frame,
             environmentName
           );
@@ -13658,17 +13658,11 @@ function renderToReadableStream$1(data, options, extraOptions) {
 function registerClientReference(proxy2, id, name) {
   return server_edgeExports.registerClientReference(proxy2, id, name);
 }
-const registerServerReference = server_edgeExports.registerServerReference;
 function decodeReply(body, options) {
   return server_edgeExports.decodeReply(body, createServerManifest(), options);
 }
 const createTemporaryReferenceSet = server_edgeExports.createTemporaryReferenceSet;
-const serverReferences = {
-  "393084148382": async () => {
-    const { testDatabaseConnection: testDatabaseConnection2 } = await Promise.resolve().then(() => testConnection);
-    return { testDatabaseConnection: testDatabaseConnection2 };
-  }
-};
+const serverReferences = {};
 initialize();
 function initialize() {
   setRequireModule({ load: async (id) => {
@@ -15168,10 +15162,10 @@ async function proxy(request) {
     "/auth"
   ];
   const publicApiRoutes = [
+    "/api/auth/login",
+    "/api/auth/session",
     "/api/test/seed-e2e",
-    "/api/test/cleanup-e2e",
-    "/api/test-db",
-    "/api/test-supabase"
+    "/api/test/cleanup-e2e"
   ];
   if (isDemoProvisioningEnabled()) {
     publicApiRoutes.unshift("/api/users/ensure-demo");
@@ -15872,6 +15866,29 @@ async function getRequestSessionClaims(request) {
   if (!token) return null;
   return verifySessionToken(token, getAuthJwtSecret());
 }
+function buildRequestUnauthorizedResponse(message = "Unauthorized") {
+  return NextResponse.json({ error: message }, { status: 401 });
+}
+function buildRequestForbiddenResponse(message = "Forbidden") {
+  return NextResponse.json({ error: message }, { status: 403 });
+}
+async function requireRequestSessionClaims(request, unauthorizedMessage = "Unauthorized") {
+  const claims = await getRequestSessionClaims(request);
+  if (!claims) {
+    return buildRequestUnauthorizedResponse(unauthorizedMessage);
+  }
+  return claims;
+}
+async function requireStudentRequestClaims(request, unauthorizedMessage = "Unauthorized", forbiddenMessage = "Forbidden") {
+  const claimsOrResponse = await requireRequestSessionClaims(request, unauthorizedMessage);
+  if (claimsOrResponse instanceof Response) {
+    return claimsOrResponse;
+  }
+  if (claimsOrResponse.role !== "student") {
+    return buildRequestForbiddenResponse(forbiddenMessage);
+  }
+  return claimsOrResponse;
+}
 function buildLoginRedirect(loginRedirectPath) {
   return `/auth/login?redirect=${loginRedirectPath}`;
 }
@@ -15901,13 +15918,9 @@ async function requireStudentSessionClaims(loginRedirectPath) {
     redirect("/teacher");
   }
   if (claims.role === "admin") {
-    redirect("/admin/dashboard");
+    redirect("/teacher");
   }
   redirect(buildLoginRedirect(loginRedirectPath));
-}
-async function requireAdminSessionClaims(loginRedirectPath, unauthorizedRedirectPath = "/student/dashboard") {
-  const claims = await requireServerSessionClaims(loginRedirectPath);
-  return requireServerRoles(claims, ["admin"], unauthorizedRedirectPath);
 }
 const version = "1.32.0";
 var lookup = [];
@@ -16719,8 +16732,8 @@ class ConvexHttpClient {
     }
     const respJSON = await response.json();
     if (this.debug) {
-      for (const line of respJSON.logLines ?? []) {
-        logForFunction(this.logger, "info", "query", name, line);
+      for (const line2 of respJSON.logLines ?? []) {
+        logForFunction(this.logger, "info", "query", name, line2);
       }
     }
     switch (respJSON.status) {
@@ -16766,8 +16779,8 @@ class ConvexHttpClient {
     }
     const respJSON = await response.json();
     if (this.debug) {
-      for (const line of respJSON.logLines ?? []) {
-        logForFunction(this.logger, "info", "mutation", name, line);
+      for (const line2 of respJSON.logLines ?? []) {
+        logForFunction(this.logger, "info", "mutation", name, line2);
       }
     }
     switch (respJSON.status) {
@@ -16863,8 +16876,8 @@ class ConvexHttpClient {
     }
     const respJSON = await response.json();
     if (this.debug) {
-      for (const line of respJSON.logLines ?? []) {
-        logForFunction(this.logger, "info", "action", name, line);
+      for (const line2 of respJSON.logLines ?? []) {
+        logForFunction(this.logger, "info", "action", name, line2);
       }
     }
     switch (respJSON.status) {
@@ -16922,8 +16935,8 @@ class ConvexHttpClient {
     }
     const respJSON = await response.json();
     if (this.debug) {
-      for (const line of respJSON.logLines ?? []) {
-        logForFunction(this.logger, "info", "any", name, line);
+      for (const line2 of respJSON.logLines ?? []) {
+        logForFunction(this.logger, "info", "any", name, line2);
       }
     }
     switch (respJSON.status) {
@@ -16974,17 +16987,16 @@ componentsGeneric();
 function isProductionRuntime(env) {
   return env.NODE_ENV === "production" || env.VERCEL_ENV === "production";
 }
-async function readLocalConvexAdminKey(cwd) {
+async function findAdminKeyInConfigRoot(configRoot) {
   const fs = await import("node:fs/promises");
   const path = await import("node:path");
-  const localRoot = path.join(cwd, ".convex", "local");
   let directoryEntries;
   try {
-    directoryEntries = await fs.readdir(localRoot, { withFileTypes: true });
+    directoryEntries = await fs.readdir(configRoot, { withFileTypes: true });
   } catch {
     return null;
   }
-  const configPaths = directoryEntries.filter((entry) => entry.isDirectory()).map((entry) => path.join(localRoot, entry.name, "config.json")).sort((left, right) => left.localeCompare(right));
+  const configPaths = directoryEntries.filter((entry) => entry.isDirectory()).map((entry) => path.join(configRoot, entry.name, "config.json")).sort((left, right) => left.localeCompare(right));
   for (const configPath of configPaths) {
     try {
       const rawConfig = await fs.readFile(configPath, "utf8");
@@ -16994,6 +17006,21 @@ async function readLocalConvexAdminKey(cwd) {
       }
     } catch {
       continue;
+    }
+  }
+  return null;
+}
+async function readLocalConvexAdminKey(cwd, homeDir) {
+  const path = await import("node:path");
+  const os = await import("node:os");
+  const configRoots = [
+    path.join(cwd, ".convex", "local"),
+    path.join(homeDir ?? os.homedir(), ".convex")
+  ];
+  for (const configRoot of configRoots) {
+    const adminKey = await findAdminKeyInConfigRoot(configRoot);
+    if (adminKey) {
+      return adminKey;
     }
   }
   return null;
@@ -17012,7 +17039,10 @@ async function resolveConvexAdminAuth(options = {}) {
       "Missing Convex admin auth. Set CONVEX_DEPLOY_KEY for production server-side internal function calls."
     );
   }
-  const localAdminKey = await readLocalConvexAdminKey(options.cwd ?? process.cwd());
+  const localAdminKey = await readLocalConvexAdminKey(
+    options.cwd ?? process.cwd(),
+    options.homeDir
+  );
   if (localAdminKey) {
     return {
       source: "local-admin-key",
@@ -17020,7 +17050,7 @@ async function resolveConvexAdminAuth(options = {}) {
     };
   }
   throw new Error(
-    "Missing Convex admin auth. Start `npx convex dev` locally or set CONVEX_DEPLOY_KEY for server-side internal function calls."
+    "Missing Convex admin auth. Start `npm run dev:stack` or `npx convex dev --local` locally, or set CONVEX_DEPLOY_KEY for server-side internal function calls."
   );
 }
 const DEFAULT_LOCAL_CONVEX_HOST = "127.0.0.1";
@@ -17038,7 +17068,7 @@ function getConvexUrl(env = process.env) {
 }
 let convexClient = null;
 let internalConvexClient = null;
-function getConvexClient$1() {
+function getConvexClient$2() {
   if (!convexClient) {
     convexClient = new ConvexHttpClient(getConvexUrl());
   }
@@ -17053,7 +17083,7 @@ async function getInternalConvexClient() {
   return internalConvexClient;
 }
 async function fetchQuery(ref, args) {
-  return getConvexClient$1().query(ref, args);
+  return getConvexClient$2().query(ref, args);
 }
 async function fetchInternalQuery(ref, args) {
   const client2 = await getInternalConvexClient();
@@ -17063,24 +17093,25 @@ async function fetchInternalMutation(ref, args) {
   const client2 = await getInternalConvexClient();
   return client2.mutation(ref, args);
 }
+const COMPETENCY_STANDARD_CODE_PATTERN = /^[A-Z]+-\d+(?:\.\d+)*$/;
 const apiAny$1 = api;
 const CompletePhaseSchema = z.object({
   lessonId: z.string().trim().min(1, "Lesson identifier is required"),
   phaseNumber: z.number().int().positive("Phase number must be a positive integer"),
   timeSpent: z.number().int().nonnegative("Time spent must be non-negative").max(86400, "Time spent cannot exceed 24 hours"),
   idempotencyKey: z.string().uuid("Invalid idempotency key format"),
-  linkedStandardId: z.string().uuid("Invalid standard ID format").optional()
+  linkedStandardId: z.string().trim().regex(COMPETENCY_STANDARD_CODE_PATTERN, "Invalid standard code format").optional()
 });
 async function POST$f(request) {
   try {
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please sign in to complete phases." },
-        { status: 401 }
-      );
+    const claimsOrResponse = await requireStudentRequestClaims(
+      request,
+      "Unauthorized. Please sign in to complete phases."
+    );
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
     const body = await request.json();
     const validationResult = CompletePhaseSchema.safeParse(body);
     if (!validationResult.success) {
@@ -17223,7 +17254,7 @@ const CompleteActivitySchema = z.object({
   activityId: z.string().uuid("Invalid activity ID format"),
   lessonId: z.string().uuid("Invalid lesson ID format"),
   phaseNumber: z.number().int().positive("Phase number must be a positive integer"),
-  linkedStandardId: z.string().uuid().optional().nullable(),
+  linkedStandardId: z.string().trim().regex(COMPETENCY_STANDARD_CODE_PATTERN, "Invalid standard code format").optional().nullable(),
   completionData: z.record(z.string(), z.unknown()).optional().nullable(),
   idempotencyKey: z.string().uuid("Invalid idempotency key format")
 });
@@ -17279,6 +17310,7 @@ async function POST$e(request) {
     const {
       lessonId,
       phaseNumber,
+      linkedStandardId,
       completionData,
       idempotencyKey
     } = validationResult.data;
@@ -17286,6 +17318,7 @@ async function POST$e(request) {
       lessonId,
       phaseNumber,
       timeSpent: deriveTimeSpent(completionData),
+      ...linkedStandardId ? { linkedStandardId } : {},
       idempotencyKey
     };
     const phaseRequest = new Request(new URL(REPLACEMENT_ENDPOINT, request.url), {
@@ -17376,286 +17409,59 @@ const HeaderSimple = /* @__PURE__ */ registerClientReference(() => {
 const Link = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'default' is called on server");
 }, "c2747888630f", "default");
-const toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
-const toCamelCase = (string) => string.replace(
-  /^([A-Z])|[\s-_]+(\w)/g,
-  (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
-);
-const toPascalCase = (string) => {
-  const camelCase = toCamelCase(string);
-  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
-};
-const mergeClasses = (...classes2) => classes2.filter((className, index2, array) => {
-  return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index2;
-}).join(" ").trim();
-const hasA11yProp = (props) => {
-  for (const prop in props) {
-    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
-      return true;
-    }
-  }
-};
-var defaultAttributes = {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: 24,
-  height: 24,
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 2,
-  strokeLinecap: "round",
-  strokeLinejoin: "round"
-};
-const Icon = react_reactServerExports.forwardRef(
-  ({
-    color = "currentColor",
-    size = 24,
-    strokeWidth = 2,
-    absoluteStrokeWidth,
-    className = "",
-    children,
-    iconNode,
-    ...rest
-  }, ref) => react_reactServerExports.createElement(
-    "svg",
-    {
-      ref,
-      ...defaultAttributes,
-      width: size,
-      height: size,
-      stroke: color,
-      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size) : strokeWidth,
-      className: mergeClasses("lucide", className),
-      ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
-      ...rest
-    },
-    [
-      ...iconNode.map(([tag, attrs]) => react_reactServerExports.createElement(tag, attrs)),
-      ...Array.isArray(children) ? children : [children]
-    ]
-  )
-);
-const createLucideIcon = (iconName, iconNode) => {
-  const Component = react_reactServerExports.forwardRef(
-    ({ className, ...props }, ref) => react_reactServerExports.createElement(Icon, {
-      ref,
-      iconNode,
-      className: mergeClasses(
-        `lucide-${toKebabCase(toPascalCase(iconName))}`,
-        `lucide-${iconName}`,
-        className
-      ),
-      ...props
-    })
-  );
-  Component.displayName = toPascalCase(iconName);
-  return Component;
-};
-const __iconNode$k = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
-];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$k);
-const __iconNode$j = [
-  ["path", { d: "M12 21V7", key: "gj6g52" }],
-  ["path", { d: "m16 12 2 2 4-4", key: "mdajum" }],
-  [
-    "path",
-    {
-      d: "M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3",
-      key: "8arnkb"
-    }
-  ]
-];
-const BookOpenCheck = createLucideIcon("book-open-check", __iconNode$j);
-const __iconNode$i = [
-  ["path", { d: "M12 7v14", key: "1akyts" }],
-  [
-    "path",
-    {
-      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
-      key: "ruj8y"
-    }
-  ]
-];
-const BookOpen = createLucideIcon("book-open", __iconNode$i);
-const __iconNode$h = [
-  ["rect", { width: "16", height: "20", x: "4", y: "2", rx: "2", key: "1nb95v" }],
-  ["line", { x1: "8", x2: "16", y1: "6", y2: "6", key: "x4nwl0" }],
-  ["line", { x1: "16", x2: "16", y1: "14", y2: "18", key: "wjye3r" }],
-  ["path", { d: "M16 10h.01", key: "1m94wz" }],
-  ["path", { d: "M12 10h.01", key: "1nrarc" }],
-  ["path", { d: "M8 10h.01", key: "19clt8" }],
-  ["path", { d: "M12 14h.01", key: "1etili" }],
-  ["path", { d: "M8 14h.01", key: "6423bh" }],
-  ["path", { d: "M12 18h.01", key: "mhygvu" }],
-  ["path", { d: "M8 18h.01", key: "lrp35t" }]
-];
-const Calculator = createLucideIcon("calculator", __iconNode$h);
-const __iconNode$g = [
-  ["path", { d: "M8 2v4", key: "1cmpym" }],
-  ["path", { d: "M16 2v4", key: "4m81vk" }],
-  ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
-  ["path", { d: "M3 10h18", key: "8toen8" }],
-  ["path", { d: "M8 14h.01", key: "6423bh" }],
-  ["path", { d: "M12 14h.01", key: "1etili" }],
-  ["path", { d: "M16 14h.01", key: "1gbofw" }],
-  ["path", { d: "M8 18h.01", key: "lrp35t" }],
-  ["path", { d: "M12 18h.01", key: "mhygvu" }],
-  ["path", { d: "M16 18h.01", key: "kzsmim" }]
-];
-const CalendarDays = createLucideIcon("calendar-days", __iconNode$g);
-const __iconNode$f = [
-  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
-  ["path", { d: "M18 17V9", key: "2bz60n" }],
-  ["path", { d: "M13 17V5", key: "1frdt8" }],
-  ["path", { d: "M8 17v-3", key: "17ska0" }]
-];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$f);
-const __iconNode$e = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$e);
-const __iconNode$d = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
-];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$d);
-const __iconNode$c = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("circle-x", __iconNode$c);
-const __iconNode$b = [
-  [
-    "path",
-    {
-      d: "m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",
-      key: "9ktpf1"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
-];
-const Compass = createLucideIcon("compass", __iconNode$b);
-const __iconNode$a = [
-  ["ellipse", { cx: "12", cy: "5", rx: "9", ry: "3", key: "msslwz" }],
-  ["path", { d: "M3 5V19A9 3 0 0 0 21 19V5", key: "1wlel7" }],
-  ["path", { d: "M3 12A9 3 0 0 0 21 12", key: "mv7ke4" }]
-];
-const Database = createLucideIcon("database", __iconNode$a);
-const __iconNode$9 = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
-  ["path", { d: "M16 8h.01", key: "cr5u4v" }],
-  ["path", { d: "M16 12h.01", key: "1l6xoz" }],
-  ["path", { d: "M16 16h.01", key: "1f9h7w" }],
-  ["path", { d: "M8 8h.01", key: "1e4136" }],
-  ["path", { d: "M8 12h.01", key: "czm47f" }],
-  ["path", { d: "M8 16h.01", key: "18s6g9" }]
-];
-const Dice6 = createLucideIcon("dice-6", __iconNode$9);
-const __iconNode$8 = [
-  [
-    "path",
-    {
-      d: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z",
-      key: "c3ymky"
-    }
-  ]
-];
-const Heart = createLucideIcon("heart", __iconNode$8);
-const __iconNode$7 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M12 16v-4", key: "1dtifu" }],
-  ["path", { d: "M12 8h.01", key: "e9boi3" }]
-];
-const Info = createLucideIcon("info", __iconNode$7);
-const __iconNode$6 = [
-  [
-    "path",
-    {
-      d: "M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",
-      key: "1gvzjb"
-    }
-  ],
-  ["path", { d: "M9 18h6", key: "x1upvd" }],
-  ["path", { d: "M10 22h4", key: "ceow96" }]
-];
-const Lightbulb = createLucideIcon("lightbulb", __iconNode$6);
-const __iconNode$5 = [
-  ["path", { d: "M14 22v-4a2 2 0 1 0-4 0v4", key: "hhkicm" }],
-  [
-    "path",
-    {
-      d: "m18 10 3.447 1.724a1 1 0 0 1 .553.894V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7.382a1 1 0 0 1 .553-.894L6 10",
-      key: "1xqip1"
-    }
-  ],
-  ["path", { d: "M18 5v17", key: "1sw6gf" }],
-  ["path", { d: "m4 6 7.106-3.553a2 2 0 0 1 1.788 0L20 6", key: "9d2mlk" }],
-  ["path", { d: "M6 5v17", key: "1xfsm0" }],
-  ["circle", { cx: "12", cy: "9", r: "2", key: "1092wv" }]
-];
-const School = createLucideIcon("school", __iconNode$5);
-const __iconNode$4 = [
-  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
-];
-const Search = createLucideIcon("search", __iconNode$4);
-const __iconNode$3 = [
-  ["path", { d: "M21 10.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.5", key: "1uzm8b" }],
-  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
-];
-const SquareCheckBig = createLucideIcon("square-check-big", __iconNode$3);
-const __iconNode$2 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "6", key: "1vlfrh" }],
-  ["circle", { cx: "12", cy: "12", r: "2", key: "1c9p78" }]
-];
-const Target = createLucideIcon("target", __iconNode$2);
-const __iconNode$1 = [
-  ["path", { d: "M16 7h6v6", key: "box55l" }],
-  ["path", { d: "m22 7-8.5 8.5-5-5L2 17", key: "1t1m79" }]
-];
-const TrendingUp = createLucideIcon("trending-up", __iconNode$1);
-const __iconNode = [
-  ["path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", key: "1yyitq" }],
-  ["path", { d: "M16 3.128a4 4 0 0 1 0 7.744", key: "16gr8j" }],
-  ["path", { d: "M22 21v-2a4 4 0 0 0-3-3.87", key: "kshegd" }],
-  ["circle", { cx: "9", cy: "7", r: "4", key: "nufk8" }]
-];
-const Users = createLucideIcon("users", __iconNode);
 function Footer() {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("footer", { role: "contentinfo", className: "border-t border-border/40 bg-muted/30 mt-auto", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-8 md:grid-cols-4", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-2 text-primary", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Calculator, { className: "h-5 w-5" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(TrendingUp, { className: "h-4 w-4 text-accent" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "text-base font-semibold text-foreground", children: "Math for Business Operations" })
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("footer", { role: "contentinfo", className: "bg-forest-dark mt-auto", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 py-10", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-8 md:grid-cols-4", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            "div",
+            {
+              className: "flex items-center justify-center w-7 h-7 rounded font-mono-num text-sm font-bold text-white shrink-0",
+              style: { backgroundColor: "oklch(0.43 0.14 157)" },
+              "aria-hidden": "true",
+              children: "∑"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display font-semibold text-white text-sm leading-tight", children: "Math for Business Operations" })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-white/45 font-body leading-relaxed", children: "An interactive Grade 12 textbook blending applied accounting with Excel automation." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs text-white/30 font-mono-num", children: "© 2025 Daniel Bodanske" })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "An interactive Grade 12 textbook blending applied accounting with Excel automation." }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "© 2025 Daniel Bodanske" })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h4", { className: "text-base font-medium", children: "Quick Links" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("nav", { className: "flex flex-col space-y-2 text-sm text-muted-foreground", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/frontmatter/preface", children: "Getting Started" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/backmatter/glossary", children: "Glossary" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/search", children: "Search" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/capstone", children: "Capstone" })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h4", { className: "text-xs font-mono-num font-medium tracking-widest uppercase text-white/40", children: "Quick Links" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("nav", { className: "flex flex-col space-y-2 text-sm font-body", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/preface", children: "Getting Started" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/backmatter/glossary", children: "Glossary" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/search", children: "Search" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/capstone", children: "Capstone" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h4", { className: "text-xs font-mono-num font-medium tracking-widest uppercase text-white/40", children: "Teacher Resources" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("nav", { className: "flex flex-col space-y-2 text-sm font-body", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/teacher/course-overview/pbl-methodology", children: "PBL Methodology" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/teacher/course-overview/backward-design", children: "Backward Design" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "text-white/55 hover:text-white transition-colors", href: "/teacher", children: "Teacher Dashboard" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h4", { className: "text-xs font-mono-num font-medium tracking-widest uppercase text-white/40", children: "Support" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-white/45 font-body leading-relaxed", children: "Questions about the course? Contact your instructor or visit the help center to get support." })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h4", { className: "text-base font-medium", children: "Teacher Resources" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("nav", { className: "flex flex-col space-y-2 text-sm text-muted-foreground", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/teacher/course-overview/pbl-methodology", children: "PBL Methodology" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/teacher/course-overview/backward-design", children: "Backward Design" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "hover:text-foreground transition-colors", href: "/teacher", children: "Teacher Dashboard" })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h4", { className: "text-base font-medium", children: "Support" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Questions about the course? Contact your instructor or visit the help center to get support." })
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-8 pt-6 border-t border-white/10 flex items-center justify-between gap-4 flex-wrap", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs text-white/25 font-mono-num", children: "Applied Accounting · Excel · Grade 12" }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "h-1 w-8 rounded-full",
+          style: { backgroundColor: "oklch(0.43 0.14 157)" },
+          "aria-hidden": "true"
+        }
+      )
     ] })
-  ] }) }) });
+  ] }) });
 }
 const ConvexClientProvider = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'ConvexClientProvider' is called on server");
@@ -17732,7 +17538,7 @@ function validatePasswordForRole(role, password) {
   }
   return null;
 }
-const requestSchema$6 = z.object({
+const requestSchema$5 = z.object({
   currentPassword: z.string().min(1, "Current password is required"),
   newPassword: z.string().min(1, "New password is required"),
   confirmPassword: z.string().min(1, "Password confirmation is required")
@@ -17749,7 +17555,7 @@ async function POST$d(request) {
     } catch {
       return Response.json({ error: "Invalid JSON body" }, { status: 400 });
     }
-    const parsedBody = requestSchema$6.safeParse(body);
+    const parsedBody = requestSchema$5.safeParse(body);
     if (!parsedBody.success) {
       return Response.json(
         { error: "Invalid request payload", details: parsedBody.error.flatten().fieldErrors },
@@ -17884,7 +17690,7 @@ const mod_4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
   __proto__: null,
   POST: POST$b
 }, Symbol.toStringTag, { value: "Module" }));
-async function GET$8() {
+async function GET$6() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) {
@@ -17929,7 +17735,7 @@ async function GET$8() {
 }
 const mod_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  GET: GET$8
+  GET: GET$6
 }, Symbol.toStringTag, { value: "Module" }));
 const parameterDefSchema$1 = z.object({
   min: z.number(),
@@ -18333,48 +18139,6 @@ function calculateScore(activity, answers) {
     feedback: buildFeedback(percentage, passingScore)
   };
 }
-const matchingItemSchema = z.object({
-  id: z.string(),
-  content: z.string(),
-  matchId: z.string(),
-  category: z.string().optional(),
-  hint: z.string().optional(),
-  description: z.string().optional()
-});
-const accountCategorySchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  emoji: z.string().optional(),
-  whyItMatters: z.string().optional()
-});
-const accountItemSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  categoryId: z.string(),
-  realWorldExample: z.string().optional(),
-  hint: z.string().optional()
-});
-const impactLevelSchema = z.enum(["low", "medium", "high"]);
-const budgetCategorySchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string(),
-  emoji: z.string().optional(),
-  color: z.string().optional(),
-  profitImpact: z.string().optional(),
-  strategyNote: z.string().optional()
-});
-const budgetExpenseSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  description: z.string(),
-  categoryId: z.string(),
-  cafeContext: z.string().optional(),
-  amount: z.number().nonnegative(),
-  impact: impactLevelSchema.default("medium")
-});
 const percentageCategorySchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -18416,50 +18180,6 @@ const inventoryScenarioSchema = z.object({
   lots: z.array(inventoryLotSchema).min(1),
   flowModes: z.array(inventoryFlowModeSchema).min(1)
 });
-const ratioDefinitionSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  category: z.string(),
-  description: z.string(),
-  businessMeaning: z.string().optional(),
-  goodRange: z.string().optional(),
-  whyItMatters: z.string().optional(),
-  formulaSummary: z.string()
-});
-const ratioFormulaZoneSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  formula: z.string(),
-  category: z.string(),
-  emoji: z.string().optional(),
-  expectedRatioId: z.string()
-});
-const breakEvenCategorySchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string(),
-  emoji: z.string().optional(),
-  color: z.string().optional(),
-  behavior: z.enum(["fixed", "variable"]),
-  whyItMatters: z.string().optional()
-});
-const breakEvenCostItemSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  amount: z.number().nonnegative(),
-  unit: z.string().default("per unit"),
-  categoryId: z.string(),
-  description: z.string().optional(),
-  realWorldExample: z.string().optional()
-});
-const salesAssumptionSchema = z.object({
-  pricePerUnit: z.number().positive(),
-  minPrice: z.number().positive().optional(),
-  maxPrice: z.number().positive().optional(),
-  step: z.number().positive().optional(),
-  unitLabel: z.string().default("units"),
-  targetUnits: z.number().int().positive().optional()
-});
 const cashFlowPeriodSchema = z.object({
   id: z.string(),
   label: z.string(),
@@ -18477,63 +18197,7 @@ const cashFlowItemSchema = z.object({
   description: z.string().optional(),
   hint: z.string().optional()
 });
-const financialStatementSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  focus: z.string().optional(),
-  icon: z.string().optional(),
-  howItHelps: z.string().optional()
-});
-const financialStatementItemSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  description: z.string(),
-  statementId: z.string(),
-  category: z.string(),
-  hint: z.string().optional()
-});
-const trialBalanceSideSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  description: z.string(),
-  type: z.enum(["debit", "credit"]),
-  badgeLabel: z.string().optional()
-});
-const trialBalanceAccountSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  amount: z.number().nonnegative(),
-  sideId: z.string(),
-  category: z.string(),
-  context: z.string().optional()
-});
 const categorizationActivityPropsSchemas = {
-  "drag-and-drop": z.object({
-    title: z.string(),
-    description: z.string(),
-    items: z.array(matchingItemSchema).min(2),
-    leftColumnTitle: z.string().default("Items"),
-    rightColumnTitle: z.string().default("Matches"),
-    showHints: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
-  "account-categorization": z.object({
-    title: z.string(),
-    description: z.string(),
-    categories: z.array(accountCategorySchema).min(1),
-    accounts: z.array(accountItemSchema).min(1),
-    showHintsByDefault: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
-  "budget-category-sort": z.object({
-    title: z.string(),
-    description: z.string(),
-    categories: z.array(budgetCategorySchema).min(1),
-    expenses: z.array(budgetExpenseSchema).min(1),
-    showHintsByDefault: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
   "percentage-calculation-sorting": z.object({
     title: z.string(),
     description: z.string(),
@@ -18547,23 +18211,6 @@ const categorizationActivityPropsSchemas = {
     description: z.string(),
     scenarios: z.array(inventoryScenarioSchema).min(1)
   }),
-  "ratio-matching": z.object({
-    title: z.string(),
-    description: z.string(),
-    ratios: z.array(ratioDefinitionSchema).min(1),
-    formulaZones: z.array(ratioFormulaZoneSchema).min(1),
-    showHintsByDefault: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
-  "break-even-components": z.object({
-    title: z.string(),
-    description: z.string(),
-    categories: z.array(breakEvenCategorySchema).min(1),
-    costItems: z.array(breakEvenCostItemSchema).min(1),
-    salesAssumptions: salesAssumptionSchema,
-    showHintsByDefault: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
   "cash-flow-timeline": z.object({
     title: z.string(),
     description: z.string(),
@@ -18571,22 +18218,6 @@ const categorizationActivityPropsSchemas = {
     cashFlowItems: z.array(cashFlowItemSchema).min(1),
     startingCash: z.number().default(0),
     showHintsByDefault: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
-  "financial-statement-matching": z.object({
-    title: z.string(),
-    description: z.string(),
-    statements: z.array(financialStatementSchema).min(1),
-    lineItems: z.array(financialStatementItemSchema).min(1),
-    showHintsByDefault: z.boolean().default(false),
-    shuffleItems: z.boolean().default(true)
-  }),
-  "trial-balance-sorting": z.object({
-    title: z.string(),
-    description: z.string(),
-    sides: z.array(trialBalanceSideSchema).min(2),
-    accounts: z.array(trialBalanceAccountSchema).min(1),
-    showCategoryBadges: z.boolean().default(true),
     shuffleItems: z.boolean().default(true)
   })
 };
@@ -19383,31 +19014,6 @@ const simulationActivityPropsSchemas = {
     initialMessage: z.string().optional(),
     successMessage: z.string().optional()
   }),
-  "ledger-hero": z.object({
-    title: z.string().default("Ledger Hero"),
-    description: z.string().default("Master the double impact of business events using the DEA LER logic."),
-    scenarios: z.array(z.object({
-      id: z.string(),
-      event: z.string(),
-      description: z.string(),
-      impacts: z.array(z.object({
-        account: z.string(),
-        category: z.enum(["asset", "liability", "equity", "revenue", "expense"]),
-        type: z.enum(["debit", "credit"]),
-        amount: z.number()
-      })),
-      hint: z.string().optional()
-    })).default([]),
-    initialState: z.object({
-      currentScenarioIndex: z.number().int().default(0),
-      score: z.number().int().default(0),
-      completed: z.boolean().default(false)
-    }).default({
-      currentScenarioIndex: 0,
-      score: 0,
-      completed: false
-    })
-  }),
   "growth-puzzle": z.object({
     title: z.string().default("The Growth Puzzle"),
     description: z.string().default("Decide how to use your profits to grow Sarah’s business or handle personal needs."),
@@ -19824,11 +19430,135 @@ const activities = pgTable(
     standardIdIdx: index("idx_activities_standard_id").on(table.standardId)
   })
 );
-const submissionDataSchema = z.object({
-  answers: z.record(z.string(), z.unknown()),
-  interactionHistory: z.array(z.unknown()).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional()
+const PRACTICE_CONTRACT_VERSION = "practice.v1";
+const PRACTICE_MODE_VALUES = [
+  "worked_example",
+  "guided_practice",
+  "independent_practice",
+  "assessment",
+  "teaching"
+];
+const PRACTICE_SUBMISSION_STATUS_VALUES = [
+  "draft",
+  "submitted",
+  "graded",
+  "returned"
+];
+const practiceModeSchema = z.enum(PRACTICE_MODE_VALUES);
+const practiceSubmissionStatusSchema = z.enum(PRACTICE_SUBMISSION_STATUS_VALUES);
+const jsonRecordSchema$1 = z.record(z.string(), z.unknown());
+function normalizeSubmittedAt(value) {
+  return value instanceof Date ? value.toISOString() : value;
+}
+function normalizePracticeValue(value) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => normalizePracticeValue(entry)).sort().join("|");
+  }
+  if (typeof value === "string") {
+    return value.trim().toLowerCase();
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value).trim().toLowerCase();
+  }
+  if (value == null) {
+    return "";
+  }
+  return JSON.stringify(value);
+}
+const practiceSubmissionPartSchema = z.object({
+  partId: z.string().trim().min(1),
+  rawAnswer: z.unknown(),
+  normalizedAnswer: z.string().optional(),
+  isCorrect: z.boolean().optional(),
+  score: z.number().optional(),
+  maxScore: z.number().optional(),
+  misconceptionTags: z.array(z.string()).optional(),
+  hintsUsed: z.number().int().nonnegative().optional(),
+  revealStepsSeen: z.number().int().nonnegative().optional(),
+  changedCount: z.number().int().nonnegative().optional()
 });
+const practiceSubmissionEnvelopeSchema = z.object({
+  contractVersion: z.literal(PRACTICE_CONTRACT_VERSION),
+  activityId: z.string().trim().min(1),
+  mode: practiceModeSchema,
+  status: practiceSubmissionStatusSchema,
+  attemptNumber: z.number().int().positive(),
+  submittedAt: z.string().min(1),
+  answers: jsonRecordSchema$1,
+  parts: z.array(practiceSubmissionPartSchema),
+  artifact: jsonRecordSchema$1.optional(),
+  interactionHistory: z.array(z.unknown()).optional(),
+  analytics: jsonRecordSchema$1.optional(),
+  studentFeedback: z.string().optional(),
+  teacherSummary: z.string().optional()
+});
+const practiceSubmissionInputSchema = z.object({
+  contractVersion: z.literal(PRACTICE_CONTRACT_VERSION).optional(),
+  activityId: z.string().trim().min(1).optional(),
+  mode: practiceModeSchema.optional(),
+  status: practiceSubmissionStatusSchema.optional(),
+  attemptNumber: z.number().int().positive().optional(),
+  submittedAt: z.union([z.string().min(1), z.date()]).optional(),
+  answers: jsonRecordSchema$1.optional(),
+  responses: jsonRecordSchema$1.optional(),
+  parts: z.array(practiceSubmissionPartSchema).optional(),
+  artifact: jsonRecordSchema$1.optional(),
+  interactionHistory: z.array(z.unknown()).optional(),
+  analytics: jsonRecordSchema$1.optional(),
+  metadata: jsonRecordSchema$1.optional(),
+  studentFeedback: z.string().optional(),
+  teacherSummary: z.string().optional()
+});
+function buildPracticeSubmissionParts(answers) {
+  return Object.entries(answers).map(([partId, rawAnswer]) => ({
+    partId,
+    rawAnswer,
+    normalizedAnswer: normalizePracticeValue(rawAnswer)
+  }));
+}
+function buildPracticeSubmissionEnvelope(input) {
+  return practiceSubmissionEnvelopeSchema.parse({
+    contractVersion: PRACTICE_CONTRACT_VERSION,
+    activityId: input.activityId,
+    mode: input.mode,
+    status: input.status ?? "submitted",
+    attemptNumber: input.attemptNumber ?? 1,
+    submittedAt: normalizeSubmittedAt(input.submittedAt ?? /* @__PURE__ */ new Date()),
+    answers: input.answers,
+    parts: input.parts ?? buildPracticeSubmissionParts(input.answers),
+    artifact: input.artifact,
+    interactionHistory: input.interactionHistory,
+    analytics: input.analytics,
+    studentFeedback: input.studentFeedback,
+    teacherSummary: input.teacherSummary
+  });
+}
+function normalizePracticeSubmissionInput(input, defaults = {}) {
+  const parsed = practiceSubmissionInputSchema.parse(input);
+  const activityId = parsed.activityId ?? defaults.activityId;
+  if (!activityId) {
+    throw new Error("activityId is required to normalize a practice submission.");
+  }
+  const answers = parsed.answers ?? parsed.responses ?? {};
+  const submittedAt = parsed.submittedAt ?? defaults.submittedAt ?? /* @__PURE__ */ new Date();
+  const analytics = parsed.analytics ?? parsed.metadata;
+  return practiceSubmissionEnvelopeSchema.parse({
+    contractVersion: PRACTICE_CONTRACT_VERSION,
+    activityId,
+    mode: parsed.mode ?? defaults.mode ?? "assessment",
+    status: parsed.status ?? defaults.status ?? "submitted",
+    attemptNumber: parsed.attemptNumber ?? defaults.attemptNumber ?? 1,
+    submittedAt: normalizeSubmittedAt(submittedAt),
+    answers,
+    parts: parsed.parts ?? buildPracticeSubmissionParts(answers),
+    artifact: parsed.artifact,
+    interactionHistory: parsed.interactionHistory,
+    analytics,
+    studentFeedback: parsed.studentFeedback,
+    teacherSummary: parsed.teacherSummary
+  });
+}
+const submissionDataSchema = practiceSubmissionEnvelopeSchema;
 const activitySubmissions = pgTable("activity_submissions", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull().references(() => profiles.id, { onDelete: "cascade" }),
@@ -19843,6 +19573,9 @@ const activitySubmissions = pgTable("activity_submissions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
+function resolveActivityComponentKey(componentKey) {
+  return componentKey;
+}
 const classMetadataSchema = z.object({
   period: z.string().optional(),
   room: z.string().optional(),
@@ -19995,7 +19728,10 @@ const unitIntroductionSchema = z.object({
   entryEvent: unitEntryEventSchema,
   projectOverview: unitProjectOverviewSchema,
   learningObjectives: unitObjectivesSchema,
-  nextSectionHref: z.string().optional()
+  nextSectionHref: z.string().optional(),
+  accountingFocus: z.string().optional(),
+  excelFocus: z.string().optional(),
+  audience: z.string().optional()
 });
 const unitContentSchema = z.object({
   drivingQuestion: unitDrivingQuestionSchema,
@@ -20078,10 +19814,10 @@ const contentBlockSchema = z.discriminatedUnion("type", [
   z.object({
     id: z.string(),
     type: z.literal("activity"),
-    activityId: z.string().uuid(),
+    activityId: z.string().min(1),
     required: z.boolean().default(false),
-    /** Standard UUID to credit in student_competency when this activity is completed */
-    linkedStandardId: z.string().uuid().optional()
+    /** Standard code to credit in student_competency when this activity is completed */
+    linkedStandardId: z.string().regex(COMPETENCY_STANDARD_CODE_PATTERN).optional()
   }),
   z.object({
     id: z.string(),
@@ -20202,42 +19938,28 @@ const studentProgress = pgTable(
     uniqueUserPhase: uniqueIndex("student_progress_user_phase_idx").on(table.userId, table.phaseId)
   })
 );
-const activityPropsSchema = z.union([
-  activityPropsSchemas["comprehension-quiz"],
-  activityPropsSchemas["tiered-assessment"],
-  activityPropsSchemas["drag-and-drop"],
-  activityPropsSchemas["account-categorization"],
-  activityPropsSchemas["budget-category-sort"],
-  activityPropsSchemas["percentage-calculation-sorting"],
-  activityPropsSchemas["inventory-flow-diagram"],
-  activityPropsSchemas["ratio-matching"],
-  activityPropsSchemas["break-even-components"],
-  activityPropsSchemas["cash-flow-timeline"],
-  activityPropsSchemas["financial-statement-matching"],
-  activityPropsSchemas["trial-balance-sorting"],
-  activityPropsSchemas["fill-in-the-blank"],
-  activityPropsSchemas["journal-entry-building"],
-  activityPropsSchemas["reflection-journal"],
-  activityPropsSchemas["peer-critique-form"],
-  activityPropsSchemas["profit-calculator"],
-  activityPropsSchemas["budget-worksheet"],
-  activityPropsSchemas["lemonade-stand"],
-  activityPropsSchemas["startup-journey"],
-  activityPropsSchemas["budget-balancer"],
-  activityPropsSchemas["cash-flow-challenge"],
-  activityPropsSchemas["inventory-manager"],
-  activityPropsSchemas["pitch-presentation-builder"],
-  activityPropsSchemas["pay-structure-lab"],
-  activityPropsSchemas["notebook-organizer"],
-  activityPropsSchemas["ledger-hero"],
-  activityPropsSchemas["growth-puzzle"],
-  activityPropsSchemas["asset-time-machine"],
-  activityPropsSchemas["cafe-supply-chaos"],
-  activityPropsSchemas["capital-negotiation"],
-  activityPropsSchemas["business-stress-test"],
-  activityPropsSchemas["spreadsheet"]
-]);
 const jsonRecordSchema = z.record(z.string(), z.unknown());
+function addActivityPropsIssues(ctx, componentKey, props) {
+  const canonicalComponentKey = resolveActivityComponentKey(componentKey);
+  if (!canonicalComponentKey || !(canonicalComponentKey in activityPropsSchemas)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["componentKey"],
+      message: `Unknown activity component: ${componentKey}`
+    });
+    return;
+  }
+  const result = activityPropsSchemas[canonicalComponentKey].safeParse(props);
+  if (result.success) {
+    return;
+  }
+  result.error.issues.forEach((issue) => {
+    ctx.addIssue({
+      ...issue,
+      path: ["props", ...issue.path]
+    });
+  });
+}
 const insertLessonSchema = createInsertSchema(lessons, {
   learningObjectives: z.array(z.string()).nullable().optional(),
   metadata: lessonMetadataSchema.nullable().optional()
@@ -20260,12 +19982,16 @@ const phaseShapeSchema = z.object({
 const insertPhaseSchema = phaseShapeSchema;
 const selectPhaseSchema = phaseShapeSchema;
 const insertActivitySchema = createInsertSchema(activities, {
-  props: activityPropsSchema,
+  props: z.unknown(),
   gradingConfig: gradingConfigSchema.nullable().optional()
+}).superRefine((activity, ctx) => {
+  addActivityPropsIssues(ctx, activity.componentKey, activity.props);
 });
 const selectActivitySchema = createSelectSchema(activities, {
-  props: activityPropsSchema,
+  props: z.unknown(),
   gradingConfig: gradingConfigSchema.nullable()
+}).superRefine((activity, ctx) => {
+  addActivityPropsIssues(ctx, activity.componentKey, activity.props);
 });
 const insertResourceSchema = createInsertSchema(resources, {
   metadata: resourceMetadataSchema.nullable().optional()
@@ -20317,12 +20043,6 @@ const selectContentRevisionSchema = createSelectSchema(contentRevisions, {
   proposedChanges: jsonRecordSchema,
   validationErrors: validationErrorSchema.array().nullable()
 });
-const requestSchema$5 = z.object({
-  activityId: z.string().trim().min(1),
-  answers: z.record(z.string(), z.unknown()),
-  interactionHistory: z.array(z.unknown()).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional()
-});
 function buildBadRequest(details) {
   return NextResponse.json(
     typeof details === "string" ? { error: details } : {
@@ -20334,28 +20054,23 @@ function buildBadRequest(details) {
 }
 async function POST$a(request) {
   try {
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
-    let payload;
+    let submission;
     try {
       const body = await request.json();
-      const parsed = requestSchema$5.safeParse(body);
-      if (!parsed.success) {
-        return buildBadRequest(parsed.error.flatten().fieldErrors);
-      }
-      payload = parsed.data;
+      submission = submissionDataSchema.parse(normalizePracticeSubmissionInput(body));
     } catch (parseError) {
-      return buildBadRequest(
-        parseError instanceof Error ? parseError.message : "Unable to parse request body"
-      );
+      console.error("Invalid practice submission payload", parseError);
+      return buildBadRequest("Invalid payload");
     }
-    if (Object.keys(payload.answers).length === 0) {
+    if (Object.keys(submission.answers).length === 0) {
       return buildBadRequest("answers must include at least one entry.");
     }
     const activityRecord = await fetchInternalQuery(internal.activities.getActivityById, {
-      activityId: payload.activityId
+      activityId: submission.activityId
     });
     if (!activityRecord) {
       return NextResponse.json({ error: "Activity not found" }, { status: 404 });
@@ -20373,21 +20088,16 @@ async function POST$a(request) {
     }
     let score;
     try {
-      score = calculateScore(activity, payload.answers);
+      score = calculateScore(activity, submission.answers);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unable to score submission";
       return NextResponse.json({ error: message }, { status: 422 });
     }
-    const submissionData = submissionDataSchema.parse({
-      answers: payload.answers,
-      interactionHistory: payload.interactionHistory,
-      metadata: payload.metadata
-    });
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
     await fetchInternalMutation(internal.activities.submitAssessment, {
       userId,
-      activityId: payload.activityId,
-      submissionData,
+      activityId: submission.activityId,
+      submissionData: submission,
       score: score.score,
       maxScore: score.maxScore,
       feedback: score.feedback
@@ -20429,7 +20139,7 @@ const querySchema = z.object({
   studentId: z.string().trim().min(1, "studentId is required"),
   lessonId: z.string().trim().min(1, "lessonId is required")
 });
-async function GET$7(request) {
+async function GET$5(request) {
   try {
     const claims = await getRequestSessionClaims(request);
     if (!claims) {
@@ -20482,11 +20192,16 @@ async function GET$7(request) {
 }
 const mod_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  GET: GET$7
+  GET: GET$5
 }, Symbol.toStringTag, { value: "Module" }));
 function createAdminClient() {
-  const supabaseUrl = "http://127.0.0.1:54321";
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl) {
+    throw new Error(
+      "NEXT_PUBLIC_SUPABASE_URL is not set. Please check your environment variables."
+    );
+  }
   if (!supabaseServiceRoleKey) {
     throw new Error(
       "SUPABASE_SERVICE_ROLE_KEY is not set. Please check your environment variables."
@@ -20767,7 +20482,7 @@ if (!process.env.DATABASE_URL) {
   console.warn("DATABASE_URL is not defined. Using dummy URL during migration.");
   process.env.DATABASE_URL = "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 }
-const client$1 = postgres(process.env.DATABASE_URL, {
+const client = postgres(process.env.DATABASE_URL, {
   prepare: false,
   // Required for Supabase transaction pooler
   max: 10,
@@ -20777,7 +20492,7 @@ const client$1 = postgres(process.env.DATABASE_URL, {
   connect_timeout: 10
   // Connection timeout in seconds
 });
-const db = drizzle(client$1, { schema });
+const db = drizzle(client, { schema });
 function enforceTestRouteGuard(request) {
   if (process.env.NODE_ENV === "production") {
     return NextResponse.json(
@@ -20797,7 +20512,7 @@ function enforceTestRouteGuard(request) {
   }
   return null;
 }
-const dynamic$4 = "force-dynamic";
+const dynamic$5 = "force-dynamic";
 const TEST_LESSON_ID$1 = "00000000-0000-0000-0000-000000000002";
 const TEST_ORGANIZATION_ID$1 = "00000000-0000-0000-0000-000000000000";
 const TEST_STANDARD_ID$1 = "00000000-0000-0000-0000-000000000006";
@@ -20863,9 +20578,9 @@ async function POST$8(request) {
 const mod_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$8,
-  dynamic: dynamic$4
+  dynamic: dynamic$5
 }, Symbol.toStringTag, { value: "Module" }));
-const dynamic$3 = "force-dynamic";
+const dynamic$4 = "force-dynamic";
 const TEST_ORGANIZATION_ID = "00000000-0000-0000-0000-000000000000";
 const TEST_USER_ID = "00000000-0000-0000-0000-000000000001";
 const TEST_LESSON_ID = "00000000-0000-0000-0000-000000000002";
@@ -21098,7 +20813,7 @@ async function POST$7(request) {
 const mod_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   POST: POST$7,
-  dynamic: dynamic$3
+  dynamic: dynamic$4
 }, Symbol.toStringTag, { value: "Module" }));
 function isTeacherOrAdminRole(role) {
   return role === "teacher" || role === "admin";
@@ -21494,7 +21209,7 @@ const mod_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 const draftSchema = z.object({
   draftData: z.array(z.array(z.any()))
 });
-async function GET$6(request, { params }) {
+async function GET$4(request, { params }) {
   try {
     const { activityId } = await params;
     if (!activityId?.trim()) {
@@ -21503,11 +21218,11 @@ async function GET$6(request, { params }) {
         { status: 400 }
       );
     }
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
     const response = await fetchInternalQuery(internal.activities.getSpreadsheetDraft, {
       userId,
       activityId
@@ -21538,11 +21253,11 @@ async function POST$1(request, { params }) {
         { status: 400 }
       );
     }
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
     let payload;
     try {
       const body = await request.json();
@@ -21586,7 +21301,7 @@ async function POST$1(request, { params }) {
 }
 const mod_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  GET: GET$6,
+  GET: GET$4,
   POST: POST$1
 }, Symbol.toStringTag, { value: "Module" }));
 const ALLOWED_FORMULA_FUNCTIONS = [
@@ -21721,6 +21436,49 @@ function validateSubmission(data, targetCells) {
     timestamp: (/* @__PURE__ */ new Date()).toISOString()
   };
 }
+function buildSpreadsheetEvaluatorSubmission(input) {
+  const answers = Object.fromEntries(
+    input.targetCells.map((target) => [target.cell, getCellValue(input.spreadsheetData, target.cell)])
+  );
+  const feedbackByCell = new Map(
+    input.validationResult.feedback.map((entry) => [entry.cell, entry])
+  );
+  const parts = input.targetCells.map((target) => {
+    const rawAnswer = getCellValue(input.spreadsheetData, target.cell);
+    const feedback = feedbackByCell.get(target.cell);
+    const isCorrect = feedback?.isCorrect ?? false;
+    return {
+      partId: target.cell,
+      rawAnswer,
+      normalizedAnswer: normalizePracticeValue(rawAnswer),
+      isCorrect,
+      score: isCorrect ? 1 : 0,
+      maxScore: 1
+    };
+  });
+  return buildPracticeSubmissionEnvelope({
+    activityId: input.activityId,
+    mode: input.mode ?? "assessment",
+    status: "submitted",
+    attemptNumber: input.attemptNumber ?? 1,
+    submittedAt: input.submittedAt ?? /* @__PURE__ */ new Date(),
+    answers,
+    parts,
+    artifact: {
+      kind: "spreadsheet_evaluator",
+      templateId: input.templateId,
+      instructions: input.instructions,
+      targetCells: input.targetCells,
+      spreadsheetData: input.spreadsheetData,
+      validation: input.validationResult
+    },
+    analytics: {
+      totalCells: input.validationResult.totalCells,
+      correctCells: input.validationResult.correctCells,
+      isComplete: input.validationResult.isComplete
+    }
+  });
+}
 const targetCellSchema = z.object({
   cell: z.string().regex(/^[A-Z]+[0-9]+$/),
   expectedValue: z.union([z.string(), z.number()]),
@@ -21735,7 +21493,7 @@ const spreadsheetEvaluatorPropsSchema = z.object({
 const requestSchema = z.object({
   spreadsheetData: z.array(z.array(z.any()))
 });
-async function GET$5(request, { params }) {
+async function GET$3(request, { params }) {
   try {
     const { activityId } = await params;
     if (!activityId?.trim()) {
@@ -21825,11 +21583,11 @@ async function POST(request, { params }) {
         { status: 400 }
       );
     }
-    const claims = await getRequestSessionClaims(request);
-    if (!claims) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const claimsOrResponse = await requireStudentRequestClaims(request);
+    if (claimsOrResponse instanceof Response) {
+      return claimsOrResponse;
     }
-    const userId = claims.sub;
+    const userId = claimsOrResponse.sub;
     let payload;
     try {
       const body = await request.json();
@@ -21888,12 +21646,28 @@ async function POST(request, { params }) {
       payload.spreadsheetData,
       parsedEvaluatorProps.data.targetCells
     );
-    await fetchInternalMutation(internal.activities.submitSpreadsheet, {
+    const existingResponse = await fetchInternalQuery(internal.activities.getSpreadsheetResponse, {
+      studentId: userId,
+      activityId
+    });
+    const attemptNumber = (existingResponse?.attempts ?? 0) + 1;
+    const submissionData = buildSpreadsheetEvaluatorSubmission({
+      activityId,
+      templateId: parsedEvaluatorProps.data.templateId,
+      instructions: parsedEvaluatorProps.data.instructions,
+      targetCells: parsedEvaluatorProps.data.targetCells,
+      spreadsheetData: payload.spreadsheetData,
+      validationResult,
+      attemptNumber,
+      mode: "assessment"
+    });
+    await fetchInternalMutation(internal.activities.submitAssessment, {
       userId,
       activityId,
-      spreadsheetData: payload.spreadsheetData,
-      isCompleted: validationResult.isComplete,
-      validationResult
+      submissionData,
+      score: validationResult.correctCells,
+      maxScore: validationResult.totalCells,
+      feedback: validationResult.feedback.map((entry) => entry.message ?? `${entry.cell} needs attention.`).join(" ")
     });
     let masteryUpdate;
     if (validationResult.isComplete && activity.standardId) {
@@ -21909,6 +21683,7 @@ async function POST(request, { params }) {
       success: true,
       isComplete: validationResult.isComplete,
       feedback: validationResult.feedback,
+      attemptNumber,
       masteryUpdate
     });
   } catch (error) {
@@ -21923,155 +21698,20 @@ async function POST(request, { params }) {
 }
 const mod_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  GET: GET$5,
+  GET: GET$3,
   POST
-}, Symbol.toStringTag, { value: "Module" }));
-async function AdminDashboard() {
-  const claims = await requireAdminSessionClaims("/admin/dashboard");
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto p-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "max-w-4xl mx-auto", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-4xl font-bold mb-4", children: "Admin Dashboard" }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground mb-8", children: "Welcome to the administrative control panel. This is a placeholder page for development." }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-4", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "border rounded-lg p-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold mb-2", children: "Coming Soon" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground", children: "Organization management, user administration, and system configuration will be available here." })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "border rounded-lg p-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "text-xl font-semibold mb-2", children: "Your Account" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
-          "User ID: ",
-          claims.sub
-        ] })
-      ] })
-    ] })
-  ] }) });
-}
-const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: AdminDashboard
-}, Symbol.toStringTag, { value: "Module" }));
-async function testDatabaseConnection() {
-  try {
-    const result = await db.execute(sql`SELECT NOW() as current_time, version() as postgres_version`);
-    const rows = Array.isArray(result) ? result : result.rows ?? [];
-    const rowCandidate = rows[0];
-    if (!rowCandidate || typeof rowCandidate !== "object" || rowCandidate === null || !("current_time" in rowCandidate) || !("postgres_version" in rowCandidate)) {
-      return {
-        success: false,
-        message: "Query returned no results",
-        error: "No data returned from database"
-      };
-    }
-    const row = rowCandidate;
-    let lessonsCount = 0;
-    try {
-      const countResult = await db.select({ count: count() }).from(lessons);
-      lessonsCount = countResult[0]?.count ?? 0;
-    } catch (tableError) {
-      return {
-        success: false,
-        message: "Database connected but lessons table check failed",
-        error: tableError instanceof Error ? tableError.message : "Unknown table error",
-        data: {
-          currentTime: row.current_time,
-          postgresVersion: row.postgres_version,
-          connectionType: "Drizzle ORM with Supabase Session Pooler"
-        }
-      };
-    }
-    return {
-      success: true,
-      message: "Database connection successful!",
-      data: {
-        currentTime: row.current_time,
-        postgresVersion: row.postgres_version,
-        connectionType: "Drizzle ORM with Supabase Session Pooler",
-        lessonsCount
-      }
-    };
-  } catch (error) {
-    console.error("Database connection error:", error);
-    return {
-      success: false,
-      message: "Database connection failed",
-      error: error instanceof Error ? error.message : "Unknown error"
-    };
-  }
-}
-testDatabaseConnection = /* @__PURE__ */ registerServerReference(testDatabaseConnection, "393084148382", "testDatabaseConnection");
-const testConnection = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  get testDatabaseConnection() {
-    return testDatabaseConnection;
-  }
-}, Symbol.toStringTag, { value: "Module" }));
-async function GET$4(request) {
-  const guardResponse = enforceTestRouteGuard(request);
-  if (guardResponse) {
-    return guardResponse;
-  }
-  const result = await testDatabaseConnection();
-  return NextResponse.json(result, {
-    status: result.success ? 200 : 500
-  });
-}
-const mod_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  GET: GET$4
-}, Symbol.toStringTag, { value: "Module" }));
-async function GET$3(request) {
-  const guardResponse = enforceTestRouteGuard(request);
-  if (guardResponse) {
-    return guardResponse;
-  }
-  try {
-    const supabaseUrl = "http://127.0.0.1:54321";
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!supabaseUrl || !supabaseKey) {
-      return NextResponse.json({
-        success: false,
-        error: "Missing Supabase credentials"
-      }, { status: 500 });
-    }
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    const { data, error } = await supabase.rpc("version");
-    if (error) {
-      const result = await supabase.from("pg_catalog.pg_tables").select("tablename").limit(1);
-      if (result.error) {
-        return NextResponse.json({
-          success: false,
-          error: result.error.message,
-          code: result.error.code
-        }, { status: 500 });
-      }
-    }
-    return NextResponse.json({
-      success: true,
-      message: "Supabase connection successful!",
-      connectionType: "Supabase Client with Service Role",
-      data: data || "Connected"
-    });
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error"
-    }, { status: 500 });
-  }
-}
-const mod_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  GET: GET$3
 }, Symbol.toStringTag, { value: "Module" }));
 async function GET$2() {
   redirect("/auth/login?message=Email confirmation is not used in this system");
 }
-const mod_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$2
 }, Symbol.toStringTag, { value: "Module" }));
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 const Card = react_reactServerExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
   "div",
   {
@@ -22134,7 +21774,7 @@ async function Page$3({
     ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "An unspecified error occurred." }) })
   ] }) }) }) });
 }
-const mod_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$3
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22144,7 +21784,7 @@ const ForgotPasswordForm = /* @__PURE__ */ registerClientReference(() => {
 function Page$2() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ForgotPasswordForm, {}) }) });
 }
-const mod_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$2
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22154,92 +21794,11396 @@ const LoginForm = /* @__PURE__ */ registerClientReference(() => {
 function Page$1() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex min-h-svh w-full items-center justify-center p-6 md:p-10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full max-w-sm", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(react_reactServerExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { children: "Loading..." }), children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(LoginForm, {}) }) }) });
 }
-const mod_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page$1
 }, Symbol.toStringTag, { value: "Module" }));
 function Page() {
   redirect("/settings");
 }
-const mod_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Page
 }, Symbol.toStringTag, { value: "Module" }));
-async function DatabaseTestPage() {
-  const result = await testDatabaseConnection();
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex-1 w-full flex flex-col gap-8 p-8", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-3xl font-bold mb-2", children: "Drizzle ORM Connection Test" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground", children: "Testing database connection via Supabase transaction pooler" })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
-      "div",
+const badgeVariants = cva(
+  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        destructive: "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
+        outline: "text-foreground"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+);
+function Badge({ className, variant, ...props }) {
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: cn(badgeVariants({ variant }), className), ...props });
+}
+const CategorizationList = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'CategorizationList' is called on server");
+}, "03118f6f3e7a", "CategorizationList");
+const AccountingEquationLayout = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'AccountingEquationLayout' is called on server");
+}, "ab3f863de78f", "AccountingEquationLayout");
+const JournalEntryTable = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'JournalEntryTable' is called on server");
+}, "e9a57d9d3b92", "JournalEntryTable");
+const TAccountInteractive = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'TAccountInteractive' is called on server");
+}, "19577ed33728", "TAccountInteractive");
+const SelectionMatrix = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'SelectionMatrix' is called on server");
+}, "355853aeb2b9", "SelectionMatrix");
+const TrialBalanceErrorMatrix = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'TrialBalanceErrorMatrix' is called on server");
+}, "732cfb3b021f", "TrialBalanceErrorMatrix");
+const StatementLayout = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'StatementLayout' is called on server");
+}, "b8b9cb2b5e2f", "StatementLayout");
+function formatAccountingAmount(value) {
+  if (value === null || value === void 0 || value === "") {
+    return "—";
+  }
+  const numericValue = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(numericValue)) {
+    return String(value);
+  }
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2
+  }).format(numericValue);
+}
+const practiceAccounts = [
+  {
+    id: "cash",
+    label: "Cash",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-asset",
+    commonConfusionPairs: ["accounts-receivable", "prepaid-rent"]
+  },
+  {
+    id: "accounts-receivable",
+    label: "Accounts Receivable",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-asset",
+    commonConfusionPairs: ["allowance-for-doubtful-accounts", "notes-receivable"]
+  },
+  {
+    id: "notes-receivable",
+    label: "Notes Receivable",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-asset",
+    commonConfusionPairs: ["accounts-receivable"]
+  },
+  {
+    id: "supplies",
+    label: "Supplies",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-asset",
+    commonConfusionPairs: ["supplies-expense", "prepaid-rent"]
+  },
+  {
+    id: "prepaid-insurance",
+    label: "Prepaid Insurance",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-asset",
+    commonConfusionPairs: ["insurance-expense"]
+  },
+  {
+    id: "prepaid-rent",
+    label: "Prepaid Rent",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-asset",
+    commonConfusionPairs: ["rent-expense"]
+  },
+  {
+    id: "merchandise-inventory",
+    label: "Merchandise Inventory",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "inventory",
+    commonConfusionPairs: ["supplies", "cost-of-goods-sold"]
+  },
+  {
+    id: "equipment",
+    label: "Equipment",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "long-term-asset",
+    commonConfusionPairs: ["accumulated-depreciation-equipment", "land"]
+  },
+  {
+    id: "buildings",
+    label: "Buildings",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "long-term-asset",
+    commonConfusionPairs: ["accumulated-depreciation-buildings"]
+  },
+  {
+    id: "land",
+    label: "Land",
+    accountType: "asset",
+    normalBalance: "debit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "long-term-asset",
+    commonConfusionPairs: ["buildings"]
+  },
+  {
+    id: "accumulated-depreciation-equipment",
+    label: "Accumulated Depreciation - Equipment",
+    accountType: "asset",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    contraOf: "equipment",
+    retailApplicable: true,
+    subcategory: "contra-asset",
+    commonConfusionPairs: ["depreciation-expense"]
+  },
+  {
+    id: "accumulated-depreciation-buildings",
+    label: "Accumulated Depreciation - Buildings",
+    accountType: "asset",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    contraOf: "buildings",
+    retailApplicable: true,
+    subcategory: "contra-asset",
+    commonConfusionPairs: ["depreciation-expense"]
+  },
+  {
+    id: "allowance-for-doubtful-accounts",
+    label: "Allowance for Doubtful Accounts",
+    accountType: "asset",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    contraOf: "accounts-receivable",
+    retailApplicable: true,
+    subcategory: "contra-asset",
+    commonConfusionPairs: ["accounts-receivable"]
+  },
+  {
+    id: "accounts-payable",
+    label: "Accounts Payable",
+    accountType: "liability",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-liability",
+    commonConfusionPairs: ["notes-payable-current"]
+  },
+  {
+    id: "salaries-payable",
+    label: "Salaries Payable",
+    accountType: "liability",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-liability",
+    commonConfusionPairs: ["salaries-expense"]
+  },
+  {
+    id: "interest-payable",
+    label: "Interest Payable",
+    accountType: "liability",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-liability",
+    commonConfusionPairs: ["interest-expense"]
+  },
+  {
+    id: "sales-tax-payable",
+    label: "Sales Tax Payable",
+    accountType: "liability",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-liability",
+    commonConfusionPairs: ["sales-revenue"]
+  },
+  {
+    id: "notes-payable",
+    label: "Notes Payable",
+    accountType: "liability",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "long-term-liability",
+    commonConfusionPairs: ["notes-receivable"]
+  },
+  {
+    id: "unearned-revenue",
+    label: "Unearned Revenue",
+    accountType: "liability",
+    normalBalance: "credit",
+    statementPlacement: "balance-sheet",
+    retailApplicable: true,
+    subcategory: "current-liability",
+    commonConfusionPairs: ["service-revenue", "sales-revenue"]
+  },
+  {
+    id: "common-stock",
+    label: "Common Stock",
+    accountType: "equity",
+    normalBalance: "credit",
+    statementPlacement: "equity-statement",
+    retailApplicable: true,
+    subcategory: "contributed-capital",
+    commonConfusionPairs: ["retained-earnings", "service-revenue"]
+  },
+  {
+    id: "retained-earnings",
+    label: "Retained Earnings",
+    accountType: "equity",
+    normalBalance: "credit",
+    statementPlacement: "equity-statement",
+    retailApplicable: true,
+    subcategory: "earned-capital",
+    commonConfusionPairs: ["common-stock", "net-income"]
+  },
+  {
+    id: "dividends",
+    label: "Dividends",
+    accountType: "equity",
+    normalBalance: "debit",
+    statementPlacement: "equity-statement",
+    retailApplicable: true,
+    subcategory: "equity-adjustment",
+    commonConfusionPairs: ["withdrawals"]
+  },
+  {
+    id: "withdrawals",
+    label: "Withdrawals",
+    accountType: "equity",
+    normalBalance: "debit",
+    statementPlacement: "equity-statement",
+    retailApplicable: false,
+    subcategory: "equity-adjustment",
+    commonConfusionPairs: ["dividends"]
+  },
+  {
+    id: "treasury-stock",
+    label: "Treasury Stock",
+    accountType: "equity",
+    normalBalance: "debit",
+    statementPlacement: "equity-statement",
+    retailApplicable: true,
+    subcategory: "equity-adjustment",
+    commonConfusionPairs: ["common-stock"]
+  },
+  {
+    id: "service-revenue",
+    label: "Service Revenue",
+    accountType: "revenue",
+    normalBalance: "credit",
+    statementPlacement: "income-statement",
+    retailApplicable: false,
+    subcategory: "operating-revenue",
+    commonConfusionPairs: ["sales-revenue", "unearned-revenue"]
+  },
+  {
+    id: "consulting-revenue",
+    label: "Consulting Revenue",
+    accountType: "revenue",
+    normalBalance: "credit",
+    statementPlacement: "income-statement",
+    retailApplicable: false,
+    subcategory: "operating-revenue",
+    commonConfusionPairs: ["service-revenue"]
+  },
+  {
+    id: "rent-revenue",
+    label: "Rent Revenue",
+    accountType: "revenue",
+    normalBalance: "credit",
+    statementPlacement: "income-statement",
+    retailApplicable: false,
+    subcategory: "other-revenue",
+    commonConfusionPairs: ["rent-expense"]
+  },
+  {
+    id: "interest-revenue",
+    label: "Interest Revenue",
+    accountType: "revenue",
+    normalBalance: "credit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "other-revenue",
+    commonConfusionPairs: ["interest-expense"]
+  },
+  {
+    id: "sales-revenue",
+    label: "Sales Revenue",
+    accountType: "revenue",
+    normalBalance: "credit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-revenue",
+    commonConfusionPairs: ["service-revenue", "sales-discounts"]
+  },
+  {
+    id: "sales-discounts",
+    label: "Sales Discounts",
+    accountType: "revenue",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    contraOf: "sales-revenue",
+    subcategory: "contra-revenue",
+    commonConfusionPairs: ["sales-returns-and-allowances"]
+  },
+  {
+    id: "sales-returns-and-allowances",
+    label: "Sales Returns and Allowances",
+    accountType: "revenue",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    contraOf: "sales-revenue",
+    subcategory: "contra-revenue",
+    commonConfusionPairs: ["sales-discounts"]
+  },
+  {
+    id: "cost-of-goods-sold",
+    label: "Cost of Goods Sold",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["merchandise-inventory"]
+  },
+  {
+    id: "freight-in",
+    label: "Freight In",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "merchandising-expense",
+    commonConfusionPairs: ["freight-out"]
+  },
+  {
+    id: "freight-out",
+    label: "Freight Out",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "merchandising-expense",
+    commonConfusionPairs: ["freight-in"]
+  },
+  {
+    id: "salaries-expense",
+    label: "Salaries Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["salaries-payable"]
+  },
+  {
+    id: "rent-expense",
+    label: "Rent Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["prepaid-rent"]
+  },
+  {
+    id: "insurance-expense",
+    label: "Insurance Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["prepaid-insurance"]
+  },
+  {
+    id: "supplies-expense",
+    label: "Supplies Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["supplies"]
+  },
+  {
+    id: "utilities-expense",
+    label: "Utilities Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["cash"]
+  },
+  {
+    id: "advertising-expense",
+    label: "Advertising Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["prepaid-advertising"]
+  },
+  {
+    id: "depreciation-expense",
+    label: "Depreciation Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["accumulated-depreciation-equipment", "accumulated-depreciation-buildings"]
+  },
+  {
+    id: "bad-debt-expense",
+    label: "Bad Debt Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["allowance-for-doubtful-accounts"]
+  },
+  {
+    id: "interest-expense",
+    label: "Interest Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "other-expense",
+    commonConfusionPairs: ["interest-revenue"]
+  },
+  {
+    id: "repairs-expense",
+    label: "Repairs Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["equipment"]
+  },
+  {
+    id: "office-supplies-expense",
+    label: "Office Supplies Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["supplies"]
+  },
+  {
+    id: "miscellaneous-expense",
+    label: "Miscellaneous Expense",
+    accountType: "expense",
+    normalBalance: "debit",
+    statementPlacement: "income-statement",
+    retailApplicable: true,
+    subcategory: "operating-expense",
+    commonConfusionPairs: ["miscellaneous-revenue"]
+  }
+];
+const accountById = new Map(practiceAccounts.map((account) => [account.id, account]));
+function getAccountById(accountId) {
+  return accountById.get(accountId);
+}
+function isContra(accountOrId) {
+  const account = typeof accountOrId === "string" ? getAccountById(accountOrId) : accountOrId;
+  return Boolean(account && "contraOf" in account && account.contraOf);
+}
+function buildPracticeSubmissionEnvelopeFromGrade(definition, studentResponse, gradeResult, submittedAt = /* @__PURE__ */ new Date()) {
+  return buildPracticeSubmissionEnvelope({
+    activityId: definition.activityId,
+    mode: definition.mode,
+    submittedAt,
+    answers: studentResponse,
+    parts: gradeResult.parts.map((part) => ({
+      partId: part.partId,
+      rawAnswer: part.rawAnswer ?? studentResponse[part.partId],
+      normalizedAnswer: part.normalizedAnswer,
+      isCorrect: part.isCorrect,
+      score: part.score,
+      maxScore: part.maxScore,
+      misconceptionTags: part.misconceptionTags
+    })),
+    analytics: {
+      score: gradeResult.score,
+      maxScore: gradeResult.maxScore
+    }
+  });
+}
+const SERVICE_BASE_IDS = [
+  "cash",
+  "accounts-receivable",
+  "supplies",
+  "equipment",
+  "accounts-payable",
+  "common-stock",
+  "retained-earnings",
+  "service-revenue",
+  "rent-expense"
+];
+const RETAIL_BASE_IDS = [
+  "cash",
+  "accounts-receivable",
+  "merchandise-inventory",
+  "accounts-payable",
+  "common-stock",
+  "retained-earnings",
+  "sales-revenue",
+  "cost-of-goods-sold"
+];
+const CONTRA_IDS = [
+  "accumulated-depreciation-equipment",
+  "allowance-for-doubtful-accounts",
+  "sales-discounts",
+  "sales-returns-and-allowances",
+  "dividends"
+];
+function mulberry32$k(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function randomInt$5(rng, min, max) {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  if (upper <= lower) {
+    return lower;
+  }
+  return Math.floor(rng() * (upper - lower + 1)) + lower;
+}
+function shuffled(items, rng) {
+  const clone = [...items];
+  for (let index2 = clone.length - 1; index2 > 0; index2 -= 1) {
+    const swapIndex = Math.floor(rng() * (index2 + 1));
+    [clone[index2], clone[swapIndex]] = [clone[swapIndex], clone[index2]];
+  }
+  return clone;
+}
+function splitTotal(total, count, rng) {
+  if (count <= 0) {
+    return [];
+  }
+  if (count === 1) {
+    return [Math.max(1, total)];
+  }
+  const remaining = Math.max(total, count);
+  const cuts = /* @__PURE__ */ new Set();
+  while (cuts.size < count - 1) {
+    cuts.add(randomInt$5(rng, 1, remaining - 1));
+  }
+  const points = [0, ...Array.from(cuts).sort((a, b) => a - b), remaining];
+  return points.slice(1).map((point, index2) => Math.max(1, point - points[index2]));
+}
+function pickUnique(ids, count, rng, exclude = /* @__PURE__ */ new Set()) {
+  const pool = shuffled(
+    ids.filter((id) => !exclude.has(id)),
+    rng
+  );
+  return pool.slice(0, count);
+}
+function buildSelectedIds(companyType, accountCount, includeContraAccounts, rng) {
+  const baseIds = companyType === "service" ? SERVICE_BASE_IDS : RETAIL_BASE_IDS;
+  const excluded = /* @__PURE__ */ new Set();
+  const selected = [...baseIds];
+  if (includeContraAccounts) {
+    const contraId = companyType === "service" ? CONTRA_IDS[0] : CONTRA_IDS[2];
+    selected.splice(3, 0, contraId);
+    excluded.add(contraId);
+  }
+  const allEligibleIds = practiceAccounts.filter((account) => companyType === "service" || account.retailApplicable).map((account) => account.id).filter((id) => !selected.includes(id));
+  while (selected.length < accountCount && allEligibleIds.length > 0) {
+    const nextIds = pickUnique(allEligibleIds, 1, rng, excluded);
+    if (nextIds.length === 0) {
+      break;
+    }
+    selected.push(nextIds[0]);
+    excluded.add(nextIds[0]);
+  }
+  return selected;
+}
+function assignBalances(accounts, totals, rng) {
+  const selectedByType = {
+    asset: accounts.filter((account) => account.accountType === "asset"),
+    liability: accounts.filter((account) => account.accountType === "liability"),
+    equity: accounts.filter((account) => account.accountType === "equity"),
+    revenue: accounts.filter((account) => account.accountType === "revenue"),
+    expense: accounts.filter((account) => account.accountType === "expense")
+  };
+  const contraAssets = selectedByType.asset.filter((account) => account.contraOf);
+  const regularAssets = selectedByType.asset.filter((account) => !account.contraOf);
+  const positiveEquity = selectedByType.equity.filter((account) => account.normalBalance === "credit");
+  const negativeEquity = selectedByType.equity.filter((account) => account.normalBalance === "debit");
+  const positiveRevenue = selectedByType.revenue.filter((account) => account.normalBalance === "credit");
+  const negativeRevenue = selectedByType.revenue.filter((account) => account.normalBalance === "debit");
+  const regularAssetBalances = splitTotal(totals.grossAssets, regularAssets.length, rng);
+  const contraAssetBalances = splitTotal(totals.contraAssets, contraAssets.length, rng);
+  const liabilityBalances = splitTotal(totals.liabilities, selectedByType.liability.length, rng);
+  const equityPositiveBalances = splitTotal(totals.beginningCapital + totals.netIncome, positiveEquity.length, rng);
+  const equityNegativeBalances = splitTotal(totals.dividends, negativeEquity.length, rng);
+  const revenueBalances = splitTotal(totals.revenue, positiveRevenue.length, rng);
+  const revenueContraBalances = splitTotal(0, negativeRevenue.length, rng);
+  const expenseBalances = splitTotal(totals.expenses, selectedByType.expense.length, rng);
+  const accountBalances = /* @__PURE__ */ new Map();
+  regularAssets.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: regularAssetBalances[index2] ?? 0,
+      statementBalance: regularAssetBalances[index2] ?? 0
+    });
+  });
+  contraAssets.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: contraAssetBalances[index2] ?? 0,
+      statementBalance: -(contraAssetBalances[index2] ?? 0)
+    });
+  });
+  selectedByType.liability.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: liabilityBalances[index2] ?? 0,
+      statementBalance: liabilityBalances[index2] ?? 0
+    });
+  });
+  positiveEquity.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: equityPositiveBalances[index2] ?? 0,
+      statementBalance: equityPositiveBalances[index2] ?? 0
+    });
+  });
+  negativeEquity.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: equityNegativeBalances[index2] ?? 0,
+      statementBalance: -(equityNegativeBalances[index2] ?? 0)
+    });
+  });
+  positiveRevenue.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: revenueBalances[index2] ?? 0,
+      statementBalance: revenueBalances[index2] ?? 0
+    });
+  });
+  negativeRevenue.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: revenueContraBalances[index2] ?? 0,
+      statementBalance: -(revenueContraBalances[index2] ?? 0)
+    });
+  });
+  selectedByType.expense.forEach((account, index2) => {
+    accountBalances.set(account.id, {
+      balance: expenseBalances[index2] ?? 0,
+      statementBalance: -(expenseBalances[index2] ?? 0)
+    });
+  });
+  return accountBalances;
+}
+function generateMiniLedger(seed, config2 = {}) {
+  const rng = mulberry32$k(seed);
+  const companyType = config2.companyType ?? (seed % 2 === 0 ? "service" : "retail");
+  const capitalMode = config2.capitalMode ?? "ending";
+  const minimumCount = companyType === "service" ? SERVICE_BASE_IDS.length : RETAIL_BASE_IDS.length;
+  const requestedCount = config2.accountCount ?? minimumCount;
+  const accountCount = Math.max(minimumCount, Math.min(requestedCount, practiceAccounts.length));
+  const includeContraAccounts = config2.includeContraAccounts ?? true;
+  const selectedIds = buildSelectedIds(companyType, accountCount, includeContraAccounts, rng);
+  const selectedAccounts = selectedIds.map((id) => getAccountById(id)).filter(Boolean);
+  const liabilities = randomInt$5(rng, 500, 2800);
+  const beginningCapital = randomInt$5(rng, 800, 4200);
+  const netIncome = randomInt$5(rng, 250, 1800);
+  const dividends = randomInt$5(rng, 100, Math.max(120, Math.floor((beginningCapital + netIncome) * 0.2)));
+  const endingCapital = Math.max(1, beginningCapital + netIncome - dividends);
+  const netAssets = liabilities + endingCapital;
+  const contraAssets = includeContraAccounts && selectedAccounts.some((account) => account.accountType === "asset" && account.contraOf) ? randomInt$5(rng, 1, Math.max(1, Math.floor(netAssets * 0.12))) : 0;
+  const grossAssets = netAssets + contraAssets;
+  const expenses = randomInt$5(rng, 300, 1800);
+  const revenue = expenses + netIncome;
+  const totals = {
+    grossAssets,
+    contraAssets,
+    netAssets,
+    liabilities,
+    beginningCapital,
+    netIncome,
+    dividends,
+    endingCapital,
+    revenue,
+    expenses
+  };
+  const accountBalanceMap = assignBalances(selectedAccounts, totals, rng);
+  const accounts = selectedAccounts.map((account) => {
+    const balanceData = accountBalanceMap.get(account.id) ?? { balance: 0, statementBalance: 0 };
+    return {
+      ...account,
+      balance: balanceData.balance,
+      statementBalance: balanceData.statementBalance
+    };
+  });
+  return {
+    seed,
+    companyType,
+    capitalMode,
+    difficulty: {
+      accountCount,
+      includeContraAccounts,
+      capitalMode,
+      companyType
+    },
+    accounts,
+    totals
+  };
+}
+const ACCOUNTING_EQUATION_TERMS = [
+  { id: "assets", label: "Assets" },
+  { id: "liabilities", label: "Liabilities" },
+  { id: "equity", label: "Owner's Equity" }
+];
+function mulberry32$j(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$f(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function buildEquationValues(miniLedger) {
+  return {
+    assets: miniLedger.totals.netAssets,
+    liabilities: miniLedger.totals.liabilities,
+    equity: miniLedger.totals.endingCapital
+  };
+}
+function buildHiddenTerm(seed, requested) {
+  if (requested) {
+    return requested;
+  }
+  const rng = mulberry32$j(seed ^ 760158763);
+  return pick$f(
+    ACCOUNTING_EQUATION_TERMS.map((entry) => entry.id),
+    rng
+  );
+}
+function buildVisibleFacts(hiddenTermId, values) {
+  return ACCOUNTING_EQUATION_TERMS.filter((term) => term.id !== hiddenTermId).map((term) => ({
+    id: term.id,
+    label: term.label,
+    value: values[term.id]
+  }));
+}
+function buildParts$9(hiddenTermId, values, companyType, tolerance) {
+  const visibleFacts = buildVisibleFacts(hiddenTermId, values);
+  const partLabel = ACCOUNTING_EQUATION_TERMS.find((term) => term.id === hiddenTermId)?.label ?? hiddenTermId;
+  return [
+    {
+      id: hiddenTermId,
+      kind: "numeric",
+      label: partLabel,
+      description: `Complete the accounting equation for ${partLabel.toLowerCase()}.`,
+      prompt: `What is ${partLabel.toLowerCase()}?`,
+      expectedAnswerShape: "number",
+      canonicalAnswer: values[hiddenTermId],
+      explanation: hiddenTermId === "assets" ? "Assets equal liabilities plus equity." : hiddenTermId === "liabilities" ? "Liabilities equal assets minus equity." : "Equity is the residual claim after liabilities are deducted from assets.",
+      misconceptionTags: ["equation-imbalance", `${hiddenTermId}-mismatch`],
+      standardCode: "ACC-M7-B-ECON",
+      artifactTarget: String(values[hiddenTermId]),
+      targetId: values[hiddenTermId],
+      details: {
+        termId: hiddenTermId,
+        companyType,
+        visibleFacts,
+        formula: "Assets = Liabilities + Owner's Equity",
+        tolerance,
+        explanation: hiddenTermId === "assets" ? "Use liabilities and equity to find total assets." : hiddenTermId === "liabilities" ? "Use assets and equity to isolate liabilities." : "Use assets and liabilities to isolate owner equity."
+      }
+    }
+  ];
+}
+function buildResponse$7(definition) {
+  return {
+    assets: definition.equation.assets,
+    liabilities: definition.equation.liabilities,
+    equity: definition.equation.equity
+  };
+}
+function scoreNumericPart$9(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: normalizePracticeValue(actual)
+    };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: normalizePracticeValue(parsed)
+  };
+}
+function buildPartFeedback$8(part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    selectedLabel: selectedValue === void 0 ? "Not entered" : String(selectedValue),
+    expectedLabel: String(part.targetId),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${part.targetId.toLocaleString("en-US")}.`
+  };
+}
+function buildAccountingEquationReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildPartFeedback$8(part, studentResponse, partResult)];
+    })
+  );
+}
+const accountingEquationFamily = {
+  generate(seed, config2 = {}) {
+    const miniLedger = generateMiniLedger(seed, {
+      ...config2,
+      capitalMode: "ending"
+    });
+    const values = buildEquationValues(miniLedger);
+    const hiddenTermId = buildHiddenTerm(seed, config2.hiddenTermId);
+    const tolerance = config2.tolerance ?? 0;
+    const parts = buildParts$9(hiddenTermId, values, miniLedger.companyType, tolerance);
+    const visibleFacts = buildVisibleFacts(hiddenTermId, values);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "accounting-equation",
+      mode: config2.mode ?? "assessment",
+      activityId: `accounting-equation-${seed}-${hiddenTermId}`,
+      prompt: {
+        title: "Complete the accounting equation",
+        stem: `Use the mini-ledger snapshot to solve for ${parts[0]?.label.toLowerCase() ?? hiddenTermId}.`
+      },
+      miniLedger,
+      equation: {
+        ...values,
+        hiddenTermId
+      },
+      facts: visibleFacts,
+      terms: {
+        assets: {
+          id: "assets",
+          label: "Assets",
+          value: values.assets,
+          hidden: hiddenTermId === "assets",
+          editable: hiddenTermId === "assets"
+        },
+        liabilities: {
+          id: "liabilities",
+          label: "Liabilities",
+          value: values.liabilities,
+          hidden: hiddenTermId === "liabilities",
+          editable: hiddenTermId === "liabilities"
+        },
+        equity: {
+          id: "equity",
+          label: "Owner's Equity",
+          value: values.equity,
+          hidden: hiddenTermId === "equity",
+          editable: hiddenTermId === "equity"
+        }
+      },
+      parts,
+      scaffolding: {
+        formula: "Assets = Liabilities + Owner's Equity",
+        hiddenTermId,
+        helperText: hiddenTermId === "assets" ? "Use liabilities plus equity to find total assets." : hiddenTermId === "liabilities" ? "Use assets minus equity to find liabilities." : "Use assets minus liabilities to find owner equity."
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "mini-ledger",
+        seed,
+        companyType: miniLedger.companyType,
+        hiddenTermId
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$7(definition);
+  },
+  grade(definition, studentResponse) {
+    const tolerance = definition.parts[0]?.details.tolerance ?? 0;
+    const part = definition.parts[0];
+    const scoreResult = scoreNumericPart$9(part.targetId, studentResponse[part.id], tolerance);
+    const partResult = {
+      partId: part.id,
+      rawAnswer: studentResponse[part.id],
+      normalizedAnswer: scoreResult.normalizedAnswer,
+      isCorrect: scoreResult.isCorrect,
+      score: scoreResult.score,
+      maxScore: 1,
+      misconceptionTags: scoreResult.isCorrect ? [] : ["equation-imbalance", `${part.id}-mismatch`]
+    };
+    return {
+      score: partResult.score,
+      maxScore: 1,
+      parts: [partResult],
+      feedback: partResult.isCorrect ? "Correct equation balance." : "Recheck the accounting equation and the mini-ledger totals."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
       {
-        className: `p-6 rounded-lg border-2 ${result.success ? "bg-green-50 border-green-500 dark:bg-green-950" : "bg-red-50 border-red-500 dark:bg-red-950"}`,
-        children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
-            result.success ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CircleCheck, { className: "w-6 h-6 text-green-600 dark:text-green-400" }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CircleX, { className: "w-6 h-6 text-red-600 dark:text-red-400" }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-xl font-semibold", children: result.success ? "Connection Successful" : "Connection Failed" })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mb-4", children: result.message }),
-          result.success && result.data && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-2 bg-background/50 p-4 rounded", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex gap-2", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Database, { className: "w-5 h-5 mt-0.5" }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono text-sm", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "Connection Type:" }),
-                " ",
-                result.data.connectionType
-              ] }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono text-sm", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "Current Time:" }),
-                " ",
-                new Date(result.data.currentTime).toISOString()
-              ] }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono text-sm break-all", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "PostgreSQL Version:" }),
-                " ",
-                result.data.postgresVersion
-              ] })
-            ] })
-          ] }) }),
-          !result.success && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "bg-background/50 p-4 rounded", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono text-sm text-red-600 dark:text-red-400", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "Error:" }),
-            " ",
-            result.error
-          ] }) })
+        activityId: definition.activityId,
+        mode: definition.mode
+      },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+const ROWS = [
+  { id: "revenue", label: "Revenue", description: "Earned income for the period" },
+  { id: "expense", label: "Expense", description: "Costs recognized this period" },
+  { id: "net-income", label: "Net income", description: "Revenue minus expense" },
+  { id: "assets", label: "Assets", description: "Resources owned" },
+  { id: "liabilities", label: "Liabilities", description: "Amounts owed" },
+  { id: "equity", label: "Owner's equity", description: "Owner claim after period results" }
+];
+const COLUMNS = [
+  { id: "overstated", label: "Overstated", description: "Reported too high" },
+  { id: "understated", label: "Understated", description: "Reported too low" },
+  { id: "no-effect", label: "No effect", description: "No change to the statement element" }
+];
+function mulberry32$i(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function clamp$1(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+const SCENARIO_TEMPLATES = [
+  {
+    kind: "accrual-revenue",
+    label: "Accrued revenue not recorded",
+    scenario: (amount) => `The business earned $${amount.toLocaleString("en-US")} of service revenue at period end, but the accrued revenue entry was skipped.`,
+    missedAdjustment: (amount) => `Record the earned revenue and the related receivable for $${amount.toLocaleString("en-US")}.`,
+    effects: {
+      revenue: "understated",
+      expense: "no-effect",
+      "net-income": "understated",
+      assets: "understated",
+      liabilities: "no-effect",
+      equity: "understated"
+    },
+    explanations: {
+      revenue: "The earned revenue never entered the books, so revenue stays understated.",
+      expense: "No expense adjustment was omitted in this scenario, so expense has no effect.",
+      "net-income": "Net income is understated because the missing revenue never reached the income statement.",
+      assets: "The receivable was never recorded, so assets stay understated.",
+      liabilities: "No liability is created by this scenario, so liabilities have no effect.",
+      equity: "Equity is understated because net income flows through to the owner's claim."
+    },
+    misconceptions: {
+      revenue: ["omitted-accrual-revenue", "revenue-not-recorded"],
+      expense: ["no-adjustment-for-expense"],
+      "net-income": ["net-income-follows-revenue"],
+      assets: ["receivable-not-recorded"],
+      liabilities: ["no-liability-created"],
+      equity: ["equity-follows-net-income"]
+    }
+  },
+  {
+    kind: "accrual-expense",
+    label: "Accrued expense not recorded",
+    scenario: (amount) => `The business incurred $${amount.toLocaleString("en-US")} of wages expense at period end, but the accrued expense entry was skipped.`,
+    missedAdjustment: (amount) => `Record the expense and the related payable for $${amount.toLocaleString("en-US")}.`,
+    effects: {
+      revenue: "no-effect",
+      expense: "understated",
+      "net-income": "overstated",
+      assets: "no-effect",
+      liabilities: "understated",
+      equity: "overstated"
+    },
+    explanations: {
+      revenue: "No revenue was affected, so revenue has no effect.",
+      expense: "The expense never reached the books, so expense is understated.",
+      "net-income": "Net income is overstated because the missing expense was never subtracted.",
+      assets: "This scenario does not change an asset balance, so assets have no effect.",
+      liabilities: "The payable was never recorded, so liabilities are understated.",
+      equity: "Equity is overstated because missing expense keeps net income too high."
+    },
+    misconceptions: {
+      revenue: ["no-revenue-effect"],
+      expense: ["omitted-expense-accrual"],
+      "net-income": ["net-income-too-high"],
+      assets: ["no-asset-effect"],
+      liabilities: ["payable-not-recorded"],
+      equity: ["equity-follows-net-income"]
+    }
+  },
+  {
+    kind: "deferral-revenue",
+    label: "Deferred revenue not recognized",
+    scenario: (amount) => `A customer advance of $${amount.toLocaleString("en-US")} had been earned by period end, but the revenue recognition entry was skipped.`,
+    missedAdjustment: (amount) => `Move $${amount.toLocaleString("en-US")} from unearned revenue to earned revenue.`,
+    effects: {
+      revenue: "understated",
+      expense: "no-effect",
+      "net-income": "understated",
+      assets: "no-effect",
+      liabilities: "overstated",
+      equity: "understated"
+    },
+    explanations: {
+      revenue: "The earned revenue was not recognized, so revenue is understated.",
+      expense: "Expenses were not part of this missing adjustment, so expense has no effect.",
+      "net-income": "Net income is understated because earned revenue never reached the income statement.",
+      assets: "The cash was already recorded, so assets have no effect.",
+      liabilities: "Unearned revenue stays too high, so liabilities are overstated.",
+      equity: "Equity is understated because the missing revenue never flowed through net income."
+    },
+    misconceptions: {
+      revenue: ["deferred-revenue-not-recognized"],
+      expense: ["no-expense-effect"],
+      "net-income": ["net-income-follows-revenue"],
+      assets: ["cash-already-recorded"],
+      liabilities: ["unearned-revenue-not-cleared"],
+      equity: ["equity-follows-net-income"]
+    }
+  },
+  {
+    kind: "deferral-expense",
+    label: "Deferred expense not recognized",
+    scenario: (amount) => `A prepaid expense of $${amount.toLocaleString("en-US")} expired during the period, but the expense recognition entry was skipped.`,
+    missedAdjustment: (amount) => `Move $${amount.toLocaleString("en-US")} from prepaid expense to expense.`,
+    effects: {
+      revenue: "no-effect",
+      expense: "understated",
+      "net-income": "overstated",
+      assets: "overstated",
+      liabilities: "no-effect",
+      equity: "overstated"
+    },
+    explanations: {
+      revenue: "Revenue is not part of this omitted expense recognition, so it has no effect.",
+      expense: "The expired cost never reached the books, so expense is understated.",
+      "net-income": "Net income is overstated because the missing expense was never subtracted.",
+      assets: "The prepaid asset was not reduced, so assets are overstated.",
+      liabilities: "This scenario does not change a payable, so liabilities have no effect.",
+      equity: "Equity is overstated because net income is too high when expense is missing."
+    },
+    misconceptions: {
+      revenue: ["no-revenue-effect"],
+      expense: ["deferred-expense-not-recognized"],
+      "net-income": ["net-income-too-high"],
+      assets: ["prepaid-asset-not-reduced"],
+      liabilities: ["no-liability-effect"],
+      equity: ["equity-follows-net-income"]
+    }
+  },
+  {
+    kind: "depreciation",
+    label: "Depreciation not recorded",
+    scenario: (amount) => `Depreciation expense of $${amount.toLocaleString("en-US")} on equipment was omitted at period end.`,
+    missedAdjustment: (amount) => `Record depreciation expense and accumulated depreciation for $${amount.toLocaleString("en-US")}.`,
+    effects: {
+      revenue: "no-effect",
+      expense: "understated",
+      "net-income": "overstated",
+      assets: "overstated",
+      liabilities: "no-effect",
+      equity: "overstated"
+    },
+    explanations: {
+      revenue: "Depreciation does not affect revenue, so revenue has no effect.",
+      expense: "The depreciation expense was never recorded, so expense is understated.",
+      "net-income": "Net income is overstated because the missing expense never reduced profit.",
+      assets: "The asset carrying value stays too high, so assets are overstated.",
+      liabilities: "No liability changes in this scenario, so liabilities have no effect.",
+      equity: "Equity is overstated because omitted depreciation keeps net income too high."
+    },
+    misconceptions: {
+      revenue: ["no-revenue-effect"],
+      expense: ["depreciation-expense-not-recorded"],
+      "net-income": ["net-income-too-high"],
+      assets: ["accumulated-depreciation-not-recorded"],
+      liabilities: ["no-liability-effect"],
+      equity: ["equity-follows-net-income"]
+    }
+  }
+];
+function getTemplate(kind) {
+  const template = SCENARIO_TEMPLATES.find((entry) => entry.kind === kind);
+  if (!template) {
+    throw new Error(`Unknown adjustment scenario kind: ${kind}`);
+  }
+  return template;
+}
+function pickScenarioKind$3(seed, requestedKind) {
+  if (requestedKind) {
+    return requestedKind;
+  }
+  const rng = mulberry32$i(seed);
+  return SCENARIO_TEMPLATES[Math.floor(rng() * SCENARIO_TEMPLATES.length)]?.kind ?? SCENARIO_TEMPLATES[0].kind;
+}
+function buildScenario$5(seed, kind) {
+  const template = getTemplate(kind);
+  const rng = mulberry32$i(seed ^ 1597463007);
+  const amountOptions = [1200, 1800, 2400, 3600, 4800];
+  const amount = amountOptions[clamp$1(Math.floor(rng() * amountOptions.length), 0, amountOptions.length - 1)];
+  return {
+    kind,
+    label: template.label,
+    scenario: template.scenario(amount),
+    missedAdjustment: template.missedAdjustment(amount),
+    periodEndAssumption: "Assume the books are unadjusted at the reporting date.",
+    amount
+  };
+}
+function buildParts$8(scenario) {
+  const template = getTemplate(scenario.kind);
+  return ROWS.map((row) => ({
+    id: row.id,
+    kind: "selection",
+    label: row.label,
+    description: row.description,
+    prompt: `Choose the effect for ${row.label}.`,
+    expectedAnswerShape: "effect-id",
+    canonicalAnswer: template.effects[row.id],
+    explanation: template.explanations[row.id],
+    misconceptionTags: template.misconceptions[row.id],
+    standardCode: `ACC-M7-${row.id}`,
+    artifactTarget: template.effects[row.id],
+    targetId: template.effects[row.id],
+    details: {
+      statementElement: row.id,
+      effect: template.effects[row.id],
+      scenarioKind: scenario.kind,
+      scenarioLabel: scenario.label,
+      missedAdjustment: scenario.missedAdjustment,
+      periodEndAssumption: scenario.periodEndAssumption,
+      explanation: template.explanations[row.id],
+      commonMisconceptionTags: template.misconceptions[row.id]
+    }
+  }));
+}
+function buildEffectsResponse(definition) {
+  return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetId]));
+}
+function buildEffectLabel(effect) {
+  return effect === "no-effect" ? "No effect" : effect[0].toUpperCase() + effect.slice(1);
+}
+function buildPartFeedback$7(part, studentResponse, gradeResultPart) {
+  const selectedEffect = normalizePracticeValue(studentResponse[part.id]);
+  const selectedLabel = selectedEffect ? buildEffectLabel(selectedEffect) : "Not selected";
+  const expectedLabel = buildEffectLabel(part.targetId);
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+    selectedLabel,
+    expectedLabel,
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? `Correct. ${part.details.explanation}` : `${part.label} should be ${expectedLabel.toLowerCase()}. ${part.details.explanation}`
+  };
+}
+function buildAdjustmentEffectsReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((gradeResultPart) => {
+      const part = definition.parts.find((entry) => entry.id === gradeResultPart.partId);
+      if (!part) {
+        return [
+          gradeResultPart.partId,
+          {
+            status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+            selectedLabel: "Not selected",
+            expectedLabel: "Unknown",
+            misconceptionTags: gradeResultPart.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildPartFeedback$7(part, studentResponse, gradeResultPart)];
+    })
+  );
+}
+const adjustmentEffectsFamily = {
+  generate(seed, config2 = {}) {
+    const scenarioKind = pickScenarioKind$3(seed, config2.scenarioKind);
+    const scenario = buildScenario$5(seed, scenarioKind);
+    const parts = buildParts$8(scenario);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "adjustment-effects",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `adjustment-effects-${scenario.kind}-${seed}`,
+      prompt: {
+        title: "Effects of Missing Adjustments",
+        stem: "For each statement element, choose whether the missing adjustment leaves it overstated, understated, or with no effect."
+      },
+      scenario,
+      rows: ROWS,
+      columns: COLUMNS,
+      parts,
+      workedExample: {
+        scenarioKind: scenario.kind,
+        scenarioLabel: scenario.label,
+        exampleRowId: parts[0]?.id,
+        exampleEffect: parts[0]?.targetId
+      },
+      scaffolding: {
+        showScenarioPreamble: true,
+        showEffectLegend: true,
+        scenarioKind: scenario.kind
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: false,
+        rubric: {
+          scenarioKind: scenario.kind
+        }
+      },
+      analyticsConfig: {
+        generator: "adjustment-effects-family",
+        seed,
+        scenarioKind: scenario.kind,
+        amount: scenario.amount
+      }
+    };
+  },
+  solve(definition) {
+    return buildEffectsResponse(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const rawAnswer = studentResponse[part.id];
+      const normalizedAnswer = normalizePracticeValue(rawAnswer);
+      const isCorrect = normalizedAnswer === part.targetId;
+      return {
+        partId: part.id,
+        rawAnswer,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [
+          "missing-adjustment-error",
+          `scenario:${definition.scenario.kind}`,
+          ...part.details.commonMisconceptionTags
+        ]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} statement effects correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "adjustment-effects-grid",
+      family: definition.familyKey,
+      scenario: definition.scenario,
+      columns: definition.columns,
+      rows: definition.rows,
+      entries: definition.parts.map((part) => {
+        const selectedEffect = normalizePracticeValue(studentResponse[part.id]);
+        const selectedLabel = selectedEffect ? buildEffectLabel(selectedEffect) : "Not selected";
+        const expectedLabel = buildEffectLabel(part.targetId);
+        const partResult = gradeResult.parts.find((entry) => entry.partId === part.id);
+        return {
+          id: part.id,
+          label: part.label,
+          description: part.description,
+          selectedEffect,
+          selectedLabel,
+          expectedEffect: part.targetId,
+          expectedLabel,
+          scenarioKind: definition.scenario.kind,
+          scenarioLabel: definition.scenario.label,
+          missedAdjustment: definition.scenario.missedAdjustment,
+          periodEndAssumption: definition.scenario.periodEndAssumption,
+          explanation: part.details.explanation,
+          isCorrect: partResult?.isCorrect ?? false,
+          misconceptionTags: partResult?.misconceptionTags ?? []
+        };
+      })
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: studentResponse,
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[part.partId],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        scenarioKind: definition.scenario.kind,
+        amount: definition.scenario.amount
+      }
+    });
+  }
+};
+const DEFAULT_DEFERRAL_LABELS = ["Insurance", "Rent", "Supplies", "Software Subscription"];
+const DEFAULT_ACCRUAL_REVENUE_LABELS = ["Service Revenue", "Consulting Revenue", "Interest Revenue"];
+const DEFAULT_ACCRUAL_EXPENSE_LABELS = ["Wages Expense", "Utilities Expense", "Insurance Expense"];
+const DEFAULT_ASSET_CATEGORIES = ["Equipment", "Office Furniture", "Computers", "Delivery Truck"];
+const DEFAULT_DEFERRAL_AMOUNTS = [600, 900, 1200, 1800, 2400];
+const DEFAULT_ACCRUAL_DAILY_RATES = [60, 90, 120, 150, 180, 210];
+const DEFAULT_DEPRECIATION_COSTS = [2400, 3600, 4800, 7200, 9600];
+const DEFAULT_COVERAGE_MONTHS = [6, 9, 12];
+const DEFAULT_USEFUL_LIFE_MONTHS = [12, 24, 36, 60];
+const DEFAULT_SCENARIO_KINDS = ["deferral", "accrual", "depreciation"];
+function mulberry32$h(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function randomInt$4(rng, min, max) {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  if (upper <= lower) {
+    return lower;
+  }
+  return Math.floor(rng() * (upper - lower + 1)) + lower;
+}
+function pick$e(items, rng) {
+  return items[randomInt$4(rng, 0, items.length - 1)];
+}
+function parseIsoDate(value) {
+  const date = /* @__PURE__ */ new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(`Invalid ISO date: ${value}`);
+  }
+  return date;
+}
+function toIsoDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+function addDays$1(baseDate, offset) {
+  const date = parseIsoDate(baseDate);
+  date.setUTCDate(date.getUTCDate() + offset);
+  return toIsoDate(date);
+}
+function addMonths(baseDate, offset) {
+  const date = parseIsoDate(baseDate);
+  date.setUTCMonth(date.getUTCMonth() + offset);
+  return toIsoDate(date);
+}
+function differenceInDays(startDate, endDate) {
+  const start = parseIsoDate(startDate);
+  const end = parseIsoDate(endDate);
+  const millisecondsPerDay = 24 * 60 * 60 * 1e3;
+  return Math.max(1, Math.round((end.getTime() - start.getTime()) / millisecondsPerDay) + 1);
+}
+function differenceInMonthsInclusive(startDate, endDate) {
+  const start = parseIsoDate(startDate);
+  const end = parseIsoDate(endDate);
+  const monthDiff = (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + (end.getUTCMonth() - start.getUTCMonth()) + 1;
+  return Math.max(1, monthDiff);
+}
+function formatAmount$f(amount) {
+  return amount.toLocaleString("en-US");
+}
+function buildPrepaidLabels(accountLabel) {
+  const baseLabel = accountLabel.trim();
+  return {
+    assetAccountLabel: `Prepaid ${baseLabel}`,
+    expenseAccountLabel: `${baseLabel} Expense`
+  };
+}
+function buildAccrualCounterLabel(accountLabel) {
+  const trimmed = accountLabel.trim();
+  if (/revenue$/i.test(trimmed)) {
+    return "Accounts Receivable";
+  }
+  if (/expense$/i.test(trimmed)) {
+    return trimmed.replace(/expense$/i, "Payable").trim();
+  }
+  return `${trimmed} Payable`;
+}
+function buildDepreciationCreditLabel(assetCategory) {
+  return `Accumulated Depreciation - ${assetCategory.trim()}`;
+}
+function buildScenarioPicker(seed, requestedKind) {
+  if (requestedKind) {
+    return requestedKind;
+  }
+  const rng = mulberry32$h(seed ^ 1374496513);
+  return pick$e(DEFAULT_SCENARIO_KINDS, rng);
+}
+function buildDeferralDefaults(seed, config2 = {}) {
+  const rng = mulberry32$h(seed ^ 439041101);
+  const accountLabel = config2.accountLabel ?? pick$e(DEFAULT_DEFERRAL_LABELS, rng);
+  const coverageMonths = config2.coverageMonths ?? pick$e(DEFAULT_COVERAGE_MONTHS, rng);
+  const initialRecordingMethod = config2.initialRecordingMethod ?? (seed % 2 === 0 ? "asset" : "expense");
+  const amount = config2.amount ?? pick$e(DEFAULT_DEFERRAL_AMOUNTS, rng);
+  const startDate = config2.startDate ?? addMonths("2026-01-01", randomInt$4(rng, 0, 2));
+  const elapsedMonths = config2.reportingDate ? Math.min(coverageMonths, differenceInMonthsInclusive(startDate, config2.reportingDate)) : Math.min(coverageMonths, Math.max(1, randomInt$4(rng, 1, Math.max(1, coverageMonths - 1))));
+  const reportingDate = config2.reportingDate ?? addMonths(startDate, elapsedMonths - 1);
+  return {
+    accountLabel,
+    amount,
+    coverageMonths,
+    initialRecordingMethod,
+    reportingDate,
+    startDate
+  };
+}
+function buildAccrualDefaults(seed, config2 = {}) {
+  const rng = mulberry32$h(seed ^ 2654435769);
+  const accrualKind = config2.accrualKind ?? (seed % 2 === 0 ? "revenue" : "expense");
+  const accountLabel = config2.accountLabel ?? (accrualKind === "revenue" ? pick$e(DEFAULT_ACCRUAL_REVENUE_LABELS, rng) : pick$e(DEFAULT_ACCRUAL_EXPENSE_LABELS, rng));
+  const dailyRate = config2.dailyRate ?? config2.amount ?? pick$e(DEFAULT_ACCRUAL_DAILY_RATES, rng);
+  const reportingDate = config2.reportingDate ?? "2026-03-31";
+  const incurredDate = config2.incurredDate ?? addDays$1(reportingDate, -randomInt$4(rng, 1, 5));
+  return {
+    accountLabel,
+    amount: dailyRate,
+    dailyRate,
+    accrualKind,
+    incurredDate,
+    reportingDate
+  };
+}
+function buildDepreciationDefaults(seed, config2 = {}) {
+  const rng = mulberry32$h(seed ^ 2246822507);
+  const assetCategory = config2.assetCategory ?? pick$e(DEFAULT_ASSET_CATEGORIES, rng);
+  const cost = config2.cost ?? pick$e(DEFAULT_DEPRECIATION_COSTS, rng);
+  const usefulLifeMonths = config2.usefulLifeMonths ?? pick$e(DEFAULT_USEFUL_LIFE_MONTHS, rng);
+  const salvageValue = Math.min(
+    cost - 1,
+    config2.salvageValue ?? Math.max(1, Math.round(cost * (0.1 + rng() * 0.15)))
+  );
+  const method = config2.method ?? (seed % 2 === 0 ? "straight-line" : "variable-salvage");
+  const purchaseDate = config2.purchaseDate ?? addMonths("2026-01-01", randomInt$4(rng, 0, 2));
+  const monthsUsed = config2.reportingDate ? Math.min(usefulLifeMonths, differenceInMonthsInclusive(purchaseDate, config2.reportingDate)) : Math.min(usefulLifeMonths, randomInt$4(rng, 1, Math.max(1, usefulLifeMonths - 2)));
+  const reportingDate = config2.reportingDate ?? addMonths(purchaseDate, monthsUsed - 1);
+  return {
+    assetCategory,
+    cost,
+    salvageValue,
+    usefulLifeMonths,
+    method,
+    purchaseDate,
+    reportingDate
+  };
+}
+function generateDeferralAdjustmentScenario(seed, config2 = {}) {
+  const defaults = buildDeferralDefaults(seed, config2);
+  const { assetAccountLabel, expenseAccountLabel } = buildPrepaidLabels(defaults.accountLabel);
+  const elapsedMonths = differenceInMonthsInclusive(defaults.startDate, defaults.reportingDate);
+  const adjustmentAmount = Math.max(1, Math.round(defaults.amount * elapsedMonths / defaults.coverageMonths));
+  const remainingAmount = Math.max(0, defaults.amount - adjustmentAmount);
+  const entry = defaults.initialRecordingMethod === "asset" ? {
+    debitLabel: expenseAccountLabel,
+    creditLabel: assetAccountLabel,
+    amount: adjustmentAmount
+  } : {
+    debitLabel: assetAccountLabel,
+    creditLabel: expenseAccountLabel,
+    amount: remainingAmount
+  };
+  return {
+    seed,
+    kind: "deferral",
+    title: `${defaults.initialRecordingMethod === "asset" ? "Adjust" : "Correct"} prepaid ${defaults.accountLabel}`,
+    stem: defaults.initialRecordingMethod === "asset" ? `The business paid $${formatAmount$f(defaults.amount)} for ${defaults.accountLabel} in advance on ${defaults.startDate} and recorded it as an asset. Prepare the ${defaults.reportingDate} adjustment after ${elapsedMonths} of ${defaults.coverageMonths} months have passed.` : `The business paid $${formatAmount$f(defaults.amount)} for ${defaults.accountLabel} in advance on ${defaults.startDate} but recorded it as expense immediately. Prepare the ${defaults.reportingDate} correcting adjustment to reclassify the unexpired portion after ${elapsedMonths} of ${defaults.coverageMonths} months have passed.`,
+    reportingDate: defaults.reportingDate,
+    amount: defaults.initialRecordingMethod === "asset" ? adjustmentAmount : remainingAmount,
+    entry,
+    method: defaults.initialRecordingMethod,
+    accountLabel: defaults.accountLabel,
+    assetAccountLabel,
+    expenseAccountLabel,
+    startDate: defaults.startDate,
+    coverageMonths: defaults.coverageMonths,
+    elapsedMonths,
+    originalAmount: defaults.amount,
+    adjustmentAmount,
+    remainingAmount
+  };
+}
+function generateAccrualAdjustmentScenario(seed, config2 = {}) {
+  const defaults = buildAccrualDefaults(seed, config2);
+  const daysAccrued = differenceInDays(defaults.incurredDate, defaults.reportingDate);
+  const amount = Math.max(1, Math.round(defaults.dailyRate * daysAccrued));
+  const entry = defaults.accrualKind === "revenue" ? {
+    debitLabel: "Accounts Receivable",
+    creditLabel: defaults.accountLabel,
+    amount
+  } : {
+    debitLabel: defaults.accountLabel,
+    creditLabel: buildAccrualCounterLabel(defaults.accountLabel),
+    amount
+  };
+  return {
+    seed,
+    kind: "accrual",
+    title: defaults.accrualKind === "revenue" ? `Record accrued ${defaults.accountLabel}` : `Record accrued ${defaults.accountLabel.replace(/ expense$/i, "").trim()}`,
+    stem: defaults.accrualKind === "revenue" ? `The business earns $${formatAmount$f(defaults.dailyRate)} per day of ${defaults.accountLabel}. As of ${defaults.reportingDate}, ${daysAccrued} days have been earned but not billed.` : `The business incurs $${formatAmount$f(defaults.dailyRate)} per day of ${defaults.accountLabel}. As of ${defaults.reportingDate}, ${daysAccrued} days have been incurred but not yet recorded.`,
+    reportingDate: defaults.reportingDate,
+    amount,
+    entry,
+    accrualKind: defaults.accrualKind,
+    accountLabel: defaults.accountLabel,
+    incurredDate: defaults.incurredDate,
+    daysAccrued,
+    dailyRate: defaults.dailyRate
+  };
+}
+function generateDepreciationAdjustmentScenario(seed, config2 = {}) {
+  const defaults = buildDepreciationDefaults(seed, config2);
+  const monthsUsed = Math.min(
+    defaults.usefulLifeMonths,
+    differenceInMonthsInclusive(defaults.purchaseDate, defaults.reportingDate)
+  );
+  const depreciableBase = Math.max(1, defaults.cost - defaults.salvageValue);
+  const monthlyDepreciation = depreciableBase / defaults.usefulLifeMonths;
+  const depreciationExpense = Math.max(1, Math.round(monthlyDepreciation * monthsUsed));
+  const accumulatedDepreciation = depreciationExpense;
+  const carryingAmount = Math.max(0, defaults.cost - accumulatedDepreciation);
+  return {
+    seed,
+    kind: "depreciation",
+    title: `Record depreciation for ${defaults.assetCategory}`,
+    stem: defaults.method === "straight-line" ? `The business purchased ${defaults.assetCategory} on ${defaults.purchaseDate} for $${formatAmount$f(defaults.cost)} with $${formatAmount$f(defaults.salvageValue)} salvage value and a ${defaults.usefulLifeMonths}-month useful life. Prepare the ${defaults.reportingDate} straight-line depreciation adjustment.` : `The business purchased ${defaults.assetCategory} on ${defaults.purchaseDate} for $${formatAmount$f(defaults.cost)} and the asset has a variable salvage estimate of $${formatAmount$f(defaults.salvageValue)} across a ${defaults.usefulLifeMonths}-month useful life. Prepare the ${defaults.reportingDate} depreciation adjustment.`,
+    reportingDate: defaults.reportingDate,
+    amount: depreciationExpense,
+    entry: {
+      debitLabel: "Depreciation Expense",
+      creditLabel: buildDepreciationCreditLabel(defaults.assetCategory),
+      amount: depreciationExpense
+    },
+    method: defaults.method,
+    assetCategory: defaults.assetCategory,
+    purchaseDate: defaults.purchaseDate,
+    usefulLifeMonths: defaults.usefulLifeMonths,
+    salvageValue: defaults.salvageValue,
+    depreciableBase,
+    monthsUsed,
+    monthlyDepreciation,
+    depreciationExpense,
+    accumulatedDepreciation,
+    carryingAmount
+  };
+}
+function generateAdjustmentScenario(seed, config2 = {}) {
+  const scenarioKind = buildScenarioPicker(seed, config2.scenarioKind);
+  if (scenarioKind === "deferral") {
+    return generateDeferralAdjustmentScenario(seed, config2.deferral);
+  }
+  if (scenarioKind === "accrual") {
+    return generateAccrualAdjustmentScenario(seed, config2.accrual);
+  }
+  return generateDepreciationAdjustmentScenario(seed, config2.depreciation);
+}
+const CALCULATION_LABELS = {
+  deferral: "Adjustment amount",
+  accrual: "Accrual amount",
+  depreciation: "Depreciation expense"
+};
+const CALCULATION_IDS = {
+  deferral: "adjustment-amount",
+  accrual: "accrual-amount",
+  depreciation: "depreciation-expense"
+};
+const DEFERRAL_LABELS = ["Insurance", "Rent"];
+const ACCRUAL_REVENUE_LABELS = ["Service Revenue", "Consulting Revenue", "Interest Revenue"];
+const ACCRUAL_EXPENSE_LABELS = ["Insurance Expense", "Rent Expense", "Salaries Expense", "Utilities Expense", "Depreciation Expense"];
+const DEPRECIATION_ASSET_LABELS = ["Equipment", "Buildings"];
+function mulberry32$g(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$d(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$e(amount) {
+  return amount.toLocaleString("en-US");
+}
+function normalizeLabel(value) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+function findAccountIdByLabel(label) {
+  const target = normalizeLabel(label);
+  return practiceAccounts.find((account) => normalizeLabel(account.label) === target)?.id ?? null;
+}
+function buildScenarioConfig$1(seed, scenarioKind) {
+  const rng = mulberry32$g(seed ^ 1332484899);
+  if (scenarioKind === "deferral") {
+    return {
+      scenarioKind,
+      deferral: {
+        accountLabel: pick$d(DEFERRAL_LABELS, rng),
+        initialRecordingMethod: pick$d(["asset", "expense"], rng)
+      }
+    };
+  }
+  if (scenarioKind === "accrual") {
+    const accrualKind = seed % 2 === 0 ? "revenue" : "expense";
+    return {
+      scenarioKind,
+      accrual: {
+        accountLabel: accrualKind === "revenue" ? pick$d(ACCRUAL_REVENUE_LABELS, rng) : pick$d(ACCRUAL_EXPENSE_LABELS, rng),
+        accrualKind
+      }
+    };
+  }
+  return {
+    scenarioKind,
+    depreciation: {
+      assetCategory: pick$d(DEPRECIATION_ASSET_LABELS, rng)
+    }
+  };
+}
+function buildCalculationPart(scenario, tolerance) {
+  const label = CALCULATION_LABELS[scenario.kind];
+  return {
+    id: CALCULATION_IDS[scenario.kind],
+    kind: "numeric",
+    label,
+    prompt: `What is the ${label.toLowerCase()}?`,
+    expectedAnswerShape: "number",
+    canonicalAnswer: scenario.amount,
+    explanation: scenario.kind === "deferral" ? "Use the elapsed coverage to compute the amount that has expired." : scenario.kind === "accrual" ? "The accrued amount is the amount to recognize at period end." : "Use the depreciable base and months used to compute depreciation expense.",
+    misconceptionTags: [`adjusting-calculations:${scenario.kind}`, "calculation-error"],
+    standardCode: `ACC-M7-J-${scenario.kind.replace(/-/g, "").toUpperCase()}`,
+    artifactTarget: String(scenario.amount),
+    targetId: scenario.amount,
+    details: {
+      scenarioKind: scenario.kind,
+      presentation: "calculation",
+      rowRole: "calculation",
+      tolerance,
+      explanation: scenario.kind === "deferral" ? "Compute the expired portion of the prepaid amount." : scenario.kind === "accrual" ? "Enter the amount to accrue at period end." : "Enter the depreciation expense for the reporting date."
+    }
+  };
+}
+function buildJournalEntryLines(scenario) {
+  const reportingDate = scenario.reportingDate;
+  const adjustmentAmount = scenario.amount;
+  if (scenario.kind === "deferral") {
+    const deferralScenario = scenario;
+    const debitLabel = deferralScenario.method === "asset" ? deferralScenario.expenseAccountLabel : deferralScenario.assetAccountLabel;
+    const creditLabel = deferralScenario.method === "asset" ? deferralScenario.assetAccountLabel : deferralScenario.expenseAccountLabel;
+    const debitAccountId = findAccountIdByLabel(debitLabel);
+    const creditAccountId = findAccountIdByLabel(creditLabel);
+    if (!debitAccountId || !creditAccountId) {
+      throw new Error(`Unable to resolve deferral accounts for ${deferralScenario.accountLabel}`);
+    }
+    return [
+      {
+        id: "line-1",
+        date: reportingDate,
+        accountId: debitAccountId,
+        debit: adjustmentAmount,
+        credit: 0,
+        memo: `Record the ${deferralScenario.method === "asset" ? "expired expense" : "correction"} adjustment.`
+      },
+      {
+        id: "line-2",
+        date: reportingDate,
+        accountId: creditAccountId,
+        debit: 0,
+        credit: adjustmentAmount,
+        memo: `Record the ${deferralScenario.method === "asset" ? "expired asset" : "correction"} adjustment.`
+      }
+    ];
+  }
+  if (scenario.kind === "accrual") {
+    const accrualScenario = scenario;
+    const revenueAccrual = accrualScenario.accrualKind === "revenue";
+    const debitLabel = revenueAccrual ? "Accounts Receivable" : accrualScenario.accountLabel;
+    const creditLabel = revenueAccrual ? accrualScenario.accountLabel : "Accounts Payable";
+    const debitAccountId = findAccountIdByLabel(debitLabel);
+    const creditAccountId = findAccountIdByLabel(creditLabel);
+    if (!debitAccountId || !creditAccountId) {
+      throw new Error(`Unable to resolve accrual accounts for ${accrualScenario.accountLabel}`);
+    }
+    return [
+      {
+        id: "line-1",
+        date: reportingDate,
+        accountId: debitAccountId,
+        debit: adjustmentAmount,
+        credit: 0,
+        memo: revenueAccrual ? "Record accrued revenue." : "Record accrued expense."
+      },
+      {
+        id: "line-2",
+        date: reportingDate,
+        accountId: creditAccountId,
+        debit: 0,
+        credit: adjustmentAmount,
+        memo: revenueAccrual ? "Record the receivable." : "Record the payable."
+      }
+    ];
+  }
+  const depreciationScenario = scenario;
+  const accumulatedDepreciationLabel = `Accumulated Depreciation - ${depreciationScenario.assetCategory}`;
+  const accumulatedDepreciationAccountId = findAccountIdByLabel(accumulatedDepreciationLabel);
+  if (!accumulatedDepreciationAccountId) {
+    throw new Error(`Unable to resolve depreciation account for ${depreciationScenario.assetCategory}`);
+  }
+  return [
+    {
+      id: "line-1",
+      date: reportingDate,
+      accountId: "depreciation-expense",
+      debit: adjustmentAmount,
+      credit: 0,
+      memo: `Record depreciation on ${depreciationScenario.assetCategory.toLowerCase()}.`
+    },
+    {
+      id: "line-2",
+      date: reportingDate,
+      accountId: accumulatedDepreciationAccountId,
+      debit: 0,
+      credit: adjustmentAmount,
+      memo: `Record accumulated depreciation for ${depreciationScenario.assetCategory.toLowerCase()}.`
+    }
+  ];
+}
+function shuffleAccounts(items, rng) {
+  const nextItems = [...items];
+  for (let index2 = nextItems.length - 1; index2 > 0; index2 -= 1) {
+    const swapIndex = Math.floor(rng() * (index2 + 1));
+    [nextItems[index2], nextItems[swapIndex]] = [nextItems[swapIndex], nextItems[index2]];
+  }
+  return nextItems;
+}
+function buildAvailableAccounts(seed, entryLines) {
+  const usedAccountIds = new Set(entryLines.map((line2) => line2.accountId));
+  const usedAccountTypes = new Set(
+    entryLines.map((line2) => getAccountById(line2.accountId)?.accountType).filter((accountType) => Boolean(accountType))
+  );
+  const usedNormalBalances = new Set(
+    entryLines.map((line2) => getAccountById(line2.accountId)?.normalBalance).filter((normalBalance) => Boolean(normalBalance))
+  );
+  const primaryPool = practiceAccounts.filter(
+    (account) => !usedAccountIds.has(account.id) && usedAccountTypes.has(account.accountType)
+  );
+  const secondaryPool = practiceAccounts.filter(
+    (account) => !usedAccountIds.has(account.id) && usedNormalBalances.has(account.normalBalance)
+  );
+  const fallbackPool = practiceAccounts.filter((account) => !usedAccountIds.has(account.id));
+  const neighborhoodPool = primaryPool.length >= 3 ? primaryPool : secondaryPool.length >= 3 ? secondaryPool : fallbackPool;
+  const rng = mulberry32$g(seed ^ 1000000109 ^ entryLines.length);
+  const distractorCount = Math.min(5, 3 + Math.floor(rng() * 3));
+  const distractors = shuffleAccounts(neighborhoodPool, rng).slice(0, distractorCount).map((account) => ({
+    id: account.id,
+    label: account.label
+  }));
+  return Array.from(
+    new Map(
+      [...entryLines, ...distractors].map((lineOrAccount) => {
+        if ("debit" in lineOrAccount) {
+          const account = getAccountById(lineOrAccount.accountId);
+          return [lineOrAccount.accountId, { id: lineOrAccount.accountId, label: account?.label ?? lineOrAccount.accountId }];
+        }
+        return [lineOrAccount.id, lineOrAccount];
+      })
+    ).values()
+  );
+}
+function buildEntryPart(line2, lineIndex, scenario, tolerance) {
+  const account = getAccountById(line2.accountId);
+  const lineRole = line2.debit > 0 ? "debit" : "credit";
+  return {
+    id: line2.id,
+    kind: "journal-entry",
+    label: `${lineRole === "debit" ? "Debit" : "Credit"} line`,
+    prompt: `Enter the ${lineRole} line for the adjustment.`,
+    expectedAnswerShape: "journal-entry-line",
+    canonicalAnswer: line2,
+    explanation: line2.memo,
+    misconceptionTags: [`adjusting-calculations:${scenario.kind}`, `${line2.id}-error`],
+    standardCode: `ACC-M7-J-${scenario.kind.replace(/-/g, "").toUpperCase()}`,
+    artifactTarget: line2.accountId,
+    targetId: line2.id,
+    details: {
+      scenarioKind: scenario.kind,
+      presentation: "journal-entry",
+      rowRole: "journal-entry",
+      lineIndex,
+      accountId: line2.accountId,
+      accountLabel: account?.label ?? line2.accountId,
+      side: lineRole,
+      tolerance,
+      explanation: line2.memo
+    }
+  };
+}
+function formatJournalEntryLine(line2) {
+  const accountLabel = getAccountById(line2.accountId)?.label ?? line2.accountId;
+  const movement = line2.debit > 0 ? `debit $${formatAmount$e(line2.debit)}` : `credit $${formatAmount$e(line2.credit)}`;
+  return `${line2.date} • ${accountLabel} ${movement}`;
+}
+function lineSignature$2(line2) {
+  return [
+    line2.date.trim().toLowerCase(),
+    line2.accountId.trim().toLowerCase(),
+    Number(line2.debit ?? 0).toFixed(2),
+    Number(line2.credit ?? 0).toFixed(2),
+    line2.memo.trim().toLowerCase()
+  ].join("|");
+}
+function scoreNumericPart$8(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: ""
+    };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: String(parsed)
+  };
+}
+function scoreJournalLine(expected, actual, tolerance) {
+  const line2 = actual;
+  if (!line2) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: ""
+    };
+  }
+  const accountMatches = line2.accountId === expected.accountId;
+  const dateMatches = line2.date.trim().toLowerCase() === expected.date.trim().toLowerCase();
+  const debitMatches = Math.abs(Number(line2.debit ?? 0) - Number(expected.debit ?? 0)) <= tolerance;
+  const creditMatches = Math.abs(Number(line2.credit ?? 0) - Number(expected.credit ?? 0)) <= tolerance;
+  const isCorrect = accountMatches && dateMatches && debitMatches && creditMatches;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: lineSignature$2(line2)
+  };
+}
+function buildReviewFeedback$3(definition, part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  const scenario = definition.scenario;
+  const chain = scenario.kind === "deferral" ? scenario.method === "asset" ? `$${formatAmount$e(scenario.originalAmount)} × (${scenario.elapsedMonths}/${scenario.coverageMonths}) = $${formatAmount$e(scenario.amount)}` : `$${formatAmount$e(scenario.originalAmount)} − $${formatAmount$e(scenario.adjustmentAmount)} = $${formatAmount$e(scenario.remainingAmount)}` : scenario.kind === "accrual" ? `$${formatAmount$e(scenario.dailyRate)} × ${scenario.daysAccrued} = $${formatAmount$e(scenario.amount)}` : `($${formatAmount$e(scenario.depreciableBase)} ÷ ${scenario.usefulLifeMonths}) × ${scenario.monthsUsed} = $${formatAmount$e(scenario.depreciationExpense)}`;
+  if (part.kind === "numeric") {
+    return {
+      status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+      selectedLabel: selectedValue === void 0 ? "Not entered" : formatAmount$e(Number(selectedValue)),
+      expectedLabel: formatAmount$e(Number(part.targetId)),
+      misconceptionTags: gradeResultPart.misconceptionTags,
+      message: gradeResultPart.isCorrect ? `${part.label} is correct. ${chain}.` : `${part.label} should be ${formatAmount$e(Number(part.targetId))}. ${chain}.`
+    };
+  }
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    selectedLabel: selectedValue && typeof selectedValue === "object" && "accountId" in selectedValue ? formatJournalEntryLine(selectedValue) : "Not entered",
+    expectedLabel: formatJournalEntryLine(part.canonicalAnswer),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? `${part.label} is correct. ${chain}.` : `${part.label} should be ${formatJournalEntryLine(part.canonicalAnswer)}. ${chain}.`
+  };
+}
+function buildAdjustingCalculationsReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildReviewFeedback$3(definition, part, studentResponse, partResult)];
+    })
+  );
+}
+function buildCalculationDefinition(seed, config2, scenario) {
+  const part = buildCalculationPart(scenario, config2.tolerance ?? 0);
+  return {
+    contractVersion: "practice.v1",
+    familyKey: "adjusting-calculations",
+    mode: config2.mode ?? "guided_practice",
+    activityId: `adjusting-calculations-${scenario.kind}-calculation-${seed}`,
+    prompt: {
+      title: `Calculate the ${part.label.toLowerCase()}`,
+      stem: `${scenario.stem} First compute the amount to record.`
+    },
+    scenario,
+    presentation: "calculation",
+    availableAccounts: [],
+    entryLines: [],
+    parts: [part],
+    scaffolding: {
+      modeLabel: "Numeric calculation",
+      guidance: scenario.stem,
+      amountLabel: part.label,
+      bridgeText: `Use ${formatAmount$e(scenario.amount)} as the amount to record.`
+    },
+    grading: {
+      strategy: "numeric",
+      partialCredit: false
+    },
+    analyticsConfig: {
+      generator: "adjusting-calculations-family",
+      seed,
+      scenarioKind: scenario.kind,
+      presentation: "calculation"
+    }
+  };
+}
+function buildJournalEntryDefinition(seed, config2, scenario) {
+  const entryLines = buildJournalEntryLines(scenario);
+  const parts = entryLines.map((line2, index2) => buildEntryPart(line2, index2, scenario, config2.tolerance ?? 0));
+  const availableAccounts = buildAvailableAccounts(seed, entryLines);
+  return {
+    contractVersion: "practice.v1",
+    familyKey: "adjusting-calculations",
+    mode: config2.mode ?? "guided_practice",
+    activityId: `adjusting-calculations-${scenario.kind}-journal-entry-${seed}`,
+    prompt: {
+      title: `Record the ${scenario.kind.replace(/-/g, " ")}`,
+      stem: `${scenario.stem} Record the adjustment as a journal entry after you compute the amount.`
+    },
+    scenario,
+    presentation: "journal-entry",
+    availableAccounts,
+    entryLines,
+    parts,
+    scaffolding: {
+      modeLabel: "Journal entry recording",
+      guidance: scenario.stem,
+      amountLabel: CALCULATION_LABELS[scenario.kind],
+      bridgeText: `Use ${formatAmount$e(scenario.amount)} as the amount to record in the journal entry.`
+    },
+    grading: {
+      strategy: "exact",
+      partialCredit: true
+    },
+    analyticsConfig: {
+      generator: "adjusting-calculations-family",
+      seed,
+      scenarioKind: scenario.kind,
+      presentation: "journal-entry"
+    }
+  };
+}
+const adjustingCalculationsFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32$g(seed ^ 1817057917);
+    const scenarioKind = config2.scenarioKind ?? pick$d(["deferral", "accrual", "depreciation"], rng);
+    const presentation = config2.presentation ?? "calculation";
+    const scenarioConfig = buildScenarioConfig$1(seed, scenarioKind);
+    const scenario = generateAdjustmentScenario(seed, scenarioConfig);
+    return presentation === "journal-entry" ? buildJournalEntryDefinition(seed, config2, scenario) : buildCalculationDefinition(seed, config2, scenario);
+  },
+  solve(definition) {
+    if (definition.presentation === "journal-entry") {
+      return Object.fromEntries(definition.entryLines.map((line2) => [line2.id, { ...line2 }]));
+    }
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetId]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      if (part.kind === "numeric") {
+        const scoreResult2 = scoreNumericPart$8(Number(part.targetId), studentResponse[part.id], part.details.tolerance);
+        return {
+          partId: part.id,
+          rawAnswer: studentResponse[part.id],
+          normalizedAnswer: scoreResult2.normalizedAnswer,
+          isCorrect: scoreResult2.isCorrect,
+          score: scoreResult2.score,
+          maxScore: 1,
+          misconceptionTags: scoreResult2.isCorrect ? [] : ["calculation-error", `${part.details.scenarioKind}-adjustment-error`]
+        };
+      }
+      const expectedLine = part.canonicalAnswer;
+      const scoreResult = scoreJournalLine(expectedLine, studentResponse[part.id], part.details.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: scoreResult.normalizedAnswer,
+        isCorrect: scoreResult.isCorrect,
+        score: scoreResult.score,
+        maxScore: 1,
+        misconceptionTags: scoreResult.isCorrect ? [] : [`adjusting-calculations:${part.details.scenarioKind}:${part.details.side ?? "line"}`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, part) => sum + part.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((part) => part.isCorrect) ? "All adjusting-calculation entries are correct." : "Recheck the adjustment amount and the journal entry lines."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      {
+        activityId: definition.activityId,
+        mode: definition.mode
+      },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32$f(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+function shuffle$2(items, rng) {
+  const clone = [...items];
+  for (let index2 = clone.length - 1; index2 > 0; index2 -= 1) {
+    const swapIndex = Math.floor(rng() * (index2 + 1));
+    [clone[index2], clone[swapIndex]] = [clone[swapIndex], clone[index2]];
+  }
+  return clone;
+}
+function buildCandidates(companyScope, includeContraAccounts, rng) {
+  return practiceAccounts.filter((account) => companyScope === "service" || account.retailApplicable).filter((account) => includeContraAccounts || !isContra(account)).map((account) => {
+    const confusionWeight = (account.commonConfusionPairs?.length ?? 0) * 0.25;
+    const contraWeight = isContra(account) ? 3 : 0;
+    const retailWeight = account.retailApplicable ? 0.1 : 0;
+    return {
+      account,
+      priority: contraWeight + confusionWeight + retailWeight + rng() * 0.2
+    };
+  });
+}
+function selectBalancedAccounts(candidates, accountCount, rng) {
+  const debitCandidates = candidates.filter((candidate) => candidate.account.normalBalance === "debit").sort((left, right) => right.priority - left.priority || left.account.label.localeCompare(right.account.label));
+  const creditCandidates = candidates.filter((candidate) => candidate.account.normalBalance === "credit").sort((left, right) => right.priority - left.priority || left.account.label.localeCompare(right.account.label));
+  const totalCandidates = debitCandidates.length + creditCandidates.length;
+  const desiredDebitCount = clamp(
+    Math.round(accountCount * debitCandidates.length / Math.max(totalCandidates, 1)),
+    debitCandidates.length === 0 ? 0 : 1,
+    debitCandidates.length
+  );
+  const desiredCreditCount = accountCount - desiredDebitCount;
+  const selected = [
+    ...debitCandidates.slice(0, desiredDebitCount),
+    ...creditCandidates.slice(0, Math.max(0, desiredCreditCount))
+  ];
+  if (selected.length >= accountCount) {
+    return shuffle$2(selected.slice(0, accountCount), rng);
+  }
+  const remaining = [...debitCandidates.slice(desiredDebitCount), ...creditCandidates.slice(Math.max(0, desiredCreditCount))].sort(
+    (left, right) => right.priority - left.priority || left.account.label.localeCompare(right.account.label)
+  );
+  const seen = new Set(selected.map((candidate) => candidate.account.id));
+  for (const candidate of remaining) {
+    if (selected.length >= accountCount) {
+      break;
+    }
+    if (seen.has(candidate.account.id)) {
+      continue;
+    }
+    selected.push(candidate);
+    seen.add(candidate.account.id);
+  }
+  return shuffle$2(selected.slice(0, accountCount), rng);
+}
+function buildParts$7(selected, companyScope) {
+  return selected.map((candidate) => ({
+    id: candidate.account.id,
+    kind: "selection",
+    label: candidate.account.label,
+    description: `${candidate.account.accountType} account with ${candidate.account.normalBalance} normal balance`,
+    prompt: `Identify the normal balance for ${candidate.account.label}.`,
+    expectedAnswerShape: "debit-or-credit",
+    canonicalAnswer: candidate.account.normalBalance,
+    explanation: candidate.account.contraOf ? `${candidate.account.label} is a contra account, so its normal balance is the opposite side of ${candidate.account.contraOf}.` : `${candidate.account.label} follows the ${candidate.account.normalBalance} normal balance for a ${candidate.account.accountType} account.`,
+    misconceptionTags: candidate.account.contraOf ? [`contra-of:${candidate.account.contraOf}`, "contra-account-same-as-parent"] : ["normal-balance-error"],
+    hintIds: candidate.account.commonConfusionPairs,
+    standardCode: candidate.account.subcategory,
+    artifactTarget: candidate.account.normalBalance,
+    targetId: candidate.account.normalBalance,
+    details: {
+      accountType: candidate.account.accountType,
+      normalBalance: candidate.account.normalBalance,
+      isContraAccount: Boolean(candidate.account.contraOf),
+      contraOf: candidate.account.contraOf,
+      retailApplicable: candidate.account.retailApplicable,
+      subcategory: candidate.account.subcategory,
+      commonConfusionPairs: candidate.account.commonConfusionPairs ?? [],
+      companyScope
+    }
+  }));
+}
+function buildNormalBalanceResponse(definition) {
+  return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetId]));
+}
+function getContraParentBalance(part) {
+  if (!part.details.contraOf) {
+    return null;
+  }
+  return practiceAccounts.find((account) => account.id === part.details.contraOf)?.normalBalance ?? null;
+}
+function explainNormalBalance(part) {
+  if (part.details.isContraAccount && part.details.contraOf) {
+    return `${part.label} is a contra account, so it uses the opposite side from ${part.details.contraOf}.`;
+  }
+  switch (part.details.accountType) {
+    case "asset":
+      return "Assets increase on the debit side.";
+    case "liability":
+      return "Liabilities increase on the credit side.";
+    case "equity":
+      return "Equity increases on the credit side.";
+    case "revenue":
+      return "Revenue increases equity, so it uses the credit side.";
+    case "expense":
+      return "Expenses increase on the debit side.";
+    default:
+      return `This account uses the ${part.targetId} side.`;
+  }
+}
+function buildPartFeedback$6(part, studentResponse, gradeResult) {
+  const selectedBalance = normalizePracticeValue(studentResponse[part.id]);
+  const expectedBalance = part.targetId;
+  const contraParentBalance = getContraParentBalance(part);
+  const isCorrect = gradeResult.isCorrect;
+  return {
+    status: isCorrect ? "correct" : "incorrect",
+    scoreLabel: `${gradeResult.score}/${gradeResult.maxScore}`,
+    selectedBalanceLabel: selectedBalance ? selectedBalance.toUpperCase() : "Not selected",
+    expectedBalanceLabel: expectedBalance.toUpperCase(),
+    misconceptionTags: gradeResult.misconceptionTags,
+    message: isCorrect ? `Correct normal balance. ${explainNormalBalance(part)}` : part.details.isContraAccount && contraParentBalance && selectedBalance === contraParentBalance ? `This contra account should not use the same side as ${part.details.contraOf}. ${explainNormalBalance(part)}` : `Expected ${expectedBalance.toUpperCase()}. ${explainNormalBalance(part)}`
+  };
+}
+function buildNormalBalanceReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${partResult.score}/${partResult.maxScore}`,
+            selectedBalanceLabel: "Not selected",
+            expectedBalanceLabel: "UNKNOWN",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildPartFeedback$6(part, studentResponse, partResult)];
+    })
+  );
+}
+const normalBalanceFamily = {
+  generate(seed, config2 = {}) {
+    const companyScope = config2.companyScope ?? "service";
+    const includeContraAccounts = config2.includeContraAccounts ?? true;
+    const rng = mulberry32$f(seed);
+    const candidates = buildCandidates(companyScope, includeContraAccounts, rng);
+    const accountCount = clamp(config2.accountCount ?? Math.max(8, Math.min(12, candidates.length)), 4, candidates.length);
+    const selected = selectBalancedAccounts(candidates, accountCount, rng);
+    const parts = buildParts$7(selected, companyScope);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "normal-balance",
+      mode: config2.mode ?? "assessment",
+      activityId: `normal-balance-${companyScope}-${seed}`,
+      prompt: {
+        title: "Identify account normal balances",
+        stem: "Choose debit or credit for each account."
+      },
+      companyScope,
+      parts,
+      workedExample: parts.length > 0 ? {
+        itemId: parts[0].id,
+        accountLabel: parts[0].label,
+        expectedBalance: parts[0].targetId,
+        explanation: parts[0].explanation
+      } : void 0,
+      scaffolding: {
+        showBalanceLegend: true,
+        includeContraAccounts,
+        companyScope,
+        mnemonic: {
+          debit: "DEA: Dividends, Expenses, Assets",
+          credit: "LER: Liabilities, Equity, Revenue",
+          hint: "Debit increases what you own (DEA); Credit increases what you owe or own (LER)"
+        }
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: false,
+        rubric: {
+          includeContraAccounts,
+          companyScope
+        }
+      },
+      analyticsConfig: {
+        generator: "normal-balance-family",
+        seed,
+        accountCount: parts.length,
+        companyScope,
+        includeContraAccounts
+      }
+    };
+  },
+  solve(definition) {
+    return buildNormalBalanceResponse(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const rawAnswer = studentResponse[part.id];
+      const normalizedAnswer = normalizePracticeValue(rawAnswer);
+      const isCorrect = normalizedAnswer === part.targetId;
+      const contraParentBalance = getContraParentBalance(part);
+      const isContraAccountError = part.details.isContraAccount && contraParentBalance === normalizedAnswer;
+      return {
+        partId: part.id,
+        rawAnswer,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [
+          ...isContraAccountError ? ["contra-account-same-as-parent"] : ["normal-balance-error"],
+          ...part.details.contraOf ? [`contra-of:${part.details.contraOf}`] : []
+        ]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} normal balances correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const columns = [
+      { id: "debit", label: "Debit", description: "Accounts with debit normal balances" },
+      { id: "credit", label: "Credit", description: "Accounts with credit normal balances" }
+    ];
+    const artifact = {
+      kind: "normal-balance-grid",
+      family: definition.familyKey,
+      companyScope: definition.companyScope,
+      columns,
+      rows: definition.parts.map((part) => {
+        const selectedBalance = normalizePracticeValue(studentResponse[part.id]);
+        const partResult = gradeResult.parts.find((entry) => entry.partId === part.id);
+        return {
+          id: part.id,
+          label: part.label,
+          description: part.description,
+          accountType: part.details.accountType,
+          normalBalance: part.details.normalBalance,
+          selectedBalance,
+          expectedBalance: part.targetId,
+          isContraAccount: part.details.isContraAccount,
+          contraOf: part.details.contraOf,
+          retailApplicable: part.details.retailApplicable,
+          subcategory: part.details.subcategory,
+          commonConfusionPairs: part.details.commonConfusionPairs,
+          isCorrect: partResult?.isCorrect ?? false,
+          misconceptionTags: partResult?.misconceptionTags ?? []
+        };
+      })
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: studentResponse,
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[part.partId],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        companyScope: definition.companyScope,
+        accountCount: definition.parts.length
+      }
+    });
+  }
+};
+function formatAmount$d(amount) {
+  return amount.toLocaleString("en-US");
+}
+function buildDepreciationChain(scenario) {
+  const originalCost = scenario.depreciableBase + scenario.salvageValue;
+  return `($${formatAmount$d(originalCost)} − $${formatAmount$d(scenario.salvageValue)}) ÷ ${scenario.usefulLifeMonths} × ${scenario.monthsUsed} = $${formatAmount$d(scenario.accumulatedDepreciation)}`;
+}
+function buildNetBookValueChain(scenario) {
+  const originalCost = scenario.depreciableBase + scenario.salvageValue;
+  return `$${formatAmount$d(originalCost)} − $${formatAmount$d(scenario.accumulatedDepreciation)} = $${formatAmount$d(scenario.carryingAmount)}`;
+}
+function buildReviewFeedback$2(definition, part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  const scenario = definition.scenario;
+  let chain = null;
+  if (part.details.rowRole === "accumulated-depreciation") {
+    chain = buildDepreciationChain(scenario);
+  } else if (part.details.rowRole === "net-presentation") {
+    chain = buildNetBookValueChain(scenario);
+  }
+  const baseMessage = gradeResultPart.isCorrect ? `${part.label} is correct.` : `${part.label} should be $${formatAmount$d(part.targetId)}.`;
+  const message = chain ? `${baseMessage} ${chain}` : baseMessage;
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    selectedLabel: selectedValue === void 0 ? "Not entered" : formatAmount$d(Number(selectedValue)),
+    expectedLabel: formatAmount$d(part.targetId),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message
+  };
+}
+function mulberry32$e(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$c(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function scoreNumericPart$7(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: normalizePracticeValue(actual)
+    };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: normalizePracticeValue(parsed)
+  };
+}
+function buildScenarioConfig(seed) {
+  const rng = mulberry32$e(seed ^ 2075741981);
+  return {
+    scenarioKind: "depreciation",
+    depreciation: {
+      assetCategory: pick$c(["Equipment", "Buildings"], rng)
+    }
+  };
+}
+function getOriginalAssetCost(scenario) {
+  return scenario.depreciableBase + scenario.salvageValue;
+}
+function createSectionRow(id, label, value, kind, note, sumOf) {
+  return {
+    id,
+    label,
+    kind,
+    value,
+    placeholder: kind === "editable" ? "0" : void 0,
+    note,
+    sumOf
+  };
+}
+function buildAssetRegister(scenario, layout) {
+  const originalCost = getOriginalAssetCost(scenario);
+  const landValue = Math.max(1200, Math.round(originalCost * 0.35));
+  return [
+    {
+      id: "asset-register-land",
+      label: "Land",
+      value: landValue,
+      note: "Land provides a contrast case because it is not depreciated.",
+      isLand: true
+    },
+    {
+      id: "asset-register-cost",
+      label: scenario.assetCategory,
+      value: originalCost,
+      note: "Use the cost and depreciation facts to present the asset.",
+      isLand: false
+    },
+    {
+      id: "asset-register-salvage",
+      label: "Salvage Value",
+      value: scenario.salvageValue,
+      note: "The residual value limits the depreciable base.",
+      isLand: false
+    },
+    {
+      id: "asset-register-life",
+      label: "Useful Life (months)",
+      value: scenario.usefulLifeMonths,
+      note: layout === "derived" ? "Students derive the depreciation first." : "Students receive the depreciation directly.",
+      isLand: false
+    },
+    {
+      id: "asset-register-months",
+      label: "Months Used",
+      value: scenario.monthsUsed,
+      note: "Use elapsed service time to complete the presentation.",
+      isLand: false
+    }
+  ];
+}
+function buildParts$6(scenario, layout, tolerance) {
+  const directPart = {
+    id: "net-book-value",
+    kind: "numeric",
+    label: "Net Book Value",
+    prompt: "What is the net book value?",
+    expectedAnswerShape: "number",
+    canonicalAnswer: scenario.carryingAmount,
+    explanation: "Subtract accumulated depreciation from the asset cost.",
+    misconceptionTags: ["depreciation-presentation", "net-presentation-error"],
+    standardCode: "ACC-M7-N-PPE",
+    artifactTarget: String(scenario.carryingAmount),
+    targetId: scenario.carryingAmount,
+    details: {
+      layout,
+      rowRole: "net-presentation",
+      explanation: "Subtract accumulated depreciation from the cost to present the asset net.",
+      tolerance,
+      contrastLabel: "Land is not depreciated."
+    }
+  };
+  if (layout === "direct") {
+    return [directPart];
+  }
+  return [
+    {
+      id: "accumulated-depreciation",
+      kind: "numeric",
+      label: "Accumulated Depreciation",
+      prompt: "What is accumulated depreciation?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: scenario.accumulatedDepreciation,
+      explanation: "Use the monthly depreciation and months used to build accumulated depreciation.",
+      misconceptionTags: ["depreciation-presentation", "accumulated-depreciation-error"],
+      standardCode: "ACC-M7-N-PPE",
+      artifactTarget: String(scenario.accumulatedDepreciation),
+      targetId: scenario.accumulatedDepreciation,
+      details: {
+        layout,
+        rowRole: "accumulated-depreciation",
+        explanation: "Compute the accumulated depreciation before presenting the asset net.",
+        tolerance,
+        contrastLabel: "Land is not depreciated."
+      }
+    },
+    directPart
+  ];
+}
+function buildStatementSections(scenario, layout) {
+  const originalCost = getOriginalAssetCost(scenario);
+  const landValue = Math.max(1200, Math.round(originalCost * 0.35));
+  if (layout === "direct") {
+    const sections2 = [
+      {
+        id: "ppe",
+        label: "Property, plant, and equipment",
+        description: "Present the long-lived asset net of accumulated depreciation.",
+        rows: [
+          createSectionRow("land", "Land", landValue, "prefilled", "Land is not depreciated."),
+          createSectionRow("asset-cost", scenario.assetCategory, originalCost, "prefilled", "Use the original asset cost."),
+          createSectionRow("accumulated-depreciation", "Less: Accumulated depreciation", scenario.accumulatedDepreciation, "prefilled", "Subtract accumulated depreciation from cost."),
+          createSectionRow("net-book-value", "Net Book Value", void 0, "editable", "Enter the net amount after depreciation."),
+          createSectionRow("total-ppe", "Total PP&E", void 0, "subtotal", "Combine land and the asset net book value.", ["land", "net-book-value"])
         ]
       }
+    ];
+    return {
+      sections: sections2,
+      rows: sections2.flatMap((section) => section.rows)
+    };
+  }
+  const sections = [
+    {
+      id: "ppe",
+      label: "Property, plant, and equipment",
+      description: "Use the cue block to complete the net presentation.",
+      rows: [
+        createSectionRow("land", "Land", landValue, "prefilled", "Land is not depreciated."),
+        createSectionRow("asset-cost", scenario.assetCategory, originalCost, "prefilled", "Use the original asset cost."),
+        createSectionRow("net-book-value", "Net Book Value", void 0, "editable", "Present the asset net of depreciation."),
+        createSectionRow("total-ppe", "Total PP&E", void 0, "subtotal", "Combine land and the net book value.", ["land", "net-book-value"])
+      ]
+    }
+  ];
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows)
+  };
+}
+function buildDepreciationPresentationReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildReviewFeedback$2(definition, part, studentResponse, partResult)];
+    })
+  );
+}
+const depreciationPresentationFamily = {
+  generate(seed, config2 = {}) {
+    const layout = config2.layout ?? (seed % 2 === 0 ? "direct" : "derived");
+    const scenario = generateAdjustmentScenario(seed, buildScenarioConfig(seed));
+    const assetRegister = buildAssetRegister(scenario, layout);
+    const parts = buildParts$6(scenario, layout, config2.tolerance ?? 0);
+    const body = buildStatementSections(scenario, layout);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "depreciation-presentation",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `depreciation-presentation-${layout}-${seed}`,
+      prompt: {
+        title: layout === "direct" ? "Present the depreciated asset" : "Derive the depreciated asset presentation",
+        stem: layout === "direct" ? "Use the given depreciation to present the asset net of accumulated depreciation." : "Use the asset register cue to derive the presentation and then place the net book value."
+      },
+      scenario,
+      layout,
+      assetRegister,
+      sections: body.sections,
+      rows: body.rows,
+      parts,
+      scaffolding: {
+        sectionLabel: "Property, plant, and equipment",
+        guidance: layout === "direct" ? "Present the asset net of accumulated depreciation." : "Read the register cue before entering the net presentation.",
+        registerCue: layout === "direct" ? "The statement gives the accumulated depreciation directly." : "Use the cost, salvage value, and months used to work out accumulated depreciation first.",
+        variantLabel: layout
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "depreciation-presentation-family",
+        seed,
+        layout
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetId]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const scoreResult = scoreNumericPart$7(part.targetId, studentResponse[part.id], part.details.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: scoreResult.normalizedAnswer,
+        isCorrect: scoreResult.isCorrect,
+        score: scoreResult.score,
+        maxScore: 1,
+        misconceptionTags: scoreResult.isCorrect ? [] : [`depreciation-presentation:${part.details.layout}:${part.details.rowRole}`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, part) => sum + part.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((part) => part.isCorrect) ? "The depreciation presentation is correct." : "Recheck the depreciation cue and the net presentation."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      {
+        activityId: definition.activityId,
+        mode: definition.mode
+      },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+const AMOUNT_CHOICES = [250, 400, 600, 800, 1200, 1500, 2400, 3600];
+const transactionArchetypeCatalog = [
+  {
+    id: "owner-invests-cash",
+    label: "Owner invests cash",
+    amountRule: "single-amount",
+    equityEffect: "increases",
+    affectedAccounts: ["Cash", "Common Stock"],
+    description: "Owner contributions bring cash into the business and raise equity."
+  },
+  {
+    id: "earn-revenue",
+    label: "Earn revenue",
+    amountRule: "single-amount",
+    equityEffect: "increases",
+    affectedAccounts: ["Cash or Accounts Receivable", "Service Revenue or Sales Revenue"],
+    description: "The business earns revenue and receives cash or a receivable."
+  },
+  {
+    id: "collect-receivable",
+    label: "Collect receivable",
+    amountRule: "single-amount",
+    equityEffect: "no-effect",
+    affectedAccounts: ["Cash", "Accounts Receivable"],
+    description: "Collecting an open receivable swaps one asset for another."
+  },
+  {
+    id: "pay-payable",
+    label: "Pay payable",
+    amountRule: "single-amount",
+    equityEffect: "no-effect",
+    affectedAccounts: ["Accounts Payable", "Cash"],
+    description: "Paying a payable reduces both cash and the liability."
+  },
+  {
+    id: "pay-expense",
+    label: "Pay expense",
+    amountRule: "single-amount",
+    equityEffect: "decreases",
+    affectedAccounts: ["Expense account", "Cash or Accounts Payable"],
+    description: "An expense lowers net income and therefore equity."
+  },
+  {
+    id: "purchase-asset",
+    label: "Purchase asset",
+    amountRule: "single-amount",
+    equityEffect: "no-effect",
+    affectedAccounts: ["Supplies, equipment, or merchandise inventory", "Cash or Accounts Payable"],
+    description: "Buying an asset changes the asset mix and maybe a liability, but not equity directly."
+  },
+  {
+    id: "receive-advance",
+    label: "Receive advance",
+    amountRule: "single-amount",
+    equityEffect: "no-effect",
+    affectedAccounts: ["Cash", "Unearned Revenue"],
+    description: "A customer advance increases cash and a liability until earned."
+  },
+  {
+    id: "owner-withdrawal",
+    label: "Owner withdrawal",
+    amountRule: "single-amount",
+    equityEffect: "decreases",
+    affectedAccounts: ["Withdrawals", "Cash"],
+    description: "A withdrawal removes owner resources from the business."
+  }
+];
+new Map(transactionArchetypeCatalog.map((archetype) => [archetype.id, archetype]));
+function mulberry32$d(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function randomInt$3(rng, min, max) {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  if (upper <= lower) {
+    return lower;
+  }
+  return Math.floor(rng() * (upper - lower + 1)) + lower;
+}
+function pick$b(items, rng) {
+  return items[randomInt$3(rng, 0, items.length - 1)];
+}
+function formatAmount$c(amount) {
+  return amount.toLocaleString("en-US");
+}
+function resolveAccountId(role, options, context) {
+  switch (role) {
+    case "cash":
+      return "cash";
+    case "receivable":
+      return "accounts-receivable";
+    case "payable":
+      return "accounts-payable";
+    case "revenue":
+      return context === "merchandise" ? "sales-revenue" : "service-revenue";
+    case "expense":
+      return options.expenseAccountId ?? (context === "merchandise" ? "cost-of-goods-sold" : "rent-expense");
+    case "asset": {
+      const assetKind = options.assetKind ?? (context === "merchandise" ? "inventory" : "supplies");
+      if (assetKind === "equipment") {
+        return "equipment";
+      }
+      if (assetKind === "inventory") {
+        return "merchandise-inventory";
+      }
+      return "supplies";
+    }
+    case "equity":
+      return "common-stock";
+    case "withdrawals":
+      return "withdrawals";
+    case "unearned-revenue":
+      return "unearned-revenue";
+    default:
+      throw new Error(`Unsupported transaction role: ${role}`);
+  }
+}
+function buildEffect(role, direction, amount, options, context) {
+  const accountId = resolveAccountId(role, options, context);
+  const account = getAccountById(accountId);
+  if (!account) {
+    throw new Error(`Unknown transaction account: ${accountId}`);
+  }
+  const side = direction === "increase" ? account.normalBalance === "debit" ? "debit" : "credit" : account.normalBalance === "debit" ? "credit" : "debit";
+  return {
+    role,
+    accountId,
+    label: account.label,
+    accountType: account.accountType,
+    normalBalance: account.normalBalance,
+    direction,
+    side,
+    amount
+  };
+}
+function buildJournalLines(effects, memo) {
+  return effects.map((effect) => ({
+    accountId: effect.accountId,
+    label: effect.label,
+    debit: effect.side === "debit" ? effect.amount : 0,
+    credit: effect.side === "credit" ? effect.amount : 0,
+    memo
+  }));
+}
+function buildEventBase(args) {
+  const suffix = [args.context, args.settlement, args.assetKind, args.amount].filter(Boolean).join("-");
+  return {
+    id: `${args.archetypeId}-${suffix}`,
+    archetypeId: args.archetypeId,
+    title: args.title,
+    narrative: args.narrative,
+    context: args.context,
+    settlement: args.settlement,
+    assetKind: args.assetKind,
+    amount: args.amount,
+    equityEffect: args.equityEffect,
+    equityReason: args.equityReason,
+    effects: args.effects,
+    journalLines: buildJournalLines(args.effects, args.narrative),
+    tags: args.tags ?? []
+  };
+}
+function buildOwnerInvestment(amount, context, options) {
+  const effects = [
+    buildEffect("cash", "increase", amount, options, context),
+    buildEffect("equity", "increase", amount, options, context)
+  ];
+  return buildEventBase({
+    archetypeId: "owner-invests-cash",
+    title: "Owner invests cash",
+    narrative: `The owner invests $${formatAmount$c(amount)} cash in the business.`,
+    context,
+    amount,
+    equityEffect: "increases",
+    equityReason: "Owner contributions increase the owner claim on the business.",
+    effects,
+    tags: ["capital-contribution", context]
+  });
+}
+function buildRevenueEvent(amount, context, settlement, options) {
+  const revenueEffect = buildEffect("revenue", "increase", amount, options, context);
+  const offsetRole = settlement === "cash" ? "cash" : "receivable";
+  const offsetEffect = buildEffect(offsetRole, "increase", amount, options, context);
+  const revenueLabel = revenueEffect.label;
+  return buildEventBase({
+    archetypeId: "earn-revenue",
+    title: "Earn revenue",
+    narrative: settlement === "cash" ? `The business earns $${formatAmount$c(amount)} of ${context === "merchandise" ? "sales" : "service"} revenue and receives cash.` : `The business earns $${formatAmount$c(amount)} of ${context === "merchandise" ? "sales" : "service"} revenue on account.`,
+    context,
+    settlement,
+    amount,
+    equityEffect: "increases",
+    equityReason: "Earned revenue increases net income and therefore owner equity.",
+    effects: [offsetEffect, revenueEffect],
+    tags: ["revenue", settlement, context, revenueLabel.toLowerCase()]
+  });
+}
+function buildCollectReceivable(amount, context, options) {
+  const effects = [
+    buildEffect("cash", "increase", amount, options, context),
+    buildEffect("receivable", "decrease", amount, options, context)
+  ];
+  return buildEventBase({
+    archetypeId: "collect-receivable",
+    title: "Collect receivable",
+    narrative: `The business collects $${formatAmount$c(amount)} from a customer who previously owed on account.`,
+    context,
+    amount,
+    equityEffect: "no-effect",
+    equityReason: "Collecting a receivable exchanges one asset for another without changing equity.",
+    effects,
+    tags: ["receivable-collection", context]
+  });
+}
+function buildPayPayable(amount, context, options) {
+  const effects = [
+    buildEffect("payable", "decrease", amount, options, context),
+    buildEffect("cash", "decrease", amount, options, context)
+  ];
+  return buildEventBase({
+    archetypeId: "pay-payable",
+    title: "Pay payable",
+    narrative: `The business pays $${formatAmount$c(amount)} on an outstanding payable.`,
+    context,
+    amount,
+    equityEffect: "no-effect",
+    equityReason: "Paying a payable reduces a liability and cash by the same amount.",
+    effects,
+    tags: ["liability-payment", context]
+  });
+}
+function buildPayExpense(amount, context, settlement, options) {
+  const effects = [
+    buildEffect("expense", "increase", amount, options, context),
+    buildEffect(settlement === "cash" ? "cash" : "payable", settlement === "cash" ? "decrease" : "increase", amount, options, context)
+  ];
+  const expenseAccountId = resolveAccountId("expense", options, context);
+  return buildEventBase({
+    archetypeId: "pay-expense",
+    title: "Pay expense",
+    narrative: settlement === "cash" ? `The business pays $${formatAmount$c(amount)} for ${getAccountById(expenseAccountId)?.label ?? "an expense"}.` : `The business records $${formatAmount$c(amount)} of ${getAccountById(expenseAccountId)?.label ?? "an expense"} on account.`,
+    context,
+    settlement,
+    amount,
+    equityEffect: "decreases",
+    equityReason: "Expenses reduce net income, which reduces owner equity.",
+    effects,
+    tags: ["expense", settlement, context, expenseAccountId]
+  });
+}
+function buildPurchaseAsset(amount, context, settlement, assetKind, options) {
+  const effects = [
+    buildEffect("asset", "increase", amount, { ...options, assetKind }, context),
+    buildEffect(settlement === "cash" ? "cash" : "payable", settlement === "cash" ? "decrease" : "increase", amount, options, context)
+  ];
+  const assetAccountId = resolveAccountId("asset", { ...options, assetKind }, context);
+  return buildEventBase({
+    archetypeId: "purchase-asset",
+    title: "Purchase asset",
+    narrative: settlement === "cash" ? `The business buys ${getAccountById(assetAccountId)?.label ?? "an asset"} for $${formatAmount$c(amount)} cash.` : `The business buys ${getAccountById(assetAccountId)?.label ?? "an asset"} for $${formatAmount$c(amount)} on account.`,
+    context,
+    settlement,
+    assetKind,
+    amount,
+    equityEffect: "no-effect",
+    equityReason: "Buying an asset changes the asset mix and maybe a liability, but does not change equity directly.",
+    effects,
+    tags: ["asset-purchase", settlement, context, assetKind]
+  });
+}
+function buildReceiveAdvance(amount, context, options) {
+  const effects = [
+    buildEffect("cash", "increase", amount, options, context),
+    buildEffect("unearned-revenue", "increase", amount, options, context)
+  ];
+  return buildEventBase({
+    archetypeId: "receive-advance",
+    title: "Receive advance",
+    narrative: `The business receives a $${formatAmount$c(amount)} customer advance before earning the revenue.`,
+    context,
+    amount,
+    equityEffect: "no-effect",
+    equityReason: "A customer advance creates a liability until the service is earned.",
+    effects,
+    tags: ["advance", context]
+  });
+}
+function buildOwnerWithdrawal(amount, context, options) {
+  const effects = [
+    buildEffect("withdrawals", "increase", amount, options, context),
+    buildEffect("cash", "decrease", amount, options, context)
+  ];
+  return buildEventBase({
+    archetypeId: "owner-withdrawal",
+    title: "Owner withdrawal",
+    narrative: `The owner withdraws $${formatAmount$c(amount)} cash from the business.`,
+    context,
+    amount,
+    equityEffect: "decreases",
+    equityReason: "Withdrawals reduce owner equity because they remove resources without earning revenue.",
+    effects,
+    tags: ["withdrawal", context]
+  });
+}
+function buildTransactionEvent(archetypeId, options = {}) {
+  const context = options.context ?? "service";
+  const rng = mulberry32$d(options.seed ?? 1600085855);
+  const amount = options.amount ?? pick$b(AMOUNT_CHOICES, rng);
+  switch (archetypeId) {
+    case "owner-invests-cash":
+      return buildOwnerInvestment(amount, context, options);
+    case "earn-revenue":
+      return buildRevenueEvent(amount, context, options.settlement ?? "cash", options);
+    case "collect-receivable":
+      return buildCollectReceivable(amount, context, options);
+    case "pay-payable":
+      return buildPayPayable(amount, context, options);
+    case "pay-expense":
+      return buildPayExpense(amount, context, options.settlement ?? "cash", options);
+    case "purchase-asset":
+      return buildPurchaseAsset(amount, context, options.settlement ?? "cash", options.assetKind ?? "supplies", options);
+    case "receive-advance":
+      return buildReceiveAdvance(amount, context, options);
+    case "owner-withdrawal":
+      return buildOwnerWithdrawal(amount, context, options);
+    default:
+      throw new Error(`Unknown transaction archetype: ${archetypeId}`);
+  }
+}
+function mulberry32$c(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$a(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$b(amount) {
+  return amount.toLocaleString("en-US");
+}
+function formatLineLabel(line2) {
+  const account = getAccountById(line2.accountId)?.label ?? line2.accountId;
+  const movement = line2.debit > 0 ? `debit $${formatAmount$b(line2.debit)}` : `credit $${formatAmount$b(line2.credit)}`;
+  return `${line2.date} • ${account} ${movement}`;
+}
+function normalizeLine(line2) {
+  return [
+    line2.date.trim().toLowerCase(),
+    line2.accountId.trim().toLowerCase(),
+    Number(line2.debit ?? 0).toFixed(2),
+    Number(line2.credit ?? 0).toFixed(2)
+  ].join("|");
+}
+function cloneLine$2(line2) {
+  return {
+    ...line2
+  };
+}
+function buildLine$1(id, date, accountId, debit, credit, memo) {
+  return {
+    id,
+    date,
+    accountId,
+    debit,
+    credit,
+    memo
+  };
+}
+function buildAccountOptions$1(accountIds) {
+  const uniqueIds = Array.from(new Set(accountIds));
+  return uniqueIds.map((accountId) => ({
+    id: accountId,
+    label: getAccountById(accountId)?.label ?? accountId
+  }));
+}
+function buildScenarioFromEvent(kind, seed, options) {
+  const event = buildTransactionEvent(options.archetypeId ?? "earn-revenue", {
+    ...options,
+    seed
+  });
+  const date = kind === "liability-settlement" ? "03/20" : "03/18";
+  const journalLines = event.journalLines.map(
+    (line2, index2) => buildLine$1(
+      `${kind}-line-${index2 + 1}`,
+      date,
+      line2.accountId,
+      line2.debit,
+      line2.credit,
+      line2.memo
+    )
+  );
+  return {
+    kind,
+    title: event.title,
+    stem: event.narrative,
+    narrative: event.narrative,
+    dates: [date],
+    availableAccounts: buildAccountOptions$1([
+      ...event.journalLines.map((line2) => line2.accountId),
+      ...event.effects.map((effect) => effect.accountId)
+    ]),
+    journalLines,
+    sourceEvent: event,
+    tags: event.tags,
+    acceptsEquivalentOrder: true
+  };
+}
+function buildServiceRevenueScenario(seed) {
+  return buildScenarioFromEvent("service-revenue", seed, {
+    archetypeId: "earn-revenue",
+    context: "service",
+    settlement: "cash"
+  });
+}
+function buildOwnerContributionScenario(seed) {
+  return buildScenarioFromEvent("owner-contribution", seed, {
+    archetypeId: "owner-invests-cash",
+    context: "service"
+  });
+}
+function buildAssetPurchaseScenario(seed) {
+  const rng = mulberry32$c(seed ^ 461845907);
+  const assetKind = pick$a(["supplies", "equipment", "inventory"], rng);
+  const event = buildTransactionEvent("purchase-asset", {
+    seed,
+    context: "merchandise",
+    settlement: "on-account",
+    assetKind
+  });
+  const journalLines = event.journalLines.map(
+    (line2, index2) => buildLine$1(
+      `asset-purchase-line-${index2 + 1}`,
+      "03/19",
+      line2.accountId,
+      line2.debit,
+      line2.credit,
+      line2.memo
+    )
+  );
+  return {
+    kind: "asset-purchase",
+    title: "Record the asset purchase",
+    stem: event.narrative,
+    narrative: event.narrative,
+    dates: ["03/19"],
+    availableAccounts: buildAccountOptions$1([
+      ...event.journalLines.map((line2) => line2.accountId),
+      ...event.effects.map((effect) => effect.accountId)
+    ]),
+    journalLines,
+    sourceEvent: event,
+    tags: event.tags,
+    acceptsEquivalentOrder: true
+  };
+}
+function buildLiabilitySettlementScenario(seed) {
+  return buildScenarioFromEvent("liability-settlement", seed, {
+    archetypeId: "pay-payable",
+    context: "service"
+  });
+}
+function buildAccrualAdjustmentScenario(seed) {
+  const rng = mulberry32$c(seed ^ 2654435769);
+  const amount = pick$a([240, 360, 480, 600, 750, 900], rng);
+  const expenseAccountId = pick$a(["salaries-expense", "interest-expense", "insurance-expense"], rng);
+  const payableAccountId = expenseAccountId === "salaries-expense" ? "salaries-payable" : "interest-payable";
+  const lines = [
+    buildLine$1("accrual-adjustment-line-1", "12/31", expenseAccountId, amount, 0, "Record accrued expense"),
+    buildLine$1("accrual-adjustment-line-2", "12/31", payableAccountId, 0, amount, "Record accrued liability")
+  ];
+  return {
+    kind: "accrual-adjustment",
+    title: "Record an accrual adjustment",
+    stem: `At year-end, record ${getAccountById(expenseAccountId)?.label ?? expenseAccountId} of $${formatAmount$b(amount)} that has been incurred but not yet paid.`,
+    narrative: `At year-end, record ${getAccountById(expenseAccountId)?.label ?? expenseAccountId} of $${formatAmount$b(amount)} that has been incurred but not yet paid.`,
+    dates: ["12/31"],
+    availableAccounts: buildAccountOptions$1([expenseAccountId, payableAccountId]),
+    journalLines: lines,
+    tags: ["accrual-adjustment", expenseAccountId, payableAccountId],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildDepreciationScenario(seed) {
+  const rng = mulberry32$c(seed ^ 2246822507);
+  const amount = pick$a([180, 240, 300, 360, 450, 600], rng);
+  const lines = [
+    buildLine$1("depreciation-adjustment-line-1", "12/31", "depreciation-expense", amount, 0, "Record depreciation expense"),
+    buildLine$1("depreciation-adjustment-line-2", "12/31", "accumulated-depreciation-equipment", 0, amount, "Record accumulated depreciation")
+  ];
+  return {
+    kind: "depreciation-adjustment",
+    title: "Record depreciation",
+    stem: `At year-end, record $${formatAmount$b(amount)} of equipment depreciation.`,
+    narrative: `At year-end, record $${formatAmount$b(amount)} of equipment depreciation.`,
+    dates: ["12/31"],
+    availableAccounts: buildAccountOptions$1(["depreciation-expense", "accumulated-depreciation-equipment"]),
+    journalLines: lines,
+    tags: ["depreciation", "year-end-adjustment"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildClosingScenario$1(seed) {
+  const rng = mulberry32$c(seed ^ 1291169091);
+  const revenue = pick$a([4800, 5400, 6e3, 7200, 8400], rng);
+  const expense = pick$a([2400, 3e3, 3600, 4200], rng);
+  const lines = [
+    buildLine$1("closing-entry-line-1", "12/31", "service-revenue", revenue, 0, "Close revenue to equity"),
+    buildLine$1("closing-entry-line-2", "12/31", "retained-earnings", 0, revenue, "Close revenue to equity"),
+    buildLine$1("closing-entry-line-3", "12/31", "retained-earnings", expense, 0, "Close expense to equity"),
+    buildLine$1("closing-entry-line-4", "12/31", "rent-expense", 0, expense, "Close expense to equity")
+  ];
+  return {
+    kind: "closing-entry",
+    title: "Prepare the closing entries",
+    stem: `Close the temporary accounts after net income has been determined.`,
+    narrative: `Close the temporary accounts after net income has been determined.`,
+    dates: ["12/31"],
+    availableAccounts: buildAccountOptions$1(["service-revenue", "retained-earnings", "rent-expense"]),
+    journalLines: lines,
+    tags: ["closing-entry", "temporary-accounts"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildCorrectingScenario(seed) {
+  const rng = mulberry32$c(seed ^ 3266489909);
+  const amount = pick$a([300, 450, 600, 750, 900, 1200], rng);
+  const lines = [
+    buildLine$1("correcting-entry-line-1", "03/23", "supplies", amount, 0, "Correct supplies purchase"),
+    buildLine$1("correcting-entry-line-2", "03/23", "supplies-expense", 0, amount, "Correct supplies purchase")
+  ];
+  return {
+    kind: "correcting-entry",
+    title: "Prepare the correcting entry",
+    stem: `Correct the earlier mistake by moving $${formatAmount$b(amount)} from expense to supplies.`,
+    narrative: `Correct the earlier mistake by moving $${formatAmount$b(amount)} from expense to supplies.`,
+    dates: ["03/23"],
+    availableAccounts: buildAccountOptions$1(["supplies", "supplies-expense"]),
+    journalLines: lines,
+    tags: ["correcting-entry", "supplies"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildReversingScenario(seed) {
+  const rng = mulberry32$c(seed ^ 668265263);
+  const amount = pick$a([240, 360, 480, 600, 750], rng);
+  const lines = [
+    buildLine$1("reversing-entry-line-1", "01/01", "salaries-payable", amount, 0, "Reverse accrued liability"),
+    buildLine$1("reversing-entry-line-2", "01/01", "salaries-expense", 0, amount, "Reverse accrued liability")
+  ];
+  return {
+    kind: "reversing-entry",
+    title: "Prepare the reversing entry",
+    stem: `Reverse the prior period accrual on the first day of the new period.`,
+    narrative: `Reverse the prior period accrual on the first day of the new period.`,
+    dates: ["01/01"],
+    availableAccounts: buildAccountOptions$1(["salaries-payable", "salaries-expense"]),
+    journalLines: lines,
+    tags: ["reversing-entry", "accrual"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildMerchandisingSaleScenario(seed) {
+  const rng = mulberry32$c(seed ^ 1663821211);
+  const saleAmount = pick$a([1200, 1500, 1800, 2400, 3e3], rng);
+  const costAmount = Math.round(saleAmount * 0.6);
+  const lines = [
+    buildLine$1("merchandising-sale-line-1", "03/18", "accounts-receivable", saleAmount, 0, "Record merchandise sale"),
+    buildLine$1("merchandising-sale-line-2", "03/18", "sales-revenue", 0, saleAmount, "Record merchandise sale"),
+    buildLine$1("merchandising-sale-line-3", "03/18", "cost-of-goods-sold", costAmount, 0, "Record merchandise cost"),
+    buildLine$1("merchandising-sale-line-4", "03/18", "merchandise-inventory", 0, costAmount, "Record merchandise cost")
+  ];
+  return {
+    kind: "merchandising-sale",
+    title: "Record the merchandising sale",
+    stem: `Record the seller-side perpetual inventory sale for $${formatAmount$b(saleAmount)}.`,
+    narrative: `Record the seller-side perpetual inventory sale for $${formatAmount$b(saleAmount)}.`,
+    dates: ["03/18"],
+    availableAccounts: buildAccountOptions$1(["accounts-receivable", "sales-revenue", "cost-of-goods-sold", "merchandise-inventory"]),
+    journalLines: lines,
+    tags: ["merchandising-sale", "perpetual-inventory"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildMerchandisingPurchaseScenario(seed) {
+  const rng = mulberry32$c(seed ^ 2496678331);
+  const purchaseAmount = pick$a([900, 1200, 1500, 1800, 2400], rng);
+  const freightAmount = pick$a([40, 60, 80, 100], rng);
+  const total = purchaseAmount + freightAmount;
+  const lines = [
+    buildLine$1("merchandising-purchase-line-1", "03/19", "merchandise-inventory", purchaseAmount, 0, "Record merchandise purchase"),
+    buildLine$1("merchandising-purchase-line-2", "03/19", "freight-in", freightAmount, 0, "Record inbound freight"),
+    buildLine$1("merchandising-purchase-line-3", "03/19", "accounts-payable", 0, total, "Record merchandise purchase")
+  ];
+  return {
+    kind: "merchandising-purchase",
+    title: "Record the merchandising purchase",
+    stem: `Record the buyer-side perpetual inventory purchase with inbound freight.`,
+    narrative: `Record the buyer-side perpetual inventory purchase with inbound freight.`,
+    dates: ["03/19"],
+    availableAccounts: buildAccountOptions$1(["merchandise-inventory", "freight-in", "accounts-payable"]),
+    journalLines: lines,
+    tags: ["merchandising-purchase", "perpetual-inventory"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildReturnAllowanceScenario(seed) {
+  const rng = mulberry32$c(seed ^ 3736353539);
+  const saleAmount = pick$a([1200, 1500, 1800, 2400], rng);
+  const returnAmount = pick$a([120, 150, 180, 240, 300], rng);
+  const inventoryCost = Math.round(returnAmount * 0.6);
+  const collectionAmount = saleAmount - returnAmount;
+  const lines = [
+    buildLine$1("return-allowance-line-1", "03/18", "accounts-receivable", saleAmount, 0, "Record original sale"),
+    buildLine$1("return-allowance-line-2", "03/18", "sales-revenue", 0, saleAmount, "Record original sale"),
+    buildLine$1("return-allowance-line-3", "03/18", "cost-of-goods-sold", Math.round(saleAmount * 0.6), 0, "Record original cost"),
+    buildLine$1("return-allowance-line-4", "03/18", "merchandise-inventory", 0, Math.round(saleAmount * 0.6), "Record original cost"),
+    buildLine$1("return-allowance-line-5", "03/20", "sales-returns-and-allowances", returnAmount, 0, "Record return and allowance"),
+    buildLine$1("return-allowance-line-6", "03/20", "accounts-receivable", 0, returnAmount, "Record return and allowance"),
+    buildLine$1("return-allowance-line-7", "03/20", "merchandise-inventory", inventoryCost, 0, "Restore returned inventory"),
+    buildLine$1("return-allowance-line-8", "03/20", "cost-of-goods-sold", 0, inventoryCost, "Restore returned inventory"),
+    buildLine$1("return-allowance-line-9", "03/22", "cash", collectionAmount, 0, "Collect remaining receivable"),
+    buildLine$1("return-allowance-line-10", "03/22", "accounts-receivable", 0, collectionAmount, "Collect remaining receivable")
+  ];
+  return {
+    kind: "return-allowance",
+    title: "Record the sale, return, and collection",
+    stem: `Record the original sale, the later return and allowance, and the final cash collection.`,
+    narrative: `Record the original sale, the later return and allowance, and the final cash collection.`,
+    dates: ["03/18", "03/20", "03/22"],
+    availableAccounts: buildAccountOptions$1([
+      "accounts-receivable",
+      "sales-revenue",
+      "cost-of-goods-sold",
+      "merchandise-inventory",
+      "sales-returns-and-allowances",
+      "cash"
+    ]),
+    journalLines: lines,
+    tags: ["return-allowance", "merchandising"],
+    acceptsEquivalentOrder: true
+  };
+}
+function buildDiscountSettlementScenario(seed) {
+  const rng = mulberry32$c(seed ^ 625341585);
+  const gross = pick$a([1200, 1500, 1800, 2400], rng);
+  const discountRate = pick$a([0.02, 0.05, 0.1], rng);
+  const discount = Math.round(gross * discountRate);
+  const cash = gross - discount;
+  const lines = [
+    buildLine$1("discount-settlement-line-1", "03/21", "cash", cash, 0, "Collect within discount period"),
+    buildLine$1("discount-settlement-line-2", "03/21", "sales-discounts", discount, 0, "Record sales discount"),
+    buildLine$1("discount-settlement-line-3", "03/21", "accounts-receivable", 0, gross, "Clear receivable")
+  ];
+  return {
+    kind: "discount-settlement",
+    title: "Record the cash settlement and discount",
+    stem: `Record the cash collection within the discount period for a $${formatAmount$b(gross)} sale.`,
+    narrative: `Record the cash collection within the discount period for a $${formatAmount$b(gross)} sale.`,
+    dates: ["03/21"],
+    availableAccounts: buildAccountOptions$1(["cash", "sales-discounts", "accounts-receivable"]),
+    journalLines: lines,
+    tags: ["discount-settlement", "sales-discounts"],
+    acceptsEquivalentOrder: true
+  };
+}
+const journalEntryScenarioCatalog = [
+  { kind: "service-revenue", build: buildServiceRevenueScenario },
+  { kind: "owner-contribution", build: buildOwnerContributionScenario },
+  { kind: "asset-purchase", build: buildAssetPurchaseScenario },
+  { kind: "liability-settlement", build: buildLiabilitySettlementScenario },
+  { kind: "accrual-adjustment", build: buildAccrualAdjustmentScenario },
+  { kind: "depreciation-adjustment", build: buildDepreciationScenario },
+  { kind: "closing-entry", build: buildClosingScenario$1 },
+  { kind: "correcting-entry", build: buildCorrectingScenario },
+  { kind: "reversing-entry", build: buildReversingScenario },
+  { kind: "merchandising-sale", build: buildMerchandisingSaleScenario },
+  { kind: "merchandising-purchase", build: buildMerchandisingPurchaseScenario },
+  { kind: "return-allowance", build: buildReturnAllowanceScenario },
+  { kind: "discount-settlement", build: buildDiscountSettlementScenario }
+];
+function pickScenarioKind$2(seed) {
+  const rng = mulberry32$c(seed ^ 1013904242);
+  return journalEntryScenarioCatalog[Math.floor(rng() * journalEntryScenarioCatalog.length)].kind;
+}
+function buildScenario$4(seed, config2) {
+  const scenarioKey = config2.scenarioKey ?? pickScenarioKind$2(seed);
+  const builder = journalEntryScenarioCatalog.find((entry) => entry.kind === scenarioKey) ?? journalEntryScenarioCatalog[0];
+  return builder.build(seed);
+}
+function buildParts$5(scenario) {
+  return scenario.journalLines.map((line2, index2) => {
+    const accountLabel = getAccountById(line2.accountId)?.label ?? line2.accountId;
+    return {
+      id: `line-${index2 + 1}`,
+      kind: "journal-entry",
+      label: `Line ${index2 + 1}`,
+      description: `${line2.date} ${accountLabel}`,
+      prompt: `Enter the journal line for ${accountLabel}.`,
+      expectedAnswerShape: "journal-line",
+      canonicalAnswer: line2,
+      explanation: `${accountLabel} is recorded with ${line2.debit > 0 ? "a debit" : "a credit"} of $${formatAmount$b(line2.debit > 0 ? line2.debit : line2.credit)}.`,
+      misconceptionTags: [`${scenario.kind}:${line2.accountId}`],
+      standardCode: `ACC-M7-JE-${scenario.kind.toUpperCase().replace(/-/g, "_")}`,
+      artifactTarget: normalizeLine(line2),
+      targetId: `line-${index2 + 1}`,
+      details: {
+        date: line2.date,
+        accountId: line2.accountId,
+        accountLabel,
+        debit: line2.debit,
+        credit: line2.credit,
+        memo: line2.memo,
+        explanation: `${accountLabel} is recorded with ${line2.debit > 0 ? "a debit" : "a credit"} of $${formatAmount$b(line2.debit > 0 ? line2.debit : line2.credit)}.`
+      }
+    };
+  });
+}
+function buildResponse$6(definition) {
+  return definition.journalLines.map(cloneLine$2);
+}
+function lineMatches$2(expected, actual) {
+  return !!actual && normalizeLine(expected) === normalizeLine(actual);
+}
+function linePresentAnywhere$2(expected, actualLines) {
+  const expectedSignature = normalizeLine(expected);
+  return actualLines.some((line2) => normalizeLine(line2) === expectedSignature);
+}
+function buildPartFeedback$5(part, expectedLine, studentLine, studentLines, gradeResultPart) {
+  const exactMatch = lineMatches$2(expectedLine, studentLine);
+  const equivalent = !exactMatch && studentLine ? linePresentAnywhere$2(expectedLine, studentLines) : false;
+  const selectedLabel = studentLine ? formatLineLabel(studentLine) : "Not entered";
+  const expectedLabel = formatLineLabel(expectedLine);
+  if (exactMatch) {
+    return {
+      status: "correct",
+      scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+      selectedLabel,
+      expectedLabel,
+      misconceptionTags: gradeResultPart.misconceptionTags,
+      message: `${part.label} is correct.`
+    };
+  }
+  if (equivalent) {
+    return {
+      status: "partial",
+      scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+      selectedLabel,
+      expectedLabel,
+      misconceptionTags: gradeResultPart.misconceptionTags,
+      message: `Accepted equivalent entry order. ${expectedLabel} is present, just not in the canonical position.`
+    };
+  }
+  return {
+    status: "incorrect",
+    scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+    selectedLabel,
+    expectedLabel,
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: `${part.label} should be ${expectedLabel}. ${part.details.explanation}`
+  };
+}
+function buildJournalEntryReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((gradeResultPart) => {
+      const part = definition.parts.find((entry) => entry.id === gradeResultPart.partId);
+      if (!part) {
+        return [
+          gradeResultPart.partId,
+          {
+            status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: gradeResultPart.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      const expectedIndex = Number.parseInt(part.id.replace("line-", ""), 10) - 1;
+      return [part.id, buildPartFeedback$5(part, definition.journalLines[expectedIndex], studentResponse[expectedIndex], studentResponse, gradeResultPart)];
+    })
+  );
+}
+const journalEntryFamily = {
+  generate(seed, config2 = {}) {
+    const scenario = buildScenario$4(seed, config2);
+    const parts = buildParts$5(scenario);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "journal-entry",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `journal-entry-${scenario.kind}-${seed}`,
+      prompt: {
+        title: scenario.title,
+        stem: scenario.stem
+      },
+      scenario,
+      journalLines: scenario.journalLines,
+      availableAccounts: scenario.availableAccounts,
+      expectedLineCount: scenario.journalLines.length,
+      parts,
+      workedExample: {
+        scenarioKind: scenario.kind,
+        narrative: scenario.narrative,
+        lineCount: scenario.journalLines.length
+      },
+      scaffolding: {
+        showDateColumn: true,
+        showEquivalentOrderNote: true,
+        showBalanceStrip: true,
+        dateCount: scenario.dates.length
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: true,
+        rubric: {
+          scenarioKind: scenario.kind
+        }
+      },
+      analyticsConfig: {
+        generator: "journal-entry-family",
+        seed,
+        scenarioKind: scenario.kind
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$6(definition);
+  },
+  grade(definition, studentResponse) {
+    const expectedLines = definition.journalLines;
+    const parts = definition.parts.map((part, index2) => {
+      const expectedLine = expectedLines[index2];
+      const rawAnswer = studentResponse[index2];
+      const normalizedAnswer = rawAnswer ? normalizeLine(rawAnswer) : "";
+      const exactMatch = lineMatches$2(expectedLine, rawAnswer);
+      const presentAnywhere = rawAnswer ? linePresentAnywhere$2(expectedLine, studentResponse) : false;
+      const isCorrect = exactMatch || presentAnywhere;
+      return {
+        partId: part.id,
+        rawAnswer,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [`journal-entry:${definition.scenario.kind}:${part.id}`]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} journal-entry lines correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "journal-entry-recording",
+      family: definition.familyKey,
+      scenario: {
+        kind: definition.scenario.kind,
+        title: definition.scenario.title,
+        narrative: definition.scenario.narrative,
+        dates: definition.scenario.dates
+      },
+      journalLines: definition.journalLines,
+      availableAccounts: definition.availableAccounts,
+      studentLines: studentResponse,
+      summary: {
+        lineCount: definition.journalLines.length,
+        balance: definition.journalLines.reduce((sum, line2) => sum + line2.debit - line2.credit, 0),
+        equivalentOrderAccepted: studentResponse.some((line2, index2) => !lineMatches$2(definition.journalLines[index2], line2))
+      }
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: Object.fromEntries(studentResponse.map((line2, index2) => [`line-${index2 + 1}`, line2])),
+      parts: gradeResult.parts.map((part, index2) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[index2],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        scenarioKind: definition.scenario.kind,
+        lineCount: definition.journalLines.length
+      }
+    });
+  }
+};
+function mulberry32$b(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$9(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$a(amount) {
+  return amount.toLocaleString("en-US");
+}
+function cloneLine$1(line2) {
+  return { ...line2 };
+}
+function buildLine(id, date, accountId, debit, credit, memo) {
+  return { id, date, accountId, debit, credit, memo };
+}
+function buildAccountOptions(accountIds) {
+  return Array.from(new Set(accountIds)).map((accountId) => ({
+    id: accountId,
+    label: getAccountById(accountId)?.label ?? accountId
+  }));
+}
+function lineSignature$1(line2) {
+  return [
+    line2.date.trim().toLowerCase(),
+    line2.accountId.trim().toLowerCase(),
+    Number(line2.debit ?? 0).toFixed(2),
+    Number(line2.credit ?? 0).toFixed(2)
+  ].join("|");
+}
+function lineMatches$1(expected, actual) {
+  return !!actual && lineSignature$1(expected) === lineSignature$1(actual);
+}
+function linePresentAnywhere$1(expected, actualLines) {
+  const expectedSignature = lineSignature$1(expected);
+  return actualLines.some((line2) => lineSignature$1(line2) === expectedSignature);
+}
+function buildSelectionRow(id, label, description, reversingRecommended, hint) {
+  return {
+    id,
+    label,
+    description,
+    reversingRecommended,
+    hint,
+    selectionMode: "single"
+  };
+}
+function buildReversingSelectionScenario(seed) {
+  const rng = mulberry32$b(seed ^ 2654435769);
+  const rows = [
+    buildSelectionRow(
+      "accrued-wages",
+      "Accrued wages payable",
+      "A year-end wage accrual that should be reversed on the first day of the new period.",
+      true,
+      "Reverse the accrual so the next-period payment is not doubled."
     ),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "bg-muted p-6 rounded-lg", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-semibold mb-3", children: "Connection Details" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "space-y-2 text-sm", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "✓ Using Drizzle ORM with postgres-js driver" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "✓ Connected via Supabase transaction pooler (port 6543)" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "✓ Connection pooling configured (max: 10 connections)" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "✓ Prepared statements disabled for pooler compatibility" })
+    buildSelectionRow(
+      "depreciation-entry",
+      "Depreciation entry",
+      "An end-of-period depreciation adjustment that stays in the books.",
+      false,
+      "Depreciation is not usually reversed because the expense is recognized only once."
+    ),
+    buildSelectionRow(
+      "closing-entry",
+      "Closing entry",
+      "A period-close transfer that should remain final.",
+      false,
+      "Closing entries reset temporary accounts and are not reversed."
+    )
+  ];
+  const narrative = `The period-end file includes one reversal candidate and two entries that should stay put.`;
+  return {
+    kind: "reversing-selection",
+    title: "Choose which entries should be reversed",
+    stem: narrative,
+    narrative,
+    dates: ["01/01"],
+    selectionRows: rows,
+    selectionColumns: [
+      { id: "reverse", label: "Reverse", description: "This entry should be reversed next period." },
+      { id: "do-not-reverse", label: "Do not reverse", description: "This entry should remain as posted." }
+    ],
+    journalLines: [],
+    availableAccounts: [],
+    tags: [
+      "reversing-selection",
+      pick$9(["accrual", "deferral", "closing"], rng),
+      "reversing-recommended"
+    ]
+  };
+}
+function buildClosingScenario(seed) {
+  const ledger = generateMiniLedger(seed, {
+    companyType: "service",
+    includeContraAccounts: false,
+    capitalMode: "ending"
+  });
+  const revenueAccounts = ledger.accounts.filter((a) => a.accountType === "revenue");
+  const expenseAccounts = ledger.accounts.filter((a) => a.accountType === "expense");
+  const dividends = ledger.totals.dividends;
+  const lines = [];
+  let lineIndex = 1;
+  for (const acct of revenueAccounts) {
+    const amount = Math.abs(acct.statementBalance);
+    lines.push(buildLine(`line-${lineIndex++}`, "12/31", acct.id, amount, 0, `Close ${acct.label} to retained earnings`));
+    lines.push(buildLine(`line-${lineIndex++}`, "12/31", "retained-earnings", 0, amount, `Close ${acct.label} to retained earnings`));
+  }
+  for (const acct of expenseAccounts) {
+    const amount = Math.abs(acct.statementBalance);
+    lines.push(buildLine(`line-${lineIndex++}`, "12/31", "retained-earnings", amount, 0, `Close ${acct.label} to retained earnings`));
+    lines.push(buildLine(`line-${lineIndex++}`, "12/31", acct.id, 0, amount, `Close ${acct.label} to retained earnings`));
+  }
+  lines.push(buildLine(`line-${lineIndex++}`, "12/31", "retained-earnings", dividends, 0, "Close dividends to retained earnings"));
+  lines.push(buildLine(`line-${lineIndex++}`, "12/31", "dividends", 0, dividends, "Close dividends to retained earnings"));
+  const accountIds = [
+    ...revenueAccounts.map((a) => a.id),
+    ...expenseAccounts.map((a) => a.id),
+    "retained-earnings",
+    "dividends"
+  ];
+  const narrative = `Close all temporary accounts from the adjusted trial balance before the next period opens. The ledger has ${revenueAccounts.length} revenue and ${expenseAccounts.length} expense accounts to close.`;
+  return {
+    kind: "closing-entry",
+    title: "Prepare the closing entries",
+    stem: narrative,
+    narrative,
+    dates: ["12/31"],
+    selectionRows: [],
+    selectionColumns: [],
+    journalLines: lines,
+    availableAccounts: buildAccountOptions(accountIds),
+    miniLedger: ledger,
+    tags: ["closing-entry", "adjusted-trial-balance", "temporary-accounts"]
+  };
+}
+const cycleDecisionScenarioCatalog = [
+  { kind: "reversing-selection", build: buildReversingSelectionScenario },
+  { kind: "closing-entry", build: buildClosingScenario }
+];
+function pickScenarioKind$1(seed) {
+  const rng = mulberry32$b(seed ^ 1013904242);
+  return cycleDecisionScenarioCatalog[Math.floor(rng() * cycleDecisionScenarioCatalog.length)].kind;
+}
+function buildScenario$3(seed, config2) {
+  const scenarioKey = config2.scenarioKey ?? pickScenarioKind$1(seed);
+  const builder = cycleDecisionScenarioCatalog.find((entry) => entry.kind === scenarioKey) ?? cycleDecisionScenarioCatalog[0];
+  return builder.build(seed);
+}
+function buildParts$4(scenario) {
+  const selectionParts = scenario.selectionRows.map((row) => ({
+    id: row.id,
+    kind: "selection",
+    label: row.label,
+    description: row.description,
+    prompt: `Choose whether ${row.label.toLowerCase()} should be reversed.`,
+    expectedAnswerShape: "choice-id",
+    canonicalAnswer: row.reversingRecommended ? "reverse" : "do-not-reverse",
+    explanation: row.hint,
+    misconceptionTags: [`cycle-decisions:${scenario.kind}:${row.id}`],
+    standardCode: `ACC-M7-CD-${scenario.kind.toUpperCase().replace(/-/g, "_")}`,
+    artifactTarget: row.reversingRecommended ? "reverse" : "do-not-reverse",
+    targetId: row.reversingRecommended ? "reverse" : "do-not-reverse",
+    details: {
+      kind: "selection",
+      reversingRecommended: row.reversingRecommended,
+      expectedChoice: row.reversingRecommended ? "reverse" : "do-not-reverse",
+      explanation: row.hint ?? row.description
+    }
+  }));
+  const journalParts = scenario.journalLines.map((line2, index2) => {
+    const accountLabel = getAccountById(line2.accountId)?.label ?? line2.accountId;
+    return {
+      id: line2.id || `line-${index2 + 1}`,
+      kind: "journal-entry",
+      label: `Line ${index2 + 1}`,
+      description: `${line2.date} ${accountLabel}`,
+      prompt: `Enter the journal line for ${accountLabel}.`,
+      expectedAnswerShape: "journal-line",
+      canonicalAnswer: line2,
+      explanation: `${accountLabel} is recorded with ${line2.debit > 0 ? "a debit" : "a credit"} of $${formatAmount$a(line2.debit > 0 ? line2.debit : line2.credit)}.`,
+      misconceptionTags: [`cycle-decisions:${scenario.kind}:${line2.accountId}`],
+      standardCode: `ACC-M7-CD-${scenario.kind.toUpperCase().replace(/-/g, "_")}`,
+      artifactTarget: lineSignature$1(line2),
+      targetId: `line-${index2 + 1}`,
+      details: {
+        kind: "journal-entry",
+        date: line2.date,
+        accountId: line2.accountId,
+        accountLabel,
+        debit: line2.debit,
+        credit: line2.credit,
+        memo: line2.memo,
+        explanation: `${accountLabel} is recorded with ${line2.debit > 0 ? "a debit" : "a credit"} of $${formatAmount$a(line2.debit > 0 ? line2.debit : line2.credit)}.`
+      }
+    };
+  });
+  return [...selectionParts, ...journalParts];
+}
+function buildResponse$5(definition) {
+  const selections = {};
+  for (const row of definition.selectionRows) {
+    selections[row.id] = row.reversingRecommended ? "reverse" : "do-not-reverse";
+  }
+  return {
+    selections,
+    lines: definition.journalLines.map(cloneLine$1)
+  };
+}
+function buildPartFeedback$4(part, studentResponse, gradeResultPart, expectedLine, studentLine, journalLines) {
+  const selectedValue = studentResponse.selections[part.id];
+  const selectedLabel = part.kind === "journal-entry" ? studentLine ? `${studentLine.date} • ${studentLine.accountId}` : "Not entered" : typeof selectedValue === "string" ? selectedValue.replace(/-/g, " ") : "Not selected";
+  const expectedLabel = part.kind === "journal-entry" ? `${part.details.date} • ${part.details.accountLabel} ${part.details.debit ? `debit $${formatAmount$a(part.details.debit)}` : `credit $${formatAmount$a(part.details.credit ?? 0)}`}` : part.details.expectedChoice?.replace(/-/g, " ") ?? "Unknown";
+  const exactMatch = part.kind === "journal-entry" && expectedLine && studentLine ? lineMatches$1(expectedLine, studentLine) : false;
+  const equivalent = part.kind === "journal-entry" && !exactMatch && studentLine && expectedLine && journalLines ? linePresentAnywhere$1(expectedLine, journalLines) : false;
+  return {
+    status: part.kind === "journal-entry" ? exactMatch ? "correct" : equivalent ? "partial" : "incorrect" : gradeResultPart.isCorrect ? "correct" : "incorrect",
+    scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+    selectedLabel,
+    expectedLabel,
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: part.kind === "journal-entry" ? exactMatch ? `${part.label} is correct.` : equivalent ? `Accepted equivalent ordering. ${expectedLabel} is present, just not in the canonical position.` : `${part.label} should be ${expectedLabel}. ${part.details.explanation}` : gradeResultPart.isCorrect ? `${part.label} uses the correct reversal decision.` : `${part.label} should be ${expectedLabel}. ${part.details.explanation}`
+  };
+}
+function buildCycleDecisionReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((gradeResultPart) => {
+      const part = definition.parts.find((entry) => entry.id === gradeResultPart.partId);
+      if (!part) {
+        return [
+          gradeResultPart.partId,
+          {
+            status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: gradeResultPart.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      const expectedIndex = Number.parseInt(part.id.replace("line-", ""), 10) - 1;
+      const expectedLine = part.kind === "journal-entry" ? definition.journalLines[expectedIndex] : void 0;
+      const studentLine = part.kind === "journal-entry" ? studentResponse.lines[expectedIndex] : void 0;
+      return [part.id, buildPartFeedback$4(part, studentResponse, gradeResultPart, expectedLine, studentLine, studentResponse.lines)];
+    })
+  );
+}
+const cycleDecisionsFamily = {
+  generate(seed, config2 = {}) {
+    const scenario = buildScenario$3(seed, config2);
+    const parts = buildParts$4(scenario);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "cycle-decisions",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `cycle-decisions-${scenario.kind}-${seed}`,
+      prompt: {
+        title: scenario.title,
+        stem: scenario.stem
+      },
+      scenario,
+      selectionRows: scenario.selectionRows,
+      selectionColumns: scenario.selectionColumns,
+      journalLines: scenario.journalLines,
+      availableAccounts: scenario.availableAccounts,
+      expectedLineCount: scenario.journalLines.length,
+      parts,
+      workedExample: {
+        scenarioKind: scenario.kind,
+        narrative: scenario.narrative,
+        dates: scenario.dates
+      },
+      scaffolding: {
+        showSelectionMatrix: scenario.selectionRows.length > 0,
+        showJournalTable: scenario.journalLines.length > 0,
+        dateCount: scenario.dates.length
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: true,
+        rubric: {
+          scenarioKind: scenario.kind
+        }
+      },
+      analyticsConfig: {
+        generator: "cycle-decisions-family",
+        seed,
+        scenarioKind: scenario.kind
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$5(definition);
+  },
+  grade(definition, studentResponse) {
+    let journalIndex = 0;
+    const parts = definition.parts.map((part) => {
+      if (part.kind === "selection") {
+        const rawAnswer = studentResponse.selections[part.id];
+        const normalizedAnswer2 = typeof rawAnswer === "string" ? normalizePracticeValue(rawAnswer) : "";
+        const isCorrect2 = rawAnswer === part.targetId;
+        return {
+          partId: part.id,
+          rawAnswer,
+          normalizedAnswer: normalizedAnswer2,
+          isCorrect: isCorrect2,
+          score: isCorrect2 ? 1 : 0,
+          maxScore: 1,
+          misconceptionTags: isCorrect2 ? [] : [`cycle-decisions:${definition.scenario.kind}:${part.id}`]
+        };
+      }
+      const expectedLine = definition.journalLines[journalIndex++];
+      const rawLine = studentResponse.lines[journalIndex - 1];
+      const normalizedAnswer = rawLine ? lineSignature$1(rawLine) : "";
+      const exactMatch = lineMatches$1(expectedLine, rawLine);
+      const presentAnywhere = rawLine ? linePresentAnywhere$1(expectedLine, studentResponse.lines) : false;
+      const isCorrect = exactMatch || presentAnywhere;
+      return {
+        partId: part.id,
+        rawAnswer: rawLine,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [`cycle-decisions:${definition.scenario.kind}:${part.id}`]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} cycle-decision parts correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "cycle-decisions",
+      family: definition.familyKey,
+      scenario: {
+        kind: definition.scenario.kind,
+        title: definition.scenario.title,
+        narrative: definition.scenario.narrative,
+        dates: definition.scenario.dates,
+        reversingRecommendedCount: definition.selectionRows.filter((row) => row.reversingRecommended).length,
+        journalLineCount: definition.journalLines.length
+      },
+      selectionRows: definition.selectionRows,
+      selectionColumns: definition.selectionColumns,
+      journalLines: definition.journalLines,
+      availableAccounts: definition.availableAccounts,
+      studentResponse,
+      summary: {
+        partCount: definition.parts.length,
+        selectionCount: definition.selectionRows.length,
+        journalLineCount: definition.journalLines.length
+      }
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: studentResponse,
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? (part.partId.startsWith("line-") ? studentResponse.lines[Number.parseInt(part.partId.replace("line-", ""), 10) - 1] : studentResponse.selections[part.partId]),
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        scenarioKind: definition.scenario.kind,
+        selectionCount: definition.selectionRows.length,
+        journalLineCount: definition.journalLines.length
+      }
+    });
+  }
+};
+const GROSS_DISCOUNT_RATES = [0.02, 0.05, 0.1];
+function mulberry32$a(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function randomInt$2(rng, min, max) {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  if (upper <= lower) {
+    return lower;
+  }
+  return Math.floor(rng() * (upper - lower + 1)) + lower;
+}
+function pick$8(items, rng) {
+  return items[randomInt$2(rng, 0, items.length - 1)];
+}
+function addDays(baseDate, offset) {
+  const date = /* @__PURE__ */ new Date(`${baseDate}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+function formatAmount$9(amount) {
+  return amount.toLocaleString("en-US");
+}
+function resolveSide(accountId, direction) {
+  const account = getAccountById(accountId);
+  if (!account) {
+    throw new Error(`Unknown merchandising account: ${accountId}`);
+  }
+  return direction === "increase" ? account.normalBalance === "debit" ? "debit" : "credit" : account.normalBalance === "debit" ? "credit" : "debit";
+}
+function line(date, eventId, accountId, direction, amount, memo) {
+  const account = getAccountById(accountId);
+  if (!account) {
+    throw new Error(`Unknown merchandising account: ${accountId}`);
+  }
+  const side = resolveSide(accountId, direction);
+  return {
+    date,
+    eventId,
+    accountId,
+    label: account.label,
+    debit: side === "debit" ? amount : 0,
+    credit: side === "credit" ? amount : 0,
+    memo
+  };
+}
+function buildEvent(event, journalLines) {
+  return {
+    ...event,
+    journalLines
+  };
+}
+function buildSellerTimeline(definition) {
+  const saleDate = "2026-03-01";
+  const returnDate = addDays(saleDate, 1);
+  const freightDate = addDays(saleDate, 2);
+  const collectionDate = definition.paymentTiming === "within-discount-period" ? addDays(saleDate, 8) : addDays(saleDate, 14);
+  const baseAmount = definition.discountMethod === "gross" ? definition.saleAmount : Math.round(definition.saleAmount * (1 - definition.discountRate));
+  const returnBasis = definition.discountMethod === "gross" ? definition.returnAmount : Math.round(definition.returnAmount * (1 - definition.discountRate));
+  const dueAfterReturn = Math.max(0, baseAmount - returnBasis);
+  const discountEligible = definition.discountMethod === "gross" && definition.paymentTiming === "within-discount-period";
+  const discountAmount = discountEligible ? Math.round(dueAfterReturn * definition.discountRate) : 0;
+  const cashCollected = dueAfterReturn - discountAmount;
+  const returnedCost = definition.saleAmount === 0 ? 0 : Math.round(definition.returnAmount / definition.saleAmount * definition.costAmount);
+  const events = [];
+  events.push(
+    buildEvent(
+      {
+        id: "seller-original-sale",
+        kind: "original-sale",
+        date: saleDate,
+        narrative: definition.discountMethod === "gross" ? `Record the $${formatAmount$9(definition.saleAmount)} sale on account and the related cost of goods sold.` : `Record the sale at the net amount of $${formatAmount$9(baseAmount)} and the related cost of goods sold.`,
+        journalLines: [],
+        tags: ["seller", "original-sale"]
+      },
+      [
+        line(
+          saleDate,
+          "seller-original-sale",
+          "accounts-receivable",
+          "increase",
+          baseAmount,
+          "Record the sale receivable."
+        ),
+        line(
+          saleDate,
+          "seller-original-sale",
+          "sales-revenue",
+          "increase",
+          baseAmount,
+          "Record the sale revenue."
+        ),
+        line(
+          saleDate,
+          "seller-original-sale",
+          "cost-of-goods-sold",
+          "increase",
+          definition.costAmount,
+          "Record the cost of goods sold."
+        ),
+        line(
+          saleDate,
+          "seller-original-sale",
+          "merchandise-inventory",
+          "decrease",
+          definition.costAmount,
+          "Reduce inventory for the goods sold."
+        )
+      ]
+    )
+  );
+  if (definition.returnAmount > 0) {
+    events.push(
+      buildEvent(
+        {
+          id: "seller-return",
+          kind: "return",
+          date: returnDate,
+          narrative: `Record the ${definition.discountMethod === "gross" ? "" : "net "}return before collection.`,
+          journalLines: [],
+          tags: ["seller", "return"]
+        },
+        [
+          line(
+            returnDate,
+            "seller-return",
+            "sales-returns-and-allowances",
+            "increase",
+            returnBasis,
+            "Record the sales return or allowance."
+          ),
+          line(
+            returnDate,
+            "seller-return",
+            "accounts-receivable",
+            "decrease",
+            returnBasis,
+            "Reduce the receivable for the return."
+          ),
+          line(
+            returnDate,
+            "seller-return",
+            "merchandise-inventory",
+            "increase",
+            returnedCost,
+            "Restore returned inventory at cost."
+          ),
+          line(
+            returnDate,
+            "seller-return",
+            "cost-of-goods-sold",
+            "decrease",
+            returnedCost,
+            "Reverse the cost of goods sold for the returned items."
+          )
+        ]
+      )
+    );
+  }
+  if (definition.freightAmount > 0 && definition.fobCondition === "destination") {
+    events.push(
+      buildEvent(
+        {
+          id: "seller-freight",
+          kind: "freight",
+          date: freightDate,
+          narrative: "The seller pays freight because the terms are FOB destination.",
+          journalLines: [],
+          tags: ["seller", "freight", "destination"]
+        },
+        [
+          line(
+            freightDate,
+            "seller-freight",
+            "freight-out",
+            "increase",
+            definition.freightAmount,
+            "Record freight out."
+          ),
+          line(
+            freightDate,
+            "seller-freight",
+            "cash",
+            "decrease",
+            definition.freightAmount,
+            "Pay freight in cash."
+          )
+        ]
+      )
+    );
+  }
+  events.push(
+    buildEvent(
+      {
+        id: "seller-collection",
+        kind: "collection",
+        date: collectionDate,
+        narrative: definition.discountMethod === "gross" ? definition.paymentTiming === "within-discount-period" ? "Collect the receivable with the sales discount taken." : "Collect the receivable after the discount period." : "Collect the receivable at the net amount.",
+        journalLines: [],
+        tags: ["seller", "collection"]
+      },
+      [
+        line(collectionDate, "seller-collection", "cash", "increase", cashCollected, "Collect the receivable in cash."),
+        ...discountAmount > 0 ? [
+          line(
+            collectionDate,
+            "seller-collection",
+            "sales-discounts",
+            "increase",
+            discountAmount,
+            "Record the cash discount."
+          )
+        ] : [],
+        line(
+          collectionDate,
+          "seller-collection",
+          "accounts-receivable",
+          "decrease",
+          dueAfterReturn,
+          "Clear the receivable."
+        )
+      ]
+    )
+  );
+  return {
+    ...definition,
+    events
+  };
+}
+function buildBuyerTimeline(definition) {
+  const purchaseDate = "2026-03-01";
+  const returnDate = addDays(purchaseDate, 1);
+  const freightDate = addDays(purchaseDate, 2);
+  const paymentDate = definition.paymentTiming === "within-discount-period" ? addDays(purchaseDate, 8) : addDays(purchaseDate, 14);
+  const baseAmount = definition.discountMethod === "gross" ? definition.saleAmount : Math.round(definition.saleAmount * (1 - definition.discountRate));
+  const returnBasis = definition.discountMethod === "gross" ? definition.returnAmount : Math.round(definition.returnAmount * (1 - definition.discountRate));
+  const dueAfterReturn = Math.max(0, baseAmount - returnBasis);
+  const discountEligible = definition.discountMethod === "gross" && definition.paymentTiming === "within-discount-period";
+  const discountAmount = discountEligible ? Math.round(dueAfterReturn * definition.discountRate) : 0;
+  const cashPaid = dueAfterReturn - discountAmount;
+  const events = [];
+  events.push(
+    buildEvent(
+      {
+        id: "buyer-original-purchase",
+        kind: "original-purchase",
+        date: purchaseDate,
+        narrative: definition.discountMethod === "gross" ? `Record the $${formatAmount$9(definition.saleAmount)} purchase on account and the related inventory cost.` : `Record the purchase at the net amount of $${formatAmount$9(baseAmount)} and the related inventory cost.`,
+        journalLines: [],
+        tags: ["buyer", "original-purchase"]
+      },
+      [
+        line(
+          purchaseDate,
+          "buyer-original-purchase",
+          "merchandise-inventory",
+          "increase",
+          baseAmount,
+          "Record the inventory purchase."
+        ),
+        line(
+          purchaseDate,
+          "buyer-original-purchase",
+          "accounts-payable",
+          "increase",
+          baseAmount,
+          "Record the payable for the purchase."
+        )
+      ]
+    )
+  );
+  if (definition.returnAmount > 0) {
+    events.push(
+      buildEvent(
+        {
+          id: "buyer-return",
+          kind: "return",
+          date: returnDate,
+          narrative: `Record the return before payment.`,
+          journalLines: [],
+          tags: ["buyer", "return"]
+        },
+        [
+          line(
+            returnDate,
+            "buyer-return",
+            "accounts-payable",
+            "decrease",
+            returnBasis,
+            "Reduce the payable for the returned goods."
+          ),
+          line(
+            returnDate,
+            "buyer-return",
+            "merchandise-inventory",
+            "decrease",
+            returnBasis,
+            "Remove returned inventory from the purchase record."
+          )
+        ]
+      )
+    );
+  }
+  if (definition.freightAmount > 0 && definition.fobCondition === "shipping-point") {
+    events.push(
+      buildEvent(
+        {
+          id: "buyer-freight",
+          kind: "freight",
+          date: freightDate,
+          narrative: "The buyer pays freight because the terms are FOB shipping point.",
+          journalLines: [],
+          tags: ["buyer", "freight", "shipping-point"]
+        },
+        [
+          line(
+            freightDate,
+            "buyer-freight",
+            "freight-in",
+            "increase",
+            definition.freightAmount,
+            "Record freight in."
+          ),
+          line(
+            freightDate,
+            "buyer-freight",
+            "cash",
+            "decrease",
+            definition.freightAmount,
+            "Pay freight in cash."
+          )
+        ]
+      )
+    );
+  }
+  events.push(
+    buildEvent(
+      {
+        id: "buyer-payment",
+        kind: "collection",
+        date: paymentDate,
+        narrative: definition.discountMethod === "gross" ? definition.paymentTiming === "within-discount-period" ? "Pay the supplier within the discount period." : "Pay the supplier after the discount period." : "Pay the supplier at the net amount.",
+        journalLines: [],
+        tags: ["buyer", "payment"]
+      },
+      [
+        line(paymentDate, "buyer-payment", "accounts-payable", "decrease", dueAfterReturn, "Clear the payable."),
+        ...discountAmount > 0 ? [
+          line(
+            paymentDate,
+            "buyer-payment",
+            "merchandise-inventory",
+            "decrease",
+            discountAmount,
+            "Reduce inventory for the cash discount."
+          )
+        ] : [],
+        line(paymentDate, "buyer-payment", "cash", "decrease", cashPaid, "Pay the supplier in cash.")
+      ]
+    )
+  );
+  return {
+    ...definition,
+    events
+  };
+}
+function generateMerchandisingTimeline(seed, config2 = {}) {
+  const rng = mulberry32$a(seed);
+  const role = config2.role ?? (rng() > 0.5 ? "seller" : "buyer");
+  const inventorySystem = config2.inventorySystem ?? "perpetual";
+  const discountMethod = config2.discountMethod ?? (rng() > 0.5 ? "gross" : "net");
+  const paymentTiming = config2.paymentTiming ?? (rng() > 0.5 ? "within-discount-period" : "after-discount-period");
+  const fobCondition = config2.fobCondition ?? (rng() > 0.5 ? "shipping-point" : "destination");
+  const saleAmount = config2.saleAmount ?? pick$8([900, 1200, 1500, 1800, 2400], rng);
+  const costAmount = config2.costAmount ?? Math.round(saleAmount * 0.6);
+  const discountRate = config2.discountRate ?? pick$8(GROSS_DISCOUNT_RATES, rng);
+  const returnAmount = config2.returnAmount ?? Math.round(saleAmount * 0.1);
+  const freightAmount = config2.freightAmount ?? pick$8([0, 25, 35, 45, 60], rng);
+  const baseDefinition = {
+    seed,
+    role,
+    inventorySystem,
+    discountMethod,
+    paymentTiming,
+    fobCondition,
+    saleAmount,
+    costAmount,
+    discountRate,
+    returnAmount,
+    freightAmount
+  };
+  return role === "seller" ? buildSellerTimeline(baseDefinition) : buildBuyerTimeline(baseDefinition);
+}
+function solveMerchandisingTimeline(definition) {
+  const journalLines = definition.events.flatMap((event) => event.journalLines).sort((left, right) => {
+    if (left.date !== right.date) {
+      return left.date.localeCompare(right.date);
+    }
+    if (left.eventId !== right.eventId) {
+      return left.eventId.localeCompare(right.eventId);
+    }
+    if (left.debit !== right.debit) {
+      return right.debit - left.debit;
+    }
+    return left.accountId.localeCompare(right.accountId);
+  });
+  return {
+    journalLines
+  };
+}
+function mulberry32$9(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    const r = Math.imul(t ^ t >>> 15, 1 | t);
+    const mixed = r ^ r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((mixed ^ mixed >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$7(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$8(amount) {
+  return amount.toLocaleString("en-US");
+}
+function cloneLine(line2) {
+  return { ...line2 };
+}
+function lineSignature(line2) {
+  return [
+    line2.date.trim().toLowerCase(),
+    line2.accountId.trim().toLowerCase(),
+    Number(line2.debit ?? 0).toFixed(2),
+    Number(line2.credit ?? 0).toFixed(2)
+  ].join("|");
+}
+function lineMatches(expected, actual) {
+  return !!actual && lineSignature(expected) === lineSignature(actual);
+}
+function linePresentAnywhere(expected, actualLines) {
+  const expectedSignature = lineSignature(expected);
+  return actualLines.some((line2) => lineSignature(line2) === expectedSignature);
+}
+function buildScenarioTitle(role) {
+  const action = role === "seller" ? "Seller perpetual merchandising entries" : "Buyer perpetual merchandising entries";
+  return `${action}`;
+}
+function buildFocus(timeline) {
+  const traps = [];
+  if (timeline.role === "seller") {
+    traps.push("seller-side paired revenue and inventory relief");
+  } else {
+    traps.push(timeline.discountMethod === "gross" ? "gross-method discount treatment" : "net-method purchase logic");
+  }
+  if (timeline.freightAmount > 0) {
+    traps.push(timeline.fobCondition === "destination" ? "seller freight-out" : "buyer freight-in");
+  }
+  if (timeline.returnAmount > 0) {
+    traps.push("return and allowance sequencing");
+  }
+  return traps.join(" • ");
+}
+function enrichTimeline(timeline) {
+  const solution = solveMerchandisingTimeline(timeline);
+  const journalLines = solution.journalLines.map((line2, index2) => ({
+    ...line2,
+    id: `line-${index2 + 1}`
+  }));
+  const dates = Array.from(new Set(timeline.events.map((event) => event.date)));
+  const availableAccounts = Array.from(
+    new Map(
+      journalLines.map((line2) => [
+        line2.accountId,
+        {
+          id: line2.accountId,
+          label: getAccountById(line2.accountId)?.label ?? line2.accountId
+        }
+      ])
+    ).values()
+  );
+  return {
+    kind: timeline.role === "seller" ? "seller-timeline" : "buyer-timeline",
+    title: buildScenarioTitle(timeline.role),
+    stem: timeline.role === "seller" ? "Read the timeline before entering the seller-side perpetual inventory entries." : "Read the timeline before entering the buyer-side perpetual inventory entries.",
+    narrative: timeline.role === "seller" ? "Seller perpetual timeline with sale, return, freight, and collection." : "Buyer perpetual timeline with purchase, return, freight, and payment.",
+    focus: buildFocus(timeline),
+    dates,
+    timeline,
+    events: timeline.events,
+    journalLines,
+    availableAccounts,
+    tags: [
+      timeline.role,
+      timeline.discountMethod,
+      timeline.paymentTiming,
+      timeline.fobCondition,
+      `events:${timeline.events.length}`
+    ]
+  };
+}
+function buildSellerScenario(seed) {
+  const rng = mulberry32$9(seed ^ 1663821211);
+  const saleAmount = pick$7([1200, 1500, 1800, 2400, 3e3], rng);
+  return enrichTimeline(
+    generateMerchandisingTimeline(seed, {
+      role: "seller",
+      discountMethod: pick$7(["gross", "net"], rng),
+      paymentTiming: pick$7(["within-discount-period", "after-discount-period"], rng),
+      fobCondition: pick$7(["destination", "shipping-point"], rng),
+      saleAmount,
+      costAmount: Math.round(saleAmount * 0.6),
+      returnAmount: pick$7([0, 120, 150, 180, 240], rng),
+      discountRate: pick$7([0.02, 0.05, 0.1], rng),
+      freightAmount: pick$7([0, 25, 35, 45, 60], rng)
+    })
+  );
+}
+function buildBuyerScenario(seed) {
+  const rng = mulberry32$9(seed ^ 2496678331);
+  const saleAmount = pick$7([900, 1200, 1500, 1800, 2400], rng);
+  return enrichTimeline(
+    generateMerchandisingTimeline(seed, {
+      role: "buyer",
+      discountMethod: pick$7(["gross", "net"], rng),
+      paymentTiming: pick$7(["within-discount-period", "after-discount-period"], rng),
+      fobCondition: pick$7(["shipping-point", "destination"], rng),
+      saleAmount,
+      costAmount: Math.round(saleAmount * 0.6),
+      returnAmount: pick$7([0, 90, 120, 150, 180], rng),
+      discountRate: pick$7([0.02, 0.05, 0.1], rng),
+      freightAmount: pick$7([0, 25, 35, 45, 60], rng)
+    })
+  );
+}
+const merchandisingEntryScenarioCatalog = [
+  { kind: "seller-timeline", build: buildSellerScenario },
+  { kind: "buyer-timeline", build: buildBuyerScenario }
+];
+function pickScenarioKind(seed) {
+  const rng = mulberry32$9(seed ^ 1013904242);
+  return merchandisingEntryScenarioCatalog[Math.floor(rng() * merchandisingEntryScenarioCatalog.length)].kind;
+}
+function buildScenario$2(seed, config2) {
+  const scenarioKey = config2.scenarioKey ?? pickScenarioKind(seed);
+  const builder = merchandisingEntryScenarioCatalog.find((entry) => entry.kind === scenarioKey) ?? merchandisingEntryScenarioCatalog[0];
+  return builder.build(seed);
+}
+function buildParts$3(scenario) {
+  return scenario.journalLines.map((line2, index2) => {
+    const accountLabel = getAccountById(line2.accountId)?.label ?? line2.accountId;
+    return {
+      id: line2.id,
+      kind: "journal-entry",
+      label: `Line ${index2 + 1}`,
+      description: `${line2.date} ${accountLabel}`,
+      prompt: `Enter the journal line for ${accountLabel}.`,
+      expectedAnswerShape: "journal-line",
+      canonicalAnswer: line2,
+      explanation: `${accountLabel} is recorded with ${line2.debit > 0 ? "a debit" : "a credit"} of $${formatAmount$8(line2.debit > 0 ? line2.debit : line2.credit)}.`,
+      misconceptionTags: [`merchandising-entries:${scenario.kind}:${line2.accountId}`],
+      standardCode: `ACC-M7-ME-${scenario.kind.toUpperCase().replace(/-/g, "_")}`,
+      artifactTarget: lineSignature(line2),
+      targetId: line2.id,
+      details: {
+        date: line2.date,
+        eventId: line2.eventId,
+        accountId: line2.accountId,
+        accountLabel,
+        debit: line2.debit,
+        credit: line2.credit,
+        memo: line2.memo,
+        explanation: `${accountLabel} is recorded with ${line2.debit > 0 ? "a debit" : "a credit"} of $${formatAmount$8(line2.debit > 0 ? line2.debit : line2.credit)}.`
+      }
+    };
+  });
+}
+function buildResponse$4(definition) {
+  return definition.journalLines.map(cloneLine);
+}
+function buildPartFeedback$3(part, studentResponse, gradeResultPart, expectedLine, studentLine) {
+  const selectedLabel = studentLine ? `${studentLine.date} • ${studentLine.accountId}` : "Not entered";
+  const expectedLabel = `${part.details.date} • ${part.details.accountLabel} ${part.details.debit ? `debit $${formatAmount$8(part.details.debit)}` : `credit $${formatAmount$8(part.details.credit)}`}`;
+  const exactMatch = lineMatches(expectedLine, studentLine);
+  const equivalent = !exactMatch && studentLine ? linePresentAnywhere(expectedLine, studentResponse) : false;
+  if (exactMatch) {
+    return {
+      status: "correct",
+      scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+      selectedLabel,
+      expectedLabel,
+      misconceptionTags: gradeResultPart.misconceptionTags,
+      message: `${part.label} is correct.`
+    };
+  }
+  return {
+    status: equivalent ? "partial" : "incorrect",
+    scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+    selectedLabel,
+    expectedLabel,
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: equivalent ? `Accepted equivalent ordering. ${expectedLabel} is present, just not in the canonical position.` : `${part.label} should be ${expectedLabel}. ${part.details.explanation}`
+  };
+}
+function buildMerchandisingEntryReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((gradeResultPart) => {
+      const part = definition.parts.find((entry) => entry.id === gradeResultPart.partId);
+      if (!part) {
+        return [
+          gradeResultPart.partId,
+          {
+            status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: gradeResultPart.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      const expectedIndex = Number.parseInt(part.id.replace("line-", ""), 10) - 1;
+      return [
+        part.id,
+        buildPartFeedback$3(part, studentResponse, gradeResultPart, definition.journalLines[expectedIndex], studentResponse[expectedIndex])
+      ];
+    })
+  );
+}
+const merchandisingEntriesFamily = {
+  generate(seed, config2 = {}) {
+    const scenario = buildScenario$2(seed, config2);
+    const parts = buildParts$3(scenario);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "merchandising-entries",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `merchandising-entries-${scenario.kind}-${seed}`,
+      prompt: {
+        title: scenario.title,
+        stem: scenario.stem
+      },
+      scenario,
+      timeline: scenario.timeline,
+      events: scenario.events,
+      journalLines: scenario.journalLines,
+      availableAccounts: scenario.availableAccounts,
+      expectedLineCount: scenario.journalLines.length,
+      parts,
+      workedExample: {
+        scenarioKind: scenario.kind,
+        narrative: scenario.narrative,
+        focus: scenario.focus,
+        eventCount: scenario.events.length
+      },
+      scaffolding: {
+        showTimelineRail: true,
+        showBalanceStrip: true,
+        dateCount: scenario.dates.length,
+        role: scenario.timeline.role
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: true,
+        rubric: {
+          scenarioKind: scenario.kind
+        }
+      },
+      analyticsConfig: {
+        generator: "merchandising-entries-family",
+        seed,
+        scenarioKind: scenario.kind
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$4(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part, index2) => {
+      const expectedLine = definition.journalLines[index2];
+      const rawLine = studentResponse[index2];
+      const normalizedAnswer = rawLine ? lineSignature(rawLine) : "";
+      const exactMatch = lineMatches(expectedLine, rawLine);
+      const presentAnywhere = rawLine ? linePresentAnywhere(expectedLine, studentResponse) : false;
+      const isCorrect = exactMatch || presentAnywhere;
+      return {
+        partId: part.id,
+        rawAnswer: rawLine,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [`merchandising-entries:${definition.scenario.kind}:${part.id}`]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} merchandising-entry lines correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "merchandising-entry-recording",
+      family: definition.familyKey,
+      scenario: {
+        kind: definition.scenario.kind,
+        title: definition.scenario.title,
+        narrative: definition.scenario.narrative,
+        focus: definition.scenario.focus,
+        dates: definition.scenario.dates
+      },
+      timeline: definition.timeline,
+      events: definition.events,
+      journalLines: definition.journalLines,
+      availableAccounts: definition.availableAccounts,
+      studentResponse,
+      summary: {
+        lineCount: definition.journalLines.length,
+        eventCount: definition.events.length,
+        role: definition.timeline.role,
+        discountMethod: definition.timeline.discountMethod,
+        paymentTiming: definition.timeline.paymentTiming,
+        fobCondition: definition.timeline.fobCondition
+      }
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: Object.fromEntries(studentResponse.map((line2, index2) => [definition.parts[index2]?.id ?? `line-${index2 + 1}`, line2])),
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[Number.parseInt(part.partId.replace("line-", ""), 10) - 1],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        scenarioKind: definition.scenario.kind,
+        lineCount: definition.journalLines.length,
+        eventCount: definition.events.length
+      }
+    });
+  }
+};
+const transactionDirectionColumns = [
+  { id: "increase", label: "Increase", description: "The balance goes up" },
+  { id: "decrease", label: "Decrease", description: "The balance goes down" },
+  { id: "no-effect", label: "No effect", description: "The category does not change" }
+];
+const transactionReasonColumns = [
+  { id: "owner-contribution", label: "Owner contribution", description: "Capital invested by the owner" },
+  { id: "earned-revenue", label: "Earned revenue", description: "Revenue was earned or collected" },
+  { id: "asset-exchange", label: "Asset exchange", description: "One asset changed into another" },
+  { id: "liability-settlement", label: "Liability settlement", description: "A payable was cleared" },
+  { id: "expense-recognition", label: "Expense recognition", description: "A period cost was recorded" },
+  { id: "customer-advance", label: "Customer advance", description: "Cash was received before earning" },
+  { id: "owner-withdrawal", label: "Owner withdrawal", description: "Owner cash left the business" }
+];
+function buildTransactionReasonChoice(event) {
+  switch (event.archetypeId) {
+    case "owner-invests-cash":
+      return transactionReasonColumns[0];
+    case "earn-revenue":
+      return transactionReasonColumns[1];
+    case "collect-receivable":
+      return transactionReasonColumns[2];
+    case "pay-payable":
+      return transactionReasonColumns[3];
+    case "pay-expense":
+      return transactionReasonColumns[4];
+    case "purchase-asset":
+      return transactionReasonColumns[2];
+    case "receive-advance":
+      return transactionReasonColumns[5];
+    case "owner-withdrawal":
+      return transactionReasonColumns[6];
+    default:
+      return transactionReasonColumns[1];
+  }
+}
+function buildAccountEffectSummary(event, accountType) {
+  const effects = event.effects.filter((effect) => effect.accountType === accountType);
+  if (!effects.length) {
+    return "no-effect";
+  }
+  const total = effects.reduce((sum, effect) => {
+    return sum + (effect.direction === "increase" ? 1 : -1);
+  }, 0);
+  if (total > 0) {
+    return "increase";
+  }
+  if (total < 0) {
+    return "decrease";
+  }
+  return "no-effect";
+}
+function formatTransactionAmount(amount) {
+  return amount.toLocaleString("en-US");
+}
+function formatDirectionLabel(direction) {
+  return direction === "no-effect" ? "No effect" : direction[0].toUpperCase() + direction.slice(1);
+}
+function describeTransactionFocus(event) {
+  const reason = buildTransactionReasonChoice(event);
+  return {
+    transaction: event.narrative,
+    amount: `$${formatTransactionAmount(event.amount)}`,
+    whyEquityChanges: reason.label,
+    reason
+  };
+}
+function buildEffectDescription(event, accountLabel, direction) {
+  const amount = `$${formatTransactionAmount(event.amount)}`;
+  const reason = buildTransactionReasonChoice(event);
+  return `${accountLabel} ${direction} ${amount} • Why equity changes: ${reason.label}`;
+}
+function buildReasonMessage(event) {
+  const reason = buildTransactionReasonChoice(event);
+  return `${reason.label}: ${reason.description}`;
+}
+function getReasonTag(event) {
+  const reason = buildTransactionReasonChoice(event);
+  return `reason:${reason.id}`;
+}
+function buildEffectRows(event) {
+  const effectRows = event.effects.map((effect) => ({
+    id: effect.accountId,
+    label: effect.label,
+    description: buildEffectDescription(event, effect.label, effect.direction === "increase" ? "increase" : "decrease"),
+    hint: `${effect.accountType} account • ${effect.normalBalance} normal balance`
+  }));
+  const summaryRows = [
+    {
+      id: "assets",
+      label: "Assets",
+      description: `${formatDirectionLabel(buildAccountEffectSummary(event, "asset"))} across the asset accounts.`
+    },
+    {
+      id: "liabilities",
+      label: "Liabilities",
+      description: `${formatDirectionLabel(buildAccountEffectSummary(event, "liability"))} across the liability accounts.`
+    },
+    {
+      id: "equity",
+      label: "Owner's Equity",
+      description: `Net equity effect: ${formatDirectionLabel(event.equityEffect === "increases" ? "increase" : event.equityEffect === "decreases" ? "decrease" : "no-effect")}.`
+    }
+  ];
+  return [...effectRows, ...summaryRows];
+}
+function buildParts$2(event) {
+  const reason = transactionReasonColumns.find((entry) => entry.id === getReasonTag(event).slice("reason:".length)) ?? transactionReasonColumns[1];
+  const effectParts = event.effects.map((effect) => ({
+    id: effect.accountId,
+    kind: "selection",
+    label: effect.label,
+    description: `${effect.accountType} account`,
+    prompt: `Select the direction for ${effect.label}.`,
+    expectedAnswerShape: "direction-id",
+    canonicalAnswer: effect.direction,
+    explanation: buildEffectDescription(event, effect.label, effect.direction),
+    misconceptionTags: [`${effect.accountId}-direction-error`],
+    standardCode: "ACC-M7-TX-EFFECT",
+    artifactTarget: effect.direction,
+    targetId: effect.direction,
+    details: {
+      kind: "effect",
+      accountId: effect.accountId,
+      accountLabel: effect.label,
+      accountType: effect.accountType,
+      expectedDirection: effect.direction,
+      reason: reason.id,
+      reasonLabel: reason.label,
+      explanation: buildEffectDescription(event, effect.label, effect.direction)
+    }
+  }));
+  const summaryParts = [
+    {
+      id: "assets",
+      kind: "selection",
+      label: "Assets",
+      description: "Net asset impact",
+      prompt: "Choose the asset-category effect.",
+      expectedAnswerShape: "direction-id",
+      canonicalAnswer: buildAccountEffectSummary(event, "asset"),
+      explanation: `Asset accounts move ${formatDirectionLabel(buildAccountEffectSummary(event, "asset")).toLowerCase()}.`,
+      misconceptionTags: ["asset-summary-error"],
+      standardCode: "ACC-M7-TX-SUMMARY",
+      artifactTarget: buildAccountEffectSummary(event, "asset"),
+      targetId: buildAccountEffectSummary(event, "asset"),
+      details: {
+        kind: "summary",
+        expectedDirection: buildAccountEffectSummary(event, "asset"),
+        reason: reason.id,
+        reasonLabel: reason.label,
+        explanation: `Asset accounts move ${formatDirectionLabel(buildAccountEffectSummary(event, "asset")).toLowerCase()}.`
+      }
+    },
+    {
+      id: "liabilities",
+      kind: "selection",
+      label: "Liabilities",
+      description: "Net liability impact",
+      prompt: "Choose the liability-category effect.",
+      expectedAnswerShape: "direction-id",
+      canonicalAnswer: buildAccountEffectSummary(event, "liability"),
+      explanation: `Liability accounts move ${formatDirectionLabel(buildAccountEffectSummary(event, "liability")).toLowerCase()}.`,
+      misconceptionTags: ["liability-summary-error"],
+      standardCode: "ACC-M7-TX-SUMMARY",
+      artifactTarget: buildAccountEffectSummary(event, "liability"),
+      targetId: buildAccountEffectSummary(event, "liability"),
+      details: {
+        kind: "summary",
+        expectedDirection: buildAccountEffectSummary(event, "liability"),
+        reason: reason.id,
+        reasonLabel: reason.label,
+        explanation: `Liability accounts move ${formatDirectionLabel(buildAccountEffectSummary(event, "liability")).toLowerCase()}.`
+      }
+    },
+    {
+      id: "equity",
+      kind: "selection",
+      label: "Owner's Equity",
+      description: "Net owner-claim impact",
+      prompt: "Choose the owner's equity effect.",
+      expectedAnswerShape: "direction-id",
+      canonicalAnswer: event.equityEffect === "increases" ? "increase" : event.equityEffect === "decreases" ? "decrease" : "no-effect",
+      explanation: event.equityReason,
+      misconceptionTags: [`equity-${event.equityEffect}`],
+      standardCode: "ACC-M7-TX-SUMMARY",
+      artifactTarget: event.equityEffect === "increases" ? "increase" : event.equityEffect === "decreases" ? "decrease" : "no-effect",
+      targetId: event.equityEffect === "increases" ? "increase" : event.equityEffect === "decreases" ? "decrease" : "no-effect",
+      details: {
+        kind: "summary",
+        expectedDirection: event.equityEffect === "increases" ? "increase" : event.equityEffect === "decreases" ? "decrease" : "no-effect",
+        reason: reason.id,
+        reasonLabel: reason.label,
+        explanation: event.equityReason
+      }
+    },
+    {
+      id: "amount",
+      kind: "numeric",
+      label: "Amount",
+      description: "Transaction amount",
+      prompt: "Enter the transaction amount.",
+      expectedAnswerShape: "number",
+      canonicalAnswer: event.amount,
+      explanation: `The transaction amount is $${event.amount.toLocaleString("en-US")}.`,
+      misconceptionTags: ["amount-error"],
+      standardCode: "ACC-M7-TX-AMOUNT",
+      artifactTarget: event.amount.toString(),
+      targetId: event.amount,
+      details: {
+        kind: "amount",
+        expectedAmount: event.amount,
+        reason: reason.id,
+        reasonLabel: reason.label,
+        explanation: `The transaction amount is $${event.amount.toLocaleString("en-US")}.`
+      }
+    },
+    {
+      id: "equity-reason",
+      kind: "selection",
+      label: "Why equity changes",
+      description: "The economic story behind the equity effect",
+      prompt: "Choose the reason equity changes.",
+      expectedAnswerShape: "reason-id",
+      canonicalAnswer: reason.id,
+      explanation: reason.description,
+      misconceptionTags: [`reason-${reason.id}`],
+      standardCode: "ACC-M7-TX-REASON",
+      artifactTarget: reason.id,
+      targetId: reason.id,
+      details: {
+        kind: "reason",
+        reason: reason.id,
+        reasonLabel: reason.label,
+        explanation: reason.description
+      }
+    }
+  ];
+  return [...effectParts, ...summaryParts];
+}
+function buildResponse$3(definition) {
+  const response = {};
+  for (const effect of definition.event.effects) {
+    response[effect.accountId] = effect.direction;
+  }
+  response.assets = buildAccountEffectSummary(definition.event, "asset");
+  response.liabilities = buildAccountEffectSummary(definition.event, "liability");
+  response.equity = definition.event.equityEffect === "increases" ? "increase" : definition.event.equityEffect === "decreases" ? "decrease" : "no-effect";
+  response.amount = definition.event.amount;
+  response["equity-reason"] = getReasonTag(definition.event).slice("reason:".length);
+  return response;
+}
+function buildPartFeedback$2(part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  const selectedLabel = part.kind === "numeric" ? `$${Number(selectedValue ?? 0).toLocaleString("en-US")}` : typeof selectedValue === "string" ? selectedValue === "no-effect" ? "No effect" : selectedValue.replace(/-/g, " ").replace(/^\w/, (char) => char.toUpperCase()) : "Not selected";
+  const expectedLabel = part.kind === "numeric" ? `$${Number(part.targetId).toLocaleString("en-US")}` : typeof part.targetId === "number" ? `$${part.targetId.toLocaleString("en-US")}` : part.targetId === "no-effect" ? "No effect" : part.targetId[0].toUpperCase() + part.targetId.slice(1);
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+    selectedLabel,
+    expectedLabel,
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? part.details.kind === "reason" ? `${part.details.reasonLabel} explains the equity change.` : part.details.kind === "amount" ? `Correct amount: $${Number(part.targetId).toLocaleString("en-US")}.` : `Correct ${part.label.toLowerCase()}.` : part.details.kind === "reason" ? `You treated this transaction as ${selectedLabel.toLowerCase()}, but it is ${part.details.reasonLabel?.toLowerCase()} because ${part.details.explanation}.` : part.details.kind === "amount" ? `The amount is $${Number(part.targetId).toLocaleString("en-US")}.` : `${part.label} should be ${expectedLabel.toLowerCase()}. ${part.details.explanation}`
+  };
+}
+function buildTransactionEffectsReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((gradeResultPart) => {
+      const part = definition.parts.find((entry) => entry.id === gradeResultPart.partId);
+      if (!part) {
+        return [
+          gradeResultPart.partId,
+          {
+            status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+            selectedLabel: "Not selected",
+            expectedLabel: "Unknown",
+            misconceptionTags: gradeResultPart.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildPartFeedback$2(part, studentResponse, gradeResultPart)];
+    })
+  );
+}
+const transactionEffectsFamily = {
+  generate(seed, config2 = {}) {
+    const event = buildTransactionEvent(config2.archetypeId ?? "earn-revenue", {
+      ...config2,
+      seed,
+      context: config2.context ?? "service",
+      settlement: config2.settlement ?? "cash"
+    });
+    const rows = buildEffectRows(event);
+    const parts = buildParts$2(event);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "transaction-effects",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `transaction-effects-${event.archetypeId}-${seed}`,
+      prompt: {
+        title: "Transaction effects on accounts",
+        stem: "Use the transaction narrative to identify how the major accounts change and why equity changes."
+      },
+      event,
+      rows,
+      columns: [...transactionDirectionColumns],
+      matrixRows: rows,
+      parts,
+      workedExample: {
+        transaction: event.narrative,
+        amount: event.amount,
+        equityReason: event.equityReason,
+        exampleAccountId: event.effects[0]?.accountId,
+        exampleDirection: event.effects[0]?.direction
+      },
+      scaffolding: {
+        showTransactionSummary: true,
+        showAmountStrip: true,
+        showReasonStrip: true
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: false,
+        rubric: {
+          archetypeId: event.archetypeId
+        }
+      },
+      analyticsConfig: {
+        generator: "transaction-effects-family",
+        seed,
+        archetypeId: event.archetypeId,
+        context: event.context,
+        settlement: event.settlement,
+        amount: event.amount
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$3(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const rawAnswer = studentResponse[part.id];
+      const normalizedAnswer = normalizePracticeValue(rawAnswer);
+      const expectedAnswer = part.kind === "numeric" ? normalizePracticeValue(part.targetId) : normalizePracticeValue(part.targetId);
+      const isCorrect = normalizedAnswer === expectedAnswer;
+      return {
+        partId: part.id,
+        rawAnswer,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [`transaction-effects:${part.id}`]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} transaction-analysis outputs correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "transaction-effects-analysis",
+      family: definition.familyKey,
+      event: definition.event,
+      rows: definition.rows,
+      columns: definition.columns,
+      entries: definition.parts.map((part) => {
+        const selectedValue = studentResponse[part.id];
+        const partResult = gradeResult.parts.find((entry) => entry.partId === part.id);
+        return {
+          id: part.id,
+          label: part.label,
+          description: part.description,
+          kind: part.kind,
+          selectedValue,
+          expectedValue: part.targetId,
+          isCorrect: partResult?.isCorrect ?? false,
+          misconceptionTags: partResult?.misconceptionTags ?? []
+        };
+      }),
+      summary: describeTransactionFocus(definition.event)
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: studentResponse,
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[part.partId],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        archetypeId: definition.event.archetypeId,
+        context: definition.event.context
+      }
+    });
+  }
+};
+const MATRIX_COLUMNS = [
+  { id: "affected", label: "Affected?", description: "This row is part of the transaction" },
+  { id: "direction", label: "Direction", description: "The account increases or decreases" },
+  { id: "amount-basis", label: "Amount basis", description: "The dollar amount comes from this row" },
+  { id: "equity-reason", label: "Equity reason", description: "This row explains the owner-claim effect" },
+  { id: "not-affected", label: "Not affected", description: "This row is not part of the transaction" }
+];
+function mulberry32$8(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function shuffleArray(arr2, rng) {
+  const result = [...arr2];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+function pickDistractorAccounts(event, seed) {
+  const involvedIds = new Set(event.effects.map((e) => e.accountId));
+  const candidates = practiceAccounts.filter((a) => !involvedIds.has(a.id) && a.retailApplicable);
+  const rng = mulberry32$8(seed ^ 981245471);
+  const shuffled2 = shuffleArray(candidates, rng);
+  return shuffled2.slice(0, 2).map((a) => ({ id: a.id, label: a.label }));
+}
+function buildRows$1(event, seed) {
+  const cashEffect = event.effects.find((effect) => effect.accountId === "cash") ?? event.effects[0];
+  const offsetEffect = event.effects.find((effect) => effect.accountId !== "cash") ?? event.effects[1] ?? event.effects[0];
+  const equityDirection = event.equityEffect === "increases" ? "increase" : event.equityEffect === "decreases" ? "decrease" : "no-effect";
+  const effectRows = [
+    {
+      id: "cash",
+      label: "Cash",
+      description: `Cash ${cashEffect?.direction === "increase" ? "comes in" : cashEffect?.direction === "decrease" ? "goes out" : "does not change"} because ${buildReasonMessage(event).toLowerCase()}.`,
+      hint: `Transaction clue: ${event.narrative}`
+    },
+    {
+      id: "offset-account",
+      label: offsetEffect?.label ?? "Offset account",
+      description: buildEffectDescription(event, offsetEffect?.label ?? "Offset account", offsetEffect?.direction === "increase" ? "increase" : "decrease"),
+      hint: `${offsetEffect?.accountType ?? "offset"} account`
+    },
+    {
+      id: "income-statement",
+      label: "Revenue or Expense",
+      description: `The income statement side follows ${buildReasonMessage(event).toLowerCase()}.`,
+      hint: "Tie the amount to the account effect."
+    },
+    {
+      id: "equity",
+      label: "Owner's Equity effect",
+      description: `Owner's equity ${formatDirectionLabel(equityDirection).toLowerCase()} when ${buildReasonMessage(event).toLowerCase()}.`,
+      hint: "Pick the reasoning stage that explains the owner-claim change."
+    }
+  ];
+  const distractors = pickDistractorAccounts(event, seed);
+  const distractorRows = distractors.map((account, index2) => ({
+    id: `distractor-${index2 + 1}`,
+    label: account.label,
+    description: `${account.label} is not involved in this transaction.`,
+    hint: "Determine whether this account is affected."
+  }));
+  const rng = mulberry32$8(seed ^ 2066566762);
+  return shuffleArray([...effectRows, ...distractorRows], rng);
+}
+function buildParts$1(event, seed) {
+  const reason = transactionReasonColumns.find((entry) => entry.id === getReasonTag(event).slice("reason:".length)) ?? transactionReasonColumns[1];
+  const offsetEffect = event.effects[1] ?? event.effects[0];
+  const distractors = pickDistractorAccounts(event, seed);
+  const realParts = [
+    {
+      id: "cash",
+      kind: "selection",
+      label: "Cash",
+      description: "Start with the cash clue.",
+      prompt: "Choose the reasoning stage for cash.",
+      expectedAnswerShape: "stage-id",
+      canonicalAnswer: "affected",
+      explanation: `Cash is affected by ${event.narrative}`,
+      misconceptionTags: ["cash-stage-error"],
+      standardCode: "ACC-M7-TX-MATRIX",
+      artifactTarget: "affected",
+      targetId: "affected",
+      details: {
+        stage: "cash",
+        accountId: event.effects[0]?.accountId,
+        accountLabel: event.effects[0]?.label,
+        expectedColumnId: "affected",
+        amount: event.amount,
+        reasonLabel: reason.label,
+        explanation: `Cash is affected by ${event.narrative}`
+      }
+    },
+    {
+      id: "offset-account",
+      kind: "selection",
+      label: offsetEffect?.label ?? "Offset account",
+      description: "Analyze the offsetting side.",
+      prompt: "Choose the reasoning stage for the offset account.",
+      expectedAnswerShape: "stage-id",
+      canonicalAnswer: "direction",
+      explanation: buildEffectDescription(event, offsetEffect?.label ?? "Offset account", offsetEffect?.direction === "increase" ? "increase" : "decrease"),
+      misconceptionTags: ["offset-stage-error"],
+      standardCode: "ACC-M7-TX-MATRIX",
+      artifactTarget: "direction",
+      targetId: "direction",
+      details: {
+        stage: "offset",
+        accountId: offsetEffect?.accountId,
+        accountLabel: offsetEffect?.label,
+        expectedColumnId: "direction",
+        amount: event.amount,
+        reasonLabel: reason.label,
+        explanation: buildEffectDescription(event, offsetEffect?.label ?? "Offset account", offsetEffect?.direction === "increase" ? "increase" : "decrease")
+      }
+    },
+    {
+      id: "income-statement",
+      kind: "selection",
+      label: "Revenue or Expense",
+      description: "Tie the amount to the income statement effect.",
+      prompt: "Choose the reasoning stage for the income-statement side.",
+      expectedAnswerShape: "stage-id",
+      canonicalAnswer: "amount-basis",
+      explanation: `Use ${event.amount.toLocaleString("en-US")} as the amount basis for ${event.effects[1]?.label ?? "the offset account"}.`,
+      misconceptionTags: ["amount-stage-error"],
+      standardCode: "ACC-M7-TX-MATRIX",
+      artifactTarget: "amount-basis",
+      targetId: "amount-basis",
+      details: {
+        stage: "income-statement",
+        accountId: event.effects[1]?.accountId,
+        accountLabel: event.effects[1]?.label,
+        expectedColumnId: "amount-basis",
+        amount: event.amount,
+        reasonLabel: reason.label,
+        explanation: `Use ${event.amount.toLocaleString("en-US")} as the amount basis for ${event.effects[1]?.label ?? "the offset account"}.`
+      }
+    },
+    {
+      id: "equity",
+      kind: "selection",
+      label: "Owner's Equity effect",
+      description: "Explain the owner-claim effect last.",
+      prompt: "Choose the reasoning stage for equity.",
+      expectedAnswerShape: "stage-id",
+      canonicalAnswer: "equity-reason",
+      explanation: event.equityReason,
+      misconceptionTags: ["equity-stage-error"],
+      standardCode: "ACC-M7-TX-MATRIX",
+      artifactTarget: "equity-reason",
+      targetId: "equity-reason",
+      details: {
+        stage: "equity",
+        accountId: void 0,
+        accountLabel: "Owner's Equity",
+        expectedColumnId: "equity-reason",
+        amount: event.amount,
+        reasonLabel: reason.label,
+        explanation: event.equityReason
+      }
+    }
+  ];
+  const distractorParts = distractors.map((account, index2) => ({
+    id: `distractor-${index2 + 1}`,
+    kind: "selection",
+    label: account.label,
+    description: "Determine whether this account is part of the transaction.",
+    prompt: `Choose the reasoning stage for ${account.label}.`,
+    expectedAnswerShape: "stage-id",
+    canonicalAnswer: "not-affected",
+    explanation: `${account.label} is not involved in this transaction.`,
+    misconceptionTags: ["distractor-stage-error"],
+    standardCode: "ACC-M7-TX-MATRIX",
+    artifactTarget: "not-affected",
+    targetId: "not-affected",
+    details: {
+      stage: "distractor",
+      accountId: account.id,
+      accountLabel: account.label,
+      expectedColumnId: "not-affected",
+      explanation: `${account.label} is not involved in this transaction.`
+    }
+  }));
+  return [...realParts, ...distractorParts];
+}
+function buildResponse$2(definition) {
+  return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetId]));
+}
+function buildPartFeedback$1(part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+    selectedLabel: typeof selectedValue === "string" ? selectedValue.replace(/-/g, " ") : "Not selected",
+    expectedLabel: part.targetId.replace(/-/g, " "),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? `${part.label} sits in the ${part.targetId.replace(/-/g, " ")} stage.` : `${part.label} belongs in the ${part.targetId.replace(/-/g, " ")} stage because ${part.details.explanation}`
+  };
+}
+function buildTransactionMatrixReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((gradeResultPart) => {
+      const part = definition.parts.find((entry) => entry.id === gradeResultPart.partId);
+      if (!part) {
+        return [
+          gradeResultPart.partId,
+          {
+            status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+            scoreLabel: `${gradeResultPart.score}/${gradeResultPart.maxScore}`,
+            selectedLabel: "Not selected",
+            expectedLabel: "Unknown",
+            misconceptionTags: gradeResultPart.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildPartFeedback$1(part, studentResponse, gradeResultPart)];
+    })
+  );
+}
+const transactionMatrixFamily = {
+  generate(seed, config2 = {}) {
+    const event = buildTransactionEvent(config2.archetypeId ?? "purchase-asset", {
+      ...config2,
+      seed,
+      context: config2.context ?? "merchandise",
+      settlement: config2.settlement ?? "on-account"
+    });
+    const rows = buildRows$1(event, seed);
+    const parts = buildParts$1(event, seed);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "transaction-matrix",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `transaction-matrix-${event.archetypeId}-${seed}`,
+      prompt: {
+        title: "Transaction reasoning matrix",
+        stem: "Work left to right through the reasoning stages and identify the owner-claim story behind the transaction."
+      },
+      event,
+      rows,
+      columns: MATRIX_COLUMNS,
+      matrixRows: rows,
+      parts,
+      workedExample: {
+        transaction: event.narrative,
+        sourceDocumentClue: event.tags.join(", "),
+        firstDecision: rows[0]?.id
+      },
+      scaffolding: {
+        showTransactionSummary: true,
+        showReasonStrip: true,
+        stageColumns: MATRIX_COLUMNS.map((column) => column.id)
+      },
+      grading: {
+        strategy: "exact",
+        partialCredit: false,
+        rubric: {
+          archetypeId: event.archetypeId
+        }
+      },
+      analyticsConfig: {
+        generator: "transaction-matrix-family",
+        seed,
+        archetypeId: event.archetypeId,
+        context: event.context,
+        settlement: event.settlement,
+        amount: event.amount
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$2(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const rawAnswer = studentResponse[part.id];
+      const normalizedAnswer = normalizePracticeValue(rawAnswer);
+      const expectedAnswer = normalizePracticeValue(part.targetId);
+      const isCorrect = normalizedAnswer === expectedAnswer;
+      return {
+        partId: part.id,
+        rawAnswer,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : [`transaction-matrix:${part.id}`]
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} reasoning stages correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "transaction-matrix-analysis",
+      family: definition.familyKey,
+      event: definition.event,
+      rows: definition.rows,
+      columns: definition.columns,
+      entries: definition.parts.map((part) => {
+        const selectedValue = studentResponse[part.id];
+        const partResult = gradeResult.parts.find((entry) => entry.partId === part.id);
+        return {
+          id: part.id,
+          label: part.label,
+          description: part.description,
+          kind: part.kind,
+          selectedValue,
+          expectedValue: part.targetId,
+          isCorrect: partResult?.isCorrect ?? false,
+          misconceptionTags: partResult?.misconceptionTags ?? []
+        };
+      }),
+      summary: describeTransactionFocus(definition.event)
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: studentResponse,
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[part.partId],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        archetypeId: definition.event.archetypeId,
+        context: definition.event.context
+      }
+    });
+  }
+};
+const TRIAL_BALANCE_BALANCE_OPTIONS = [
+  { id: "still-balances", label: "Still balances" },
+  { id: "out-of-balance", label: "Out of balance" }
+];
+const TRIAL_BALANCE_LARGER_OPTIONS = [
+  { id: "debit", label: "Debit" },
+  { id: "credit", label: "Credit" },
+  { id: "neither", label: "Neither" }
+];
+const TRIAL_BALANCE_ARCHETYPE_CATALOG = [
+  { id: "wrong-side", label: "Wrong side", description: "The correct amount is posted to the opposite column." },
+  { id: "wrong-amount", label: "Wrong amount", description: "One side is posted for the wrong dollar amount." },
+  { id: "double-post", label: "Double post", description: "One side is recorded twice." },
+  { id: "both-sides-wrong", label: "Both sides wrong", description: "Both sides use the same incorrect amount." },
+  { id: "omission", label: "Omission", description: "One side is left out entirely." },
+  { id: "transposition", label: "Transposition", description: "Digits are reversed in a single amount." },
+  { id: "slide", label: "Slide", description: "A digit slips out of a single amount." }
+];
+const DEBIT_ACCOUNTS = practiceAccounts.filter((account) => account.normalBalance === "debit");
+const CREDIT_ACCOUNTS = practiceAccounts.filter((account) => account.normalBalance === "credit");
+function mulberry32$7(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function randomInt$1(rng, min, max) {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  if (upper <= lower) {
+    return lower;
+  }
+  return Math.floor(rng() * (upper - lower + 1)) + lower;
+}
+function pick$6(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function capitalize(value) {
+  return value.replace(/^[a-z]/, (char) => char.toUpperCase());
+}
+function formatAmount$7(amount) {
+  return `$${amount.toLocaleString("en-US")}`;
+}
+function clampAmount(amount, min, max) {
+  return Math.max(min, Math.min(max, amount));
+}
+function roundToNearestFive(amount) {
+  return Math.max(5, Math.round(amount / 5) * 5);
+}
+function pickAccountPair(rng) {
+  const debitAccount = pick$6(DEBIT_ACCOUNTS, rng);
+  const creditAccount = pick$6(CREDIT_ACCOUNTS, rng);
+  return {
+    debitAccount: {
+      id: debitAccount.id,
+      label: debitAccount.label
+    },
+    creditAccount: {
+      id: creditAccount.id,
+      label: creditAccount.label
+    },
+    amount: 0
+  };
+}
+function transposeAmount(amount) {
+  const digits = String(Math.abs(Math.trunc(amount)));
+  if (digits.length < 2) {
+    return amount + 9;
+  }
+  const transposedDigits = `${digits[1]}${digits[0]}${digits.slice(2)}`;
+  const transposed = Number(transposedDigits);
+  return Number.isFinite(transposed) && transposed > 0 ? transposed : amount + 9;
+}
+function slideAmount(amount) {
+  const digits = String(Math.abs(Math.trunc(amount)));
+  if (digits.length < 2) {
+    return amount * 10;
+  }
+  const slidDigits = digits.slice(0, -1);
+  const slid = Number(slidDigits);
+  return Number.isFinite(slid) && slid > 0 ? slid : Math.floor(amount / 10);
+}
+function pickGenericAmount(rng, min, max) {
+  const raw = randomInt$1(rng, min, max);
+  return clampAmount(roundToNearestFive(raw), min, max);
+}
+function pickTranspositionAmount(rng, min, max) {
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    const hundreds = randomInt$1(rng, 1, 9);
+    const tens = randomInt$1(rng, 1, 9);
+    const ones = randomInt$1(rng, 0, 9);
+    const amount = hundreds * 100 + tens * 10 + ones;
+    const transposed = transposeAmount(amount);
+    if (amount >= min && amount <= max && transposed !== amount && transposed >= min && transposed <= max) {
+      return amount;
+    }
+  }
+  return pickGenericAmount(rng, min, max);
+}
+function pickSlideAmount(rng, min, max) {
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    const base = randomInt$1(rng, Math.max(1, Math.ceil(min / 10)), Math.max(1, Math.floor(max / 10)));
+    const amount = base * 10;
+    const slid = slideAmount(amount);
+    if (amount >= min && amount <= max && slid !== amount && slid > 0) {
+      return amount;
+    }
+  }
+  const fallback = pickGenericAmount(rng, min, max);
+  return fallback + (fallback % 10 === 0 ? 0 : 10 - fallback % 10);
+}
+function generateDifferenceOptions(rng, difference, isBalanced) {
+  const options = /* @__PURE__ */ new Set();
+  options.add(0);
+  options.add(Math.max(0, difference));
+  if (isBalanced) {
+    options.add(9);
+    options.add(18);
+    options.add(27);
+  } else {
+    options.add(Math.max(0, difference - 9));
+    options.add(difference + 9);
+    options.add(difference + 18);
+  }
+  while (options.size < 4) {
+    options.add(Math.max(0, roundToNearestFive(difference + randomInt$1(rng, 1, 4) * 5)));
+  }
+  return Array.from(options).slice(0, 4).sort((left, right) => left - right);
+}
+function buildOutcome(debitTotal, creditTotal) {
+  const balanced = debitTotal === creditTotal;
+  const difference = Math.abs(debitTotal - creditTotal);
+  return {
+    balanced,
+    difference,
+    largerColumn: balanced ? "neither" : debitTotal > creditTotal ? "debit" : "credit"
+  };
+}
+function buildScenarioFromOutcome(input) {
+  const balance = buildOutcome(input.debitTotal, input.creditTotal);
+  return {
+    id: input.id,
+    rowId: input.rowId,
+    rowLabel: input.rowLabel,
+    archetypeId: input.archetypeId,
+    archetypeLabel: input.archetypeLabel,
+    title: input.title,
+    narrative: input.narrative,
+    whatHappened: input.whatHappened,
+    whatToDecideFirst: input.whatToDecideFirst,
+    correctEntry: {
+      debitAccount: input.correctEntry.debitAccount,
+      creditAccount: input.correctEntry.creditAccount,
+      amount: input.correctAmount
+    },
+    errorSide: input.errorSide,
+    correctAmount: input.correctAmount,
+    erroneousAmount: input.erroneousAmount,
+    balance,
+    expectedBalanced: balance.balanced ? "still-balances" : "out-of-balance",
+    expectedDifference: balance.difference,
+    expectedLargerColumn: balance.largerColumn,
+    balancedOptions: [...TRIAL_BALANCE_BALANCE_OPTIONS],
+    differenceOptions: generateDifferenceOptions(input.rng, balance.difference, balance.balanced),
+    largerColumnOptions: [...TRIAL_BALANCE_LARGER_OPTIONS],
+    misconceptionTags: input.misconceptionTags
+  };
+}
+function buildWrongSideScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 2654435769 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  const errorSide = rng() > 0.5 ? "debit" : "credit";
+  const debitTotal = errorSide === "credit" ? correctAmount * 2 : 0;
+  const creditTotal = errorSide === "debit" ? correctAmount * 2 : 0;
+  const misTags = ["wrong-side-posting"];
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "wrong-side",
+    archetypeLabel: "Wrong side",
+    title: `${String.fromCharCode(65 + rowIndex)}. Wrong side posting`,
+    narrative: `The ${errorSide} side was posted to the opposite column instead of the intended side.`,
+    whatHappened: `The ${errorSide} side was posted on the wrong side.`,
+    whatToDecideFirst: "Decide whether the mistake still leaves debits equal to credits.",
+    correctEntry,
+    errorSide,
+    correctAmount,
+    erroneousAmount: correctAmount,
+    debitTotal,
+    creditTotal,
+    misconceptionTags: misTags,
+    rng
+  });
+}
+function buildWrongAmountScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 1374496523 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  const errorSide = rng() > 0.5 ? "debit" : "credit";
+  let erroneousAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  if (erroneousAmount === correctAmount) {
+    erroneousAmount = clampAmount(erroneousAmount + 15, options.amountRange.min, options.amountRange.max);
+  }
+  const debitTotal = errorSide === "debit" ? erroneousAmount : correctAmount;
+  const creditTotal = errorSide === "credit" ? erroneousAmount : correctAmount;
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "wrong-amount",
+    archetypeLabel: "Wrong amount",
+    title: `${String.fromCharCode(65 + rowIndex)}. Wrong amount`,
+    narrative: `The ${errorSide} side was recorded for ${formatAmount$7(erroneousAmount)} instead of ${formatAmount$7(correctAmount)}.`,
+    whatHappened: `One side was posted for the wrong dollar amount.`,
+    whatToDecideFirst: "Decide whether the wrong amount changes the balance before comparing the columns.",
+    correctEntry,
+    errorSide,
+    correctAmount,
+    erroneousAmount,
+    debitTotal,
+    creditTotal,
+    misconceptionTags: ["wrong-amount-posting"],
+    rng
+  });
+}
+function buildDoublePostScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 2496678331 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  const errorSide = rng() > 0.5 ? "debit" : "credit";
+  const debitTotal = errorSide === "debit" ? correctAmount * 2 : correctAmount;
+  const creditTotal = errorSide === "credit" ? correctAmount * 2 : correctAmount;
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "double-post",
+    archetypeLabel: "Double post",
+    title: `${String.fromCharCode(65 + rowIndex)}. Double post`,
+    narrative: `The ${errorSide} side was entered twice.`,
+    whatHappened: `One side was posted twice.`,
+    whatToDecideFirst: "Decide which side is duplicated, then compare the totals.",
+    correctEntry,
+    errorSide,
+    correctAmount,
+    erroneousAmount: correctAmount,
+    debitTotal,
+    creditTotal,
+    misconceptionTags: ["double-posting"],
+    rng
+  });
+}
+function buildBothSidesWrongScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 3266489909 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  let erroneousAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  if (erroneousAmount === correctAmount) {
+    erroneousAmount = clampAmount(erroneousAmount + 20, options.amountRange.min, options.amountRange.max);
+  }
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "both-sides-wrong",
+    archetypeLabel: "Both sides wrong",
+    title: `${String.fromCharCode(65 + rowIndex)}. Both sides wrong`,
+    narrative: `Both sides were recorded for ${formatAmount$7(erroneousAmount)} instead of ${formatAmount$7(correctAmount)}.`,
+    whatHappened: "Both sides used the same wrong amount.",
+    whatToDecideFirst: "Check whether the equal wrong amounts still keep the trial balance in agreement.",
+    correctEntry,
+    errorSide: "both",
+    correctAmount,
+    erroneousAmount,
+    debitTotal: erroneousAmount,
+    creditTotal: erroneousAmount,
+    misconceptionTags: ["both-sides-wrong-balances"],
+    rng
+  });
+}
+function buildOmissionScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 374761393 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickGenericAmount(rng, options.amountRange.min, options.amountRange.max);
+  const errorSide = rng() > 0.5 ? "debit" : "credit";
+  const debitTotal = errorSide === "debit" ? 0 : correctAmount;
+  const creditTotal = errorSide === "credit" ? 0 : correctAmount;
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "omission",
+    archetypeLabel: "Omission",
+    title: `${String.fromCharCode(65 + rowIndex)}. Omission`,
+    narrative: `The ${errorSide} side was omitted entirely.`,
+    whatHappened: "One side never made it into the trial balance.",
+    whatToDecideFirst: "Check whether the remaining side leaves one column larger.",
+    correctEntry,
+    errorSide,
+    correctAmount,
+    erroneousAmount: 0,
+    debitTotal,
+    creditTotal,
+    misconceptionTags: ["omission-always-debit-heavy"],
+    rng
+  });
+}
+function buildTranspositionScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 668265263 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickTranspositionAmount(rng, options.amountRange.min, options.amountRange.max);
+  const errorSide = rng() > 0.5 ? "debit" : "credit";
+  const erroneousAmount = transposeAmount(correctAmount);
+  const debitTotal = errorSide === "debit" ? erroneousAmount : correctAmount;
+  const creditTotal = errorSide === "credit" ? erroneousAmount : correctAmount;
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "transposition",
+    archetypeLabel: "Transposition",
+    title: `${String.fromCharCode(65 + rowIndex)}. Transposition`,
+    narrative: `One ${errorSide} amount was transposed from ${formatAmount$7(correctAmount)} to ${formatAmount$7(erroneousAmount)}.`,
+    whatHappened: `A digit swap changed the ${errorSide} amount.`,
+    whatToDecideFirst: "Check whether the digit swap leaves a difference that is divisible by 9.",
+    correctEntry,
+    errorSide,
+    correctAmount,
+    erroneousAmount,
+    debitTotal,
+    creditTotal,
+    misconceptionTags: ["transposition-vs-slide"],
+    rng
+  });
+}
+function buildSlideScenario(seed, options, rowIndex) {
+  const rng = mulberry32$7(seed ^ 2246822519 ^ rowIndex);
+  const correctEntry = pickAccountPair(rng);
+  const correctAmount = pickSlideAmount(rng, options.amountRange.min, options.amountRange.max);
+  const errorSide = rng() > 0.5 ? "debit" : "credit";
+  const erroneousAmount = slideAmount(correctAmount);
+  const debitTotal = errorSide === "debit" ? erroneousAmount : correctAmount;
+  const creditTotal = errorSide === "credit" ? erroneousAmount : correctAmount;
+  return buildScenarioFromOutcome({
+    id: `scenario-${rowIndex + 1}`,
+    rowId: `scenario-${rowIndex + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + rowIndex)}`,
+    archetypeId: "slide",
+    archetypeLabel: "Slide",
+    title: `${String.fromCharCode(65 + rowIndex)}. Slide`,
+    narrative: `One ${errorSide} amount slid from ${formatAmount$7(correctAmount)} to ${formatAmount$7(erroneousAmount)}.`,
+    whatHappened: `A digit slipped out of the ${errorSide} amount.`,
+    whatToDecideFirst: "Decide whether the slipped amount changes the balance and by how much.",
+    correctEntry,
+    errorSide,
+    correctAmount,
+    erroneousAmount,
+    debitTotal,
+    creditTotal,
+    misconceptionTags: ["slide-error-size"],
+    rng
+  });
+}
+const trialBalanceErrorArchetypes = [...TRIAL_BALANCE_ARCHETYPE_CATALOG];
+function pickWeightedArchetype(rng, weights, allowBalancedScenarios) {
+  const candidates = trialBalanceErrorArchetypes.filter((archetype) => allowBalancedScenarios || archetype.id !== "both-sides-wrong").map((archetype) => ({
+    archetype,
+    weight: weights[archetype.id] ?? 1
+  })).filter((entry) => entry.weight > 0);
+  const total = candidates.reduce((sum, entry) => sum + entry.weight, 0);
+  if (total <= 0) {
+    return pick$6(
+      trialBalanceErrorArchetypes.filter((archetype) => allowBalancedScenarios || archetype.id !== "both-sides-wrong"),
+      rng
+    ).id;
+  }
+  let cursor = rng() * total;
+  for (const candidate of candidates) {
+    cursor -= candidate.weight;
+    if (cursor <= 0) {
+      return candidate.archetype.id;
+    }
+  }
+  return candidates[candidates.length - 1]?.archetype.id ?? "wrong-side";
+}
+function generateTrialBalanceErrorScenarios(seed, config2 = {}) {
+  const rng = mulberry32$7(seed ^ 1367130551);
+  const amountRange = {
+    min: config2.amountRange?.min ?? 90,
+    max: config2.amountRange?.max ?? 900
+  };
+  const normalizedConfig = {
+    scenarioCount: config2.scenarioCount ?? randomInt$1(rng, 3, 6),
+    amountRange,
+    includeBalancedScenarios: config2.includeBalancedScenarios ?? true,
+    errorTypeWeights: config2.errorTypeWeights ?? {}
+  };
+  const scenarioCount = clampAmount(normalizedConfig.scenarioCount, 3, 6);
+  const scenarios = Array.from({ length: scenarioCount }, (_, index2) => {
+    const archetypeId = pickWeightedArchetype(rng, normalizedConfig.errorTypeWeights, normalizedConfig.includeBalancedScenarios);
+    const scenarioSeed = seed + index2 * 101;
+    switch (archetypeId) {
+      case "wrong-side":
+        return buildWrongSideScenario(scenarioSeed, normalizedConfig, index2);
+      case "wrong-amount":
+        return buildWrongAmountScenario(scenarioSeed, normalizedConfig, index2);
+      case "double-post":
+        return buildDoublePostScenario(scenarioSeed, normalizedConfig, index2);
+      case "both-sides-wrong":
+        return buildBothSidesWrongScenario(scenarioSeed, normalizedConfig, index2);
+      case "omission":
+        return buildOmissionScenario(scenarioSeed, normalizedConfig, index2);
+      case "transposition":
+        return buildTranspositionScenario(scenarioSeed, normalizedConfig, index2);
+      case "slide":
+        return buildSlideScenario(scenarioSeed, normalizedConfig, index2);
+      default:
+        return buildWrongSideScenario(scenarioSeed, normalizedConfig, index2);
+    }
+  });
+  if (normalizedConfig.includeBalancedScenarios && !scenarios.some((scenario) => scenario.balance.balanced)) {
+    const replacement = buildBothSidesWrongScenario(seed + 999, normalizedConfig, scenarios.length - 1);
+    scenarios[scenarios.length - 1] = replacement;
+  }
+  return scenarios.map((scenario, index2) => ({
+    ...scenario,
+    id: `scenario-${index2 + 1}`,
+    rowId: `scenario-${index2 + 1}`,
+    rowLabel: `Scenario ${String.fromCharCode(65 + index2)}`,
+    title: `${String.fromCharCode(65 + index2)}. ${scenario.archetypeLabel}`
+  }));
+}
+function formatTrialBalanceBalanceAnswer(value) {
+  return value === "still-balances" ? "Still balances" : "Out of balance";
+}
+function formatTrialBalanceLargerColumn(value) {
+  if (value === "neither") {
+    return "Neither";
+  }
+  return capitalize(value);
+}
+function formatTrialBalanceDifference(value) {
+  return formatAmount$7(value);
+}
+function formatPartLabel(answerKind) {
+  switch (answerKind) {
+    case "balanced":
+      return "Balanced?";
+    case "difference":
+      return "Difference";
+    default:
+      return "Larger column";
+  }
+}
+function formatSelectionValue(value) {
+  if (typeof value === "number") {
+    return formatTrialBalanceDifference(value);
+  }
+  if (typeof value !== "string") {
+    return "Not selected";
+  }
+  if (value === "still-balances") {
+    return "Still balances";
+  }
+  if (value === "out-of-balance") {
+    return "Out of balance";
+  }
+  if (value === "neither") {
+    return "Neither";
+  }
+  return value.split("-").map((word) => word.slice(0, 1).toUpperCase() + word.slice(1)).join(" ");
+}
+function buildScenarioParts(scenario) {
+  return [
+    {
+      id: `${scenario.rowId}:balanced`,
+      kind: "selection",
+      label: `${scenario.rowLabel} balanced?`,
+      description: scenario.whatHappened,
+      prompt: `Will ${scenario.rowLabel} still balance?`,
+      expectedAnswerShape: "selection",
+      canonicalAnswer: scenario.expectedBalanced,
+      explanation: scenario.whatToDecideFirst,
+      misconceptionTags: scenario.misconceptionTags,
+      standardCode: "ACC-M7-TB-G",
+      artifactTarget: "balanced",
+      targetId: scenario.expectedBalanced,
+      details: {
+        scenarioId: scenario.id,
+        rowId: scenario.rowId,
+        answerKind: "balanced",
+        explanation: scenario.narrative,
+        errorType: scenario.archetypeId,
+        expectedBalanced: scenario.expectedBalanced,
+        expectedDifference: scenario.expectedDifference,
+        expectedLargerColumn: scenario.expectedLargerColumn,
+        misconceptionTags: scenario.misconceptionTags
+      }
+    },
+    {
+      id: `${scenario.rowId}:difference`,
+      kind: "numeric",
+      label: `${scenario.rowLabel} difference`,
+      description: scenario.whatHappened,
+      prompt: `What is the difference for ${scenario.rowLabel}?`,
+      expectedAnswerShape: "numeric",
+      canonicalAnswer: scenario.expectedDifference,
+      explanation: scenario.narrative,
+      misconceptionTags: scenario.misconceptionTags,
+      standardCode: "ACC-M7-TB-G",
+      artifactTarget: "difference",
+      targetId: scenario.expectedDifference,
+      details: {
+        scenarioId: scenario.id,
+        rowId: scenario.rowId,
+        answerKind: "difference",
+        explanation: scenario.narrative,
+        errorType: scenario.archetypeId,
+        expectedBalanced: scenario.expectedBalanced,
+        expectedDifference: scenario.expectedDifference,
+        expectedLargerColumn: scenario.expectedLargerColumn,
+        misconceptionTags: scenario.misconceptionTags
+      }
+    },
+    {
+      id: `${scenario.rowId}:larger-column`,
+      kind: "selection",
+      label: `${scenario.rowLabel} larger column`,
+      description: scenario.whatHappened,
+      prompt: `Which column is larger for ${scenario.rowLabel}?`,
+      expectedAnswerShape: "selection",
+      canonicalAnswer: scenario.expectedLargerColumn,
+      explanation: scenario.narrative,
+      misconceptionTags: scenario.misconceptionTags,
+      standardCode: "ACC-M7-TB-G",
+      artifactTarget: "larger-column",
+      targetId: scenario.expectedLargerColumn,
+      details: {
+        scenarioId: scenario.id,
+        rowId: scenario.rowId,
+        answerKind: "larger-column",
+        explanation: scenario.narrative,
+        errorType: scenario.archetypeId,
+        expectedBalanced: scenario.expectedBalanced,
+        expectedDifference: scenario.expectedDifference,
+        expectedLargerColumn: scenario.expectedLargerColumn,
+        misconceptionTags: scenario.misconceptionTags
+      }
+    }
+  ];
+}
+function buildResponse$1(definition) {
+  return Object.fromEntries(
+    definition.scenarios.flatMap((scenario) => [
+      [`${scenario.rowId}:balanced`, scenario.expectedBalanced],
+      [`${scenario.rowId}:difference`, scenario.expectedDifference],
+      [`${scenario.rowId}:larger-column`, scenario.expectedLargerColumn]
+    ])
+  );
+}
+function getScenarioMisconceptionTags(scenario, answerKind) {
+  const baseTags = new Set(scenario.misconceptionTags);
+  if (answerKind === "balanced" && scenario.archetypeId === "both-sides-wrong") {
+    baseTags.add("both-sides-wrong-balances");
+  }
+  if (answerKind === "difference" && scenario.archetypeId === "transposition") {
+    baseTags.add("transposition-vs-slide");
+  }
+  if (answerKind === "larger-column" && scenario.archetypeId === "omission") {
+    baseTags.add("omission-always-debit-heavy");
+  }
+  return Array.from(baseTags);
+}
+function buildTrialBalanceErrorScenarioReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    definition.scenarios.map((scenario) => {
+      const partIds = [`${scenario.rowId}:balanced`, `${scenario.rowId}:difference`, `${scenario.rowId}:larger-column`];
+      const parts = partIds.map((partId) => gradeResult.parts.find((part) => part.partId === partId)).filter((part) => !!part);
+      const selectedSummary = partIds.map((partId) => {
+        const part = definition.parts.find((entry) => entry.id === partId);
+        const selected = studentResponse[partId];
+        if (!part) {
+          return null;
+        }
+        return `${formatPartLabel(part.details.answerKind)}: ${formatSelectionValue(selected)}`;
+      }).filter((entry) => !!entry).join(" · ");
+      const expectedSummary = partIds.map((partId) => {
+        const part = definition.parts.find((entry) => entry.id === partId);
+        if (!part) {
+          return null;
+        }
+        const expected = part.details.answerKind === "balanced" ? formatTrialBalanceBalanceAnswer(part.targetId) : part.details.answerKind === "difference" ? formatTrialBalanceDifference(Number(part.targetId)) : formatTrialBalanceLargerColumn(part.targetId);
+        return `${formatPartLabel(part.details.answerKind)}: ${expected}`;
+      }).filter((entry) => !!entry).join(" · ");
+      const score = parts.reduce((sum, part) => sum + part.score, 0);
+      const maxScore = parts.reduce((sum, part) => sum + part.maxScore, 0);
+      const misconceptionTags = Array.from(new Set(parts.flatMap((part) => part.misconceptionTags)));
+      const firstIncorrectPart = partIds.map((partId) => gradeResult.parts.find((part) => part.partId === partId)).find((part) => part && !part.isCorrect);
+      const firstIncorrectDefinition = firstIncorrectPart ? definition.parts.find((part) => part.id === firstIncorrectPart.partId) : void 0;
+      const selectedScenario = definition.scenarios.find((entry) => entry.rowId === scenario.rowId) ?? scenario;
+      return [
+        scenario.rowId,
+        {
+          status: score === maxScore ? "correct" : score === 0 ? "incorrect" : "partial",
+          scoreLabel: `${score}/${maxScore}`,
+          selectedLabel: selectedSummary,
+          expectedLabel: expectedSummary,
+          misconceptionTags,
+          message: firstIncorrectDefinition ? `${firstIncorrectDefinition.label}: ${selectedScenario.narrative}` : `${scenario.rowLabel} is correct.`
+        }
+      ];
+    })
+  );
+}
+const trialBalanceErrorFamily = {
+  generate(seed, config2 = {}) {
+    const scenarios = generateTrialBalanceErrorScenarios(seed, {
+      scenarioCount: config2.scenarioCount,
+      amountRange: config2.amountRange,
+      includeBalancedScenarios: config2.includeBalancedScenarios,
+      errorTypeWeights: config2.errorTypeWeights
+    });
+    const rows = scenarios.map((scenario) => ({
+      id: scenario.rowId,
+      label: scenario.rowLabel,
+      description: scenario.narrative,
+      hint: scenario.whatToDecideFirst
+    }));
+    const columns = [
+      { id: "balanced", label: "Balanced?", description: "Will the trial balance still balance?" },
+      { id: "difference", label: "Difference", description: "Difference amount in dollars" },
+      { id: "larger-column", label: "Larger column", description: "Which column is larger?" }
+    ];
+    const parts = scenarios.flatMap((scenario) => buildScenarioParts(scenario));
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "trial-balance-errors",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `trial-balance-errors-${seed}`,
+      prompt: {
+        title: "Trial Balance Error Analysis",
+        stem: "For each scenario, decide whether the trial balance still balances, the amount of the difference, and which column is larger."
+      },
+      scenarios,
+      rows,
+      columns,
+      parts,
+      workedExample: scenarios[0] ? {
+        scenarioId: scenarios[0].id,
+        rowId: scenarios[0].rowId,
+        narrative: scenarios[0].narrative,
+        balanced: scenarios[0].expectedBalanced,
+        difference: scenarios[0].expectedDifference,
+        largerColumn: scenarios[0].expectedLargerColumn
+      } : void 0,
+      scaffolding: {
+        showScenarioBrief: true,
+        showDecisionSequence: true,
+        includeBalancedScenarios: config2.includeBalancedScenarios ?? true,
+        scenarioCount: scenarios.length
+      },
+      grading: {
+        strategy: "rubric",
+        partialCredit: true,
+        rubric: {
+          balanced: 1,
+          difference: 1,
+          largerColumn: 1
+        }
+      },
+      analyticsConfig: {
+        generator: "trial-balance-error-family",
+        seed,
+        scenarioCount: scenarios.length
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse$1(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const rawAnswer = studentResponse[part.id];
+      let normalizedAnswer;
+      let isCorrect = false;
+      if (part.kind === "numeric") {
+        const numericAnswer = typeof rawAnswer === "number" ? rawAnswer : Number(String(rawAnswer).replace(/[^0-9.-]/g, ""));
+        normalizedAnswer = Number.isFinite(numericAnswer) ? String(numericAnswer) : "";
+        isCorrect = Number.isFinite(numericAnswer) && numericAnswer === Number(part.targetId);
+      } else {
+        normalizedAnswer = normalizePracticeValue(rawAnswer);
+        isCorrect = normalizedAnswer === normalizePracticeValue(part.targetId);
+      }
+      return {
+        partId: part.id,
+        rawAnswer,
+        normalizedAnswer,
+        isCorrect,
+        score: isCorrect ? 1 : 0,
+        maxScore: 1,
+        misconceptionTags: isCorrect ? [] : getScenarioMisconceptionTags(
+          definition.scenarios.find((scenario) => scenario.rowId === part.details.rowId) ?? definition.scenarios[0],
+          part.details.answerKind
+        )
+      };
+    });
+    const score = parts.reduce((sum, part) => sum + part.score, 0);
+    return {
+      score,
+      maxScore: parts.length,
+      parts,
+      feedback: `${score}/${parts.length} trial balance decisions correct.`
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    const artifact = {
+      kind: "trial-balance-error-analysis",
+      family: definition.familyKey,
+      scenarios: definition.scenarios.map((scenario) => {
+        const scenarioParts = gradeResult.parts.filter((part) => part.partId.startsWith(`${scenario.rowId}:`));
+        return {
+          id: scenario.id,
+          rowId: scenario.rowId,
+          rowLabel: scenario.rowLabel,
+          archetypeId: scenario.archetypeId,
+          archetypeLabel: scenario.archetypeLabel,
+          narrative: scenario.narrative,
+          correctEntry: scenario.correctEntry,
+          errorSide: scenario.errorSide,
+          correctAmount: scenario.correctAmount,
+          erroneousAmount: scenario.erroneousAmount,
+          balance: scenario.balance,
+          expectedBalanced: scenario.expectedBalanced,
+          expectedDifference: scenario.expectedDifference,
+          expectedLargerColumn: scenario.expectedLargerColumn,
+          selectedAnswers: {
+            balanced: studentResponse[`${scenario.rowId}:balanced`],
+            difference: studentResponse[`${scenario.rowId}:difference`],
+            largerColumn: studentResponse[`${scenario.rowId}:larger-column`]
+          },
+          isCorrect: scenarioParts.every((part) => part.isCorrect),
+          misconceptionTags: Array.from(new Set(scenarioParts.flatMap((part) => part.misconceptionTags)))
+        };
+      }),
+      summary: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        balancedCount: definition.scenarios.filter((scenario) => scenario.balance.balanced).length
+      }
+    };
+    return buildPracticeSubmissionEnvelope({
+      activityId: definition.activityId,
+      mode: definition.mode,
+      status: "submitted",
+      attemptNumber: 1,
+      answers: studentResponse,
+      parts: gradeResult.parts.map((part) => ({
+        partId: part.partId,
+        rawAnswer: part.rawAnswer ?? studentResponse[part.partId],
+        normalizedAnswer: part.normalizedAnswer,
+        isCorrect: part.isCorrect,
+        score: part.score,
+        maxScore: part.maxScore,
+        misconceptionTags: part.misconceptionTags
+      })),
+      artifact,
+      analytics: {
+        score: gradeResult.score,
+        maxScore: gradeResult.maxScore,
+        scenarioCount: definition.scenarios.length,
+        balancedCount: definition.scenarios.filter((scenario) => scenario.balance.balanced).length
+      },
+      teacherSummary: gradeResult.feedback
+    });
+  }
+};
+function mulberry32$6(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function randomInt(rng, min, max) {
+  const lower = Math.ceil(min);
+  const upper = Math.floor(max);
+  if (upper <= lower) {
+    return lower;
+  }
+  return Math.floor(rng() * (upper - lower + 1)) + lower;
+}
+function shuffle$1(items, rng) {
+  const clone = [...items];
+  for (let index2 = clone.length - 1; index2 > 0; index2 -= 1) {
+    const swapIndex = Math.floor(rng() * (index2 + 1));
+    [clone[index2], clone[swapIndex]] = [clone[swapIndex], clone[index2]];
+  }
+  return clone;
+}
+function formatAmount$6(amount) {
+  return amount.toLocaleString("en-US");
+}
+function toPositiveAmount(value) {
+  return Math.max(1, Math.round(Math.abs(value)));
+}
+function buildReferenceEffectLabel(normalSide, direction, amount) {
+  const effectSide = direction === "increase" ? normalSide : normalSide === "debit" ? "credit" : "debit";
+  return `${effectSide[0].toUpperCase()}${effectSide.slice(1)} ${formatAmount$6(amount)}`;
+}
+function buildPostingLine(seed, accountId, accountLabel, normalSide, direction, amount, index2) {
+  const debit = direction === "increase" ? normalSide === "debit" ? amount : 0 : normalSide === "credit" ? amount : 0;
+  const credit = direction === "increase" ? normalSide === "credit" ? amount : 0 : normalSide === "debit" ? amount : 0;
+  return {
+    id: `${accountId}-posting-${seed}-${index2 + 1}`,
+    date: `03/${20 + index2}`.padStart(5, "0"),
+    accountId,
+    accountLabel,
+    debit,
+    credit,
+    effectLabel: buildReferenceEffectLabel(normalSide, direction, amount),
+    memo: direction === "increase" ? "Posting increases the balance" : "Posting decreases the balance"
+  };
+}
+function buildAccountSelection(miniLedger, seed, targetAccountCount) {
+  const rng = mulberry32$6(seed ^ 1831565813);
+  const eligible = miniLedger.accounts.filter((account) => account.retailApplicable || miniLedger.companyType === "service");
+  return shuffle$1(eligible, rng).slice(0, Math.max(3, Math.min(targetAccountCount, eligible.length)));
+}
+function buildRows(seed, miniLedger, config2) {
+  const rng = mulberry32$6(seed ^ 1291169091);
+  const targetAccountCount = config2.targetAccountCount ?? 4;
+  const postingAccountCount = config2.postingAccountCount ?? Math.max(1, targetAccountCount - 1);
+  const selectedAccounts = buildAccountSelection(miniLedger, seed, targetAccountCount);
+  const postingAccounts = shuffle$1([...selectedAccounts], rng).slice(0, Math.min(postingAccountCount, selectedAccounts.length));
+  const postingAccountIds = new Set(postingAccounts.map((account) => account.id));
+  return selectedAccounts.map((account, index2) => {
+    const startingBalance = toPositiveAmount(account.balance);
+    const normalSide = account.normalBalance;
+    const hasPosting = postingAccountIds.has(account.id);
+    const maxDelta = Math.max(1, Math.min(startingBalance - 1, Math.max(1, Math.round(startingBalance * 0.4))));
+    const netChange = hasPosting ? randomInt(rng, 1, maxDelta) * (rng() > 0.45 ? 1 : -1) : 0;
+    const endingBalance = Math.max(1, startingBalance + netChange);
+    const postingAmount = Math.abs(netChange);
+    const line2 = hasPosting && postingAmount > 0 ? buildPostingLine(
+      seed,
+      account.id,
+      account.label,
+      normalSide,
+      netChange >= 0 ? "increase" : "decrease",
+      postingAmount,
+      index2
+    ) : null;
+    return {
+      id: account.id,
+      kind: "numeric",
+      label: account.label,
+      description: `Starting ${normalSide} balance before the posting sequence.`,
+      prompt: `What is the ending balance for ${account.label}?`,
+      expectedAnswerShape: "number",
+      canonicalAnswer: endingBalance,
+      explanation: postingAmount > 0 ? `Apply the ${formatAmount$6(postingAmount)} posting to the ${normalSide} balance.` : "This account is unchanged by the posting sequence.",
+      misconceptionTags: [`posting-${account.id}`, "ending-balance-error"],
+      standardCode: "ACC-M7-I-POST",
+      artifactTarget: String(endingBalance),
+      targetId: endingBalance,
+      details: {
+        accountId: account.id,
+        accountLabel: account.label,
+        companyType: miniLedger.companyType,
+        normalSide,
+        startingBalance,
+        netChange,
+        endingBalance,
+        postingLines: line2 ? [line2] : [],
+        explanation: postingAmount > 0 ? `Starting ${formatAmount$6(startingBalance)} plus the ${formatAmount$6(postingAmount)} posting yields ${formatAmount$6(endingBalance)}.` : "No posting lines touch this account, so the ending balance matches the starting balance.",
+        tolerance: config2.tolerance ?? 0
+      }
+    };
+  });
+}
+function buildResponse(definition) {
+  return Object.fromEntries(definition.rows.map((row) => [row.id, row.targetId]));
+}
+function scoreNumericPart$6(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: normalizePracticeValue(actual)
+    };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: normalizePracticeValue(parsed)
+  };
+}
+function buildPartFeedback(part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    selectedLabel: selectedValue === void 0 ? "Not entered" : String(selectedValue),
+    expectedLabel: String(part.targetId),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? `${part.label} is correct.` : `Expected ${part.targetId.toLocaleString("en-US")}; review the posting cue.`
+  };
+}
+function buildPostingBalanceReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildPartFeedback(part, studentResponse, partResult)];
+    })
+  );
+}
+const postingBalancesFamily = {
+  generate(seed, config2 = {}) {
+    const miniLedger = generateMiniLedger(seed, {
+      ...config2,
+      capitalMode: "ending"
+    });
+    const rows = buildRows(seed, miniLedger, config2);
+    const postingLines = rows.flatMap((row) => row.details.postingLines);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "posting-balances",
+      mode: config2.mode ?? "assessment",
+      activityId: `posting-balances-${seed}`,
+      prompt: {
+        title: "Solve the posting balances",
+        stem: "Use the posting trail to determine each ending balance."
+      },
+      miniLedger,
+      postingLines,
+      rows,
+      parts: rows,
+      scaffolding: {
+        referenceTitle: "Posting sequence",
+        note: rows.some((row) => row.details.netChange === 0) ? "Some ending balances stay unchanged." : void 0
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "mini-ledger",
+        seed,
+        companyType: miniLedger.companyType
+      }
+    };
+  },
+  solve(definition) {
+    return buildResponse(definition);
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const scoreResult = scoreNumericPart$6(part.targetId, studentResponse[part.id], part.details.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: scoreResult.normalizedAnswer,
+        isCorrect: scoreResult.isCorrect,
+        score: scoreResult.score,
+        maxScore: 1,
+        misconceptionTags: scoreResult.isCorrect ? [] : ["posting-side-error", `${part.id}-ending-balance-error`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, part) => sum + part.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((part) => part.isCorrect) ? "All ending balances are correct." : "Recheck the posting cues and starting balances."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      {
+        activityId: definition.activityId,
+        mode: definition.mode
+      },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32$5(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$5(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function shuffle(items, rng) {
+  const clone = [...items];
+  for (let index2 = clone.length - 1; index2 > 0; index2 -= 1) {
+    const swapIndex = Math.floor(rng() * (index2 + 1));
+    [clone[index2], clone[swapIndex]] = [clone[swapIndex], clone[index2]];
+  }
+  return clone;
+}
+function formatAmount$5(amount) {
+  return amount.toLocaleString("en-US");
+}
+function scoreNumericPart$5(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: normalizePracticeValue(actual)
+    };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: normalizePracticeValue(parsed)
+  };
+}
+function scoreLabelPart(expected, actual) {
+  const normalized = normalizePracticeValue(actual);
+  const isCorrect = normalized === normalizePracticeValue(expected);
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: normalized
+  };
+}
+function makePlacementRow(params) {
+  return {
+    id: params.rowId,
+    kind: "editable",
+    label: params.prompt,
+    prompt: params.prompt,
+    editableField: "label",
+    placeholder: params.placeholder ?? params.expectedLabel,
+    note: params.note,
+    targetId: params.expectedLabel,
+    expectedAnswerShape: "string",
+    canonicalAnswer: params.expectedLabel,
+    explanation: params.explanation,
+    misconceptionTags: [`${params.statementKind}-placement-error`, `${params.sectionId}-placement-error`],
+    standardCode: `ACC-M7-EC-${params.statementKind.replace(/-/g, "").toUpperCase()}`,
+    artifactTarget: params.expectedLabel,
+    details: {
+      statementKind: params.statementKind,
+      sectionId: params.sectionId,
+      rowRole: "account-placement",
+      expectedAnswerType: "label",
+      expectedLabel: params.expectedLabel,
+      accountId: params.accountId,
+      accountType: params.accountType,
+      bankStatus: params.bankStatus,
+      tolerance: params.tolerance,
+      explanation: params.explanation
+    },
+    value: params.amount
+  };
+}
+function makeSubtotalRow(params) {
+  return {
+    id: params.rowId,
+    kind: "editable",
+    label: params.label,
+    prompt: `What is ${params.label.toLowerCase()}?`,
+    editableField: "amount",
+    placeholder: "0",
+    note: params.note,
+    targetId: params.expectedValue,
+    expectedAnswerShape: "number",
+    canonicalAnswer: params.expectedValue,
+    explanation: params.explanation,
+    misconceptionTags: [`${params.statementKind}-subtotal-error`, `${params.sectionId}-subtotal-error`],
+    standardCode: `ACC-M7-EC-${params.statementKind.replace(/-/g, "").toUpperCase()}`,
+    artifactTarget: String(params.expectedValue),
+    sumOf: params.sumOf,
+    details: {
+      statementKind: params.statementKind,
+      sectionId: params.sectionId,
+      rowRole: "subtotal",
+      expectedAnswerType: "number",
+      expectedValue: params.expectedValue,
+      bankStatus: "included",
+      tolerance: params.tolerance,
+      explanation: params.explanation
+    }
+  };
+}
+function chooseAccounts(accounts, count, rng) {
+  return shuffle(accounts, rng).slice(0, Math.max(1, Math.min(count, accounts.length)));
+}
+function buildBank(selectedAccounts, distractorAccounts, rng) {
+  const bankItems = [
+    ...selectedAccounts.map((account) => ({
+      id: account.id,
+      label: account.label,
+      accountType: account.accountType,
+      statementPlacement: account.statementPlacement,
+      amount: 0,
+      included: true
+    })),
+    ...distractorAccounts.map((account) => ({
+      id: `${account.id}-distractor`,
+      label: account.label,
+      accountType: account.accountType,
+      statementPlacement: account.statementPlacement,
+      amount: 0,
+      included: false
+    }))
+  ];
+  return shuffle(bankItems.map((item) => ({ ...item })), rng);
+}
+function buildBalanceSheetConstruction(ledger, tolerance, rng) {
+  const assetAccounts = ledger.accounts.filter((account) => account.accountType === "asset");
+  const liabilityAccounts = ledger.accounts.filter((account) => account.accountType === "liability");
+  const equityAccounts = ledger.accounts.filter((account) => account.accountType === "equity");
+  const revenueAccounts = ledger.accounts.filter((account) => account.accountType === "revenue");
+  const expenseAccounts = ledger.accounts.filter((account) => account.accountType === "expense");
+  const selectedAssets = chooseAccounts(assetAccounts, 3, rng);
+  const selectedLiabilities = chooseAccounts(liabilityAccounts, 2, rng);
+  const selectedEquity = chooseAccounts(equityAccounts, 1, rng);
+  const distractors = shuffle([...revenueAccounts, ...expenseAccounts].filter((account) => !selectedAssets.concat(selectedLiabilities, selectedEquity).some((entry) => entry.id === account.id)), rng).slice(0, 2);
+  const assetRows = selectedAssets.map(
+    (account, index2) => makePlacementRow({
+      statementKind: "balance-sheet",
+      sectionId: "assets",
+      rowId: `asset-${account.id}`,
+      prompt: "Asset account",
+      expectedLabel: account.label,
+      accountId: account.id,
+      accountType: account.accountType,
+      amount: account.statementBalance,
+      bankStatus: "included",
+      tolerance,
+      explanation: `${account.label} belongs in the assets section.`,
+      placeholder: account.label,
+      note: index2 === 0 && account.contraOf ? "Contra assets appear in the asset section with a credit balance." : "Choose the correct asset from the bank."
+    })
+  );
+  const totalAssets = selectedAssets.reduce((sum, account) => sum + account.statementBalance, 0);
+  const totalAssetsRow = makeSubtotalRow({
+    statementKind: "balance-sheet",
+    sectionId: "assets",
+    rowId: "total-assets",
+    label: "Total Assets",
+    expectedValue: totalAssets,
+    sumOf: assetRows.map((row) => row.id),
+    tolerance,
+    explanation: "Add the asset lines to reach total assets.",
+    note: "Use the asset section to complete the subtotal."
+  });
+  const liabilityRows = selectedLiabilities.map(
+    (account) => makePlacementRow({
+      statementKind: "balance-sheet",
+      sectionId: "claims",
+      rowId: `liability-${account.id}`,
+      prompt: "Liability account",
+      expectedLabel: account.label,
+      accountId: account.id,
+      accountType: account.accountType,
+      amount: account.statementBalance,
+      bankStatus: "included",
+      tolerance,
+      explanation: `${account.label} belongs in the claims section.`,
+      placeholder: account.label,
+      note: "Choose the correct liability from the bank."
+    })
+  );
+  const equityRows = selectedEquity.map(
+    (account) => makePlacementRow({
+      statementKind: "balance-sheet",
+      sectionId: "claims",
+      rowId: `equity-${account.id}`,
+      prompt: "Equity account",
+      expectedLabel: account.label,
+      accountId: account.id,
+      accountType: account.accountType,
+      amount: account.statementBalance,
+      bankStatus: "included",
+      tolerance,
+      explanation: `${account.label} belongs in equity.`,
+      placeholder: account.label,
+      note: "Choose the correct equity account from the bank."
+    })
+  );
+  const totalClaims = [...selectedLiabilities, ...selectedEquity].reduce((sum, account) => sum + account.statementBalance, 0);
+  const totalClaimsRow = makeSubtotalRow({
+    statementKind: "balance-sheet",
+    sectionId: "claims",
+    rowId: "total-liabilities-equity",
+    label: "Total Liabilities and Equity",
+    expectedValue: totalClaims,
+    sumOf: [...liabilityRows, ...equityRows].map((row) => row.id),
+    tolerance,
+    explanation: "Add liabilities and equity to reach the claims subtotal.",
+    note: "Use the claims section to complete the subtotal."
+  });
+  const sections = [
+    {
+      id: "assets",
+      label: "Assets",
+      description: "Match the balance sheet accounts first, then complete the total.",
+      rows: [...assetRows, totalAssetsRow]
+    },
+    {
+      id: "claims",
+      label: "Liabilities and Equity",
+      description: "Finish the claims side with the matching account names and total.",
+      rows: [...liabilityRows, ...equityRows, totalClaimsRow]
+    }
+  ];
+  const rows = sections.flatMap((section) => section.rows);
+  const parts = rows;
+  return {
+    sections,
+    rows,
+    parts,
+    accountBank: buildBank([...selectedAssets, ...selectedLiabilities, ...selectedEquity], distractors, rng).map((item) => ({
+      ...item,
+      amount: item.included ? [...selectedAssets, ...selectedLiabilities, ...selectedEquity].find((account) => account.id === item.id)?.statementBalance ?? 0 : distractors.find((account) => account.label === item.label)?.statementBalance ?? 0
+    })),
+    scaffolding: {
+      statementLabel: "Balance sheet",
+      guidance: "Type the account names into the blanks, then complete the totals.",
+      bankLabel: "Account bank",
+      blanks: parts.length
+    }
+  };
+}
+function buildIncomeStatementConstruction(ledger, tolerance, rng) {
+  const revenueAccounts = ledger.accounts.filter((account) => account.accountType === "revenue");
+  const expenseAccounts = ledger.accounts.filter((account) => account.accountType === "expense");
+  const assetAccounts = ledger.accounts.filter((account) => account.accountType === "asset");
+  const liabilityAccounts = ledger.accounts.filter((account) => account.accountType === "liability");
+  const equityAccounts = ledger.accounts.filter((account) => account.accountType === "equity");
+  const selectedRevenue = chooseAccounts(revenueAccounts, 2, rng);
+  const selectedExpenses = chooseAccounts(expenseAccounts, 2, rng);
+  const distractors = shuffle([...assetAccounts, ...liabilityAccounts, ...equityAccounts].filter((account) => !selectedRevenue.concat(selectedExpenses).some((entry) => entry.id === account.id)), rng).slice(0, 2);
+  const revenueRows = selectedRevenue.map(
+    (account) => makePlacementRow({
+      statementKind: "income-statement",
+      sectionId: "revenues",
+      rowId: `revenue-${account.id}`,
+      prompt: "Revenue account",
+      expectedLabel: account.label,
+      accountId: account.id,
+      accountType: account.accountType,
+      amount: account.statementBalance,
+      bankStatus: "included",
+      tolerance,
+      explanation: `${account.label} belongs in the revenue section.`,
+      placeholder: account.label,
+      note: "Choose the correct revenue account from the bank."
+    })
+  );
+  const totalRevenue = selectedRevenue.reduce((sum, account) => sum + account.statementBalance, 0);
+  const totalRevenueRow = makeSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "revenues",
+    rowId: "total-revenue",
+    label: "Total Revenues",
+    expectedValue: totalRevenue,
+    sumOf: revenueRows.map((row) => row.id),
+    tolerance,
+    explanation: "Add the revenue rows to finish the section total.",
+    note: "Use the revenue section to complete the subtotal."
+  });
+  const expenseRows = selectedExpenses.map(
+    (account) => makePlacementRow({
+      statementKind: "income-statement",
+      sectionId: "expenses",
+      rowId: `expense-${account.id}`,
+      prompt: "Expense account",
+      expectedLabel: account.label,
+      accountId: account.id,
+      accountType: account.accountType,
+      amount: Math.abs(account.statementBalance),
+      bankStatus: "included",
+      tolerance,
+      explanation: `${account.label} belongs in the expense section.`,
+      placeholder: account.label,
+      note: "Choose the correct expense account from the bank."
+    })
+  );
+  const totalExpenses = selectedExpenses.reduce((sum, account) => sum + Math.abs(account.statementBalance), 0);
+  const totalExpensesRow = makeSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "expenses",
+    rowId: "total-expenses",
+    label: "Total Expenses",
+    expectedValue: totalExpenses,
+    sumOf: expenseRows.map((row) => row.id),
+    tolerance,
+    explanation: "Add the expense rows to finish the section total.",
+    note: "Use the expense section to complete the subtotal."
+  });
+  const netIncome = totalRevenue - totalExpenses;
+  const netIncomeRow = makeSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "bottom-line",
+    rowId: "net-income",
+    label: "Net Income",
+    expectedValue: netIncome,
+    sumOf: [totalRevenueRow.id, totalExpensesRow.id],
+    tolerance,
+    explanation: "Subtract total expenses from total revenues.",
+    note: "Use the section totals to finish the statement."
+  });
+  const sections = [
+    {
+      id: "revenues",
+      label: "Revenues",
+      description: "Choose the revenue accounts first, then compute the total.",
+      rows: [...revenueRows, totalRevenueRow]
+    },
+    {
+      id: "expenses",
+      label: "Expenses",
+      description: "Choose the expense accounts next, then compute the total.",
+      rows: [...expenseRows, totalExpensesRow]
+    },
+    {
+      id: "bottom-line",
+      label: "Bottom Line",
+      description: "Finish with the profit or loss line.",
+      rows: [netIncomeRow]
+    }
+  ];
+  const rows = sections.flatMap((section) => section.rows);
+  const parts = rows;
+  return {
+    sections,
+    rows,
+    parts,
+    accountBank: buildBank([...selectedRevenue, ...selectedExpenses], distractors, rng).map((item) => ({
+      ...item,
+      amount: item.included ? [...selectedRevenue, ...selectedExpenses].find((account) => account.id === item.id)?.statementBalance ?? 0 : distractors.find((account) => account.label === item.label)?.statementBalance ?? 0
+    })),
+    scaffolding: {
+      statementLabel: "Income statement",
+      guidance: "Type the account names from the bank, then complete the totals.",
+      bankLabel: "Account bank",
+      blanks: parts.length
+    }
+  };
+}
+function buildStatementConstructionBody(kind, ledger, tolerance, rng) {
+  if (kind === "income-statement") {
+    return buildIncomeStatementConstruction(ledger, tolerance, rng);
+  }
+  return buildBalanceSheetConstruction(ledger, tolerance, rng);
+}
+function buildReviewFeedback$1(definition, part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  const totalRevenue = definition.parts.find((entry) => entry.id === "total-revenue");
+  const totalExpenses = definition.parts.find((entry) => entry.id === "total-expenses");
+  const netIncome = definition.parts.find((entry) => entry.id === "net-income");
+  const rowValues = part.sumOf?.map((rowId) => Number(definition.parts.find((entry) => entry.id === rowId)?.targetId ?? 0)) ?? [];
+  const subtotalChain = part.id === "net-income" && totalRevenue && totalExpenses && netIncome ? `Total Revenues (${Number(totalRevenue.targetId).toLocaleString("en-US")}) - Total Expenses (${Number(totalExpenses.targetId).toLocaleString("en-US")}) = Net Income (${Number(netIncome.targetId).toLocaleString("en-US")})` : rowValues.length > 0 ? `${rowValues.map((value) => value.toLocaleString("en-US")).join(" + ")} = ${Number(part.targetId).toLocaleString("en-US")}` : "";
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    selectedLabel: selectedValue === void 0 ? "Not entered" : typeof selectedValue === "number" ? formatAmount$5(selectedValue) : String(selectedValue),
+    expectedLabel: part.details.expectedAnswerType === "number" ? formatAmount$5(part.targetId) : String(part.targetId),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message: gradeResultPart.isCorrect ? `${part.label} is correct.${subtotalChain ? ` ${subtotalChain}.` : ""}` : part.details.expectedAnswerType === "number" ? `${part.label} should be ${formatAmount$5(part.targetId)}.${subtotalChain ? ` ${subtotalChain}.` : ""}` : `Use ${part.details.expectedLabel} on this line.`
+  };
+}
+function buildStatementConstructionReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildReviewFeedback$1(definition, part, studentResponse, partResult)];
+    })
+  );
+}
+const statementConstructionFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32$5(seed ^ 1255319493);
+    const statementKind = config2.statementKind ?? pick$5(["balance-sheet", "income-statement"], rng);
+    const miniLedger = generateMiniLedger(seed, {
+      ...config2,
+      companyType: statementKind === "income-statement" ? "service" : "retail",
+      includeContraAccounts: statementKind === "balance-sheet",
+      capitalMode: "ending"
+    });
+    const tolerance = config2.tolerance ?? 0;
+    const body = buildStatementConstructionBody(statementKind, miniLedger, tolerance, rng);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "statement-construction",
+      mode: config2.mode ?? "assessment",
+      activityId: `statement-construction-${statementKind}-${seed}`,
+      prompt: {
+        title: `Construct the ${body.scaffolding.statementLabel.toLowerCase()}`,
+        stem: body.scaffolding.guidance
+      },
+      miniLedger,
+      statementKind,
+      accountBank: body.accountBank,
+      sections: body.sections,
+      rows: body.rows,
+      parts: body.parts,
+      scaffolding: body.scaffolding,
+      grading: {
+        strategy: "rubric",
+        partialCredit: true
+      },
+      analyticsConfig: {
+        generator: "mini-ledger",
+        seed,
+        companyType: miniLedger.companyType,
+        statementKind
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(
+      definition.parts.map((part) => [
+        part.id,
+        part.details.expectedAnswerType === "number" ? part.targetId : part.details.expectedLabel ?? part.targetId
+      ])
+    );
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const scoreResult = part.details.expectedAnswerType === "number" ? scoreNumericPart$5(part.targetId, studentResponse[part.id], part.details.tolerance) : scoreLabelPart(part.details.expectedLabel ?? String(part.targetId), studentResponse[part.id]);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: scoreResult.normalizedAnswer,
+        isCorrect: scoreResult.isCorrect,
+        score: scoreResult.score,
+        maxScore: 1,
+        misconceptionTags: scoreResult.isCorrect ? [] : part.details.expectedAnswerType === "number" ? ["arithmetic-error", `${part.details.sectionId}-subtotal-error`] : ["placement-error", `${part.details.sectionId}-placement-error`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, part) => sum + part.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((part) => part.isCorrect) ? "All statement construction entries are correct." : "Recheck the account placements and section totals."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      {
+        activityId: definition.activityId,
+        mode: definition.mode
+      },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32$4(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$4(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$4(amount) {
+  return amount.toLocaleString("en-US");
+}
+function scoreNumericPart$4(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return {
+      isCorrect: false,
+      score: 0,
+      normalizedAnswer: normalizePracticeValue(actual)
+    };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return {
+    isCorrect,
+    score: isCorrect ? 1 : 0,
+    normalizedAnswer: normalizePracticeValue(parsed)
+  };
+}
+function createPrefilledRow(statementKind, id, label, value, note) {
+  return {
+    id,
+    label,
+    kind: "prefilled",
+    prompt: `${label} is provided in the statement snapshot.`,
+    value,
+    note,
+    expectedAnswerShape: "number",
+    canonicalAnswer: value,
+    explanation: `${label} is provided in the statement snapshot.`,
+    artifactTarget: String(value),
+    targetId: value,
+    details: {
+      statementKind,
+      rowRole: "subtotal",
+      sectionId: "prefilled",
+      expectedValue: value,
+      tolerance: 0,
+      explanation: `${label} is provided in the statement snapshot.`
+    }
+  };
+}
+function createEditableSubtotalRow(params) {
+  return {
+    id: params.id,
+    label: params.label,
+    kind: "editable",
+    prompt: `What is ${params.label.toLowerCase()}?`,
+    placeholder: "0",
+    sumOf: params.sumOf,
+    expectedAnswerShape: "number",
+    canonicalAnswer: params.expectedValue,
+    explanation: params.explanation,
+    misconceptionTags: [`${params.statementKind}-subtotal-error`, `${params.sectionId}-subtotal-error`],
+    standardCode: `ACC-M7-Q-${params.statementKind.replace(/-/g, "").toUpperCase()}`,
+    artifactTarget: String(params.expectedValue),
+    targetId: params.expectedValue,
+    note: params.note,
+    details: {
+      statementKind: params.statementKind,
+      rowRole: "subtotal",
+      sectionId: params.sectionId,
+      expectedValue: params.expectedValue,
+      tolerance: params.tolerance,
+      explanation: params.explanation
+    }
+  };
+}
+function buildServiceIncomeStatement(ledger, tolerance) {
+  const revenueAccounts = ledger.accounts.filter((account) => account.accountType === "revenue");
+  const expenseAccounts = ledger.accounts.filter((account) => account.accountType === "expense");
+  const revenueRows = revenueAccounts.map(
+    (account) => createPrefilledRow("income-statement", `revenue-${account.id}`, account.label, account.statementBalance, "Revenue recognized in the period.")
+  );
+  const expenseRows = expenseAccounts.map(
+    (account) => createPrefilledRow("income-statement", `expense-${account.id}`, account.label, Math.abs(account.statementBalance), "Expense recognized in the period.")
+  );
+  const totalRevenue = revenueRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const totalExpenses = expenseRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const netIncome = totalRevenue - totalExpenses;
+  const totalRevenueRow = createEditableSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "revenues",
+    id: "total-revenue",
+    label: "Total Revenues",
+    expectedValue: totalRevenue,
+    sumOf: revenueRows.map((row) => row.id),
+    tolerance,
+    explanation: "Add the revenue lines above.",
+    note: "Use the revenue section to find the total."
+  });
+  const totalExpensesRow = createEditableSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "expenses",
+    id: "total-expenses",
+    label: "Total Expenses",
+    expectedValue: totalExpenses,
+    sumOf: expenseRows.map((row) => row.id),
+    tolerance,
+    explanation: "Add the expense lines above.",
+    note: "Use the expense section to find the total."
+  });
+  const netIncomeRow = createEditableSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "bottom-line",
+    id: "net-income",
+    label: "Net Income",
+    expectedValue: netIncome,
+    sumOf: [totalRevenueRow.id, totalExpensesRow.id],
+    tolerance,
+    explanation: "Subtract total expenses from total revenues.",
+    note: "Use the section totals to find the bottom line."
+  });
+  const sections = [
+    {
+      id: "revenues",
+      label: "Revenues",
+      description: "Revenue lines are already given; complete the total at the bottom.",
+      rows: [...revenueRows, totalRevenueRow]
+    },
+    {
+      id: "expenses",
+      label: "Expenses",
+      description: "Expense lines are already given; complete the total at the bottom.",
+      rows: [...expenseRows, totalExpensesRow]
+    },
+    {
+      id: "bottom-line",
+      label: "Bottom Line",
+      description: "Use the section totals to calculate income.",
+      rows: [netIncomeRow]
+    }
+  ];
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows),
+    parts: [totalRevenueRow, totalExpensesRow, netIncomeRow],
+    scaffolding: {
+      statementLabel: "Income statement",
+      guidance: "Fill in the missing subtotals after reading the statement rows.",
+      blanks: 3
+    }
+  };
+}
+function buildBalanceSheetSubtotals(ledger, tolerance) {
+  const assetRows = ledger.accounts.filter((account) => account.accountType === "asset").map(
+    (account) => createPrefilledRow(
+      "balance-sheet",
+      `asset-${account.id}`,
+      account.label,
+      account.statementBalance,
+      account.contraOf ? "Contra assets reduce the section total." : "Asset line item."
+    )
+  );
+  const liabilityRows = ledger.accounts.filter((account) => account.accountType === "liability").map((account) => createPrefilledRow("balance-sheet", `liability-${account.id}`, account.label, account.statementBalance, "Liability line item."));
+  const equityRows = ledger.accounts.filter((account) => account.accountType === "equity").map((account) => createPrefilledRow("balance-sheet", `equity-${account.id}`, account.label, account.statementBalance, "Equity line item."));
+  const totalAssets = assetRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const totalClaims = [...liabilityRows, ...equityRows].reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const totalAssetsRow = createEditableSubtotalRow({
+    statementKind: "balance-sheet",
+    sectionId: "assets",
+    id: "total-assets",
+    label: "Total Assets",
+    expectedValue: totalAssets,
+    sumOf: assetRows.map((row) => row.id),
+    tolerance,
+    explanation: "Add the asset section lines.",
+    note: "Use the asset section to calculate the total."
+  });
+  const totalClaimsRow = createEditableSubtotalRow({
+    statementKind: "balance-sheet",
+    sectionId: "claims",
+    id: "total-liabilities-equity",
+    label: "Total Liabilities and Equity",
+    expectedValue: totalClaims,
+    sumOf: [...liabilityRows, ...equityRows].map((row) => row.id),
+    tolerance,
+    explanation: "Add the liabilities and equity section lines.",
+    note: "Use the claims section to calculate the total."
+  });
+  const sections = [
+    {
+      id: "assets",
+      label: "Assets",
+      description: "The total assets line is missing.",
+      rows: [...assetRows, totalAssetsRow]
+    },
+    {
+      id: "claims",
+      label: "Liabilities and Equity",
+      description: "The claims side needs its matching total.",
+      rows: [...liabilityRows, ...equityRows, totalClaimsRow]
+    }
+  ];
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows),
+    parts: [totalAssetsRow, totalClaimsRow],
+    scaffolding: {
+      statementLabel: "Balance sheet",
+      guidance: "Use the row totals to complete the missing balance sheet subtotals.",
+      blanks: 2
+    }
+  };
+}
+function buildEquityStatement(ledger, tolerance) {
+  const beginningCapital = createPrefilledRow(
+    "equity-statement",
+    "beginning-capital",
+    "Beginning Capital",
+    ledger.totals.beginningCapital,
+    "Starting owner capital before period activity."
+  );
+  const netIncome = createPrefilledRow("equity-statement", "net-income", "Net Income", ledger.totals.netIncome, "Income carried into equity.");
+  const dividends = createPrefilledRow("equity-statement", "dividends", "Dividends", ledger.totals.dividends, "Dividends reduce owner equity.");
+  const endingCapital = createEditableSubtotalRow({
+    statementKind: "equity-statement",
+    sectionId: "equity",
+    id: "ending-capital",
+    label: "Ending Capital",
+    expectedValue: ledger.totals.endingCapital,
+    sumOf: [beginningCapital.id, netIncome.id, dividends.id],
+    tolerance,
+    explanation: "Add beginning capital and net income, then subtract dividends.",
+    note: "Use the equity flow above to find the ending balance."
+  });
+  const sections = [
+    {
+      id: "equity",
+      label: "Owner's Equity Statement",
+      description: "Only the ending capital subtotal is missing.",
+      rows: [beginningCapital, netIncome, dividends, endingCapital]
+    }
+  ];
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows),
+    parts: [endingCapital],
+    scaffolding: {
+      statementLabel: "Owner's equity statement",
+      guidance: "Read the equity flow and complete the final subtotal.",
+      blanks: 1
+    }
+  };
+}
+function buildRetailIncomeStatement(seed, ledger, tolerance) {
+  const rng = mulberry32$4(seed ^ 1403858881);
+  const timeline = generateMerchandisingTimeline(seed, {
+    role: "seller",
+    discountMethod: pick$4(["gross", "net"], rng),
+    paymentTiming: pick$4(["within-discount-period", "after-discount-period"], rng),
+    fobCondition: pick$4(["shipping-point", "destination"], rng),
+    saleAmount: pick$4([1200, 1500, 1800, 2400, 3e3], rng),
+    costAmount: pick$4([720, 900, 1080, 1440, 1800], rng),
+    returnAmount: pick$4([0, 120, 150, 180, 240], rng),
+    discountRate: pick$4([0.02, 0.05, 0.1], rng),
+    freightAmount: pick$4([0, 25, 35, 45, 60], rng)
+  });
+  const salesReturns = timeline.returnAmount;
+  const salesDiscounts = timeline.discountMethod === "gross" && timeline.paymentTiming === "within-discount-period" ? Math.round((timeline.saleAmount - salesReturns) * timeline.discountRate) : 0;
+  const netSales = timeline.saleAmount - salesReturns - salesDiscounts;
+  const returnedCost = timeline.returnAmount > 0 ? Math.round(timeline.returnAmount / timeline.saleAmount * timeline.costAmount) : 0;
+  const costOfGoodsSold = Math.max(0, timeline.costAmount - returnedCost);
+  const grossProfit = netSales - costOfGoodsSold;
+  const operatingExpenses = ledger.totals.expenses;
+  const netIncome = grossProfit - operatingExpenses;
+  const grossSalesRow = createPrefilledRow("retail-income-statement", "gross-sales", "Gross Sales", timeline.saleAmount, "Use the original retail selling price.");
+  const salesReturnsRow = createPrefilledRow("retail-income-statement", "sales-returns", "Sales Returns and Allowances", salesReturns, "Returns reduce sales revenue.");
+  const salesDiscountsRow = createPrefilledRow("retail-income-statement", "sales-discounts", "Sales Discounts", salesDiscounts, "Discounts reduce sales revenue when applicable.");
+  const netSalesRow = createEditableSubtotalRow({
+    statementKind: "retail-income-statement",
+    sectionId: "sales",
+    id: "net-sales",
+    label: "Net Sales",
+    expectedValue: netSales,
+    sumOf: [grossSalesRow.id, salesReturnsRow.id, salesDiscountsRow.id],
+    tolerance,
+    explanation: "Subtract returns and discounts from gross sales.",
+    note: "Use the sales lines to find net sales."
+  });
+  const costOfGoodsSoldRow = createPrefilledRow("retail-income-statement", "cogs", "Cost of Goods Sold", costOfGoodsSold, "Retail cost of the merchandise sold.");
+  const grossProfitRow = createEditableSubtotalRow({
+    statementKind: "retail-income-statement",
+    sectionId: "profit",
+    id: "gross-profit",
+    label: "Gross Profit",
+    expectedValue: grossProfit,
+    sumOf: [netSalesRow.id, costOfGoodsSoldRow.id],
+    tolerance,
+    explanation: "Subtract cost of goods sold from net sales.",
+    note: "Use the sales and cost lines to find gross profit."
+  });
+  const operatingExpensesRow = createPrefilledRow("retail-income-statement", "operating-expenses", "Operating Expenses", operatingExpenses, "Use the period expense total.");
+  const netIncomeRow = createEditableSubtotalRow({
+    statementKind: "retail-income-statement",
+    sectionId: "bottom-line",
+    id: "retail-net-income",
+    label: "Net Income",
+    expectedValue: netIncome,
+    sumOf: [grossProfitRow.id, operatingExpensesRow.id],
+    tolerance,
+    explanation: "Subtract operating expenses from gross profit.",
+    note: "Use gross profit and operating expenses to find net income."
+  });
+  const sections = [
+    {
+      id: "sales",
+      label: "Sales",
+      description: "Retail sales need a net sales subtotal.",
+      rows: [grossSalesRow, salesReturnsRow, salesDiscountsRow, netSalesRow]
+    },
+    {
+      id: "profit",
+      label: "Merchandise Cost",
+      description: "Use net sales and cost of goods sold to find gross profit.",
+      rows: [costOfGoodsSoldRow, grossProfitRow]
+    },
+    {
+      id: "expenses",
+      label: "Operating Expenses",
+      description: "The operating expense total is already provided.",
+      rows: [operatingExpensesRow, netIncomeRow]
+    }
+  ];
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows),
+    parts: [netSalesRow, grossProfitRow, netIncomeRow],
+    scaffolding: {
+      statementLabel: "Retail income statement",
+      guidance: "Combine the sales lines, cost lines, and operating expenses to fill the blanks.",
+      blanks: 3
+    }
+  };
+}
+function buildLowDensityIncomeStatement(ledger, tolerance) {
+  const revenueAccounts = ledger.accounts.filter((account) => account.accountType === "revenue");
+  const expenseAccounts = ledger.accounts.filter((account) => account.accountType === "expense");
+  const revenueRows = revenueAccounts.map(
+    (account) => createPrefilledRow("income-statement", `revenue-${account.id}`, account.label, account.statementBalance, "Revenue recognized in the period.")
+  );
+  const expenseRows = expenseAccounts.map(
+    (account) => createPrefilledRow("income-statement", `expense-${account.id}`, account.label, Math.abs(account.statementBalance), "Expense recognized in the period.")
+  );
+  const totalRevenue = revenueRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const totalExpenses = expenseRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+  const netIncome = totalRevenue - totalExpenses;
+  const totalRevenueRow = createPrefilledRow("income-statement", "total-revenue", "Total Revenues", totalRevenue, "Add the revenue lines above.");
+  const totalExpensesRow = createPrefilledRow("income-statement", "total-expenses", "Total Expenses", totalExpenses, "Add the expense lines above.");
+  const netIncomeRow = createEditableSubtotalRow({
+    statementKind: "income-statement",
+    sectionId: "bottom-line",
+    id: "net-income",
+    label: "Net Income",
+    expectedValue: netIncome,
+    sumOf: [totalRevenueRow.id, totalExpensesRow.id],
+    tolerance,
+    explanation: "Subtract total expenses from total revenues.",
+    note: "Use the section totals to find the bottom line."
+  });
+  const sections = [
+    {
+      id: "revenues",
+      label: "Revenues",
+      description: "Revenue lines and total are already given.",
+      rows: [...revenueRows, totalRevenueRow]
+    },
+    {
+      id: "expenses",
+      label: "Expenses",
+      description: "Expense lines and total are already given.",
+      rows: [...expenseRows, totalExpensesRow]
+    },
+    {
+      id: "bottom-line",
+      label: "Bottom Line",
+      description: "Use the totals above to finish the income statement.",
+      rows: [netIncomeRow]
+    }
+  ];
+  return {
+    sections,
+    rows: sections.flatMap((section) => section.rows),
+    parts: [netIncomeRow],
+    scaffolding: {
+      statementLabel: "Income statement",
+      guidance: "Use the totals above to complete the bottom line.",
+      blanks: 1
+    }
+  };
+}
+function buildStatementBody(kind, seed, ledger, tolerance, density = "standard") {
+  if (kind === "balance-sheet") {
+    return buildBalanceSheetSubtotals(ledger, tolerance);
+  }
+  if (kind === "equity-statement") {
+    return buildEquityStatement(ledger, tolerance);
+  }
+  if (kind === "retail-income-statement") {
+    return buildRetailIncomeStatement(seed, ledger, tolerance);
+  }
+  if (density === "low") {
+    return buildLowDensityIncomeStatement(ledger, tolerance);
+  }
+  return buildServiceIncomeStatement(ledger, tolerance);
+}
+function buildComputationChain(definition, part) {
+  const statementKind = definition.statementKind;
+  const rows = definition.rows;
+  if (part.id === "net-income" && (statementKind === "income-statement" || statementKind === "retail-income-statement")) {
+    const totalRevenueRow = rows.find((row) => row.id === "total-revenue");
+    const totalExpensesRow = rows.find((row) => row.id === "total-expenses");
+    if (totalRevenueRow && totalExpensesRow) {
+      const revenue = totalRevenueRow.value ?? 0;
+      const expenses = totalExpensesRow.value ?? 0;
+      const netIncome = part.targetId;
+      return `Total Revenues ($${formatAmount$4(revenue)}) − Total Expenses ($${formatAmount$4(expenses)}) = Net Income ($${formatAmount$4(netIncome)})`;
+    }
+  }
+  if (part.id === "retail-net-income" && statementKind === "retail-income-statement") {
+    const grossProfitRow = rows.find((row) => row.id === "gross-profit");
+    const operatingExpensesRow = rows.find((row) => row.id === "operating-expenses");
+    if (grossProfitRow && operatingExpensesRow) {
+      const grossProfit = grossProfitRow.value ?? 0;
+      const operatingExpenses = operatingExpensesRow.value ?? 0;
+      const netIncome = part.targetId;
+      return `Gross Profit ($${formatAmount$4(grossProfit)}) − Operating Expenses ($${formatAmount$4(operatingExpenses)}) = Net Income ($${formatAmount$4(netIncome)})`;
+    }
+  }
+  if (part.id === "gross-profit" && statementKind === "retail-income-statement") {
+    const netSalesRow = rows.find((row) => row.id === "net-sales");
+    const cogsRow = rows.find((row) => row.id === "cogs");
+    if (netSalesRow && cogsRow) {
+      const netSales = netSalesRow.value ?? 0;
+      const cogs = cogsRow.value ?? 0;
+      const grossProfit = part.targetId;
+      return `Net Sales ($${formatAmount$4(netSales)}) − Cost of Goods Sold ($${formatAmount$4(cogs)}) = Gross Profit ($${formatAmount$4(grossProfit)})`;
+    }
+  }
+  if (part.id === "total-assets" && statementKind === "balance-sheet") {
+    const assetRows = rows.filter((row) => row.id.startsWith("asset-") && row.kind === "prefilled");
+    const total = assetRows.reduce((sum, row) => sum + (row.value ?? 0), 0);
+    const totalAssets = part.targetId;
+    return `Sum of all asset line items ($${formatAmount$4(total)}) = Total Assets ($${formatAmount$4(totalAssets)})`;
+  }
+  if (part.id === "total-liabilities-equity" && statementKind === "balance-sheet") {
+    const liabilityRows = rows.filter((row) => row.id.startsWith("liability-") && row.kind === "prefilled");
+    const equityRows = rows.filter((row) => row.id.startsWith("equity-") && row.kind === "prefilled");
+    const total = [...liabilityRows, ...equityRows].reduce((sum, row) => sum + (row.value ?? 0), 0);
+    const totalClaims = part.targetId;
+    return `Sum of all liability and equity line items ($${formatAmount$4(total)}) = Total Liabilities and Equity ($${formatAmount$4(totalClaims)})`;
+  }
+  if (part.id === "ending-capital" && statementKind === "equity-statement") {
+    const beginningCapitalRow = rows.find((row) => row.id === "beginning-capital");
+    const netIncomeRow = rows.find((row) => row.id === "net-income");
+    const dividendsRow = rows.find((row) => row.id === "dividends");
+    if (beginningCapitalRow && netIncomeRow && dividendsRow) {
+      const beginningCapital = beginningCapitalRow.value ?? 0;
+      const netIncome = netIncomeRow.value ?? 0;
+      const dividends = dividendsRow.value ?? 0;
+      const endingCapital = part.targetId;
+      return `Beginning Capital ($${formatAmount$4(beginningCapital)}) + Net Income ($${formatAmount$4(netIncome)}) − Dividends ($${formatAmount$4(dividends)}) = Ending Capital ($${formatAmount$4(endingCapital)})`;
+    }
+  }
+  if (part.sumOf && part.sumOf.length > 0) {
+    const sumRows = part.sumOf.map((sumId) => rows.find((row) => row.id === sumId)).filter((row) => Boolean(row));
+    if (sumRows.length > 0) {
+      const values = sumRows.map((row) => row.value ?? 0);
+      const total = values.reduce((sum, val) => sum + val, 0);
+      const expected = part.targetId;
+      if (values.length === 2) {
+        return `${sumRows[0].label} ($${formatAmount$4(values[0])}) ${values[1] >= 0 ? "+" : "−"} ${sumRows[1].label} ($${formatAmount$4(Math.abs(values[1]))}) = ${part.label} ($${formatAmount$4(expected)})`;
+      }
+      return `Sum of ${sumRows.map((row) => row.label).join(", ")} ($${formatAmount$4(total)}) = ${part.label} ($${formatAmount$4(expected)})`;
+    }
+  }
+  return null;
+}
+function buildReviewFeedback(definition, part, studentResponse, gradeResultPart) {
+  const selectedValue = studentResponse[part.id];
+  const chain = buildComputationChain(definition, part);
+  const baseMessage = gradeResultPart.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${formatAmount$4(part.targetId)}.`;
+  const message = chain ? `${baseMessage} ${chain}` : baseMessage;
+  return {
+    status: gradeResultPart.isCorrect ? "correct" : "incorrect",
+    selectedLabel: selectedValue === void 0 ? "Not entered" : formatAmount$4(Number(selectedValue)),
+    expectedLabel: formatAmount$4(part.targetId),
+    misconceptionTags: gradeResultPart.misconceptionTags,
+    message
+  };
+}
+function buildStatementSubtotalsReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((entry) => entry.id === partResult.partId);
+      if (!part) {
+        return [
+          partResult.partId,
+          {
+            status: partResult.isCorrect ? "correct" : "incorrect",
+            selectedLabel: "Not entered",
+            expectedLabel: "Unknown",
+            misconceptionTags: partResult.misconceptionTags,
+            message: "Review data unavailable."
+          }
+        ];
+      }
+      return [part.id, buildReviewFeedback(definition, part, studentResponse, partResult)];
+    })
+  );
+}
+const statementSubtotalsFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32$4(seed ^ 1028401945);
+    const statementKind = config2.statementKind ?? pick$4(
+      ["balance-sheet", "income-statement", "equity-statement", "retail-income-statement"],
+      rng
+    );
+    const miniLedger = generateMiniLedger(seed, {
+      ...config2,
+      companyType: statementKind === "balance-sheet" || statementKind === "retail-income-statement" ? "retail" : "service",
+      includeContraAccounts: statementKind === "balance-sheet" || statementKind === "retail-income-statement",
+      capitalMode: "ending"
+    });
+    const tolerance = config2.tolerance ?? 0;
+    const density = config2.density ?? "standard";
+    const body = buildStatementBody(statementKind, seed, miniLedger, tolerance, density);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "statement-subtotals",
+      mode: config2.mode ?? "assessment",
+      activityId: `statement-subtotals-${statementKind}-${seed}`,
+      prompt: {
+        title: `Complete the ${body.scaffolding.statementLabel.toLowerCase()}`,
+        stem: body.scaffolding.guidance
+      },
+      miniLedger,
+      statementKind,
+      sections: body.sections,
+      rows: body.rows,
+      parts: body.parts,
+      scaffolding: body.scaffolding,
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "mini-ledger",
+        seed,
+        companyType: miniLedger.companyType,
+        statementKind
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetId]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const scoreResult = scoreNumericPart$4(part.targetId, studentResponse[part.id], part.details.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: scoreResult.normalizedAnswer,
+        isCorrect: scoreResult.isCorrect,
+        score: scoreResult.score,
+        maxScore: 1,
+        misconceptionTags: scoreResult.isCorrect ? [] : [part.details.statementKind, `${part.details.sectionId}-subtotal-error`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, part) => sum + part.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((part) => part.isCorrect) ? "All statement subtotals are correct." : "Recheck the dependent subtotals and section totals."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      {
+        activityId: definition.activityId,
+        mode: definition.mode
+      },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32$3(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$3(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$3(amount) {
+  return amount.toLocaleString("en-US");
+}
+const COMPANY_NAMES = ["Riverside Crafts", "Summit Products", "Lakewood Manufacturing", "Prairie Goods", "Valley Enterprises"];
+const PRODUCT_NAMES = ["widgets", "units", "assemblies", "kits", "packages"];
+function buildScenario$1(seed) {
+  const rng = mulberry32$3(seed ^ 2050694189);
+  const sellingPrice = pick$3([20, 25, 30, 40, 50, 60, 75, 100], rng);
+  const vcRatio = pick$3([0.4, 0.45, 0.5, 0.55, 0.6, 0.65], rng);
+  const variableCost = Math.round(sellingPrice * vcRatio);
+  const fixedCosts = pick$3([5e3, 8e3, 1e4, 12e3, 15e3, 18e3, 2e4, 24e3], rng);
+  const targetProfit = pick$3([2e3, 3e3, 5e3, 6e3, 8e3, 1e4], rng);
+  return {
+    companyName: pick$3(COMPANY_NAMES, rng),
+    productName: pick$3(PRODUCT_NAMES, rng),
+    sellingPricePerUnit: sellingPrice,
+    variableCostPerUnit: variableCost,
+    fixedCosts,
+    targetProfit
+  };
+}
+function computeValues(scenario) {
+  const contributionMarginPerUnit = scenario.sellingPricePerUnit - scenario.variableCostPerUnit;
+  const contributionMarginRatio = contributionMarginPerUnit / scenario.sellingPricePerUnit;
+  const breakEvenUnits = Math.ceil(scenario.fixedCosts / contributionMarginPerUnit);
+  const breakEvenDollars = Math.ceil(scenario.fixedCosts / contributionMarginRatio);
+  const targetProfitUnits = scenario.targetProfit ? Math.ceil((scenario.fixedCosts + scenario.targetProfit) / contributionMarginPerUnit) : 0;
+  return {
+    contributionMarginPerUnit,
+    contributionMarginRatio: Math.round(contributionMarginRatio * 1e4) / 1e4,
+    breakEvenUnits,
+    breakEvenDollars,
+    targetProfitUnits
+  };
+}
+function buildParts(variant, scenario, values, tolerance) {
+  const base = {
+    kind: "numeric",
+    expectedAnswerShape: "number",
+    standardCode: `ACC-M8-R-CVP`
+  };
+  switch (variant) {
+    case "break-even-units":
+      return [
+        {
+          ...base,
+          id: "contribution-margin",
+          label: "Contribution Margin per Unit",
+          prompt: "What is the contribution margin per unit?",
+          canonicalAnswer: values.contributionMarginPerUnit,
+          explanation: `$${formatAmount$3(scenario.sellingPricePerUnit)} − $${formatAmount$3(scenario.variableCostPerUnit)} = $${formatAmount$3(values.contributionMarginPerUnit)}`,
+          artifactTarget: String(values.contributionMarginPerUnit),
+          targetValue: values.contributionMarginPerUnit,
+          tolerance,
+          details: {
+            variant,
+            explanation: "Selling price minus variable cost per unit.",
+            formula: "SP − VC"
+          }
+        },
+        {
+          ...base,
+          id: "break-even-units",
+          label: "Break-Even Point (units)",
+          prompt: "How many units must be sold to break even?",
+          canonicalAnswer: values.breakEvenUnits,
+          explanation: `$${formatAmount$3(scenario.fixedCosts)} ÷ $${formatAmount$3(values.contributionMarginPerUnit)} = ${formatAmount$3(values.breakEvenUnits)} units`,
+          misconceptionTags: ["cvp-analysis:break-even-units"],
+          artifactTarget: String(values.breakEvenUnits),
+          targetValue: values.breakEvenUnits,
+          tolerance,
+          details: {
+            variant,
+            explanation: "Fixed costs divided by contribution margin per unit.",
+            formula: "FC ÷ CM per unit"
+          }
+        }
+      ];
+    case "break-even-dollars":
+      return [
+        {
+          ...base,
+          id: "cm-ratio",
+          label: "Contribution Margin Ratio",
+          prompt: "What is the contribution margin ratio (as a decimal)?",
+          canonicalAnswer: values.contributionMarginRatio,
+          explanation: `$${formatAmount$3(values.contributionMarginPerUnit)} ÷ $${formatAmount$3(scenario.sellingPricePerUnit)} = ${values.contributionMarginRatio}`,
+          artifactTarget: String(values.contributionMarginRatio),
+          targetValue: values.contributionMarginRatio,
+          tolerance: tolerance || 0.01,
+          details: {
+            variant,
+            explanation: "Contribution margin per unit divided by selling price.",
+            formula: "CM ÷ SP"
+          }
+        },
+        {
+          ...base,
+          id: "break-even-dollars",
+          label: "Break-Even Point (dollars)",
+          prompt: "What is the break-even point in sales dollars?",
+          canonicalAnswer: values.breakEvenDollars,
+          explanation: `$${formatAmount$3(scenario.fixedCosts)} ÷ ${values.contributionMarginRatio} = $${formatAmount$3(values.breakEvenDollars)}`,
+          misconceptionTags: ["cvp-analysis:break-even-dollars"],
+          artifactTarget: String(values.breakEvenDollars),
+          targetValue: values.breakEvenDollars,
+          tolerance,
+          details: {
+            variant,
+            explanation: "Fixed costs divided by contribution margin ratio.",
+            formula: "FC ÷ CM ratio"
+          }
+        }
+      ];
+    case "contribution-margin-ratio":
+      return [
+        {
+          ...base,
+          id: "contribution-margin",
+          label: "Contribution Margin per Unit",
+          prompt: "What is the contribution margin per unit?",
+          canonicalAnswer: values.contributionMarginPerUnit,
+          explanation: `$${formatAmount$3(scenario.sellingPricePerUnit)} − $${formatAmount$3(scenario.variableCostPerUnit)} = $${formatAmount$3(values.contributionMarginPerUnit)}`,
+          artifactTarget: String(values.contributionMarginPerUnit),
+          targetValue: values.contributionMarginPerUnit,
+          tolerance,
+          details: {
+            variant,
+            explanation: "Selling price minus variable cost per unit.",
+            formula: "SP − VC"
+          }
+        },
+        {
+          ...base,
+          id: "cm-ratio",
+          label: "Contribution Margin Ratio",
+          prompt: "What is the contribution margin ratio (as a decimal)?",
+          canonicalAnswer: values.contributionMarginRatio,
+          explanation: `$${formatAmount$3(values.contributionMarginPerUnit)} ÷ $${formatAmount$3(scenario.sellingPricePerUnit)} = ${values.contributionMarginRatio}`,
+          misconceptionTags: ["cvp-analysis:cm-ratio"],
+          artifactTarget: String(values.contributionMarginRatio),
+          targetValue: values.contributionMarginRatio,
+          tolerance: tolerance || 0.01,
+          details: {
+            variant,
+            explanation: "Contribution margin per unit divided by selling price.",
+            formula: "CM ÷ SP"
+          }
+        }
+      ];
+    case "target-profit-units":
+      return [
+        {
+          ...base,
+          id: "contribution-margin",
+          label: "Contribution Margin per Unit",
+          prompt: "What is the contribution margin per unit?",
+          canonicalAnswer: values.contributionMarginPerUnit,
+          explanation: `$${formatAmount$3(scenario.sellingPricePerUnit)} − $${formatAmount$3(scenario.variableCostPerUnit)} = $${formatAmount$3(values.contributionMarginPerUnit)}`,
+          artifactTarget: String(values.contributionMarginPerUnit),
+          targetValue: values.contributionMarginPerUnit,
+          tolerance,
+          details: {
+            variant,
+            explanation: "Selling price minus variable cost per unit.",
+            formula: "SP − VC"
+          }
+        },
+        {
+          ...base,
+          id: "target-profit-units",
+          label: "Units for Target Profit",
+          prompt: `How many units must be sold to earn a target profit of $${formatAmount$3(scenario.targetProfit ?? 0)}?`,
+          canonicalAnswer: values.targetProfitUnits,
+          explanation: `($${formatAmount$3(scenario.fixedCosts)} + $${formatAmount$3(scenario.targetProfit ?? 0)}) ÷ $${formatAmount$3(values.contributionMarginPerUnit)} = ${formatAmount$3(values.targetProfitUnits)} units`,
+          misconceptionTags: ["cvp-analysis:target-profit"],
+          artifactTarget: String(values.targetProfitUnits),
+          targetValue: values.targetProfitUnits,
+          tolerance,
+          details: {
+            variant,
+            explanation: "Fixed costs plus target profit, divided by contribution margin per unit.",
+            formula: "(FC + TP) ÷ CM per unit"
+          }
+        }
+      ];
+  }
+}
+const VARIANT_LABELS = {
+  "break-even-units": "Break-even in units",
+  "break-even-dollars": "Break-even in dollars",
+  "contribution-margin-ratio": "Contribution margin ratio",
+  "target-profit-units": "Target profit in units"
+};
+const GUIDANCE$3 = {
+  "break-even-units": "First find the contribution margin per unit, then divide fixed costs by it.",
+  "break-even-dollars": "Find the contribution margin ratio, then divide fixed costs by it.",
+  "contribution-margin-ratio": "Compute the contribution margin per unit, then express it as a ratio of the selling price.",
+  "target-profit-units": "Add the target profit to fixed costs, then divide by the contribution margin per unit."
+};
+const FORMULA_HINTS$2 = {
+  "break-even-units": "BEP (units) = Fixed Costs ÷ CM per unit",
+  "break-even-dollars": "BEP ($) = Fixed Costs ÷ CM ratio",
+  "contribution-margin-ratio": "CM ratio = CM per unit ÷ Selling Price",
+  "target-profit-units": "Target units = (FC + Target Profit) ÷ CM per unit"
+};
+function scoreNumericPart$3(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return { isCorrect: false, score: 0, normalizedAnswer: normalizePracticeValue(actual) };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return { isCorrect, score: isCorrect ? 1 : 0, normalizedAnswer: normalizePracticeValue(parsed) };
+}
+function buildCvpAnalysisReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((p) => p.id === partResult.partId);
+      if (!part) {
+        return [partResult.partId, { status: "incorrect", message: "Review data unavailable." }];
+      }
+      return [
+        part.id,
+        {
+          status: partResult.isCorrect ? "correct" : "incorrect",
+          selectedLabel: studentResponse[part.id] === void 0 ? "Not entered" : formatAmount$3(Number(studentResponse[part.id])),
+          expectedLabel: formatAmount$3(part.targetValue),
+          misconceptionTags: partResult.misconceptionTags,
+          message: partResult.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${formatAmount$3(part.targetValue)}. ${part.details.explanation}`
+        }
+      ];
+    })
+  );
+}
+const cvpAnalysisFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32$3(seed ^ 439041101);
+    const variant = config2.variant ?? pick$3(["break-even-units", "break-even-dollars", "contribution-margin-ratio", "target-profit-units"], rng);
+    const scenario = buildScenario$1(seed);
+    const values = computeValues(scenario);
+    const tolerance = config2.tolerance ?? 0;
+    const parts = buildParts(variant, scenario, values, tolerance);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "cvp-analysis",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `cvp-analysis-${variant}-${seed}`,
+      prompt: {
+        title: `CVP Analysis: ${VARIANT_LABELS[variant]}`,
+        stem: `${scenario.companyName} sells ${scenario.productName} at $${formatAmount$3(scenario.sellingPricePerUnit)} per unit. Variable costs are $${formatAmount$3(scenario.variableCostPerUnit)} per unit. Fixed costs total $${formatAmount$3(scenario.fixedCosts)}.${variant === "target-profit-units" ? ` The company wants to earn a target profit of $${formatAmount$3(scenario.targetProfit ?? 0)}.` : ""}`
+      },
+      variant,
+      scenario,
+      parts,
+      scaffolding: {
+        guidance: GUIDANCE$3[variant],
+        formulaHint: FORMULA_HINTS$2[variant]
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "cvp-analysis-family",
+        seed,
+        variant
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetValue]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const result = scoreNumericPart$3(part.targetValue, studentResponse[part.id], part.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: result.normalizedAnswer,
+        isCorrect: result.isCorrect,
+        score: result.score,
+        maxScore: 1,
+        misconceptionTags: result.isCorrect ? [] : [`cvp-analysis:${part.id}`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, p) => sum + p.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((p) => p.isCorrect) ? "All CVP computations are correct." : "Recheck the cost-volume-profit relationships."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      { activityId: definition.activityId, mode: definition.mode },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32$2(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$2(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$2(amount) {
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function round2$1(n) {
+  return Math.round(n * 100) / 100;
+}
+function buildScenario(seed, variant) {
+  const rng = mulberry32$2(seed ^ 1582119979);
+  const principal = pick$2([1e3, 2e3, 3e3, 5e3, 8e3, 1e4, 15e3, 2e4], rng);
+  const annualRate = pick$2([0.03, 0.04, 0.05, 0.06, 0.08, 0.1], rng);
+  const periods = variant === "loan-amortization" ? pick$2([3, 4, 5], rng) : pick$2([2, 3, 4, 5], rng);
+  const compoundingPerYear = variant === "compound-interest" ? pick$2([1, 2, 4, 12], rng) : 1;
+  let loanPayment;
+  if (variant === "loan-amortization") {
+    const r = annualRate;
+    const n = periods;
+    loanPayment = round2$1(principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1));
+  }
+  return { principal, annualRate, periods, compoundingPerYear, loanPayment };
+}
+function buildSimpleInterestParts(scenario, tolerance) {
+  const interest = round2$1(scenario.principal * scenario.annualRate * scenario.periods);
+  const totalAmount = round2$1(scenario.principal + interest);
+  return [
+    {
+      id: "interest",
+      kind: "numeric",
+      label: "Total Interest",
+      prompt: "What is the total simple interest earned?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: interest,
+      explanation: `$${formatAmount$2(scenario.principal)} × ${scenario.annualRate} × ${scenario.periods} = $${formatAmount$2(interest)}`,
+      artifactTarget: String(interest),
+      targetValue: interest,
+      tolerance,
+      details: {
+        variant: "simple-interest",
+        explanation: "Principal × Rate × Time.",
+        formula: "I = P × r × t"
+      }
+    },
+    {
+      id: "total-amount",
+      kind: "numeric",
+      label: "Total Amount",
+      prompt: "What is the total amount (principal + interest)?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: totalAmount,
+      explanation: `$${formatAmount$2(scenario.principal)} + $${formatAmount$2(interest)} = $${formatAmount$2(totalAmount)}`,
+      misconceptionTags: ["interest-schedules:simple-total"],
+      artifactTarget: String(totalAmount),
+      targetValue: totalAmount,
+      tolerance,
+      details: {
+        variant: "simple-interest",
+        explanation: "Add principal and total interest.",
+        formula: "A = P + I"
+      }
+    }
+  ];
+}
+function buildCompoundInterestParts(scenario, tolerance) {
+  const n = scenario.compoundingPerYear ?? 1;
+  const totalPeriods = n * scenario.periods;
+  const periodRate = scenario.annualRate / n;
+  const totalAmount = round2$1(scenario.principal * Math.pow(1 + periodRate, totalPeriods));
+  const totalInterest = round2$1(totalAmount - scenario.principal);
+  return [
+    {
+      id: "total-amount",
+      kind: "numeric",
+      label: "Future Value",
+      prompt: "What is the future value of the investment?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: totalAmount,
+      explanation: `$${formatAmount$2(scenario.principal)} × (1 + ${periodRate})^${totalPeriods} = $${formatAmount$2(totalAmount)}`,
+      artifactTarget: String(totalAmount),
+      targetValue: totalAmount,
+      tolerance,
+      details: {
+        variant: "compound-interest",
+        explanation: "Principal times (1 + period rate) raised to the number of compounding periods.",
+        formula: "FV = P × (1 + r/n)^(n×t)"
+      }
+    },
+    {
+      id: "total-interest",
+      kind: "numeric",
+      label: "Total Interest Earned",
+      prompt: "How much interest was earned in total?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: totalInterest,
+      explanation: `$${formatAmount$2(totalAmount)} − $${formatAmount$2(scenario.principal)} = $${formatAmount$2(totalInterest)}`,
+      misconceptionTags: ["interest-schedules:compound-interest"],
+      artifactTarget: String(totalInterest),
+      targetValue: totalInterest,
+      tolerance,
+      details: {
+        variant: "compound-interest",
+        explanation: "Future value minus principal.",
+        formula: "Interest = FV − P"
+      }
+    }
+  ];
+}
+function buildAmortizationParts(scenario, tolerance) {
+  const payment = scenario.loanPayment;
+  const firstInterest = round2$1(scenario.principal * scenario.annualRate);
+  const firstPrincipal = round2$1(payment - firstInterest);
+  const totalPayments = round2$1(payment * scenario.periods);
+  const totalInterest = round2$1(totalPayments - scenario.principal);
+  return [
+    {
+      id: "annual-payment",
+      kind: "numeric",
+      label: "Annual Payment",
+      prompt: "What is the annual loan payment?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: payment,
+      explanation: `PMT = $${formatAmount$2(scenario.principal)} × (${scenario.annualRate} × (1+${scenario.annualRate})^${scenario.periods}) / ((1+${scenario.annualRate})^${scenario.periods} − 1) = $${formatAmount$2(payment)}`,
+      artifactTarget: String(payment),
+      targetValue: payment,
+      tolerance,
+      details: {
+        variant: "loan-amortization",
+        explanation: "Use the annuity payment formula.",
+        formula: "PMT = P × r(1+r)^n / ((1+r)^n − 1)"
+      }
+    },
+    {
+      id: "first-year-interest",
+      kind: "numeric",
+      label: "Year 1 Interest",
+      prompt: "How much interest is paid in the first year?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: firstInterest,
+      explanation: `$${formatAmount$2(scenario.principal)} × ${scenario.annualRate} = $${formatAmount$2(firstInterest)}`,
+      artifactTarget: String(firstInterest),
+      targetValue: firstInterest,
+      tolerance,
+      details: {
+        variant: "loan-amortization",
+        explanation: "Beginning balance times the annual rate.",
+        formula: "Interest = Balance × r"
+      }
+    },
+    {
+      id: "first-year-principal",
+      kind: "numeric",
+      label: "Year 1 Principal",
+      prompt: "How much principal is repaid in the first year?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: firstPrincipal,
+      explanation: `$${formatAmount$2(payment)} − $${formatAmount$2(firstInterest)} = $${formatAmount$2(firstPrincipal)}`,
+      misconceptionTags: ["interest-schedules:amortization-principal"],
+      artifactTarget: String(firstPrincipal),
+      targetValue: firstPrincipal,
+      tolerance,
+      details: {
+        variant: "loan-amortization",
+        explanation: "Payment minus the interest portion.",
+        formula: "Principal = PMT − Interest"
+      }
+    },
+    {
+      id: "total-interest",
+      kind: "numeric",
+      label: "Total Interest Paid",
+      prompt: "What is the total interest paid over the life of the loan?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: totalInterest,
+      explanation: `$${formatAmount$2(totalPayments)} − $${formatAmount$2(scenario.principal)} = $${formatAmount$2(totalInterest)}`,
+      misconceptionTags: ["interest-schedules:total-interest"],
+      artifactTarget: String(totalInterest),
+      targetValue: totalInterest,
+      tolerance,
+      details: {
+        variant: "loan-amortization",
+        explanation: "Total payments minus original principal.",
+        formula: "Total Interest = (PMT × n) − P"
+      }
+    }
+  ];
+}
+function scoreNumericPart$2(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return { isCorrect: false, score: 0, normalizedAnswer: normalizePracticeValue(actual) };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return { isCorrect, score: isCorrect ? 1 : 0, normalizedAnswer: normalizePracticeValue(parsed) };
+}
+const GUIDANCE$2 = {
+  "simple-interest": "Apply the simple interest formula: I = P × r × t.",
+  "compound-interest": "Apply the compound interest formula: FV = P × (1 + r/n)^(n×t).",
+  "loan-amortization": "Start with the annuity payment formula, then build the amortization schedule."
+};
+const FORMULA_HINTS$1 = {
+  "simple-interest": "I = P × r × t; A = P + I",
+  "compound-interest": "FV = P × (1 + r/n)^(n×t)",
+  "loan-amortization": "PMT = P × r(1+r)^n / ((1+r)^n − 1)"
+};
+function buildInterestSchedulesReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((p) => p.id === partResult.partId);
+      if (!part) {
+        return [partResult.partId, { status: "incorrect", message: "Review data unavailable." }];
+      }
+      return [
+        part.id,
+        {
+          status: partResult.isCorrect ? "correct" : "incorrect",
+          selectedLabel: studentResponse[part.id] === void 0 ? "Not entered" : formatAmount$2(Number(studentResponse[part.id])),
+          expectedLabel: formatAmount$2(part.targetValue),
+          misconceptionTags: partResult.misconceptionTags,
+          message: partResult.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${formatAmount$2(part.targetValue)}. ${part.details.explanation}`
+        }
+      ];
+    })
+  );
+}
+const interestSchedulesFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32$2(seed ^ 2409528684);
+    const variant = config2.variant ?? pick$2(["simple-interest", "compound-interest", "loan-amortization"], rng);
+    const scenario = buildScenario(seed, variant);
+    const tolerance = config2.tolerance ?? 0;
+    const parts = variant === "simple-interest" ? buildSimpleInterestParts(scenario, tolerance) : variant === "compound-interest" ? buildCompoundInterestParts(scenario, tolerance) : buildAmortizationParts(scenario, tolerance);
+    const compoundingLabel = variant === "compound-interest" && scenario.compoundingPerYear !== 1 ? ` Interest compounds ${scenario.compoundingPerYear === 12 ? "monthly" : scenario.compoundingPerYear === 4 ? "quarterly" : scenario.compoundingPerYear === 2 ? "semi-annually" : "annually"}.` : "";
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "interest-schedules",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `interest-schedules-${variant}-${seed}`,
+      prompt: {
+        title: variant === "simple-interest" ? "Simple Interest" : variant === "compound-interest" ? "Compound Interest" : "Loan Amortization",
+        stem: `A ${variant === "loan-amortization" ? "loan" : "note"} of $${formatAmount$2(scenario.principal)} has an annual interest rate of ${(scenario.annualRate * 100).toFixed(0)}% for ${scenario.periods} years.${compoundingLabel}`
+      },
+      variant,
+      scenario,
+      parts,
+      scaffolding: {
+        guidance: GUIDANCE$2[variant],
+        formulaHint: FORMULA_HINTS$1[variant]
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "interest-schedules-family",
+        seed,
+        variant
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetValue]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const result = scoreNumericPart$2(part.targetValue, studentResponse[part.id], part.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: result.normalizedAnswer,
+        isCorrect: result.isCorrect,
+        score: result.score,
+        maxScore: 1,
+        misconceptionTags: result.isCorrect ? [] : [`interest-schedules:${part.id}`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, p) => sum + p.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((p) => p.isCorrect) ? "All interest computations are correct." : "Recheck the interest calculations."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      { activityId: definition.activityId, mode: definition.mode },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32$1(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick$1(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function formatAmount$1(amount) {
+  return amount.toLocaleString("en-US");
+}
+const ASSET_NAMES = ["delivery truck", "office equipment", "manufacturing machine", "warehouse forklift", "computer system"];
+function buildAsset(seed, method) {
+  const rng = mulberry32$1(seed ^ 1247505533);
+  const cost = pick$1([1e4, 15e3, 2e4, 25e3, 3e4, 4e4, 5e4], rng);
+  const salvageRatio = pick$1([0.05, 0.1, 0.15, 0.2], rng);
+  const salvageValue = Math.round(cost * salvageRatio);
+  const usefulLifeYears = pick$1([3, 4, 5, 7, 8, 10], rng);
+  const totalUnits = method === "units-of-production" ? pick$1([5e4, 8e4, 1e5, 12e4, 15e4], rng) : void 0;
+  const unitsYear1 = totalUnits ? pick$1([Math.round(totalUnits * 0.15), Math.round(totalUnits * 0.2), Math.round(totalUnits * 0.25)], rng) : void 0;
+  return {
+    name: pick$1(ASSET_NAMES, rng),
+    cost,
+    salvageValue,
+    usefulLifeYears,
+    totalUnits,
+    unitsYear1
+  };
+}
+function buildStraightLineParts(asset, tolerance) {
+  const depreciableBase = asset.cost - asset.salvageValue;
+  const annualDepreciation = Math.round(depreciableBase / asset.usefulLifeYears);
+  const bookValueYear1 = asset.cost - annualDepreciation;
+  return [
+    {
+      id: "depreciable-base",
+      kind: "numeric",
+      label: "Depreciable Base",
+      prompt: "What is the depreciable base (cost minus salvage)?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: depreciableBase,
+      explanation: `$${formatAmount$1(asset.cost)} − $${formatAmount$1(asset.salvageValue)} = $${formatAmount$1(depreciableBase)}`,
+      artifactTarget: String(depreciableBase),
+      targetValue: depreciableBase,
+      tolerance,
+      details: { method: "straight-line", explanation: "Cost minus salvage value." }
+    },
+    {
+      id: "year-1-depreciation",
+      kind: "numeric",
+      label: "Year 1 Depreciation",
+      prompt: "What is the annual depreciation expense?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: annualDepreciation,
+      explanation: `$${formatAmount$1(depreciableBase)} ÷ ${asset.usefulLifeYears} = $${formatAmount$1(annualDepreciation)}`,
+      misconceptionTags: ["depreciation-schedules:straight-line"],
+      artifactTarget: String(annualDepreciation),
+      targetValue: annualDepreciation,
+      tolerance,
+      details: { method: "straight-line", explanation: "Depreciable base divided by useful life." }
+    },
+    {
+      id: "book-value-year-1",
+      kind: "numeric",
+      label: "Book Value After Year 1",
+      prompt: "What is the book value at the end of year 1?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: bookValueYear1,
+      explanation: `$${formatAmount$1(asset.cost)} − $${formatAmount$1(annualDepreciation)} = $${formatAmount$1(bookValueYear1)}`,
+      artifactTarget: String(bookValueYear1),
+      targetValue: bookValueYear1,
+      tolerance,
+      details: { method: "straight-line", explanation: "Cost minus accumulated depreciation." }
+    }
+  ];
+}
+function buildDDBParts(asset, tolerance) {
+  const slRate = 1 / asset.usefulLifeYears;
+  const ddbRate = slRate * 2;
+  const year1Dep = Math.round(asset.cost * ddbRate);
+  const bookValueYear1 = asset.cost - year1Dep;
+  const year2Dep = Math.round(bookValueYear1 * ddbRate);
+  return [
+    {
+      id: "year-1-depreciation",
+      kind: "numeric",
+      label: "Year 1 Depreciation",
+      prompt: "What is year 1 depreciation using DDB?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: year1Dep,
+      explanation: `$${formatAmount$1(asset.cost)} × ${(ddbRate * 100).toFixed(1)}% = $${formatAmount$1(year1Dep)}`,
+      misconceptionTags: ["depreciation-schedules:ddb-year1"],
+      artifactTarget: String(year1Dep),
+      targetValue: year1Dep,
+      tolerance,
+      details: { method: "double-declining", explanation: "Cost times double the straight-line rate." }
+    },
+    {
+      id: "book-value-year-1",
+      kind: "numeric",
+      label: "Book Value After Year 1",
+      prompt: "What is the book value at the end of year 1?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: bookValueYear1,
+      explanation: `$${formatAmount$1(asset.cost)} − $${formatAmount$1(year1Dep)} = $${formatAmount$1(bookValueYear1)}`,
+      artifactTarget: String(bookValueYear1),
+      targetValue: bookValueYear1,
+      tolerance,
+      details: { method: "double-declining", explanation: "Beginning book value minus year 1 depreciation." }
+    },
+    {
+      id: "year-2-depreciation",
+      kind: "numeric",
+      label: "Year 2 Depreciation",
+      prompt: "What is year 2 depreciation using DDB?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: year2Dep,
+      explanation: `$${formatAmount$1(bookValueYear1)} × ${(ddbRate * 100).toFixed(1)}% = $${formatAmount$1(year2Dep)}`,
+      misconceptionTags: ["depreciation-schedules:ddb-year2"],
+      artifactTarget: String(year2Dep),
+      targetValue: year2Dep,
+      tolerance,
+      details: { method: "double-declining", explanation: "Year 1 ending book value times the DDB rate." }
+    }
+  ];
+}
+function buildUOPParts(asset, tolerance) {
+  const depreciableBase = asset.cost - asset.salvageValue;
+  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
+  const year1Dep = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
+  return [
+    {
+      id: "depreciable-base",
+      kind: "numeric",
+      label: "Depreciable Base",
+      prompt: "What is the depreciable base?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: depreciableBase,
+      explanation: `$${formatAmount$1(asset.cost)} − $${formatAmount$1(asset.salvageValue)} = $${formatAmount$1(depreciableBase)}`,
+      artifactTarget: String(depreciableBase),
+      targetValue: depreciableBase,
+      tolerance,
+      details: { method: "units-of-production", explanation: "Cost minus salvage value." }
+    },
+    {
+      id: "rate-per-unit",
+      kind: "numeric",
+      label: "Depreciation per Unit",
+      prompt: "What is the depreciation rate per unit?",
+      expectedAnswerShape: "number",
+      canonicalAnswer: ratePerUnitRounded,
+      explanation: `$${formatAmount$1(depreciableBase)} ÷ ${formatAmount$1(asset.totalUnits ?? 0)} = $${ratePerUnitRounded.toFixed(2)}`,
+      artifactTarget: String(ratePerUnitRounded),
+      targetValue: ratePerUnitRounded,
+      tolerance: tolerance || 0.01,
+      details: { method: "units-of-production", explanation: "Depreciable base divided by total estimated units." }
+    },
+    {
+      id: "year-1-depreciation",
+      kind: "numeric",
+      label: "Year 1 Depreciation",
+      prompt: `What is year 1 depreciation for ${formatAmount$1(asset.unitsYear1 ?? 0)} units produced?`,
+      expectedAnswerShape: "number",
+      canonicalAnswer: year1Dep,
+      explanation: `$${ratePerUnitRounded.toFixed(2)} × ${formatAmount$1(asset.unitsYear1 ?? 0)} = $${formatAmount$1(year1Dep)}`,
+      misconceptionTags: ["depreciation-schedules:uop-year1"],
+      artifactTarget: String(year1Dep),
+      targetValue: year1Dep,
+      tolerance,
+      details: { method: "units-of-production", explanation: "Rate per unit times units produced in year 1." }
+    }
+  ];
+}
+function scoreNumericPart$1(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return { isCorrect: false, score: 0, normalizedAnswer: normalizePracticeValue(actual) };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return { isCorrect, score: isCorrect ? 1 : 0, normalizedAnswer: normalizePracticeValue(parsed) };
+}
+function buildChainText(definition, part) {
+  const asset = definition.asset;
+  const depreciableBase = asset.cost - asset.salvageValue;
+  const annualDepreciation = Math.round(depreciableBase / asset.usefulLifeYears);
+  const slRate = 1 / asset.usefulLifeYears;
+  const ddbRate = slRate * 2;
+  const year1Ddb = Math.round(asset.cost * ddbRate);
+  const bookValueYear1 = asset.cost - year1Ddb;
+  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
+  const year1Units = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
+  if (part.id === "depreciable-base") {
+    return `$${formatAmount$1(asset.cost)} − $${formatAmount$1(asset.salvageValue)} = $${formatAmount$1(depreciableBase)}`;
+  }
+  if (part.id === "year-1-depreciation") {
+    if (definition.method === "straight-line") {
+      return `$${formatAmount$1(depreciableBase)} ÷ ${asset.usefulLifeYears} = $${formatAmount$1(annualDepreciation)}`;
+    }
+    if (definition.method === "double-declining") {
+      return `$${formatAmount$1(asset.cost)} × ${(ddbRate * 100).toFixed(1)}% = $${formatAmount$1(year1Ddb)}`;
+    }
+    return `$${ratePerUnitRounded.toFixed(2)} × ${formatAmount$1(asset.unitsYear1 ?? 0)} = $${formatAmount$1(year1Units)}`;
+  }
+  if (part.id === "book-value-year-1") {
+    if (definition.method === "double-declining") {
+      return `$${formatAmount$1(asset.cost)} − $${formatAmount$1(year1Ddb)} = $${formatAmount$1(bookValueYear1)}`;
+    }
+    return `$${formatAmount$1(asset.cost)} − $${formatAmount$1(annualDepreciation)} = $${formatAmount$1(asset.cost - annualDepreciation)}`;
+  }
+  if (part.id === "rate-per-unit") {
+    return `$${formatAmount$1(depreciableBase)} ÷ ${formatAmount$1(asset.totalUnits ?? 0)} = $${ratePerUnitRounded.toFixed(2)}`;
+  }
+  return `$${formatAmount$1(asset.cost)} − $${formatAmount$1(asset.salvageValue)} ÷ ${asset.usefulLifeYears} = $${formatAmount$1(part.targetValue)}`;
+}
+const GUIDANCE$1 = {
+  "straight-line": "Compute the depreciable base, then divide by the useful life.",
+  "double-declining": "Apply double the straight-line rate to the beginning book value each year.",
+  "units-of-production": "Find the rate per unit, then multiply by actual units produced."
+};
+const FORMULA_HINTS = {
+  "straight-line": "Annual Dep = (Cost − Salvage) ÷ Life",
+  "double-declining": "DDB = Book Value × (2 ÷ Life)",
+  "units-of-production": "Dep = (Cost − Salvage) ÷ Total Units × Units Produced"
+};
+function buildDepreciationSchedulesReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((p) => p.id === partResult.partId);
+      if (!part) {
+        return [partResult.partId, { status: "incorrect", message: "Review data unavailable." }];
+      }
+      return [
+        part.id,
+        {
+          status: partResult.isCorrect ? "correct" : "incorrect",
+          selectedLabel: studentResponse[part.id] === void 0 ? "Not entered" : formatAmount$1(Number(studentResponse[part.id])),
+          expectedLabel: formatAmount$1(part.targetValue),
+          misconceptionTags: partResult.misconceptionTags,
+          message: partResult.isCorrect ? `${part.label} is correct. ${buildChainText(definition, part)}.` : `${part.label} should be ${formatAmount$1(part.targetValue)}. ${buildChainText(definition, part)}.`
+        }
+      ];
+    })
+  );
+}
+const depreciationSchedulesFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32$1(seed ^ 759058256);
+    const method = config2.method ?? pick$1(["straight-line", "double-declining", "units-of-production"], rng);
+    const asset = buildAsset(seed, method);
+    const tolerance = config2.tolerance ?? 0;
+    const parts = method === "straight-line" ? buildStraightLineParts(asset, tolerance) : method === "double-declining" ? buildDDBParts(asset, tolerance) : buildUOPParts(asset, tolerance);
+    const uopStem = method === "units-of-production" ? ` It is expected to produce ${formatAmount$1(asset.totalUnits ?? 0)} units over its life. In year 1, it produced ${formatAmount$1(asset.unitsYear1 ?? 0)} units.` : "";
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "depreciation-schedules",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `depreciation-schedules-${method}-${seed}`,
+      prompt: {
+        title: method === "straight-line" ? "Straight-Line Depreciation" : method === "double-declining" ? "Double-Declining Balance" : "Units-of-Production",
+        stem: `A ${asset.name} was purchased for $${formatAmount$1(asset.cost)} with a salvage value of $${formatAmount$1(asset.salvageValue)} and a useful life of ${asset.usefulLifeYears} years.${uopStem}`
+      },
+      method,
+      asset,
+      parts,
+      scaffolding: {
+        guidance: GUIDANCE$1[method],
+        formulaHint: FORMULA_HINTS[method]
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "depreciation-schedules-family",
+        seed,
+        method
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetValue]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const result = scoreNumericPart$1(part.targetValue, studentResponse[part.id], part.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: result.normalizedAnswer,
+        isCorrect: result.isCorrect,
+        score: result.score,
+        maxScore: 1,
+        misconceptionTags: result.isCorrect ? [] : [`depreciation-schedules:${part.id}`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, p) => sum + p.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((p) => p.isCorrect) ? "All depreciation computations are correct." : "Recheck the depreciation calculations."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      { activityId: definition.activityId, mode: definition.mode },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function mulberry32(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 1831565813;
+    let r = Math.imul(t ^ t >>> 15, 1 | t);
+    r ^= r + Math.imul(r ^ r >>> 7, 61 | r);
+    return ((r ^ r >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pick(items, rng) {
+  return items[Math.floor(rng() * items.length)];
+}
+function round4(n) {
+  return Math.round(n * 1e4) / 1e4;
+}
+function round2(n) {
+  return Math.round(n * 100) / 100;
+}
+function formatRatio(n) {
+  return n.toFixed(4);
+}
+function formatAmount(n) {
+  return n.toLocaleString("en-US");
+}
+function scoreNumericPart(expected, actual, tolerance) {
+  const parsed = Number(actual);
+  if (!Number.isFinite(parsed)) {
+    return { isCorrect: false, score: 0, normalizedAnswer: normalizePracticeValue(actual) };
+  }
+  const isCorrect = Math.abs(parsed - expected) <= tolerance;
+  return { isCorrect, score: isCorrect ? 1 : 0, normalizedAnswer: normalizePracticeValue(parsed) };
+}
+function buildProfitabilityParts(ledger, tolerance) {
+  const revenue = ledger.totals.revenue;
+  const netIncome = ledger.totals.netIncome;
+  const totalAssets = ledger.totals.netAssets;
+  const profitMargin = round4(netIncome / revenue);
+  const returnOnAssets = round4(netIncome / totalAssets);
+  const base = { kind: "numeric", expectedAnswerShape: "number", standardCode: "ACC-M9-U-FA" };
+  return [
+    {
+      ...base,
+      id: "profit-margin",
+      label: "Profit Margin",
+      prompt: "What is the profit margin ratio (as a decimal)?",
+      canonicalAnswer: profitMargin,
+      explanation: `$${formatAmount(netIncome)} ÷ $${formatAmount(revenue)} = ${formatRatio(profitMargin)}`,
+      artifactTarget: String(profitMargin),
+      targetValue: profitMargin,
+      tolerance: tolerance || 0.01,
+      details: {
+        variant: "profitability",
+        explanation: "Net income divided by revenue.",
+        formula: "Profit Margin = Net Income ÷ Revenue"
+      }
+    },
+    {
+      ...base,
+      id: "return-on-assets",
+      label: "Return on Assets",
+      prompt: "What is the return on assets (as a decimal)?",
+      canonicalAnswer: returnOnAssets,
+      explanation: `$${formatAmount(netIncome)} ÷ $${formatAmount(totalAssets)} = ${formatRatio(returnOnAssets)}`,
+      misconceptionTags: ["financial-analysis:roa"],
+      artifactTarget: String(returnOnAssets),
+      targetValue: returnOnAssets,
+      tolerance: tolerance || 0.01,
+      details: {
+        variant: "profitability",
+        explanation: "Net income divided by total assets.",
+        formula: "ROA = Net Income ÷ Total Assets"
+      }
+    }
+  ];
+}
+function buildLiquidityParts(ledger, tolerance) {
+  const totalAssets = ledger.totals.netAssets;
+  const totalLiabilities = ledger.totals.liabilities;
+  const currentRatio = round2(totalAssets / (totalLiabilities || 1));
+  const workingCapital = totalAssets - totalLiabilities;
+  const base = { kind: "numeric", expectedAnswerShape: "number", standardCode: "ACC-M9-U-FA" };
+  return [
+    {
+      ...base,
+      id: "current-ratio",
+      label: "Current Ratio",
+      prompt: "What is the current ratio?",
+      canonicalAnswer: currentRatio,
+      explanation: `$${formatAmount(totalAssets)} ÷ $${formatAmount(totalLiabilities)} = ${currentRatio.toFixed(2)}`,
+      artifactTarget: String(currentRatio),
+      targetValue: currentRatio,
+      tolerance: tolerance || 0.01,
+      details: {
+        variant: "liquidity",
+        explanation: "Total assets divided by total liabilities.",
+        formula: "Current Ratio = Assets ÷ Liabilities"
+      }
+    },
+    {
+      ...base,
+      id: "working-capital",
+      label: "Working Capital",
+      prompt: "What is the working capital?",
+      canonicalAnswer: workingCapital,
+      explanation: `$${formatAmount(totalAssets)} − $${formatAmount(totalLiabilities)} = $${formatAmount(workingCapital)}`,
+      misconceptionTags: ["financial-analysis:working-capital"],
+      artifactTarget: String(workingCapital),
+      targetValue: workingCapital,
+      tolerance,
+      details: {
+        variant: "liquidity",
+        explanation: "Total assets minus total liabilities.",
+        formula: "Working Capital = Assets − Liabilities"
+      }
+    }
+  ];
+}
+function buildLeverageParts(ledger, tolerance) {
+  const totalAssets = ledger.totals.netAssets;
+  const totalLiabilities = ledger.totals.liabilities;
+  const equity = ledger.totals.endingCapital;
+  const debtRatio = round4(totalLiabilities / totalAssets);
+  const debtToEquity = round2(totalLiabilities / (equity || 1));
+  const base = { kind: "numeric", expectedAnswerShape: "number", standardCode: "ACC-M9-U-FA" };
+  return [
+    {
+      ...base,
+      id: "debt-ratio",
+      label: "Debt Ratio",
+      prompt: "What is the debt ratio (as a decimal)?",
+      canonicalAnswer: debtRatio,
+      explanation: `$${formatAmount(totalLiabilities)} ÷ $${formatAmount(totalAssets)} = ${formatRatio(debtRatio)}`,
+      artifactTarget: String(debtRatio),
+      targetValue: debtRatio,
+      tolerance: tolerance || 0.01,
+      details: {
+        variant: "leverage",
+        explanation: "Total liabilities divided by total assets.",
+        formula: "Debt Ratio = Total Liabilities ÷ Total Assets"
+      }
+    },
+    {
+      ...base,
+      id: "debt-to-equity",
+      label: "Debt-to-Equity Ratio",
+      prompt: "What is the debt-to-equity ratio?",
+      canonicalAnswer: debtToEquity,
+      explanation: `$${formatAmount(totalLiabilities)} ÷ $${formatAmount(equity)} = ${debtToEquity.toFixed(2)}`,
+      misconceptionTags: ["financial-analysis:debt-to-equity"],
+      artifactTarget: String(debtToEquity),
+      targetValue: debtToEquity,
+      tolerance: tolerance || 0.01,
+      details: {
+        variant: "leverage",
+        explanation: "Total liabilities divided by total equity.",
+        formula: "D/E = Total Liabilities ÷ Total Equity"
+      }
+    }
+  ];
+}
+const GUIDANCE = {
+  profitability: "Use the income statement and balance sheet totals to compute profitability ratios.",
+  liquidity: "Use total assets and total liabilities to assess the company's short-term financial health.",
+  leverage: "Compare liabilities to assets and equity to measure financial leverage."
+};
+function buildFinancialAnalysisReviewFeedback(definition, studentResponse, gradeResult) {
+  return Object.fromEntries(
+    gradeResult.parts.map((partResult) => {
+      const part = definition.parts.find((p) => p.id === partResult.partId);
+      if (!part) {
+        return [partResult.partId, { status: "incorrect", message: "Review data unavailable." }];
+      }
+      return [
+        part.id,
+        {
+          status: partResult.isCorrect ? "correct" : "incorrect",
+          selectedLabel: studentResponse[part.id] === void 0 ? "Not entered" : String(studentResponse[part.id]),
+          expectedLabel: String(part.targetValue),
+          misconceptionTags: partResult.misconceptionTags,
+          message: partResult.isCorrect ? `${part.label} is correct.` : `${part.label} should be ${part.targetValue}. ${part.details.explanation}`
+        }
+      ];
+    })
+  );
+}
+const financialAnalysisFamily = {
+  generate(seed, config2 = {}) {
+    const rng = mulberry32(seed ^ 1820167839);
+    const variant = config2.variant ?? pick(["profitability", "liquidity", "leverage"], rng);
+    const miniLedger = generateMiniLedger(seed, {
+      companyType: "service",
+      includeContraAccounts: false,
+      capitalMode: "ending"
+    });
+    const tolerance = config2.tolerance ?? 0;
+    const parts = variant === "profitability" ? buildProfitabilityParts(miniLedger, tolerance) : variant === "liquidity" ? buildLiquidityParts(miniLedger, tolerance) : buildLeverageParts(miniLedger, tolerance);
+    return {
+      contractVersion: "practice.v1",
+      familyKey: "financial-analysis",
+      mode: config2.mode ?? "guided_practice",
+      activityId: `financial-analysis-${variant}-${seed}`,
+      prompt: {
+        title: variant === "profitability" ? "Profitability Ratios" : variant === "liquidity" ? "Liquidity Ratios" : "Leverage Ratios",
+        stem: `Use the financial data to compute the ${variant} ratios. Total assets: $${formatAmount(miniLedger.totals.netAssets)}. Total liabilities: $${formatAmount(miniLedger.totals.liabilities)}. Revenue: $${formatAmount(miniLedger.totals.revenue)}. Net income: $${formatAmount(miniLedger.totals.netIncome)}. Owner's equity: $${formatAmount(miniLedger.totals.endingCapital)}.`
+      },
+      variant,
+      miniLedger,
+      parts,
+      scaffolding: {
+        guidance: GUIDANCE[variant]
+      },
+      grading: {
+        strategy: "numeric",
+        partialCredit: false
+      },
+      analyticsConfig: {
+        generator: "financial-analysis-family",
+        seed,
+        variant
+      }
+    };
+  },
+  solve(definition) {
+    return Object.fromEntries(definition.parts.map((part) => [part.id, part.targetValue]));
+  },
+  grade(definition, studentResponse) {
+    const parts = definition.parts.map((part) => {
+      const result = scoreNumericPart(part.targetValue, studentResponse[part.id], part.tolerance);
+      return {
+        partId: part.id,
+        rawAnswer: studentResponse[part.id],
+        normalizedAnswer: result.normalizedAnswer,
+        isCorrect: result.isCorrect,
+        score: result.score,
+        maxScore: 1,
+        misconceptionTags: result.isCorrect ? [] : [`financial-analysis:${part.id}`]
+      };
+    });
+    return {
+      score: parts.reduce((sum, p) => sum + p.score, 0),
+      maxScore: parts.length,
+      parts,
+      feedback: parts.every((p) => p.isCorrect) ? "All financial ratios are correct." : "Recheck the ratio computations."
+    };
+  },
+  toEnvelope(definition, studentResponse, gradeResult) {
+    return buildPracticeSubmissionEnvelopeFromGrade(
+      { activityId: definition.activityId, mode: definition.mode },
+      studentResponse,
+      gradeResult
+    );
+  }
+};
+function PracticePreviewPage() {
+  if (process.env.NODE_ENV !== "development") {
+    notFound();
+  }
+  const familyACategories = [
+    { id: "assets", label: "Assets", description: "Resources the business owns" },
+    { id: "liabilities", label: "Liabilities", description: "Debts and obligations" },
+    { id: "equity", label: "Equity", description: "Owner claim on the business" },
+    { id: "income-statement", label: "Income Statement", description: "Revenue and expense accounts" }
+  ];
+  const familyAItems = [
+    {
+      id: "cash",
+      label: "Cash",
+      description: "Cash on hand and in bank accounts",
+      targetId: "assets",
+      details: { confusionPair: "accounts-receivable" }
+    },
+    {
+      id: "prepaid-insurance",
+      label: "Prepaid Insurance",
+      description: "Unused coverage paid in advance",
+      targetId: "assets",
+      details: { confusionPair: "insurance-expense" }
+    },
+    {
+      id: "unearned-revenue",
+      label: "Unearned Revenue",
+      description: "Cash received before the service is earned",
+      targetId: "liabilities",
+      details: { confusionPair: "service-revenue" }
+    },
+    {
+      id: "common-stock",
+      label: "Common Stock",
+      description: "Owner contributions in exchange for shares",
+      targetId: "equity",
+      details: { confusionPair: "retained-earnings" }
+    },
+    {
+      id: "service-revenue",
+      label: "Service Revenue",
+      description: "Earnings from services performed",
+      targetId: "income-statement",
+      details: { confusionPair: "unearned-revenue" }
+    },
+    {
+      id: "insurance-expense",
+      label: "Insurance Expense",
+      description: "Insurance cost recognized this period",
+      targetId: "income-statement",
+      details: { confusionPair: "prepaid-insurance" }
+    }
+  ];
+  const familyATeacherPlacements = {
+    assets: familyAItems.filter((item) => item.id === "cash").map((item) => ({ ...item })),
+    liabilities: familyAItems.filter((item) => ["unearned-revenue", "service-revenue"].includes(item.id)).map((item) => ({ ...item })),
+    equity: familyAItems.filter((item) => item.id === "common-stock").map((item) => ({ ...item })),
+    "income-statement": familyAItems.filter((item) => ["prepaid-insurance", "insurance-expense"].includes(item.id)).map((item) => ({ ...item }))
+  };
+  const familyATeacherFeedback = {
+    cash: {
+      status: "correct",
+      scoreLabel: "1/1",
+      selectedZoneLabel: "Assets",
+      expectedZoneLabel: "Assets",
+      misconceptionTags: [],
+      message: "Cash is a current asset."
+    },
+    "prepaid-insurance": {
+      status: "incorrect",
+      scoreLabel: "0/1",
+      selectedZoneLabel: "Income Statement",
+      expectedZoneLabel: "Assets",
+      misconceptionTags: ["prepaid-vs-expense"],
+      message: "This is an unused prepaid asset, not an expense yet."
+    },
+    "unearned-revenue": {
+      status: "correct",
+      scoreLabel: "1/1",
+      selectedZoneLabel: "Liabilities",
+      expectedZoneLabel: "Liabilities",
+      misconceptionTags: [],
+      message: "Cash was received before the revenue was earned, so it stays a liability."
+    },
+    "common-stock": {
+      status: "correct",
+      scoreLabel: "1/1",
+      selectedZoneLabel: "Equity",
+      expectedZoneLabel: "Equity",
+      misconceptionTags: [],
+      message: "Common stock represents the owner claim."
+    },
+    "service-revenue": {
+      status: "incorrect",
+      scoreLabel: "0/1",
+      selectedZoneLabel: "Liabilities",
+      expectedZoneLabel: "Income Statement",
+      misconceptionTags: ["earned-vs-deferred"],
+      message: "Service revenue is earned, so it belongs on the income statement."
+    },
+    "insurance-expense": {
+      status: "correct",
+      scoreLabel: "1/1",
+      selectedZoneLabel: "Income Statement",
+      expectedZoneLabel: "Income Statement",
+      misconceptionTags: [],
+      message: "Insurance expense is an income statement account."
+    }
+  };
+  const miniLedger = generateMiniLedger(2026, {
+    accountCount: 12,
+    includeContraAccounts: true,
+    capitalMode: "ending",
+    companyType: "retail"
+  });
+  const assets = miniLedger.accounts.filter((account) => account.accountType === "asset" && !account.contraOf);
+  const liabilities = miniLedger.accounts.filter((account) => account.accountType === "liability");
+  const selectionRows = [
+    { id: "assets", label: "Asset accounts", description: "Balance sheet items", selectionMode: "single" },
+    { id: "liabilities", label: "Liability accounts", description: "Claims owed to others", selectionMode: "single" },
+    { id: "equity", label: "Equity accounts", description: "Owner claim on assets", selectionMode: "single" }
+  ];
+  const statementSections = [
+    {
+      id: "income",
+      label: "Income Statement",
+      description: "Sample values drawn from the ledger snapshot.",
+      rows: [
+        { id: "revenue", label: "Revenue", kind: "prefilled", value: miniLedger.totals.revenue },
+        { id: "expenses", label: "Expenses", kind: "prefilled", value: -miniLedger.totals.expenses },
+        { id: "net-income", label: "Net Income", kind: "subtotal", sumOf: ["revenue", "expenses"], note: "Revenue less expenses" }
+      ]
+    },
+    {
+      id: "equity",
+      label: "Equity Rollforward",
+      description: "Beginning capital to ending capital.",
+      rows: [
+        { id: "beginning-capital", label: "Beginning Capital", kind: "prefilled", value: miniLedger.totals.beginningCapital },
+        { id: "dividends", label: "Dividends", kind: "prefilled", value: -miniLedger.totals.dividends },
+        { id: "ending-capital", label: "Ending Capital", kind: "subtotal", sumOf: ["beginning-capital", "net-income", "dividends"], note: "Beginning capital + net income - dividends" }
+      ]
+    }
+  ];
+  const journalTotal = miniLedger.totals.liabilities + miniLedger.totals.endingCapital;
+  const journalLines = [
+    {
+      id: "line-1",
+      date: "03/20",
+      accountId: assets[0]?.id,
+      debit: journalTotal,
+      credit: "",
+      memo: "Initial asset recognition"
+    },
+    {
+      id: "line-2",
+      date: "03/20",
+      accountId: liabilities[0]?.id,
+      debit: "",
+      credit: journalTotal,
+      memo: "Liability side"
+    },
+    {
+      id: "line-3",
+      date: "03/20",
+      accountId: "",
+      debit: "",
+      credit: "",
+      memo: "Reserved line"
+    },
+    {
+      id: "line-4",
+      date: "03/20",
+      accountId: "",
+      debit: "",
+      credit: "",
+      memo: "Reserved line"
+    }
+  ];
+  const categorizationItems = miniLedger.accounts.slice(0, 6).map((account) => ({
+    id: account.id,
+    label: account.label,
+    description: `${account.accountType} • ${formatAccountingAmount(account.balance)}`,
+    targetId: account.accountType === "asset" ? "assets" : account.accountType === "liability" ? "liabilities" : account.accountType === "equity" ? "equity" : account.accountType === "revenue" ? "revenue" : "expenses"
+  }));
+  const categorizationPlacements = categorizationItems.reduce((acc, item) => {
+    const bucket = acc[item.targetId] ?? [];
+    bucket.push(item);
+    acc[item.targetId] = bucket;
+    return acc;
+  }, {});
+  const normalBalanceDefinition = normalBalanceFamily.generate(2026, {
+    accountCount: 8,
+    includeContraAccounts: true,
+    companyScope: "retail",
+    mode: "guided_practice"
+  });
+  const normalBalanceSolution = normalBalanceFamily.solve(normalBalanceDefinition);
+  const normalBalanceTarget = normalBalanceDefinition.parts.find((part) => part.details.isContraAccount) ?? normalBalanceDefinition.parts[0];
+  const normalBalanceWrongAnswer = (() => {
+    if (!normalBalanceTarget) {
+      return normalBalanceSolution;
+    }
+    const parentNormalBalance = normalBalanceTarget.details.contraOf ? practiceAccounts.find((account) => account.id === normalBalanceTarget.details.contraOf)?.normalBalance : null;
+    const nextSelection = parentNormalBalance ?? (normalBalanceTarget.targetId === "debit" ? "credit" : "debit");
+    return {
+      ...normalBalanceSolution,
+      [normalBalanceTarget.id]: nextSelection
+    };
+  })();
+  const normalBalanceGrade = normalBalanceFamily.grade(normalBalanceDefinition, normalBalanceWrongAnswer);
+  const normalBalanceFeedback = buildNormalBalanceReviewFeedback(normalBalanceDefinition, normalBalanceWrongAnswer, normalBalanceGrade);
+  const normalBalanceColumns = [
+    { id: "debit", label: "Debit", description: "Normal balance on the left side" },
+    { id: "credit", label: "Credit", description: "Normal balance on the right side" }
+  ];
+  const normalBalanceRows = normalBalanceDefinition.parts.map((part) => ({
+    id: part.id,
+    label: part.label,
+    description: `${part.details.accountType} account${part.details.isContraAccount && part.details.contraOf ? ` • contra to ${part.details.contraOf}` : ""}`
+  }));
+  const normalBalanceReviewFeedback = Object.fromEntries(
+    normalBalanceDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: normalBalanceFeedback[part.id]?.status ?? "incorrect",
+        scoreLabel: normalBalanceFeedback[part.id]?.scoreLabel ?? "0/1",
+        selectedLabel: normalBalanceFeedback[part.id]?.selectedBalanceLabel ?? (normalBalanceWrongAnswer[part.id] === "debit" ? "Debit" : "Credit"),
+        expectedLabel: normalBalanceFeedback[part.id]?.expectedBalanceLabel ?? part.targetId.toUpperCase(),
+        misconceptionTags: normalBalanceFeedback[part.id]?.misconceptionTags ?? [],
+        message: normalBalanceFeedback[part.id]?.message
+      }
+    ])
+  );
+  const adjustmentEffectsDefinition = adjustmentEffectsFamily.generate(2026, {
+    mode: "guided_practice",
+    scenarioKind: "depreciation"
+  });
+  const adjustmentEffectsSolution = adjustmentEffectsFamily.solve(adjustmentEffectsDefinition);
+  const adjustmentEffectOrder = ["overstated", "understated", "no-effect"];
+  const adjustmentEffectsStudentResponse = adjustmentEffectsDefinition.parts.reduce(
+    (acc, part, index2) => {
+      const solution = adjustmentEffectsSolution[part.id];
+      if (index2 < 2) {
+        const alternateEffect = adjustmentEffectOrder.find((effect) => effect !== solution) ?? solution;
+        acc[part.id] = alternateEffect;
+        return acc;
+      }
+      acc[part.id] = solution;
+      return acc;
+    },
+    {}
+  );
+  const adjustmentEffectsGrade = adjustmentEffectsFamily.grade(adjustmentEffectsDefinition, adjustmentEffectsStudentResponse);
+  const adjustmentEffectsFeedback = buildAdjustmentEffectsReviewFeedback(
+    adjustmentEffectsDefinition,
+    adjustmentEffectsStudentResponse,
+    adjustmentEffectsGrade
+  );
+  const adjustmentEffectsReviewFeedback = Object.fromEntries(
+    adjustmentEffectsDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: adjustmentEffectsFeedback[part.id]?.status ?? "incorrect",
+        scoreLabel: adjustmentEffectsFeedback[part.id]?.scoreLabel ?? "0/1",
+        selectedLabel: adjustmentEffectsFeedback[part.id]?.selectedLabel ?? "Not selected",
+        expectedLabel: adjustmentEffectsFeedback[part.id]?.expectedLabel ?? (part.targetId === "no-effect" ? "No effect" : `${part.targetId[0].toUpperCase()}${part.targetId.slice(1)}`),
+        misconceptionTags: adjustmentEffectsFeedback[part.id]?.misconceptionTags ?? [],
+        message: adjustmentEffectsFeedback[part.id]?.message
+      }
+    ])
+  );
+  const trialBalanceErrorDefinition = trialBalanceErrorFamily.generate(2026, {
+    mode: "guided_practice",
+    scenarioCount: 4,
+    includeBalancedScenarios: true
+  });
+  const trialBalanceErrorSolution = trialBalanceErrorFamily.solve(trialBalanceErrorDefinition);
+  const trialBalanceErrorFirstScenario = trialBalanceErrorDefinition.scenarios[0];
+  const trialBalanceErrorStudentResponse = trialBalanceErrorFirstScenario ? {
+    ...trialBalanceErrorSolution,
+    [`${trialBalanceErrorFirstScenario.rowId}:balanced`]: trialBalanceErrorFirstScenario.expectedBalanced === "still-balances" ? "out-of-balance" : "still-balances",
+    [`${trialBalanceErrorFirstScenario.rowId}:difference`]: trialBalanceErrorFirstScenario.expectedDifference + 9,
+    [`${trialBalanceErrorFirstScenario.rowId}:larger-column`]: trialBalanceErrorFirstScenario.expectedLargerColumn === "debit" ? "credit" : "debit"
+  } : trialBalanceErrorSolution;
+  const trialBalanceErrorGrade = trialBalanceErrorFamily.grade(trialBalanceErrorDefinition, trialBalanceErrorStudentResponse);
+  const trialBalanceErrorRowFeedback = buildTrialBalanceErrorScenarioReviewFeedback(
+    trialBalanceErrorDefinition,
+    trialBalanceErrorStudentResponse,
+    trialBalanceErrorGrade
+  );
+  const transactionEffectsDefinition = transactionEffectsFamily.generate(2026, {
+    mode: "guided_practice",
+    archetypeId: "earn-revenue",
+    context: "service",
+    settlement: "cash"
+  });
+  const transactionEffectsSolution = transactionEffectsFamily.solve(transactionEffectsDefinition);
+  const transactionEffectsStudentResponse = {
+    ...transactionEffectsSolution,
+    [transactionEffectsDefinition.event.effects[0]?.accountId ?? "cash"]: transactionEffectsDefinition.event.effects[0]?.direction === "increase" ? "decrease" : "increase",
+    equity: transactionEffectsDefinition.event.equityEffect === "increases" ? "decrease" : "increase",
+    amount: transactionEffectsDefinition.event.amount,
+    "equity-reason": transactionEffectsSolution["equity-reason"]
+  };
+  const transactionEffectsMatrixValue = Object.fromEntries(
+    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsSolution[row.id]])
+  );
+  const transactionEffectsMatrixStudentValue = Object.fromEntries(
+    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsStudentResponse[row.id]])
+  );
+  const transactionEffectsGrade = transactionEffectsFamily.grade(transactionEffectsDefinition, transactionEffectsStudentResponse);
+  const transactionEffectsFeedback = buildTransactionEffectsReviewFeedback(
+    transactionEffectsDefinition,
+    transactionEffectsStudentResponse,
+    transactionEffectsGrade
+  );
+  const transactionMatrixDefinition = transactionMatrixFamily.generate(2026, {
+    mode: "guided_practice",
+    archetypeId: "earn-revenue",
+    context: "service",
+    settlement: "cash"
+  });
+  const transactionMatrixSolution = transactionMatrixFamily.solve(transactionMatrixDefinition);
+  const transactionMatrixStudentResponse = {
+    ...transactionMatrixSolution,
+    "offset-account": "equity-reason",
+    equity: "direction"
+  };
+  const transactionMatrixMatrixValue = Object.fromEntries(
+    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixSolution[row.id]])
+  );
+  const transactionMatrixMatrixStudentValue = Object.fromEntries(
+    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixStudentResponse[row.id]])
+  );
+  const transactionMatrixGrade = transactionMatrixFamily.grade(transactionMatrixDefinition, transactionMatrixStudentResponse);
+  const transactionMatrixFeedback = buildTransactionMatrixReviewFeedback(
+    transactionMatrixDefinition,
+    transactionMatrixStudentResponse,
+    transactionMatrixGrade
+  );
+  const transactionMatrixScenario = transactionMatrixDefinition.event;
+  const transactionMatrixReason = transactionMatrixDefinition.event.equityReason;
+  const journalEntryDefinition = journalEntryFamily.generate(2026, {
+    mode: "guided_practice",
+    scenarioKey: "return-allowance"
+  });
+  const journalEntrySolution = journalEntryFamily.solve(journalEntryDefinition);
+  const journalEntryStudentResponse = journalEntrySolution.map((line2) => ({ ...line2 }));
+  if (journalEntryStudentResponse.length > 1) {
+    [journalEntryStudentResponse[0], journalEntryStudentResponse[1]] = [
+      journalEntryStudentResponse[1],
+      journalEntryStudentResponse[0]
+    ];
+  }
+  const journalEntryGrade = journalEntryFamily.grade(journalEntryDefinition, journalEntryStudentResponse);
+  const journalEntryFeedback = buildJournalEntryReviewFeedback(
+    journalEntryDefinition,
+    journalEntryStudentResponse,
+    journalEntryGrade
+  );
+  const journalEntryRowFeedback = Object.fromEntries(
+    journalEntryDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: journalEntryFeedback[part.id]?.status ?? "incorrect",
+        message: journalEntryFeedback[part.id]?.message,
+        misconceptionTags: journalEntryFeedback[part.id]?.misconceptionTags ?? []
+      }
+    ])
+  );
+  const journalEntryEquivalentRows = Object.values(journalEntryFeedback).filter((feedback) => feedback.status === "partial").length;
+  const cycleDecisionSelectionDefinition = cycleDecisionsFamily.generate(2026, {
+    mode: "guided_practice",
+    scenarioKey: "reversing-selection"
+  });
+  const cycleDecisionSelectionSolution = cycleDecisionsFamily.solve(cycleDecisionSelectionDefinition);
+  const cycleDecisionSelectionStudentResponse = {
+    selections: {
+      ...cycleDecisionSelectionSolution.selections,
+      "accrued-wages": "do-not-reverse"
+    },
+    lines: []
+  };
+  const cycleDecisionSelectionGrade = cycleDecisionsFamily.grade(
+    cycleDecisionSelectionDefinition,
+    cycleDecisionSelectionStudentResponse
+  );
+  const cycleDecisionSelectionFeedback = buildCycleDecisionReviewFeedback(
+    cycleDecisionSelectionDefinition,
+    cycleDecisionSelectionStudentResponse,
+    cycleDecisionSelectionGrade
+  );
+  const cycleDecisionSelectionRowFeedback = Object.fromEntries(
+    cycleDecisionSelectionDefinition.selectionRows.map((row) => [
+      row.id,
+      {
+        status: cycleDecisionSelectionFeedback[row.id]?.status ?? "incorrect",
+        scoreLabel: cycleDecisionSelectionFeedback[row.id]?.scoreLabel ?? "0/1",
+        selectedLabel: cycleDecisionSelectionFeedback[row.id]?.selectedLabel ?? "Not selected",
+        expectedLabel: cycleDecisionSelectionFeedback[row.id]?.expectedLabel ?? "Unknown",
+        misconceptionTags: cycleDecisionSelectionFeedback[row.id]?.misconceptionTags ?? [],
+        message: cycleDecisionSelectionFeedback[row.id]?.message
+      }
+    ])
+  );
+  const cycleDecisionClosingDefinition = cycleDecisionsFamily.generate(2026, {
+    mode: "guided_practice",
+    scenarioKey: "closing-entry"
+  });
+  const cycleDecisionClosingSolution = cycleDecisionsFamily.solve(cycleDecisionClosingDefinition);
+  const cycleDecisionClosingStudentResponse = {
+    selections: {},
+    lines: [cycleDecisionClosingSolution.lines[1], cycleDecisionClosingSolution.lines[0], ...cycleDecisionClosingSolution.lines.slice(2)]
+  };
+  const cycleDecisionClosingGrade = cycleDecisionsFamily.grade(cycleDecisionClosingDefinition, cycleDecisionClosingStudentResponse);
+  const cycleDecisionClosingFeedback = buildCycleDecisionReviewFeedback(
+    cycleDecisionClosingDefinition,
+    cycleDecisionClosingStudentResponse,
+    cycleDecisionClosingGrade
+  );
+  const cycleDecisionClosingRowFeedback = Object.fromEntries(
+    cycleDecisionClosingDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: cycleDecisionClosingFeedback[part.id]?.status ?? "incorrect",
+        message: cycleDecisionClosingFeedback[part.id]?.message,
+        misconceptionTags: cycleDecisionClosingFeedback[part.id]?.misconceptionTags ?? []
+      }
+    ])
+  );
+  const cycleDecisionClosingEquivalentRows = Object.values(cycleDecisionClosingFeedback).filter((feedback) => feedback.status === "partial").length;
+  const merchandisingEntryDefinition = merchandisingEntriesFamily.generate(2026, {
+    mode: "guided_practice",
+    scenarioKey: "seller-timeline"
+  });
+  const merchandisingEntrySolution = merchandisingEntriesFamily.solve(merchandisingEntryDefinition);
+  const merchandisingEntryStudentResponse = [
+    merchandisingEntrySolution[1],
+    merchandisingEntrySolution[0],
+    ...merchandisingEntrySolution.slice(2)
+  ];
+  const merchandisingEntryGrade = merchandisingEntriesFamily.grade(merchandisingEntryDefinition, merchandisingEntryStudentResponse);
+  const merchandisingEntryFeedback = buildMerchandisingEntryReviewFeedback(
+    merchandisingEntryDefinition,
+    merchandisingEntryStudentResponse,
+    merchandisingEntryGrade
+  );
+  const merchandisingEntryRowFeedback = Object.fromEntries(
+    merchandisingEntryDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: merchandisingEntryFeedback[part.id]?.status ?? "incorrect",
+        message: merchandisingEntryFeedback[part.id]?.message,
+        misconceptionTags: merchandisingEntryFeedback[part.id]?.misconceptionTags ?? []
+      }
+    ])
+  );
+  const merchandisingEntryEquivalentRows = Object.values(merchandisingEntryFeedback).filter((feedback) => feedback.status === "partial").length;
+  const transactionEffectsRowFeedback = Object.fromEntries(
+    transactionEffectsDefinition.rows.map((row) => [
+      row.id,
+      {
+        status: transactionEffectsFeedback[row.id]?.status ?? "incorrect",
+        scoreLabel: transactionEffectsFeedback[row.id]?.scoreLabel ?? "0/1",
+        selectedLabel: transactionEffectsFeedback[row.id]?.selectedLabel ?? "Not selected",
+        expectedLabel: transactionEffectsFeedback[row.id]?.expectedLabel ?? "Unknown",
+        misconceptionTags: transactionEffectsFeedback[row.id]?.misconceptionTags ?? [],
+        message: transactionEffectsFeedback[row.id]?.message
+      }
+    ])
+  );
+  const transactionMatrixRowFeedback = Object.fromEntries(
+    transactionMatrixDefinition.rows.map((row) => [
+      row.id,
+      {
+        status: transactionMatrixFeedback[row.id]?.status ?? "incorrect",
+        scoreLabel: transactionMatrixFeedback[row.id]?.scoreLabel ?? "0/1",
+        selectedLabel: transactionMatrixFeedback[row.id]?.selectedLabel ?? "Not selected",
+        expectedLabel: transactionMatrixFeedback[row.id]?.expectedLabel ?? "Unknown",
+        misconceptionTags: transactionMatrixFeedback[row.id]?.misconceptionTags ?? [],
+        message: transactionMatrixFeedback[row.id]?.message
+      }
+    ])
+  );
+  const accountingEquationDefinition = accountingEquationFamily.generate(2026, {
+    companyType: "retail",
+    hiddenTermId: "equity",
+    mode: "guided_practice",
+    tolerance: 1
+  });
+  const accountingEquationSolution = accountingEquationFamily.solve(accountingEquationDefinition);
+  const accountingEquationStudentResponse = {
+    equity: Math.max(1, (accountingEquationSolution.equity ?? 0) - 400)
+  };
+  const accountingEquationGrade = accountingEquationFamily.grade(
+    accountingEquationDefinition,
+    accountingEquationStudentResponse
+  );
+  const accountingEquationFeedback = buildAccountingEquationReviewFeedback(
+    accountingEquationDefinition,
+    accountingEquationStudentResponse,
+    accountingEquationGrade
+  );
+  const postingBalancesDefinition = postingBalancesFamily.generate(2026, {
+    mode: "guided_practice",
+    targetAccountCount: 4,
+    postingAccountCount: 3,
+    tolerance: 1
+  });
+  const postingBalancesSolution = postingBalancesFamily.solve(postingBalancesDefinition);
+  const postingBalanceTarget = postingBalancesDefinition.rows.find((row) => row.details.netChange !== 0) ?? postingBalancesDefinition.rows[0];
+  const postingBalancesStudentResponse = postingBalanceTarget ? {
+    ...postingBalancesSolution,
+    [postingBalanceTarget.id]: Math.max(1, (postingBalancesSolution[postingBalanceTarget.id] ?? 0) - 100)
+  } : postingBalancesSolution;
+  const postingBalancesGrade = postingBalancesFamily.grade(postingBalancesDefinition, postingBalancesStudentResponse);
+  const postingBalancesFeedback = buildPostingBalanceReviewFeedback(
+    postingBalancesDefinition,
+    postingBalancesStudentResponse,
+    postingBalancesGrade
+  );
+  const postingBalancesRows = postingBalancesDefinition.rows.map((row) => ({
+    id: row.id,
+    accountLabel: row.label,
+    startingBalance: row.details.startingBalance,
+    normalSide: row.details.normalSide,
+    netPostingCue: row.details.postingLines[0]?.effectLabel ?? "No postings",
+    placeholder: "0"
+  }));
+  const adjustingCalculationsCalculationDefinition = adjustingCalculationsFamily.generate(2026, {
+    mode: "guided_practice",
+    presentation: "calculation",
+    scenarioKind: "deferral",
+    tolerance: 1
+  });
+  const adjustingCalculationsCalculationSolution = adjustingCalculationsFamily.solve(
+    adjustingCalculationsCalculationDefinition
+  );
+  const adjustingCalculationsCalculationPart = adjustingCalculationsCalculationDefinition.parts[0];
+  const adjustingCalculationsCalculationStudentResponse = adjustingCalculationsCalculationPart ? {
+    ...adjustingCalculationsCalculationSolution,
+    [adjustingCalculationsCalculationPart.id]: Number(adjustingCalculationsCalculationSolution[adjustingCalculationsCalculationPart.id] ?? 0) + 2
+  } : adjustingCalculationsCalculationSolution;
+  const adjustingCalculationsCalculationGrade = adjustingCalculationsFamily.grade(
+    adjustingCalculationsCalculationDefinition,
+    adjustingCalculationsCalculationStudentResponse
+  );
+  const adjustingCalculationsCalculationFeedback = buildAdjustingCalculationsReviewFeedback(
+    adjustingCalculationsCalculationDefinition,
+    adjustingCalculationsCalculationStudentResponse,
+    adjustingCalculationsCalculationGrade
+  );
+  const adjustingCalculationsNumericRows = adjustingCalculationsCalculationDefinition.parts.map((part) => ({
+    id: part.id,
+    label: part.label,
+    kind: "editable",
+    placeholder: "0",
+    note: part.details.explanation
+  }));
+  const adjustingCalculationsEntryDefinition = adjustingCalculationsFamily.generate(2026, {
+    mode: "guided_practice",
+    presentation: "journal-entry",
+    scenarioKind: "depreciation",
+    tolerance: 1
+  });
+  const adjustingCalculationsEntrySolution = adjustingCalculationsFamily.solve(
+    adjustingCalculationsEntryDefinition
+  );
+  const adjustingCalculationsEntryStudentResponse = {
+    ...adjustingCalculationsEntrySolution,
+    [adjustingCalculationsEntryDefinition.parts[0]?.id ?? "line-1"]: {
+      ...adjustingCalculationsEntrySolution[adjustingCalculationsEntryDefinition.parts[0]?.id ?? "line-1"] ?? {},
+      memo: "Incorrect memo"
+    }
+  };
+  const adjustingCalculationsEntryGrade = adjustingCalculationsFamily.grade(
+    adjustingCalculationsEntryDefinition,
+    adjustingCalculationsEntryStudentResponse
+  );
+  const adjustingCalculationsEntryFeedback = buildAdjustingCalculationsReviewFeedback(
+    adjustingCalculationsEntryDefinition,
+    adjustingCalculationsEntryStudentResponse,
+    adjustingCalculationsEntryGrade
+  );
+  const adjustingCalculationsEntryRowFeedback = Object.fromEntries(
+    adjustingCalculationsEntryDefinition.parts.map((part) => [
+      part.id,
+      {
+        status: adjustingCalculationsEntryFeedback[part.id]?.status ?? "incorrect",
+        message: adjustingCalculationsEntryFeedback[part.id]?.message,
+        misconceptionTags: adjustingCalculationsEntryFeedback[part.id]?.misconceptionTags ?? []
+      }
+    ])
+  );
+  const depreciationPresentationDirectDefinition = depreciationPresentationFamily.generate(2026, {
+    mode: "guided_practice",
+    layout: "direct",
+    tolerance: 1
+  });
+  const depreciationPresentationDirectSolution = depreciationPresentationFamily.solve(
+    depreciationPresentationDirectDefinition
+  );
+  const depreciationPresentationDirectPart = depreciationPresentationDirectDefinition.parts[0];
+  const depreciationPresentationDirectStudentResponse = depreciationPresentationDirectPart ? {
+    ...depreciationPresentationDirectSolution,
+    [depreciationPresentationDirectPart.id]: Number(depreciationPresentationDirectSolution[depreciationPresentationDirectPart.id] ?? 0) + 120
+  } : depreciationPresentationDirectSolution;
+  const depreciationPresentationDirectGrade = depreciationPresentationFamily.grade(
+    depreciationPresentationDirectDefinition,
+    depreciationPresentationDirectStudentResponse
+  );
+  const depreciationPresentationDirectFeedback = buildDepreciationPresentationReviewFeedback(
+    depreciationPresentationDirectDefinition,
+    depreciationPresentationDirectStudentResponse,
+    depreciationPresentationDirectGrade
+  );
+  const depreciationPresentationDerivedDefinition = depreciationPresentationFamily.generate(2026, {
+    mode: "guided_practice",
+    layout: "derived",
+    tolerance: 1
+  });
+  const depreciationPresentationDerivedSolution = depreciationPresentationFamily.solve(
+    depreciationPresentationDerivedDefinition
+  );
+  const depreciationPresentationDerivedPart = depreciationPresentationDerivedDefinition.parts[0];
+  const depreciationPresentationDerivedStudentResponse = depreciationPresentationDerivedPart ? {
+    ...depreciationPresentationDerivedSolution,
+    [depreciationPresentationDerivedPart.id]: Number(depreciationPresentationDerivedSolution[depreciationPresentationDerivedPart.id] ?? 0) + 120
+  } : depreciationPresentationDerivedSolution;
+  const depreciationPresentationDerivedGrade = depreciationPresentationFamily.grade(
+    depreciationPresentationDerivedDefinition,
+    depreciationPresentationDerivedStudentResponse
+  );
+  const depreciationPresentationDerivedFeedback = buildDepreciationPresentationReviewFeedback(
+    depreciationPresentationDerivedDefinition,
+    depreciationPresentationDerivedStudentResponse,
+    depreciationPresentationDerivedGrade
+  );
+  const cvpDefinition = cvpAnalysisFamily.generate(2026, { mode: "guided_practice", variant: "break-even-units", tolerance: 1 });
+  const cvpSolution = cvpAnalysisFamily.solve(cvpDefinition);
+  const cvpFirstPart = cvpDefinition.parts[0];
+  const cvpStudentResponse = cvpFirstPart ? { ...cvpSolution, [cvpFirstPart.id]: (cvpSolution[cvpFirstPart.id] ?? 0) + 50 } : cvpSolution;
+  const cvpGrade = cvpAnalysisFamily.grade(cvpDefinition, cvpStudentResponse);
+  const cvpFeedback = buildCvpAnalysisReviewFeedback(cvpDefinition, cvpStudentResponse, cvpGrade);
+  const interestDefinition = interestSchedulesFamily.generate(2026, { mode: "guided_practice", variant: "compound-interest", tolerance: 1 });
+  const interestSolution = interestSchedulesFamily.solve(interestDefinition);
+  const interestFirstPart = interestDefinition.parts[0];
+  const interestStudentResponse = interestFirstPart ? { ...interestSolution, [interestFirstPart.id]: (interestSolution[interestFirstPart.id] ?? 0) + 200 } : interestSolution;
+  const interestGrade = interestSchedulesFamily.grade(interestDefinition, interestStudentResponse);
+  const interestFeedback = buildInterestSchedulesReviewFeedback(interestDefinition, interestStudentResponse, interestGrade);
+  const depScheduleDefinition = depreciationSchedulesFamily.generate(2026, { mode: "guided_practice", method: "double-declining", tolerance: 1 });
+  const depScheduleSolution = depreciationSchedulesFamily.solve(depScheduleDefinition);
+  const depScheduleFirstPart = depScheduleDefinition.parts[0];
+  const depScheduleStudentResponse = depScheduleFirstPart ? { ...depScheduleSolution, [depScheduleFirstPart.id]: (depScheduleSolution[depScheduleFirstPart.id] ?? 0) + 300 } : depScheduleSolution;
+  const depScheduleGrade = depreciationSchedulesFamily.grade(depScheduleDefinition, depScheduleStudentResponse);
+  const depScheduleFeedback = buildDepreciationSchedulesReviewFeedback(depScheduleDefinition, depScheduleStudentResponse, depScheduleGrade);
+  const finAnalysisDefinition = financialAnalysisFamily.generate(2026, { mode: "guided_practice", variant: "profitability", tolerance: 0.01 });
+  const finAnalysisSolution = financialAnalysisFamily.solve(finAnalysisDefinition);
+  const finAnalysisFirstPart = finAnalysisDefinition.parts[0];
+  const finAnalysisStudentResponse = finAnalysisFirstPart ? { ...finAnalysisSolution, [finAnalysisFirstPart.id]: (finAnalysisSolution[finAnalysisFirstPart.id] ?? 0) + 0.5 } : finAnalysisSolution;
+  const finAnalysisGrade = financialAnalysisFamily.grade(finAnalysisDefinition, finAnalysisStudentResponse);
+  const finAnalysisFeedback = buildFinancialAnalysisReviewFeedback(finAnalysisDefinition, finAnalysisStudentResponse, finAnalysisGrade);
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mx-auto flex max-w-7xl flex-col gap-6", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("header", { className: "space-y-2 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Developer preview" }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-3xl font-semibold tracking-tight", children: "Accounting practice foundation preview" }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-3xl text-sm text-slate-600", children: "Shared components backed by a deterministic mini-ledger snapshot." })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family A preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Classification and statement mapping" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "The same 6-item dataset is shown in a guided student state and a review state with two intentional mistakes." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          CategorizationList,
+          {
+            title: "Family A Guided Practice",
+            description: "Classify the accounts into the broad statement groups.",
+            items: familyAItems.map((item) => ({ ...item })),
+            zones: familyACategories.map((category) => ({ ...category })),
+            shuffleItems: false,
+            mode: "independent_practice"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          CategorizationList,
+          {
+            title: "Family A Teacher Review",
+            description: "Read-only review with the same student artifact and annotated misconceptions.",
+            items: familyAItems.map((item) => ({ ...item })),
+            zones: familyACategories.map((category) => ({ ...category })),
+            readOnly: true,
+            teacherView: true,
+            mode: "teaching",
+            reviewPlacements: familyATeacherPlacements,
+            reviewFeedback: familyATeacherFeedback,
+            submissionSummary: {
+              scoreLabel: "4/6 correct",
+              attempts: 1,
+              submittedAt: "2026-03-20 09:15",
+              misconceptionCount: 2
+            }
+          }
+        )
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-sm text-muted-foreground", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "Issue:" }),
-        " #3 - Set Up Drizzle ORM Infrastructure"
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family M preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Normal balances and account nature" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "The same account set appears in a guided student state and a read-only teacher review with annotated misconceptions." })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "Test File:" }),
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("code", { children: "lib/db/test-connection.ts" })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { children: "Note:" }),
-        " This page can be deleted after verifying the connection works."
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          SelectionMatrix,
+          {
+            title: "Family M Guided Practice",
+            description: "Choose the debit or credit normal balance for each account.",
+            rows: normalBalanceRows,
+            columns: normalBalanceColumns,
+            defaultValue: normalBalanceSolution
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          SelectionMatrix,
+          {
+            title: "Family M Teacher Review",
+            description: "Read-only review with the same account set and misconception tags.",
+            rows: normalBalanceRows,
+            columns: normalBalanceColumns,
+            readOnly: true,
+            teacherView: true,
+            defaultValue: normalBalanceWrongAnswer,
+            rowFeedback: normalBalanceReviewFeedback,
+            submissionSummary: {
+              scoreLabel: `${normalBalanceGrade.score}/${normalBalanceGrade.maxScore} correct`,
+              attempts: 1,
+              submittedAt: "2026-03-20 09:20",
+              misconceptionCount: new Set(Object.values(normalBalanceFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size
+            }
+          }
+        )
       ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family K preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Effects of Missing Adjustments" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "The same omission scenario appears in a guided student state and a teacher review with annotated consequence patterns." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          SelectionMatrix,
+          {
+            title: "Family K Guided Practice",
+            description: adjustmentEffectsDefinition.prompt.stem,
+            rows: adjustmentEffectsDefinition.rows,
+            columns: adjustmentEffectsDefinition.columns,
+            defaultValue: adjustmentEffectsSolution,
+            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.scenario }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What was missed" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.missedAdjustment }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Assumption" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.periodEndAssumption })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-xs text-slate-500", children: "Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements." })
+            ] })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          SelectionMatrix,
+          {
+            title: "Family K Teacher Review",
+            description: adjustmentEffectsDefinition.prompt.stem,
+            rows: adjustmentEffectsDefinition.rows,
+            columns: adjustmentEffectsDefinition.columns,
+            readOnly: true,
+            teacherView: true,
+            defaultValue: adjustmentEffectsStudentResponse,
+            rowFeedback: adjustmentEffectsReviewFeedback,
+            submissionSummary: {
+              scoreLabel: `${adjustmentEffectsGrade.score}/${adjustmentEffectsGrade.maxScore} correct`,
+              attempts: 1,
+              submittedAt: "2026-03-20 09:25",
+              misconceptionCount: new Set(
+                Object.values(adjustmentEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
+              ).size
+            },
+            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.scenario }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What was missed" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.missedAdjustment }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Assumption" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.periodEndAssumption })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-xs text-slate-500", children: "Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements." })
+            ] })
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family G preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Trial balance error analysis" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "The same error pattern appears in a guided student state and a read-only teacher review with scenario-level feedback." })
+      ] }),
+      trialBalanceErrorFirstScenario && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-slate-50/80 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-3 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What happened" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: trialBalanceErrorFirstScenario.whatHappened }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Error type" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: trialBalanceErrorFirstScenario.archetypeLabel }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to decide first" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: trialBalanceErrorFirstScenario.whatToDecideFirst })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          TrialBalanceErrorMatrix,
+          {
+            title: "Family G Guided Practice",
+            description: "Read the scenario, decide whether the trial balance balances, then choose the difference and larger column.",
+            scenarios: trialBalanceErrorDefinition.scenarios,
+            defaultValue: trialBalanceErrorSolution
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          TrialBalanceErrorMatrix,
+          {
+            title: "Family G Teacher Review",
+            description: "Read-only review with row-level evidence and misconception tags.",
+            scenarios: trialBalanceErrorDefinition.scenarios,
+            readOnly: true,
+            teacherView: true,
+            defaultValue: trialBalanceErrorStudentResponse,
+            rowFeedback: trialBalanceErrorRowFeedback,
+            submissionSummary: {
+              scoreLabel: `${trialBalanceErrorGrade.score}/${trialBalanceErrorGrade.maxScore} correct`,
+              attempts: 1,
+              submittedAt: "2026-03-20 09:25",
+              misconceptionCount: new Set(Object.values(trialBalanceErrorRowFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])).size
+            }
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction analysis" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Families C and F" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Transaction-effects and transaction-matrix share the same narrative spine, but Family C stays close to the account effects while Family F slows the reasoning down into a scaffolded decision path." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family C preview" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "text-xl font-semibold tracking-tight", children: "Transaction effects on accounts" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Mark how each account or category changes because of this transaction." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+              SelectionMatrix,
+              {
+                title: "Family C Guided Practice",
+                description: "Select how the affected accounts and summary categories change.",
+                rows: transactionEffectsDefinition.rows,
+                columns: transactionEffectsDefinition.columns,
+                defaultValue: transactionEffectsMatrixValue,
+                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.narrative }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Amount" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(transactionEffectsDefinition.event.amount) }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Why equity changes" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.equityReason })
+                ] }) })
+              }
+            ),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+              SelectionMatrix,
+              {
+                title: "Family C Teacher Review",
+                description: "Read-only review with the same transaction and annotated misconceptions.",
+                rows: transactionEffectsDefinition.rows,
+                columns: transactionEffectsDefinition.columns,
+                readOnly: true,
+                teacherView: true,
+                defaultValue: transactionEffectsMatrixStudentValue,
+                rowFeedback: transactionEffectsRowFeedback,
+                submissionSummary: {
+                  scoreLabel: `${transactionEffectsGrade.score}/${transactionEffectsGrade.maxScore} correct`,
+                  attempts: 1,
+                  submittedAt: "2026-03-20 09:30",
+                  misconceptionCount: new Set(
+                    Object.values(transactionEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
+                  ).size
+                },
+                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.narrative }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Amount" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(transactionEffectsDefinition.event.amount) }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Why equity changes" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.equityReason })
+                ] }) })
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family F preview" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "text-xl font-semibold tracking-tight", children: "Transaction reasoning matrix" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Work left to right: first identify whether the row is affected, then explain the change." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            SelectionMatrix,
+            {
+              title: "Family F Guided Practice",
+              description: "Select the reasoning stage that matches each row.",
+              rows: transactionMatrixDefinition.rows,
+              columns: transactionMatrixDefinition.columns,
+              defaultValue: transactionMatrixMatrixValue,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.narrative }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Business context" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-sm text-slate-700", children: [
+                  transactionMatrixScenario.context,
+                  " context • ",
+                  transactionMatrixScenario.settlement ?? "cash"
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Source document clue" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.tags.join(" • ") }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to decide first" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixReason })
+              ] }) })
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            SelectionMatrix,
+            {
+              title: "Family F Teacher Review",
+              description: "Read-only review with the same reasoning stages and stage-level feedback.",
+              rows: transactionMatrixDefinition.rows,
+              columns: transactionMatrixDefinition.columns,
+              readOnly: true,
+              teacherView: true,
+              defaultValue: transactionMatrixMatrixStudentValue,
+              rowFeedback: transactionMatrixRowFeedback,
+              submissionSummary: {
+                scoreLabel: `${transactionMatrixGrade.score}/${transactionMatrixGrade.maxScore} correct`,
+                attempts: 1,
+                submittedAt: "2026-03-20 09:35",
+                misconceptionCount: new Set(
+                  Object.values(transactionMatrixFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
+                ).size
+              },
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.narrative }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Business context" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-sm text-slate-700", children: [
+                  transactionMatrixScenario.context,
+                  " context • ",
+                  transactionMatrixScenario.settlement ?? "cash"
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Source document clue" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.tags.join(" • ") }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to decide first" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixReason })
+              ] }) })
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family H preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Journal entry recording" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family H shows a multi-date merchandising return sequence with a teacher review that accepts equivalent line order." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          JournalEntryTable,
+          {
+            title: "Family H Guided Practice",
+            description: "Record the journal lines in canonical order. The balance strip stays visible below the table.",
+            availableAccounts: journalEntryDefinition.availableAccounts,
+            expectedLineCount: journalEntryDefinition.expectedLineCount,
+            defaultValue: journalEntrySolution,
+            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+                  "Expected lines: ",
+                  journalEntryDefinition.expectedLineCount
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Mode: Guided practice" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "default", children: "Balanced" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+                  "Dates: ",
+                  journalEntryDefinition.scenario.dates.join(" • ")
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-3 grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: journalEntryDefinition.scenario.narrative }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: "The date column keeps the original sale, the return and allowance, and the final collection separate." })
+              ] })
+            ] })
+          }
+        ) }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+              "Score: ",
+              journalEntryGrade.score,
+              "/",
+              journalEntryGrade.maxScore,
+              " correct"
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Attempts: 2" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Submitted: 2026-03-20 09:40" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+              "Equivalent rows: ",
+              journalEntryEquivalentRows
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-2 rounded-2xl border bg-white/90 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Teacher note" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: "The student entered the same accounting logic, but the first two lines were swapped. The review keeps the response readable and marks the equivalent ordering as accepted." })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            JournalEntryTable,
+            {
+              title: "Family H Teacher Review",
+              description: "Read-only evidence with row-level feedback and equivalent-order acceptance.",
+              availableAccounts: journalEntryDefinition.availableAccounts,
+              expectedLineCount: journalEntryDefinition.expectedLineCount,
+              defaultValue: journalEntryStudentResponse,
+              readOnly: true,
+              teacherView: true,
+              rowFeedback: journalEntryRowFeedback,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+                    "Expected lines: ",
+                    journalEntryDefinition.expectedLineCount
+                  ] }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Mode: Guided practice" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "default", children: "Balanced" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+                    "Dates: ",
+                    journalEntryDefinition.scenario.dates.join(" • ")
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-3 grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: journalEntryDefinition.scenario.narrative }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: "The date column keeps the original sale, the return and allowance, and the final collection separate." })
+                ] })
+              ] })
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family L preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Cycle decisions" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family L stacks the decision first and the entry second: the student chooses what should be reversed, then prepares the closing entry from the adjusted trial balance." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Decision task" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Period: 01/01" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Policy: reversing recommended" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+              "Rows: ",
+              cycleDecisionSelectionDefinition.selectionRows.length
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 rounded-2xl border bg-white/90 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: cycleDecisionSelectionDefinition.scenario.narrative })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: "Reverse the accrual that will be paid next period, but keep depreciation and closing entries in place." })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            SelectionMatrix,
+            {
+              title: "Family L Guided Decision",
+              description: "Choose whether each candidate entry should be reversed in the next period.",
+              rows: cycleDecisionSelectionDefinition.selectionRows,
+              columns: cycleDecisionSelectionDefinition.selectionColumns,
+              defaultValue: cycleDecisionSelectionSolution.selections
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            SelectionMatrix,
+            {
+              title: "Family L Decision Review",
+              description: "Read-only review with the same reversal decisions and annotated misconception tags.",
+              rows: cycleDecisionSelectionDefinition.selectionRows,
+              columns: cycleDecisionSelectionDefinition.selectionColumns,
+              readOnly: true,
+              teacherView: true,
+              defaultValue: cycleDecisionSelectionStudentResponse.selections,
+              rowFeedback: cycleDecisionSelectionRowFeedback,
+              submissionSummary: {
+                scoreLabel: `${cycleDecisionSelectionGrade.score}/${cycleDecisionSelectionGrade.maxScore} correct`,
+                attempts: 1,
+                submittedAt: "2026-03-20 09:42",
+                misconceptionCount: new Set(
+                  Object.values(cycleDecisionSelectionFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
+                ).size
+              }
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Entry task" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Date: 12/31" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Adjusted trial balance" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+              "Lines: ",
+              cycleDecisionClosingDefinition.expectedLineCount
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 rounded-2xl border bg-white/90 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: cycleDecisionClosingDefinition.scenario.narrative })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: "Closing entries always clear temporary accounts to retained earnings, and accepted equivalent logic is noted in teacher review." })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            JournalEntryTable,
+            {
+              title: "Family L Guided Entry",
+              description: "Prepare the closing entry in canonical order.",
+              availableAccounts: cycleDecisionClosingDefinition.availableAccounts,
+              expectedLineCount: cycleDecisionClosingDefinition.expectedLineCount,
+              defaultValue: cycleDecisionClosingSolution.lines
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-white/90 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+                "Score: ",
+                cycleDecisionClosingGrade.score,
+                "/",
+                cycleDecisionClosingGrade.maxScore,
+                " correct"
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Attempts: 1" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Submitted: 2026-03-20 09:44" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+                "Equivalent rows: ",
+                cycleDecisionClosingEquivalentRows
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-sm text-slate-600", children: "Accepted equivalent closing logic is called out here so teachers can see that the same accounting result was reached even when the closing lines were entered in a different order." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            JournalEntryTable,
+            {
+              title: "Family L Entry Review",
+              description: "Read-only closing entry with row-level feedback and equivalent-order acceptance.",
+              availableAccounts: cycleDecisionClosingDefinition.availableAccounts,
+              expectedLineCount: cycleDecisionClosingDefinition.expectedLineCount,
+              defaultValue: cycleDecisionClosingStudentResponse.lines,
+              readOnly: true,
+              teacherView: true,
+              rowFeedback: cycleDecisionClosingRowFeedback
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family P preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Merchandising entries" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family P makes the timeline explicit before the journal table so students read the merchandise story in order, then translate that sequence into perpetual inventory entries." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+              "Role: ",
+              merchandisingEntryDefinition.timeline.role
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+              "Method: ",
+              merchandisingEntryDefinition.timeline.discountMethod
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+              "Terms: ",
+              merchandisingEntryDefinition.timeline.paymentTiming
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+              "FOB: ",
+              merchandisingEntryDefinition.timeline.fobCondition
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+              "Dates: ",
+              merchandisingEntryDefinition.scenario.dates.join(" • ")
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-3 rounded-2xl border bg-white/90 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: merchandisingEntryDefinition.scenario.narrative })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: merchandisingEntryDefinition.scenario.focus })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("ol", { className: "space-y-3", children: merchandisingEntryDefinition.events.map((event, index2) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("li", { className: "rounded-2xl border bg-white/90 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: index2 + 1 }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: event.kind.replace(/-/g, " ") }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-xs uppercase tracking-[0.2em] text-slate-500", children: event.date })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-2 text-sm text-slate-700", children: event.narrative })
+          ] }, event.id)) }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            JournalEntryTable,
+            {
+              title: "Family P Guided Practice",
+              description: "Record the seller-side perpetual entries in chronological order.",
+              availableAccounts: merchandisingEntryDefinition.availableAccounts,
+              expectedLineCount: merchandisingEntryDefinition.expectedLineCount,
+              defaultValue: merchandisingEntrySolution
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+              "Score: ",
+              merchandisingEntryGrade.score,
+              "/",
+              merchandisingEntryGrade.maxScore,
+              " correct"
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Attempts: 1" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Submitted: 2026-03-20 09:48" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
+              "Equivalent rows: ",
+              merchandisingEntryEquivalentRows
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-3 rounded-2xl border bg-white/90 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Teacher note" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: "The seller’s response is economically correct even though the first two journal rows were swapped, so the review keeps the work readable and labels the accepted equivalent ordering." })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            JournalEntryTable,
+            {
+              title: "Family P Teacher Review",
+              description: "Read-only perpetual inventory evidence with row-level feedback and equivalent-order acceptance.",
+              availableAccounts: merchandisingEntryDefinition.availableAccounts,
+              expectedLineCount: merchandisingEntryDefinition.expectedLineCount,
+              defaultValue: merchandisingEntryStudentResponse,
+              readOnly: true,
+              teacherView: true,
+              rowFeedback: merchandisingEntryRowFeedback
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family B preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Accounting equation workbench" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family B uses the mini-ledger snapshot to hide one term in the accounting equation and keeps the teacher review aligned with the same workbench." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          AccountingEquationLayout,
+          {
+            title: "Family B Guided Practice",
+            description: "Complete the hidden term using the equation workbench.",
+            facts: accountingEquationDefinition.facts,
+            terms: accountingEquationDefinition.terms,
+            mode: "guided_practice",
+            helperText: accountingEquationDefinition.scaffolding.helperText,
+            defaultValues: { equity: "" }
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          AccountingEquationLayout,
+          {
+            title: "Family B Teacher Review",
+            description: "Read-only evidence with the submitted answer and a single review annotation.",
+            facts: accountingEquationDefinition.facts,
+            terms: accountingEquationDefinition.terms,
+            mode: "assessment",
+            values: { equity: String(accountingEquationStudentResponse.equity) },
+            readOnly: true,
+            teacherView: true,
+            feedback: accountingEquationFeedback
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family I preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Posting balances workboard" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family I keeps the posting sequence in a reference panel and asks for the ending balance on each account row." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          TAccountInteractive,
+          {
+            title: "Family I Guided Practice",
+            description: "Use the posting trail and starting balance to compute each ending balance.",
+            referenceTitle: postingBalancesDefinition.scaffolding.referenceTitle,
+            referenceLines: postingBalancesDefinition.postingLines,
+            rows: postingBalancesRows,
+            mode: "guided_practice",
+            defaultValues: Object.fromEntries(postingBalancesRows.map((row) => [row.id, ""]))
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          TAccountInteractive,
+          {
+            title: "Family I Teacher Review",
+            description: "Read-only evidence with row-level review feedback and posting tags.",
+            referenceTitle: postingBalancesDefinition.scaffolding.referenceTitle,
+            referenceLines: postingBalancesDefinition.postingLines,
+            rows: postingBalancesRows,
+            mode: "assessment",
+            values: Object.fromEntries(
+              postingBalancesDefinition.rows.map((row) => [row.id, String(postingBalancesStudentResponse[row.id] ?? "")])
+            ),
+            readOnly: true,
+            teacherView: true,
+            rowFeedback: postingBalancesFeedback
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        SelectionMatrix,
+        {
+          title: "Selection Matrix",
+          description: "Classify the main ledger groups.",
+          rows: selectionRows,
+          columns: [
+            { id: "assets", label: "Assets" },
+            { id: "liabilities", label: "Liabilities" },
+            { id: "equity", label: "Equity" }
+          ],
+          defaultValue: { assets: "assets", liabilities: "liabilities", equity: "equity" },
+          teacherView: true,
+          rowFeedback: {
+            assets: { status: "correct", scoreLabel: "Correct" },
+            liabilities: { status: "correct", scoreLabel: "Correct" },
+            equity: { status: "correct", scoreLabel: "Correct" }
+          }
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        StatementLayout,
+        {
+          title: "Statement Layout",
+          description: "Editable blanks, computed totals, and teacher annotations.",
+          sections: statementSections,
+          defaultValues: {
+            revenue: String(miniLedger.totals.revenue),
+            expenses: String(miniLedger.totals.expenses),
+            "beginning-capital": String(miniLedger.totals.beginningCapital),
+            dividends: String(miniLedger.totals.dividends)
+          },
+          teacherView: true,
+          rowFeedback: {
+            revenue: { status: "correct", message: "Revenue pulled from the snapshot." },
+            expenses: { status: "correct", message: "Expenses pulled from the snapshot." }
+          }
+        }
+      )
+    ] }),
+    (() => {
+      const statementConstructionDefinition = statementConstructionFamily.generate(2026, {
+        mode: "guided_practice",
+        statementKind: "income-statement"
+      });
+      const statementConstructionSolution = statementConstructionFamily.solve(statementConstructionDefinition);
+      const statementConstructionLabelPart = statementConstructionDefinition.parts.find((part) => part.details.expectedAnswerType === "label") ?? statementConstructionDefinition.parts[0];
+      const statementConstructionAmountPart = statementConstructionDefinition.parts.find((part) => part.details.expectedAnswerType === "number") ?? statementConstructionDefinition.parts[1];
+      const statementConstructionStudentResponse = {
+        ...statementConstructionSolution,
+        ...statementConstructionLabelPart ? {
+          [statementConstructionLabelPart.id]: "Wrong Account"
+        } : {},
+        ...statementConstructionAmountPart ? {
+          [statementConstructionAmountPart.id]: Number(statementConstructionSolution[statementConstructionAmountPart.id] ?? 0) + 125
+        } : {}
+      };
+      const statementConstructionGradeResult = statementConstructionFamily.grade(
+        statementConstructionDefinition,
+        statementConstructionStudentResponse
+      );
+      const statementConstructionFeedback = buildStatementConstructionReviewFeedback(
+        statementConstructionDefinition,
+        statementConstructionStudentResponse,
+        statementConstructionGradeResult
+      );
+      const statementConstructionReviewCount = Object.values(statementConstructionFeedback).filter(
+        (feedback) => feedback?.status !== "correct"
+      ).length;
+      return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family E preview" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Statement construction workbook" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family E asks students to place the correct account names from a bank into a blank statement template and finish the totals." })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family E Guided Practice",
+              description: "Type the account names in the left-side blanks and complete the subtotals on the right.",
+              sections: statementConstructionDefinition.sections,
+              defaultValues: Object.fromEntries(statementConstructionDefinition.parts.map((part) => [part.id, ""])),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: statementConstructionDefinition.scaffolding.bankLabel }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: statementConstructionDefinition.scaffolding.statementLabel }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "Seed 2026" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: statementConstructionDefinition.miniLedger.companyType })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-4 flex flex-wrap gap-2", children: statementConstructionDefinition.accountBank.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+                  Badge,
+                  {
+                    variant: item.included ? "secondary" : "outline",
+                    className: "gap-1.5",
+                    children: [
+                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: item.label }),
+                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-[11px] font-normal opacity-80", children: formatAccountingAmount(item.amount) })
+                    ]
+                  },
+                  `${item.id}-${item.included ? "included" : "distractor"}`
+                )) })
+              ] }),
+              scaffoldText: statementConstructionDefinition.scaffolding.guidance
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family E Teacher Review",
+              description: "Read-only evidence with row-level review feedback and the same bank of candidate accounts.",
+              sections: statementConstructionDefinition.sections,
+              values: Object.fromEntries(
+                statementConstructionDefinition.rows.map((row) => [row.id, String(statementConstructionStudentResponse[row.id] ?? "")])
+              ),
+              readOnly: true,
+              teacherView: true,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: statementConstructionDefinition.scaffolding.bankLabel }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: statementConstructionDefinition.scaffolding.statementLabel }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "Seed 2026" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: statementConstructionDefinition.miniLedger.companyType })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-4 flex flex-wrap gap-2", children: statementConstructionDefinition.accountBank.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+                  Badge,
+                  {
+                    variant: item.included ? "secondary" : "outline",
+                    className: "gap-1.5",
+                    children: [
+                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: item.label }),
+                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-[11px] font-normal opacity-80", children: formatAccountingAmount(item.amount) })
+                    ]
+                  },
+                  `${item.id}-${item.included ? "included" : "distractor"}`
+                )) })
+              ] }),
+              scaffoldText: statementConstructionDefinition.scaffolding.guidance,
+              reviewSummary: [
+                { label: "Attempt", value: "1" },
+                {
+                  label: "Score",
+                  value: `${statementConstructionGradeResult.score}/${statementConstructionGradeResult.maxScore}`
+                },
+                { label: "Submitted", value: "Preview sample" },
+                { label: "Needs review", value: String(statementConstructionReviewCount) }
+              ],
+              rowFeedback: statementConstructionFeedback
+            }
+          )
+        ] })
+      ] });
+    })(),
+    (() => {
+      const statementSubtotalsDefinition = statementSubtotalsFamily.generate(2026, {
+        mode: "guided_practice",
+        statementKind: "income-statement"
+      });
+      const statementSubtotalsSolution = statementSubtotalsFamily.solve(statementSubtotalsDefinition);
+      const statementSubtotalsFirstPart = statementSubtotalsDefinition.parts[0];
+      const statementSubtotalsStudentResponse = {
+        ...statementSubtotalsSolution,
+        ...statementSubtotalsFirstPart ? {
+          [statementSubtotalsFirstPart.id]: Number(statementSubtotalsSolution[statementSubtotalsFirstPart.id] ?? 0) + 125
+        } : {}
+      };
+      const statementSubtotalsGradeResult = statementSubtotalsFamily.grade(
+        statementSubtotalsDefinition,
+        statementSubtotalsStudentResponse
+      );
+      const statementSubtotalsFeedback = buildStatementSubtotalsReviewFeedback(
+        statementSubtotalsDefinition,
+        statementSubtotalsStudentResponse,
+        statementSubtotalsGradeResult
+      );
+      const statementSubtotalsBlankCount = statementSubtotalsDefinition.parts.length;
+      const statementSubtotalsReviewCount = Object.values(statementSubtotalsFeedback).filter(
+        (feedback) => feedback?.status !== "correct"
+      ).length;
+      return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family Q preview" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Statement subtotal worksheet" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family Q keeps the statement structure visible but focuses on the dependent subtotals that tie the sections together." })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family Q Guided Practice",
+              description: "Complete the missing subtotal lines after reading the prefilled statement rows.",
+              sections: statementSubtotalsDefinition.sections,
+              defaultValues: Object.fromEntries(statementSubtotalsDefinition.parts.map((part) => [part.id, ""])),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Statement type" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.statementLabel }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Blanks" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsBlankCount }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.guidance })
+              ] }) }),
+              scaffoldText: statementSubtotalsDefinition.scaffolding.guidance
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family Q Teacher Review",
+              description: "Read-only evidence with row-level review feedback and the same subtotal relationships.",
+              sections: statementSubtotalsDefinition.sections,
+              values: Object.fromEntries(
+                statementSubtotalsDefinition.rows.filter((row) => row.kind === "editable").map((row) => [row.id, String(statementSubtotalsStudentResponse[row.id] ?? "")])
+              ),
+              readOnly: true,
+              teacherView: true,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Statement type" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.statementLabel }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Blanks" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsBlankCount }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.guidance })
+              ] }) }),
+              scaffoldText: statementSubtotalsDefinition.scaffolding.guidance,
+              reviewSummary: [
+                { label: "Attempt", value: "1" },
+                {
+                  label: "Score",
+                  value: `${statementSubtotalsGradeResult.score}/${statementSubtotalsGradeResult.maxScore}`
+                },
+                { label: "Submitted", value: "Preview sample" },
+                { label: "Needs review", value: String(statementSubtotalsReviewCount) }
+              ],
+              rowFeedback: statementSubtotalsFeedback
+            }
+          )
+        ] })
+      ] });
+    })(),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family J preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Adjusting calculations" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family J first asks for the adjustment amount, then shows the journal entry that records the same business fact." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family J Guided Practice",
+              description: "Compute the adjustment amount before recording the entry.",
+              sections: [
+                {
+                  id: "adjustment-targets",
+                  label: "Adjustment targets",
+                  description: "Read the facts, then compute the number you would record.",
+                  rows: adjustingCalculationsNumericRows
+                }
+              ],
+              defaultValues: Object.fromEntries(adjustingCalculationsNumericRows.map((row) => [row.id, ""])),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsCalculationDefinition.scenario.stem }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Adjustment amount" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(adjustingCalculationsCalculationDefinition.scenario.amount) }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Mode" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsCalculationDefinition.scaffolding.modeLabel })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-sm text-slate-700", children: adjustingCalculationsCalculationDefinition.scaffolding.bridgeText })
+              ] }),
+              scaffoldText: adjustingCalculationsCalculationDefinition.scaffolding.bridgeText
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family J Teacher Review",
+              description: "Read-only evidence with the submitted calculation and a single review annotation.",
+              sections: [
+                {
+                  id: "adjustment-targets",
+                  label: "Adjustment targets",
+                  description: "The same calculation target appears in the teacher review.",
+                  rows: adjustingCalculationsNumericRows
+                }
+              ],
+              values: Object.fromEntries(
+                adjustingCalculationsCalculationDefinition.parts.map((part) => [
+                  part.id,
+                  String(adjustingCalculationsCalculationStudentResponse[part.id] ?? "")
+                ])
+              ),
+              readOnly: true,
+              teacherView: true,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsCalculationDefinition.scenario.stem }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Adjustment amount" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(adjustingCalculationsCalculationDefinition.scenario.amount) }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Mode" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsCalculationDefinition.scaffolding.modeLabel })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-sm text-slate-700", children: adjustingCalculationsCalculationDefinition.scaffolding.bridgeText })
+              ] }),
+              scaffoldText: adjustingCalculationsCalculationDefinition.scaffolding.bridgeText,
+              reviewSummary: [
+                { label: "Attempt", value: "1" },
+                {
+                  label: "Score",
+                  value: `${adjustingCalculationsCalculationGrade.score}/${adjustingCalculationsCalculationGrade.maxScore}`
+                },
+                { label: "Needs review", value: String(Object.values(adjustingCalculationsCalculationFeedback).filter((item) => item.status !== "correct").length) },
+                { label: "Adjustment type", value: adjustingCalculationsCalculationDefinition.scenario.kind.replace(/-/g, " ") }
+              ],
+              rowFeedback: Object.fromEntries(
+                adjustingCalculationsCalculationDefinition.parts.map((part) => [
+                  part.id,
+                  {
+                    status: adjustingCalculationsCalculationFeedback[part.id]?.status ?? "incorrect",
+                    message: adjustingCalculationsCalculationFeedback[part.id]?.message,
+                    misconceptionTags: adjustingCalculationsCalculationFeedback[part.id]?.misconceptionTags ?? []
+                  }
+                ])
+              )
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            JournalEntryTable,
+            {
+              title: "Family J Guided Entry",
+              description: "Record the adjusting entry after computing the amount.",
+              availableAccounts: adjustingCalculationsEntryDefinition.availableAccounts,
+              expectedLineCount: adjustingCalculationsEntryDefinition.entryLines.length,
+              defaultValue: Object.values(adjustingCalculationsEntrySolution),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+                    "Amount to record: ",
+                    formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)
+                  ] }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: adjustingCalculationsEntryDefinition.presentation }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: adjustingCalculationsEntryDefinition.scenario.reportingDate })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-3 grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scenario.stem }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Bridge" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scaffolding.bridgeText }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Mode" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scaffolding.modeLabel })
+                ] })
+              ] })
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+                "Score: ",
+                adjustingCalculationsEntryGrade.score,
+                "/",
+                adjustingCalculationsEntryGrade.maxScore
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: "Attempts: 1" }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: adjustingCalculationsEntryDefinition.scenario.kind.replace(/-/g, " ") })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Teacher note" }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "The student computed the adjustment amount, but the journal entry memo was altered to surface the review state." })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-3", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Adjustment amount" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount) })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Bridge" }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scaffolding.bridgeText })
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+              JournalEntryTable,
+              {
+                title: "Family J Teacher Review",
+                description: "Read-only journal entry evidence with row-level feedback.",
+                availableAccounts: adjustingCalculationsEntryDefinition.availableAccounts,
+                expectedLineCount: adjustingCalculationsEntryDefinition.entryLines.length,
+                defaultValue: Object.values(adjustingCalculationsEntryStudentResponse),
+                readOnly: true,
+                teacherView: true,
+                rowFeedback: adjustingCalculationsEntryRowFeedback,
+                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "secondary", children: [
+                      "Amount to record: ",
+                      formatAccountingAmount(adjustingCalculationsEntryDefinition.scenario.amount)
+                    ] }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: adjustingCalculationsEntryDefinition.presentation }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: adjustingCalculationsEntryDefinition.scenario.reportingDate })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-3 grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scenario.stem }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Bridge" }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scaffolding.bridgeText }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Mode" }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustingCalculationsEntryDefinition.scaffolding.modeLabel })
+                  ] })
+                ] })
+              }
+            )
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family N preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Depreciation presentation" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Family N keeps land as the contrast case and lets students present the depreciable asset net of accumulated depreciation." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family N Guided Practice",
+              description: "Present the PP&E section with the direct depreciation amount already given.",
+              sections: depreciationPresentationDirectDefinition.sections,
+              defaultValues: Object.fromEntries(
+                depreciationPresentationDirectDefinition.rows.filter((row) => row.kind === "editable").map((row) => [row.id, ""])
+              ),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDirectDefinition.layout }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDirectDefinition.scenario.assetCategory }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: depreciationPresentationDirectDefinition.scaffolding.sectionLabel })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3", children: depreciationPresentationDirectDefinition.assetRegister.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: item.label }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: formatAccountingAmount(item.value) }),
+                  item.note && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: item.note })
+                ] }, item.id)) }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-sm text-slate-700", children: depreciationPresentationDirectDefinition.scaffolding.registerCue })
+              ] }),
+              scaffoldText: depreciationPresentationDirectDefinition.scaffolding.registerCue
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family N Teacher Review",
+              description: "Read-only PP&E presentation with the same direct depreciation facts.",
+              sections: depreciationPresentationDirectDefinition.sections,
+              values: Object.fromEntries(
+                depreciationPresentationDirectDefinition.rows.filter((row) => row.kind === "editable").map((row) => [row.id, String(depreciationPresentationDirectStudentResponse[row.id] ?? "")])
+              ),
+              readOnly: true,
+              teacherView: true,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDirectDefinition.layout }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDirectDefinition.scenario.assetCategory }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: depreciationPresentationDirectDefinition.scaffolding.sectionLabel })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3", children: depreciationPresentationDirectDefinition.assetRegister.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: item.label }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: formatAccountingAmount(item.value) }),
+                  item.note && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: item.note })
+                ] }, item.id)) }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-sm text-slate-700", children: depreciationPresentationDirectDefinition.scaffolding.registerCue })
+              ] }),
+              scaffoldText: depreciationPresentationDirectDefinition.scaffolding.registerCue,
+              reviewSummary: [
+                { label: "Attempt", value: "1" },
+                {
+                  label: "Score",
+                  value: `${depreciationPresentationDirectGrade.score}/${depreciationPresentationDirectGrade.maxScore}`
+                },
+                { label: "Needs review", value: String(Object.values(depreciationPresentationDirectFeedback).filter((item) => item.status !== "correct").length) },
+                { label: "Variant", value: depreciationPresentationDirectDefinition.layout }
+              ],
+              rowFeedback: Object.fromEntries(
+                depreciationPresentationDirectDefinition.parts.map((part) => [
+                  part.id,
+                  {
+                    status: depreciationPresentationDirectFeedback[part.id]?.status ?? "incorrect",
+                    message: depreciationPresentationDirectFeedback[part.id]?.message,
+                    misconceptionTags: depreciationPresentationDirectFeedback[part.id]?.misconceptionTags ?? []
+                  }
+                ])
+              )
+            }
+          )
+        ] }) }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-4 rounded-2xl border bg-slate-50/80 p-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family N Guided Practice",
+              description: "Use the cue block to present the PP&E section for the derived variant.",
+              sections: depreciationPresentationDerivedDefinition.sections,
+              defaultValues: Object.fromEntries(
+                depreciationPresentationDerivedDefinition.rows.filter((row) => row.kind === "editable").map((row) => [row.id, ""])
+              ),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDerivedDefinition.layout }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDerivedDefinition.scenario.assetCategory }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: depreciationPresentationDerivedDefinition.scaffolding.sectionLabel })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3", children: [
+                  depreciationPresentationDerivedDefinition.assetRegister.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: item.label }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: formatAccountingAmount(item.value) }),
+                    item.note && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: item.note })
+                  ] }, item.id)),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border border-dashed border-slate-300 bg-white/80 p-3", children: [
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Compute first" }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: "Compute accumulated depreciation." }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: "Use that amount to present the asset at net book value." })
+                  ] })
+                ] })
+              ] }),
+              scaffoldText: depreciationPresentationDerivedDefinition.scaffolding.registerCue
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            StatementLayout,
+            {
+              title: "Family N Teacher Review",
+              description: "Read-only evidence with the same cue block and net presentation.",
+              sections: depreciationPresentationDerivedDefinition.sections,
+              values: Object.fromEntries(
+                depreciationPresentationDerivedDefinition.rows.filter((row) => row.kind === "editable").map((row) => [row.id, String(depreciationPresentationDerivedStudentResponse[row.id] ?? "")])
+              ),
+              readOnly: true,
+              teacherView: true,
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDerivedDefinition.layout }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: depreciationPresentationDerivedDefinition.scenario.assetCategory }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: depreciationPresentationDerivedDefinition.scaffolding.sectionLabel })
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3", children: [
+                  depreciationPresentationDerivedDefinition.assetRegister.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: item.label }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: formatAccountingAmount(item.value) }),
+                    item.note && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: item.note })
+                  ] }, item.id)),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border border-dashed border-slate-300 bg-white/80 p-3", children: [
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Compute first" }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: "Compute accumulated depreciation." }),
+                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: "Use that amount to present the asset at net book value." })
+                  ] })
+                ] })
+              ] }),
+              scaffoldText: depreciationPresentationDerivedDefinition.scaffolding.registerCue,
+              reviewSummary: [
+                { label: "Attempt", value: "1" },
+                {
+                  label: "Score",
+                  value: `${depreciationPresentationDerivedGrade.score}/${depreciationPresentationDerivedGrade.maxScore}`
+                },
+                { label: "Needs review", value: String(Object.values(depreciationPresentationDerivedFeedback).filter((item) => item.status !== "correct").length) },
+                { label: "Variant", value: depreciationPresentationDerivedDefinition.layout }
+              ],
+              rowFeedback: Object.fromEntries(
+                depreciationPresentationDerivedDefinition.parts.map((part) => [
+                  part.id,
+                  {
+                    status: depreciationPresentationDerivedFeedback[part.id]?.status ?? "incorrect",
+                    message: depreciationPresentationDerivedFeedback[part.id]?.message,
+                    misconceptionTags: depreciationPresentationDerivedFeedback[part.id]?.misconceptionTags ?? []
+                  }
+                ])
+              )
+            }
+          )
+        ] }) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family R preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "CVP Analysis" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Break-even units variant with contribution margin and unit computations." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Scenario" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: cvpDefinition.prompt.stem })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Variant" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: cvpDefinition.variant })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Score" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 text-sm font-medium text-slate-800", children: [
+              cvpGrade.score,
+              "/",
+              cvpGrade.maxScore
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Guidance" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: cvpDefinition.scaffolding.guidance })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Guided Practice" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Compute the CVP values from the scenario data." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: cvpDefinition.parts.map((part) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs text-slate-500", children: part.prompt })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400", children: "enter value" })
+          ] }, part.id)) })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Teacher Review" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Graded responses with feedback for each ratio." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: cvpDefinition.parts.map((part) => {
+            const fb = cvpFeedback[part.id];
+            return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: `rounded-xl border p-3 ${fb?.status === "correct" ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}`, children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: fb?.status === "correct" ? "default" : "destructive", children: fb?.status })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 flex gap-4 text-xs text-slate-600", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Student: ",
+                  fb?.selectedLabel ?? "—"
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Expected: ",
+                  fb?.expectedLabel ?? "—"
+                ] })
+              ] }),
+              fb?.message && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: fb.message })
+            ] }, part.id);
+          }) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family S preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Interest Schedules" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Compound interest variant with future value and total interest computations." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Scenario" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: interestDefinition.prompt.stem })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Variant" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: interestDefinition.variant })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Score" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 text-sm font-medium text-slate-800", children: [
+              interestGrade.score,
+              "/",
+              interestGrade.maxScore
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Guidance" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: interestDefinition.scaffolding.guidance })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Guided Practice" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Compute the interest values from the scenario data." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: interestDefinition.parts.map((part) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs text-slate-500", children: part.prompt })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400", children: "enter value" })
+          ] }, part.id)) })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Teacher Review" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Graded responses with feedback for each computation." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: interestDefinition.parts.map((part) => {
+            const fb = interestFeedback[part.id];
+            return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: `rounded-xl border p-3 ${fb?.status === "correct" ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}`, children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: fb?.status === "correct" ? "default" : "destructive", children: fb?.status })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 flex gap-4 text-xs text-slate-600", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Student: ",
+                  fb?.selectedLabel ?? "—"
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Expected: ",
+                  fb?.expectedLabel ?? "—"
+                ] })
+              ] }),
+              fb?.message && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: fb.message })
+            ] }, part.id);
+          }) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family T preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Depreciation Schedules" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Double-declining balance method with depreciable base, year-1 depreciation, and book value computations." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Scenario" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: depScheduleDefinition.prompt.stem })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Method" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: depScheduleDefinition.method })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Score" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 text-sm font-medium text-slate-800", children: [
+              depScheduleGrade.score,
+              "/",
+              depScheduleGrade.maxScore
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Guidance" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: depScheduleDefinition.scaffolding.guidance })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Guided Practice" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Compute the depreciation values from the asset data." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: depScheduleDefinition.parts.map((part) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs text-slate-500", children: part.prompt })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400", children: "enter value" })
+          ] }, part.id)) })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Teacher Review" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Graded responses with feedback for each computation." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: depScheduleDefinition.parts.map((part) => {
+            const fb = depScheduleFeedback[part.id];
+            return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: `rounded-xl border p-3 ${fb?.status === "correct" ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}`, children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: fb?.status === "correct" ? "default" : "destructive", children: fb?.status })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 flex gap-4 text-xs text-slate-600", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Student: ",
+                  fb?.selectedLabel ?? "—"
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Expected: ",
+                  fb?.expectedLabel ?? "—"
+                ] })
+              ] }),
+              fb?.message && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: fb.message })
+            ] }, part.id);
+          }) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-4 rounded-2xl border bg-white/90 p-6 shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Family U preview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold tracking-tight", children: "Financial Statement Analysis" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "max-w-4xl text-sm text-slate-600", children: "Profitability variant with profit margin and return on assets from mini-ledger data." })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Scenario" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: finAnalysisDefinition.prompt.stem })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Variant" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: finAnalysisDefinition.variant })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Score" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 text-sm font-medium text-slate-800", children: [
+              finAnalysisGrade.score,
+              "/",
+              finAnalysisGrade.maxScore
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Guidance" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-sm font-medium text-slate-800", children: finAnalysisDefinition.scaffolding.guidance })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Guided Practice" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Compute the financial ratios from the statement data." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: finAnalysisDefinition.parts.map((part) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between rounded-xl border bg-background/90 p-3", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs text-slate-500", children: part.prompt })
+            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-dashed border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-400", children: "enter value" })
+          ] }, part.id)) })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-lg", children: "Teacher Review" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Graded responses with feedback for each ratio." })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-3", children: finAnalysisDefinition.parts.map((part) => {
+            const fb = finAnalysisFeedback[part.id];
+            return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: `rounded-xl border p-3 ${fb?.status === "correct" ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"}`, children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm font-medium text-slate-800", children: part.label }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: fb?.status === "correct" ? "default" : "destructive", children: fb?.status })
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-1 flex gap-4 text-xs text-slate-600", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Student: ",
+                  fb?.selectedLabel ?? "—"
+                ] }),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
+                  "Expected: ",
+                  fb?.expectedLabel ?? "—"
+                ] })
+              ] }),
+              fb?.message && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "mt-1 text-xs text-slate-500", children: fb.message })
+            ] }, part.id);
+          }) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-6 xl:grid-cols-2", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        JournalEntryTable,
+        {
+          title: "Journal Entry Table",
+          description: "Data-driven rows with balance validation.",
+          availableAccounts: miniLedger.accounts.map((account) => ({
+            id: account.id,
+            label: account.label
+          })),
+          expectedLineCount: 4,
+          defaultValue: journalLines,
+          teacherView: true,
+          rowFeedback: {
+            "line-1": { status: "partial", message: "Debit entry prepared." },
+            "line-2": { status: "correct", message: "Liability recorded." }
+          }
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        CategorizationList,
+        {
+          title: "Categorization List",
+          description: "Read-only teacher review showing ledger groups.",
+          items: categorizationItems,
+          zones: [
+            { id: "assets", label: "Assets", description: "Cash and other resources", emoji: "💼" },
+            { id: "liabilities", label: "Liabilities", description: "Debts and obligations", emoji: "🧾" },
+            { id: "equity", label: "Equity", description: "Owner claim", emoji: "🧭" },
+            { id: "revenue", label: "Revenue", description: "Inflow from operations", emoji: "📈" },
+            { id: "expenses", label: "Expenses", description: "Outflows and costs", emoji: "📉" }
+          ],
+          readOnly: true,
+          mode: "teaching",
+          reviewPlacements: categorizationPlacements
+        }
+      )
     ] })
-  ] });
+  ] }) });
 }
-const mod_27 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: DatabaseTestPage
+  default: PracticePreviewPage
 }, Symbol.toStringTag, { value: "Module" }));
+const toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+const toCamelCase = (string) => string.replace(
+  /^([A-Z])|[\s-_]+(\w)/g,
+  (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
+);
+const toPascalCase = (string) => {
+  const camelCase = toCamelCase(string);
+  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+};
+const mergeClasses = (...classes2) => classes2.filter((className, index2, array) => {
+  return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index2;
+}).join(" ").trim();
+const hasA11yProp = (props) => {
+  for (const prop in props) {
+    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+      return true;
+    }
+  }
+};
+var defaultAttributes = {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: 24,
+  height: 24,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+};
+const Icon = react_reactServerExports.forwardRef(
+  ({
+    color = "currentColor",
+    size = 24,
+    strokeWidth = 2,
+    absoluteStrokeWidth,
+    className = "",
+    children,
+    iconNode,
+    ...rest
+  }, ref) => react_reactServerExports.createElement(
+    "svg",
+    {
+      ref,
+      ...defaultAttributes,
+      width: size,
+      height: size,
+      stroke: color,
+      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size) : strokeWidth,
+      className: mergeClasses("lucide", className),
+      ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
+      ...rest
+    },
+    [
+      ...iconNode.map(([tag, attrs]) => react_reactServerExports.createElement(tag, attrs)),
+      ...Array.isArray(children) ? children : [children]
+    ]
+  )
+);
+const createLucideIcon = (iconName, iconNode) => {
+  const Component = react_reactServerExports.forwardRef(
+    ({ className, ...props }, ref) => react_reactServerExports.createElement(Icon, {
+      ref,
+      iconNode,
+      className: mergeClasses(
+        `lucide-${toKebabCase(toPascalCase(iconName))}`,
+        `lucide-${iconName}`,
+        className
+      ),
+      ...props
+    })
+  );
+  Component.displayName = toPascalCase(iconName);
+  return Component;
+};
+const __iconNode$a = [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
+];
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$a);
+const __iconNode$9 = [
+  ["path", { d: "M12 21V7", key: "gj6g52" }],
+  ["path", { d: "m16 12 2 2 4-4", key: "mdajum" }],
+  [
+    "path",
+    {
+      d: "M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3",
+      key: "8arnkb"
+    }
+  ]
+];
+const BookOpenCheck = createLucideIcon("book-open-check", __iconNode$9);
+const __iconNode$8 = [
+  ["path", { d: "M12 7v14", key: "1akyts" }],
+  [
+    "path",
+    {
+      d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      key: "ruj8y"
+    }
+  ]
+];
+const BookOpen = createLucideIcon("book-open", __iconNode$8);
+const __iconNode$7 = [
+  ["rect", { width: "16", height: "20", x: "4", y: "2", rx: "2", key: "1nb95v" }],
+  ["line", { x1: "8", x2: "16", y1: "6", y2: "6", key: "x4nwl0" }],
+  ["line", { x1: "16", x2: "16", y1: "14", y2: "18", key: "wjye3r" }],
+  ["path", { d: "M16 10h.01", key: "1m94wz" }],
+  ["path", { d: "M12 10h.01", key: "1nrarc" }],
+  ["path", { d: "M8 10h.01", key: "19clt8" }],
+  ["path", { d: "M12 14h.01", key: "1etili" }],
+  ["path", { d: "M8 14h.01", key: "6423bh" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }],
+  ["path", { d: "M8 18h.01", key: "lrp35t" }]
+];
+const Calculator = createLucideIcon("calculator", __iconNode$7);
+const __iconNode$6 = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$6);
+const __iconNode$5 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$5);
+const __iconNode$4 = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+];
+const CircleCheck = createLucideIcon("circle-check", __iconNode$4);
+const __iconNode$3 = [
+  [
+    "path",
+    {
+      d: "m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",
+      key: "9ktpf1"
+    }
+  ],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+];
+const Compass = createLucideIcon("compass", __iconNode$3);
+const __iconNode$2 = [
+  [
+    "path",
+    {
+      d: "M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z",
+      key: "c3ymky"
+    }
+  ]
+];
+const Heart = createLucideIcon("heart", __iconNode$2);
+const __iconNode$1 = [
+  ["path", { d: "M21 10.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12.5", key: "1uzm8b" }],
+  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+];
+const SquareCheckBig = createLucideIcon("square-check-big", __iconNode$1);
+const __iconNode = [
+  ["path", { d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2", key: "1yyitq" }],
+  ["path", { d: "M16 3.128a4 4 0 0 1 0 7.744", key: "16gr8j" }],
+  ["path", { d: "M22 21v-2a4 4 0 0 0-3-3.87", key: "kshegd" }],
+  ["circle", { cx: "9", cy: "7", r: "4", key: "nufk8" }]
+];
+const Users = createLucideIcon("users", __iconNode);
+function clampPercentage$1(value) {
+  if (Number.isNaN(value)) return 0;
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+function getLessonStatus(lesson) {
+  if (lesson.totalPhases > 0 && lesson.completedPhases >= lesson.totalPhases) {
+    return "completed";
+  }
+  if (lesson.completedPhases > 0 || lesson.progressPercentage > 0) {
+    return "in_progress";
+  }
+  return "not_started";
+}
+function toLessonAction(lesson) {
+  const status = getLessonStatus(lesson);
+  if (status === "completed") {
+    return null;
+  }
+  return {
+    ...lesson,
+    status,
+    actionLabel: status === "in_progress" ? "Resume Lesson" : "Start Lesson"
+  };
+}
+function getUnitStatus(lessons2, completedLessons, nextLesson) {
+  if (lessons2.length > 0 && completedLessons === lessons2.length) {
+    return "completed";
+  }
+  if (nextLesson && nextLesson.status === "in_progress") {
+    return "in_progress";
+  }
+  if (completedLessons > 0) {
+    return "in_progress";
+  }
+  return "not_started";
+}
+function buildStudentDashboardViewModel(units) {
+  let completedPhases = 0;
+  let totalPhases = 0;
+  let completedLessons = 0;
+  let inProgressLessons = 0;
+  const unitViews = units.map((unit) => {
+    const lessons2 = [...unit.lessons];
+    for (const lesson of lessons2) {
+      completedPhases += lesson.completedPhases;
+      totalPhases += lesson.totalPhases;
+      const status = getLessonStatus(lesson);
+      if (status === "completed") completedLessons += 1;
+      if (status === "in_progress") inProgressLessons += 1;
+    }
+    const nextLesson2 = lessons2.map(toLessonAction).find((lesson) => lesson?.status === "in_progress") ?? lessons2.map(toLessonAction).find((lesson) => lesson?.status === "not_started") ?? null;
+    const unitCompletedLessons = lessons2.filter((lesson) => getLessonStatus(lesson) === "completed").length;
+    const unitCompletedPhases = lessons2.reduce(
+      (sum, lesson) => sum + lesson.completedPhases,
+      0
+    );
+    const unitTotalPhases = lessons2.reduce(
+      (sum, lesson) => sum + lesson.totalPhases,
+      0
+    );
+    const unitProgress = unitTotalPhases === 0 ? 0 : clampPercentage$1(unitCompletedPhases / unitTotalPhases * 100);
+    return {
+      ...unit,
+      lessons: lessons2,
+      completedLessons: unitCompletedLessons,
+      progressPercentage: unitProgress,
+      status: getUnitStatus(lessons2, unitCompletedLessons, nextLesson2),
+      nextLesson: nextLesson2
+    };
+  });
+  const nextLesson = unitViews.map((unit) => unit.nextLesson).find((lesson) => lesson?.status === "in_progress") ?? unitViews.map((unit) => unit.nextLesson).find((lesson) => lesson?.status === "not_started") ?? null;
+  return {
+    summary: {
+      totalUnits: unitViews.length,
+      completedUnits: unitViews.filter((unit) => unit.status === "completed").length,
+      totalLessons: unitViews.reduce((sum, unit) => sum + unit.lessons.length, 0),
+      completedLessons,
+      inProgressLessons,
+      progressPercentage: totalPhases === 0 ? 0 : clampPercentage$1(completedPhases / totalPhases * 100)
+    },
+    nextLesson,
+    units: unitViews
+  };
+}
+function dashboardStatusBadgeClassName(status) {
+  if (status === "completed") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  }
+  if (status === "in_progress") {
+    return "border-sky-200 bg-sky-50 text-sky-700";
+  }
+  return "border-amber-200 bg-amber-50 text-amber-700";
+}
+function dashboardStatusLabel(status) {
+  if (status === "completed") return "Completed";
+  if (status === "in_progress") return "In Progress";
+  return "Not Started";
+}
+const CAPSTONE_UNIT_NUMBER = 9;
+function isCapstoneUnitNumber(unitNumber) {
+  return unitNumber === CAPSTONE_UNIT_NUMBER;
+}
+function formatCurriculumSegmentLabel(unitNumber) {
+  return isCapstoneUnitNumber(unitNumber) ? "Capstone" : `Unit ${unitNumber}`;
+}
+function studentDashboardPath() {
+  return "/student/dashboard";
+}
+function studentLessonPath(slug) {
+  return `/student/lesson/${slug}`;
+}
 function setRef(ref, value) {
   if (typeof ref === "function") {
     return ref(value);
@@ -22407,201 +33351,6 @@ const Button = react_reactServerExports.forwardRef(
   }
 );
 Button.displayName = "Button";
-function DeployButton() {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(jsxRuntime_reactServerExports.Fragment, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-    Link,
-    {
-      href: "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png",
-      target: "_blank",
-      children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Button, { className: "flex items-center gap-2", size: "sm", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "svg",
-          {
-            className: "h-3 w-3",
-            viewBox: "0 0 76 65",
-            fill: "hsl(var(--background)/1)",
-            xmlns: "http://www.w3.org/2000/svg",
-            children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("path", { d: "M37.5274 0L75.0548 65H0L37.5274 0Z", fill: "inherit" })
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "Deploy to Vercel" })
-      ] })
-    }
-  ) });
-}
-const badgeVariants = cva(
-  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-  {
-    variants: {
-      variant: {
-        default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
-        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground"
-      }
-    },
-    defaultVariants: {
-      variant: "default"
-    }
-  }
-);
-function Badge({ className, variant, ...props }) {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: cn(badgeVariants({ variant }), className), ...props });
-}
-const LogoutButton = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'LogoutButton' is called on server");
-}, "a9027afaa0f7", "LogoutButton");
-async function AuthButton() {
-  const claims = await getServerSessionClaims();
-  return claims ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-4", children: [
-    "Hey, ",
-    claims.username,
-    "!",
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(LogoutButton, {})
-  ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex gap-2", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, size: "sm", variant: "outline", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/auth/login", children: "Sign in" }) }) });
-}
-const ThemeSwitcher = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'ThemeSwitcher' is called on server");
-}, "88655b0528e0", "ThemeSwitcher");
-function ProtectedLayout({
-  children
-}) {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("main", { className: "min-h-screen flex flex-col items-center", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex-1 w-full flex flex-col gap-20 items-center", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("nav", { className: "w-full flex justify-center border-b border-b-foreground/10 h-16", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex gap-5 items-center font-semibold", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/", children: "Next.js Supabase Starter" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(DeployButton, {}) })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AuthButton, {})
-    ] }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex-1 flex flex-col gap-20 max-w-5xl p-5", children }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("footer", { className: "w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        "Powered by",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs",
-            target: "_blank",
-            className: "font-bold hover:underline",
-            rel: "noreferrer",
-            children: "Supabase"
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ThemeSwitcher, {})
-    ] })
-  ] }) });
-}
-const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: ProtectedLayout
-}, Symbol.toStringTag, { value: "Module" }));
-function clampPercentage$1(value) {
-  if (Number.isNaN(value)) return 0;
-  return Math.max(0, Math.min(100, Math.round(value)));
-}
-function getLessonStatus(lesson) {
-  if (lesson.totalPhases > 0 && lesson.completedPhases >= lesson.totalPhases) {
-    return "completed";
-  }
-  if (lesson.completedPhases > 0 || lesson.progressPercentage > 0) {
-    return "in_progress";
-  }
-  return "not_started";
-}
-function toLessonAction(lesson) {
-  const status = getLessonStatus(lesson);
-  if (status === "completed") {
-    return null;
-  }
-  return {
-    ...lesson,
-    status,
-    actionLabel: status === "in_progress" ? "Resume Lesson" : "Start Lesson"
-  };
-}
-function getUnitStatus(lessons2, completedLessons, nextLesson) {
-  if (lessons2.length > 0 && completedLessons === lessons2.length) {
-    return "completed";
-  }
-  if (nextLesson && nextLesson.status === "in_progress") {
-    return "in_progress";
-  }
-  if (completedLessons > 0) {
-    return "in_progress";
-  }
-  return "not_started";
-}
-function buildStudentDashboardViewModel(units) {
-  let completedPhases = 0;
-  let totalPhases = 0;
-  let completedLessons = 0;
-  let inProgressLessons = 0;
-  const unitViews = units.map((unit) => {
-    const lessons2 = [...unit.lessons];
-    for (const lesson of lessons2) {
-      completedPhases += lesson.completedPhases;
-      totalPhases += lesson.totalPhases;
-      const status = getLessonStatus(lesson);
-      if (status === "completed") completedLessons += 1;
-      if (status === "in_progress") inProgressLessons += 1;
-    }
-    const nextLesson2 = lessons2.map(toLessonAction).find((lesson) => lesson?.status === "in_progress") ?? lessons2.map(toLessonAction).find((lesson) => lesson?.status === "not_started") ?? null;
-    const unitCompletedLessons = lessons2.filter((lesson) => getLessonStatus(lesson) === "completed").length;
-    const unitCompletedPhases = lessons2.reduce(
-      (sum, lesson) => sum + lesson.completedPhases,
-      0
-    );
-    const unitTotalPhases = lessons2.reduce(
-      (sum, lesson) => sum + lesson.totalPhases,
-      0
-    );
-    const unitProgress = unitTotalPhases === 0 ? 0 : clampPercentage$1(unitCompletedPhases / unitTotalPhases * 100);
-    return {
-      ...unit,
-      lessons: lessons2,
-      completedLessons: unitCompletedLessons,
-      progressPercentage: unitProgress,
-      status: getUnitStatus(lessons2, unitCompletedLessons, nextLesson2),
-      nextLesson: nextLesson2
-    };
-  });
-  const nextLesson = unitViews.map((unit) => unit.nextLesson).find((lesson) => lesson?.status === "in_progress") ?? unitViews.map((unit) => unit.nextLesson).find((lesson) => lesson?.status === "not_started") ?? null;
-  return {
-    summary: {
-      totalUnits: unitViews.length,
-      completedUnits: unitViews.filter((unit) => unit.status === "completed").length,
-      totalLessons: unitViews.reduce((sum, unit) => sum + unit.lessons.length, 0),
-      completedLessons,
-      inProgressLessons,
-      progressPercentage: totalPhases === 0 ? 0 : clampPercentage$1(completedPhases / totalPhases * 100)
-    },
-    nextLesson,
-    units: unitViews
-  };
-}
-function dashboardStatusBadgeClassName(status) {
-  if (status === "completed") {
-    return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  }
-  if (status === "in_progress") {
-    return "border-sky-200 bg-sky-50 text-sky-700";
-  }
-  return "border-amber-200 bg-amber-50 text-amber-700";
-}
-function dashboardStatusLabel(status) {
-  if (status === "completed") return "Completed";
-  if (status === "in_progress") return "In Progress";
-  return "Not Started";
-}
-function studentDashboardPath() {
-  return "/student/dashboard";
-}
-function studentLessonPath(slug) {
-  return `/student/lesson/${slug}`;
-}
 function Progress({ value = 0, className, ...props }) {
   const clampedValue = Math.max(0, Math.min(100, value));
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
@@ -22636,10 +33385,7 @@ function NextLessonCard({
     ] }),
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-4", children: lesson ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-xl border border-border/60 bg-background/80 p-4", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
-          "Unit ",
-          lesson.unitNumber
-        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: formatCurriculumSegmentLabel(lesson.unitNumber) }),
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-1 font-semibold text-foreground", children: lesson.title }),
         lesson.description ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-2 text-sm text-muted-foreground", children: lesson.description }) : null
       ] }),
@@ -22650,7 +33396,7 @@ function NextLessonCard({
     ] }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800", children: emptyMessage }) })
   ] });
 }
-const dynamic$2 = "force-dynamic";
+const dynamic$3 = "force-dynamic";
 const metricCards = [
   {
     key: "progress",
@@ -22726,10 +33472,7 @@ async function StudentDashboard() {
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { className: "gap-4 md:flex-row md:items-start md:justify-between", children: [
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-2", children: [
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { variant: "outline", children: [
-              "Unit ",
-              unit.unitNumber
-            ] }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", children: formatCurriculumSegmentLabel(unit.unitNumber) }),
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", className: dashboardStatusBadgeClassName(unit.status), children: dashboardStatusLabel(unit.status) })
           ] }),
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: unit.unitTitle }),
@@ -22799,10 +33542,10 @@ async function StudentDashboard() {
     ] }, unit.unitNumber)) })
   ] }) }) });
 }
-const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: StudentDashboard,
-  dynamic: dynamic$2
+  dynamic: dynamic$3
 }, Symbol.toStringTag, { value: "Module" }));
 const TeacherDashboardContent = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'TeacherDashboardContent' is called on server");
@@ -22836,11 +33579,11 @@ async function TeacherDashboardPage() {
     }
   );
 }
-const mod_45 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_41 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
-const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherDashboardPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22878,7 +33621,7 @@ async function CourseGradebookPage() {
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": "Course overview gradebook", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CourseOverviewGrid, { rows, units }) })
   ] }) });
 }
-const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_27 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CourseGradebookPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -22950,7 +33693,7 @@ function redactSensitiveFields(value) {
   }
   return value;
 }
-const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_28 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET: GET$1
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23000,14 +33743,13 @@ async function GET(request, { params }) {
     );
   }
 }
-const mod_33 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_29 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GET
 }, Symbol.toStringTag, { value: "Module" }));
 const LessonRenderer = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'LessonRenderer' is called on server");
 }, "d2d9302f16e5", "LessonRenderer");
-const apiAny = api;
 const PHASE_TYPE_BY_NUMBER = {
   1: "intro",
   2: "example",
@@ -23016,7 +33758,7 @@ const PHASE_TYPE_BY_NUMBER = {
   5: "assessment",
   6: "reflection"
 };
-function fallbackPhaseTitle(phaseNumber) {
+function fallbackPublishedPhaseTitle(phaseNumber) {
   const labels = {
     1: "Hook",
     2: "Introduction",
@@ -23027,22 +33769,33 @@ function fallbackPhaseTitle(phaseNumber) {
   };
   return labels[phaseNumber] ?? `Phase ${phaseNumber}`;
 }
+function publishedPhaseMetadata(phaseNumber) {
+  return {
+    phaseType: PHASE_TYPE_BY_NUMBER[phaseNumber]
+  };
+}
 function asRecord(value) {
-  if (!value || typeof value !== "object") return null;
+  if (!value || typeof value !== "object") {
+    return null;
+  }
   return value;
 }
 function contentToText(content) {
-  if (typeof content === "string") return content;
+  if (typeof content === "string") {
+    return content;
+  }
   const obj = asRecord(content);
-  if (!obj) return "";
+  if (!obj) {
+    return "";
+  }
   const markdown = obj.markdown;
   const text2 = obj.text;
   const value = typeof markdown === "string" ? markdown : text2;
   return typeof value === "string" ? value : "";
 }
-function toContentBlock(section, fallbackOrder) {
+function toPublishedContentBlock(section, fallbackOrder) {
   const obj = asRecord(section.content);
-  const blockId = section._id || `section-${fallbackOrder}`;
+  const blockId = section.id ?? section._id ?? `section-${fallbackOrder}`;
   if (section.sectionType === "callout") {
     const variantRaw = obj?.variant;
     const variant = variantRaw === "why-this-matters" || variantRaw === "tip" || variantRaw === "warning" || variantRaw === "example" ? variantRaw : "tip";
@@ -23106,6 +33859,37 @@ function toContentBlock(section, fallbackOrder) {
     content: contentToText(section.content) || "Content coming soon."
   };
 }
+function resolveLessonLandingPhase({
+  totalPhases,
+  completedPhaseNumbers
+}) {
+  if (totalPhases <= 1) {
+    return Math.max(totalPhases, 1);
+  }
+  for (let phaseNumber = 1; phaseNumber <= totalPhases; phaseNumber += 1) {
+    if (!completedPhaseNumbers.has(phaseNumber)) {
+      return phaseNumber;
+    }
+  }
+  return totalPhases;
+}
+function buildLessonContinueState(units, currentLessonSlug) {
+  const dashboard = buildStudentDashboardViewModel(units);
+  const nextLesson = dashboard.nextLesson;
+  if (!nextLesson || nextLesson.slug === currentLessonSlug) {
+    return { recommendedLesson: null };
+  }
+  return {
+    recommendedLesson: {
+      unitNumber: nextLesson.unitNumber,
+      title: nextLesson.title,
+      slug: nextLesson.slug,
+      description: nextLesson.description,
+      actionLabel: nextLesson.actionLabel
+    }
+  };
+}
+const apiAny = api;
 function NoPhaseError({ lessonTitle }) {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "max-w-2xl mx-auto bg-red-50 border border-red-200 rounded-lg p-6", children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-2xl font-bold text-red-900 mb-4", children: "Lesson Not Available" }),
@@ -23171,12 +33955,10 @@ async function LessonPage({ params, searchParams }) {
       id: phase._id,
       lessonId: lesson._id,
       phaseNumber: phase.phaseNumber,
-      title: phase.title ?? fallbackPhaseTitle(phase.phaseNumber),
-      contentBlocks: phase.sections.map((s, idx) => toContentBlock(s, idx + 1)),
+      title: phase.title ?? fallbackPublishedPhaseTitle(phase.phaseNumber),
+      contentBlocks: phase.sections.map((s, idx) => toPublishedContentBlock(s, idx + 1)),
       estimatedMinutes: phase.estimatedMinutes,
-      metadata: {
-        phaseType: PHASE_TYPE_BY_NUMBER[phase.phaseNumber]
-      },
+      metadata: publishedPhaseMetadata(phase.phaseNumber),
       createdAt: new Date(phase.createdAt),
       updatedAt: new Date(lesson.updatedAt)
     })
@@ -23189,6 +33971,8 @@ async function LessonPage({ params, searchParams }) {
   }
   const isBypassRole = userProfile?.role === "teacher" || userProfile?.role === "admin";
   const requestedPhaseNumber = phaseParam ? parseInt(phaseParam, 10) : 1;
+  let isLessonComplete = false;
+  let recommendedLesson = null;
   if (isNaN(requestedPhaseNumber) || requestedPhaseNumber < 1 || requestedPhaseNumber > lessonPhases2.length) {
     redirect(`/student/lesson/${lessonSlug}?phase=1`);
   }
@@ -23207,6 +33991,41 @@ async function LessonPage({ params, searchParams }) {
       return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
     }
     if (!phaseParam) {
+      let completedPhaseNumbers = /* @__PURE__ */ new Set();
+      try {
+        const progressResponse = await fetchInternalQuery(internal.student.getLessonProgress, {
+          userId,
+          lessonIdentifier: lesson.slug
+        });
+        completedPhaseNumbers = new Set(
+          (progressResponse?.phases ?? []).filter((phase) => phase.status === "completed").map((phase) => phase.phaseNumber)
+        );
+        const targetPhaseNumber = resolveLessonLandingPhase({
+          totalPhases: lessonPhases2.length,
+          completedPhaseNumbers
+        });
+        isLessonComplete = lessonPhases2.every(
+          (phase) => completedPhaseNumbers.has(phase.phaseNumber)
+        );
+        if (isLessonComplete) {
+          try {
+            const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
+              userId
+            });
+            recommendedLesson = buildLessonContinueState(studentUnits, lesson.slug).recommendedLesson;
+          } catch (dashboardError) {
+            console.error("Error loading dashboard recommendation from Convex:", dashboardError);
+          }
+        }
+        if (targetPhaseNumber !== requestedPhaseNumber) {
+          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        }
+      } catch (progressError) {
+        console.error("Error loading lesson progress from Convex:", progressError);
+        return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(AccessCheckError, { lessonTitle: lesson.title });
+      }
+    }
+    if (phaseParam) {
       try {
         const progressResponse = await fetchInternalQuery(internal.student.getLessonProgress, {
           userId,
@@ -23215,12 +34034,18 @@ async function LessonPage({ params, searchParams }) {
         const completedPhaseNumbers = new Set(
           (progressResponse?.phases ?? []).filter((phase) => phase.status === "completed").map((phase) => phase.phaseNumber)
         );
-        const firstIncompletePhase = lessonPhases2.find(
-          (phase) => !completedPhaseNumbers.has(phase.phaseNumber)
+        isLessonComplete = lessonPhases2.every(
+          (phase) => completedPhaseNumbers.has(phase.phaseNumber)
         );
-        const targetPhaseNumber = firstIncompletePhase?.phaseNumber || 1;
-        if (targetPhaseNumber !== requestedPhaseNumber) {
-          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        if (isLessonComplete) {
+          try {
+            const studentUnits = await fetchInternalQuery(internal.student.getDashboardData, {
+              userId
+            });
+            recommendedLesson = buildLessonContinueState(studentUnits, lesson.slug).recommendedLesson;
+          } catch (dashboardError) {
+            console.error("Error loading dashboard recommendation from Convex:", dashboardError);
+          }
         }
       } catch (progressError) {
         console.error("Error loading lesson progress from Convex:", progressError);
@@ -23265,11 +34090,13 @@ async function LessonPage({ params, searchParams }) {
       lesson,
       phases: lessonPhases2,
       currentPhaseNumber: requestedPhaseNumber,
-      lessonSlug
+      lessonSlug,
+      isLessonComplete,
+      recommendedLesson
     }
   );
 }
-const mod_34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_30 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LessonPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23303,7 +34130,7 @@ function LessonLoading() {
     ] }, i)) })
   ] }) });
 }
-const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_31 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LessonLoading
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23567,10 +34394,7 @@ async function TeacherStudentDetailPage({
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "space-y-4", children: viewModel.unitSummaries.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-lg border border-dashed p-4 text-sm text-muted-foreground", children: "No published unit data is available yet." }) : viewModel.unitSummaries.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-lg border p-4", children: [
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm font-medium text-muted-foreground", children: [
-                "Unit ",
-                unit.unitNumber
-              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm font-medium text-muted-foreground", children: formatCurriculumSegmentLabel(unit.unitNumber) }),
               /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "font-semibold text-foreground", children: unit.unitTitle }),
               /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
                 unit.completedLessons,
@@ -23600,7 +34424,7 @@ async function TeacherStudentDetailPage({
     ] })
   ] }) });
 }
-const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_32 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: TeacherStudentDetailPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -23639,8 +34463,7 @@ async function UnitGradebookPage({ params }) {
         }
       ),
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("h1", { className: "text-2xl font-semibold tracking-tight text-foreground", children: [
-        "Unit ",
-        unitNumber,
+        formatCurriculumSegmentLabel(unitNumber),
         " — Gradebook"
       ] }),
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
@@ -23655,12 +34478,103 @@ async function UnitGradebookPage({ params }) {
         lessons2.some((l) => l.isUnitTest) ? " (including unit test)" : ""
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": `Unit ${unitNumber} gradebook`, children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(GradebookGrid, { rows, lessons: lessons2, unitNumber }) })
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-label": `${formatCurriculumSegmentLabel(unitNumber)} gradebook`, children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(GradebookGrid, { rows, lessons: lessons2, unitNumber }) })
   ] }) });
 }
-const mod_37 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_33 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: UnitGradebookPage
+}, Symbol.toStringTag, { value: "Module" }));
+const TeacherLessonPlanPageContent = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'TeacherLessonPlanPageContent' is called on server");
+}, "39943e3ac7c5", "TeacherLessonPlanPageContent");
+function buildLessonHref(unitNumber, lessonId) {
+  return `/teacher/units/${unitNumber}/lessons/${lessonId}`;
+}
+function buildTeacherLessonMonitoringViewModel(input) {
+  const orderedUnitLessons = [...input.unitLessons].sort(
+    (left, right) => left.orderIndex - right.orderIndex
+  );
+  const selectedLessonIndex = orderedUnitLessons.findIndex(
+    (lesson) => lesson.id === input.lesson.id
+  );
+  const previousLesson = selectedLessonIndex > 0 ? orderedUnitLessons[selectedLessonIndex - 1] : null;
+  const nextLesson = selectedLessonIndex >= 0 && selectedLessonIndex < orderedUnitLessons.length - 1 ? orderedUnitLessons[selectedLessonIndex + 1] : null;
+  const lessonHrefByNumber = Object.fromEntries(
+    orderedUnitLessons.map((lesson) => [
+      lesson.orderIndex,
+      buildLessonHref(input.unitNumber, lesson.id)
+    ])
+  );
+  return {
+    lesson: {
+      id: input.lesson.id,
+      unitNumber: input.lesson.unitNumber,
+      title: input.lesson.title,
+      slug: input.lesson.slug,
+      description: input.lesson.description,
+      learningObjectives: input.lesson.learningObjectives,
+      orderIndex: input.lesson.orderIndex,
+      metadata: input.lesson.metadata,
+      createdAt: new Date(input.lesson.createdAt ?? Date.now()),
+      updatedAt: new Date(input.lesson.updatedAt ?? input.lesson.createdAt ?? Date.now())
+    },
+    phases: [...input.phases].sort((left, right) => left.phaseNumber - right.phaseNumber).map((phase) => ({
+      id: phase.id,
+      lessonId: input.lesson.id,
+      phaseNumber: phase.phaseNumber,
+      title: phase.title?.trim() || fallbackPublishedPhaseTitle(phase.phaseNumber),
+      contentBlocks: phase.sections.map(
+        (section, index2) => toPublishedContentBlock(section, index2 + 1)
+      ),
+      estimatedMinutes: phase.estimatedMinutes,
+      metadata: publishedPhaseMetadata(phase.phaseNumber),
+      createdAt: new Date(input.lesson.createdAt ?? Date.now()),
+      updatedAt: new Date(input.lesson.updatedAt ?? input.lesson.createdAt ?? Date.now())
+    })),
+    lessonNumber: input.lesson.orderIndex,
+    availableLessons: orderedUnitLessons.map((lesson) => ({
+      number: lesson.orderIndex,
+      title: lesson.title
+    })),
+    lessonHrefByNumber,
+    backHref: `/teacher/units/${input.unitNumber}`,
+    previousLessonHref: previousLesson ? buildLessonHref(input.unitNumber, previousLesson.id) : null,
+    nextLessonHref: nextLesson ? buildLessonHref(input.unitNumber, nextLesson.id) : null,
+    empty: input.phases.length === 0
+  };
+}
+async function TeacherLessonPage({
+  params
+}) {
+  const { unitNumber: unitNumberParam, lessonId } = await params;
+  const unitNumber = Number.parseInt(unitNumberParam, 10);
+  if (Number.isNaN(unitNumber) || unitNumber < 1) {
+    notFound();
+  }
+  const claims = await requireTeacherSessionClaims(
+    `/teacher/units/${unitNumber}/lessons/${lessonId}`
+  );
+  const result = await fetchInternalQuery(
+    internal.teacher.getTeacherLessonMonitoringData,
+    {
+      userId: claims.sub,
+      unitNumber,
+      lessonId
+    }
+  );
+  if (!result || result.status === "unauthorized") {
+    redirect("/teacher");
+  }
+  if (result.status === "not_found") {
+    notFound();
+  }
+  const viewModel = buildTeacherLessonMonitoringViewModel(result);
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(TeacherLessonPlanPageContent, { ...viewModel });
+}
+const mod_34 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: TeacherLessonPage
 }, Symbol.toStringTag, { value: "Module" }));
 function AcknowledgmentsPage() {
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-slate-50 to-blue-50", children: [
@@ -23713,7 +34627,7 @@ function AcknowledgmentsPage() {
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "About the Platform" }) }),
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "This digital textbook platform was developed to provide an engaging, interactive learning experience for business mathematics and accounting. The platform features interactive exercises, real-time feedback, and progress tracking to support student success." }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Version 2.0 represents a complete rewrite using modern web technologies including Next.js, Supabase, and React, with enhanced accessibility features and improved performance." })
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Version 2.0 represents a complete rewrite using modern web technologies including Vinext, Convex, and React, with enhanced accessibility features and improved performance." })
         ] })
       ] }) }),
       /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-3 text-center", children: [
@@ -23729,281 +34643,183 @@ function AcknowledgmentsPage() {
     ] })
   ] });
 }
-const mod_38 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_35 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: AcknowledgmentsPage
 }, Symbol.toStringTag, { value: "Module" }));
-const unitStrands = [
-  {
-    unit: "Unit 1",
-    title: "Balance by Design",
-    accountingFocus: "Accounting equation, account types",
-    excelFocus: "Excel tables, SUMIF, conditional formatting",
-    deliverable: "Self-auditing ledger + mini balance sheet"
-  },
-  {
-    unit: "Unit 2",
-    title: "Flow of Transactions",
-    accountingFocus: "Debit/Credit logic, T-accounts",
-    excelFocus: "IF, SWITCH, SUMIFS, conditional formats",
-    deliverable: "Transaction workbook + income statement check"
-  },
-  {
-    unit: "Unit 3",
-    title: "Statements in Balance",
-    accountingFocus: "Income + balance sheet integration",
-    excelFocus: "Named ranges, XLOOKUP, INDEX/MATCH",
-    deliverable: "Two-statement model + operating cash summary"
-  },
-  {
-    unit: "Unit 4",
-    title: "Payroll in Motion",
-    accountingFocus: "Gross-to-net payroll & compliance",
-    excelFocus: "XLOOKUP, rounding, formatting standards",
-    deliverable: "Payroll register + pay stub analysis"
-  },
-  {
-    unit: "Unit 5",
-    title: "Assets That Age",
-    accountingFocus: "Depreciation schedules, accumulated depreciation",
-    excelFocus: "SLN, DDB, linked schedules",
-    deliverable: "Depreciation schedule + financial updates"
-  },
-  {
-    unit: "Unit 6",
-    title: "Inventory & Project Costing",
-    accountingFocus: "FIFO/LIFO, WIP costing, turnover KPIs",
-    excelFocus: "INDEX/MATCH, dynamic arrays, sparklines",
-    deliverable: "Inventory + project cost dashboard"
-  },
-  {
-    unit: "Unit 7",
-    title: "Financing the Future",
-    accountingFocus: "Loans, member equity, financing options",
-    excelFocus: "PMT, IPMT, CHOOSE, Goal Seek",
-    deliverable: "Loan amortization + financing model"
-  },
-  {
-    unit: "Unit 8",
-    title: "Integrated Model Sprint",
-    accountingFocus: "3-statement integration & scenarios",
-    excelFocus: "Data tables, dashboards, KPI design",
-    deliverable: "Integrated dashboard with linked financials"
-  },
-  {
-    unit: "Capstone",
-    title: "Investor-Ready Plan",
-    accountingFocus: "Synthesize all reports into one model",
-    excelFocus: "Story-driven dashboard + linked workbook",
-    deliverable: "Business plan, model-tour, and pitch"
-  }
-];
-const drivingQuestions = [
-  {
-    unit: "Unit 1",
-    question: "How can we design a self-auditing ledger that proves our books are investor-ready?",
-    audience: "PTA panel & local mentors"
-  },
-  {
-    unit: "Unit 2",
-    question: "How do business transactions tell the story of profit and loss?",
-    audience: "Peer review teams"
-  },
-  {
-    unit: "Unit 3",
-    question: "How do our reports prove financial stability to lenders or investors?",
-    audience: "Mock bank loan officers"
-  },
-  {
-    unit: "Unit 4",
-    question: "How can a small business pay employees accurately and on time?",
-    audience: "School HR or finance staff"
-  },
-  {
-    unit: "Unit 5",
-    question: "How do we measure and manage the aging of our assets?",
-    audience: "Accountant mentor feedback"
-  },
-  {
-    unit: "Unit 6",
-    question: "How can we manage both inventory and project costs to stay profitable?",
-    audience: "Retail managers & client panels"
-  },
-  {
-    unit: "Unit 7",
-    question: "How can financing decisions shape a company’s growth and risk?",
-    audience: "Lender & advisor panel"
-  },
-  {
-    unit: "Unit 8",
-    question: "How can we integrate every report to forecast our business’s future?",
-    audience: "Entrepreneurs & investors"
-  },
-  {
-    unit: "Capstone",
-    question: "Can we convince an investor our business model is fundable and sustainable?",
-    audience: "Live Demo Day judges"
-  }
-];
-const weekByWeekMilestones = [
-  { week: "1", focus: "Concept proposal & team roles with Sarah’s TechStart scenario." },
-  { week: "2", focus: "Market research sprint + early public product summary." },
-  { week: "3", focus: "Revenue logic and unit economics (Goal Seek practice)." },
-  { week: "4", focus: "Start-up budget linking CapEx/OpEx to cash flow." },
-  { week: "5", focus: "Funding strategy—equity vs. debt with amortization links." },
-  { week: "6", focus: "Pricing + CVP dashboard with data tables." },
-  { week: "7", focus: "Payroll plan with wage bands and compliance checks." },
-  { week: "8", focus: "Inventory & WIP planner with FIFO/LIFO logic." },
-  { week: "9", focus: "Depreciation + asset schedules linked to statements." },
-  { week: "10", focus: "12-month integrated model build + validation scripts." },
-  { week: "11", focus: "Sensitivity analysis + tornado chart storytelling." },
-  { week: "12", focus: "Pitch deck + rehearsal feedback loops." },
-  { week: "13", focus: "Demo Day presentation, model tour, final reflection." }
-];
-const sarahNarrative = [
-  {
-    phase: "Units 1-2",
-    headline: "From notebooks to self-auditing ledgers",
-    detail: "Sarah builds disciplined ledgers that prove TechStart’s early operations and gives students a concrete protagonist for balance mechanics."
-  },
-  {
-    phase: "Units 3-4",
-    headline: "Meeting lender requirements",
-    detail: "Loan officers demand clean statements and payroll discipline, so students see why accurate reporting + compliance keep growth on track."
-  },
-  {
-    phase: "Units 5-6",
-    headline: "Scaling operations & projects",
-    detail: "Sarah invests in equipment and client projects, forcing the class to manage depreciation, inventory, and WIP profitability like analysts."
-  },
-  {
-    phase: "Units 7-8",
-    headline: "Capital decisions & investor prep",
-    detail: "Debt vs. equity tradeoffs culminate in an integrated dashboard that sets the stage for the capstone pitch."
-  }
-];
+const dynamic$2 = "force-dynamic";
+function getConvexClient$1() {
+  return new ConvexHttpClient(getConvexUrl());
+}
+function buildNarrativeArcs(units) {
+  const phases = [
+    { range: [1, 2], label: "Units 1-2" },
+    { range: [3, 4], label: "Units 3-4" },
+    { range: [5, 6], label: "Units 5-6" },
+    { range: [7, 8], label: "Units 7-8" }
+  ];
+  return phases.map((phase) => {
+    const phaseUnits = units.filter(
+      (u) => u.unitNumber >= phase.range[0] && u.unitNumber <= phase.range[1]
+    );
+    if (phaseUnits.length === 0) return null;
+    const scenarios = phaseUnits.map((u) => u.scenario).filter(Boolean).join(" ");
+    return {
+      phase: phase.label,
+      headline: phaseUnits.map((u) => u.title).join(" & "),
+      detail: scenarios || "See unit details for the full scenario."
+    };
+  }).filter(Boolean);
+}
 function SectionHeader({ label, title, description }) {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-2", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "outline", className: "text-xs tracking-wide uppercase", children: label }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold text-foreground", children: title }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto text-sm md:text-base", children: description })
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-3", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label", children: label }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-foreground", children: title }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto text-sm md:text-base font-body", children: description })
   ] });
 }
-function CapstonePage() {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("main", { className: "flex-1 bg-gradient-to-br from-slate-50 via-white to-blue-50", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("header", { className: "border-b border-border/40 bg-white/80 backdrop-blur", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-6xl px-4 py-12 text-center space-y-4", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "mx-auto w-fit bg-primary/10 text-primary", children: "Capstone Overview" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-4xl md:text-5xl font-bold text-foreground", children: "Investor-Ready Capstone Project" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto", children: "13 weeks of authentic business modeling where every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch." }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
-        "Need specifics? Review the ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "underline", href: "/capstone/guidelines", children: "Capstone Guidelines" }),
-        " and ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "underline", href: "/capstone/rubrics", children: "Rubrics" }),
-        " before Demo Day."
+async function CapstonePage() {
+  const convex = getConvexClient$1();
+  let data = { instructionalUnits: [], capstone: null };
+  try {
+    data = await convex.query(api.public.getCapstonePageData);
+  } catch (err) {
+    console.error("[capstone] Failed to load capstone page data from Convex", err);
+  }
+  const allUnits = [
+    ...data.instructionalUnits,
+    ...data.capstone ? [data.capstone] : []
+  ];
+  const drivingQuestions = allUnits.filter((u) => u.drivingQuestion).map((u) => ({
+    label: u.unitNumber <= 8 ? `Unit ${u.unitNumber}` : "Capstone",
+    question: u.drivingQuestion,
+    audience: u.audience
+  }));
+  const narrativeArcs = buildNarrativeArcs(data.instructionalUnits);
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("main", { className: "flex-1 bg-background", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("header", { className: "hero-gradient relative overflow-hidden border-b border-white/[0.08]", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto max-w-6xl px-4 py-14 text-center space-y-4", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label section-label-light", children: "Capstone Overview" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "font-display text-4xl md:text-5xl font-bold text-white mt-4", children: data.capstone?.title ?? "Investor-Ready Capstone Project" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg md:text-xl text-white/75 font-body max-w-4xl mx-auto", children: data.capstone?.deliverable ? `${data.capstone.deliverable} — every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.` : "13 weeks of authentic business modeling where every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-white/70 font-body", children: [
+          "Need specifics? Review the ",
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "underline text-white/70 hover:text-white transition-colors", href: "/capstone/guidelines", children: "Capstone Guidelines" }),
+          " and ",
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { className: "underline text-white/70 hover:text-white transition-colors", href: "/capstone/rubrics", children: "Rubrics" }),
+          " before Demo Day."
+        ] })
       ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "py-12 bg-muted/20 ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-6xl px-4 space-y-6 font-body", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        SectionHeader,
+        {
+          label: "Curriculum Bridge",
+          title: "How each unit feeds the capstone",
+          description: "Unit deliverables become the subsystems of the integrated model. Students see the throughline from ledger discipline to investor storytelling."
+        }
+      ),
+      allUnits.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-center text-muted-foreground font-body border rounded-xl p-12 bg-card", children: "Curriculum data isn't available yet. Please publish lessons to populate this page." }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2", children: allUnits.map((unit) => {
+        const label = unit.unitNumber <= 8 ? `Unit ${unit.unitNumber}` : "Capstone";
+        const watermark = unit.unitNumber <= 8 ? String(unit.unitNumber) : "★";
+        return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "card-workbook p-5 relative overflow-hidden", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            "span",
+            {
+              className: "absolute -right-1 -top-2 font-display font-bold leading-none select-none pointer-events-none",
+              style: { fontSize: "4rem", color: "oklch(var(--primary) / 0.05)" },
+              "aria-hidden": "true",
+              children: watermark
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between text-sm text-muted-foreground mb-2", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-mono-num text-xs tracking-wider uppercase", children: label }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label", children: unit.title })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-lg font-semibold text-foreground mb-1", children: unit.deliverable ?? unit.title }),
+          unit.accountingFocus && /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground mb-2", children: [
+            "Accounting: ",
+            unit.accountingFocus
+          ] }),
+          unit.excelFocus && /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-semibold text-foreground", children: "Excel: " }),
+            unit.excelFocus
+          ] })
+        ] }, unit.unitNumber);
+      }) })
     ] }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-6xl px-4 py-12 space-y-12", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          SectionHeader,
-          {
-            label: "Curriculum Bridge",
-            title: "How each unit feeds the capstone",
-            description: "Unit deliverables become the subsystems of the integrated model. Students see the throughline from ledger discipline to investor storytelling."
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2", children: unitStrands.map((strand) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "shadow-sm", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-between text-sm text-muted-foreground", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: strand.unit }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { variant: "secondary", children: strand.title })
-            ] }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-xl", children: strand.deliverable }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardDescription, { children: [
-              "Accounting: ",
-              strand.accountingFocus
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "text-sm text-muted-foreground space-y-2", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-semibold text-foreground", children: "Excel Focus: " }),
-            strand.excelFocus
-          ] }) })
-        ] }, strand.unit)) })
+    drivingQuestions.length > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "py-12 bg-background", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-6xl px-4 space-y-6 font-body", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        SectionHeader,
+        {
+          label: "Public Products",
+          title: "Driving questions & authentic audiences",
+          description: "Keep the PBL energy alive by reminding students who they are building for every time a deliverable ships."
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2", children: drivingQuestions.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "card-workbook p-5", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "font-mono-num text-xs tracking-wider uppercase text-muted-foreground mb-1", children: item.label }),
+        item.audience && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs text-primary font-medium font-body mb-2", children: item.audience }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-foreground font-body italic leading-relaxed", children: [
+          "“",
+          item.question,
+          "”"
+        ] })
+      ] }, item.label)) })
+    ] }) }),
+    narrativeArcs.length > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "py-12 bg-muted/20 ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto max-w-6xl px-4 space-y-6 font-body", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        SectionHeader,
+        {
+          label: "Narrative",
+          title: "Sarah Chen’s TechStart arc",
+          description: "Use Sarah’s story to keep the “why” front-and-center — students step into her decision-making to justify every spreadsheet."
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2", children: narrativeArcs.map((moment) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+        "div",
+        {
+          className: "rounded-lg p-5",
+          style: { background: "oklch(var(--primary) / 0.05)", border: "1px solid oklch(var(--primary) / 0.12)" },
+          children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "font-mono-num text-xs tracking-wider uppercase text-primary/70 mb-1", children: moment.phase }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-base font-semibold text-foreground mb-2", children: moment.headline }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground font-body leading-relaxed", children: moment.detail })
+          ]
+        },
+        moment.phase
+      )) })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "py-12 bg-background", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto max-w-6xl px-4 font-body", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "card-statement rounded-lg overflow-hidden max-w-2xl mx-auto", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "excel-header px-6 py-3", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-base font-semibold text-primary", children: "Quality standards for submission" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs text-muted-foreground", children: "Simple guardrails that keep every workbook investor-ready." })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          SectionHeader,
-          {
-            label: "Timeline",
-            title: "13-week investor sprint",
-            description: "Weekly milestones blend accounting, Excel fluency, and Sarah Chen’s TechStart narrative so teams never lose the storyline."
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2 lg:grid-cols-3", children: weekByWeekMilestones.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base", children: [
-            "Week ",
-            item.week
-          ] }) }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "text-sm text-muted-foreground", children: item.focus })
-        ] }, item.week)) })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          SectionHeader,
-          {
-            label: "Public Products",
-            title: "Driving questions & authentic audiences",
-            description: "Keep the PBL energy alive by reminding students who they are building for every time a deliverable ships."
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2", children: drivingQuestions.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-base", children: item.unit }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: item.audience })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "text-sm text-muted-foreground", children: item.question })
-        ] }, item.unit)) })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          SectionHeader,
-          {
-            label: "Narrative",
-            title: "Sarah Chen’s TechStart arc",
-            description: "Use Sarah’s story to keep the “why” front-and-center—students step into her decision-making to justify every spreadsheet."
-          }
-        ),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-4 md:grid-cols-2", children: sarahNarrative.map((moment) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "bg-primary/5", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-base", children: moment.phase }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: moment.headline })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { className: "text-sm text-muted-foreground", children: moment.detail })
-        ] }, moment.phase)) })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "Quality standards for submission" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Simple guardrails that keep every workbook investor-ready." })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm text-muted-foreground space-y-1", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Linked formulas only—no hard-coded totals or plug values." }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Document data sources and annotate complex logic with concise comments." }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Use validation checks & KPI indicators so issues surface before Demo Day." }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Keep formatting professional: consistent currency, alignment, and label conventions." })
-        ] }) })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "px-6 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm text-muted-foreground space-y-1.5", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Linked formulas only — no hard-coded totals or plug values." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Document data sources and annotate complex logic with concise comments." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Use validation checks & KPI indicators so issues surface before Demo Day." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Keep formatting professional: consistent currency, alignment, and label conventions." })
       ] }) })
-    ] })
+    ] }) }) })
   ] });
 }
-const mod_39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_36 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  default: CapstonePage
+  default: CapstonePage,
+  dynamic: dynamic$2
 }, Symbol.toStringTag, { value: "Module" }));
-const CurriculumUnitCard = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'CurriculumUnitCard' is called on server");
-}, "6d41c11c5f74", "CurriculumUnitCard");
+const Carousel = /* @__PURE__ */ registerClientReference(() => {
+  throw new Error("Unexpectedly client reference export 'Carousel' is called on server");
+}, "005c3b14c95a", "Carousel");
 const dynamic$1 = "force-dynamic";
 async function CurriculumPage() {
   const convex = new ConvexHttpClient(getConvexUrl());
@@ -24014,20 +34830,173 @@ async function CurriculumPage() {
   } catch (err) {
     console.error("Error fetching curriculum from Convex", err);
   }
+  const semester1 = units.filter((u) => u.unitNumber >= 1 && u.unitNumber <= 4);
+  const semester2 = units.filter((u) => u.unitNumber >= 5 && u.unitNumber <= 8);
+  const capstone = units.find((u) => u.unitNumber === 9);
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("main", { className: "flex-1", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-20 bg-gradient-to-br from-background via-primary/5 to-accent/5 border-b border-border/40", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 space-y-6 text-center max-w-4xl", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "mx-auto w-fit", variant: "secondary", children: "Public Curriculum Overview" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-4xl md:text-5xl font-semibold tracking-tight text-foreground", children: "Explore the Math for Business Operations Curriculum" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg md:text-xl text-muted-foreground", children: "Every unit blends classroom-ready narratives, authentic financial problems, and spreadsheet modeling. Browse the units and jump into any lesson without signing in." }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4 justify-center", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, size: "lg", className: "shadow-md", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/", children: "Back to home" }) }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Button, { asChild: true, variant: "outline", size: "lg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/auth/login", children: "Teacher login" }) })
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "hero-gradient relative overflow-hidden py-20 md:py-28 border-b border-white/[0.08]", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 text-center max-w-3xl space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label section-label-light", children: "The Curriculum" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("h1", { className: "font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mt-4 leading-tight", children: [
+          "8 units. 1 capstone.",
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { style: { color: "oklch(0.68 0.17 157)" }, children: "Real workbooks you can show off." })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg text-white/70 font-body max-w-xl mx-auto", children: "Every unit ends with a deliverable you built yourself — not a worksheet you filled in." })
       ] })
+    ] }),
+    semester1.length > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-20 bg-background ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 max-w-6xl", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-baseline gap-4 mb-10", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-mono-num text-xs tracking-widest uppercase text-muted-foreground", children: "Semester 1" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-foreground", children: "Build the financial spine" })
+      ] }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "hidden md:grid md:grid-cols-4 gap-5", children: semester1.map((unit, i) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(UnitTeaser, { unit, delay: i * 60 }, unit.unitNumber)) }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "md:hidden", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Carousel, { itemsPerView: 1, gap: "gap-4", className: "max-w-sm mx-auto", children: semester1.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "p-1", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(UnitTeaser, { unit, delay: 0 }) }, unit.unitNumber)) }) })
     ] }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-12 md:py-16 bg-muted/10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4", children: units.length === 0 ? /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-center text-muted-foreground border rounded-xl p-12 bg-background", children: "Curriculum data isn't available yet. Please seed lessons in Convex to populate this page." }) : /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-8 md:grid-cols-2", children: units.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CurriculumUnitCard, { unit }, unit.unitNumber)) }) }) })
+    semester2.length > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "py-16 md:py-20 bg-forest-dark relative overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 max-w-6xl", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-baseline gap-4 mb-10", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-mono-num text-xs tracking-widest uppercase text-white/70", children: "Semester 2" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-white", children: "Run & finance the venture" })
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "hidden md:grid md:grid-cols-4 gap-5", children: semester2.map((unit, i) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(UnitTeaserDark, { unit, delay: i * 60 }, unit.unitNumber)) }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "md:hidden", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Carousel, { itemsPerView: 1, gap: "gap-4", className: "max-w-sm mx-auto", children: semester2.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "p-1", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(UnitTeaserDark, { unit, delay: 0 }) }, unit.unitNumber)) }) })
+      ] })
+    ] }),
+    capstone && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-24 bg-muted/20 ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 max-w-4xl text-center space-y-8", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label", children: "The Finale" }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4", children: capstone.title }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg text-muted-foreground font-body max-w-2xl mx-auto", children: capstone.description }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex justify-center", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+        Link,
+        {
+          href: "/capstone",
+          className: "inline-flex items-center gap-2 h-12 px-8 rounded-md gradient-financial text-white font-body font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+          children: [
+            "See the capstone",
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ArrowRight, { className: "w-4 h-4" })
+          ]
+        }
+      ) })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "py-16 md:py-20 bg-forest-dark relative overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 max-w-3xl text-center space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-3xl md:text-4xl font-bold text-white", children: "Ready to start building?" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-white/70 font-body text-lg", children: "Log in to access lessons, datasets, and your personal workbook progress." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4 justify-center pt-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            Link,
+            {
+              href: "/auth/login",
+              className: "inline-flex items-center justify-center h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
+              style: { color: "oklch(0.22 0.05 157)" },
+              children: "Student or teacher login"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            Link,
+            {
+              href: "/",
+              className: "inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2",
+              style: { borderColor: "oklch(1 0 0 / 0.25)" },
+              children: "Back to home"
+            }
+          )
+        ] })
+      ] })
+    ] })
   ] });
 }
-const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+function UnitTeaser({ unit, delay }) {
+  const deliverable = unit.lessons[0]?.description ?? unit.description;
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+    "div",
+    {
+      className: "card-workbook h-full p-5 relative overflow-hidden group",
+      style: { animationDelay: `${delay}ms` },
+      children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          "span",
+          {
+            className: "absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none",
+            style: { fontSize: "5rem", color: "oklch(var(--primary) / 0.05)" },
+            "aria-hidden": "true",
+            children: unit.unitNumber
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono-num text-[10px] text-muted-foreground mb-2 tracking-widest uppercase", children: [
+          "Unit ",
+          unit.unitNumber
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-3", children: unit.title }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground font-body leading-relaxed mb-4 line-clamp-2", children: deliverable }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-auto flex items-center text-xs text-primary font-medium font-body gap-1 opacity-0 group-hover:opacity-100 transition-opacity", children: [
+          unit.lessons.length,
+          " lessons ",
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ChevronRight, { className: "w-3 h-3" })
+        ] })
+      ]
+    }
+  );
+}
+function UnitTeaserDark({ unit, delay }) {
+  const deliverable = unit.lessons[0]?.description ?? unit.description;
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+    "div",
+    {
+      className: "h-full p-5 rounded-lg relative overflow-hidden group transition-all duration-200 hover:-translate-y-1",
+      style: {
+        background: "oklch(1 0 0 / 0.05)",
+        border: "1px solid oklch(1 0 0 / 0.08)",
+        animationDelay: `${delay}ms`
+      },
+      children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          "span",
+          {
+            className: "absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none",
+            style: { fontSize: "5rem", color: "oklch(1 0 0 / 0.04)" },
+            "aria-hidden": "true",
+            children: unit.unitNumber
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono-num text-[10px] text-white/70 mb-2 tracking-widest uppercase", children: [
+          "Unit ",
+          unit.unitNumber
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-lg font-semibold text-white group-hover:text-[oklch(0.68_0.17_157)] transition-colors leading-snug mb-3", children: unit.title }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-white/70 font-body leading-relaxed mb-4 line-clamp-2", children: deliverable }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "mt-auto flex items-center text-xs font-medium font-body gap-1 opacity-0 group-hover:opacity-100 transition-opacity", style: { color: "oklch(0.68 0.17 157)" }, children: [
+          unit.lessons.length,
+          " lessons ",
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ChevronRight, { className: "w-3 h-3" })
+        ] })
+      ]
+    }
+  );
+}
+const mod_37 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CurriculumPage,
   dynamic: dynamic$1
@@ -24035,44 +35004,20 @@ const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 const ComprehensionCheck = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'ComprehensionCheck' is called on server");
 }, "168423284e2a", "ComprehensionCheck");
-const FillInTheBlank = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'FillInTheBlank' is called on server");
-}, "c6078602b8c5", "FillInTheBlank");
-const ReflectionJournal = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'ReflectionJournal' is called on server");
-}, "736cb4bd7ef3", "ReflectionJournal");
 const CashFlowChallenge = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'CashFlowChallenge' is called on server");
 }, "0dd7285711dc", "CashFlowChallenge");
 const dynamic = "force-dynamic";
-const DEFAULT_UNIT_SUMMARIES = [
-  { unitNumber: 1, title: "Balance by Design", summary: "Build accounting equation fluency and set up clean ledger structures." },
-  { unitNumber: 2, title: "Flow of Transactions", summary: "Track transaction lifecycles from source documents to journal entries." },
-  { unitNumber: 3, title: "Statements in Balance", summary: "Assemble income statement, balance sheet, and cash flow connections." },
-  { unitNumber: 4, title: "Payroll in Motion", summary: "Model payroll processing, compliance checks, and employer obligations." },
-  { unitNumber: 5, title: "Assets That Age", summary: "Apply depreciation methods and interpret fixed-asset reporting impacts." },
-  { unitNumber: 6, title: "Inventory & Project Costing", summary: "Manage inventory valuation and project-level costing decisions." },
-  { unitNumber: 7, title: "Financing the Future", summary: "Compare funding structures and map repayment scenarios in Excel." },
-  { unitNumber: 8, title: "Integrated Model Sprint", summary: "Link assumptions to 3-statement forecasts and stress-test decisions." }
-];
-const lessonPhases = [
-  { n: 1, name: "Hook", icon: "▶" },
-  { n: 2, name: "Introduction", icon: "📘" },
-  { n: 3, name: "Guided Practice", icon: "👥" },
-  { n: 4, name: "Independent Practice", icon: "🎯" },
-  { n: 5, name: "Assessment", icon: "✅" },
-  { n: 6, name: "Closing", icon: "💡" }
-];
 const staticTimestamp = () => /* @__PURE__ */ new Date("2024-01-01T00:00:00.000Z");
 const introQuizActivity = {
   id: "preface-intro-quiz",
   componentKey: "comprehension-quiz",
-  displayName: "Preface: Getting Started Quiz",
-  description: "Check your understanding of the course structure and capstone.",
+  displayName: "Quick Course Quiz",
+  description: "See if you already know how this course works.",
   standardId: null,
   props: {
-    title: "Getting Started Quiz",
-    description: "Check your understanding of the course structure and capstone.",
+    title: "Quick Course Quiz",
+    description: "See if you already know how this course works.",
     allowRetry: true,
     showExplanations: true,
     questions: [
@@ -24116,78 +35061,8 @@ const introQuizActivity = {
   createdAt: staticTimestamp(),
   updatedAt: staticTimestamp()
 };
-const vocabWarmupActivity = {
-  id: "preface-vocab-warmup",
-  componentKey: "fill-in-the-blank",
-  displayName: "Business Math Vocabulary Warm-Up",
-  standardId: null,
-  description: "Fill the blanks to preview key ideas we'll use often.",
-  props: {
-    title: "Business Math Vocabulary Warm-Up",
-    description: "Fill the blanks to preview key ideas we'll use often.",
-    showHints: true,
-    showWordList: true,
-    randomizeWordOrder: true,
-    sentences: [
-      {
-        id: "s1",
-        text: "Assets = {blank} + Equity",
-        answer: "Liabilities",
-        hint: "Money the business owes"
-      },
-      {
-        id: "s2",
-        text: "A CVP model studies Cost-Volume-{blank}.",
-        answer: "Profit",
-        hint: "The “P” in CVP"
-      },
-      {
-        id: "s3",
-        text: "Excel's {blank} Manager lets you compare best, base, and worst cases.",
-        answer: "Scenario",
-        hint: "Used for what-if analysis"
-      }
-    ]
-  },
-  gradingConfig: null,
-  createdAt: staticTimestamp(),
-  updatedAt: staticTimestamp()
-};
-const reflectionJournalActivity = {
-  id: "preface-reflection",
-  componentKey: "reflection-journal",
-  displayName: "Quick Reflection",
-  standardId: null,
-  description: "Set goals for the semester using the CAP framework.",
-  props: {
-    unitTitle: "My Starting Goals",
-    prompts: [
-      {
-        id: "courage-1",
-        category: "courage",
-        prompt: "What was the most challenging part of this unit that required you to step outside your comfort zone?",
-        placeholder: "Describe a specific moment when you had to take a risk or try something new..."
-      },
-      {
-        id: "adaptability-1",
-        category: "adaptability",
-        prompt: "How did you adjust your approach when you encountered unexpected problems or feedback?",
-        placeholder: "Think about times when you had to change your strategy or method..."
-      },
-      {
-        id: "persistence-1",
-        category: "persistence",
-        prompt: "Describe a time when you wanted to give up but kept working. What motivated you to continue?",
-        placeholder: "Reflect on your perseverance and what helped you push through..."
-      }
-    ]
-  },
-  gradingConfig: null,
-  createdAt: staticTimestamp(),
-  updatedAt: staticTimestamp()
-};
 const cashFlowChallengeActivity = {
-  title: "60-Second Simulation",
+  title: "60-Second Cash Flow Challenge",
   description: "Keep your startup cash-positive for a month.",
   incomingFlows: [
     { id: "incoming-0", description: "Customer Payment A", amount: 15e3, daysLeft: 5, type: "incoming", canModify: true },
@@ -24212,490 +35087,179 @@ const cashFlowChallengeActivity = {
     gameStatus: "playing"
   }
 };
-async function PrefacePage() {
-  const convex = new ConvexHttpClient(getConvexUrl());
-  let units = [];
-  try {
-    const fetchedUnits = await convex.query(api.public.getUnitSummaries);
-    units = fetchedUnits.map((u) => ({
-      unitNumber: u.unitNumber,
-      title: u.title,
-      summary: u.summary
-    }));
-  } catch (err) {
-    console.error("Error fetching unit summaries from Convex", err);
+const lessonPhases = [
+  { name: "Hook", desc: "A scenario that pulls you in" },
+  { name: "Instruction", desc: "Plain-language teaching" },
+  { name: "Guided Practice", desc: "Build together with feedback" },
+  { name: "Independent Practice", desc: "Prove it on your own" },
+  { name: "Assessment", desc: "Quick checks for understanding" },
+  { name: "Closing", desc: "Reflect and preview next steps" }
+];
+const valuePillars = [
+  {
+    number: "01",
+    headline: "Build real workbooks",
+    detail: "Every unit ends with an Excel artifact you designed, not a worksheet you filled in. Ledgers, dashboards, financial models — all yours."
+  },
+  {
+    number: "02",
+    headline: "Present to real audiences",
+    detail: "Mock loan officers, mentor panels, and Demo Day judges. You learn to explain numbers the way professionals do."
+  },
+  {
+    number: "03",
+    headline: "Finish with a capstone",
+    detail: "An investor-ready business plan, a linked workbook, and a pitch deck. 40% of your grade. One shot to prove it all connects."
   }
-  const displayUnits = units.length > 0 ? units : DEFAULT_UNIT_SUMMARIES;
-  const unitGroups = [
-    {
-      title: "Units 1–3 · Build the Financial Spine",
-      description: "Balance by Design, Flow of Transactions, and Statements in Balance focus on the accounting equation, debit/credit fluency, and publishing clean statements for lenders.",
-      minUnit: 1,
-      maxUnit: 3
-    },
-    {
-      title: "Units 4–6 · Run Real Operations",
-      description: "Payroll in Motion, Assets That Age, and Inventory & Project Costing push students into compliance-grade payroll, depreciation schedules, and inventory/project costing dashboards.",
-      minUnit: 4,
-      maxUnit: 6
-    },
-    {
-      title: "Units 7–8 · Finance & Forecast the Venture",
-      description: "Financing the Future and Integrated Model Sprint layer financing models, loan amortization, and full 3-statement forecasting to prepare for investor scrutiny.",
-      minUnit: 7,
-      maxUnit: 8
-    }
-  ].map((group) => ({
-    ...group,
-    units: displayUnits.filter(
-      (unit) => unit.unitNumber >= group.minUnit && unit.unitNumber <= group.maxUnit
-    )
-  }));
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "min-h-screen bg-gradient-to-br from-slate-50 to-blue-50", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("header", { className: "border-b bg-white/70 backdrop-blur", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4 py-6 max-w-6xl", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-4", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Badge, { className: "bg-blue-100 text-blue-800 text-lg px-4 py-2", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(BookOpen, { className: "inline-block mr-2 h-4 w-4" }),
-        " Preface: Welcome & Syllabus"
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { className: "text-3xl md:text-4xl font-bold", children: "Math for Business Operations: Applied Accounting with Excel" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto", children: "This course turns spreadsheets into decision tools. You will build working Excel models, present to real audiences, and finish with a capstone that shows investor-level thinking." })
-    ] }) }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("main", { className: "container mx-auto px-4 py-10 space-y-10 max-w-6xl", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "space-y-6", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Target, { className: "h-5 w-5" }),
-            " Course Snapshot"
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Your first-day overview at a glance" })
+];
+function PrefacePage() {
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("main", { className: "flex-1 bg-background", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "hero-gradient relative overflow-hidden py-20 md:py-28 border-b border-white/[0.08]", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 text-center max-w-3xl space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label section-label-light", children: "Welcome" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("h1", { className: "font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mt-4 leading-tight", children: [
+          "Spreadsheets become",
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { style: { color: "oklch(0.68 0.17 157)" }, children: "decision tools." })
         ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "grid md:grid-cols-3 gap-6", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-semibold mb-2", children: "What you’ll learn" }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Core accounting (ledger → statements → KPIs)" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Excel automation (tables, SUMIF/SUMIFS, Goal Seek, data tables, macros)" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Decision skills (pricing, forecasting, cash flow)" })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-semibold mb-2", children: "How the class runs" }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Six-phase lessons with frequent checks for understanding" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Team projects with public-facing demos" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Realistic datasets and authentic scenarios" })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-semibold mb-2", children: "How you’re graded" }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Formative: 60% (benchmarks, peer reviews, weekly reflections)" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Summative: 40% (capstone workbook, pitch, model-tour video)" })
-            ] })
-          ] })
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg text-white/70 font-body max-w-xl mx-auto", children: "Math for Business Operations is applied accounting with Excel. You build working models, present to real audiences, and finish with a capstone that shows investor-level thinking." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4 justify-center pt-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+            Link,
+            {
+              href: "/curriculum",
+              className: "inline-flex items-center justify-center gap-2 h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
+              style: { color: "oklch(0.22 0.05 157)" },
+              children: [
+                "See the curriculum",
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ArrowRight, { className: "w-4 h-4" })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            Link,
+            {
+              href: "/auth/login",
+              className: "inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2",
+              style: { borderColor: "oklch(1 0 0 / 0.25)" },
+              children: "Student or teacher login"
+            }
+          )
         ] })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "bg-blue-100 text-blue-800", children: "Lesson Flow" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold", children: "Our Six-Phase Structure" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto", children: "Each lesson follows a clear rhythm so you always know what’s next. You’ll read short explanations, try a focused task, check your understanding, and reflect on what you learned." })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid md:grid-cols-3 gap-4", children: lessonPhases.map((phase) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: phase.icon }),
-            "Phase ",
-            phase.n,
-            ": ",
-            phase.name
-          ] }) }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "text-sm text-muted-foreground", children: [
-            phase.name === "Hook" && "A fast scenario or short video that pulls you into the problem.",
-            phase.name === "Introduction" && "Plain-language teaching with examples that connect to real business.",
-            phase.name === "Guided Practice" && "We build together. You get feedback as you go.",
-            phase.name === "Independent Practice" && "You try it solo to show skill growth and confidence.",
-            phase.name === "Assessment" && "Quick checks for understanding. Fix mistakes while they are small.",
-            phase.name === "Closing" && "Reflect, summarize, and preview what comes next."
-          ] }) })
-        ] }, phase.n)) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-20 bg-background ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 max-w-5xl", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-12", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label", children: "What makes this different" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-foreground mt-4", children: "Not a textbook. A workshop." })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "bg-blue-100 text-blue-800", children: "Course Map" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold", children: "8 Units + Capstone" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto", children: "Semester 1 builds solid accounting and Excel skills. Semester 2 assembles a full startup model and prepares you for the capstone." })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid md:grid-cols-3 gap-8", children: valuePillars.map((pillar) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          "span",
+          {
+            className: "font-display font-bold leading-none select-none block mb-3",
+            style: { fontSize: "2.5rem", color: "oklch(var(--primary) / 0.10)" },
+            "aria-hidden": "true",
+            children: pillar.number
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-lg font-semibold text-foreground mb-2", children: pillar.headline }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground font-body leading-relaxed", children: pillar.detail })
+      ] }, pillar.number)) })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "py-14 bg-forest-dark relative overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 max-w-5xl", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-10", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label section-label-light", children: "Lesson rhythm" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-white mt-4", children: "Six phases, every class" })
         ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid md:grid-cols-2 gap-4", children: unitGroups.filter((group) => group.units.length > 0).map((group) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { className: "text-base", children: group.title }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: group.description })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("ul", { className: "list-disc list-inside text-sm space-y-1", children: group.units.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("strong", { children: [
-              "Unit ",
-              unit.unitNumber,
-              unit.title && unit.title !== `Unit ${unit.unitNumber}` ? `: ${unit.title}` : ""
-            ] }),
-            " ",
-            "- ",
-            unit.summary
-          ] }, unit.unitNumber)) }) })
-        ] }, group.title)) })
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4", children: lessonPhases.map((phase, i) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+          "div",
+          {
+            className: "rounded-lg p-4 text-center",
+            style: {
+              background: "oklch(1 0 0 / 0.05)",
+              border: "1px solid oklch(1 0 0 / 0.08)"
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-mono-num text-[10px] text-white/60 tracking-widest uppercase block mb-2", children: i + 1 }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "font-display text-sm font-semibold text-white mb-1", children: phase.name }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs text-white/70 font-body leading-snug", children: phase.desc })
+            ]
+          },
+          phase.name
+        )) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-20 bg-muted/20 ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 max-w-5xl", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-10", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label", children: "Try it right now" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-foreground mt-4", children: "This is what class feels like" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground font-body mt-2 max-w-lg mx-auto", children: "No login required. Try a quiz and a cash flow simulation from the actual course." })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "bg-blue-100 text-blue-800", children: "Capstone" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold", children: "Second-Semester Capstone: Investor-Ready" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto", children: "Over 13 weeks you will extend your best mini-projects into one investor-ready business plan with a linked Excel workbook. You’ll deliver a 10-slide pitch, a 3-minute model-tour video, and a self-auditing dashboard." })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid lg:grid-cols-2 gap-8 items-start", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ComprehensionCheck, { activity: introQuizActivity }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CashFlowChallenge, { activity: cashFlowChallengeActivity })
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "py-16 md:py-20 bg-forest-dark relative overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
+        {
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 max-w-3xl text-center space-y-6", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-3xl md:text-4xl font-bold text-white", children: "Ready to start building?" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-white/70 font-body text-lg", children: "Log in to access your first unit, or browse the curriculum to see the full sequence." }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4 justify-center pt-2", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            Link,
+            {
+              href: "/auth/login",
+              className: "inline-flex items-center justify-center h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
+              style: { color: "oklch(0.22 0.05 157)" },
+              children: "Student or teacher login"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            Link,
+            {
+              href: "/curriculum",
+              className: "inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2",
+              style: { borderColor: "oklch(1 0 0 / 0.25)" },
+              children: "View the curriculum"
+            }
+          )
         ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CalendarDays, { className: "h-4 w-4" }),
-              " Timeline"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Weeks 1-2: Proposal + research" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Weeks 3-8: Build revenue, budget, payroll, inventory tabs" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Weeks 9-11: Integrate 3 statements + scenarios" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Weeks 12-13: Pitch, model tour, final reflection" })
-            ] }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Users, { className: "h-4 w-4" }),
-              " Deliverables"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Linked Excel model with validation checks" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "10-slide investor pitch (+ Q&A)" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "3-minute model-tour video" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Weekly CAP reflections + peer reviews" })
-            ] }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CircleCheck, { className: "h-4 w-4" }),
-              " How it’s graded"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Model fidelity & automation (10)" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Analytic insight (10)" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Documentation & sourcing (5)" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Pitch quality (10) + peer critique (2)" })
-              ] }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs text-muted-foreground mt-2", children: "See Capstone guidelines and rubrics for full details." }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xs mt-1", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/capstone", className: "underline", children: "Capstone Overview" }) })
-            ] })
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "bg-blue-100 text-blue-800", children: "Try It" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold", children: "How learning feels in this course" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground max-w-3xl mx-auto", children: "A quick taste of our interactive checks and business simulations." })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid lg:grid-cols-2 gap-6 items-start", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-6", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ComprehensionCheck, { activity: introQuizActivity }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(FillInTheBlank, { activity: vocabWarmupActivity })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CashFlowChallenge, { activity: cashFlowChallengeActivity }) })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center space-y-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Badge, { className: "bg-blue-100 text-blue-800", children: "Expectations" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "text-2xl font-semibold", children: "How to succeed here" })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid md:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(School, { className: "h-4 w-4" }),
-              " Daily Habits"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Bring your laptop and keep files organized" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Build every day; small steps add up" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Ask questions early and often" })
-            ] }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Users, { className: "h-4 w-4" }),
-              " Teamwork"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Share roles: modeler, designer, auditor" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Give kind, specific, helpful feedback" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Document sources and formulas" })
-            ] }) })
-          ] }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Lightbulb, { className: "h-4 w-4" }),
-              " Academic Integrity"
-            ] }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ul", { className: "list-disc list-inside text-sm space-y-1", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "No hard-coded totals-formulas must show your reasoning" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Cite data sources; summarize AI help you used" }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("li", { children: "Keep a clear change-log for major edits" })
-            ] }) })
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "space-y-6", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { children: "Quick Reflection" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { children: "Set goals for the semester using the CAP framework." })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ReflectionJournal, { activity: reflectionJournalActivity }) })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "space-y-3 text-center", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground", children: "Ready to start?" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-center gap-3 flex-wrap", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/curriculum", className: "underline", children: "View Curriculum" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/capstone", className: "underline", children: "Preview the Capstone" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "•" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/acknowledgments", className: "underline", children: "Acknowledgments & Author" })
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-center gap-4 pt-4 text-sm text-white/60 font-body", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/capstone", className: "hover:text-white/90 transition-colors", children: "Capstone" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "·" }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/acknowledgments", className: "hover:text-white/90 transition-colors", children: "Acknowledgments" })
         ] })
       ] })
     ] })
   ] });
 }
-const mod_41 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_38 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: PrefacePage,
   dynamic
-}, Symbol.toStringTag, { value: "Module" }));
-const Checkbox = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'Checkbox' is called on server");
-}, "488f67026ba7", "Checkbox");
-function TutorialStep({
-  title,
-  children
-}) {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("li", { className: "relative", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-      Checkbox,
-      {
-        id: title,
-        name: title,
-        className: `absolute top-[3px] mr-2 peer`
-      }
-    ),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
-      "label",
-      {
-        htmlFor: title,
-        className: `relative text-base text-foreground peer-checked:line-through font-medium`,
-        children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "ml-8", children: title }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-            "div",
-            {
-              className: `ml-8 text-sm peer-checked:line-through font-normal text-muted-foreground`,
-              children
-            }
-          )
-        ]
-      }
-    )
-  ] });
-}
-const CodeBlock = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'CodeBlock' is called on server");
-}, "d862648f0678", "CodeBlock");
-const create = `create table notes (
-  id bigserial primary key,
-  title text
-);
-
-insert into notes(title)
-values
-  ('Today I created a Supabase project.'),
-  ('I added some data and queried it from Next.js.'),
-  ('It was awesome!');
-`.trim();
-const rls = `alter table notes enable row level security;
-create policy "Allow public read access" on notes
-for select
-using (true);`.trim();
-const server = `import { createClient } from '@/lib/supabase/server'
-
-export default async function Page() {
-  const supabase = await createClient()
-  const { data: notes } = await supabase.from('notes').select()
-
-  return <pre>{JSON.stringify(notes, null, 2)}</pre>
-}
-`.trim();
-const client = `'use client'
-
-import { createClient } from '@/lib/supabase/client'
-import { useEffect, useState } from 'react'
-
-export default function Page() {
-  const [notes, setNotes] = useState<any[] | null>(null)
-  const supabase = createClient()
-
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await supabase.from('notes').select()
-      setNotes(data)
-    }
-    getData()
-  }, [])
-
-  return <pre>{JSON.stringify(notes, null, 2)}</pre>
-}
-`.trim();
-function FetchDataSteps() {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("ol", { className: "flex flex-col gap-6", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(TutorialStep, { title: "Create some tables and insert some data", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        "Head over to the",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/dashboard/project/_/editor",
-            className: "font-bold hover:underline text-foreground/80",
-            target: "_blank",
-            rel: "noreferrer",
-            children: "Table Editor"
-          }
-        ),
-        " ",
-        "for your Supabase project to create a table and insert some example data. If you're stuck for creativity, you can copy and paste the following into the",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/dashboard/project/_/sql/new",
-            className: "font-bold hover:underline text-foreground/80",
-            target: "_blank",
-            rel: "noreferrer",
-            children: "SQL Editor"
-          }
-        ),
-        " ",
-        "and click RUN!"
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CodeBlock, { code: create })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(TutorialStep, { title: "Enable Row Level Security (RLS)", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        "Supabase enables Row Level Security (RLS) by default. To query data from your ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("code", { children: "notes" }),
-        " table, you need to add a policy. You can do this in the",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/dashboard/project/_/editor",
-            className: "font-bold hover:underline text-foreground/80",
-            target: "_blank",
-            rel: "noreferrer",
-            children: "Table Editor"
-          }
-        ),
-        " ",
-        "or via the",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/dashboard/project/_/sql/new",
-            className: "font-bold hover:underline text-foreground/80",
-            target: "_blank",
-            rel: "noreferrer",
-            children: "SQL Editor"
-          }
-        ),
-        "."
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { children: "For example, you can run the following SQL to allow public read access:" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CodeBlock, { code: rls }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        "You can learn more about RLS in the",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/docs/guides/auth/row-level-security",
-            className: "font-bold hover:underline text-foreground/80",
-            target: "_blank",
-            rel: "noreferrer",
-            children: "Supabase docs"
-          }
-        ),
-        "."
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(TutorialStep, { title: "Query Supabase data from Next.js", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        "To create a Supabase client and query data from an Async Server Component, create a new page.tsx file at",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border", children: "/app/notes/page.tsx" }),
-        " ",
-        "and add the following."
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CodeBlock, { code: server }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { children: "Alternatively, you can use a Client Component." }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CodeBlock, { code: client })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(TutorialStep, { title: "Explore the Supabase UI Library", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { children: [
-        "Head over to the",
-        " ",
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          "a",
-          {
-            href: "https://supabase.com/ui",
-            className: "font-bold hover:underline text-foreground/80",
-            children: "Supabase UI library"
-          }
-        ),
-        " ",
-        "and try installing some blocks. For example, you can install a Realtime Chat block by running:"
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-        CodeBlock,
-        {
-          code: "npx shadcn@latest add https://supabase.com/ui/r/realtime-chat-nextjs.json"
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(TutorialStep, { title: "Build in a weekend and scale to millions!", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { children: "You're ready to launch your product to the world! 🚀" }) })
-  ] });
-}
-async function ProtectedPage() {
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect("/auth/login");
-  }
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex-1 w-full flex flex-col gap-12", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-full", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Info, { size: "16", strokeWidth: 2 }),
-      "This is a protected page that you can only see as an authenticated user"
-    ] }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col gap-2 items-start", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-bold text-2xl mb-4", children: "Your user details" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("pre", { className: "text-xs font-mono p-3 rounded border max-h-32 overflow-auto", children: JSON.stringify(claims, null, 2) })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-bold text-2xl mb-4", children: "Next steps" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(FetchDataSteps, {})
-    ] })
-  ] });
-}
-const mod_42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: ProtectedPage
 }, Symbol.toStringTag, { value: "Module" }));
 const UpdatePasswordForm = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'UpdatePasswordForm' is called on server");
@@ -24767,37 +35331,17 @@ async function SettingsPage() {
     )
   ] }) });
 }
-const mod_43 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_39 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: SettingsPage
 }, Symbol.toStringTag, { value: "Module" }));
 async function StudentIndexPage() {
   redirect(studentDashboardPath());
 }
-const mod_44 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_40 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: StudentIndexPage
 }, Symbol.toStringTag, { value: "Module" }));
-const Input = react_reactServerExports.forwardRef(
-  ({ className, type, ...props }, ref) => {
-    return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-      "input",
-      {
-        type,
-        className: cn(
-          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-          className
-        ),
-        ref,
-        ...props
-      }
-    );
-  }
-);
-Input.displayName = "Input";
-const Carousel = /* @__PURE__ */ registerClientReference(() => {
-  throw new Error("Unexpectedly client reference export 'Carousel' is called on server");
-}, "005c3b14c95a", "Carousel");
 var nestedKeys = /* @__PURE__ */ new Set(["style"]);
 var isNewReact = "use" in React;
 var fixedMap = {
@@ -24980,283 +35524,319 @@ const Image = react_reactServerExports.forwardRef(function Image22({ src: srcPro
   return jsxRuntime_reactServerExports.jsx("img", { ref, src: optimizedSrc, alt, width: fill ? void 0 : imgWidth, height: fill ? void 0 : imgHeight, loading: priority ? "eager" : loading ?? "lazy", fetchPriority: priority ? "high" : void 0, decoding: "async", srcSet, sizes: sizes ?? (fill ? "100vw" : void 0), className, "data-nimg": fill ? "fill" : "1", style: fill ? { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", ...blurStyle, ...style } : { ...blurStyle, ...style }, ...rest });
 });
 function Hero({ stats }) {
-  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-labelledby": "hero-heading", className: "py-16 bg-gradient-to-br from-background via-primary/5 to-accent/5", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "container mx-auto px-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid grid-cols-1 xl:grid-cols-2 gap-12 items-center", children: [
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Calculator, { className: "h-8 w-8 text-primary" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ChartColumn, { className: "h-7 w-7 text-accent" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(TrendingUp, { className: "h-6 w-6 text-green-600" })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h1", { id: "hero-heading", className: "text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground", children: "Math for Business Operations" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xl text-muted-foreground leading-relaxed", children: "Master accounting principles, spreadsheet modeling, and entrepreneurship through hands-on Excel projects and real-world business applications." }),
-      stats && stats.unitCount > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex gap-6 text-sm text-muted-foreground", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-baseline gap-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(BookOpen, { className: "h-4 w-4 text-primary" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { className: "text-foreground", children: stats.unitCount }),
-            " ",
-            "Units"
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-baseline gap-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Calculator, { className: "h-4 w-4 text-accent" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("strong", { className: "text-foreground", children: stats.lessonCount }),
-            " ",
-            "Lessons"
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-baseline gap-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(SquareCheckBig, { className: "h-4 w-4 text-green-600" }),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("span", { children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("strong", { className: "text-foreground", children: [
-              stats.activityCount,
-              "+"
-            ] }),
-            " ",
-            "Activities"
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex justify-start", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-        Button,
-        {
-          asChild: true,
-          size: "lg",
-          className: "gradient-financial text-primary-foreground shadow-lg hover:shadow-xl transition-shadow",
-          children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/curriculum", className: "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded", children: "Browse Units" })
-        }
-      ) })
-    ] }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex justify-center xl:justify-end mt-12 xl:mt-0", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "w-full max-w-sm md:max-w-md relative", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "absolute inset-0 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-lg blur-xl opacity-30" }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-        Image,
-        {
-          src: "/cover.png",
-          alt: "Math for Business Operations textbook cover showing business charts and Excel spreadsheets",
-          width: 400,
-          height: 533,
-          className: "relative w-full h-auto rounded-lg shadow-2xl border border-border/50",
-          priority: true
-        }
-      )
-    ] }) })
-  ] }) }) });
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+    "section",
+    {
+      "aria-labelledby": "hero-heading",
+      className: "relative overflow-hidden hero-gradient",
+      children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          "div",
+          {
+            className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+            "aria-hidden": "true"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "relative container mx-auto px-4 py-20 md:py-28", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid grid-cols-1 xl:grid-cols-2 gap-12 items-center", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "space-y-7 animate-fade-up", children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label section-label-light", children: "Grade 12 · Applied Math" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+              "h1",
+              {
+                id: "hero-heading",
+                className: "font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight",
+                children: [
+                  "Math for Business",
+                  " ",
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { style: { color: "oklch(0.68 0.17 157)" }, children: "Operations" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg text-white/65 font-body leading-relaxed max-w-lg", children: "Master accounting principles, spreadsheet modeling, and entrepreneurship through hands-on Excel projects and real-world business applications." }),
+            stats && stats.unitCount > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "flex flex-wrap gap-3", children: [
+              { label: "Units", value: stats.unitCount, Icon: BookOpen },
+              { label: "Lessons", value: stats.lessonCount, Icon: Calculator },
+              { label: "Activities", value: `${stats.activityCount}+`, Icon: SquareCheckBig }
+            ].map(({ label, value, Icon: Icon2 }) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+              "div",
+              {
+                className: "flex items-center gap-2 rounded-md px-3 py-2 border",
+                style: {
+                  background: "oklch(1 0 0 / 0.07)",
+                  borderColor: "oklch(1 0 0 / 0.12)"
+                },
+                children: [
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                    Icon2,
+                    {
+                      className: "h-4 w-4 shrink-0",
+                      style: { color: "oklch(0.68 0.17 157)" }
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "font-mono-num text-white font-semibold text-sm", children: value }),
+                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-white/45 text-xs font-body", children: label })
+                ]
+              },
+              label
+            )) }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-wrap gap-3 pt-1", children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                Link,
+                {
+                  href: "/curriculum",
+                  className: "inline-flex items-center justify-center h-11 px-6 rounded-md bg-white font-body font-semibold shadow-md hover:bg-white/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2",
+                  style: { color: "oklch(0.22 0.05 157)" },
+                  children: "Browse Units"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                Link,
+                {
+                  href: "/preface",
+                  className: "inline-flex items-center justify-center h-11 px-6 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2",
+                  style: { borderColor: "oklch(1 0 0 / 0.30)" },
+                  children: "Read Preface"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+            "div",
+            {
+              className: "flex justify-center xl:justify-end mt-8 xl:mt-0 animate-fade-up-3",
+              children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative w-full max-w-[320px] md:max-w-[380px]", children: [
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                  "div",
+                  {
+                    className: "absolute -top-7 left-0 right-0 flex font-mono-num text-[10px] text-white/20 pointer-events-none",
+                    "aria-hidden": "true",
+                    children: ["A", "B", "C"].map((col) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                      "div",
+                      {
+                        className: "flex-1 text-center py-1 border border-white/[0.07]",
+                        children: col
+                      },
+                      col
+                    ))
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                  "div",
+                  {
+                    className: "absolute -left-7 top-0 bottom-0 flex flex-col font-mono-num text-[10px] text-white/20 pointer-events-none",
+                    "aria-hidden": "true",
+                    children: ["1", "2", "3", "4", "5"].map((row) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                      "div",
+                      {
+                        className: "flex-1 flex items-center justify-center px-1.5 border border-white/[0.07]",
+                        children: row
+                      },
+                      row
+                    ))
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                  "div",
+                  {
+                    className: "absolute inset-0 rounded-lg pointer-events-none",
+                    style: {
+                      boxShadow: "0 0 60px oklch(0.43 0.14 157 / 0.35)"
+                    },
+                    "aria-hidden": "true"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                  Image,
+                  {
+                    src: "/cover.png",
+                    alt: "Math for Business Operations textbook cover showing business charts and Excel spreadsheets",
+                    width: 400,
+                    height: 533,
+                    className: "relative w-full h-auto rounded-lg shadow-2xl",
+                    style: { border: "1px solid oklch(1 0 0 / 0.15)" },
+                    priority: true
+                  }
+                )
+              ] })
+            }
+          )
+        ] }) })
+      ]
+    }
+  );
 }
 function getConvexClient() {
   return new ConvexHttpClient(getConvexUrl());
 }
-const features = [
+const outcomes = [
   {
-    icon: BookOpen,
-    title: "Interactive Spreadsheets",
-    description: "Work with live Excel-like interfaces directly in your browser."
+    number: "01",
+    headline: "Build real Excel models",
+    detail: "Ledgers, dashboards, financial statements, amortization schedules — every unit produces a workbook you designed from scratch."
   },
   {
-    icon: Calculator,
-    title: "Financial Calculators",
-    description: "Built-in calculators for NPV, loan payments, and more."
+    number: "02",
+    headline: "Present to real audiences",
+    detail: "Mock loan officers, mentor panels, and Demo Day judges. Learn to defend your numbers the way professionals do."
   },
   {
-    icon: SquareCheckBig,
-    title: "Comprehension Checks",
-    description: "Immediate feedback on your understanding after each section."
-  },
-  {
-    icon: Dice6,
-    title: "Dynamic Exercises",
-    description: "Practice with different scenarios and data every time."
-  },
-  {
-    icon: TrendingUp,
-    title: "Progress Tracking",
-    description: "Monitor your learning journey and identify areas to review."
+    number: "03",
+    headline: "Finish with an investor pitch",
+    detail: "The capstone is a linked business plan, a 3-minute model tour, and a pitch deck. One shot to prove it all connects."
   }
 ];
-const getDifficultyColor = (difficulty) => {
-  switch (difficulty) {
-    case "beginner":
-      return "text-green-700 dark:text-green-300 bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/30";
-    case "intermediate":
-      return "text-primary bg-primary/5 border-primary/20 dark:bg-primary/10 dark:border-primary/30";
-    case "advanced":
-      return "text-orange-700 dark:text-orange-300 bg-orange-50/50 dark:bg-orange-950/20 border-orange-200/50 dark:border-orange-800/30";
-    case "expert":
-      return "text-red-700 dark:text-red-300 bg-red-50/50 dark:bg-red-950/20 border-red-200/50 dark:border-red-800/30";
-    default:
-      return "text-muted-foreground bg-muted/30 border-border/30";
-  }
-};
-const formatDifficulty = (difficulty) => {
-  return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-};
 async function Home() {
   const convex = getConvexClient();
-  const [stats, units] = await Promise.all([
+  const [statsFetch, unitsFetch] = await Promise.allSettled([
     convex.query(api.public.getCurriculumStats),
     convex.query(api.public.getUnits)
   ]);
-  const landingUnits = units;
+  if (statsFetch.status === "rejected" || unitsFetch.status === "rejected") {
+    console.error("[home] Failed to load landing data from Convex", {
+      statsError: statsFetch.status === "rejected" ? statsFetch.reason : null,
+      unitsError: unitsFetch.status === "rejected" ? unitsFetch.reason : null
+    });
+  }
+  const statsResult = statsFetch.status === "fulfilled" ? statsFetch.value : null;
+  const unitsResult = unitsFetch.status === "fulfilled" ? unitsFetch.value : [];
+  const stats = statsResult && typeof statsResult === "object" && "unitCount" in statsResult && "lessonCount" in statsResult && "activityCount" in statsResult ? statsResult : null;
+  const landingUnits = Array.isArray(unitsResult) ? unitsResult : [];
   return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Hero, { stats }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-labelledby": "search-heading", className: "py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-8", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { id: "search-heading", className: "text-2xl md:text-3xl font-bold mb-4 text-foreground", children: "Search Course Content" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-lg text-muted-foreground", children: "Find lessons, concepts, formulas, and examples instantly." })
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-20 bg-background ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 max-w-5xl", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-12", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label", children: "Why this course" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-foreground mt-4", children: "Not worksheets. Workbooks." })
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "max-w-2xl mx-auto", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid md:grid-cols-3 gap-8", children: outcomes.map((item) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative", children: [
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-          Input,
+          "span",
           {
-            type: "search",
-            placeholder: "Search for lessons, topics, formulas, or examples...",
-            className: "flex-1 h-12 text-base border-border/50 bg-background/80 focus:bg-background transition-colors"
+            className: "font-display font-bold leading-none select-none block mb-3",
+            style: { fontSize: "2.5rem", color: "oklch(var(--primary) / 0.10)" },
+            "aria-hidden": "true",
+            children: item.number
           }
         ),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
-          Button,
-          {
-            size: "lg",
-            className: "h-12 px-6 shrink-0",
-            children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Search, { className: "h-5 w-5 mr-2" }),
-              "Search"
-            ]
-          }
-        )
-      ] }) })
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-lg font-semibold text-foreground mb-2", children: item.headline }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-sm text-muted-foreground font-body leading-relaxed", children: item.detail })
+      ] }, item.number)) })
     ] }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-labelledby": "course-structure-heading", className: "py-16 bg-muted/10", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-16", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { id: "course-structure-heading", className: "text-3xl md:text-4xl font-bold mb-6 text-foreground", children: "Course Structure" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xl text-muted-foreground", children: "8 Units + Capstone" })
-      ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6", children: landingUnits.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-        Link,
+    landingUnits.length > 0 && /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("section", { className: "py-16 md:py-20 bg-forest-dark relative overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+        "div",
         {
-          href: `/student/lesson/${unit.slug}`,
-          className: "group block outline-none focus-visible:outline-none",
-          children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
-            Card,
+          className: "absolute inset-0 accounting-grid-dark pointer-events-none",
+          "aria-hidden": "true"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "relative container mx-auto px-4 max-w-6xl", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-baseline justify-between mb-10 flex-wrap gap-4", children: [
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "section-label section-label-light", children: "The sequence" }),
+            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-2xl md:text-3xl font-semibold text-white mt-4", children: "8 units + capstone" })
+          ] }),
+          /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+            Link,
             {
-              className: "card-ledger h-full hover:shadow-lg transition-all duration-300 group-hover:scale-105 border-border/50 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2",
+              href: "/curriculum",
+              className: "inline-flex items-center gap-2 text-sm font-body font-medium transition-colors hover:text-white",
+              style: { color: "oklch(0.68 0.17 157)" },
               children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-lg group-hover:text-primary transition-colors", children: [
-                    "Unit ",
-                    unit.unit_number,
-                    ": ",
-                    unit.title
-                  ] }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { className: "text-sm text-muted-foreground", children: unit.description })
-                ] }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex justify-between items-center text-sm", children: [
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-muted-foreground font-medium", children: unit.metadata?.duration || "2-3 weeks" }),
-                  unit.metadata?.difficulty && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-                    "span",
-                    {
-                      className: `px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
-                        unit.metadata.difficulty
-                      )}`,
-                      children: formatDifficulty(unit.metadata.difficulty)
-                    }
-                  )
-                ] }) })
+                "See full curriculum ",
+                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ArrowRight, { className: "w-4 h-4" })
               ]
             }
           )
-        },
-        unit.id
-      )) }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "lg:hidden", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-        Carousel,
-        {
-          itemsPerView: 1,
-          className: "max-w-md mx-auto",
-          gap: "gap-4",
-          children: landingUnits.map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-            Link,
-            {
-              href: `/student/lesson/${unit.slug}`,
-              className: "group block outline-none focus-visible:outline-none p-1",
-              children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
-                Card,
-                {
-                  className: "card-ledger hover:shadow-lg transition-all duration-300 group-hover:scale-105 border-border/50 group-focus-visible:ring-2 group-focus-visible:ring-primary group-focus-visible:ring-offset-2",
-                  children: [
-                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardHeader, { children: [
-                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardTitle, { className: "text-lg group-hover:text-primary transition-colors", children: [
-                        "Unit ",
-                        unit.unit_number,
-                        ": ",
-                        unit.title
-                      ] }),
-                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardDescription, { className: "text-sm text-muted-foreground", children: unit.description })
-                    ] }),
-                    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardContent, { children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex justify-between items-center text-sm", children: [
-                      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { className: "text-muted-foreground font-medium", children: unit.metadata?.duration || "2-3 weeks" }),
-                      unit.metadata?.difficulty && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-                        "span",
-                        {
-                          className: `px-2 py-1 rounded-md border text-xs font-medium ${getDifficultyColor(
-                            unit.metadata.difficulty
-                          )}`,
-                          children: formatDifficulty(unit.metadata.difficulty)
-                        }
-                      )
-                    ] }) })
-                  ]
-                }
-              )
+        ] }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "hidden md:grid md:grid-cols-4 xl:grid-cols-8 gap-3", children: landingUnits.slice(0, 8).map((unit, i) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+          "div",
+          {
+            className: "rounded-lg p-4 relative overflow-hidden group transition-all duration-200 hover:-translate-y-1",
+            style: {
+              background: "oklch(1 0 0 / 0.05)",
+              border: "1px solid oklch(1 0 0 / 0.08)",
+              animationDelay: `${i * 60}ms`
             },
-            unit.id
-          ))
-        }
-      ) }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("nav", { "aria-labelledby": "getting-started-heading", className: "mt-12 grid grid-cols-1 md:grid-cols-1 gap-6", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(Card, { className: "card-statement border-primary/20", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardHeader, { className: "excel-header", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(CardTitle, { id: "getting-started-heading", className: "text-primary", children: "Getting Started" }) }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-            Link,
-            {
-              href: "/preface",
-              className: "block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
-              children: "Preface"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-            Link,
-            {
-              href: "/acknowledgments",
-              className: "block text-sm hover:text-primary transition-colors p-2 rounded hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
-              children: "Acknowledgments"
-            }
-          )
-        ] })
-      ] }) })
-    ] }) }),
-    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { "aria-labelledby": "features-heading", className: "py-16 bg-gradient-to-br from-muted/10 via-background to-muted/5", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4", children: [
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-center mb-16", children: [
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { id: "features-heading", className: "text-3xl md:text-4xl font-bold mb-6 text-foreground", children: "Interactive Learning Features" }),
-        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-xl text-muted-foreground", children: "Everything you need for hands-on business math education with Excel integration." })
+            children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                "span",
+                {
+                  className: "absolute -right-0.5 -top-2 font-display font-bold leading-none select-none pointer-events-none",
+                  style: { fontSize: "3.5rem", color: "oklch(1 0 0 / 0.04)" },
+                  "aria-hidden": "true",
+                  children: unit.unit_number
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono-num text-[9px] text-white/60 tracking-widest uppercase mb-1.5", children: [
+                "Unit ",
+                unit.unit_number
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-sm font-semibold text-white leading-snug group-hover:text-[oklch(0.68_0.17_157)] transition-colors", children: unit.title })
+            ]
+          },
+          unit.id
+        )) }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "md:hidden", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Carousel, { itemsPerView: 1, gap: "gap-4", className: "max-w-sm mx-auto", children: landingUnits.slice(0, 8).map((unit) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "p-1", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(
+          "div",
+          {
+            className: "rounded-lg p-5 relative overflow-hidden",
+            style: {
+              background: "oklch(1 0 0 / 0.05)",
+              border: "1px solid oklch(1 0 0 / 0.08)"
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                "span",
+                {
+                  className: "absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none",
+                  style: { fontSize: "5rem", color: "oklch(1 0 0 / 0.04)" },
+                  "aria-hidden": "true",
+                  children: unit.unit_number
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("p", { className: "font-mono-num text-[10px] text-white/60 tracking-widest uppercase mb-2", children: [
+                "Unit ",
+                unit.unit_number
+              ] }),
+              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "font-display text-lg font-semibold text-white leading-snug", children: unit.title })
+            ]
+          }
+        ) }, unit.id)) }) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("section", { className: "py-16 md:py-20 bg-muted/20 ledger-bg", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "container mx-auto px-4 max-w-3xl text-center space-y-6", children: [
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h2", { className: "font-display text-3xl md:text-4xl font-bold text-foreground", children: "Ready to start building?" }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground font-body text-lg", children: "Log in to access your first unit, or try a simulation on the preface page." }),
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex flex-col sm:flex-row gap-4 justify-center pt-2", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          Link,
+          {
+            href: "/auth/login",
+            className: "inline-flex items-center justify-center h-12 px-8 rounded-md gradient-financial text-white font-body font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+            children: "Student or teacher login"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+          Link,
+          {
+            href: "/preface",
+            className: "inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border border-border/60 text-foreground font-body hover:bg-muted/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+            children: "Try it first"
+          }
+        )
       ] }),
-      /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8", children: features.map((feature, index2) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
-        Card,
-        {
-          className: "card-ledger text-center hover:shadow-lg transition-all duration-300 hover:scale-105 border-border/50 group",
-          children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(CardContent, { className: "pt-6", children: [
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "w-16 h-16 mx-auto mb-4 rounded-lg bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center group-hover:from-primary/20 group-hover:to-accent/20 transition-colors", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(feature.icon, { className: "w-8 h-8 text-primary" }) }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("h3", { className: "text-xl font-semibold mb-2 text-foreground", children: feature.title }),
-            /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "text-muted-foreground text-sm leading-relaxed", children: feature.description })
-          ] })
-        },
-        index2
-      )) })
+      /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "flex items-center justify-center gap-4 pt-4 text-sm text-muted-foreground font-body", children: [
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/curriculum", className: "hover:text-foreground transition-colors", children: "Curriculum" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "·" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/capstone", className: "hover:text-foreground transition-colors", children: "Capstone" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("span", { children: "·" }),
+        /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(Link, { href: "/acknowledgments", className: "hover:text-foreground transition-colors", children: "Acknowledgments" })
+      ] })
     ] }) })
   ] });
 }
-const mod_46 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const mod_42 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Home
 }, Symbol.toStringTag, { value: "Module" }));
@@ -25601,65 +36181,11 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/admin/dashboard",
-    isDynamic: false,
-    params: [],
-    page: mod_19,
-    routeHandler: null,
-    layouts: [mod_1],
-    layoutSegmentDepths: [0],
-    templates: [],
-    errors: [null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
-    pattern: "/api/test-db",
-    isDynamic: false,
-    params: [],
-    page: null,
-    routeHandler: mod_20,
-    layouts: [mod_1],
-    layoutSegmentDepths: [0],
-    templates: [],
-    errors: [null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
-    pattern: "/api/test-supabase",
-    isDynamic: false,
-    params: [],
-    page: null,
-    routeHandler: mod_21,
-    layouts: [mod_1],
-    layoutSegmentDepths: [0],
-    templates: [],
-    errors: [null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
     pattern: "/auth/confirm",
     isDynamic: false,
     params: [],
     page: null,
-    routeHandler: mod_22,
+    routeHandler: mod_19,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25676,7 +36202,7 @@ const routes = [
     pattern: "/auth/error",
     isDynamic: false,
     params: [],
-    page: mod_23,
+    page: mod_20,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25694,7 +36220,7 @@ const routes = [
     pattern: "/auth/forgot-password",
     isDynamic: false,
     params: [],
-    page: mod_24,
+    page: mod_21,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25712,7 +36238,7 @@ const routes = [
     pattern: "/auth/login",
     isDynamic: false,
     params: [],
-    page: mod_25,
+    page: mod_22,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25730,7 +36256,7 @@ const routes = [
     pattern: "/auth/update-password",
     isDynamic: false,
     params: [],
-    page: mod_26,
+    page: mod_23,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25745,20 +36271,20 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/protected/db-test",
+    pattern: "/dev/practice-preview",
     isDynamic: false,
     params: [],
-    page: mod_27,
+    page: mod_24,
     routeHandler: null,
-    layouts: [mod_1, mod_28],
-    layoutSegmentDepths: [0, 1],
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
     templates: [],
-    errors: [null, null],
+    errors: [null],
     slots: {},
     loading: null,
     error: null,
     notFound: null,
-    notFounds: [null, null],
+    notFounds: [null],
     forbidden: null,
     unauthorized: null
   },
@@ -25766,7 +36292,7 @@ const routes = [
     pattern: "/student/dashboard",
     isDynamic: false,
     params: [],
-    page: mod_29,
+    page: mod_25,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25784,7 +36310,7 @@ const routes = [
     pattern: "/teacher/dashboard",
     isDynamic: false,
     params: [],
-    page: mod_30,
+    page: mod_26,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25802,7 +36328,7 @@ const routes = [
     pattern: "/teacher/gradebook",
     isDynamic: false,
     params: [],
-    page: mod_31,
+    page: mod_27,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25821,7 +36347,7 @@ const routes = [
     isDynamic: true,
     params: ["activityId"],
     page: null,
-    routeHandler: mod_32,
+    routeHandler: mod_28,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25839,7 +36365,7 @@ const routes = [
     isDynamic: true,
     params: ["lessonId"],
     page: null,
-    routeHandler: mod_33,
+    routeHandler: mod_29,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
@@ -25856,14 +36382,14 @@ const routes = [
     pattern: "/student/lesson/:lessonSlug",
     isDynamic: true,
     params: ["lessonSlug"],
-    page: mod_34,
+    page: mod_30,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
     templates: [],
     errors: [null],
     slots: {},
-    loading: mod_35,
+    loading: mod_31,
     error: null,
     notFound: null,
     notFounds: [null],
@@ -25874,7 +36400,7 @@ const routes = [
     pattern: "/teacher/students/:studentId",
     isDynamic: true,
     params: ["studentId"],
-    page: mod_36,
+    page: mod_32,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25892,7 +36418,25 @@ const routes = [
     pattern: "/teacher/units/:unitNumber",
     isDynamic: true,
     params: ["unitNumber"],
-    page: mod_37,
+    page: mod_33,
+    routeHandler: null,
+    layouts: [mod_1],
+    layoutSegmentDepths: [0],
+    templates: [],
+    errors: [null],
+    slots: {},
+    loading: null,
+    error: null,
+    notFound: null,
+    notFounds: [null],
+    forbidden: null,
+    unauthorized: null
+  },
+  {
+    pattern: "/teacher/units/:unitNumber/lessons/:lessonId",
+    isDynamic: true,
+    params: ["unitNumber", "lessonId"],
+    page: mod_34,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25910,7 +36454,7 @@ const routes = [
     pattern: "/acknowledgments",
     isDynamic: false,
     params: [],
-    page: mod_38,
+    page: mod_35,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25928,7 +36472,7 @@ const routes = [
     pattern: "/capstone",
     isDynamic: false,
     params: [],
-    page: mod_39,
+    page: mod_36,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25946,7 +36490,7 @@ const routes = [
     pattern: "/curriculum",
     isDynamic: false,
     params: [],
-    page: mod_40,
+    page: mod_37,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25964,7 +36508,7 @@ const routes = [
     pattern: "/preface",
     isDynamic: false,
     params: [],
-    page: mod_41,
+    page: mod_38,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -25979,28 +36523,10 @@ const routes = [
     unauthorized: null
   },
   {
-    pattern: "/protected",
-    isDynamic: false,
-    params: [],
-    page: mod_42,
-    routeHandler: null,
-    layouts: [mod_1, mod_28],
-    layoutSegmentDepths: [0, 1],
-    templates: [],
-    errors: [null, null],
-    slots: {},
-    loading: null,
-    error: null,
-    notFound: null,
-    notFounds: [null, null],
-    forbidden: null,
-    unauthorized: null
-  },
-  {
     pattern: "/settings",
     isDynamic: false,
     params: [],
-    page: mod_43,
+    page: mod_39,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -26018,7 +36544,7 @@ const routes = [
     pattern: "/student",
     isDynamic: false,
     params: [],
-    page: mod_44,
+    page: mod_40,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -26036,7 +36562,7 @@ const routes = [
     pattern: "/teacher",
     isDynamic: false,
     params: [],
-    page: mod_45,
+    page: mod_41,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],
@@ -26054,7 +36580,7 @@ const routes = [
     pattern: "/",
     isDynamic: false,
     params: [],
-    page: mod_46,
+    page: mod_42,
     routeHandler: null,
     layouts: [mod_1],
     layoutSegmentDepths: [0],

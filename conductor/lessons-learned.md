@@ -45,3 +45,5 @@
 - (2026-04-04, code_review_legacy_cleanup) When deleting components, audit seed data, generated curriculum, test fixtures, mock factories, docs, and the catalog test for dangling references to the deleted keys.
 - (2026-04-04, legacy_cleanup_phase4) Optional build plugins should use dynamic imports with try/catch so local builds don't fail when deployment-only packages are absent.
 - (2026-04-04, teacher_practice_error_analysis) Practice submission parts have optional `misconceptionTags`; always use `?? []` when aggregating to avoid undefined iteration errors in summary assembly.
+- (2026-04-04, code_review_track5_phase1) Error analysis utilities that aggregate per-student data should accept an explicit `studentIdMap` parameter since `PracticeSubmissionEnvelope` has no student ID field; falling back to `activityId` is acceptable but must be documented.
+- (2026-04-04, code_review_track5_phase1) When adding interactive component keys to a helper list, include simulation components alongside quiz/spreadsheet keys, or tests that gate on interactivity will silently skip entire categories.

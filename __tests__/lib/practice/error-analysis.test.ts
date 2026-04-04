@@ -157,6 +157,28 @@ describe('aggregateMisconceptionTags', () => {
     const result = aggregateMisconceptionTags([submission]);
     expect(result).toEqual([]);
   });
+
+  it('should use studentIdMap when provided', () => {
+    const submissions = [makeSubmission(), makeSubmissionWithMultipleTags()];
+    const studentIdMap = new Map([
+      ['test-activity', 'student-alice'],
+      ['student-b', 'student-bob'],
+    ]);
+    const result = aggregateMisconceptionTags(submissions, studentIdMap);
+
+    const debitCredit = result.find(r => r.tag === 'debit-credit-confusion');
+    expect(debitCredit!.affectedStudents).toContain('student-alice');
+    expect(debitCredit!.affectedStudents).toContain('student-bob');
+  });
+
+  it('should fall back to activityId when no studentIdMap', () => {
+    const submissions = [makeSubmission()];
+    const result = aggregateMisconceptionTags(submissions);
+
+    const debitCredit = result.find(r => r.tag === 'debit-credit-confusion');
+    expect(debitCredit).toBeDefined();
+    expect(debitCredit!.affectedStudents).toContain('test-activity');
+  });
 });
 
 describe('summarizePartOutcomes', () => {
@@ -224,6 +246,22 @@ describe('buildStudentProfiles', () => {
     const result = buildStudentProfiles([submission]);
 
     expect(result[0].misconceptions).toEqual([]);
+  });
+
+  it('should use studentIdMap when provided', () => {
+    const submissions = [makeSubmission()];
+    const studentIdMap = new Map([['test-activity', 'student-alice']]);
+    const result = buildStudentProfiles(submissions, studentIdMap);
+
+    expect(result[0].studentId).toBe('student-alice');
+    expect(result[0].activityId).toBe('test-activity');
+  });
+
+  it('should fall back to activityId when no studentIdMap', () => {
+    const submissions = [makeSubmission()];
+    const result = buildStudentProfiles(submissions);
+
+    expect(result[0].studentId).toBe('test-activity');
   });
 });
 
