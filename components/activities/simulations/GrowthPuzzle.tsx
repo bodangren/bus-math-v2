@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -65,6 +65,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
   const [selections, setSelections] = useState<string[]>([])
   const [showInstructions, setShowInstructions] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
+  const submittedRef = useRef(false)
 
   const remainingProfit = useMemo(() => {
     const spent = selections.reduce((sum, id) => {
@@ -97,6 +98,8 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
   }
 
   const handleFinalize = () => {
+    if (submittedRef.current) return
+    submittedRef.current = true
     setIsComplete(true)
     onComplete?.({ selections, stats })
 
@@ -143,6 +146,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
   const resetGame = () => {
     setSelections([])
     setIsComplete(false)
+    submittedRef.current = false
   }
 
   return (
