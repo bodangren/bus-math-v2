@@ -7,6 +7,7 @@
 
 import {
   buildPracticeSubmissionEnvelope,
+  normalizePracticeValue,
   type PracticeSubmissionEnvelope,
   type PracticeSubmissionPart,
 } from '@/lib/practice/contract';
@@ -68,35 +69,12 @@ export function createSimulationPart(
   return {
     partId,
     rawAnswer,
-    normalizedAnswer: normalizeSimulationValue(rawAnswer),
+    normalizedAnswer: normalizePracticeValue(rawAnswer),
     isCorrect: options?.isCorrect,
     score: options?.score,
     maxScore: options?.maxScore,
     misconceptionTags: options?.misconceptionTags,
   };
-}
-
-/**
- * Normalize a simulation value for comparison
- */
-function normalizeSimulationValue(value: unknown): string {
-  if (Array.isArray(value)) {
-    return value.map((entry) => normalizeSimulationValue(entry)).sort().join('|');
-  }
-
-  if (typeof value === 'string') {
-    return value.trim().toLowerCase();
-  }
-
-  if (typeof value === 'number' || typeof value === 'boolean') {
-    return String(value).trim().toLowerCase();
-  }
-
-  if (value == null) {
-    return '';
-  }
-
-  return JSON.stringify(value);
 }
 
 /**
