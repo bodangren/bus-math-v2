@@ -1,0 +1,1 @@
+Track: classification_activity_schema_fix_20260406 | Phase: 1 (Schema + Registry) | Added 'classification' schema entry to categorizationActivityPropsSchemas, registered ClassificationActivity in registry, added test assertions. Verified lint/test/build.
