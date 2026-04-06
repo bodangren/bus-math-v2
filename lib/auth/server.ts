@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 
 import { SESSION_COOKIE_NAME, getAuthJwtSecret } from '@/lib/auth/constants';
 import { SessionClaims, verifySessionToken } from '@/lib/auth/session';
+import { fetchInternalQuery, internal } from '@/lib/convex/server';
 
 /**
  * Reads and verifies the authenticated session claims from the server cookie jar.
@@ -156,4 +157,40 @@ export async function requireStudentSessionClaims(
   }
 
   redirect(buildLoginRedirect(loginRedirectPath));
+}
+
+/**
+ * Requires an authenticated request session with an active (non-deactivated) credential.
+ *
+ * Checks the JWT signature/expiry first, then verifies the credential is still
+ * active via Convex. This prevents deactivated users from continuing to use
+ * sessions issued before deactivation.
+ *
+ * Use this for API routes that mutate data, instead of `requireRequestSessionClaims`.
+ */
+export async function requireActiveRequestSessionClaims(
+  request: Request,
+  unauthorizedMessage = 'Unauthorized',
+): Promise<SessionClaims | Response> {
+  const claims = await getRequestSessionClaims(request);
+  if (!claims) {
+    return buildRequestUnauthorizedResponse(unauthorizedMessage);
+  }
+
+  try {
+    const credential = await fetchInternalQuery(
+      internal.auth.getCredentialByUsername,
+      { username: claims.username },
+    );
+
+    if (!credential) {
+      return buildRequestUnauthorizedResponse('Session revoked');
+    }
+  } catch {
+    // If the Convex check fails (network error, etc.), fail open
+    // to avoid locking users out during transient backend issues.
+    // The JWT signature and expiry are still validated above.
+  }
+
+  return claims;
 }

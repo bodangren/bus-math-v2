@@ -11,6 +11,7 @@
  */
 
 import type { LessonErrorSummary } from './error-summary';
+import { withRetry } from '@/lib/ai/retry';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -157,20 +158,22 @@ async function callAIProvider(
     throw new Error('AI API key is not configured');
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  return withRetry(async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  try {
-    if (provider === 'openai') {
-      return await callOpenAI(prompt, apiKey, maxTokens, controller.signal);
-    } else if (provider === 'anthropic') {
-      return await callAnthropic(prompt, apiKey, maxTokens, controller.signal);
-    } else {
-      throw new Error(`Unknown AI provider: ${provider}`);
+    try {
+      if (provider === 'openai') {
+        return await callOpenAI(prompt, apiKey, maxTokens, controller.signal);
+      } else if (provider === 'anthropic') {
+        return await callAnthropic(prompt, apiKey, maxTokens, controller.signal);
+      } else {
+        throw new Error(`Unknown AI provider: ${provider}`);
+      }
+    } finally {
+      clearTimeout(timeoutId);
     }
-  } finally {
-    clearTimeout(timeoutId);
-  }
+  });
 }
 
 async function callOpenAI(

@@ -168,7 +168,7 @@ export function JournalEntryTable({
           />
         )}
 
-        <div className="overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto">
           <div className="min-w-[920px] overflow-hidden rounded-2xl border border-border/80 bg-white shadow-sm" data-layout="general-journal">
             <div className="grid grid-cols-[88px_minmax(240px,1.2fr)_88px_120px_120px_minmax(160px,0.8fr)_150px] border-b border-border/70 bg-muted/30 px-4 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
               {showDates && <div>Date</div>}
@@ -332,6 +332,157 @@ export function JournalEntryTable({
               })}
             </div>
           </div>
+        </div>
+
+        <div className="space-y-3 md:hidden">
+          {normalizedLines.map((line, index) => {
+            const feedback = rowFeedback[line.id];
+            const lineSide = getLineSide(line);
+            const previousDate = index > 0 ? normalizedLines[index - 1]?.date ?? '' : '';
+            const showDateHeader = showDates && (index === 0 || line.date !== previousDate);
+
+            return (
+              <div key={`mobile-${line.id}`}>
+                {showDateHeader && (
+                  <div
+                    data-date-header
+                    className="mb-2 mt-1 text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    {line.date || '—'}
+                  </div>
+                )}
+                <article
+                  data-line-id={line.id}
+                  data-line-side={lineSide}
+                  className={cn(
+                    'space-y-3 rounded-2xl border px-4 py-4 transition-colors',
+                    teacherView && feedback?.status === 'correct' && 'bg-emerald-50/60 border-emerald-200',
+                    teacherView && feedback?.status === 'incorrect' && 'bg-rose-50/70 border-rose-200',
+                    teacherView && feedback?.status === 'partial' && 'bg-amber-50/70 border-amber-200',
+                    lineSide === 'debit' && 'border-l-4 border-l-blue-300',
+                    lineSide === 'credit' && 'border-l-4 border-l-rose-300',
+                  )}
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                        {lineSide === 'credit' ? 'Credit' : 'Debit'} · Line {index + 1}
+                      </span>
+                      <Badge variant="outline" className="text-[10px]">
+                        {index < expectedLineCount ? `Line ${index + 1}` : 'Optional'}
+                      </Badge>
+                    </div>
+                    <div className="text-sm font-medium">
+                      {readOnly
+                        ? (availableAccounts.find((account) => account.id === line.accountId)?.label ?? line.accountId ?? '—')
+                        : (
+                          <select
+                            className="min-h-11 w-full rounded-md border border-border/60 bg-background px-3 py-2 text-sm font-medium"
+                            value={line.accountId ?? ''}
+                            aria-label={`Account for line ${index + 1}`}
+                            onChange={(event) => {
+                              const nextLines = [...normalizedLines];
+                              nextLines[index] = { ...line, accountId: event.target.value };
+                              updateLines(nextLines);
+                            }}
+                          >
+                            <option value="">Select account</option>
+                            {availableAccounts.map((account) => (
+                              <option key={account.id} value={account.id}>
+                                {account.label}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Debit</div>
+                      {readOnly ? (
+                        <div className="font-mono text-sm tabular-nums">{renderAmount(line.debit)}</div>
+                      ) : (
+                        <Input
+                          type="text"
+                          inputMode="decimal"
+                          className="h-11 w-full text-right tabular-nums"
+                          aria-label={`Debit for line ${index + 1}`}
+                          value={line.debit ?? ''}
+                          onChange={(event) => {
+                            const nextLines = [...normalizedLines];
+                            nextLines[index] = { ...line, debit: event.target.value, credit: event.target.value ? '' : line.credit };
+                            updateLines(nextLines);
+                          }}
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Credit</div>
+                      {readOnly ? (
+                        <div className="font-mono text-sm tabular-nums">{renderAmount(line.credit)}</div>
+                      ) : (
+                        <Input
+                          type="text"
+                          inputMode="decimal"
+                          className="h-11 w-full text-right tabular-nums"
+                          aria-label={`Credit for line ${index + 1}`}
+                          value={line.credit ?? ''}
+                          onChange={(event) => {
+                            const nextLines = [...normalizedLines];
+                            nextLines[index] = { ...line, credit: event.target.value, debit: event.target.value ? '' : line.debit };
+                            updateLines(nextLines);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Memo</div>
+                    {readOnly ? (
+                      <span className="text-sm text-muted-foreground">{line.memo || '—'}</span>
+                    ) : (
+                      <Input
+                        type="text"
+                        value={line.memo ?? ''}
+                        aria-label={`Memo for line ${index + 1}`}
+                        onChange={(event) => {
+                          const nextLines = [...normalizedLines];
+                          nextLines[index] = { ...line, memo: event.target.value };
+                          updateLines(nextLines);
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {feedback ? (
+                    <div className="space-y-2 text-xs">
+                      <div
+                        className={cn(
+                          'font-medium',
+                          feedback.status === 'correct' && 'text-emerald-700',
+                          feedback.status === 'incorrect' && 'text-rose-700',
+                          feedback.status === 'partial' && 'text-amber-700',
+                        )}
+                      >
+                        {feedback.message ?? feedback.status}
+                      </div>
+                      {teacherView && feedback?.misconceptionTags?.length ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {feedback.misconceptionTags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-[10px]">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </article>
+              </div>
+            );
+          })}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/80 bg-muted/20 px-4 py-3 text-sm">

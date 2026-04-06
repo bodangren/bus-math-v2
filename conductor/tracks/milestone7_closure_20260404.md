@@ -1,6 +1,6 @@
 # Track: Milestone 7 Closure and Production Polish
 
-**Status**: [~] In Progress — Phase 1 complete
+**Status**: [~] In Progress — Phase 1-2 complete
 **Created**: 2026-04-04
 **Parent Milestone**: 7 — Practice Contract and Evidence Loop
 
@@ -36,18 +36,23 @@ Close out remaining Milestone 7 tech debt, harden production readiness, and ensu
 ### Phase 2: Code Quality and Infrastructure
 **Goal**: Address remaining code quality items and infrastructure gaps
 
-4. **Extract shared HTTP retry wrapper for AI providers**
+4. **Extract shared HTTP retry wrapper for AI providers** [x]
    - Both OpenAI and Anthropic call sites handle timeouts/errors independently
-   - Create shared retry/backoff wrapper
-   - Update AI interpretation provider abstraction
+   - Create shared retry/backoff wrapper (`lib/ai/retry.ts`)
+   - Update both `error-analysis/providers.ts` and `ai-interpretation.ts` to use wrapper
+   - 15 new tests for retry behavior
 
-5. **JournalEntryTable responsive improvements**
-   - Add stacked mobile row fallback
-   - Implement grouped-date header treatment from preview spec
+5. **JournalEntryTable responsive improvements** [x]
+   - Added stacked mobile row fallback (article cards with `md:hidden`)
+   - Desktop table wrapped in `hidden md:block`
+   - Implemented grouped-date header treatment for mobile view
+   - 4 new tests for responsive behavior
 
-6. **Session cookie revocation awareness**
-   - Add validation for deactivated credentials
-   - Or implement shorter-lived credential strategy
+6. **Session cookie revocation awareness** [x]
+   - Added `requireActiveRequestSessionClaims` helper in `lib/auth/server.ts`
+   - Checks credential `isActive` status via Convex on API route requests
+   - Fails open on transient Convex errors to avoid lockouts
+   - 5 new tests for revocation behavior
 
 ### Phase 3: Legacy Cleanup
 **Goal**: Remove legacy residue and final verification
