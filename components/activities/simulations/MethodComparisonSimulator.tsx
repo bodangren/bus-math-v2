@@ -40,24 +40,28 @@ export function MethodComparisonSimulator({ activity, onSubmit, onComplete }: Me
   const correctSL = computeSL(asset.cost, asset.salvageValue, asset.usefulLife)
   const correctDDB = computeDDB(asset.cost, asset.salvageValue, asset.usefulLife)
   const correctUOP = asset.totalUnits && asset.unitsYear1 ? computeUOP(asset.cost, asset.salvageValue, asset.totalUnits, asset.unitsYear1) : null
-  const slCorrect = Math.abs(parseFloat(userSL) - correctSL) < 1
-  const ddbCorrect = Math.abs(parseFloat(userDDB) - correctDDB) < 1
-  const uopCorrect = correctUOP !== null ? Math.abs(parseFloat(userUOP) - correctUOP) < 1 : true
+  const slNum = parseFloat(userSL)
+  const ddbNum = parseFloat(userDDB)
+  const uopNum = parseFloat(userUOP)
+  const slCorrect = !isNaN(slNum) && Math.abs(slNum - correctSL) < 1
+  const ddbCorrect = !isNaN(ddbNum) && Math.abs(ddbNum - correctDDB) < 1
+  const uopCorrect = correctUOP !== null ? (!isNaN(uopNum) && Math.abs(uopNum - correctUOP) < 1) : true
 
   const handleReset = () => { setUserSL(''); setUserDDB(''); setUserUOP(''); setSubmitted(false); setShowReveal(false) }
 
   const handleSubmit = useCallback(() => {
+    if (isNaN(slNum) || isNaN(ddbNum) || (correctUOP !== null && isNaN(uopNum))) return
     setSubmitted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
         activityId: activity.id ?? 'method-comparison-simulator',
         mode: 'independent_practice',
-        answers: { sl: parseFloat(userSL), ddb: parseFloat(userDDB), uop: parseFloat(userUOP), slCorrect, ddbCorrect, uopCorrect },
-        parts: [createSimulationPart('sl-year1', parseFloat(userSL), { isCorrect: slCorrect }), createSimulationPart('ddb-year1', parseFloat(userDDB), { isCorrect: ddbCorrect })],
+        answers: { sl: slNum, ddb: ddbNum, uop: uopNum, slCorrect, ddbCorrect, uopCorrect },
+        parts: [createSimulationPart('sl-year1', slNum, { isCorrect: slCorrect }), createSimulationPart('ddb-year1', ddbNum, { isCorrect: ddbCorrect })],
         artifact: { assetName: asset.name, cost: asset.cost, salvageValue: asset.salvageValue, usefulLife: asset.usefulLife, correctSL, correctDDB, correctUOP },
       }),
     )
-  }, [userSL, userDDB, userUOP, slCorrect, ddbCorrect, uopCorrect, onSubmit, activity.id, asset, correctSL, correctDDB, correctUOP])
+  }, [slNum, ddbNum, uopNum, slCorrect, ddbCorrect, uopCorrect, onSubmit, activity.id, asset, correctSL, correctDDB, correctUOP])
 
   return (
     <div className="space-y-6">
@@ -87,7 +91,7 @@ export function MethodComparisonSimulator({ activity, onSubmit, onComplete }: Me
             {correctUOP !== null && <div className="space-y-2"><Label>UOP Year 1 ($)</Label><Input type="number" placeholder="UOP" value={userUOP} onChange={e => setUserUOP(e.target.value)} disabled={submitted} /></div>}
           </div>
           {!submitted ? (
-            <Button onClick={handleSubmit} className="bg-amber-700 hover:bg-amber-800">Check Answers</Button>
+            <Button onClick={handleSubmit} disabled={!userSL || !userDDB || (correctUOP !== null && !userUOP)} className="bg-amber-700 hover:bg-amber-800">Check Answers</Button>
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-2">{slCorrect ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <XCircle className="h-5 w-5 text-red-600" />}<span className={slCorrect ? 'text-green-700' : 'text-red-700'}>SL: {slCorrect ? 'Correct!' : `$${userSL} → $${correctSL}`}</span></div>

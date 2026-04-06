@@ -51,23 +51,26 @@ export function AssetRegisterSimulator({ activity, onSubmit, onComplete }: Asset
   const correctSchedule = asset.method === 'SL' ? calculateSL(asset.cost, asset.salvageValue, asset.usefulLife) : calculateDDB(asset.cost, asset.salvageValue, asset.usefulLife)
   const correctAnnualExpense = correctSchedule[0]?.annualExpense ?? 0
   const correctYear3BV = correctSchedule[2]?.bookValue ?? 0
-  const annualExpenseCorrect = Math.abs(parseFloat(userAnnualExpense) - correctAnnualExpense) < 1
-  const year3BVCorrect = Math.abs(parseFloat(userYear3BV) - correctYear3BV) < 1
+  const annualExpenseNum = parseFloat(userAnnualExpense)
+  const year3BVNum = parseFloat(userYear3BV)
+  const annualExpenseCorrect = !isNaN(annualExpenseNum) && Math.abs(annualExpenseNum - correctAnnualExpense) < 1
+  const year3BVCorrect = !isNaN(year3BVNum) && Math.abs(year3BVNum - correctYear3BV) < 1
 
   const handleReset = () => { setUserAnnualExpense(''); setUserYear3BV(''); setSubmitted(false); setShowReveal(false) }
 
   const handleSubmit = useCallback(() => {
+    if (isNaN(annualExpenseNum) || isNaN(year3BVNum)) return
     setSubmitted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
         activityId: activity.id ?? 'asset-register-simulator',
         mode: 'independent_practice',
-        answers: { annualExpense: parseFloat(userAnnualExpense), year3BV: parseFloat(userYear3BV), annualExpenseCorrect, year3BVCorrect },
-        parts: [createSimulationPart('annual-expense', parseFloat(userAnnualExpense), { isCorrect: annualExpenseCorrect }), createSimulationPart('year3-bv', parseFloat(userYear3BV), { isCorrect: year3BVCorrect })],
+        answers: { annualExpense: annualExpenseNum, year3BV: year3BVNum, annualExpenseCorrect, year3BVCorrect },
+        parts: [createSimulationPart('annual-expense', annualExpenseNum, { isCorrect: annualExpenseCorrect }), createSimulationPart('year3-bv', year3BVNum, { isCorrect: year3BVCorrect })],
         artifact: { assetName: asset.name, cost: asset.cost, method: asset.method, schedule: correctSchedule },
       }),
     )
-  }, [userAnnualExpense, userYear3BV, annualExpenseCorrect, year3BVCorrect, onSubmit, activity.id, asset, correctSchedule])
+  }, [annualExpenseNum, year3BVNum, annualExpenseCorrect, year3BVCorrect, onSubmit, activity.id, asset, correctSchedule])
 
   return (
     <div className="space-y-6">
@@ -97,7 +100,7 @@ export function AssetRegisterSimulator({ activity, onSubmit, onComplete }: Asset
               <div className="space-y-2"><Label>End of Year 3 Book Value ($)</Label><Input type="number" placeholder="Enter prediction" value={userYear3BV} onChange={e => setUserYear3BV(e.target.value)} disabled={submitted} /></div>
             </div>
             {!submitted ? (
-              <Button onClick={handleSubmit} className="bg-amber-700 hover:bg-amber-800">Submit Predictions</Button>
+              <Button onClick={handleSubmit} disabled={!userAnnualExpense || !userYear3BV} className="bg-amber-700 hover:bg-amber-800">Submit Predictions</Button>
             ) : (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">{annualExpenseCorrect ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <XCircle className="h-5 w-5 text-red-600" />}<span className={annualExpenseCorrect ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>Expense: {annualExpenseCorrect ? 'Correct!' : `$${userAnnualExpense} → $${correctAnnualExpense}`}</span></div>

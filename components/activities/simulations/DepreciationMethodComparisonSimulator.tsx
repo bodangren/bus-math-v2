@@ -52,22 +52,25 @@ export function DepreciationMethodComparisonSimulator({ activity, onSubmit, onCo
   const schedule = calculateComparison(asset)
   const correctSL = schedule[0]?.slExpense ?? 0
   const correctDDB = schedule[0]?.ddbExpense ?? 0
-  const slCorrect = Math.abs(parseFloat(userYear1SL) - correctSL) < 1
-  const ddbCorrect = Math.abs(parseFloat(userYear1DDB) - correctDDB) < 1
+  const slNum = parseFloat(userYear1SL)
+  const ddbNum = parseFloat(userYear1DDB)
+  const slCorrect = !isNaN(slNum) && Math.abs(slNum - correctSL) < 1
+  const ddbCorrect = !isNaN(ddbNum) && Math.abs(ddbNum - correctDDB) < 1
 
   const handleReset = () => { setUserYear1SL(''); setUserYear1DDB(''); setSubmitted(false); setShowReveal(false) }
   const handleSubmit = useCallback(() => {
+    if (isNaN(slNum) || isNaN(ddbNum)) return
     setSubmitted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
         activityId: activity.id ?? 'depreciation-method-comparison',
         mode: 'independent_practice',
-        answers: { slYear1: parseFloat(userYear1SL), ddbYear1: parseFloat(userYear1DDB), slCorrect, ddbCorrect },
-        parts: [createSimulationPart('sl-year1', parseFloat(userYear1SL), { isCorrect: slCorrect }), createSimulationPart('ddb-year1', parseFloat(userYear1DDB), { isCorrect: ddbCorrect })],
+        answers: { slYear1: slNum, ddbYear1: ddbNum, slCorrect, ddbCorrect },
+        parts: [createSimulationPart('sl-year1', slNum, { isCorrect: slCorrect }), createSimulationPart('ddb-year1', ddbNum, { isCorrect: ddbCorrect })],
         artifact: { assetName: asset.name, cost: asset.cost, salvageValue: asset.salvageValue, usefulLife: asset.usefulLife, schedule },
       }),
     )
-  }, [userYear1SL, userYear1DDB, slCorrect, ddbCorrect, onSubmit, activity.id, asset, schedule])
+  }, [slNum, ddbNum, slCorrect, ddbCorrect, onSubmit, activity.id, asset, schedule])
 
   return (
     <div className="space-y-6">
@@ -115,7 +118,7 @@ export function DepreciationMethodComparisonSimulator({ activity, onSubmit, onCo
               </div>
             </div>
             {!submitted ? (
-              <Button onClick={handleSubmit} className="bg-amber-700 hover:bg-amber-800">Submit Predictions</Button>
+              <Button onClick={handleSubmit} disabled={!userYear1SL || !userYear1DDB} className="bg-amber-700 hover:bg-amber-800">Submit Predictions</Button>
             ) : (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">{slCorrect ? <CheckCircle2 className="h-5 w-5 text-green-600" /> : <XCircle className="h-5 w-5 text-red-600" />}<span className={slCorrect ? 'text-green-700 font-medium' : 'text-red-700 font-medium'}>SL: {slCorrect ? 'Correct!' : `$${userYear1SL} → Correct: $${correctSL}`}</span></div>
