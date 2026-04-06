@@ -28,6 +28,7 @@ import { AssetTimeMachine } from '@/components/activities/simulations/AssetTimeM
 import { CapitalNegotiation } from '@/components/activities/simulations/CapitalNegotiation';
 import { BusinessStressTest } from '@/components/activities/simulations/BusinessStressTest';
 import { PayStructureDecisionLab } from '@/components/activities/simulations/PayStructureDecisionLab';
+import { ClassificationActivity } from '@/components/activities/ClassificationActivity';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -63,6 +64,9 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'capital-negotiation': CapitalNegotiation,
   'business-stress-test': BusinessStressTest,
   'pay-structure-lab': PayStructureDecisionLab,
+
+  // Classification
+  'classification': ClassificationActivity,
 
   // Charting components
   'financial-dashboard': FinancialDashboard,

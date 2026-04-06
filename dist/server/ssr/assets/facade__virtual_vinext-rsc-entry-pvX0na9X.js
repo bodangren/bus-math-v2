@@ -58858,6 +58858,63 @@ function InputWithLabel({ label, value, onChange, prefix: prefix2, suffix: suffi
     ] })
   ] });
 }
+function ClassificationActivity({ activity, onSubmit }) {
+  const { title, description, categories, accounts } = activity;
+  const zones = useMemo$1(() => {
+    return categories.map((cat) => ({
+      id: cat.id,
+      label: cat.name || cat.label || cat.id,
+      description: cat.description,
+      whyItMatters: cat.whyItMatters
+    }));
+  }, [categories]);
+  const items = useMemo$1(() => {
+    if (accounts) {
+      return accounts.map((account) => ({
+        id: account.id,
+        label: account.name,
+        description: account.description,
+        categoryId: account.categoryId,
+        targetId: account.categoryId,
+        // targetId maps to the zone/category id
+        hint: account.hint,
+        details: {}
+      }));
+    }
+    return [];
+  }, [accounts]);
+  const [isComplete, setIsComplete] = useState(false);
+  const handleComplete = (payload) => {
+    setIsComplete(true);
+    const simplifiedPlacements = {};
+    for (const [zoneId, zoneItems] of Object.entries(payload.placements)) {
+      simplifiedPlacements[zoneId] = zoneItems.map((item) => item.id);
+    }
+    onSubmit?.({
+      score: payload.score,
+      placements: simplifiedPlacements
+    });
+  };
+  if (items.length === 0) {
+    return /* @__PURE__ */ jsx("div", { className: "p-6 text-center text-muted-foreground", children: /* @__PURE__ */ jsx("p", { children: "No items to classify. Please check the activity configuration." }) });
+  }
+  return /* @__PURE__ */ jsxs("div", { className: "classification-activity", children: [
+    /* @__PURE__ */ jsx(
+      CategorizationList,
+      {
+        title,
+        description,
+        items,
+        zones,
+        mode: "guided_practice",
+        showHintsByDefault: activity.scaffolding?.showHints ?? false,
+        shuffleItems: true,
+        onComplete: handleComplete
+      }
+    ),
+    isComplete && /* @__PURE__ */ jsx("div", { className: "mt-4 p-4 bg-green-50 border border-green-200 rounded-lg", children: /* @__PURE__ */ jsx("p", { className: "text-green-800 font-medium", children: "Activity completed!" }) })
+  ] });
+}
 function resolveActivityComponentKey(componentKey) {
   return componentKey;
 }
@@ -58887,6 +58944,8 @@ const activityRegistry = {
   "capital-negotiation": CapitalNegotiation,
   "business-stress-test": BusinessStressTest,
   "pay-structure-lab": PayStructureDecisionLab,
+  // Classification
+  "classification": ClassificationActivity,
   // Charting components
   "financial-dashboard": FinancialDashboard,
   "chart-builder": FinancialDashboard,

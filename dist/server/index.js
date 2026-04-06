@@ -18197,6 +18197,20 @@ const cashFlowItemSchema = z.object({
   description: z.string().optional(),
   hint: z.string().optional()
 });
+const classificationCategorySchema = z.object({
+  id: z.string(),
+  name: z.string().optional(),
+  label: z.string().optional(),
+  description: z.string().optional(),
+  whyItMatters: z.string().optional()
+});
+const classificationAccountSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().optional(),
+  categoryId: z.string(),
+  hint: z.string().optional()
+});
 const categorizationActivityPropsSchemas = {
   "percentage-calculation-sorting": z.object({
     title: z.string(),
@@ -18219,6 +18233,15 @@ const categorizationActivityPropsSchemas = {
     startingCash: z.number().default(0),
     showHintsByDefault: z.boolean().default(false),
     shuffleItems: z.boolean().default(true)
+  }),
+  "classification": z.object({
+    title: z.string(),
+    description: z.string(),
+    categories: z.array(classificationCategorySchema).min(1),
+    accounts: z.array(classificationAccountSchema).optional(),
+    scaffolding: z.object({
+      showHints: z.boolean().default(false)
+    }).optional()
   })
 };
 const parameterDefSchema = z.object({

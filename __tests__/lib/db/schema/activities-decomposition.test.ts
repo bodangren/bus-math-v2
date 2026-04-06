@@ -40,6 +40,7 @@ describe('activities schema decomposition', () => {
     expect(categorizationActivityPropsSchemas['percentage-calculation-sorting']).toBeDefined();
     expect(categorizationActivityPropsSchemas['inventory-flow-diagram']).toBeDefined();
     expect(categorizationActivityPropsSchemas['cash-flow-timeline']).toBeDefined();
+    expect(categorizationActivityPropsSchemas['classification']).toBeDefined();
   });
 
   it('exports simulation schemas', () => {
@@ -52,6 +53,7 @@ describe('activities schema decomposition', () => {
     expect(activityPropsSchemas['spreadsheet']).toBeDefined();
     expect(activityPropsSchemas['percentage-calculation-sorting']).toBeDefined();
     expect(activityPropsSchemas['lemonade-stand']).toBeDefined();
+    expect(activityPropsSchemas['classification']).toBeDefined();
 
     expect(barrelActivities).toBe(activities);
     expect(barrelGradingConfigSchema).toBe(gradingConfigSchema);
