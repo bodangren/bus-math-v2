@@ -1,0 +1,1 @@
+Track 11 Phase 1 checkpoint: CashFlowChallenge and BusinessStressTest converted to useRef double-submit guard. 3 remaining (BudgetBalancer, LemonadeStand, NotebookOrganizer). Lint clean, 20 tests pass, build clean.
