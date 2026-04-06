@@ -73,6 +73,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/classification_activity_schema_fix_20260406/](./tracks/classification_activity_schema_fix_20260406/)*
   *Status: Complete. Added 'classification' schema entry to categorizationActivityPropsSchemas, registered ClassificationActivity in activityRegistry, added decomposition test assertions. Verified lint, test, build.*
 
+- [~] **Track 10: Practice Engine Post-Audit Fixes**
+  *Link: [./tracks/post_audit_practice_fixes_20260406/](./tracks/post_audit_practice_fixes_20260406/)*
+  *Status: In Progress. Fix misapplied misconception tags (transaction-matrix, transaction-effects), add misconception tag test coverage (3 families), NaN/Infinity guards in depreciation computation functions, and deduplicate normalizePracticeValue.*
+
 ## Archive Ledger
 
 - [x] **Track: Simulation Contract Hardening**
