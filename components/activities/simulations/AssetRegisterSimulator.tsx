@@ -20,6 +20,7 @@ const sampleAssets: AssetInput[] = [
 ]
 
 function calculateSL(cost: number, salvageValue: number, usefulLife: number): ScheduleRow[] {
+  if (usefulLife <= 0) return []
   const annualExpense = (cost - salvageValue) / usefulLife
   const rows: ScheduleRow[] = []; let accum = 0
   for (let year = 1; year <= usefulLife; year++) { accum += annualExpense; rows.push({ year, annualExpense: Math.round(annualExpense * 100) / 100, accumulatedDepreciation: Math.round(accum * 100) / 100, bookValue: Math.round((cost - accum) * 100) / 100 }) }
@@ -27,6 +28,7 @@ function calculateSL(cost: number, salvageValue: number, usefulLife: number): Sc
 }
 
 function calculateDDB(cost: number, salvageValue: number, usefulLife: number): ScheduleRow[] {
+  if (usefulLife <= 0) return []
   const rate = 2 / usefulLife; const rows: ScheduleRow[] = []; let accum = 0; let bv = cost
   for (let year = 1; year <= usefulLife; year++) { let expense = bv * rate; if (bv - expense < salvageValue) expense = bv - salvageValue; accum += expense; bv -= expense; rows.push({ year, annualExpense: Math.round(expense * 100) / 100, accumulatedDepreciation: Math.round(accum * 100) / 100, bookValue: Math.round(bv * 100) / 100 }) }
   return rows

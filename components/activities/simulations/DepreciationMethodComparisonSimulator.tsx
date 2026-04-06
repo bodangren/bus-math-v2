@@ -19,6 +19,7 @@ const scenarios: AssetScenario[] = [
 ]
 
 function calculateComparison(asset: AssetScenario): ScheduleRow[] {
+  if (asset.usefulLife <= 0) return []
   const slAnnual = (asset.cost - asset.salvageValue) / asset.usefulLife
   const ddbRate = 2 / asset.usefulLife
   const rows: ScheduleRow[] = []

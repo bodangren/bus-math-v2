@@ -17,9 +17,9 @@ const defaultScenarios: ComparisonScenario[] = [
   { id: 'M-003', name: 'Forklift', cost: 18000, usefulLife: 6, salvageValue: 3000, totalUnits: 20000, unitsYear1: 4500 },
 ]
 
-function computeSL(cost: number, salvage: number, life: number) { return Math.round((cost - salvage) / life) }
-function computeDDB(cost: number, salvage: number, life: number) { const bv = cost; const expense = Math.round(bv * (2 / life)); return Math.min(expense, cost - salvage) }
-function computeUOP(cost: number, salvage: number, totalUnits: number, unitsYear1: number) { return Math.round(((cost - salvage) / totalUnits) * unitsYear1) }
+function computeSL(cost: number, salvage: number, life: number) { if (life <= 0) return 0; return Math.round((cost - salvage) / life) }
+function computeDDB(cost: number, salvage: number, life: number) { if (life <= 0) return 0; const bv = cost; const expense = Math.round(bv * (2 / life)); return Math.min(expense, cost - salvage) }
+function computeUOP(cost: number, salvage: number, totalUnits: number, unitsYear1: number) { if (totalUnits <= 0) return 0; return Math.round(((cost - salvage) / totalUnits) * unitsYear1) }
 
 export interface MethodComparisonSimulatorProps {
   activity: { id?: string; props?: { scenarios?: ComparisonScenario[] } }
