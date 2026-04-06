@@ -1,0 +1,1 @@
+Track: milestone7_final_closure_20260406 | Phase: 2 — Simulation Input Validation | Summary: NaN/empty-input guards on AssetRegisterSimulator, DepreciationMethodComparisonSimulator, MethodComparisonSimulator. Correctness booleans, early return in handleSubmit, disabled button on empty inputs.
