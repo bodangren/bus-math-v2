@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -56,14 +56,14 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
   const [activeDisaster, setActiveDisaster] = useState<Disaster | null>(null)
   const [isGameOver, setIsGameOver] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
 
   const profit = revenue - expenses
 
   const handleNextRound = () => {
-    if (submitted) return
+    if (submittedRef.current) return
     if (round >= disasters.length) {
-      setSubmitted(true)
+      submittedRef.current = true
       const finalCash = cash
       const roundsSurvived = round
       setIsComplete(true)
@@ -135,9 +135,9 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
   }
 
   useEffect(() => {
-    if (cash <= 0 && !isGameOver && !submitted) {
+    if (cash <= 0 && !isGameOver && !submittedRef.current) {
       setIsGameOver(true)
-      setSubmitted(true)
+      submittedRef.current = true
 
       const answers: Record<string, unknown> = {
         finalCash: 0,
@@ -177,7 +177,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
       onSubmit?.(envelope)
       onComplete?.({ finalCash: 0, roundsSurvived: round })
     }
-  }, [cash, isGameOver, submitted, round, activity, disasters.length, onSubmit, onComplete])
+  }, [cash, isGameOver, round, activity, disasters.length, onSubmit, onComplete])
 
   const reset = () => {
     setCash(initialState.cash)
@@ -187,7 +187,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
     setActiveDisaster(null)
     setIsGameOver(false)
     setIsComplete(false)
-    setSubmitted(false)
+    submittedRef.current = false
   }
 
   return (

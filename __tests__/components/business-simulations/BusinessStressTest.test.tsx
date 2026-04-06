@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -106,5 +106,37 @@ describe('BusinessStressTest', () => {
     expect(envelope.parts.length).toBeGreaterThan(0)
     expect(envelope.artifact.survivedAll).toBe(false)
     expect(envelope.artifact.finalCash).toBe(0)
+  })
+
+  it('only calls onSubmit once on rapid double-click of trigger button', async () => {
+    const onSubmit = vi.fn()
+
+    render(<BusinessStressTest activity={mockActivity} onSubmit={onSubmit} />)
+
+    // Round 1: trigger crisis
+    await userEvent.click(screen.getByRole('button', { name: /trigger next crisis/i }))
+
+    // Choose a response
+    await waitFor(() => {
+      expect(screen.getByText('Raise Prices')).toBeInTheDocument()
+    })
+
+    await userEvent.click(screen.getByRole('button', { name: /raise prices/i }))
+
+    // Wait for the trigger button to reappear
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /trigger next crisis/i })).toBeInTheDocument()
+    })
+
+    // Rapidly fire two click events to trigger double-submit
+    const triggerButton = screen.getByRole('button', { name: /trigger next crisis/i })
+    fireEvent.click(triggerButton)
+    fireEvent.click(triggerButton)
+
+    await waitFor(() => {
+      expect(screen.getByText('TEST PASSED!')).toBeInTheDocument()
+    })
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 })

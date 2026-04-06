@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -254,5 +254,39 @@ describe('CashFlowChallenge', () => {
       // No specific assertion needed - just verify clicking doesn't error
       expect(helpButton).toBeInTheDocument()
     })
+  })
+
+  it('only calls onSubmit once on rapid double-click of submit button', async () => {
+    const onSubmit = vi.fn()
+    const winningActivity = {
+      ...mockActivity,
+      initialState: {
+        ...mockActivity.initialState,
+        cashPosition: 50000,
+        day: 30,
+        maxDays: 30
+      }
+    }
+
+    render(<CashFlowChallenge activity={winningActivity} onSubmit={onSubmit} />)
+
+    // Advance one day to trigger win
+    const advanceButton = screen.getByRole('button', { name: /run simulation/i })
+    await userEvent.click(advanceButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Challenge Complete!/i)).toBeInTheDocument()
+    })
+
+    // Rapidly fire two click events (simulates double-click before re-render)
+    const submitButton = screen.getByRole('button', { name: /submit results/i })
+    fireEvent.click(submitButton)
+    fireEvent.click(submitButton)
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled()
+    })
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 })

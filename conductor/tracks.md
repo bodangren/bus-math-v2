@@ -77,6 +77,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/post_audit_practice_fixes_20260406/](./tracks/post_audit_practice_fixes_20260406/)*
   *Status: Complete. Fixed misapplied misconception tags in transaction-matrix (context-only) and transaction-effects (classification-error), added misconception tag test coverage for all 3 families (8 new tests), NaN/Infinity guards in 3 depreciation simulators' computation functions, and deduplicated normalizePracticeValue. Closed 6 tech-debt items. Verified lint, test, build.*
 
+- [~] **Track 11: Simulation Double-Submit Guard Standardization**
+  *Link: [./tracks/simulation_double_submit_guard_20260406/](./tracks/simulation_double_submit_guard_20260406/)*
+  *Status: In Progress. Phase 1 complete: CashFlowChallenge and BusinessStressTest converted to useRef guard pattern. Phases 2-3 pending (BudgetBalancer, LemonadeStand, NotebookOrganizer).*
+
 ## Archive Ledger
 
 - [x] **Track: Simulation Contract Hardening**

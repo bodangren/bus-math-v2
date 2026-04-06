@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -93,6 +93,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
   const [showInstructions, setShowInstructions] = useState(false)
   const [actionsLog, setActionsLog] = useState<string[]>([])
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
     const id = Date.now().toString()
     setNotifications(prev => [...prev, { id, message, type }])
@@ -346,12 +347,15 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
     })
     setNotifications([])
     setActionsLog([])
+    setSubmitted(false)
+    submittedRef.current = false
     addNotification('Game reset successfully', 'info')
   }, [activity, addNotification])
 
   const handleSubmit = useCallback(() => {
-    if (submitted) return
+    if (submittedRef.current) return
     if (onSubmit && gameState.gameStatus !== 'playing') {
+      submittedRef.current = true
       setSubmitted(true)
       const initialCash = activity.initialState.cashPosition
       const finalProfit = gameState.cashPosition - initialCash
@@ -397,7 +401,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
       onSubmit(envelope)
       addNotification('Results submitted successfully!', 'success')
     }
-  }, [submitted, gameState, actionsLog, onSubmit, activity, addNotification])
+  }, [gameState, actionsLog, onSubmit, activity, addNotification])
 
   const healthStatus = getCashHealthStatus(gameState.cashPosition)
   const totalIncoming = gameState.incomingFlows.reduce((sum, flow) => sum + flow.amount, 0)
