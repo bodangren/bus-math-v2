@@ -1,0 +1,1 @@
+Track: milestone7_final_closure_20260406 | Phase: 3 — GrowthPuzzle Double-Submit Guard | Summary: Added submittedRef for synchronous guard in handleFinalize, complementing existing isComplete UI disabled state. Ref resets on resetGame.
