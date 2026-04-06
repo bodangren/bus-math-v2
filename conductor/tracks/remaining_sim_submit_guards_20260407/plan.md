@@ -27,10 +27,10 @@
 
 ### Tasks
 
-1. [ ] Fix submittedRef ordering in PitchPresentationBuilder (check before onSubmit)
-2. [ ] Fix submittedRef ordering in PayStructureDecisionLab (check before onSubmit)
-3. [ ] Fix submittedRef ordering in InventoryManager (check before onSubmit)
-4. [ ] Write source-level tests for MEDIUM components
-5. [ ] Verify: lint, tests, build for Phase 3
-6. [ ] Update tech-debt.md and lessons-learned.md
-7. [ ] Checkpoint commit with git note
+1. [x] Fix submittedRef ordering in PitchPresentationBuilder (check before onSubmit)
+2. [x] Fix submittedRef ordering in PayStructureDecisionLab (check before onSubmit)
+3. [x] Fix submittedRef ordering in InventoryManager (check before onSubmit)
+4. [x] Write source-level tests for MEDIUM components
+5. [x] Verify: lint, tests, build for Phase 3
+6. [x] Update tech-debt.md and lessons-learned.md
+7. [x] Checkpoint commit with git note

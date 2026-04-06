@@ -90,6 +90,7 @@ const getIconForProduct = (iconName: string) => {
 export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) {
   const runtimeIdCounterRef = useRef(0)
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
 
   const generateRuntimeId = useCallback((prefix: 'event' | 'notification') => {
     runtimeIdCounterRef.current += 1
@@ -401,11 +402,12 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
     })
     setNotifications([])
     setSubmitted(false)
+    submittedRef.current = false
     addNotification('Game reset successfully', 'info')
   }, [activity, addNotification])
 
   const handleSubmit = useCallback(() => {
-    if (submitted) return
+    if (submittedRef.current) return
     if (onSubmit && gameState.gameStatus !== 'playing') {
       const finalProfit = gameState.totalRevenue - gameState.totalExpenses
       const answers: Record<string, unknown> = {
@@ -448,11 +450,12 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
           inventoryTurnover: gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(gameState.products.reduce((sum, p) => sum + (p.quantity * p.cost), 0), 1) : 0,
         },
       })
+      submittedRef.current = true
       onSubmit(envelope)
       setSubmitted(true)
       addNotification('Results submitted as practice evidence!', 'success')
     }
-  }, [submitted, gameState, onSubmit, addNotification, activity.title])
+  }, [gameState, onSubmit, addNotification, activity.title])
 
   const profit = gameState.totalRevenue - gameState.totalExpenses
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + (p.quantity * p.cost), 0)

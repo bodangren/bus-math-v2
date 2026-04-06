@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -330,6 +330,7 @@ export interface PayStructureDecisionLabProps {
 export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabProps) {
   const [current, setCurrent] = useState(0)
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(initialHourly)
   const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(initialSalary)
   const [commissionInputs, setCommissionInputs] = useState<CommissionInputs>(initialCommission)
@@ -521,7 +522,7 @@ export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabPro
               {current === scenarios.length - 1 && onSubmit && (
                 <Button
                   onClick={() => {
-                    if (submitted) return
+                    if (submittedRef.current) return
                     const answers: Record<string, unknown> = {
                       hourlyGross: hourlyResult.gross,
                       hourlyNet: hourlyResult.net,
@@ -557,6 +558,7 @@ export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabPro
                         totalNetCommission: commissionResult.net,
                       },
                     })
+                    submittedRef.current = true
                     onSubmit(envelope)
                     setSubmitted(true)
                   }}

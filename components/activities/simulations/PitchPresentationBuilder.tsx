@@ -176,6 +176,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
 
   const [showInstructions, setShowInstructions] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   const calculateCompleteness = useCallback((content: string, speakingNotes: string, title: string) => {
@@ -287,7 +288,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
   }, [pitchState])
 
   const handleSubmit = useCallback(() => {
-    if (submitted) return
+    if (submittedRef.current) return
     if (onSubmit) {
       const overallProgress = calculateOverallProgress()
       const sections = Object.entries(pitchState.sections)
@@ -330,10 +331,11 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
           totalPracticeTime: pitchState.totalPracticeTime,
         },
       })
+      submittedRef.current = true
       onSubmit(envelope)
       setSubmitted(true)
     }
-  }, [submitted, pitchState, onSubmit, calculateOverallProgress, activity])
+  }, [pitchState, onSubmit, calculateOverallProgress, activity])
 
   useEffect(() => {
     return () => {
