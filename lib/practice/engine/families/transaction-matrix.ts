@@ -1,7 +1,6 @@
 import { buildPracticeSubmissionEnvelope, normalizePracticeValue, type PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import type { GradeResult, ProblemDefinition, ProblemFamily, ProblemPartDefinition } from '@/lib/practice/engine/types';
 import { practiceAccounts } from '@/lib/practice/engine/accounts';
-import { misconceptionTags } from '@/lib/practice/misconception-taxonomy';
 import { buildTransactionEvent, type TransactionBuildOptions, type TransactionEvent } from '@/lib/practice/engine/transactions';
 import {
   buildEffectDescription,
