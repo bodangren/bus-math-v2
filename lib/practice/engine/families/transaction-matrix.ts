@@ -392,13 +392,7 @@ export const transactionMatrixFamily: ProblemFamily<
       const tags: string[] = [];
       if (!isCorrect) {
         const contextTag = `transaction-matrix:${part.id}`;
-        if (part.details.stage === 'cash' || part.details.stage === 'offset') {
-          tags.push(...misconceptionTags('debit-credit-reversal', contextTag));
-        } else if (part.details.stage === 'income-statement') {
-          tags.push(...misconceptionTags('computation-error', contextTag));
-        } else {
-          tags.push(contextTag);
-        }
+        tags.push(contextTag);
       }
 
       return {

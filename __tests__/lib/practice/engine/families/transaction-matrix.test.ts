@@ -160,4 +160,59 @@ describe('transaction matrix family', () => {
       expect(grade.score).toBe(grade.maxScore);
     }
   });
+
+  it('emits no canonical misconception tags for reasoning-stage (column-selection) errors', () => {
+    const definition = transactionMatrixFamily.generate(2026, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+      mode: 'assessment',
+    });
+
+    const solution = transactionMatrixFamily.solve(definition);
+
+    // Build a response with wrong reasoning-stage answers for non-distractor parts
+    const studentResponse: TransactionMatrixResponse = { ...solution };
+    const realParts = definition.parts.filter((p) => !p.id.startsWith('distractor-'));
+    // Pick the first real part and set it to the wrong stage column
+    const wrongPart = realParts[0];
+    const wrongColumns = definition.columns
+      .map((c) => c.id)
+      .filter((c) => c !== solution[wrongPart.id]);
+    studentResponse[wrongPart.id] = wrongColumns[0];
+
+    const gradeResult = transactionMatrixFamily.grade(definition, studentResponse);
+
+    // The wrong part should have tags but NONE should be debit-credit-reversal or computation-error
+    const wrongPartGrade = gradeResult.parts.find((p) => p.partId === wrongPart.id);
+    expect(wrongPartGrade).toBeDefined();
+    expect(wrongPartGrade!.isCorrect).toBe(false);
+    for (const tag of wrongPartGrade!.misconceptionTags) {
+      expect(tag).not.toContain('debit-credit-reversal');
+      expect(tag).not.toContain('computation-error');
+    }
+  });
+
+  it('emits context-only tags for distractor reasoning-stage errors', () => {
+    const definition = transactionMatrixFamily.generate(42, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+    });
+
+    const solution = transactionMatrixFamily.solve(definition);
+    const studentResponse: TransactionMatrixResponse = {
+      ...solution,
+      'distractor-1': 'affected',
+    };
+
+    const gradeResult = transactionMatrixFamily.grade(definition, studentResponse);
+    const distractorGrade = gradeResult.parts.find((p) => p.partId === 'distractor-1');
+    expect(distractorGrade).toBeDefined();
+    expect(distractorGrade!.isCorrect).toBe(false);
+    for (const tag of distractorGrade!.misconceptionTags) {
+      expect(tag).not.toContain('debit-credit-reversal');
+      expect(tag).not.toContain('computation-error');
+    }
+  });
 });
