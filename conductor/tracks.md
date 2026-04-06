@@ -85,9 +85,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/ddb_exercise_submit_guard_20260407/](./tracks/ddb_exercise_submit_guard_20260407/)*
   *Status: Complete. DDBComparisonMastery now uses submittedRef guard matching Track 11 pattern. 4 source-level tests pass. Tech-debt item closed. Verified lint, test, build.*
 
-- [~] **Track: Remaining Simulation Double-Submit Guards**
+- [x] **Track: Remaining Simulation Double-Submit Guards**
   *Link: [./tracks/remaining_sim_submit_guards_20260407/](./tracks/remaining_sim_submit_guards_20260407/)*
-  *Status: In Progress. Phase 1: AssetTimeMachine, CapitalNegotiation submittedRef guards. 4 HIGH components (no guard at all) and 3 MEDIUM components (fragile state-after-onSubmit ordering) remain.*
+  *Status: Complete. All 3 phases finished: submittedRef guards added to AssetTimeMachine, CapitalNegotiation, CafeSupplyChaos, ScenarioSwitchShowTell (HIGH), and ordering fixed in PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager (MEDIUM). All 8 simulation components now use canonical submittedRef pattern. Verified lint, test, build.*
 
 ## Archive Ledger
 

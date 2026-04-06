@@ -21,7 +21,7 @@ Admin tooling, in-app curriculum authoring, and new content beyond the existing 
 1. ~~**Complete Track 11 Phase 3** — NotebookOrganizer useRef double-submit guard~~ — Done.
 2. ~~**DDBComparisonMastery submittedRef guard**~~ — Done.
 3. ~~**Remaining Simulation submittedRef Guards (HIGH)**~~ — Done. All 4 HIGH components guarded.
-4. **Remaining Simulation submittedRef Guards (MEDIUM)** — PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager set useState AFTER onSubmit; race window allows double-submit bypass. InventoryManager resetGame now clears submitted, but all three still lack submittedRef.
+4. ~~**Remaining Simulation submittedRef Guards (MEDIUM)**~~ — Done. PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager now use submittedRef guard checked before onSubmit.
 5. **BusinessStressTest submitted state** — No visual disabled state on buttons after submission; submittedRef silently blocks with no UI feedback.
 6. **Simulation Activity Prop Type Standardization** — 5 simulations (4–8) use ad-hoc inline types instead of Zod schemas. Standardize to match first 3 simulations.
 7. **CashFlowChallenge Legacy Cleanup** — Remove `onSubmitLegacy` callback and migrate to `activity.id ?? fallback` pattern. Dual-callback path is a maintenance trap.
