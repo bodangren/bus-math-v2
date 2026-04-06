@@ -38,6 +38,7 @@ function randInt(min: number, max: number): number {
 }
 
 function computeDDBSchedule(cost: number, salvage: number, life: number) {
+  if (life <= 0) return []
   const slRate = 1 / life
   const ddbRate = 2 * slRate
   const schedule: { year: number; expense: number; accumulated: number; bookValue: number }[] = []
@@ -56,6 +57,7 @@ function computeDDBSchedule(cost: number, salvage: number, life: number) {
 }
 
 function computeSLSchedule(cost: number, salvage: number, life: number) {
+  if (life <= 0) return []
   const annualExpense = Math.round((cost - salvage) / life)
   return Array.from({ length: life }, (_, i) => ({
     year: i + 1,

@@ -27439,7 +27439,7 @@ const transactionEffectsFamily = {
       if (!isCorrect) {
         const contextTag = `transaction-effects:${part.id}`;
         if (part.details.kind === "effect") {
-          tags.push(...misconceptionTags("debit-credit-reversal", contextTag));
+          tags.push(...misconceptionTags("classification-error", contextTag));
         } else if (part.details.kind === "amount") {
           tags.push(...misconceptionTags("computation-error", contextTag));
         } else {
@@ -27802,13 +27802,7 @@ const transactionMatrixFamily = {
       const tags = [];
       if (!isCorrect) {
         const contextTag = `transaction-matrix:${part.id}`;
-        if (part.details.stage === "cash" || part.details.stage === "offset") {
-          tags.push(...misconceptionTags("debit-credit-reversal", contextTag));
-        } else if (part.details.stage === "income-statement") {
-          tags.push(...misconceptionTags("computation-error", contextTag));
-        } else {
-          tags.push(contextTag);
-        }
+        tags.push(contextTag);
       }
       return {
         partId: part.id,
