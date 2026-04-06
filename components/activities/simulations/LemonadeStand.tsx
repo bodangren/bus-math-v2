@@ -205,6 +205,7 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
   }>>([])
   const [salesProgress, setSalesProgress] = useState(0)
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const salesIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const heroDescription = activity.description ?? activity.props.description
@@ -431,11 +432,13 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
     setSalesProgress(0)
     setNotifications([])
     setSubmitted(false)
+    submittedRef.current = false
     addNotification('Game reset successfully!', 'info')
   }, [activity.props.initialState, addNotification])
 
   const handleSubmitResults = useCallback(() => {
-    if (submitted || gameState.revenue === 0) return
+    if (submittedRef.current || gameState.revenue === 0) return
+    submittedRef.current = true
 
     const totalExpenses = gameState.expenses
     const totalProfit = gameState.revenue - totalExpenses
@@ -484,7 +487,7 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
     setSubmitted(true)
     onSubmit?.(envelope)
     addNotification('Results submitted as practice evidence!', 'success')
-  }, [submitted, gameState, activity, onSubmit, addNotification])
+  }, [gameState, activity, onSubmit, addNotification])
 
   const profit = gameState.revenue - gameState.expenses
   const recipeFeedback = getRecipeFeedback()

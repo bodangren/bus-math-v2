@@ -59,7 +59,7 @@
 
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -207,6 +207,7 @@ export function BudgetBalancer({ activity, initialState, onStateChange, onSubmit
 
   const [showInstructions, setShowInstructions] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
 
   useEffect(() => {
     const merged = mergeBudgetState(baseState, initialState)
@@ -278,10 +279,12 @@ export function BudgetBalancer({ activity, initialState, onStateChange, onSubmit
     setGameState(resetState)
     setTempExpenses(Object.fromEntries(Object.entries(resetState.expenses).map(([key, expense]) => [key, expense.amount])))
     setSubmitted(false)
+    submittedRef.current = false
   }
 
   const handleSubmitResults = () => {
-    if (submitted) return
+    if (submittedRef.current) return
+    submittedRef.current = true
 
     const answers: Record<string, unknown> = {
       totalSavings: gameState.totalSavings,

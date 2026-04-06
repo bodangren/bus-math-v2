@@ -14,11 +14,11 @@
 
 ### Tasks
 
-1. [ ] Write tests verifying double-submit protection for BudgetBalancer
-2. [ ] Implement useRef guard in BudgetBalancer
-3. [ ] Write tests verifying double-submit protection for LemonadeStand
-4. [ ] Implement useRef guard in LemonadeStand
-5. [ ] Verify: lint, tests, build for Phase 2
+1. [x] Write tests verifying double-submit protection for BudgetBalancer
+2. [x] Implement useRef guard in BudgetBalancer
+3. [x] Write tests verifying double-submit protection for LemonadeStand
+4. [x] Implement useRef guard in LemonadeStand
+5. [x] Verify: lint, tests, build for Phase 2
 
 ## Phase 3: NotebookOrganizer and Final Verification
 

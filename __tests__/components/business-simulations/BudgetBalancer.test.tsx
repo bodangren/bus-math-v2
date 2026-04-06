@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -109,5 +109,32 @@ describe('BudgetBalancer', () => {
     await userEvent.click(updateButtons[0])
 
     await waitFor(() => expect(onStateChange.mock.calls.at(-1)?.[0].expenses.rent.amount).toBe(1500))
+  })
+
+  it('only calls onSubmit once on rapid double-click of submit button', async () => {
+    const onSubmit = vi.fn()
+    const activity = buildActivity({
+      initialState: {
+        monthlyIncome: 5000,
+        month: 2,
+        totalSavings: 5000,
+        emergencyFund: 500,
+        financialHealth: 80
+      }
+    })
+
+    render(<BudgetBalancer activity={activity} onSubmit={onSubmit} />)
+
+    const submitButton = await screen.findByRole('button', { name: /submit results/i })
+
+    // Rapidly fire two click events (simulates double-click before re-render)
+    fireEvent.click(submitButton)
+    fireEvent.click(submitButton)
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled()
+    })
+
+    expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 })
