@@ -4,6 +4,8 @@ The full 8-unit curriculum, capstone, student study runtime, teacher monitoring,
 
 Current focus is **Milestones 7–8 transition**: practice contract closure and post-practice hardening.
 
+Milestone 7 is complete (2026-04-06). Remaining tech debt from code review has been resolved or explicitly deferred.
+
 Every active track must directly support one of these outcomes:
 
 - close Milestone 7 exit gate: remaining tech debt resolved or explicitly deferred

@@ -12,7 +12,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 4 | Full Core Book (Units 5-8) | Complete |
 | 5 | Capstone and Textbook Completion | Complete (2026-03-14) |
 | 6 | Production Hardening and Launch | Complete (2026-03-16) |
-| 7 | Practice Contract and Evidence Loop | **Active** |
+| 7 | Practice Contract and Evidence Loop | Complete (2026-04-06) |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
