@@ -401,7 +401,7 @@ export const transactionEffectsFamily: ProblemFamily<
       if (!isCorrect) {
         const contextTag = `transaction-effects:${part.id}`;
         if (part.details.kind === 'effect') {
-          tags.push(...misconceptionTags('debit-credit-reversal', contextTag));
+          tags.push(...misconceptionTags('classification-error', contextTag));
         } else if (part.details.kind === 'amount') {
           tags.push(...misconceptionTags('computation-error', contextTag));
         } else {

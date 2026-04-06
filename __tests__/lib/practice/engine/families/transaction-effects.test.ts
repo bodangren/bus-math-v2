@@ -88,4 +88,76 @@ describe('transaction effects family', () => {
       }),
     });
   });
+
+  it('emits classification-error (not debit-credit-reversal) for wrong direction selections', () => {
+    const definition = transactionEffectsFamily.generate(2026, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+      mode: 'assessment',
+    });
+
+    const solution = transactionEffectsFamily.solve(definition);
+
+    // Find an effect-kind part and answer incorrectly
+    const effectParts = definition.parts.filter((p) => p.details.kind === 'effect' && p.targetId !== 'no-effect');
+    const wrongPart = effectParts[0];
+    const wrongAnswer = wrongPart.targetId === 'increase' ? 'decrease' : 'increase';
+    const studentResponse: TransactionEffectsResponse = {
+      ...solution,
+      [wrongPart.id]: wrongAnswer,
+    };
+
+    const gradeResult = transactionEffectsFamily.grade(definition, studentResponse);
+    const wrongPartGrade = gradeResult.parts.find((p) => p.partId === wrongPart.id);
+    expect(wrongPartGrade).toBeDefined();
+    expect(wrongPartGrade!.isCorrect).toBe(false);
+    // Direction errors are classification errors, not debit-credit reversals
+    for (const tag of wrongPartGrade!.misconceptionTags) {
+      expect(tag).not.toContain('debit-credit-reversal');
+    }
+  });
+
+  it('emits computation-error for wrong amount answers', () => {
+    const definition = transactionEffectsFamily.generate(2026, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+      mode: 'assessment',
+    });
+
+    const solution = transactionEffectsFamily.solve(definition);
+    const amountPart = definition.parts.find((p) => p.details.kind === 'amount');
+    expect(amountPart).toBeDefined();
+
+    const studentResponse: TransactionEffectsResponse = {
+      ...solution,
+      [amountPart!.id]: (Number(amountPart!.targetId) + 999).toString(),
+    };
+
+    const gradeResult = transactionEffectsFamily.grade(definition, studentResponse);
+    const wrongAmountGrade = gradeResult.parts.find((p) => p.partId === amountPart!.id);
+    expect(wrongAmountGrade).toBeDefined();
+    expect(wrongAmountGrade!.isCorrect).toBe(false);
+    expect(wrongAmountGrade!.misconceptionTags).toEqual(
+      expect.arrayContaining([expect.stringContaining('computation-error')]),
+    );
+  });
+
+  it('emits no misconception tags on correct answers', () => {
+    const definition = transactionEffectsFamily.generate(2026, {
+      archetypeId: 'earn-revenue',
+      context: 'service',
+      settlement: 'cash',
+      mode: 'assessment',
+    });
+
+    const solution = transactionEffectsFamily.solve(definition);
+    const gradeResult = transactionEffectsFamily.grade(definition, solution);
+
+    for (const part of gradeResult.parts) {
+      expect(part.isCorrect).toBe(true);
+      expect(part.misconceptionTags).toHaveLength(0);
+    }
+  });
 });
