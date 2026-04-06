@@ -1,0 +1,7 @@
+milestone7_closure Phase 1: Accessibility and UX Polish
+- CategorizationList: aria-live polite announcements for drag/move/score
+- ScenarioPanel shared component (label-value grid with guidance)
+- projectToRowSelections helper for SelectionMatrix defaults
+- Family C/F/K/Q preview pairs use ScenarioPanel
+- Closed 3 tech-debt items (live-region, projection helper, panel duplication)
+- Verified: lint (1 warning pre-existing), tests (257 pass, 2 pre-existing Supabase failures), build OK
