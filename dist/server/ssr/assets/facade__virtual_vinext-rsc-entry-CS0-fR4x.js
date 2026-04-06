@@ -12706,6 +12706,7 @@ function CashFlowChallenge({ activity, onSubmit }) {
   const [showInstructions, setShowInstructions] = useState(false);
   const [actionsLog, setActionsLog] = useState([]);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const addNotification = useCallback$1((message, type) => {
     const id = Date.now().toString();
     setNotifications((prev) => [...prev, { id, message, type }]);
@@ -12916,11 +12917,14 @@ function CashFlowChallenge({ activity, onSubmit }) {
     });
     setNotifications([]);
     setActionsLog([]);
+    setSubmitted(false);
+    submittedRef.current = false;
     addNotification("Game reset successfully", "info");
   }, [activity, addNotification]);
   const handleSubmit = useCallback$1(() => {
-    if (submitted) return;
+    if (submittedRef.current) return;
     if (onSubmit && gameState.gameStatus !== "playing") {
+      submittedRef.current = true;
       setSubmitted(true);
       const initialCash = activity.initialState.cashPosition;
       const finalProfit = gameState.cashPosition - initialCash;
@@ -12963,7 +12967,7 @@ function CashFlowChallenge({ activity, onSubmit }) {
       onSubmit(envelope);
       addNotification("Results submitted successfully!", "success");
     }
-  }, [submitted, gameState, actionsLog, onSubmit, activity, addNotification]);
+  }, [gameState, actionsLog, onSubmit, activity, addNotification]);
   const healthStatus = getCashHealthStatus(gameState.cashPosition);
   const totalIncoming = gameState.incomingFlows.reduce((sum, flow) => sum + flow.amount, 0);
   const totalOutgoing = gameState.outgoingFlows.reduce((sum, flow) => sum + flow.amount, 0);
@@ -39449,6 +39453,7 @@ function BudgetBalancer({ activity, initialState: initialState2, onStateChange, 
   );
   const [showInstructions, setShowInstructions] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   useEffect(() => {
     const merged = mergeBudgetState(baseState, initialState2);
     setGameState(merged);
@@ -39507,9 +39512,11 @@ function BudgetBalancer({ activity, initialState: initialState2, onStateChange, 
     setGameState(resetState);
     setTempExpenses(Object.fromEntries(Object.entries(resetState.expenses).map(([key, expense]) => [key, expense.amount])));
     setSubmitted(false);
+    submittedRef.current = false;
   };
   const handleSubmitResults = () => {
-    if (submitted) return;
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     const answers = {
       totalSavings: gameState.totalSavings,
       emergencyFund: gameState.emergencyFund,
@@ -40791,6 +40798,7 @@ function LemonadeStand({ activity, initialState: initialState2, onStateChange, o
   const [notifications, setNotifications] = useState([]);
   const [salesProgress, setSalesProgress] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const salesIntervalRef = useRef(null);
   const heroDescription = activity.description ?? activity.props.description;
   const supplyOptions = activity.props.supplyOptions;
@@ -40981,10 +40989,12 @@ function LemonadeStand({ activity, initialState: initialState2, onStateChange, o
     setSalesProgress(0);
     setNotifications([]);
     setSubmitted(false);
+    submittedRef.current = false;
     addNotification("Game reset successfully!", "info");
   }, [activity.props.initialState, addNotification]);
   const handleSubmitResults = useCallback$1(() => {
-    if (submitted || gameState.revenue === 0) return;
+    if (submittedRef.current || gameState.revenue === 0) return;
+    submittedRef.current = true;
     const totalExpenses = gameState.expenses;
     const totalProfit = gameState.revenue - totalExpenses;
     const answers = {
@@ -41029,7 +41039,7 @@ function LemonadeStand({ activity, initialState: initialState2, onStateChange, o
     setSubmitted(true);
     onSubmit?.(envelope);
     addNotification("Results submitted as practice evidence!", "success");
-  }, [submitted, gameState, activity, onSubmit, addNotification]);
+  }, [gameState, activity, onSubmit, addNotification]);
   const profit = gameState.revenue - gameState.expenses;
   const recipeFeedback = getRecipeFeedback();
   const maxCups = getMaxCupsFromInventory();
@@ -58082,12 +58092,12 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
   const [activeDisaster, setActiveDisaster] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const profit = revenue - expenses;
   const handleNextRound = () => {
-    if (submitted) return;
+    if (submittedRef.current) return;
     if (round >= disasters.length) {
-      setSubmitted(true);
+      submittedRef.current = true;
       const finalCash = cash;
       const roundsSurvived = round;
       setIsComplete(true);
@@ -58148,9 +58158,9 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
     setActiveDisaster(null);
   };
   useEffect(() => {
-    if (cash <= 0 && !isGameOver && !submitted) {
+    if (cash <= 0 && !isGameOver && !submittedRef.current) {
       setIsGameOver(true);
-      setSubmitted(true);
+      submittedRef.current = true;
       const answers = {
         finalCash: 0,
         roundsSurvived: round,
@@ -58187,7 +58197,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
       onSubmit?.(envelope);
       onComplete?.({ finalCash: 0, roundsSurvived: round });
     }
-  }, [cash, isGameOver, submitted, round, activity, disasters.length, onSubmit, onComplete]);
+  }, [cash, isGameOver, round, activity, disasters.length, onSubmit, onComplete]);
   const reset = () => {
     setCash(initialState2.cash);
     setRevenue(initialState2.revenue);
@@ -58196,7 +58206,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
     setActiveDisaster(null);
     setIsGameOver(false);
     setIsComplete(false);
-    setSubmitted(false);
+    submittedRef.current = false;
   };
   return /* @__PURE__ */ jsxs("div", { className: "max-w-5xl mx-auto space-y-6 p-4", children: [
     /* @__PURE__ */ jsxs(Card, { className: "bg-gradient-to-r from-red-900 via-slate-900 to-red-900 text-white border-0 shadow-2xl overflow-hidden relative", children: [
