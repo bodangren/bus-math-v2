@@ -70,4 +70,77 @@ describe('posting balances family', () => {
     expect(parsed.data.answers[changedRow.id]).toBe(studentResponse[changedRow.id]);
     expect(parsed.data.parts).toHaveLength(definition.parts.length);
   });
+
+  it('emits sign-error tag when student enters wrong sign on a nonzero balance', () => {
+    const definition = postingBalancesFamily.generate(2026, {
+      mode: 'assessment',
+      targetAccountCount: 4,
+      postingAccountCount: 3,
+      tolerance: 1,
+    });
+
+    const solution = postingBalancesFamily.solve(definition);
+    const nonzeroRow = definition.rows.find((row) => Number(row.targetId) !== 0);
+    // If no nonzero row, skip (unlikely for valid generation)
+    if (!nonzeroRow) return;
+
+    const studentResponse: PostingBalanceResponse = {
+      ...solution,
+      [nonzeroRow.id]: -Number(nonzeroRow.targetId),
+    };
+
+    const gradeResult = postingBalancesFamily.grade(definition, studentResponse);
+    const partGrade = gradeResult.parts.find((p) => p.partId === nonzeroRow.id);
+    expect(partGrade).toBeDefined();
+    expect(partGrade!.isCorrect).toBe(false);
+    expect(partGrade!.misconceptionTags).toEqual(
+      expect.arrayContaining([expect.stringContaining('sign-error')]),
+    );
+  });
+
+  it('emits computation-error tag when student enters wrong amount with correct sign', () => {
+    const definition = postingBalancesFamily.generate(2026, {
+      mode: 'assessment',
+      targetAccountCount: 4,
+      postingAccountCount: 3,
+      tolerance: 1,
+    });
+
+    const solution = postingBalancesFamily.solve(definition);
+    const nonzeroRow = definition.rows.find((row) => Number(row.targetId) !== 0);
+    if (!nonzeroRow) return;
+
+    // Same sign, different amount
+    const correctValue = Number(nonzeroRow.targetId);
+    const wrongValue = correctValue > 0 ? correctValue + 50 : correctValue - 50;
+    const studentResponse: PostingBalanceResponse = {
+      ...solution,
+      [nonzeroRow.id]: wrongValue,
+    };
+
+    const gradeResult = postingBalancesFamily.grade(definition, studentResponse);
+    const partGrade = gradeResult.parts.find((p) => p.partId === nonzeroRow.id);
+    expect(partGrade).toBeDefined();
+    expect(partGrade!.isCorrect).toBe(false);
+    expect(partGrade!.misconceptionTags).toEqual(
+      expect.arrayContaining([expect.stringContaining('computation-error')]),
+    );
+  });
+
+  it('emits no misconception tags on correct answers', () => {
+    const definition = postingBalancesFamily.generate(2026, {
+      mode: 'assessment',
+      targetAccountCount: 4,
+      postingAccountCount: 3,
+      tolerance: 1,
+    });
+
+    const solution = postingBalancesFamily.solve(definition);
+    const gradeResult = postingBalancesFamily.grade(definition, solution);
+
+    for (const part of gradeResult.parts) {
+      expect(part.isCorrect).toBe(true);
+      expect(part.misconceptionTags).toHaveLength(0);
+    }
+  });
 });
