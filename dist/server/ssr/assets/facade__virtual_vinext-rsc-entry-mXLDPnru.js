@@ -57130,6 +57130,7 @@ function NotebookOrganizer({ activity, onComplete, onSubmit }) {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const resolvedTitle = activity.title ?? activity.displayName ?? "The Notebook Organizer";
   const resolvedDescription = activity.description ?? "Help Sarah sort her messy desk into 'What she has' vs 'What she owes'.";
   const totals = useMemo$1(() => {
@@ -57146,7 +57147,8 @@ function NotebookOrganizer({ activity, onComplete, onSubmit }) {
   const allItemsPlaced = Object.keys(placedItems).length === items.length;
   const correctPlacements = items.every((item) => placedItems[item.id] === item.category);
   useEffect(() => {
-    if (allItemsPlaced && equationBalanced && !isComplete && correctPlacements) {
+    if (allItemsPlaced && equationBalanced && !isComplete && correctPlacements && !submittedRef.current) {
+      submittedRef.current = true;
       const submission = buildSubmission({
         activity,
         items,
@@ -57168,11 +57170,13 @@ function NotebookOrganizer({ activity, onComplete, onSubmit }) {
     setPlacedItems({});
     setIsComplete(false);
     setSubmitted(false);
+    submittedRef.current = false;
   };
   const submitNow = () => {
-    if (!allItemsPlaced || !equationBalanced || !correctPlacements || submitted) {
+    if (!allItemsPlaced || !equationBalanced || !correctPlacements || submittedRef.current) {
       return;
     }
+    submittedRef.current = true;
     const submission = buildSubmission({
       activity,
       items,
