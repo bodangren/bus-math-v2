@@ -24,8 +24,8 @@
 
 ### Tasks
 
-1. [ ] Write tests verifying double-submit protection for NotebookOrganizer
-2. [ ] Implement useRef guard in NotebookOrganizer
-3. [ ] Verify: full lint, full test suite, build
-4. [ ] Close 5 tech-debt items for double-submit guards
-5. [ ] Checkpoint commit
+1. [x] Write tests verifying double-submit protection for NotebookOrganizer
+2. [x] Implement useRef guard in NotebookOrganizer
+3. [x] Verify: full lint, full test suite, build
+4. [x] Close 5 tech-debt items for double-submit guards
+5. [x] Checkpoint commit

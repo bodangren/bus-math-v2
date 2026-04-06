@@ -78,4 +78,39 @@ describe('NotebookOrganizer', () => {
       }),
     );
   });
+
+  it('only calls onSubmit once on rapid double-click of submit button', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    const onComplete = vi.fn();
+
+    render(<NotebookOrganizer activity={activity} onSubmit={onSubmit} onComplete={onComplete} />);
+
+    const cashCard = screen.getByText('Cash on hand').closest('div')?.parentElement?.parentElement?.parentElement;
+    const ownerCard = screen.getByText('Owner contribution').closest('div')?.parentElement?.parentElement?.parentElement;
+    expect(cashCard).toBeTruthy();
+    expect(ownerCard).toBeTruthy();
+
+    await user.click(within(cashCard as HTMLElement).getByRole('button', { name: /^asset$/i }));
+    await user.click(within(ownerCard as HTMLElement).getByRole('button', { name: /^equity$/i }));
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalled();
+    });
+
+    // Reset to allow manual re-submission test
+    await user.click(screen.getByRole('button', { name: /reset/i }));
+
+    // Re-place items
+    const cashCard2 = screen.getByText('Cash on hand').closest('div')?.parentElement?.parentElement?.parentElement;
+    const ownerCard2 = screen.getByText('Owner contribution').closest('div')?.parentElement?.parentElement?.parentElement;
+    await user.click(within(cashCard2 as HTMLElement).getByRole('button', { name: /^asset$/i }));
+    await user.click(within(ownerCard2 as HTMLElement).getByRole('button', { name: /^equity$/i }));
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(2);
+    });
+
+    expect(onComplete).toHaveBeenCalledTimes(2);
+  });
 });

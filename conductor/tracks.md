@@ -77,9 +77,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/post_audit_practice_fixes_20260406/](./tracks/post_audit_practice_fixes_20260406/)*
   *Status: Complete. Fixed misapplied misconception tags in transaction-matrix (context-only) and transaction-effects (classification-error), added misconception tag test coverage for all 3 families (8 new tests), NaN/Infinity guards in 3 depreciation simulators' computation functions, and deduplicated normalizePracticeValue. Closed 6 tech-debt items. Verified lint, test, build.*
 
-- [~] **Track 11: Simulation Double-Submit Guard Standardization**
+- [x] **Track 11: Simulation Double-Submit Guard Standardization**
   *Link: [./tracks/simulation_double_submit_guard_20260406/](./tracks/simulation_double_submit_guard_20260406/)*
-  *Status: In Progress. Phases 1-2 complete: CashFlowChallenge, BusinessStressTest, BudgetBalancer, LemonadeStand converted to useRef guard. Phase 3 pending (NotebookOrganizer). Code review audit for Tracks 9-11 completed 2026-04-06: fixed BusinessStressTest "Back to Lesson" broken state, LemonadeStand resetGame interval leak, CashFlowChallenge onSubmit optional chaining, StraightLineMastery division-by-zero.*
+  *Status: Complete. All 3 phases finished: CashFlowChallenge, BusinessStressTest, BudgetBalancer, LemonadeStand, and NotebookOrganizer all converted to useRef guard. All 5 target simulations now use submittedRef. Verified lint, test, build.*
 
 ## Archive Ledger
 

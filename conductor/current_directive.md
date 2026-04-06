@@ -16,9 +16,9 @@ Every active track must directly support one of these outcomes:
 
 Admin tooling, in-app curriculum authoring, and new content beyond the existing 8 units + capstone are deferred.
 
-## Next High-Level Priorities (post code-review Tracks 9–11, 2026-04-06)
+## Next High-Level Priorities (post double-submit standardization, 2026-04-06)
 
-1. **Complete Track 11 Phase 3** — NotebookOrganizer useRef double-submit guard (1 remaining simulation).
+1. ~~**Complete Track 11 Phase 3** — NotebookOrganizer useRef double-submit guard~~ — Done.
 2. **DDBComparisonMastery submittedRef guard** — Exercise component's handleSubmit lacks ref-based double-submit protection; relies on disabled prop only.
 3. **BusinessStressTest submitted state** — No visual disabled state on buttons after submission; submittedRef silently blocks with no UI feedback.
 4. **Simulation Activity Prop Type Standardization** — 5 simulations (4–8) use ad-hoc inline types instead of Zod schemas. Standardize to match first 3 simulations.
