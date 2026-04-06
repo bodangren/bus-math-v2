@@ -57400,6 +57400,7 @@ function GrowthPuzzle({ activity, onComplete, onSubmit }) {
   const [selections, setSelections] = useState([]);
   const [showInstructions, setShowInstructions] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const submittedRef = useRef(false);
   const remainingProfit = useMemo$1(() => {
     const spent = selections.reduce((sum, id) => {
       const option = options.find((o) => o.id === id);
@@ -57428,6 +57429,8 @@ function GrowthPuzzle({ activity, onComplete, onSubmit }) {
     }
   };
   const handleFinalize = () => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     setIsComplete(true);
     onComplete?.({ selections, stats });
     if (onSubmit) {
@@ -57472,6 +57475,7 @@ function GrowthPuzzle({ activity, onComplete, onSubmit }) {
   const resetGame = () => {
     setSelections([]);
     setIsComplete(false);
+    submittedRef.current = false;
   };
   return /* @__PURE__ */ jsxs("div", { className: "max-w-5xl mx-auto space-y-6 p-4", children: [
     /* @__PURE__ */ jsx(Card, { className: "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200", children: /* @__PURE__ */ jsxs(CardHeader, { className: "text-center", children: [
