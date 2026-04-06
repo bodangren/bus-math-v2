@@ -378,10 +378,7 @@ export const classificationFamily: ProblemFamily<ClassificationDefinition, Class
           tags.push(`confused-with:${normalizedAnswer}`);
         }
         if (definition.categorySet === 'account-type' && normalizedAnswer) {
-          const answerAccount = practiceAccounts.find((a) => a.id === normalizedAnswer);
-          if (answerAccount && answerAccount.accountType !== part.targetId) {
-            tags.push('wrong-account-type');
-          }
+          tags.push(...misconceptionTags('wrong-account-type'));
         }
         tags.push(...(part.details.commonConfusionPairs ?? []).map((confusionId) => `confused-with:${confusionId}`));
       }

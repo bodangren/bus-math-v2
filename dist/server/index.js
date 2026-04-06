@@ -25833,7 +25833,17 @@ const journalEntryFamily = {
         } else {
           tags.push(`journal-entry:${definition.scenario.kind}:${part.id}`);
           if (rawAnswer.accountId === expectedLine.accountId) {
-            tags.push(...misconceptionTags("debit-credit-reversal"));
+            const studentDebit = Number(rawAnswer.debit) ?? 0;
+            const studentCredit = Number(rawAnswer.credit) ?? 0;
+            const expectedDebit = Number(expectedLine.debit) ?? 0;
+            const expectedCredit = Number(expectedLine.credit) ?? 0;
+            const studentOnDebitSide = studentDebit > 0 && studentCredit === 0;
+            const expectedOnDebitSide = expectedDebit > 0 && expectedCredit === 0;
+            if (studentOnDebitSide !== expectedOnDebitSide) {
+              tags.push(...misconceptionTags("debit-credit-reversal"));
+            } else {
+              tags.push(...misconceptionTags("computation-error"));
+            }
           } else if (rawAnswer.debit === 0 && rawAnswer.credit === 0) {
             tags.push(...misconceptionTags("incomplete-entry"));
           } else {

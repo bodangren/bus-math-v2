@@ -78,7 +78,7 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
   const [activeStage, setActiveStage] = useState(0)
   const [selectedScenario, setSelectedScenario] = useState('Base')
   const [selectedMethod, setSelectedMethod] = useState('FIFO')
-  const [, setCompleted] = useState(false)
+  const [completed, setCompleted] = useState(false)
 
   const compositeKey = `${selectedScenario}|${selectedMethod}`
   const lookup = methodSummary.find(r => r.key === compositeKey)
@@ -86,6 +86,7 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
   const methods = ['FIFO', 'LIFO', 'Weighted Average']
 
   const handleComplete = useCallback(() => {
+    if (completed) return
     setCompleted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
@@ -97,7 +98,7 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
       }),
     )
     onComplete?.()
-  }, [selectedScenario, selectedMethod, lookup, onSubmit, onComplete, activity.id, compositeKey])
+  }, [completed, selectedScenario, selectedMethod, lookup, onSubmit, onComplete, activity.id, compositeKey])
 
   return (
     <div className="space-y-6">
@@ -137,7 +138,7 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
           {activeStage < stages.length - 1 ? (
             <Button onClick={() => setActiveStage(activeStage + 1)} className="bg-green-700">Next Stage <ArrowRight className="ml-2 h-4 w-4" /></Button>
           ) : (
-            <Button onClick={handleComplete} className="bg-green-700"><CheckCircle2 className="h-4 w-4 mr-2" />Complete</Button>
+            <Button onClick={handleComplete} className="bg-green-700" disabled={completed}><CheckCircle2 className="h-4 w-4 mr-2" />Complete</Button>
           )}
         </CardContent>
       </Card>
