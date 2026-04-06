@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { RotateCcw, Target } from 'lucide-react';
@@ -507,11 +507,19 @@ function CategorizationInteractive<T extends CategorizationListItem>({
     [items],
   );
 
+  const [announcement, setAnnouncement] = useState('');
   const { availableItems, placements, attempts, score, completed, handleDragEnd, moveItemToZone, reset } = useCategorizationExercise(normalizedItems, zoneIds, {
     shuffleItems,
     resetKey,
     onComplete,
   });
+
+  const announceMove = (itemLabel: string, destinationZoneLabel: string | null) => {
+    const message = destinationZoneLabel
+      ? `${itemLabel} moved to ${destinationZoneLabel}`
+      : `${itemLabel} returned to item bank`;
+    setAnnouncement(message);
+  };
 
   const renderMoveControl = (item: T, currentZoneId: string | null = null) => (
     <label className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-600">
@@ -525,7 +533,14 @@ function CategorizationInteractive<T extends CategorizationListItem>({
             return;
           }
 
-          moveItemToZone(item.id, nextZoneId === 'bank' ? null : nextZoneId);
+          if (nextZoneId === 'bank') {
+            announceMove(item.label, null);
+            moveItemToZone(item.id, null);
+          } else {
+            const zone = zones.find((z) => z.id === nextZoneId);
+            announceMove(item.label, zone?.label ?? nextZoneId);
+            moveItemToZone(item.id, nextZoneId);
+          }
         }}
         className="min-h-11 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
@@ -544,6 +559,19 @@ function CategorizationInteractive<T extends CategorizationListItem>({
     </label>
   );
 
+  const onDragEndWithAnnouncement = (result: import('@hello-pangea/dnd').DropResult) => {
+    const itemId = result.draggableId;
+    const item = [...availableItems, ...Object.values(placements).flat()].find((entry) => entry.id === itemId);
+    const destinationZoneId = result.destination?.droppableId?.startsWith('zone-')
+      ? result.destination.droppableId.replace('zone-', '')
+      : null;
+    const destZone = destinationZoneId ? zones.find((z) => z.id === destinationZoneId) : null;
+    if (item) {
+      announceMove(item.label, destZone?.label ?? null);
+    }
+    handleDragEnd(result);
+  };
+
   const renderZone = (zone: CategorizationListZone) => (
     <Droppable droppableId={getZoneDroppableId(zone.id)}>
       {(provided) => (
@@ -561,7 +589,7 @@ function CategorizationInteractive<T extends CategorizationListItem>({
             const detail = itemMeta?.description ?? item.description;
             const isCorrect = item.targetId === zone.id;
 
-            return (
+  return (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(dragProvided, snapshot) => (
                   <div
@@ -622,7 +650,10 @@ function CategorizationInteractive<T extends CategorizationListItem>({
           </div>
         )}
 
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <DragDropContext onDragEnd={onDragEndWithAnnouncement}>
+          <div className="sr-only" aria-live="polite" aria-atomic="true">
+            {announcement}
+          </div>
           <div className="grid gap-6 xl:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.65fr)]">
             <section className="rounded-[1.5rem] border border-slate-300 bg-white/90 p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between gap-3">

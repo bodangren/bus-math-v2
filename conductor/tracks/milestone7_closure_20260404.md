@@ -1,6 +1,6 @@
 # Track: Milestone 7 Closure and Production Polish
 
-**Status**: [~] In Progress
+**Status**: [~] In Progress — Phase 1 complete
 **Created**: 2026-04-04
 **Parent Milestone**: 7 — Practice Contract and Evidence Loop
 
@@ -18,19 +18,19 @@ Close out remaining Milestone 7 tech debt, harden production readiness, and ensu
 ### Phase 1: Accessibility and UX Polish
 **Goal**: Address open accessibility gaps and extract shared helpers
 
-1. **CategorizationList live-region announcements**
+1. **CategorizationList live-region announcements** [x]
    - Add `aria-live="polite"` summary strip to `CategorizationList.tsx`
    - Announce drag events, placement changes, and score updates
    - Follow existing pattern from `SelectionMatrix.tsx` (announcement state + sr-only div)
 
-2. **Extract shared preview panel builder**
+2. **Extract shared preview panel builder** [x]
    - Identify duplicated scenario-panel JSX between teacher and guided preview variants
    - Create reusable `ScenarioPanel` component
    - Update dev preview surfaces to use shared component
 
-3. **Row-only projection helper for SelectionMatrix**
+3. **Row-only projection helper for SelectionMatrix** [x]
    - Create shared helper to strip numeric metadata from mixed response shapes
-   - Update Family C/F/L preview wiring to use helper
+   - Update Family C/F/K preview wiring to use helper
    - Prevent future drift when new families use SelectionMatrix
 
 ### Phase 2: Code Quality and Infrastructure

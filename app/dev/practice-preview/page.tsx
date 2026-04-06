@@ -6,10 +6,12 @@ import {
   AccountingEquationLayout,
   CategorizationList,
   JournalEntryTable,
+  ScenarioPanel,
   SelectionMatrix,
   TrialBalanceErrorMatrix,
   StatementLayout,
   TAccountInteractive,
+  projectToRowSelections,
   type JournalEntryRowFeedback,
   type SelectionMatrixRowFeedback,
 } from '@/components/activities/shared';
@@ -452,12 +454,14 @@ export default function PracticePreviewPage() {
     amount: transactionEffectsDefinition.event.amount,
     'equity-reason': transactionEffectsSolution['equity-reason'],
   };
-  const transactionEffectsMatrixValue = Object.fromEntries(
-    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsSolution[row.id]]),
-  ) as Record<string, string | string[]>;
-  const transactionEffectsMatrixStudentValue = Object.fromEntries(
-    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsStudentResponse[row.id]]),
-  ) as Record<string, string | string[]>;
+  const transactionEffectsMatrixValue = projectToRowSelections(
+    transactionEffectsDefinition.rows,
+    transactionEffectsSolution,
+  );
+  const transactionEffectsMatrixStudentValue = projectToRowSelections(
+    transactionEffectsDefinition.rows,
+    transactionEffectsStudentResponse,
+  );
   const transactionEffectsGrade = transactionEffectsFamily.grade(transactionEffectsDefinition, transactionEffectsStudentResponse);
   const transactionEffectsFeedback = buildTransactionEffectsReviewFeedback(
     transactionEffectsDefinition,
@@ -477,12 +481,14 @@ export default function PracticePreviewPage() {
     'offset-account': 'equity-reason',
     equity: 'direction',
   };
-  const transactionMatrixMatrixValue = Object.fromEntries(
-    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixSolution[row.id]]),
-  ) as Record<string, string | string[]>;
-  const transactionMatrixMatrixStudentValue = Object.fromEntries(
-    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixStudentResponse[row.id]]),
-  ) as Record<string, string | string[]>;
+  const transactionMatrixMatrixValue = projectToRowSelections(
+    transactionMatrixDefinition.rows,
+    transactionMatrixSolution,
+  );
+  const transactionMatrixMatrixStudentValue = projectToRowSelections(
+    transactionMatrixDefinition.rows,
+    transactionMatrixStudentResponse,
+  );
   const transactionMatrixGrade = transactionMatrixFamily.grade(transactionMatrixDefinition, transactionMatrixStudentResponse);
   const transactionMatrixFeedback = buildTransactionMatrixReviewFeedback(
     transactionMatrixDefinition,
@@ -956,19 +962,14 @@ export default function PracticePreviewPage() {
               columns={adjustmentEffectsDefinition.columns}
               defaultValue={adjustmentEffectsSolution}
               scenarioPanel={
-                <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                  <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
-                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.scenario}</div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What was missed</div>
-                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.missedAdjustment}</div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Assumption</div>
-                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.periodEndAssumption}</div>
-                  </div>
-                  <p className="mt-3 text-xs text-slate-500">
-                    Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements.
-                  </p>
-                </div>
+                <ScenarioPanel
+                  rows={[
+                    { label: 'Scenario', value: adjustmentEffectsDefinition.scenario.scenario },
+                    { label: 'What was missed', value: adjustmentEffectsDefinition.scenario.missedAdjustment },
+                    { label: 'Assumption', value: adjustmentEffectsDefinition.scenario.periodEndAssumption },
+                  ]}
+                  guidance="Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements."
+                />
               }
             />
 
@@ -990,19 +991,14 @@ export default function PracticePreviewPage() {
                 ).size,
               }}
               scenarioPanel={
-                <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                  <div className="grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]">
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Scenario</div>
-                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.scenario}</div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What was missed</div>
-                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.missedAdjustment}</div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Assumption</div>
-                    <div className="text-sm text-slate-700">{adjustmentEffectsDefinition.scenario.periodEndAssumption}</div>
-                  </div>
-                  <p className="mt-3 text-xs text-slate-500">
-                    Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements.
-                  </p>
-                </div>
+                <ScenarioPanel
+                  rows={[
+                    { label: 'Scenario', value: adjustmentEffectsDefinition.scenario.scenario },
+                    { label: 'What was missed', value: adjustmentEffectsDefinition.scenario.missedAdjustment },
+                    { label: 'Assumption', value: adjustmentEffectsDefinition.scenario.periodEndAssumption },
+                  ]}
+                  guidance="Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements."
+                />
               }
             />
           </div>
@@ -1084,16 +1080,14 @@ export default function PracticePreviewPage() {
                   columns={transactionEffectsDefinition.columns}
                   defaultValue={transactionEffectsMatrixValue}
                   scenarioPanel={
-                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                      <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
-                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.narrative}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Amount</div>
-                        <div className="text-sm text-slate-700">{formatAccountingAmount(transactionEffectsDefinition.event.amount)}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Why equity changes</div>
-                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.equityReason}</div>
-                      </div>
-                    </div>
+                    <ScenarioPanel
+                      labelWidth={140}
+                      rows={[
+                        { label: 'Transaction', value: transactionEffectsDefinition.event.narrative },
+                        { label: 'Amount', value: formatAccountingAmount(transactionEffectsDefinition.event.amount) },
+                        { label: 'Why equity changes', value: transactionEffectsDefinition.event.equityReason },
+                      ]}
+                    />
                   }
                 />
 
@@ -1115,16 +1109,14 @@ export default function PracticePreviewPage() {
                     ).size,
                   }}
                   scenarioPanel={
-                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                      <div className="grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]">
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
-                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.narrative}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Amount</div>
-                        <div className="text-sm text-slate-700">{formatAccountingAmount(transactionEffectsDefinition.event.amount)}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Why equity changes</div>
-                        <div className="text-sm text-slate-700">{transactionEffectsDefinition.event.equityReason}</div>
-                      </div>
-                    </div>
+                    <ScenarioPanel
+                      labelWidth={140}
+                      rows={[
+                        { label: 'Transaction', value: transactionEffectsDefinition.event.narrative },
+                        { label: 'Amount', value: formatAccountingAmount(transactionEffectsDefinition.event.amount) },
+                        { label: 'Why equity changes', value: transactionEffectsDefinition.event.equityReason },
+                      ]}
+                    />
                   }
                 />
               </div>
@@ -1146,20 +1138,15 @@ export default function PracticePreviewPage() {
                 columns={transactionMatrixDefinition.columns}
                 defaultValue={transactionMatrixMatrixValue}
                 scenarioPanel={
-                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
-                      <div className="text-sm text-slate-700">{transactionMatrixScenario.narrative}</div>
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business context</div>
-                      <div className="text-sm text-slate-700">
-                        {transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}
-                      </div>
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Source document clue</div>
-                      <div className="text-sm text-slate-700">{transactionMatrixScenario.tags.join(' • ')}</div>
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
-                      <div className="text-sm text-slate-700">{transactionMatrixReason}</div>
-                    </div>
-                  </div>
+                  <ScenarioPanel
+                    labelWidth={160}
+                    rows={[
+                      { label: 'Transaction', value: transactionMatrixScenario.narrative },
+                      { label: 'Business context', value: <>{transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}</> },
+                      { label: 'Source document clue', value: transactionMatrixScenario.tags.join(' • ') },
+                      { label: 'What to decide first', value: transactionMatrixReason },
+                    ]}
+                  />
                 }
               />
 
@@ -1181,20 +1168,15 @@ export default function PracticePreviewPage() {
                   ).size,
                 }}
                 scenarioPanel={
-                  <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                    <div className="grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]">
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Transaction</div>
-                      <div className="text-sm text-slate-700">{transactionMatrixScenario.narrative}</div>
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Business context</div>
-                      <div className="text-sm text-slate-700">
-                        {transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}
-                      </div>
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Source document clue</div>
-                      <div className="text-sm text-slate-700">{transactionMatrixScenario.tags.join(' • ')}</div>
-                      <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to decide first</div>
-                      <div className="text-sm text-slate-700">{transactionMatrixReason}</div>
-                    </div>
-                  </div>
+                  <ScenarioPanel
+                    labelWidth={160}
+                    rows={[
+                      { label: 'Transaction', value: transactionMatrixScenario.narrative },
+                      { label: 'Business context', value: <>{transactionMatrixScenario.context} context • {transactionMatrixScenario.settlement ?? 'cash'}</> },
+                      { label: 'Source document clue', value: transactionMatrixScenario.tags.join(' • ') },
+                      { label: 'What to decide first', value: transactionMatrixReason },
+                    ]}
+                  />
                 }
               />
             </div>
@@ -1781,16 +1763,14 @@ export default function PracticePreviewPage() {
                   sections={statementSubtotalsDefinition.sections}
                   defaultValues={Object.fromEntries(statementSubtotalsDefinition.parts.map((part) => [part.id, '']))}
                   scenarioPanel={
-                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                      <div className="grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]">
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Statement type</div>
-                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.statementLabel}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Blanks</div>
-                        <div className="text-sm text-slate-700">{statementSubtotalsBlankCount}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
-                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.guidance}</div>
-                      </div>
-                    </div>
+                    <ScenarioPanel
+                      labelWidth={150}
+                      rows={[
+                        { label: 'Statement type', value: statementSubtotalsDefinition.scaffolding.statementLabel },
+                        { label: 'Blanks', value: statementSubtotalsBlankCount },
+                        { label: 'What to notice', value: statementSubtotalsDefinition.scaffolding.guidance },
+                      ]}
+                    />
                   }
                   scaffoldText={statementSubtotalsDefinition.scaffolding.guidance}
                 />
@@ -1807,16 +1787,14 @@ export default function PracticePreviewPage() {
                   readOnly
                   teacherView
                   scenarioPanel={
-                    <div className="rounded-2xl border bg-muted/15 px-4 py-4">
-                      <div className="grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]">
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Statement type</div>
-                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.statementLabel}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Blanks</div>
-                        <div className="text-sm text-slate-700">{statementSubtotalsBlankCount}</div>
-                        <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">What to notice</div>
-                        <div className="text-sm text-slate-700">{statementSubtotalsDefinition.scaffolding.guidance}</div>
-                      </div>
-                    </div>
+                    <ScenarioPanel
+                      labelWidth={150}
+                      rows={[
+                        { label: 'Statement type', value: statementSubtotalsDefinition.scaffolding.statementLabel },
+                        { label: 'Blanks', value: statementSubtotalsBlankCount },
+                        { label: 'What to notice', value: statementSubtotalsDefinition.scaffolding.guidance },
+                      ]}
+                    />
                   }
                   scaffoldText={statementSubtotalsDefinition.scaffolding.guidance}
                   reviewSummary={[
