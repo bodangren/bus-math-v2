@@ -40052,6 +40052,7 @@ const getIconForProduct = (iconName) => {
 function InventoryManager({ activity, onSubmit }) {
   const runtimeIdCounterRef = useRef(0);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const generateRuntimeId = useCallback$1((prefix2) => {
     runtimeIdCounterRef.current += 1;
     return `${prefix2}-${Date.now()}-${runtimeIdCounterRef.current}`;
@@ -40311,10 +40312,11 @@ function InventoryManager({ activity, onSubmit }) {
     });
     setNotifications([]);
     setSubmitted(false);
+    submittedRef.current = false;
     addNotification("Game reset successfully", "info");
   }, [activity, addNotification]);
   const handleSubmit = useCallback$1(() => {
-    if (submitted) return;
+    if (submittedRef.current) return;
     if (onSubmit && gameState.gameStatus !== "playing") {
       const finalProfit = gameState.totalRevenue - gameState.totalExpenses;
       const answers = {
@@ -40357,11 +40359,12 @@ function InventoryManager({ activity, onSubmit }) {
           inventoryTurnover: gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(gameState.products.reduce((sum, p) => sum + p.quantity * p.cost, 0), 1) : 0
         }
       });
+      submittedRef.current = true;
       onSubmit(envelope);
       setSubmitted(true);
       addNotification("Results submitted as practice evidence!", "success");
     }
-  }, [submitted, gameState, onSubmit, addNotification, activity.title]);
+  }, [gameState, onSubmit, addNotification, activity.title]);
   const profit = gameState.totalRevenue - gameState.totalExpenses;
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + p.quantity * p.cost, 0);
   const inventoryTurnover = gameState.totalRevenue > 0 ? gameState.totalRevenue / Math.max(totalInventoryValue, 1) : 0;
@@ -41471,6 +41474,7 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
   });
   const [showInstructions, setShowInstructions] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const timerRef = useRef(null);
   const calculateCompleteness = useCallback$1((content, speakingNotes, title) => {
     let score = 0;
@@ -41564,7 +41568,7 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
     URL.revokeObjectURL(url);
   }, [pitchState]);
   const handleSubmit = useCallback$1(() => {
-    if (submitted) return;
+    if (submittedRef.current) return;
     if (onSubmit) {
       const overallProgress2 = calculateOverallProgress();
       const sections = Object.entries(pitchState.sections);
@@ -41605,10 +41609,11 @@ function PitchPresentationBuilder({ activity, onSubmit }) {
           totalPracticeTime: pitchState.totalPracticeTime
         }
       });
+      submittedRef.current = true;
       onSubmit(envelope);
       setSubmitted(true);
     }
-  }, [submitted, pitchState, onSubmit, calculateOverallProgress, activity]);
+  }, [pitchState, onSubmit, calculateOverallProgress, activity]);
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -58115,12 +58120,14 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
   const [activeDisaster, setActiveDisaster] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const submittedRef = useRef(false);
   const profit = revenue - expenses;
   const handleNextRound = () => {
     if (submittedRef.current) return;
     if (round >= disasters.length) {
       submittedRef.current = true;
+      setSubmitted(true);
       const finalCash = cash;
       const roundsSurvived = round;
       setIsComplete(true);
@@ -58184,6 +58191,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
     if (cash <= 0 && !isGameOver && !submittedRef.current) {
       setIsGameOver(true);
       submittedRef.current = true;
+      setSubmitted(true);
       const answers = {
         finalCash: 0,
         roundsSurvived: round,
@@ -58229,6 +58237,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
     setActiveDisaster(null);
     setIsGameOver(false);
     setIsComplete(false);
+    setSubmitted(false);
     submittedRef.current = false;
   };
   return /* @__PURE__ */ jsxs("div", { className: "max-w-5xl mx-auto space-y-6 p-4", children: [
@@ -58349,7 +58358,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
       /* @__PURE__ */ jsx(Skull, { className: "w-20 h-20 text-slate-900 mx-auto" }),
       /* @__PURE__ */ jsx("h2", { className: "text-4xl font-black text-slate-900", children: "BANKRUPT!" }),
       /* @__PURE__ */ jsx("p", { className: "text-xl text-slate-600 max-w-xl mx-auto font-medium", children: "Sarah's cash hit zero. In the real world, this is where the story ends. A linked financial model helps you see these disasters coming before they hit!" }),
-      /* @__PURE__ */ jsxs(Button, { size: "lg", className: "bg-slate-900 px-10 h-14 text-xl", onClick: reset, children: [
+      /* @__PURE__ */ jsxs(Button, { size: "lg", className: "bg-slate-900 px-10 h-14 text-xl", onClick: reset, disabled: submitted, children: [
         /* @__PURE__ */ jsx(RotateCcw, { className: "w-5 h-5 mr-2" }),
         "Restart Test"
       ] })
@@ -58381,7 +58390,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
           ". This is the power of a fully integrated model."
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl", onClick: reset, children: "Back to Lesson" })
+      /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl", onClick: reset, disabled: submitted, children: "Back to Lesson" })
     ] }) })
   ] });
 }
@@ -58626,6 +58635,7 @@ const commissionSheet = (inputs, result) => [
 function PayStructureDecisionLab({ onSubmit }) {
   const [current2, setCurrent] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
   const [hourlyInputs, setHourlyInputs] = useState(initialHourly);
   const [salaryInputs, setSalaryInputs] = useState(initialSalary);
   const [commissionInputs, setCommissionInputs] = useState(initialCommission);
@@ -58814,7 +58824,7 @@ function PayStructureDecisionLab({ onSubmit }) {
               Button,
               {
                 onClick: () => {
-                  if (submitted) return;
+                  if (submittedRef.current) return;
                   const answers = {
                     hourlyGross: hourlyResult.gross,
                     hourlyNet: hourlyResult.net,
@@ -58850,6 +58860,7 @@ function PayStructureDecisionLab({ onSubmit }) {
                       totalNetCommission: commissionResult.net
                     }
                   });
+                  submittedRef.current = true;
                   onSubmit(envelope);
                   setSubmitted(true);
                 },
