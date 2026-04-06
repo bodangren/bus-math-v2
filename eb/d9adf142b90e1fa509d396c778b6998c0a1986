@@ -1,0 +1,1 @@
+milestone7_closure Phase 3: Removed 72 legacy Supabase/Drizzle files (42MB binary, CLI config, 29 SQL migrations, edge functions, tutorial components, diagnostic scripts, archived Drizzle migrations, 4 config guard tests). Milestone 7 complete. Lint: 1 warning (pre-existing). Tests: 1454 pass, 2 pre-existing failures (Supabase RLS). Build: clean.
