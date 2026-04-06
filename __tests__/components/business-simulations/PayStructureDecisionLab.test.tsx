@@ -68,6 +68,7 @@ describe('PayStructureDecisionLab', () => {
     expect(envelope).toHaveProperty('mode', 'guided_practice')
     expect(envelope).toHaveProperty('status', 'submitted')
     expect(envelope).toHaveProperty('parts')
+    expect(envelope.parts.length).toBeGreaterThan(0)
     expect(envelope).toHaveProperty('artifact')
     expect(envelope.artifact).toHaveProperty('kind', 'pay_structure')
   })

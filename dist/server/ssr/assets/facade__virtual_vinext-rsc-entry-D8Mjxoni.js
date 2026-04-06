@@ -57537,11 +57537,11 @@ function GrowthPuzzle({ activity, onComplete, onSubmit }) {
           /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-xs font-bold", children: [
             /* @__PURE__ */ jsx("span", { children: "ALLOCATED" }),
             /* @__PURE__ */ jsxs("span", { children: [
-              Math.round((totalProfit - remainingProfit) / totalProfit * 100),
+              totalProfit > 0 ? Math.round((totalProfit - remainingProfit) / totalProfit * 100) : 0,
               "%"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Progress, { value: (totalProfit - remainingProfit) / totalProfit * 100, className: "h-3 bg-emerald-800" })
+          /* @__PURE__ */ jsx(Progress, { value: totalProfit > 0 ? (totalProfit - remainingProfit) / totalProfit * 100 : 0, className: "h-3 bg-emerald-800" })
         ] })
       ] }) }),
       /* @__PURE__ */ jsxs(Card, { className: "md:col-span-2 border-2 bg-slate-50 border-slate-200", children: [
@@ -57558,7 +57558,7 @@ function GrowthPuzzle({ activity, onComplete, onSubmit }) {
                 stats.reinvestment.toLocaleString()
               ] })
             ] }),
-            /* @__PURE__ */ jsx(Progress, { value: stats.reinvestment / totalProfit * 100, className: "h-4 bg-slate-200" })
+            /* @__PURE__ */ jsx(Progress, { value: totalProfit > 0 ? stats.reinvestment / totalProfit * 100 : 0, className: "h-4 bg-slate-200" })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
             /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-end", children: [
@@ -57571,7 +57571,7 @@ function GrowthPuzzle({ activity, onComplete, onSubmit }) {
                 stats.distribution.toLocaleString()
               ] })
             ] }),
-            /* @__PURE__ */ jsx(Progress, { value: stats.distribution / totalProfit * 100, className: "h-4 bg-slate-200" })
+            /* @__PURE__ */ jsx(Progress, { value: totalProfit > 0 ? stats.distribution / totalProfit * 100 : 0, className: "h-4 bg-slate-200" })
           ] })
         ] })
       ] })

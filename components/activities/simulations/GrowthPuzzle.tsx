@@ -219,9 +219,9 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
             <div className="mt-6 flex flex-col gap-2">
               <div className="flex justify-between text-xs font-bold">
                 <span>ALLOCATED</span>
-                <span>{Math.round(((totalProfit - remainingProfit) / totalProfit) * 100)}%</span>
+                <span>{totalProfit > 0 ? Math.round(((totalProfit - remainingProfit) / totalProfit) * 100) : 0}%</span>
               </div>
-              <Progress value={((totalProfit - remainingProfit) / totalProfit) * 100} className="h-3 bg-emerald-800" />
+              <Progress value={totalProfit > 0 ? ((totalProfit - remainingProfit) / totalProfit) * 100 : 0} className="h-3 bg-emerald-800" />
             </div>
           </CardContent>
         </Card>
@@ -239,7 +239,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
                 </div>
                 <div className="text-xl font-black text-emerald-600">+${stats.reinvestment.toLocaleString()}</div>
               </div>
-              <Progress value={(stats.reinvestment / totalProfit) * 100} className="h-4 bg-slate-200" />
+              <Progress value={totalProfit > 0 ? (stats.reinvestment / totalProfit) * 100 : 0} className="h-4 bg-slate-200" />
             </div>
 
             <div className="space-y-2">
@@ -250,7 +250,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
                 </div>
                 <div className="text-xl font-black text-blue-600">+${stats.distribution.toLocaleString()}</div>
               </div>
-              <Progress value={(stats.distribution / totalProfit) * 100} className="h-4 bg-slate-200" />
+              <Progress value={totalProfit > 0 ? (stats.distribution / totalProfit) * 100 : 0} className="h-4 bg-slate-200" />
             </div>
           </CardContent>
         </Card>

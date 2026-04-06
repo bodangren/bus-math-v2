@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -175,8 +175,8 @@ export function DDBComparisonMastery({ activity, onSubmit, onComplete }: DDBComp
     setProblem(generateProblem()); setUserAnswer(''); setSubmitted(false); setCorrect(null); setShowWorkedExample(false)
   }, [])
 
-  const ddbSchedule = computeDDBSchedule(problem.cost, problem.salvageValue, problem.usefulLife)
-  const slSchedule = computeSLSchedule(problem.cost, problem.salvageValue, problem.usefulLife)
+  const ddbSchedule = useMemo(() => computeDDBSchedule(problem.cost, problem.salvageValue, problem.usefulLife), [problem.cost, problem.salvageValue, problem.usefulLife])
+  const slSchedule = useMemo(() => computeSLSchedule(problem.cost, problem.salvageValue, problem.usefulLife), [problem.cost, problem.salvageValue, problem.usefulLife])
   const progressToMastery = (consecutiveCorrect / masteryTarget) * 100
 
   return (
@@ -230,7 +230,7 @@ export function DDBComparisonMastery({ activity, onSubmit, onComplete }: DDBComp
             {!submitted ? (
               <>
                 <Button onClick={handleSubmit} disabled={!userAnswer} className="bg-purple-600 hover:bg-purple-700">Check Answer</Button>
-                <Button variant="outline" onClick={() => { setShowWorkedExample(true); setSubmitted(true); setCorrect(false) }} className="border-purple-300 text-purple-700">
+                <Button variant="outline" onClick={() => { setShowWorkedExample(true) }} className="border-purple-300 text-purple-700">
                   <HelpCircle className="h-4 w-4 mr-1" />Show Schedule
                 </Button>
               </>

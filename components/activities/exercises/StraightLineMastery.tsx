@@ -209,8 +209,6 @@ export function StraightLineMastery({ activity, onSubmit, onComplete }: Straight
 
   const handleShowExample = useCallback(() => {
     setShowWorkedExample(true)
-    setSubmitted(true)
-    setCorrect(false)
   }, [])
 
   const progressToMastery = (consecutiveCorrect / masteryTarget) * 100
