@@ -69,9 +69,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/milestone7_final_closure_20260406/](./tracks/milestone7_final_closure_20260406/)*
   *Status: Complete. All 4 phases finished: envelope test quality (status/parts assertions on 8 test files), NaN guards on 3 depreciation simulators, GrowthPuzzle double-submit ref guard, StraightLineMastery useMemo fix, CapitalizationExpenseMastery Show Example fix. Verified lint, test, build.*
 
-- [~] **Track 9: ClassificationActivity Schema Fix**
+- [x] **Track 9: ClassificationActivity Schema Fix**
   *Link: [./tracks/classification_activity_schema_fix_20260406/](./tracks/classification_activity_schema_fix_20260406/)*
-  *Status: In Progress. Add missing 'classification' key to activityPropsSchemas, register component in registry, add decomposition test assertions.*
+  *Status: Complete. Added 'classification' schema entry to categorizationActivityPropsSchemas, registered ClassificationActivity in activityRegistry, added decomposition test assertions. Verified lint, test, build.*
 
 ## Archive Ledger
 
