@@ -44,3 +44,5 @@
 - When applying submittedRef guards to exercise components, check ALL exercise components in the same directory — the pattern gap is usually systematic, not isolated.
 - Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
 - Code review audits should inventory ALL components in a category (simulations, exercises) to identify the full scope of missing guards — fixing only the named targets leaves siblings unprotected.
+- "Continue Lesson" / "Try Again" buttons that only set isComplete=false must NOT re-arm submittedRef — partial reset without clearing negotiation state allows re-submission of the same envelope.
+- Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.

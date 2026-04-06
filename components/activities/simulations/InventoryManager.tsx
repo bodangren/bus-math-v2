@@ -400,6 +400,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
       profitTarget: activity.initialState.profitTarget
     })
     setNotifications([])
+    setSubmitted(false)
     addNotification('Game reset successfully', 'info')
   }, [activity, addNotification])
 

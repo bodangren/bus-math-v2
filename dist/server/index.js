@@ -30627,7 +30627,7 @@ function buildAsset(seed, method) {
 }
 function buildStraightLineParts(asset, tolerance) {
   const depreciableBase = asset.cost - asset.salvageValue;
-  const annualDepreciation = Math.round(depreciableBase / asset.usefulLifeYears);
+  const annualDepreciation = Math.round(depreciableBase / (asset.usefulLifeYears || 1));
   const bookValueYear1 = asset.cost - annualDepreciation;
   return [
     {
@@ -30673,7 +30673,7 @@ function buildStraightLineParts(asset, tolerance) {
   ];
 }
 function buildDDBParts(asset, tolerance) {
-  const slRate = 1 / asset.usefulLifeYears;
+  const slRate = 1 / (asset.usefulLifeYears || 1);
   const ddbRate = slRate * 2;
   const year1Dep = Math.round(asset.cost * ddbRate);
   const bookValueYear1 = asset.cost - year1Dep;
@@ -30781,8 +30781,8 @@ function scoreNumericPart$1(expected, actual, tolerance) {
 function buildChainText(definition, part) {
   const asset = definition.asset;
   const depreciableBase = asset.cost - asset.salvageValue;
-  const annualDepreciation = Math.round(depreciableBase / asset.usefulLifeYears);
-  const slRate = 1 / asset.usefulLifeYears;
+  const annualDepreciation = Math.round(depreciableBase / (asset.usefulLifeYears || 1));
+  const slRate = 1 / (asset.usefulLifeYears || 1);
   const ddbRate = slRate * 2;
   const year1Ddb = Math.round(asset.cost * ddbRate);
   const bookValueYear1 = asset.cost - year1Ddb;

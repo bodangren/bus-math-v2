@@ -40310,6 +40310,7 @@ function InventoryManager({ activity, onSubmit }) {
       profitTarget: activity.initialState.profitTarget
     });
     setNotifications([]);
+    setSubmitted(false);
     addNotification("Game reset successfully", "info");
   }, [activity, addNotification]);
   const handleSubmit = useCallback$1(() => {
@@ -58098,7 +58099,6 @@ function CapitalNegotiation({ activity, onComplete, onSubmit }) {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "pt-6 flex justify-center gap-4", children: [
         /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl", onClick: () => {
-          submittedRef.current = false;
           setIsComplete(false);
         }, children: "Continue Lesson" }),
         /* @__PURE__ */ jsx(Button, { variant: "outline", size: "lg", className: "h-14", onClick: reset, children: "Try Other Option" })

@@ -273,7 +273,7 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
             </div>
 
             <div className="pt-6 flex justify-center gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl" onClick={() => { submittedRef.current = false; setIsComplete(false) }}>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl" onClick={() => { setIsComplete(false) }}>
                 Continue Lesson
               </Button>
               <Button variant="outline" size="lg" className="h-14" onClick={reset}>
