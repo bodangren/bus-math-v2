@@ -1,0 +1,1 @@
+milestone7_closure Phase 2: shared AI retry wrapper (lib/ai/retry.ts), JournalEntryTable responsive mobile fallback, session revocation awareness (requireActiveRequestSessionClaims). 24 new tests. Closed tech-debt: journal_entry_preview_ui, replan session cookies. Verified lint/test/build.
