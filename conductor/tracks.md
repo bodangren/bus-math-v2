@@ -81,6 +81,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/simulation_double_submit_guard_20260406/](./tracks/simulation_double_submit_guard_20260406/)*
   *Status: Complete. All 3 phases finished: CashFlowChallenge, BusinessStressTest, BudgetBalancer, LemonadeStand, and NotebookOrganizer all converted to useRef guard. All 5 target simulations now use submittedRef. Verified lint, test, build.*
 
+- [~] **Track: DDBComparisonMastery submittedRef Guard & BusinessStressTest Visual Feedback**
+  *Link: [./tracks/ddb_exercise_submit_guard_20260407/](./tracks/ddb_exercise_submit_guard_20260407/)*
+  *Status: In Progress. Adding useRef double-submit guard to DDBComparisonMastery exercise component, visual disabled state to BusinessStressTest buttons.*
+
 ## Archive Ledger
 
 - [x] **Track: Simulation Contract Hardening**

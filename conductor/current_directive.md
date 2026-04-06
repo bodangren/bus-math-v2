@@ -19,7 +19,7 @@ Admin tooling, in-app curriculum authoring, and new content beyond the existing 
 ## Next High-Level Priorities (post double-submit standardization, 2026-04-06)
 
 1. ~~**Complete Track 11 Phase 3** — NotebookOrganizer useRef double-submit guard~~ — Done.
-2. **DDBComparisonMastery submittedRef guard** — Exercise component's handleSubmit lacks ref-based double-submit protection; relies on disabled prop only.
+2. ~~**DDBComparisonMastery submittedRef guard**~~ — Done. Added useRef guard (track ddb_exercise_submit_guard_20260407).
 3. **BusinessStressTest submitted state** — No visual disabled state on buttons after submission; submittedRef silently blocks with no UI feedback.
 4. **Simulation Activity Prop Type Standardization** — 5 simulations (4–8) use ad-hoc inline types instead of Zod schemas. Standardize to match first 3 simulations.
 5. **CashFlowChallenge Legacy Cleanup** — Remove `onSubmitLegacy` callback and migrate to `activity.id ?? fallback` pattern. Dual-callback path is a maintenance trap.

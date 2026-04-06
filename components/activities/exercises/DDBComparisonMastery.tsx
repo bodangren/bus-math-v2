@@ -147,6 +147,7 @@ export function DDBComparisonMastery({ activity, onSubmit, onComplete }: DDBComp
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0)
   const [showWorkedExample, setShowWorkedExample] = useState(false)
   const hasCompleted = useRef(false)
+  const submittedRef = useRef(false)
 
   useEffect(() => {
     if (consecutiveCorrect >= masteryTarget && !hasCompleted.current) {
@@ -156,8 +157,10 @@ export function DDBComparisonMastery({ activity, onSubmit, onComplete }: DDBComp
   }, [consecutiveCorrect, masteryTarget, onComplete])
 
   const handleSubmit = useCallback(() => {
+    if (submittedRef.current) return
     const selectedOption = problem.distractors.find(o => o.label === userAnswer)
     const isCorrect = selectedOption?.isCorrect ?? false
+    submittedRef.current = true
     setCorrect(isCorrect)
     setSubmitted(true)
     if (isCorrect) { setConsecutiveCorrect(p => p + 1); setStreak(p => p + 1) } else { setConsecutiveCorrect(0) }
@@ -174,7 +177,7 @@ export function DDBComparisonMastery({ activity, onSubmit, onComplete }: DDBComp
   }, [userAnswer, problem, onSubmit, activity.id])
 
   const handleNewProblem = useCallback(() => {
-    setProblem(generateProblem()); setUserAnswer(''); setSubmitted(false); setCorrect(null); setShowWorkedExample(false)
+    setProblem(generateProblem()); setUserAnswer(''); setSubmitted(false); setCorrect(null); setShowWorkedExample(false); submittedRef.current = false
   }, [])
 
   const ddbSchedule = useMemo(() => computeDDBSchedule(problem.cost, problem.salvageValue, problem.usefulLife), [problem.cost, problem.salvageValue, problem.usefulLife])
