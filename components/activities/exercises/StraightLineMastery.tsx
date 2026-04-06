@@ -120,6 +120,7 @@ export function StraightLineMastery({ activity, onSubmit, onComplete }: Straight
   const [showWorkedExample, setShowWorkedExample] = useState(false)
   const [selectedDistractor, setSelectedDistractor] = useState<number | null>(null)
   const hasCompleted = useRef(false)
+  const submittedRef = useRef(false)
 
   useEffect(() => {
     if (consecutiveCorrect >= masteryTarget && !hasCompleted.current) {
@@ -155,10 +156,12 @@ export function StraightLineMastery({ activity, onSubmit, onComplete }: Straight
   }, [problem.id])
 
   const handleSubmit = useCallback(() => {
+    if (submittedRef.current) return
     const selectedOption = shuffledOptions.find(o => o.label === userAnswer)
     const isCorrect = selectedOption?.isCorrect ?? false
     if (!selectedOption) return
 
+    submittedRef.current = true
     setCorrect(isCorrect)
     setSubmitted(true)
     if (selectedOption.distractorIndex !== undefined) {
@@ -206,6 +209,7 @@ export function StraightLineMastery({ activity, onSubmit, onComplete }: Straight
     setCorrect(null)
     setShowWorkedExample(false)
     setSelectedDistractor(null)
+    submittedRef.current = false
   }, [])
 
   const handleShowExample = useCallback(() => {

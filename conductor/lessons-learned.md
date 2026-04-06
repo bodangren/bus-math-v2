@@ -41,3 +41,6 @@
 - "Back to Lesson" / completion-dismissal buttons must call reset() or fully restore playable state — partial state clearing (e.g., only setIsComplete(false)) leaves the game in an unplayable limbo where the ref guard silently blocks all actions.
 - Simulation reset functions must clear all active intervals/timeouts (salesIntervalRef, etc.) before resetting state; stale intervals continue modifying freshly-reset state.
 - Optional chaining on callbacks (onSubmit?.()) should be consistent across all components in the same layer — mixing onSubmit(envelope) and onSubmit?.(envelope) is a latent crash risk if the null guard is ever refactored.
+- When applying submittedRef guards to exercise components, check ALL exercise components in the same directory — the pattern gap is usually systematic, not isolated.
+- Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
+- Code review audits should inventory ALL components in a category (simulations, exercises) to identify the full scope of missing guards — fixing only the named targets leaves siblings unprotected.

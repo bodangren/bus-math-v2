@@ -83,6 +83,7 @@ export function CapitalizationExpenseMastery({ activity, onSubmit, onComplete }:
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0)
   const [showWorkedExample, setShowWorkedExample] = useState(false)
   const hasCompleted = useRef(false)
+  const submittedRef = useRef(false)
 
   useEffect(() => {
     if (consecutiveCorrect >= masteryTarget && !hasCompleted.current) {
@@ -92,7 +93,9 @@ export function CapitalizationExpenseMastery({ activity, onSubmit, onComplete }:
   }, [consecutiveCorrect, masteryTarget, onComplete])
 
   const handleSubmit = useCallback(() => {
+    if (submittedRef.current) return
     const isCorrect = userAnswer === (scenario.isCapital ? 'capitalize' : 'expense')
+    submittedRef.current = true
     setCorrect(isCorrect)
     setSubmitted(true)
     if (isCorrect) { setConsecutiveCorrect(p => p + 1); setStreak(p => p + 1) } else { setConsecutiveCorrect(0) }
@@ -109,7 +112,7 @@ export function CapitalizationExpenseMastery({ activity, onSubmit, onComplete }:
   }, [userAnswer, scenario, onSubmit, activity.id])
 
   const handleNewScenario = useCallback(() => {
-    setScenario(generateScenario()); setUserAnswer(''); setSubmitted(false); setCorrect(null); setShowWorkedExample(false)
+    setScenario(generateScenario()); setUserAnswer(''); setSubmitted(false); setCorrect(null); setShowWorkedExample(false); submittedRef.current = false
   }, [])
 
   const progressToMastery = (consecutiveCorrect / masteryTarget) * 100

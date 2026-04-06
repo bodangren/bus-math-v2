@@ -198,7 +198,7 @@ function buildDDBParts(asset: DepreciationAsset, tolerance: number): Depreciatio
 
 function buildUOPParts(asset: DepreciationAsset, tolerance: number): DepreciationSchedulesPart[] {
   const depreciableBase = asset.cost - asset.salvageValue;
-  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnit = depreciableBase / (asset.totalUnits || 1);
   const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
   const year1Dep = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
 
@@ -263,7 +263,7 @@ function buildChainText(definition: DepreciationSchedulesDefinition, part: Depre
   const ddbRate = slRate * 2;
   const year1Ddb = Math.round(asset.cost * ddbRate);
   const bookValueYear1 = asset.cost - year1Ddb;
-  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnit = depreciableBase / (asset.totalUnits || 1);
   const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
   const year1Units = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
 
