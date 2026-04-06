@@ -30724,7 +30724,7 @@ function buildDDBParts(asset, tolerance) {
 }
 function buildUOPParts(asset, tolerance) {
   const depreciableBase = asset.cost - asset.salvageValue;
-  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnit = depreciableBase / (asset.totalUnits || 1);
   const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
   const year1Dep = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
   return [
@@ -30786,7 +30786,7 @@ function buildChainText(definition, part) {
   const ddbRate = slRate * 2;
   const year1Ddb = Math.round(asset.cost * ddbRate);
   const bookValueYear1 = asset.cost - year1Ddb;
-  const ratePerUnit = depreciableBase / (asset.totalUnits ?? 1);
+  const ratePerUnit = depreciableBase / (asset.totalUnits || 1);
   const ratePerUnitRounded = Math.round(ratePerUnit * 100) / 100;
   const year1Units = Math.round(ratePerUnitRounded * (asset.unitsYear1 ?? 0));
   if (part.id === "depreciable-base") {
