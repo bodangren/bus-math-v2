@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -127,29 +127,31 @@ export function StraightLineMastery({ activity, onSubmit, onComplete }: Straight
     }
   }, [consecutiveCorrect, masteryTarget, onComplete])
 
-  const options: {
-    label: string
-    isCorrect: boolean
-    distractorIndex?: number
-    distractorLabel?: string
-  }[] = [
-    {
-      label: `Annual expense: $${problem.correctAnnualExpense.toLocaleString()}, ` +
-        `Accumulated (Year ${problem.yearToCalculate}): $${problem.correctAccumulated.toLocaleString()}, ` +
-        `Book value: $${problem.correctBookValue.toLocaleString()}`,
-      isCorrect: true,
-    },
-    ...problem.distractors.map((d, i) => ({
-      label: `Annual expense: $${d.annualExpense.toLocaleString()}, ` +
-        `Accumulated (Year ${problem.yearToCalculate}): $${d.accumulated.toLocaleString()}, ` +
-        `Book value: $${d.bookValue.toLocaleString()}`,
-      isCorrect: false,
-      distractorIndex: i,
-      distractorLabel: d.label,
-    })),
-  ]
-
-  const shuffledOptions = options.sort(() => Math.random() - 0.5)
+  const shuffledOptions = useMemo(() => {
+    const opts: {
+      label: string
+      isCorrect: boolean
+      distractorIndex?: number
+      distractorLabel?: string
+    }[] = [
+      {
+        label: `Annual expense: $${problem.correctAnnualExpense.toLocaleString()}, ` +
+          `Accumulated (Year ${problem.yearToCalculate}): $${problem.correctAccumulated.toLocaleString()}, ` +
+          `Book value: $${problem.correctBookValue.toLocaleString()}`,
+        isCorrect: true,
+      },
+      ...problem.distractors.map((d, i) => ({
+        label: `Annual expense: $${d.annualExpense.toLocaleString()}, ` +
+          `Accumulated (Year ${problem.yearToCalculate}): $${d.accumulated.toLocaleString()}, ` +
+          `Book value: $${d.bookValue.toLocaleString()}`,
+        isCorrect: false,
+        distractorIndex: i,
+        distractorLabel: d.label,
+      })),
+    ]
+    return opts.sort(() => Math.random() - 0.5)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [problem.id])
 
   const handleSubmit = useCallback(() => {
     const selectedOption = shuffledOptions.find(o => o.label === userAnswer)

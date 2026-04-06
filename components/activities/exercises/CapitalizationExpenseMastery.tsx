@@ -157,7 +157,7 @@ export function CapitalizationExpenseMastery({ activity, onSubmit, onComplete }:
             {!submitted ? (
               <>
                 <Button onClick={handleSubmit} disabled={!userAnswer} className="bg-amber-600 hover:bg-amber-700">Check Answer</Button>
-                <Button variant="outline" onClick={() => { setShowWorkedExample(true); setSubmitted(true); setCorrect(false) }} className="border-amber-300 text-amber-700"><HelpCircle className="h-4 w-4 mr-1" />Show Example</Button>
+                <Button variant="outline" onClick={() => setShowWorkedExample(true)} className="border-amber-300 text-amber-700"><HelpCircle className="h-4 w-4 mr-1" />Show Example</Button>
               </>
             ) : (
               <Button onClick={handleNewScenario} className="bg-green-600 hover:bg-green-700"><RefreshCw className="h-4 w-4 mr-1" />New Numbers</Button>
