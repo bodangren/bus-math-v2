@@ -20,7 +20,7 @@ Admin tooling, in-app curriculum authoring, and new content beyond the existing 
 
 1. ~~**Complete Track 11 Phase 3** — NotebookOrganizer useRef double-submit guard~~ — Done.
 2. ~~**DDBComparisonMastery submittedRef guard**~~ — Done.
-3. **Remaining Simulation submittedRef Guards (HIGH)** — AssetTimeMachine, CapitalNegotiation, CafeSupplyChaos, ScenarioSwitchShowTell have NO double-submit protection. Every user completion click fires onSubmit with no guard.
+3. ~~**Remaining Simulation submittedRef Guards (HIGH)**~~ — AssetTimeMachine, CapitalNegotiation, CafeSupplyChaos, ScenarioSwitchShowTell all now have submittedRef guards. Phase 1+2 complete.
 4. **Remaining Simulation submittedRef Guards (MEDIUM)** — PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager set useState AFTER onSubmit; race window allows double-submit bypass.
 5. **BusinessStressTest submitted state** — No visual disabled state on buttons after submission; submittedRef silently blocks with no UI feedback.
 6. **Simulation Activity Prop Type Standardization** — 5 simulations (4–8) use ad-hoc inline types instead of Zod schemas. Standardize to match first 3 simulations.

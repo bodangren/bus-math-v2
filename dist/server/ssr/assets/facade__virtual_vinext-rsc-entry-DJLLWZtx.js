@@ -56754,6 +56754,7 @@ function CafeSupplyChaos({ activity, onComplete, onSubmit }) {
   const [method, setMethod] = useState(null);
   const [sales, setSales] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
+  const submittedRef = useRef(false);
   const startSimulation = (selectedMethod) => {
     setMethod(selectedMethod);
     const day1Ship = shipments.find((s) => s.day === 1);
@@ -56767,6 +56768,7 @@ function CafeSupplyChaos({ activity, onComplete, onSubmit }) {
     }
   };
   const handleNextDay = () => {
+    if (submittedRef.current) return;
     if (!method) {
       return;
     }
@@ -56852,6 +56854,7 @@ function CafeSupplyChaos({ activity, onComplete, onSubmit }) {
           totalProfit
         }
       });
+      submittedRef.current = true;
       onSubmit?.(envelope);
       onComplete?.({ method, sales: allSales });
     } else {
@@ -56866,6 +56869,7 @@ function CafeSupplyChaos({ activity, onComplete, onSubmit }) {
     }), { revenue: 0, cogs: 0, profit: 0 });
   }, [sales]);
   const reset = () => {
+    submittedRef.current = false;
     setCurrentDay(1);
     setInventory([]);
     setMethod(null);
@@ -57069,7 +57073,7 @@ function CafeSupplyChaos({ activity, onComplete, onSubmit }) {
         " are so important for taxes and reporting."
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "pt-4 flex justify-center gap-4", children: [
-        /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-slate-900 px-10 h-14 text-xl", onClick: () => setIsComplete(false), children: "Back to Lesson" }),
+        /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-slate-900 px-10 h-14 text-xl", onClick: reset, children: "Back to Lesson" }),
         /* @__PURE__ */ jsx(Button, { variant: "outline", size: "lg", className: "h-14", onClick: reset, children: "Try Other Method" })
       ] })
     ] }) })

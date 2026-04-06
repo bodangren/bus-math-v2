@@ -16,12 +16,12 @@
 
 ### Tasks
 
-1. [ ] Write source-level test verifying submittedRef guard pattern in CafeSupplyChaos
-2. [ ] Implement submittedRef guard in CafeSupplyChaos handleNextDay
-3. [ ] Reset submittedRef in CafeSupplyChaos reset function
-4. [ ] Write source-level test verifying submittedRef guard pattern in ScenarioSwitchShowTell
-5. [ ] Implement submittedRef guard in ScenarioSwitchShowTell handleComplete
-6. [ ] Verify: lint, tests, build for Phase 2
+1. [x] Write source-level test verifying submittedRef guard pattern in CafeSupplyChaos
+2. [x] Implement submittedRef guard in CafeSupplyChaos handleNextDay
+3. [x] Reset submittedRef in CafeSupplyChaos reset function
+4. [x] Write source-level test verifying submittedRef guard pattern in ScenarioSwitchShowTell
+5. [x] Implement submittedRef guard in ScenarioSwitchShowTell handleComplete
+6. [x] Verify: lint, tests, build for Phase 2
 
 ## Phase 3: MEDIUM — PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager
 

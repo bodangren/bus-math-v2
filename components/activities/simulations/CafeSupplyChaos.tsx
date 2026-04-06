@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -55,6 +55,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
   const [method, setMethod] = useState<'FIFO' | 'LIFO' | null>(null)
   const [sales, setSales] = useState<CafeSupplyChaosResult[]>([])
   const [isComplete, setIsComplete] = useState(false)
+  const submittedRef = useRef(false)
 
   // Start the simulation by picking a method
   const startSimulation = (selectedMethod: 'FIFO' | 'LIFO') => {
@@ -72,6 +73,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
   }
 
   const handleNextDay = () => {
+    if (submittedRef.current) return
     if (!method) {
       return
     }
@@ -170,6 +172,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
         },
       })
 
+      submittedRef.current = true
       onSubmit?.(envelope)
       onComplete?.({ method: method!, sales: allSales })
     } else {
@@ -186,6 +189,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
   }, [sales])
 
   const reset = () => {
+    submittedRef.current = false
     setCurrentDay(1)
     setInventory([])
     setMethod(null)
@@ -369,7 +373,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
             </p>
 
             <div className="pt-4 flex justify-center gap-4">
-              <Button size="lg" className="bg-slate-900 px-10 h-14 text-xl" onClick={() => setIsComplete(false)}>
+              <Button size="lg" className="bg-slate-900 px-10 h-14 text-xl" onClick={reset}>
                 Back to Lesson
               </Button>
               <Button variant="outline" size="lg" className="h-14" onClick={reset}>

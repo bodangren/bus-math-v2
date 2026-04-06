@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, Lightbulb } from 'lucide-react'
@@ -29,6 +29,7 @@ export function ScenarioSwitchShowTell({ activity, onSubmit, onComplete }: Scena
   const [comparisonNotes, setComparisonNotes] = useState<ComparisonNote[]>([])
   const [currentNote, setCurrentNote] = useState('')
   const [completed, setCompleted] = useState(false)
+  const submittedRef = useRef(false)
 
   const active = scenarios[activeIndex]
 
@@ -40,6 +41,8 @@ export function ScenarioSwitchShowTell({ activity, onSubmit, onComplete }: Scena
   }, [currentNote, activeIndex, scenarios])
 
   const handleComplete = useCallback(() => {
+    if (submittedRef.current) return
+    submittedRef.current = true
     setCompleted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
