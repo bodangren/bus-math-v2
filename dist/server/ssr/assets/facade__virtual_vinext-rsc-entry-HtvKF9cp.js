@@ -57669,8 +57669,10 @@ function AssetTimeMachine({ activity, onComplete, onSubmit }) {
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [history, setHistory] = useState([]);
+  const submittedRef = useRef(false);
   const currentScenario = scenarios2.find((s) => s.year === currentYear + 1);
   const handleAction = (type) => {
+    if (submittedRef.current) return;
     let cost = 0;
     let valueImpact = -(currentValue * 0.2);
     if (type === "repair" && currentScenario) {
@@ -57729,6 +57731,7 @@ function AssetTimeMachine({ activity, onComplete, onSubmit }) {
           valueRetention: result.finalValue / activity.props.initialCost
         }
       });
+      submittedRef.current = true;
       onSubmit?.(envelope);
       onComplete?.(result);
     } else {
@@ -57890,6 +57893,7 @@ function AssetTimeMachine({ activity, onComplete, onSubmit }) {
         "—spreading the cost over the life of the asset."
       ] }),
       /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-blue-600 hover:bg-blue-700 w-full h-14 text-xl", onClick: () => {
+        submittedRef.current = false;
         setIsComplete(false);
         setCurrentYear(0);
         setCurrentValue(initialCost);
@@ -57905,6 +57909,7 @@ function CapitalNegotiation({ activity, onComplete, onSubmit }) {
   const [revealedTerms, setRevealedTerms] = useState([]);
   const [isComplete, setIsComplete] = useState(false);
   const [simulationStep, setSimulationStep] = useState(0);
+  const submittedRef = useRef(false);
   const handleSelect = (option) => {
     setSelectedOption(option);
     setRevealedTerms([]);
@@ -57916,6 +57921,7 @@ function CapitalNegotiation({ activity, onComplete, onSubmit }) {
     }
   };
   const handleFinalize = () => {
+    if (submittedRef.current) return;
     setIsComplete(true);
     const selection = selectedOption?.id ?? "";
     const answers = {
@@ -57951,10 +57957,12 @@ function CapitalNegotiation({ activity, onComplete, onSubmit }) {
         termsReviewedCount: revealedTerms.length
       }
     });
+    submittedRef.current = true;
     onSubmit?.(envelope);
     onComplete?.({ selection });
   };
   const reset = () => {
+    submittedRef.current = false;
     setSelectedOption(null);
     setRevealedTerms([]);
     setSimulationStep(0);
@@ -58085,7 +58093,10 @@ function CapitalNegotiation({ activity, onComplete, onSubmit }) {
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "pt-6 flex justify-center gap-4", children: [
-        /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl", onClick: () => setIsComplete(false), children: "Continue Lesson" }),
+        /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl", onClick: () => {
+          submittedRef.current = false;
+          setIsComplete(false);
+        }, children: "Continue Lesson" }),
         /* @__PURE__ */ jsx(Button, { variant: "outline", size: "lg", className: "h-14", onClick: reset, children: "Try Other Option" })
       ] })
     ] }) })
