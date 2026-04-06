@@ -15841,87 +15841,6 @@ function getSSRFontStyles() {
 function getSSRFontPreloads() {
   return [...ssrFontPreloads];
 }
-async function getServerSessionClaims() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (!token) return null;
-  return verifySessionToken(token, getAuthJwtSecret());
-}
-function getCookieValueFromHeader(cookieHeader, key) {
-  if (!cookieHeader) return null;
-  const entries = cookieHeader.split(";");
-  for (const entry of entries) {
-    const trimmed = entry.trim();
-    if (!trimmed) continue;
-    const separatorIndex = trimmed.indexOf("=");
-    if (separatorIndex <= 0) continue;
-    const name = trimmed.slice(0, separatorIndex).trim();
-    if (name !== key) continue;
-    return decodeURIComponent(trimmed.slice(separatorIndex + 1));
-  }
-  return null;
-}
-async function getRequestSessionClaims(request) {
-  const token = getCookieValueFromHeader(request.headers.get("cookie"), SESSION_COOKIE_NAME);
-  if (!token) return null;
-  return verifySessionToken(token, getAuthJwtSecret());
-}
-function buildRequestUnauthorizedResponse(message = "Unauthorized") {
-  return NextResponse.json({ error: message }, { status: 401 });
-}
-function buildRequestForbiddenResponse(message = "Forbidden") {
-  return NextResponse.json({ error: message }, { status: 403 });
-}
-async function requireRequestSessionClaims(request, unauthorizedMessage = "Unauthorized") {
-  const claims = await getRequestSessionClaims(request);
-  if (!claims) {
-    return buildRequestUnauthorizedResponse(unauthorizedMessage);
-  }
-  return claims;
-}
-async function requireStudentRequestClaims(request, unauthorizedMessage = "Unauthorized", forbiddenMessage = "Forbidden") {
-  const claimsOrResponse = await requireRequestSessionClaims(request, unauthorizedMessage);
-  if (claimsOrResponse instanceof Response) {
-    return claimsOrResponse;
-  }
-  if (claimsOrResponse.role !== "student") {
-    return buildRequestForbiddenResponse(forbiddenMessage);
-  }
-  return claimsOrResponse;
-}
-function buildLoginRedirect(loginRedirectPath) {
-  return `/auth/login?redirect=${loginRedirectPath}`;
-}
-async function requireServerSessionClaims(loginRedirectPath) {
-  const claims = await getServerSessionClaims();
-  if (!claims) {
-    redirect(buildLoginRedirect(loginRedirectPath));
-  }
-  return claims;
-}
-function requireServerRoles(claims, allowedRoles, unauthorizedRedirectPath) {
-  if (!allowedRoles.includes(claims.role)) {
-    redirect(unauthorizedRedirectPath);
-  }
-  return claims;
-}
-async function requireTeacherSessionClaims(loginRedirectPath, unauthorizedRedirectPath = "/student/dashboard") {
-  const claims = await requireServerSessionClaims(loginRedirectPath);
-  return requireServerRoles(claims, ["teacher", "admin"], unauthorizedRedirectPath);
-}
-async function requireStudentSessionClaims(loginRedirectPath) {
-  const claims = await requireServerSessionClaims(loginRedirectPath);
-  if (claims.role === "student") {
-    return claims;
-  }
-  if (claims.role === "teacher") {
-    redirect("/teacher");
-  }
-  if (claims.role === "admin") {
-    redirect("/teacher");
-  }
-  redirect(buildLoginRedirect(loginRedirectPath));
-}
 const version = "1.32.0";
 var lookup = [];
 var revLookup = [];
@@ -17092,6 +17011,87 @@ async function fetchInternalQuery(ref, args) {
 async function fetchInternalMutation(ref, args) {
   const client2 = await getInternalConvexClient();
   return client2.mutation(ref, args);
+}
+async function getServerSessionClaims() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  if (!token) return null;
+  return verifySessionToken(token, getAuthJwtSecret());
+}
+function getCookieValueFromHeader(cookieHeader, key) {
+  if (!cookieHeader) return null;
+  const entries = cookieHeader.split(";");
+  for (const entry of entries) {
+    const trimmed = entry.trim();
+    if (!trimmed) continue;
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex <= 0) continue;
+    const name = trimmed.slice(0, separatorIndex).trim();
+    if (name !== key) continue;
+    return decodeURIComponent(trimmed.slice(separatorIndex + 1));
+  }
+  return null;
+}
+async function getRequestSessionClaims(request) {
+  const token = getCookieValueFromHeader(request.headers.get("cookie"), SESSION_COOKIE_NAME);
+  if (!token) return null;
+  return verifySessionToken(token, getAuthJwtSecret());
+}
+function buildRequestUnauthorizedResponse(message = "Unauthorized") {
+  return NextResponse.json({ error: message }, { status: 401 });
+}
+function buildRequestForbiddenResponse(message = "Forbidden") {
+  return NextResponse.json({ error: message }, { status: 403 });
+}
+async function requireRequestSessionClaims(request, unauthorizedMessage = "Unauthorized") {
+  const claims = await getRequestSessionClaims(request);
+  if (!claims) {
+    return buildRequestUnauthorizedResponse(unauthorizedMessage);
+  }
+  return claims;
+}
+async function requireStudentRequestClaims(request, unauthorizedMessage = "Unauthorized", forbiddenMessage = "Forbidden") {
+  const claimsOrResponse = await requireRequestSessionClaims(request, unauthorizedMessage);
+  if (claimsOrResponse instanceof Response) {
+    return claimsOrResponse;
+  }
+  if (claimsOrResponse.role !== "student") {
+    return buildRequestForbiddenResponse(forbiddenMessage);
+  }
+  return claimsOrResponse;
+}
+function buildLoginRedirect(loginRedirectPath) {
+  return `/auth/login?redirect=${loginRedirectPath}`;
+}
+async function requireServerSessionClaims(loginRedirectPath) {
+  const claims = await getServerSessionClaims();
+  if (!claims) {
+    redirect(buildLoginRedirect(loginRedirectPath));
+  }
+  return claims;
+}
+function requireServerRoles(claims, allowedRoles, unauthorizedRedirectPath) {
+  if (!allowedRoles.includes(claims.role)) {
+    redirect(unauthorizedRedirectPath);
+  }
+  return claims;
+}
+async function requireTeacherSessionClaims(loginRedirectPath, unauthorizedRedirectPath = "/student/dashboard") {
+  const claims = await requireServerSessionClaims(loginRedirectPath);
+  return requireServerRoles(claims, ["teacher", "admin"], unauthorizedRedirectPath);
+}
+async function requireStudentSessionClaims(loginRedirectPath) {
+  const claims = await requireServerSessionClaims(loginRedirectPath);
+  if (claims.role === "student") {
+    return claims;
+  }
+  if (claims.role === "teacher") {
+    redirect("/teacher");
+  }
+  if (claims.role === "admin") {
+    redirect("/teacher");
+  }
+  redirect(buildLoginRedirect(loginRedirectPath));
 }
 const COMPETENCY_STANDARD_CODE_PATTERN = /^[A-Z]+-\d+(?:\.\d+)*$/;
 const apiAny$1 = api;
@@ -20305,45 +20305,114 @@ function parseAIResponse(response, input) {
     generatedAt: Date.now()
   };
 }
+function isRetryableStatus(status) {
+  return status === 429 || status >= 500 && status < 600;
+}
+function isRetryableError(error) {
+  if (error instanceof DOMException && error.name === "AbortError") {
+    return false;
+  }
+  if (error instanceof Error) {
+    const message = error.message;
+    const statusMatch = message.match(/\((\d{3})\)/);
+    if (statusMatch) {
+      return isRetryableStatus(parseInt(statusMatch[1], 10));
+    }
+    const altMatch = message.match(/error:\s*(\d{3})/);
+    if (altMatch) {
+      return isRetryableStatus(parseInt(altMatch[1], 10));
+    }
+    return true;
+  }
+  return false;
+}
+function sleep(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
+      return;
+    }
+    const timeout = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    const onAbort = () => {
+      clearTimeout(timeout);
+      reject(signal?.reason ?? new DOMException("Aborted", "AbortError"));
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+async function withRetry(fn, options = {}) {
+  const {
+    maxRetries = 2,
+    baseDelayMs = 500,
+    maxDelayMs = 8e3,
+    signal
+  } = options;
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    if (signal?.aborted) {
+      throw signal.reason ?? new DOMException("Aborted", "AbortError");
+    }
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (!isRetryableError(error)) {
+        throw error;
+      }
+      if (attempt >= maxRetries) {
+        throw error;
+      }
+      const baseDelay = Math.min(baseDelayMs * Math.pow(2, attempt), maxDelayMs);
+      const jitter = baseDelay * (0.5 + Math.random() * 0.5);
+      await sleep(Math.round(jitter), signal);
+    }
+  }
+  throw lastError;
+}
 const OPENAI_API_BASE = "https://api.openai.com/v1";
 function createOpenAIProvider(options) {
   const { apiKey, model = "gpt-4o-mini", baseUrl = OPENAI_API_BASE, timeoutMs = 15e3 } = options;
   return async function openAIProvider(prompt) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const response = await fetch(`${baseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model,
-          messages: [
-            {
-              role: "system",
-              content: "You are an expert accounting teacher analyzing student practice submissions. Respond with exactly three lines: 1) the likely misunderstanding (1-2 sentences), 2) evidence observed (reference specific answers), 3) suggested reteach or intervention direction (1-2 sentences). No numbering, no extra text."
-            },
-            { role: "user", content: prompt }
-          ],
-          temperature: 0.3,
-          max_tokens: 300
-        }),
-        signal: controller.signal
-      });
-      if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+    return withRetry(async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(`${baseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              {
+                role: "system",
+                content: "You are an expert accounting teacher analyzing student practice submissions. Respond with exactly three lines: 1) the likely misunderstanding (1-2 sentences), 2) evidence observed (reference specific answers), 3) suggested reteach or intervention direction (1-2 sentences). No numbering, no extra text."
+              },
+              { role: "user", content: prompt }
+            ],
+            temperature: 0.3,
+            max_tokens: 300
+          }),
+          signal: controller.signal
+        });
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content;
+        if (typeof content !== "string" || content.trim().length === 0) {
+          throw new Error("Empty response from AI provider");
+        }
+        return content.trim();
+      } finally {
+        clearTimeout(timeout);
       }
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content;
-      if (typeof content !== "string" || content.trim().length === 0) {
-        throw new Error("Empty response from AI provider");
-      }
-      return content.trim();
-    } finally {
-      clearTimeout(timeout);
-    }
+    });
   };
 }
 function resolveAIProviderFromEnv() {
@@ -22214,6 +22283,18 @@ const TrialBalanceErrorMatrix = /* @__PURE__ */ registerClientReference(() => {
 const StatementLayout = /* @__PURE__ */ registerClientReference(() => {
   throw new Error("Unexpectedly client reference export 'StatementLayout' is called on server");
 }, "b8b9cb2b5e2f", "StatementLayout");
+function ScenarioPanel({ rows, guidance, labelWidth = 132, className }) {
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: className ?? "rounded-2xl border bg-muted/15 px-4 py-4", children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "grid gap-2", style: { gridTemplateColumns: `${labelWidth}px minmax(0, 1fr)` }, children: rows.map((row) => /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(ScenarioPanelEntry, { ...row }, row.label)) }),
+    guidance && /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-xs text-slate-500", children: guidance })
+  ] });
+}
+function ScenarioPanelEntry({ label, value }) {
+  return /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: label }),
+    /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: value })
+  ] });
+}
 function formatAccountingAmount(value) {
   if (value === null || value === void 0 || value === "") {
     return "—";
@@ -22225,6 +22306,11 @@ function formatAccountingAmount(value) {
   return new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 2
   }).format(numericValue);
+}
+function projectToRowSelections(rows, source) {
+  return Object.fromEntries(
+    rows.map((row) => [row.id, source[row.id]]).filter(([, value]) => value !== void 0)
+  );
 }
 const practiceAccounts = [
   {
@@ -31354,11 +31440,13 @@ function PracticePreviewPage() {
     amount: transactionEffectsDefinition.event.amount,
     "equity-reason": transactionEffectsSolution["equity-reason"]
   };
-  const transactionEffectsMatrixValue = Object.fromEntries(
-    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsSolution[row.id]])
+  const transactionEffectsMatrixValue = projectToRowSelections(
+    transactionEffectsDefinition.rows,
+    transactionEffectsSolution
   );
-  const transactionEffectsMatrixStudentValue = Object.fromEntries(
-    transactionEffectsDefinition.rows.map((row) => [row.id, transactionEffectsStudentResponse[row.id]])
+  const transactionEffectsMatrixStudentValue = projectToRowSelections(
+    transactionEffectsDefinition.rows,
+    transactionEffectsStudentResponse
   );
   const transactionEffectsGrade = transactionEffectsFamily.grade(transactionEffectsDefinition, transactionEffectsStudentResponse);
   const transactionEffectsFeedback = buildTransactionEffectsReviewFeedback(
@@ -31378,11 +31466,13 @@ function PracticePreviewPage() {
     "offset-account": "equity-reason",
     equity: "direction"
   };
-  const transactionMatrixMatrixValue = Object.fromEntries(
-    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixSolution[row.id]])
+  const transactionMatrixMatrixValue = projectToRowSelections(
+    transactionMatrixDefinition.rows,
+    transactionMatrixSolution
   );
-  const transactionMatrixMatrixStudentValue = Object.fromEntries(
-    transactionMatrixDefinition.rows.map((row) => [row.id, transactionMatrixStudentResponse[row.id]])
+  const transactionMatrixMatrixStudentValue = projectToRowSelections(
+    transactionMatrixDefinition.rows,
+    transactionMatrixStudentResponse
   );
   const transactionMatrixGrade = transactionMatrixFamily.grade(transactionMatrixDefinition, transactionMatrixStudentResponse);
   const transactionMatrixFeedback = buildTransactionMatrixReviewFeedback(
@@ -31811,17 +31901,17 @@ function PracticePreviewPage() {
             rows: adjustmentEffectsDefinition.rows,
             columns: adjustmentEffectsDefinition.columns,
             defaultValue: adjustmentEffectsSolution,
-            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.scenario }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What was missed" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.missedAdjustment }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Assumption" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.periodEndAssumption })
-              ] }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-xs text-slate-500", children: "Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements." })
-            ] })
+            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+              ScenarioPanel,
+              {
+                rows: [
+                  { label: "Scenario", value: adjustmentEffectsDefinition.scenario.scenario },
+                  { label: "What was missed", value: adjustmentEffectsDefinition.scenario.missedAdjustment },
+                  { label: "Assumption", value: adjustmentEffectsDefinition.scenario.periodEndAssumption }
+                ],
+                guidance: "Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements."
+              }
+            )
           }
         ),
         /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
@@ -31843,17 +31933,17 @@ function PracticePreviewPage() {
                 Object.values(adjustmentEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
               ).size
             },
-            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: [
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[132px_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Scenario" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.scenario }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What was missed" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.missedAdjustment }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Assumption" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: adjustmentEffectsDefinition.scenario.periodEndAssumption })
-              ] }),
-              /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("p", { className: "mt-3 text-xs text-slate-500", children: "Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements." })
-            ] })
+            scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+              ScenarioPanel,
+              {
+                rows: [
+                  { label: "Scenario", value: adjustmentEffectsDefinition.scenario.scenario },
+                  { label: "What was missed", value: adjustmentEffectsDefinition.scenario.missedAdjustment },
+                  { label: "Assumption", value: adjustmentEffectsDefinition.scenario.periodEndAssumption }
+                ],
+                guidance: "Think about what the correct adjustment would change first, then compare adjusted versus unadjusted statements."
+              }
+            )
           }
         )
       ] })
@@ -31924,14 +32014,17 @@ function PracticePreviewPage() {
                 rows: transactionEffectsDefinition.rows,
                 columns: transactionEffectsDefinition.columns,
                 defaultValue: transactionEffectsMatrixValue,
-                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.narrative }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Amount" }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(transactionEffectsDefinition.event.amount) }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Why equity changes" }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.equityReason })
-                ] }) })
+                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                  ScenarioPanel,
+                  {
+                    labelWidth: 140,
+                    rows: [
+                      { label: "Transaction", value: transactionEffectsDefinition.event.narrative },
+                      { label: "Amount", value: formatAccountingAmount(transactionEffectsDefinition.event.amount) },
+                      { label: "Why equity changes", value: transactionEffectsDefinition.event.equityReason }
+                    ]
+                  }
+                )
               }
             ),
             /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
@@ -31953,14 +32046,17 @@ function PracticePreviewPage() {
                     Object.values(transactionEffectsFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
                   ).size
                 },
-                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[140px_minmax(0,1fr)]", children: [
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.narrative }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Amount" }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: formatAccountingAmount(transactionEffectsDefinition.event.amount) }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Why equity changes" }),
-                  /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionEffectsDefinition.event.equityReason })
-                ] }) })
+                scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                  ScenarioPanel,
+                  {
+                    labelWidth: 140,
+                    rows: [
+                      { label: "Transaction", value: transactionEffectsDefinition.event.narrative },
+                      { label: "Amount", value: formatAccountingAmount(transactionEffectsDefinition.event.amount) },
+                      { label: "Why equity changes", value: transactionEffectsDefinition.event.equityReason }
+                    ]
+                  }
+                )
               }
             )
           ] })
@@ -31979,20 +32075,22 @@ function PracticePreviewPage() {
               rows: transactionMatrixDefinition.rows,
               columns: transactionMatrixDefinition.columns,
               defaultValue: transactionMatrixMatrixValue,
-              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.narrative }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Business context" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-sm text-slate-700", children: [
-                  transactionMatrixScenario.context,
-                  " context • ",
-                  transactionMatrixScenario.settlement ?? "cash"
-                ] }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Source document clue" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.tags.join(" • ") }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to decide first" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixReason })
-              ] }) })
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                ScenarioPanel,
+                {
+                  labelWidth: 160,
+                  rows: [
+                    { label: "Transaction", value: transactionMatrixScenario.narrative },
+                    { label: "Business context", value: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
+                      transactionMatrixScenario.context,
+                      " context • ",
+                      transactionMatrixScenario.settlement ?? "cash"
+                    ] }) },
+                    { label: "Source document clue", value: transactionMatrixScenario.tags.join(" • ") },
+                    { label: "What to decide first", value: transactionMatrixReason }
+                  ]
+                }
+              )
             }
           ),
           /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
@@ -32014,20 +32112,22 @@ function PracticePreviewPage() {
                   Object.values(transactionMatrixFeedback).flatMap((feedback) => feedback.misconceptionTags ?? [])
                 ).size
               },
-              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[160px_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Transaction" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.narrative }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Business context" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "text-sm text-slate-700", children: [
-                  transactionMatrixScenario.context,
-                  " context • ",
-                  transactionMatrixScenario.settlement ?? "cash"
-                ] }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Source document clue" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixScenario.tags.join(" • ") }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to decide first" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: transactionMatrixReason })
-              ] }) })
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                ScenarioPanel,
+                {
+                  labelWidth: 160,
+                  rows: [
+                    { label: "Transaction", value: transactionMatrixScenario.narrative },
+                    { label: "Business context", value: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs(jsxRuntime_reactServerExports.Fragment, { children: [
+                      transactionMatrixScenario.context,
+                      " context • ",
+                      transactionMatrixScenario.settlement ?? "cash"
+                    ] }) },
+                    { label: "Source document clue", value: transactionMatrixScenario.tags.join(" • ") },
+                    { label: "What to decide first", value: transactionMatrixReason }
+                  ]
+                }
+              )
             }
           )
         ] })
@@ -32617,14 +32717,17 @@ function PracticePreviewPage() {
               description: "Complete the missing subtotal lines after reading the prefilled statement rows.",
               sections: statementSubtotalsDefinition.sections,
               defaultValues: Object.fromEntries(statementSubtotalsDefinition.parts.map((part) => [part.id, ""])),
-              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Statement type" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.statementLabel }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Blanks" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsBlankCount }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.guidance })
-              ] }) }),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                ScenarioPanel,
+                {
+                  labelWidth: 150,
+                  rows: [
+                    { label: "Statement type", value: statementSubtotalsDefinition.scaffolding.statementLabel },
+                    { label: "Blanks", value: statementSubtotalsBlankCount },
+                    { label: "What to notice", value: statementSubtotalsDefinition.scaffolding.guidance }
+                  ]
+                }
+              ),
               scaffoldText: statementSubtotalsDefinition.scaffolding.guidance
             }
           ),
@@ -32639,14 +32742,17 @@ function PracticePreviewPage() {
               ),
               readOnly: true,
               teacherView: true,
-              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "rounded-2xl border bg-muted/15 px-4 py-4", children: /* @__PURE__ */ jsxRuntime_reactServerExports.jsxs("div", { className: "grid gap-2 sm:grid-cols-[150px_minmax(0,1fr)]", children: [
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Statement type" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.statementLabel }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Blanks" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsBlankCount }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "What to notice" }),
-                /* @__PURE__ */ jsxRuntime_reactServerExports.jsx("div", { className: "text-sm text-slate-700", children: statementSubtotalsDefinition.scaffolding.guidance })
-              ] }) }),
+              scenarioPanel: /* @__PURE__ */ jsxRuntime_reactServerExports.jsx(
+                ScenarioPanel,
+                {
+                  labelWidth: 150,
+                  rows: [
+                    { label: "Statement type", value: statementSubtotalsDefinition.scaffolding.statementLabel },
+                    { label: "Blanks", value: statementSubtotalsBlankCount },
+                    { label: "What to notice", value: statementSubtotalsDefinition.scaffolding.guidance }
+                  ]
+                }
+              ),
               scaffoldText: statementSubtotalsDefinition.scaffolding.guidance,
               reviewSummary: [
                 { label: "Attempt", value: "1" },

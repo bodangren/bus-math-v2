@@ -10578,11 +10578,16 @@ function CategorizationInteractive({
     })),
     [items]
   );
+  const [announcement, setAnnouncement] = useState("");
   const { availableItems, placements, attempts, score, completed: completed2, handleDragEnd, moveItemToZone, reset } = useCategorizationExercise(normalizedItems, zoneIds, {
     shuffleItems,
     resetKey,
     onComplete
   });
+  const announceMove = (itemLabel, destinationZoneLabel) => {
+    const message = destinationZoneLabel ? `${itemLabel} moved to ${destinationZoneLabel}` : `${itemLabel} returned to item bank`;
+    setAnnouncement(message);
+  };
   const renderMoveControl = (item, currentZoneId = null) => /* @__PURE__ */ jsxs("label", { className: "mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-600", children: [
     /* @__PURE__ */ jsx("span", { className: "font-medium text-slate-900", children: "Move to" }),
     /* @__PURE__ */ jsxs(
@@ -10595,7 +10600,14 @@ function CategorizationInteractive({
           if (!nextZoneId) {
             return;
           }
-          moveItemToZone(item.id, nextZoneId === "bank" ? null : nextZoneId);
+          if (nextZoneId === "bank") {
+            announceMove(item.label, null);
+            moveItemToZone(item.id, null);
+          } else {
+            const zone = zones.find((z2) => z2.id === nextZoneId);
+            announceMove(item.label, zone?.label ?? nextZoneId);
+            moveItemToZone(item.id, nextZoneId);
+          }
         },
         className: "min-h-11 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         children: [
@@ -10606,6 +10618,16 @@ function CategorizationInteractive({
       }
     )
   ] });
+  const onDragEndWithAnnouncement = (result) => {
+    const itemId = result.draggableId;
+    const item = [...availableItems, ...Object.values(placements).flat()].find((entry) => entry.id === itemId);
+    const destinationZoneId = result.destination?.droppableId?.startsWith("zone-") ? result.destination.droppableId.replace("zone-", "") : null;
+    const destZone = destinationZoneId ? zones.find((z2) => z2.id === destinationZoneId) : null;
+    if (item) {
+      announceMove(item.label, destZone?.label ?? null);
+    }
+    handleDragEnd(result);
+  };
   const renderZone = (zone) => /* @__PURE__ */ jsx(ConnectedDroppable, { droppableId: getZoneDroppableId(zone.id), children: (provided) => /* @__PURE__ */ jsxs(
     "div",
     {
@@ -10670,36 +10692,39 @@ function CategorizationInteractive({
       /* @__PURE__ */ jsx("div", { className: "rounded-[1.25rem] border border-slate-300 bg-white/90 p-3 text-sm text-slate-600", children: "Drag each item into the correct category." }),
       showHints && /* @__PURE__ */ jsx("div", { className: "rounded-[1.25rem] border border-dashed border-slate-300 bg-white/80 p-3 text-xs text-slate-600", children: "Context hints are visible for this mode." }),
       mode === "teaching" && /* @__PURE__ */ jsx("div", { className: "rounded-[1.25rem] border border-blue-200 bg-blue-50/70 p-3 text-sm text-blue-950", children: "Classification rule: keep the account bank and the target zone in view together." }),
-      /* @__PURE__ */ jsx(DragDropContext, { onDragEnd: handleDragEnd, children: /* @__PURE__ */ jsxs("div", { className: "grid gap-6 xl:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.65fr)]", children: [
-        /* @__PURE__ */ jsxs("section", { className: "rounded-[1.5rem] border border-slate-300 bg-white/90 p-4 shadow-sm", children: [
-          /* @__PURE__ */ jsxs("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
-            /* @__PURE__ */ jsx("h3", { className: "text-sm font-semibold uppercase tracking-[0.22em] text-slate-500", children: "Item bank" }),
-            /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "sm", onClick: reset, className: "gap-2 text-xs", children: [
-              /* @__PURE__ */ jsx(RotateCcw, { className: "h-4 w-4" }),
-              "Reset"
-            ] })
+      /* @__PURE__ */ jsxs(DragDropContext, { onDragEnd: onDragEndWithAnnouncement, children: [
+        /* @__PURE__ */ jsx("div", { className: "sr-only", "aria-live": "polite", "aria-atomic": "true", children: announcement }),
+        /* @__PURE__ */ jsxs("div", { className: "grid gap-6 xl:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.65fr)]", children: [
+          /* @__PURE__ */ jsxs("section", { className: "rounded-[1.5rem] border border-slate-300 bg-white/90 p-4 shadow-sm", children: [
+            /* @__PURE__ */ jsxs("div", { className: "mb-3 flex items-center justify-between gap-3", children: [
+              /* @__PURE__ */ jsx("h3", { className: "text-sm font-semibold uppercase tracking-[0.22em] text-slate-500", children: "Item bank" }),
+              /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "sm", onClick: reset, className: "gap-2 text-xs", children: [
+                /* @__PURE__ */ jsx(RotateCcw, { className: "h-4 w-4" }),
+                "Reset"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx(ConnectedDroppable, { droppableId: AVAILABLE_ITEMS_DROPPABLE, children: (provided) => /* @__PURE__ */ jsxs(
+              "div",
+              {
+                ref: provided.innerRef,
+                ...provided.droppableProps,
+                className: "flex min-h-[200px] flex-col gap-3 rounded-2xl border border-dashed border-slate-200 bg-[linear-gradient(180deg,#fff,#faf9f4)] p-3",
+                children: [
+                  availableItems.map((item, index2) => buildInteractiveCard({ item, index: index2, describeItem, showHints, renderMoveControl })),
+                  provided.placeholder,
+                  availableItems.length === 0 && /* @__PURE__ */ jsx("p", { className: "text-center text-sm text-slate-600", children: "All items placed." })
+                ]
+              }
+            ) })
           ] }),
-          /* @__PURE__ */ jsx(ConnectedDroppable, { droppableId: AVAILABLE_ITEMS_DROPPABLE, children: (provided) => /* @__PURE__ */ jsxs(
-            "div",
-            {
-              ref: provided.innerRef,
-              ...provided.droppableProps,
-              className: "flex min-h-[200px] flex-col gap-3 rounded-2xl border border-dashed border-slate-200 bg-[linear-gradient(180deg,#fff,#faf9f4)] p-3",
-              children: [
-                availableItems.map((item, index2) => buildInteractiveCard({ item, index: index2, describeItem, showHints, renderMoveControl })),
-                provided.placeholder,
-                availableItems.length === 0 && /* @__PURE__ */ jsx("p", { className: "text-center text-sm text-slate-600", children: "All items placed." })
-              ]
-            }
-          ) })
-        ] }),
-        /* @__PURE__ */ jsx("section", { className: "space-y-4", children: buildZoneList({
-          zones,
-          layoutPreset,
-          showHints,
-          renderZone
-        }) })
-      ] }) })
+          /* @__PURE__ */ jsx("section", { className: "space-y-4", children: buildZoneList({
+            zones,
+            layoutPreset,
+            showHints,
+            renderZone
+          }) })
+        ] })
+      ] })
     ] })
   ] });
 }
@@ -10812,7 +10837,7 @@ function JournalEntryTable({
           steps: rowPrompts
         }
       ),
-      /* @__PURE__ */ jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs("div", { className: "min-w-[920px] overflow-hidden rounded-2xl border border-border/80 bg-white shadow-sm", "data-layout": "general-journal", children: [
+      /* @__PURE__ */ jsx("div", { className: "hidden md:block overflow-x-auto", children: /* @__PURE__ */ jsxs("div", { className: "min-w-[920px] overflow-hidden rounded-2xl border border-border/80 bg-white shadow-sm", "data-layout": "general-journal", children: [
         /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[88px_minmax(240px,1.2fr)_88px_120px_120px_minmax(160px,0.8fr)_150px] border-b border-border/70 bg-muted/30 px-4 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground", children: [
           showDates && /* @__PURE__ */ jsx("div", { children: "Date" }),
           /* @__PURE__ */ jsx("div", { children: "Account title" }),
@@ -10936,6 +10961,135 @@ function JournalEntryTable({
           );
         }) })
       ] }) }),
+      /* @__PURE__ */ jsx("div", { className: "space-y-3 md:hidden", children: normalizedLines.map((line2, index2) => {
+        const feedback = rowFeedback[line2.id];
+        const lineSide = getLineSide(line2);
+        const previousDate = index2 > 0 ? normalizedLines[index2 - 1]?.date ?? "" : "";
+        const showDateHeader = showDates && (index2 === 0 || line2.date !== previousDate);
+        return /* @__PURE__ */ jsxs("div", { children: [
+          showDateHeader && /* @__PURE__ */ jsx(
+            "div",
+            {
+              "data-date-header": true,
+              className: "mb-2 mt-1 text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground",
+              children: line2.date || "—"
+            }
+          ),
+          /* @__PURE__ */ jsxs(
+            "article",
+            {
+              "data-line-id": line2.id,
+              "data-line-side": lineSide,
+              className: cn(
+                "space-y-3 rounded-2xl border px-4 py-4 transition-colors",
+                teacherView && feedback?.status === "correct" && "bg-emerald-50/60 border-emerald-200",
+                teacherView && feedback?.status === "incorrect" && "bg-rose-50/70 border-rose-200",
+                teacherView && feedback?.status === "partial" && "bg-amber-50/70 border-amber-200",
+                lineSide === "debit" && "border-l-4 border-l-blue-300",
+                lineSide === "credit" && "border-l-4 border-l-rose-300"
+              ),
+              children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-1", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                    /* @__PURE__ */ jsxs("span", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground", children: [
+                      lineSide === "credit" ? "Credit" : "Debit",
+                      " · Line ",
+                      index2 + 1
+                    ] }),
+                    /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-[10px]", children: index2 < expectedLineCount ? `Line ${index2 + 1}` : "Optional" })
+                  ] }),
+                  /* @__PURE__ */ jsx("div", { className: "text-sm font-medium", children: readOnly ? availableAccounts.find((account) => account.id === line2.accountId)?.label ?? line2.accountId ?? "—" : /* @__PURE__ */ jsxs(
+                    "select",
+                    {
+                      className: "min-h-11 w-full rounded-md border border-border/60 bg-background px-3 py-2 text-sm font-medium",
+                      value: line2.accountId ?? "",
+                      "aria-label": `Account for line ${index2 + 1}`,
+                      onChange: (event) => {
+                        const nextLines = [...normalizedLines];
+                        nextLines[index2] = { ...line2, accountId: event.target.value };
+                        updateLines(nextLines);
+                      },
+                      children: [
+                        /* @__PURE__ */ jsx("option", { value: "", children: "Select account" }),
+                        availableAccounts.map((account) => /* @__PURE__ */ jsx("option", { value: account.id, children: account.label }, account.id))
+                      ]
+                    }
+                  ) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-3", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("div", { className: "text-[11px] uppercase tracking-[0.18em] text-muted-foreground", children: "Debit" }),
+                    readOnly ? /* @__PURE__ */ jsx("div", { className: "font-mono text-sm tabular-nums", children: renderAmount(line2.debit) }) : /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        type: "text",
+                        inputMode: "decimal",
+                        className: "h-11 w-full text-right tabular-nums",
+                        "aria-label": `Debit for line ${index2 + 1}`,
+                        value: line2.debit ?? "",
+                        onChange: (event) => {
+                          const nextLines = [...normalizedLines];
+                          nextLines[index2] = { ...line2, debit: event.target.value, credit: event.target.value ? "" : line2.credit };
+                          updateLines(nextLines);
+                        }
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("div", { className: "text-[11px] uppercase tracking-[0.18em] text-muted-foreground", children: "Credit" }),
+                    readOnly ? /* @__PURE__ */ jsx("div", { className: "font-mono text-sm tabular-nums", children: renderAmount(line2.credit) }) : /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        type: "text",
+                        inputMode: "decimal",
+                        className: "h-11 w-full text-right tabular-nums",
+                        "aria-label": `Credit for line ${index2 + 1}`,
+                        value: line2.credit ?? "",
+                        onChange: (event) => {
+                          const nextLines = [...normalizedLines];
+                          nextLines[index2] = { ...line2, credit: event.target.value, debit: event.target.value ? "" : line2.debit };
+                          updateLines(nextLines);
+                        }
+                      }
+                    )
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("div", { className: "text-[11px] uppercase tracking-[0.18em] text-muted-foreground", children: "Memo" }),
+                  readOnly ? /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: line2.memo || "—" }) : /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      type: "text",
+                      value: line2.memo ?? "",
+                      "aria-label": `Memo for line ${index2 + 1}`,
+                      onChange: (event) => {
+                        const nextLines = [...normalizedLines];
+                        nextLines[index2] = { ...line2, memo: event.target.value };
+                        updateLines(nextLines);
+                      }
+                    }
+                  )
+                ] }),
+                feedback ? /* @__PURE__ */ jsxs("div", { className: "space-y-2 text-xs", children: [
+                  /* @__PURE__ */ jsx(
+                    "div",
+                    {
+                      className: cn(
+                        "font-medium",
+                        feedback.status === "correct" && "text-emerald-700",
+                        feedback.status === "incorrect" && "text-rose-700",
+                        feedback.status === "partial" && "text-amber-700"
+                      ),
+                      children: feedback.message ?? feedback.status
+                    }
+                  ),
+                  teacherView && feedback?.misconceptionTags?.length ? /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-1.5", children: feedback.misconceptionTags.map((tag) => /* @__PURE__ */ jsx(Badge, { variant: "secondary", className: "text-[10px]", children: tag }, tag)) }) : null
+                ] }) : null
+              ]
+            }
+          )
+        ] }, `mobile-${line2.id}`);
+      }) }),
       /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/80 bg-muted/20 px-4 py-3 text-sm", children: [
         /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-3", children: [
           /* @__PURE__ */ jsxs("span", { children: [
