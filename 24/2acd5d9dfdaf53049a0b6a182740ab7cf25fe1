@@ -1,0 +1,1 @@
+remaining_sim_submit_guards Phase 3: Fixed submittedRef ordering in 3 MEDIUM components (PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager). Guard now checked before onSubmit, ref set synchronously. 3 source-level guard tests added. Tech-debt item closed. Track marked complete. Lint/test/build verified.
