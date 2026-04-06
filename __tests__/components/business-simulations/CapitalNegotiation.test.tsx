@@ -83,5 +83,7 @@ describe('CapitalNegotiation', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'capital_negotiation')
     expect(envelope).toHaveProperty('activityId', 'capital-negotiation-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 })

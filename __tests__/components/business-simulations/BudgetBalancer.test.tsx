@@ -90,6 +90,8 @@ describe('BudgetBalancer', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'budget_balancer')
     expect(envelope).toHaveProperty('activityId', 'activity-budget')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 
   it('applies expense updates and calls onStateChange', async () => {

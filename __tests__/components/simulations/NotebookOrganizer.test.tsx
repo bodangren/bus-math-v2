@@ -57,12 +57,16 @@ describe('NotebookOrganizer', () => {
           contractVersion: 'practice.v1',
           activityId: 'notebook-test',
           mode: 'guided_practice',
+          status: 'submitted',
           artifact: expect.objectContaining({
             kind: 'notebook_organizer',
           }),
         }),
       );
     });
+
+    const envelope = onSubmit.mock.calls[0][0]
+    expect(envelope.parts.length).toBeGreaterThan(0)
 
     expect(onComplete).toHaveBeenCalledWith(
       expect.objectContaining({

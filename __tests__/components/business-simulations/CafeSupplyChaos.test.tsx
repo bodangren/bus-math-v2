@@ -61,5 +61,7 @@ describe('CafeSupplyChaos', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'cafe_supply_chaos')
     expect(envelope).toHaveProperty('activityId', 'cafe-supply-chaos-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 })

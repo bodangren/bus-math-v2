@@ -137,6 +137,8 @@ describe('LemonadeStand', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'lemonade_stand')
     expect(envelope).toHaveProperty('activityId', 'activity-lemonade')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 
   it('calls onStateChange when supplies are purchased', async () => {

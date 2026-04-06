@@ -7,44 +7,44 @@
 ### Tasks
 
 1. **BusinessStressTest.test.tsx — add status/parts assertions**
-   - [ ] Read current test, identify envelope assertion block
-   - [ ] Add `expect(envelope).toHaveProperty('status', 'submitted')` to both envelope tests
-   - [ ] Add `expect(envelope.parts.length).toBeGreaterThan(0)` to both envelope tests
-   - [ ] Write test: verify assertions pass
+   - [x] Read current test, identify envelope assertion block
+   - [x] Add `expect(envelope).toHaveProperty('status', 'submitted')` to both envelope tests
+   - [x] Add `expect(envelope.parts.length).toBeGreaterThan(0)` to both envelope tests
+   - [x] Write test: verify assertions pass
 
 2. **LemonadeStand.test.tsx — add status/parts assertions**
-   - [ ] Add `status` and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `status` and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 3. **BudgetBalancer.test.tsx — add status/parts assertions**
-   - [ ] Add `status` and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `status` and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 4. **StartupJourney.test.tsx — add activityId/status/parts assertions**
-   - [ ] Add `activityId`, `status`, and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `activityId`, `status`, and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 5. **CapitalNegotiation.test.tsx — add status/parts assertions**
-   - [ ] Add `status` and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `status` and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 6. **CafeSupplyChaos.test.tsx — add status/parts assertions**
-   - [ ] Add `status` and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `status` and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 7. **AssetTimeMachine.test.tsx — add status/parts assertions**
-   - [ ] Add `status` and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `status` and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 8. **NotebookOrganizer.test.tsx — add status/parts assertions**
-   - [ ] Add `status` and `parts` assertions to envelope test
-   - [ ] Verify test passes
+   - [x] Add `status` and `parts` assertions to envelope test
+   - [x] Verify test passes
 
 9. **Phase verification**
-   - [ ] Run `npm run lint`
-   - [ ] Run full test suite
-   - [ ] Run `npm run build`
-   - [ ] Commit and push
+   - [x] Run `npm run lint`
+   - [x] Run full test suite (85 passed, 13 files)
+   - [x] Run `npm run build`
+   - [x] Commit and push
 
 ## Phase 2: Simulation Input Validation — NaN/Empty Guards
 

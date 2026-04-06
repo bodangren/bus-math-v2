@@ -61,6 +61,8 @@ describe('BusinessStressTest', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'business_stress_test')
     expect(envelope).toHaveProperty('activityId', 'business-stress-test-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 
   it('emits a practice.v1 envelope on bankruptcy path', async () => {
@@ -100,6 +102,8 @@ describe('BusinessStressTest', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'business_stress_test')
     expect(envelope).toHaveProperty('activityId', 'business-stress-test-bankruptcy')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
     expect(envelope.artifact.survivedAll).toBe(false)
     expect(envelope.artifact.finalCash).toBe(0)
   })

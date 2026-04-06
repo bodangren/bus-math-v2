@@ -149,7 +149,10 @@ describe('StartupJourney', () => {
     const envelope = onSubmit.mock.calls[0][0]
     expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
     expect(envelope).toHaveProperty('artifact.kind', 'startup_journey')
+    expect(envelope).toHaveProperty('activityId', 'activity-startup')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 
   it('updates funding and notifies parent when a decision is made', async () => {

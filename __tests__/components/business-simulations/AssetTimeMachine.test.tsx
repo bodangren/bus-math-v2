@@ -54,6 +54,8 @@ describe('AssetTimeMachine', () => {
     expect(envelope).toHaveProperty('artifact.kind', 'asset_time_machine')
     expect(envelope).toHaveProperty('activityId', 'asset-time-machine-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
+    expect(envelope).toHaveProperty('status', 'submitted')
+    expect(envelope.parts.length).toBeGreaterThan(0)
   })
 
   it('resets game state when Back to Lesson is clicked after completion', async () => {
