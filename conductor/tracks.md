@@ -65,9 +65,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/practice_contract_completion_20260404/](./tracks/practice_contract_completion_20260404/)*
   *Status: Complete. All 4 phases finished: all components emit practice.v1 envelopes, misconception taxonomy wired into family engines, teacher error summary dashboard integrated, SpreadsheetActivity practice.v1 path added. All acceptance criteria met. Verified lint, test, build.*
 
-- [~] **Track 8: Milestone 7 Final Closure — Envelope Tests, Input Validation, and Double-Submit Guards**
+- [x] **Track 8: Milestone 7 Final Closure — Envelope Tests, Input Validation, and Double-Submit Guards**
   *Link: [./tracks/milestone7_final_closure_20260406/](./tracks/milestone7_final_closure_20260406/)*
-  *Status: In Progress. Phase 1: envelope test quality (status/parts assertions). Phase 2: simulation input validation (NaN guards). Phase 3: GrowthPuzzle double-submit guard. Phase 4: exercise component polish.*
+  *Status: Complete. All 4 phases finished: envelope test quality (status/parts assertions on 8 test files), NaN guards on 3 depreciation simulators, GrowthPuzzle double-submit ref guard, StraightLineMastery useMemo fix, CapitalizationExpenseMastery Show Example fix. Verified lint, test, build.*
 
 ## Archive Ledger
 
