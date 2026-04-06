@@ -1,0 +1,8 @@
+{
+  "track_id": "bstress_submitted_state_20260407",
+  "type": "chore",
+  "status": "complete",
+  "created_at": "2026-04-07T14:00:00Z",
+  "updated_at": "2026-04-07T14:55:00Z",
+  "description": "Add submitted state variable to BusinessStressTest for visual disabled state on post-submission buttons"
+}

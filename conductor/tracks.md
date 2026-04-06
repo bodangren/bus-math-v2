@@ -89,6 +89,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/remaining_sim_submit_guards_20260407/](./tracks/remaining_sim_submit_guards_20260407/)*
   *Status: Complete. All 3 phases finished: submittedRef guards added to AssetTimeMachine, CapitalNegotiation, CafeSupplyChaos, ScenarioSwitchShowTell (HIGH), and ordering fixed in PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager (MEDIUM). All 8 simulation components now use canonical submittedRef pattern. Verified lint, test, build.*
 
+- [x] **Track: BusinessStressTest Submitted State**
+  *Link: [./tracks/bstress_submitted_state_20260407/](./tracks/bstress_submitted_state_20260407/)*
+  *Status: Complete. Added submitted state variable, disabled={submitted} on post-submission buttons, setSubmitted(false) in reset. Source-level tests pass. Verified lint, test, build.*
+
 ## Archive Ledger
 
 - [x] **Track: Simulation Contract Hardening**

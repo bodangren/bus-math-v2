@@ -22,7 +22,7 @@ Admin tooling, in-app curriculum authoring, and new content beyond the existing 
 2. ~~**DDBComparisonMastery submittedRef guard**~~ — Done.
 3. ~~**Remaining Simulation submittedRef Guards (HIGH)**~~ — Done. All 4 HIGH components guarded.
 4. ~~**Remaining Simulation submittedRef Guards (MEDIUM)**~~ — Done. PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager now use submittedRef guard checked before onSubmit.
-5. **BusinessStressTest submitted state** — No visual disabled state on buttons after submission; submittedRef silently blocks with no UI feedback.
+5. ~~**BusinessStressTest submitted state**~~ — Done. Added `submitted` state variable, `disabled={submitted}` on post-submission buttons, `setSubmitted(false)` in reset.
 6. **Simulation Activity Prop Type Standardization** — 5 simulations (4–8) use ad-hoc inline types instead of Zod schemas. Standardize to match first 3 simulations.
 7. **CashFlowChallenge Legacy Cleanup** — Remove `onSubmitLegacy` callback and migrate to `activity.id ?? fallback` pattern. Dual-callback path is a maintenance trap.
 8. **Auth Fails-Open Hardening** — `requireActiveRequestSessionClaims` passes through deactivated users during Convex outages. Consider credential-state caching or 503 response.

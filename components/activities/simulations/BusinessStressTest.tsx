@@ -56,6 +56,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
   const [activeDisaster, setActiveDisaster] = useState<Disaster | null>(null)
   const [isGameOver, setIsGameOver] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
 
   const profit = revenue - expenses
@@ -64,6 +65,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
     if (submittedRef.current) return
     if (round >= disasters.length) {
       submittedRef.current = true
+      setSubmitted(true)
       const finalCash = cash
       const roundsSurvived = round
       setIsComplete(true)
@@ -138,6 +140,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
     if (cash <= 0 && !isGameOver && !submittedRef.current) {
       setIsGameOver(true)
       submittedRef.current = true
+      setSubmitted(true)
 
       const answers: Record<string, unknown> = {
         finalCash: 0,
@@ -187,6 +190,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
     setActiveDisaster(null)
     setIsGameOver(false)
     setIsComplete(false)
+    setSubmitted(false)
     submittedRef.current = false
   }
 
@@ -312,7 +316,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
               Sarah&apos;s cash hit zero. In the real world, this is where the story ends.
               A linked financial model helps you see these disasters coming before they hit!
             </p>
-            <Button size="lg" className="bg-slate-900 px-10 h-14 text-xl" onClick={reset}>
+            <Button size="lg" className="bg-slate-900 px-10 h-14 text-xl" onClick={reset} disabled={submitted}>
               <RotateCcw className="w-5 h-5 mr-2" />
               Restart Test
             </Button>
@@ -338,7 +342,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
               </p>
             </div>
 
-            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl" onClick={reset}>
+            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl" onClick={reset} disabled={submitted}>
               Back to Lesson
             </Button>
           </CardContent>
