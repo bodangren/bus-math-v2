@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -61,10 +61,12 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
   const [totalExpenses, setTotalExpenses] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
   const [history, setHistory] = useState<AssetHistoryEntry[]>([])
+  const submittedRef = useRef(false)
 
   const currentScenario = scenarios.find(s => s.year === currentYear + 1)
 
   const handleAction = (type: 'repair' | 'upgrade' | 'ignore') => {
+    if (submittedRef.current) return
     let cost = 0
     let valueImpact = -(currentValue * 0.2) // Natural aging
 
@@ -132,6 +134,7 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
         },
       })
 
+      submittedRef.current = true
       onSubmit?.(envelope)
       onComplete?.(result)
     } else {
@@ -254,6 +257,7 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
             </p>
 
             <Button size="lg" className="bg-blue-600 hover:bg-blue-700 w-full h-14 text-xl" onClick={() => {
+              submittedRef.current = false
               setIsComplete(false)
               setCurrentYear(0)
               setCurrentValue(initialCost)

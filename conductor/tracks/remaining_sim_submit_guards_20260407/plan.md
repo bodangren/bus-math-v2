@@ -4,13 +4,13 @@
 
 ### Tasks
 
-1. [ ] Write source-level test verifying submittedRef guard pattern in AssetTimeMachine
-2. [ ] Implement submittedRef guard in AssetTimeMachine handleAction
-3. [ ] Reset submittedRef in AssetTimeMachine "Back to Lesson" button
-4. [ ] Write source-level test verifying submittedRef guard pattern in CapitalNegotiation
-5. [ ] Implement submittedRef guard in CapitalNegotiation handleFinalize
-6. [ ] Reset submittedRef in CapitalNegotiation reset function
-7. [ ] Verify: lint, tests, build for Phase 1
+1. [x] Write source-level test verifying submittedRef guard pattern in AssetTimeMachine
+2. [x] Implement submittedRef guard in AssetTimeMachine handleAction
+3. [x] Reset submittedRef in AssetTimeMachine "Back to Lesson" button
+4. [x] Write source-level test verifying submittedRef guard pattern in CapitalNegotiation
+5. [x] Implement submittedRef guard in CapitalNegotiation handleFinalize
+6. [x] Reset submittedRef in CapitalNegotiation reset function
+7. [x] Verify: lint, tests, build for Phase 1
 
 ## Phase 2: HIGH — CafeSupplyChaos and ScenarioSwitchShowTell
 

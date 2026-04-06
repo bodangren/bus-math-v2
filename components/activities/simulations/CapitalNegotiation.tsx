@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -53,6 +53,7 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
   const [revealedTerms, setRevealedTerms] = useState<string[]>([])
   const [isComplete, setIsComplete] = useState(false)
   const [simulationStep, setSimulationStep] = useState(0)
+  const submittedRef = useRef(false)
 
   const handleSelect = (option: CapitalOption) => {
     setSelectedOption(option)
@@ -67,6 +68,7 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
   }
 
   const handleFinalize = () => {
+    if (submittedRef.current) return
     setIsComplete(true)
 
     const selection = selectedOption?.id ?? ''
@@ -105,11 +107,13 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
       },
     })
 
+    submittedRef.current = true
     onSubmit?.(envelope)
     onComplete?.({ selection })
   }
 
   const reset = () => {
+    submittedRef.current = false
     setSelectedOption(null)
     setRevealedTerms([])
     setSimulationStep(0)
@@ -269,7 +273,7 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
             </div>
 
             <div className="pt-6 flex justify-center gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl" onClick={() => setIsComplete(false)}>
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-10 h-14 text-xl" onClick={() => { submittedRef.current = false; setIsComplete(false) }}>
                 Continue Lesson
               </Button>
               <Button variant="outline" size="lg" className="h-14" onClick={reset}>
