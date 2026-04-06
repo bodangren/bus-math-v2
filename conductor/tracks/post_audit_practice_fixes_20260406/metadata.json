@@ -1,7 +1,7 @@
 {
   "track_id": "post_audit_practice_fixes_20260406",
   "type": "fix",
-  "status": "new",
+  "status": "complete",
   "created_at": "2026-04-06T00:00:00Z",
   "updated_at": "2026-04-06T00:00:00Z",
   "description": "Fix misapplied misconception tags, add test coverage, add NaN/Infinity guards, and deduplicate normalizePracticeValue — post code-review audit items from Tracks 6-8."
