@@ -38,3 +38,6 @@
 - Grader misconception-tag lookups must use the same ID space as the student answer; searching practiceAccounts by category id when the answer is a category will never match and produces dead code.
 - `const [, setCompleted] = useState(false)` discards the boolean, making it impossible to guard against double-submit; always read the state value.
 - When grading journal entries, "correct account, wrong amount on the correct side" is a computation error, not a debit/credit reversal; compare the debit/credit side placement to distinguish.
+- "Back to Lesson" / completion-dismissal buttons must call reset() or fully restore playable state — partial state clearing (e.g., only setIsComplete(false)) leaves the game in an unplayable limbo where the ref guard silently blocks all actions.
+- Simulation reset functions must clear all active intervals/timeouts (salesIntervalRef, etc.) before resetting state; stale intervals continue modifying freshly-reset state.
+- Optional chaining on callbacks (onSubmit?.()) should be consistent across all components in the same layer — mixing onSubmit(envelope) and onSubmit?.(envelope) is a latent crash risk if the null guard is ever refactored.

@@ -398,7 +398,7 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
         },
       })
 
-      onSubmit(envelope)
+      onSubmit?.(envelope)
       addNotification('Results submitted successfully!', 'success')
     }
   }, [gameState, actionsLog, onSubmit, activity, addNotification])

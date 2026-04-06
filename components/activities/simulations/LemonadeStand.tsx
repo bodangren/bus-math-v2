@@ -428,6 +428,10 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
   }, [])
 
   const resetGame = useCallback(() => {
+    if (salesIntervalRef.current) {
+      clearInterval(salesIntervalRef.current)
+      salesIntervalRef.current = null
+    }
     setGameState(cloneStateFromConfig(activity.props.initialState))
     setSalesProgress(0)
     setNotifications([])

@@ -49,6 +49,7 @@ function generateProblem(): DepreciationProblem {
   const asset = assetPool[Math.floor(Math.random() * assetPool.length)]
   const cost = randInt(asset.costRange[0], asset.costRange[1])
   const usefulLife = randInt(asset.lifeRange[0], asset.lifeRange[1])
+  if (usefulLife <= 0) return generateProblem()
   const salvageValue = randInt(asset.salvageRange[0], asset.salvageRange[1])
   const yearToCalculate = randInt(1, usefulLife)
 

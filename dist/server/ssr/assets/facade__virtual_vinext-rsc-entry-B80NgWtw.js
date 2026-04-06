@@ -12964,7 +12964,7 @@ function CashFlowChallenge({ activity, onSubmit }) {
           won: gameState.gameStatus === "won"
         }
       });
-      onSubmit(envelope);
+      onSubmit?.(envelope);
       addNotification("Results submitted successfully!", "success");
     }
   }, [gameState, actionsLog, onSubmit, activity, addNotification]);
@@ -40985,6 +40985,10 @@ function LemonadeStand({ activity, initialState: initialState2, onStateChange, o
     setSalesProgress(0);
   }, []);
   const resetGame = useCallback$1(() => {
+    if (salesIntervalRef.current) {
+      clearInterval(salesIntervalRef.current);
+      salesIntervalRef.current = null;
+    }
     setGameState(cloneStateFromConfig$1(activity.props.initialState));
     setSalesProgress(0);
     setNotifications([]);
@@ -58358,7 +58362,7 @@ function BusinessStressTest({ activity, onComplete, onSubmit }) {
           ". This is the power of a fully integrated model."
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl", onClick: () => setIsComplete(false), children: "Back to Lesson" })
+      /* @__PURE__ */ jsx(Button, { size: "lg", className: "bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl", onClick: reset, children: "Back to Lesson" })
     ] }) })
   ] });
 }

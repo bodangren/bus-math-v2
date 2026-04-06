@@ -338,7 +338,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
               </p>
             </div>
 
-            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl" onClick={() => setIsComplete(false)}>
+            <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 w-full h-14 text-xl" onClick={reset}>
               Back to Lesson
             </Button>
           </CardContent>
