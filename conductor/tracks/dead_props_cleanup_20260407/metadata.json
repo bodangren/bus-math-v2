@@ -1,0 +1,8 @@
+{
+  "track_id": "dead_props_cleanup_20260407",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-04-07T00:00:00Z",
+  "updated_at": "2026-04-07T00:00:00Z",
+  "description": "Clean up dead props and unused buttons in simulation components"
+}

@@ -96,6 +96,8 @@ Strictly serial. Complete and archive each track before starting the next.
 - [x] **Track: CashFlowChallenge Legacy Cleanup**
   *Link: [./tracks/cashflowchallenge_legacy_cleanup_20260407/](./tracks/cashflowchallenge_legacy_cleanup_20260407/)*
   *Status: Complete. onSubmitLegacy already removed, activityId already uses activity.id ?? fallback pattern.*
+- [ ] **Track: Dead Props Cleanup**
+  *Link: [./tracks/dead_props_cleanup_20260407/](./tracks/dead_props_cleanup_20260407/)*
 
 ## Archive Ledger
 
