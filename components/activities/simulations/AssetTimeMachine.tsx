@@ -15,7 +15,14 @@ import {
   Zap
 } from 'lucide-react'
 
+import type { Activity } from '@/lib/db/schema/validators'
+import type { AssetTimeMachineActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
+export type AssetTimeMachineActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'asset-time-machine'
+  props: AssetTimeMachineActivityProps
+}
 
 export interface AssetYearScenario {
   year: number
@@ -26,17 +33,7 @@ export interface AssetYearScenario {
 }
 
 export interface AssetTimeMachineProps {
-  activity: {
-    id?: string
-    title?: string
-    description?: string
-    props: {
-      assetName: string
-      initialCost: number
-      years: number
-      scenarios: AssetYearScenario[]
-    }
-  }
+  activity: AssetTimeMachineActivity
   onComplete?: (results: AssetTimeMachineResult) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
@@ -120,7 +117,7 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
         parts,
         artifact: {
           kind: 'asset_time_machine',
-          title: activity.title ?? 'The Asset Time-Machine',
+          title: activity.props.title ?? 'The Asset Time-Machine',
           assetName: activity.props.assetName,
           initialCost: activity.props.initialCost,
           totalExpenses: result.totalExpenses,
@@ -148,7 +145,7 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Clock className="w-8 h-8 text-blue-400" />
-            {activity.title || 'The Asset Time-Machine'}
+            {activity.props.title || 'The Asset Time-Machine'}
           </CardTitle>
           <CardDescription className="text-slate-400 text-lg">
             Sarah bought a <strong>{assetName}</strong> for <strong>${initialCost.toLocaleString()}</strong>. Let&apos;s see how it ages.

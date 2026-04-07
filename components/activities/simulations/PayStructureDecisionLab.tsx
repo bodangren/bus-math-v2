@@ -8,12 +8,17 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { SpreadsheetWrapper, type SpreadsheetData } from "@/components/activities/spreadsheet/SpreadsheetWrapper"
 import { ArrowLeft, ArrowRight, CheckCircle2, Info, ShieldCheck, Target } from "lucide-react"
+import type { Activity } from '@/lib/db/schema/validators'
+import type { PayStructureDecisionLabActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 
-type ScenarioId = "service" | "product" | "sales"
+export type PayStructureDecisionLabActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'pay-structure-lab'
+  props: PayStructureDecisionLabActivityProps
+}
 
 type ScenarioConfig = {
-  id: ScenarioId
+  id: "service" | "product" | "sales"
   title: string
   role: string
   context: string
@@ -23,6 +28,8 @@ type ScenarioConfig = {
   strengths: string[]
   risks: string[]
 }
+
+
 
 type HourlyInputs = {
   week1: number
@@ -50,88 +57,7 @@ type CommissionInputs = {
   stateRate: number
 }
 
-const scenarios: ScenarioConfig[] = [
-  {
-    id: "service",
-    title: "Client Support Coverage",
-    role: "Support Specialist",
-    context: "Handles live chat and quick fixes during launch weeks. Hours spike fast.",
-    goal: "Pay for time and stay compliant with weekly overtime rules.",
-    payType: "hourly",
-    talkTrack: "Hourly + overtime keeps pay fair when launches go long. We track by week so OT is legal.",
-    strengths: [
-      "Overtime after 40 hours in a week protects the employee",
-      "Easy to scale hours up/down when tickets spike",
-      "Clear match between time worked and pay received",
-    ],
-    risks: [
-      "Unplanned overtime can blow up cash needs",
-      "Requires tight scheduling and time tracking",
-    ],
-  },
-  {
-    id: "product",
-    title: "Project and Quality Ownership",
-    role: "Junior Developer",
-    context: "Ships features, fixes bugs, joins demos. Some sprints run late.",
-    goal: "Provide stable pay, budget predictably, and add bonuses for launches.",
-    payType: "salary",
-    talkTrack: "Salary keeps pay steady. When launches push late, Sarah can add a small bonus or flex day.",
-    strengths: [
-      "Predictable payroll each period",
-      "Simpler admin than tracking OT every week",
-      "Supports retention with steady checks",
-    ],
-    risks: [
-      "Must meet exemption rules to avoid misclassification",
-      "Crunch weeks can feel unpaid without comp time or bonuses",
-    ],
-  },
-  {
-    id: "sales",
-    title: "Outbound Sales Growth",
-    role: "Sales Representative",
-    context: "Books new clients and renewals. Revenue swings by month.",
-    goal: "Align pay with revenue and protect take-home with a draw/base.",
-    payType: "commission",
-    talkTrack: "Commission with a draw says: you share the upside, and you have a floor while pipeline builds.",
-    strengths: [
-      "Direct tie between revenue and pay",
-      "Draw/base smooths slow months without losing upside",
-      "Easy to adjust payouts to margin targets",
-    ],
-    risks: [
-      "Must track chargebacks and returns",
-      "Cash planning needed when big deals hit",
-    ],
-  },
-]
 
-const initialHourly: HourlyInputs = {
-  week1: 44,
-  week2: 41,
-  rate: 25,
-  ytdWages: 167500,
-  ssCap: 168600,
-  stateRate: 0.05,
-}
-
-const initialSalary: SalaryInputs = {
-  annualSalary: 52000,
-  ytdWages: 167500,
-  ssCap: 168600,
-  stateRate: 0.05,
-}
-
-const initialCommission: CommissionInputs = {
-  sales: 12000,
-  commissionRate: 0.05,
-  draw: 300,
-  basePay: 500,
-  ytdWages: 167500,
-  ssCap: 168600,
-  stateRate: 0.05,
-}
 
 type CommonResult = {
   gross: number
@@ -318,23 +244,104 @@ const commissionSheet = (
   ],
 ]
 
+const defaultScenarios: ScenarioConfig[] = [
+  {
+    id: "service",
+    title: "Client Support Coverage",
+    role: "Support Specialist",
+    context: "Handles live chat and quick fixes during launch weeks. Hours spike fast.",
+    goal: "Pay for time and stay compliant with weekly overtime rules.",
+    payType: "hourly",
+    talkTrack: "Hourly + overtime keeps pay fair when launches go long. We track by week so OT is legal.",
+    strengths: [
+      "Overtime after 40 hours in a week protects the employee",
+      "Easy to scale hours up/down when tickets spike",
+      "Clear match between time worked and pay received",
+    ],
+    risks: [
+      "Unplanned overtime can blow up cash needs",
+      "Requires tight scheduling and time tracking",
+    ],
+  },
+  {
+    id: "product",
+    title: "Project and Quality Ownership",
+    role: "Junior Developer",
+    context: "Ships features, fixes bugs, joins demos. Some sprints run late.",
+    goal: "Provide stable pay, budget predictably, and add bonuses for launches.",
+    payType: "salary",
+    talkTrack: "Salary keeps pay steady. When launches push late, Sarah can add a small bonus or flex day.",
+    strengths: [
+      "Predictable payroll each period",
+      "Simpler admin than tracking OT every week",
+      "Supports retention with steady checks",
+    ],
+    risks: [
+      "Must meet exemption rules to avoid misclassification",
+      "Crunch weeks can feel unpaid without comp time or bonuses",
+    ],
+  },
+  {
+    id: "sales",
+    title: "Outbound Sales Growth",
+    role: "Sales Representative",
+    context: "Books new clients and renewals. Revenue swings by month.",
+    goal: "Align pay with revenue and protect take-home with a draw/base.",
+    payType: "commission",
+    talkTrack: "Commission with a draw says: you share the upside, and you have a floor while pipeline builds.",
+    strengths: [
+      "Direct tie between revenue and pay",
+      "Draw/base smooths slow months without losing upside",
+      "Easy to adjust payouts to margin targets",
+    ],
+    risks: [
+      "Must track chargebacks and returns",
+      "Cash planning needed when big deals hit",
+    ],
+  },
+]
+
+const defaultInitialHourly: HourlyInputs = {
+  week1: 44,
+  week2: 41,
+  rate: 25,
+  ytdWages: 167500,
+  ssCap: 168600,
+  stateRate: 0.05,
+}
+
+const defaultInitialSalary: SalaryInputs = {
+  annualSalary: 52000,
+  ytdWages: 167500,
+  ssCap: 168600,
+  stateRate: 0.05,
+}
+
+const defaultInitialCommission: CommissionInputs = {
+  sales: 12000,
+  commissionRate: 0.05,
+  draw: 300,
+  basePay: 500,
+  ytdWages: 167500,
+  ssCap: 168600,
+  stateRate: 0.05,
+}
+
 export interface PayStructureDecisionLabProps {
-  activity?: {
-    title?: string
-    description?: string
-  }
+  activity?: PayStructureDecisionLabActivity
   onComplete?: (results: { score: number; scenarioId: string }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
-export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabProps) {
+export function PayStructureDecisionLab({ activity, onSubmit }: PayStructureDecisionLabProps) {
   const [current, setCurrent] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
-  const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(initialHourly)
-  const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(initialSalary)
-  const [commissionInputs, setCommissionInputs] = useState<CommissionInputs>(initialCommission)
+  const [hourlyInputs, setHourlyInputs] = useState<HourlyInputs>(activity?.props.initialHourly ?? defaultInitialHourly)
+  const [salaryInputs, setSalaryInputs] = useState<SalaryInputs>(activity?.props.initialSalary ?? defaultInitialSalary)
+  const [commissionInputs, setCommissionInputs] = useState<CommissionInputs>(activity?.props.initialCommission ?? defaultInitialCommission)
 
+  const scenarios = activity?.props.scenarios ?? defaultScenarios
   const scenario = scenarios[current]
   const completion = { done: current + 1, total: scenarios.length }
 
@@ -420,7 +427,7 @@ export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabPro
             Watch out
           </div>
           <ul className="list-disc list-inside text-sm text-red-800 space-y-1">
-            {scenarios[current].risks.map((risk) => (
+            {scenario.risks.map((risk: string) => (
               <li key={risk}>{risk}</li>
             ))}
           </ul>
@@ -547,7 +554,7 @@ export function PayStructureDecisionLab({ onSubmit }: PayStructureDecisionLabPro
                       parts,
                       artifact: {
                         kind: 'pay_structure',
-                        scenarios: scenarios.map(s => s.id),
+                        scenarios: scenarios.map((s: { id: string }) => s.id),
                         hourly: { inputs: hourlyInputs, result: hourlyResult },
                         salary: { inputs: salaryInputs, result: salaryResult },
                         commission: { inputs: commissionInputs, result: commissionResult },

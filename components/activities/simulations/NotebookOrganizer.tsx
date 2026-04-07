@@ -16,6 +16,8 @@ import {
   Scale
 } from 'lucide-react'
 
+import type { Activity } from '@/lib/db/schema/validators'
+import type { NotebookOrganizerActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -28,6 +30,11 @@ export const NOTEBOOK_ORGANIZER_SUPPORTED_MODES = [
 ] as const
 const NOTEBOOK_ORGANIZER_DEFAULT_MODE = 'guided_practice' as const
 
+export type NotebookOrganizerActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'notebook-organizer'
+  props: NotebookOrganizerActivityProps
+}
+
 export interface NotebookItem {
   id: string
   label: string
@@ -38,17 +45,7 @@ export interface NotebookItem {
 }
 
 export interface NotebookOrganizerProps {
-  activity: {
-    id?: string
-    title?: string
-    displayName?: string
-    description?: string
-    props: {
-      items: NotebookItem[]
-      initialMessage?: string
-      successMessage?: string
-    }
-  }
+  activity: NotebookOrganizerActivity
   onComplete?: (results: {
     totals: { asset: number; liability: number; equity: number }
     items: Record<string, string>
@@ -69,7 +66,7 @@ function resolveActivityId(activity: NotebookOrganizerProps['activity']) {
     return activity.id
   }
 
-  return `${activity.title ?? activity.displayName ?? 'notebook-organizer'}`
+  return `${activity.props.title ?? activity.displayName ?? 'notebook-organizer'}`
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
 }
@@ -102,7 +99,7 @@ function buildSubmission(args: {
     parts,
     artifact: {
       kind: 'notebook_organizer',
-      title: args.activity.title ?? args.activity.displayName ?? 'The Notebook Organizer',
+      title: args.activity.props.title ?? args.activity.displayName ?? 'The Notebook Organizer',
       description: args.activity.description ?? "Help Sarah sort her messy desk into 'What she has' vs 'What she owes'.",
       items: args.items,
       placedItems: args.placedItems,
@@ -126,7 +123,7 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
   const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
 
-  const resolvedTitle = activity.title ?? activity.displayName ?? 'The Notebook Organizer'
+  const resolvedTitle = activity.props.title ?? activity.displayName ?? 'The Notebook Organizer'
   const resolvedDescription =
     activity.description ?? "Help Sarah sort her messy desk into 'What she has' vs 'What she owes'."
 

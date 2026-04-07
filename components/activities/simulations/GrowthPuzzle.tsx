@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import type { Activity } from '@/lib/db/schema/validators'
+import type { GrowthPuzzleActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
 import {
   type LucideIcon,
@@ -25,6 +27,11 @@ import {
   Heart
 } from 'lucide-react'
 
+export type GrowthPuzzleActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'growth-puzzle'
+  props: GrowthPuzzleActivityProps
+}
+
 // Types for the Growth Puzzle
 export interface GrowthOption {
   id: string
@@ -36,15 +43,7 @@ export interface GrowthOption {
 }
 
 export interface GrowthPuzzleProps {
-  activity: {
-    title?: string
-    description?: string
-    props: {
-      totalProfit: number
-      options: GrowthOption[]
-      successMessage?: string
-    }
-  }
+  activity: GrowthPuzzleActivity
   onComplete?: (results: { selections: string[]; stats: { reinvestment: number; distribution: number } }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
@@ -127,7 +126,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
         parts,
         artifact: {
           kind: 'growth_puzzle',
-          title: activity.title ?? 'The Growth Puzzle',
+          title: activity.props.title ?? 'The Growth Puzzle',
           selections,
           stats,
           totalProfit,
@@ -156,7 +155,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <TrendingUp className="w-8 h-8 text-emerald-600" />
-            {activity.title || 'The Growth Puzzle'}
+            {activity.props.title || 'The Growth Puzzle'}
           </CardTitle>
           <CardDescription className="text-lg">
             Sarah made <strong>${totalProfit.toLocaleString()}</strong> in profit this month. How should she use it?

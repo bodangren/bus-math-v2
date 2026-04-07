@@ -1,11 +1,18 @@
 'use client'
 
+import type { Activity } from '@/lib/db/schema/validators'
+import type { ScenarioSwitchShowtellActivityProps } from '@/types/activities'
 import { useCallback, useRef, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { CheckCircle2, Lightbulb } from 'lucide-react'
 import type { PracticeSubmissionEnvelope } from '@/lib/practice/contract'
 import { buildSimulationSubmissionEnvelope, createSimulationPart } from '@/lib/practice/simulation-submission'
+
+export type ScenarioSwitchShowtellActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'scenario-switch-showtell'
+  props: ScenarioSwitchShowtellActivityProps
+}
 
 interface Scenario { id: string; label: string; description: string; impact: string; tradeoff: string }
 
@@ -18,13 +25,13 @@ const defaultScenarios: Scenario[] = [
 interface ComparisonNote { scenarioA: string; scenarioB: string; insight: string }
 
 export interface ScenarioSwitchShowTellProps {
-  activity: { id?: string; props?: { scenarios?: Scenario[] } }
+  activity: ScenarioSwitchShowtellActivity
   onSubmit?: (submission: PracticeSubmissionEnvelope) => void
   onComplete?: () => void
 }
 
 export function ScenarioSwitchShowTell({ activity, onSubmit, onComplete }: ScenarioSwitchShowTellProps) {
-  const scenarios = activity.props?.scenarios ?? defaultScenarios
+  const scenarios = activity.props.scenarios ?? defaultScenarios
   const [activeIndex, setActiveIndex] = useState(0)
   const [comparisonNotes, setComparisonNotes] = useState<ComparisonNote[]>([])
   const [currentNote, setCurrentNote] = useState('')

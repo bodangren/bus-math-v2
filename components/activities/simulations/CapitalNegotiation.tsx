@@ -17,7 +17,14 @@ import {
   ThumbsDown
 } from 'lucide-react'
 
+import type { Activity } from '@/lib/db/schema/validators'
+import type { CapitalNegotiationActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
+export type CapitalNegotiationActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'capital-negotiation'
+  props: CapitalNegotiationActivityProps
+}
 
 export interface CapitalTerm {
   label: string
@@ -35,14 +42,7 @@ export interface CapitalOption {
 }
 
 export interface CapitalNegotiationProps {
-  activity: {
-    id?: string
-    title?: string
-    description?: string
-    props: {
-      options: CapitalOption[]
-    }
-  }
+  activity: CapitalNegotiationActivity
   onComplete?: (results: { selection?: string }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
@@ -92,14 +92,14 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
       submittedAt: new Date(),
       answers,
       parts,
-      artifact: {
-        kind: 'capital_negotiation',
-        title: activity.title ?? 'Capital Negotiation',
-        selectedOption: selection,
-        optionType: selectedOption?.type ?? 'unknown',
-        termsReviewed: revealedTerms,
-        revealedCount: revealedTerms.length,
-      },
+        artifact: {
+          kind: 'capital_negotiation',
+          title: activity.props.title ?? 'Capital Negotiation',
+          selectedOption: selection,
+          optionType: selectedOption?.type ?? 'unknown',
+          termsReviewed: revealedTerms,
+          revealedCount: revealedTerms.length,
+        },
       analytics: {
         selectedOption: selection,
         optionType: selectedOption?.type ?? 'unknown',
@@ -126,7 +126,7 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Handshake className="w-10 h-10 text-blue-400" />
-            {activity.title || 'The Capital Negotiation'}
+            {activity.props.title || 'The Capital Negotiation'}
           </CardTitle>
           <CardDescription className="text-blue-200 text-lg">
             Sarah needs <strong>$10,000</strong> to scale TechStart. Two offers are on the table.

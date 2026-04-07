@@ -11,12 +11,19 @@ import {
   TrendingUp,
   RotateCcw,
   Skull,
-  Activity,
+  Activity as ActivityIcon,
   DollarSign,
   ShieldCheck
 } from 'lucide-react'
 
+import type { Activity } from '@/lib/db/schema/validators'
+import type { BusinessStressTestActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
+export type BusinessStressTestActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'business-stress-test'
+  props: BusinessStressTestActivityProps
+}
 
 export interface Disaster {
   id: string
@@ -29,26 +36,18 @@ export interface Disaster {
   message: string
 }
 
+const defaultInitialState = { cash: 5000, revenue: 2000, expenses: 1500 }
+const defaultDisasters: Disaster[] = []
+
 export interface BusinessStressTestProps {
-  activity: {
-    id?: string
-    title?: string
-    description?: string
-    props: {
-      initialState: {
-        cash: number
-        revenue: number
-        expenses: number
-      }
-      disasters: Disaster[]
-    }
-  }
+  activity?: BusinessStressTestActivity
   onComplete?: (results: { finalCash: number; roundsSurvived: number }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
 export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessStressTestProps) {
-  const { initialState, disasters } = activity.props
+  const initialState = activity?.props.initialState ?? defaultInitialState
+  const disasters = activity?.props.disasters ?? defaultDisasters
   const [cash, setCash] = useState(initialState.cash)
   const [revenue, setRevenue] = useState(initialState.revenue)
   const [expenses, setExpenses] = useState(initialState.expenses)
@@ -83,7 +82,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
       }))
 
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: activity.id ?? 'business-stress-test',
+        activityId: activity?.id ?? 'business-stress-test',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
@@ -92,7 +91,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         parts,
         artifact: {
           kind: 'business_stress_test',
-          title: activity.title ?? 'Business Stress Test',
+          title: activity?.props.title ?? 'Business Stress Test',
           finalCash,
           roundsSurvived,
           totalRounds: disasters.length,
@@ -155,7 +154,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
       }))
 
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: activity.id ?? 'business-stress-test',
+        activityId: activity?.id ?? 'business-stress-test',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
@@ -164,7 +163,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         parts,
         artifact: {
           kind: 'business_stress_test',
-          title: activity.title ?? 'Business Stress Test',
+          title: activity?.props.title ?? 'Business Stress Test',
           finalCash: 0,
           roundsSurvived: round,
           totalRounds: disasters.length,
@@ -198,12 +197,12 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
     <div className="max-w-5xl mx-auto space-y-6 p-4">
       <Card className="bg-gradient-to-r from-red-900 via-slate-900 to-red-900 text-white border-0 shadow-2xl overflow-hidden relative">
         <div className="absolute inset-0 opacity-10">
-          <Activity className="w-full h-full" />
+          <ActivityIcon className="w-full h-full" />
         </div>
         <CardHeader className="text-center relative z-10">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Zap className="w-8 h-8 text-yellow-400" />
-            {activity.title || 'Business Stress-Test'}
+            {activity?.props.title || 'Business Stress-Test'}
           </CardTitle>
           <CardDescription className="text-red-200 text-lg font-bold uppercase tracking-tighter">
             Panic Mode: Can Sarah&apos;s Business Survive the Market?

@@ -16,7 +16,14 @@ import {
   CheckCircle
 } from 'lucide-react'
 
+import type { Activity } from '@/lib/db/schema/validators'
+import type { CafeSupplyChaosActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
+export type CafeSupplyChaosActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'cafe-supply-chaos'
+  props: CafeSupplyChaosActivityProps
+}
 
 export interface InventoryBatch {
   id: string
@@ -34,16 +41,7 @@ export interface CafeSupplyChaosResult {
 }
 
 export interface CafeSupplyChaosProps {
-  activity: {
-    id?: string
-    title?: string
-    description?: string
-    props: {
-      days: number
-      shipments: { day: number; quantity: number; costPerUnit: number }[]
-      orders: { day: number; quantity: number; pricePerUnit: number }[]
-    }
-  }
+  activity: CafeSupplyChaosActivity
   onComplete?: (results: { method: 'FIFO' | 'LIFO'; sales: CafeSupplyChaosResult[] }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
@@ -157,7 +155,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
         parts,
         artifact: {
           kind: 'cafe_supply_chaos',
-          title: activity.title ?? 'Cafe Supply Chaos',
+          title: activity.props.title ?? 'Cafe Supply Chaos',
           method: method!,
           sales: allSales,
           totalRevenue,
@@ -203,7 +201,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Coffee className="w-8 h-8 text-orange-700" />
-            {activity.title || 'Cafe Supply Chaos'}
+            {activity.props.title || 'Cafe Supply Chaos'}
           </CardTitle>
           <CardDescription className="text-orange-900 text-lg">
             Prices for coffee beans are rising fast! How will you track your costs?

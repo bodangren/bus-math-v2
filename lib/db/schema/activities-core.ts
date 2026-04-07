@@ -2,6 +2,7 @@ import { index, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-cor
 import { z } from 'zod';
 
 import { categorizationActivityPropsSchemas } from './activities-categorization';
+import { exerciseActivityPropsSchemas } from './activities-exercises';
 import { quizActivityPropsSchemas } from './activities-quiz';
 import { simulationActivityPropsSchemas } from './activities-simulation';
 import { spreadsheetActivityPropsSchemas } from './activities-spreadsheet';
@@ -90,6 +91,7 @@ export const activityPropsSchemas = {
   ...quizActivityPropsSchemas,
   ...categorizationActivityPropsSchemas,
   ...coreActivityPropsSchemas,
+  ...exerciseActivityPropsSchemas,
   ...simulationActivityPropsSchemas,
   ...spreadsheetActivityPropsSchemas,
 } as const;
@@ -115,8 +117,16 @@ export type BudgetBalancerActivityProps = z.infer<typeof activityPropsSchemas['b
 export type CashFlowChallengeActivityProps = z.infer<typeof activityPropsSchemas['cash-flow-challenge']>;
 export type InventoryManagerActivityProps = z.infer<typeof activityPropsSchemas['inventory-manager']>;
 export type PitchPresentationBuilderActivityProps = z.infer<typeof activityPropsSchemas['pitch-presentation-builder']>;
+export type NotebookOrganizerActivityProps = z.infer<typeof activityPropsSchemas['notebook-organizer']>;
+export type GrowthPuzzleActivityProps = z.infer<typeof activityPropsSchemas['growth-puzzle']>;
+export type AssetTimeMachineActivityProps = z.infer<typeof activityPropsSchemas['asset-time-machine']>;
+export type CafeSupplyChaosActivityProps = z.infer<typeof activityPropsSchemas['cafe-supply-chaos']>;
+export type CapitalNegotiationActivityProps = z.infer<typeof activityPropsSchemas['capital-negotiation']>;
+export type BusinessStressTestActivityProps = z.infer<typeof activityPropsSchemas['business-stress-test']>;
+export type PayStructureDecisionLabActivityProps = z.infer<typeof activityPropsSchemas['pay-structure-lab']>;
 export type SpreadsheetActivityProps = z.infer<typeof activityPropsSchemas.spreadsheet>;
 export type SpreadsheetEvaluatorActivityProps = z.infer<typeof activityPropsSchemas['spreadsheet-evaluator']>;
+export type ScenarioSwitchShowtellActivityProps = z.infer<typeof activityPropsSchemas['scenario-switch-showtell']>;
 
 export const gradingConfigSchema = z.object({
   autoGrade: z.boolean().default(false),

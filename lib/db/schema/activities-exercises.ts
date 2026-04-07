@@ -78,6 +78,8 @@ const scenarioSwitchConfigSchema = z.object({
         id: z.string(),
         label: z.string(),
         description: z.string(),
+        impact: z.string().optional(),
+        tradeoff: z.string().optional(),
       }),
     )
     .optional(),
