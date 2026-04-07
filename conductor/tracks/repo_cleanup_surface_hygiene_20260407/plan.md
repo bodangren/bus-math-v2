@@ -17,15 +17,20 @@
 ## Phase 3: Queue Baseline for UI Audit
 
 - [x] Register the queued non-unit and per-unit page-polish tracks in `conductor/tracks.md` (already done)
-- [ ] Confirm the cleanup leaves a stable baseline for page-by-page visual evaluation
-- [ ] Update any tech-debt or lessons-learned entries created by the cleanup
+- [x] Confirm the cleanup leaves a stable baseline for page-by-page visual evaluation
+- [x] Update any tech-debt or lessons-learned entries created by the cleanup (no updates needed)
 
 ## Phase 4: Verification
 
 - [x] Run `npm run lint`
-- [~] Run targeted tests for affected code paths
-- [ ] Run `npm run build`
-- [ ] Summarize residual risks or deferred cleanup items
+- [x] Run targeted tests for affected code paths
+- [x] Run `npm run build`
+- [x] Summarize residual risks or deferred cleanup items (no residual risks)
+
+## Track Complete
+
+All phases complete: cleanup, baseline, and verification passed!
+
 
 ## Phase 2: Cleanup Implementation
 
