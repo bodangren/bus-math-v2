@@ -41,69 +41,95 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [x] **Track 1: Practice Engine Stabilization**
-  *Link: [./archive/practice_engine_stabilization_20260323/](./archive/practice_engine_stabilization_20260323/)*
-  *Status: Complete. All 14 tasks finished: 7 engine bugs fixed, families D→Q/O→Q consolidated, L rebuilt, Families R-U built. Family registry stabilized with 19 entries.*
+- [~] **Track: Repo Cleanup and Surface Hygiene**
+  *Link: [./tracks/repo_cleanup_surface_hygiene_20260407/](./tracks/repo_cleanup_surface_hygiene_20260407/)*
+  *Status: Active. Remove confirmed-unused files and stale active-surface residue, then leave the repo in a clean baseline for page-by-page UI audits.*
 
-- [x] **Track 3: Curriculum Rollout**
-  *Link: [./archive/curriculum_rollout_20260331/](./archive/curriculum_rollout_20260331/)*
-  *Status: Complete. All curriculum units verified to use stable activity components with proper family keys. Unblocks Legacy Cleanup and Teacher Error Analysis.*
+- [ ] **Track: Non-Unit Page Evaluation and Polish**
+  *Link: [./tracks/non_unit_page_polish_20260407/](./tracks/non_unit_page_polish_20260407/)*
+  *Status: Queued after cleanup. Audit and fix layout, overflow, spacing, alignment, and responsive issues on non-unit product pages before unit-by-unit passes begin.*
 
-- [x] **Track 4: Legacy Cleanup — Component Pruning, Charts, and Simulations**
-  *Link: [./archive/legacy_component_pruning_and_simulations_20260322/](./archive/legacy_component_pruning_and_simulations_20260322/)*
-  *Status: Complete. Phase 1 (pruning), Phase 2 (chart refactor), Phase 3 (simulation rebuilds), Phase 4 (cleanup and archival) all complete.*
+- [ ] **Track: Unit 1 Page Evaluation and Polish**
+  *Link: [./tracks/unit1_page_polish_20260407/](./tracks/unit1_page_polish_20260407/)*
+  *Status: Queued after non-unit pages.*
 
-- [x] **Track 5: Teacher Practice Error Analysis**
-  *Link: [./tracks/teacher_practice_error_analysis_20260319/](./tracks/teacher_practice_error_analysis_20260319/)*
-  *Status: Complete. All 4 phases finished: deterministic summary layer, AI-assisted interpretation pipeline with graceful fallback, and full verification (tests, lint, build).*
+- [ ] **Track: Unit 2 Page Evaluation and Polish**
+  *Link: [./tracks/unit2_page_polish_20260407/](./tracks/unit2_page_polish_20260407/)*
+  *Status: Queued after Unit 1.*
 
-- [x] **Track 6: Practice Simulation Contract Hardening**
-  *Link: [./tracks/simulation_contract_hardening_20260404/](./tracks/simulation_contract_hardening_20260404/)*
-  *Status: Complete. All 4 phases finished: envelope emission tests for all simulations, bankruptcy path coverage, verified lint/test/build. CashFlowChallenge hardcoded activityId deferred (props refactor needed).*
+- [ ] **Track: Unit 3 Page Evaluation and Polish**
+  *Link: [./tracks/unit3_page_polish_20260407/](./tracks/unit3_page_polish_20260407/)*
+  *Status: Queued after Unit 2.*
 
-- [x] **Track 7: Practice Contract Completion -- Remaining Components and Evidence Wiring**
-  *Link: [./tracks/practice_contract_completion_20260404/](./tracks/practice_contract_completion_20260404/)*
-  *Status: Complete. All 4 phases finished: all components emit practice.v1 envelopes, misconception taxonomy wired into family engines, teacher error summary dashboard integrated, SpreadsheetActivity practice.v1 path added. All acceptance criteria met. Verified lint, test, build.*
+- [ ] **Track: Unit 4 Page Evaluation and Polish**
+  *Link: [./tracks/unit4_page_polish_20260407/](./tracks/unit4_page_polish_20260407/)*
+  *Status: Queued after Unit 3.*
 
-- [x] **Track 8: Milestone 7 Final Closure — Envelope Tests, Input Validation, and Double-Submit Guards**
-  *Link: [./tracks/milestone7_final_closure_20260406/](./tracks/milestone7_final_closure_20260406/)*
-  *Status: Complete. All 4 phases finished: envelope test quality (status/parts assertions on 8 test files), NaN guards on 3 depreciation simulators, GrowthPuzzle double-submit ref guard, StraightLineMastery useMemo fix, CapitalizationExpenseMastery Show Example fix. Verified lint, test, build.*
+- [ ] **Track: Unit 5 Page Evaluation and Polish**
+  *Link: [./tracks/unit5_page_polish_20260407/](./tracks/unit5_page_polish_20260407/)*
+  *Status: Queued after Unit 4.*
 
-- [x] **Track 9: ClassificationActivity Schema Fix**
-  *Link: [./tracks/classification_activity_schema_fix_20260406/](./tracks/classification_activity_schema_fix_20260406/)*
-  *Status: Complete. Added 'classification' schema entry to categorizationActivityPropsSchemas, registered ClassificationActivity in activityRegistry, added decomposition test assertions. Verified lint, test, build.*
+- [ ] **Track: Unit 6 Page Evaluation and Polish**
+  *Link: [./tracks/unit6_page_polish_20260407/](./tracks/unit6_page_polish_20260407/)*
+  *Status: Queued after Unit 5.*
 
-- [x] **Track 10: Practice Engine Post-Audit Fixes**
-  *Link: [./tracks/post_audit_practice_fixes_20260406/](./tracks/post_audit_practice_fixes_20260406/)*
-  *Status: Complete. Fixed misapplied misconception tags in transaction-matrix (context-only) and transaction-effects (classification-error), added misconception tag test coverage for all 3 families (8 new tests), NaN/Infinity guards in 3 depreciation simulators' computation functions, and deduplicated normalizePracticeValue. Closed 6 tech-debt items. Verified lint, test, build.*
+- [ ] **Track: Unit 7 Page Evaluation and Polish**
+  *Link: [./tracks/unit7_page_polish_20260407/](./tracks/unit7_page_polish_20260407/)*
+  *Status: Queued after Unit 6.*
 
-- [x] **Track 11: Simulation Double-Submit Guard Standardization**
-  *Link: [./tracks/simulation_double_submit_guard_20260406/](./tracks/simulation_double_submit_guard_20260406/)*
-  *Status: Complete. All 3 phases finished: CashFlowChallenge, BusinessStressTest, BudgetBalancer, LemonadeStand, and NotebookOrganizer all converted to useRef guard. All 5 target simulations now use submittedRef. Verified lint, test, build.*
-
-- [x] **Track: DDBComparisonMastery submittedRef Guard & BusinessStressTest Visual Feedback**
-  *Link: [./tracks/ddb_exercise_submit_guard_20260407/](./tracks/ddb_exercise_submit_guard_20260407/)*
-  *Status: Complete. DDBComparisonMastery now uses submittedRef guard matching Track 11 pattern. 4 source-level tests pass. Tech-debt item closed. Verified lint, test, build.*
-
-- [x] **Track: Remaining Simulation Double-Submit Guards**
-  *Link: [./tracks/remaining_sim_submit_guards_20260407/](./tracks/remaining_sim_submit_guards_20260407/)*
-  *Status: Complete. All 3 phases finished: submittedRef guards added to AssetTimeMachine, CapitalNegotiation, CafeSupplyChaos, ScenarioSwitchShowTell (HIGH), and ordering fixed in PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager (MEDIUM). All 8 simulation components now use canonical submittedRef pattern. Verified lint, test, build.*
-
-- [x] **Track: BusinessStressTest Submitted State**
-  *Link: [./tracks/bstress_submitted_state_20260407/](./tracks/bstress_submitted_state_20260407/)*
-  *Status: Complete. Added submitted state variable, disabled={submitted} on post-submission buttons, setSubmitted(false) in reset. Source-level tests pass. Verified lint, test, build.*
-
-- [x] **Track: CashFlowChallenge Legacy Cleanup**
-  *Link: [./tracks/cashflowchallenge_legacy_cleanup_20260407/](./tracks/cashflowchallenge_legacy_cleanup_20260407/)*
-  *Status: Complete. onSubmitLegacy already removed, activityId already uses activity.id ?? fallback pattern.*
-- [x] **Track: Dead Props Cleanup**
-  *Link: [./tracks/dead_props_cleanup_20260407/](./tracks/dead_props_cleanup_20260407/)*
+- [ ] **Track: Unit 8 Page Evaluation and Polish**
+  *Link: [./tracks/unit8_page_polish_20260407/](./tracks/unit8_page_polish_20260407/)*
+  *Status: Queued after Unit 7.*
 
 ## Archive Ledger
 
+- [x] **Track: Practice Contract Completion -- Remaining Components and Evidence Wiring**
+  *Link: [./archive/practice_contract_completion_20260404/](./archive/practice_contract_completion_20260404/)*
+  *Closeout: archived on 2026-04-07 after completing practice.v1 contract compliance for remaining components, misconception tagging integration, teacher error summary wiring, and full verification.*
+
+- [x] **Track: Milestone 7 Final Closure — Envelope Tests, Input Validation, and Double-Submit Guards**
+  *Link: [./archive/milestone7_final_closure_20260406/](./archive/milestone7_final_closure_20260406/)*
+  *Closeout: archived on 2026-04-07 after closing envelope test quality gaps, input validation gaps, and final double-submit guard issues with verification recorded in the track.*
+
+- [x] **Track: ClassificationActivity Schema Fix**
+  *Link: [./archive/classification_activity_schema_fix_20260406/](./archive/classification_activity_schema_fix_20260406/)*
+  *Closeout: archived on 2026-04-07 after adding the missing schema entry, wiring the registry, and verifying lint, tests, and build.*
+
+- [x] **Track: Practice Engine Post-Audit Fixes**
+  *Link: [./archive/post_audit_practice_fixes_20260406/](./archive/post_audit_practice_fixes_20260406/)*
+  *Closeout: archived on 2026-04-07 after shipping misconception-tag fixes, additional coverage, NaN/Infinity guards, and helper deduplication.*
+
+- [x] **Track: Simulation Double-Submit Guard Standardization**
+  *Link: [./archive/simulation_double_submit_guard_20260406/](./archive/simulation_double_submit_guard_20260406/)*
+  *Closeout: archived on 2026-04-07 after standardizing submittedRef guards across the first five target simulations and verifying the track gates.*
+
+- [x] **Track: DDBComparisonMastery submittedRef Guard**
+  *Link: [./archive/ddb_exercise_submit_guard_20260407/](./archive/ddb_exercise_submit_guard_20260407/)*
+  *Closeout: archived on 2026-04-07 after adding the DDBComparisonMastery submittedRef guard and verification coverage.*
+
+- [x] **Track: Remaining Simulation Double-Submit Guards**
+  *Link: [./archive/remaining_sim_submit_guards_20260407/](./archive/remaining_sim_submit_guards_20260407/)*
+  *Closeout: archived on 2026-04-07 after finishing the remaining HIGH and MEDIUM simulation submittedRef fixes and verification.*
+
+- [x] **Track: BusinessStressTest Submitted State**
+  *Link: [./archive/bstress_submitted_state_20260407/](./archive/bstress_submitted_state_20260407/)*
+  *Closeout: archived on 2026-04-07 after adding visible submitted-state disabling and reset behavior to BusinessStressTest.*
+
+- [x] **Track: CashFlowChallenge Legacy Cleanup**
+  *Link: [./archive/cashflowchallenge_legacy_cleanup_20260407/](./archive/cashflowchallenge_legacy_cleanup_20260407/)*
+  *Closeout: archived on 2026-04-07 after confirming the legacy submit path was removed and the activity id fallback path was already standardized.*
+
+- [x] **Track: Dead Props Cleanup**
+  *Link: [./archive/dead_props_cleanup_20260407/](./archive/dead_props_cleanup_20260407/)*
+  *Closeout: archived on 2026-04-07 after removing dead props and the dead Save Progress control from simulation surfaces.*
+
+- [x] **Track: Component Import from Business-Operations (superseded)**
+  *Link: [./archive/component_import_20260404/](./archive/component_import_20260404/)*
+  *Closeout: archived as superseded on 2026-04-07 after the project shifted to the cleanup-first, page-polish phase before implementation began.*
+
 - [x] **Track: Simulation Contract Hardening**
-  *Link: [./archive/ — moved to archive/ during code review audit]*
-  *Note: metadata updated to status: complete. Directory still in tracks/ pending final archival after Phase 4 verification.*
+  *Link: [./archive/simulation_contract_hardening_20260404/](./archive/simulation_contract_hardening_20260404/)*
+  *Closeout: archived on 2026-04-07. One deferred CashFlowChallenge props refactor remains documented, but the completed track no longer stays in the active surface.*
 
 - [x] **Track: Teacher Practice Error Analysis**
   *Link: [./archive/teacher_practice_error_analysis_20260319/](./archive/teacher_practice_error_analysis_20260319/)*

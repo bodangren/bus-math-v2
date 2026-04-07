@@ -1,0 +1,8 @@
+{
+  "track_id": "repo_cleanup_surface_hygiene_20260407",
+  "type": "chore",
+  "status": "in_progress",
+  "created_at": "2026-04-07T02:12:05Z",
+  "updated_at": "2026-04-07T02:20:00Z",
+  "description": "Remove unused files and stale project surfaces, reconcile active-track hygiene, and establish a clean baseline for page-by-page UI audits"
+}

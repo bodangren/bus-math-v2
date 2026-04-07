@@ -1,32 +1,82 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring, and Cloudflare deployment are complete (Milestones 1–6 closed 2026-03-16).
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring, and Cloudflare deployment are complete. Milestones 1–7 closed on March 16, 2026 through April 6, 2026.
 
-Milestone 7 is complete (2026-04-06). Code review audits completed for Tracks 5–12 + DDB guard track with 28+ bugs fixed and 40+ tech-debt items tracked.
+The project is now in a post-milestone cleanup and polish phase beginning on April 7, 2026.
 
-**Code review audit for Tracks 10–12 + DDB guard completed 2026-04-07.** Findings: CapitalNegotiation "Continue Lesson" re-armed submittedRef enabling re-submission (fixed), InventoryManager resetGame never cleared submitted state (fixed), depreciation-schedules.ts had 4 unguarded usefulLifeYears divisions (fixed), ScenarioSwitchShowTell has no reset path (tracked), PitchPresentationBuilder has dead "Save Progress" button (tracked). All 1498 non-Supabase tests pass; build clean. 30 open tech-debt items remain.
+## Phase Focus
 
-Every active track must directly support one of these outcomes:
+This phase has two serialized goals:
 
-- close remaining open tech-debt items from the full audit history
-- standardize double-submit guards across ALL remaining simulation components (useRef pattern)
-- remove legacy Supabase/Drizzle surfaces that inflate type-check surface area
-- resolve pre-existing test failures (2 Supabase security test files)
-- address npm dependency security advisories (rollup, serialize-javascript, tar) when dependency changes are approved
+1. clean the repository so the active codebase and Conductor surface contain only live, intentional files and references
+2. run a page-by-page product audit and fix visible UI discrepancies such as overflow, clipping, alignment drift, spacing imbalance, and responsive layout failures
 
-Admin tooling, in-app curriculum authoring, and new content beyond the existing 8 units + capstone are deferred.
+## Required Execution Order
 
-## Next High-Level Priorities (2026-04-07)
+Tracks in this phase must run in this order:
 
-1. ~~**Complete Track 11 Phase 3** — NotebookOrganizer useRef double-submit guard~~ — Done.
-2. ~~**DDBComparisonMastery submittedRef guard**~~ — Done.
-3. ~~**Remaining Simulation submittedRef Guards (HIGH)**~~ — Done. All 4 HIGH components guarded.
-4. ~~**Remaining Simulation submittedRef Guards (MEDIUM)**~~ — Done. PitchPresentationBuilder, PayStructureDecisionLab, InventoryManager now use submittedRef guard checked before onSubmit.
-5. ~~**BusinessStressTest submitted state**~~ — Done. Added `submitted` state variable, `disabled={submitted}` on post-submission buttons, `setSubmitted(false)` in reset.
-6. ~~**Simulation Activity Prop Type Standardization** — 5 simulations (4–8) use ad-hoc inline types instead of Zod schemas. Standardize to match first 3 simulations.~~ — Done.
-7. ~~**CashFlowChallenge Legacy Cleanup** — Remove `onSubmitLegacy` callback and migrate to `activity.id ?? fallback` pattern. Dual-callback path is a maintenance trap.~~ — Done.
-8. **Auth Fails-Open Hardening** — `requireActiveRequestSessionClaims` passes through deactivated users during Convex outages. Consider credential-state caching or 503 response.
-9. **AI Retry Error Handling** — `lib/ai/retry.ts` extracts status codes via regex. Introduce custom error class with statusCode property.
-10. **Supabase/Drizzle Legacy Surface Removal** — lib/db/schema/ still imported by active components; requires dedicated migration track.
-11. **Omitted-Entry Tag Gap** — 6 of 7 practice families don't emit `omitted-entry` for blank/undefined responses.
-12. **Dead Props Cleanup** — PayStructureDecisionLab declares unused `onComplete` and `activity` props. PitchPresentationBuilder has dead "Save Progress" button.
+1. **Repo Cleanup and Surface Hygiene**
+2. **Non-Unit Page Evaluation and Polish**
+3. **Unit 1 Page Evaluation and Polish**
+4. **Unit 2 Page Evaluation and Polish**
+5. **Unit 3 Page Evaluation and Polish**
+6. **Unit 4 Page Evaluation and Polish**
+7. **Unit 5 Page Evaluation and Polish**
+8. **Unit 6 Page Evaluation and Polish**
+9. **Unit 7 Page Evaluation and Polish**
+10. **Unit 8 Page Evaluation and Polish**
+
+One implementation track may be active at a time. Do not begin the next UI audit track until the current track is verified, documented, and archived.
+
+## In-Bounds Work
+
+Every active track in this phase must directly support at least one of these outcomes:
+
+- remove unused files, dead exports, stale imports, obsolete helper surfaces, and planning residue that no longer belong to the active product
+- reconcile Conductor queue hygiene so the active registry and active track directory describe the same reality
+- fix page-level UI defects on the rendered product, including horizontal overflow, clipped controls, broken wrapping, uneven spacing, misalignment, inconsistent container widths, and poor mobile behavior
+- preserve or improve student clarity and teacher signal on every touched page
+- close cleanup-adjacent tech debt discovered during the audit when it blocks repository hygiene or page correctness
+
+## Phase Exit Gates
+
+This phase is only complete when all of the following are true:
+
+- the repository no longer contains confirmed-unused project files or stale active-track residue
+- non-unit pages have been audited and corrected
+- each instructional unit has completed its own page-polish track
+- touched pages render cleanly on desktop and mobile widths without obvious overflow or alignment defects
+- Conductor planning artifacts accurately reflect the active queue and archive state
+- required verification for each track has been run and recorded
+
+## Quality Bar For Page Audits
+
+For every page-polish track:
+
+- inspect the real rendered page, not just the source
+- verify desktop and mobile layouts
+- fix visible issues before moving on, rather than recording obvious defects for later
+- preserve the existing visual language unless a correction is necessary for clarity, hierarchy, or responsiveness
+- keep the curriculum-first product story intact across public, student, and teacher surfaces
+
+## Deferred Work
+
+The following remain out of scope for this phase unless they block cleanup or page correctness:
+
+- new product features
+- new curriculum content beyond the existing 8 units and capstone
+- admin tooling
+- in-app curriculum authoring
+- dependency upgrades or package additions without explicit approval
+- broad architectural refactors unrelated to cleanup or rendered-page quality
+
+## Current High-Level Priorities (2026-04-07)
+
+1. **Repo Cleanup and Surface Hygiene** — active first track; establish a clean, trustworthy baseline.
+2. **Non-Unit Page Evaluation and Polish** — next track after cleanup closes.
+3. **Unit-by-Unit Page Evaluation and Polish** — execute one unit per track after the non-unit pass is complete.
+
+## Notes
+
+- Existing open tech-debt items still matter, but this phase prioritizes the items that directly affect cleanup, rendered-page correctness, or the reliability of follow-on UI audits.
+- If a page audit exposes a deeper runtime or auth defect, fix it in the owning track only when it is necessary to make the page correct and testable; otherwise record it and keep the serialized queue moving.
