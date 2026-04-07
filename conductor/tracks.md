@@ -93,9 +93,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/bstress_submitted_state_20260407/](./tracks/bstress_submitted_state_20260407/)*
   *Status: Complete. Added submitted state variable, disabled={submitted} on post-submission buttons, setSubmitted(false) in reset. Source-level tests pass. Verified lint, test, build.*
 
-- [ ] **Track: CashFlowChallenge Legacy Cleanup**
+- [x] **Track: CashFlowChallenge Legacy Cleanup**
   *Link: [./tracks/cashflowchallenge_legacy_cleanup_20260407/](./tracks/cashflowchallenge_legacy_cleanup_20260407/)*
-  *Status: New. Remove onSubmitLegacy callback and migrate to activity.id ?? fallback pattern.*
+  *Status: Complete. onSubmitLegacy already removed, activityId already uses activity.id ?? fallback pattern.*
 
 ## Archive Ledger
 

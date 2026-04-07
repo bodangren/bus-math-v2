@@ -13,7 +13,7 @@
 | 2026-04-04 | code_review_legacy_cleanup | Simulations 4-8 use ad-hoc inline activity prop types instead of canonical Zod schemas | Medium | Open | First 3 simulations wrap the Activity type; last 5 should follow. |
 | 2026-04-04 | code_review_legacy_cleanup | 2 pre-existing security test files (competency-rls.test.ts, rls.test.ts) failing | Medium | Open | Require Supabase client credentials; not related to current changes. |
 | 2026-04-04 | code_review_track5_phase1 | CashFlowChallenge uses hardcoded activityId 'cash-flow-challenge' instead of activity.id | Low | Open | Inconsistent with StartupJourney/BusinessStressTest pattern. |
-| 2026-04-04 | code_review_track5_phase1 | CashFlowChallenge exposes dual onSubmit/onSubmitLegacy; onSubmitLegacy bypasses practice.v1 | Medium | Open | Remove onSubmitLegacy once all consumers migrated to practice contract. |
+| 2026-04-04 | code_review_track5_phase1 | CashFlowChallenge exposes dual onSubmit/onSubmitLegacy; onSubmitLegacy bypasses practice.v1 | Medium | Closed | onSubmitLegacy already removed in prior commit; all consumers migrated to practice contract. |
 | 2026-04-04 | code_review_track5_phase2-4 | `canTeacherAccessSubmission` and `canTeacherAccessLessonSummary` exported/tested but never called in production | Low | Open | Wire into Convex query guards or remove if API-layer auth is sufficient. |
 | 2026-04-04 | code_review_track5_phase2-4 | `getLessonErrorSummary` uses N+1 queries (one per activityId) | Low | Open | Acceptable at current scale; refactor to batch if activity count grows. |
 | 2026-04-04 | code_review_audit_tracks6-7 | PayStructureDecisionLab declares `onComplete` and `activity` props but never uses them | Low | Open | Remove dead props or wire them. |
