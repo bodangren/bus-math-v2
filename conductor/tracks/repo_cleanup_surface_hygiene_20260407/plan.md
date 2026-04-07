@@ -2,10 +2,17 @@
 
 ## Phase 1: Inventory and Removal Candidates
 
-- [ ] Mark this track active in the registry and current directive
-- [ ] Audit unused files, stale exports, and orphaned project surfaces with code search and route coverage
-- [ ] Write or update targeted regression coverage for any risky cleanup seams discovered during the audit
-- [ ] Produce the confirmed removal list for implementation
+- [x] Mark this track active in the registry and current directive (a3742e5)
+- [x] Audit unused files, stale exports, and orphaned project surfaces with code search and route coverage
+- [x] Write or update targeted regression coverage for any risky cleanup seams discovered during the audit (no new seams discovered)
+- [x] Produce the confirmed removal list for implementation (6c4ecba)
+
+## Phase 2: Cleanup Implementation
+
+- [x] Remove confirmed-unused files and associated references
+- [x] Remove stale Conductor active-surface residue that violates one-active-track expectations (queued tracks are pre-registered per plan.md Phase 3, no violation)
+- [ ] Update docs and registry links affected by cleanup
+- [ ] Verify targeted tests for cleaned areas
 
 ## Phase 2: Cleanup Implementation
 

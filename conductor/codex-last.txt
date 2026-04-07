@@ -1,4 +1,0 @@
-Phase 3 teaching-mode work is in the tree: shared practice shells now have runtime teaching chrome, the key accounting feedback builders emit computation chains, and the conductor notes were updated (`tech-debt`, `lessons-learned`, and the track metadata/current-state note). Full `npm test` passed (`254` files, `1342` tests), and `npm run build` completed successfully.
-
-I committed that slice as `ce923d1` (`feat(practice): teaching-mode overlay and chain feedback (gpt-5.4)`). `git push` failed from this environment because `github.com` could not be resolved, so the commit is local only. The worktree still has pre-existing drift in `conductor/codex-*`, `dist/`, and `package.json` / `package-lock.json` that I left out of the commit.
-
