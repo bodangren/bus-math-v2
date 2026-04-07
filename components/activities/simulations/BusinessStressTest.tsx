@@ -40,7 +40,12 @@ const defaultInitialState = { cash: 5000, revenue: 2000, expenses: 1500 }
 const defaultDisasters: Disaster[] = []
 
 export interface BusinessStressTestProps {
-  activity?: BusinessStressTestActivity
+  activity?: BusinessStressTestActivity | {
+    id?: string
+    title?: string
+    description?: string
+    props: BusinessStressTestActivityProps
+  }
   onComplete?: (results: { finalCash: number; roundsSurvived: number }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
@@ -48,6 +53,8 @@ export interface BusinessStressTestProps {
 export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessStressTestProps) {
   const initialState = activity?.props.initialState ?? defaultInitialState
   const disasters = activity?.props.disasters ?? defaultDisasters
+  const activityTitle = (activity as any)?.title ?? (activity as any)?.props?.title ?? 'Business Stress-Test'
+  const activityArtifactTitle = (activity as any)?.props?.title ?? (activity as any)?.title ?? 'Business Stress Test'
   const [cash, setCash] = useState(initialState.cash)
   const [revenue, setRevenue] = useState(initialState.revenue)
   const [expenses, setExpenses] = useState(initialState.expenses)
@@ -91,7 +98,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         parts,
         artifact: {
           kind: 'business_stress_test',
-          title: activity?.props.title ?? 'Business Stress Test',
+          title: activityArtifactTitle,
           finalCash,
           roundsSurvived,
           totalRounds: disasters.length,
@@ -163,7 +170,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         parts,
         artifact: {
           kind: 'business_stress_test',
-          title: activity?.props.title ?? 'Business Stress Test',
+          title: activityArtifactTitle,
           finalCash: 0,
           roundsSurvived: round,
           totalRounds: disasters.length,
@@ -202,7 +209,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         <CardHeader className="text-center relative z-10">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Zap className="w-8 h-8 text-yellow-400" />
-            {activity?.props.title || 'Business Stress-Test'}
+            {activityTitle}
           </CardTitle>
           <CardDescription className="text-red-200 text-lg font-bold uppercase tracking-tighter">
             Panic Mode: Can Sarah&apos;s Business Survive the Market?
