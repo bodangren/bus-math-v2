@@ -329,7 +329,6 @@ const defaultInitialCommission: CommissionInputs = {
 
 export interface PayStructureDecisionLabProps {
   activity?: PayStructureDecisionLabActivity
-  onComplete?: (results: { score: number; scenarioId: string }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
