@@ -53,8 +53,8 @@ export interface BusinessStressTestProps {
 export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessStressTestProps) {
   const initialState = activity?.props.initialState ?? defaultInitialState
   const disasters = activity?.props.disasters ?? defaultDisasters
-  const activityTitle = (activity as any)?.title ?? (activity as any)?.props?.title ?? 'Business Stress-Test'
-  const activityArtifactTitle = (activity as any)?.props?.title ?? (activity as any)?.title ?? 'Business Stress Test'
+  const activityTitle = activity?.props?.title ?? 'Business Stress-Test'
+  const activityArtifactTitle = activity?.props?.title ?? 'Business Stress Test'
   const [cash, setCash] = useState(initialState.cash)
   const [revenue, setRevenue] = useState(initialState.revenue)
   const [expenses, setExpenses] = useState(initialState.expenses)
