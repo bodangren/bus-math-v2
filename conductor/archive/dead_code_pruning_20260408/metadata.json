@@ -1,0 +1,8 @@
+{
+  "track_id": "dead_code_pruning_20260408",
+  "type": "chore",
+  "status": "completed",
+  "created_at": "2026-04-08T20:30:00Z",
+  "updated_at": "2026-04-08T20:45:00Z",
+  "description": "Remove 12 unregistered activity components that are only imported by tests"
+}

@@ -41,6 +41,10 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Dead Code Pruning**
+  *Link: [./archive/dead_code_pruning_20260408/](./archive/dead_code_pruning_20260408/)*
+  *Closeout: archived on 2026-04-08 after removing 12 unregistered activity components (FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed) and their corresponding test files, updating tech-debt.md, and verifying lint, test, and build all pass.*
+
 - [x] **Track: Security Vulnerability Remediation**
   *Link: [./archive/security_vulnerability_remediation_20260408/](./archive/security_vulnerability_remediation_20260408/)*
   *Closeout: archived on 2026-04-08 after upgrading drizzle-kit (0.18.1→0.31.10) and drizzle-orm (0.44.7→0.45.2), resolving all high-severity npm vulnerabilities. 4 moderate esbuild vulns remain (transitive via drizzle-kit).*
