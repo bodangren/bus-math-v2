@@ -2,9 +2,9 @@
 
 ## Phase 1: Unit 1 Audit
 
-- [ ] Enumerate Unit 1 route and lesson coverage for student and teacher flows
-- [ ] Capture desktop and mobile audit notes for Unit 1 surfaces
-- [ ] Separate shared defects from Unit 1-local defects
+- [x] Enumerate Unit 1 route and lesson coverage for student and teacher flows
+- [x] Capture desktop and mobile audit notes for Unit 1 surfaces
+- [x] Separate shared defects from Unit 1-local defects
 
 ## Phase 2: Shared Fixes Needed For Unit 1
 

@@ -41,13 +41,13 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Non-Unit Page Evaluation and Polish**
-  *Link: [./tracks/non_unit_page_polish_20260407/](./tracks/non_unit_page_polish_20260407/)*
-  *Status: Active. Audit and fix layout, overflow, spacing, alignment, and responsive issues on non-unit product pages before unit-by-unit passes begin.*
+- [x] **Track: Non-Unit Page Evaluation and Polish**
+  *Link: [./archive/non_unit_page_polish_20260407/](./archive/non_unit_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after completing page-level audits and fixes for all non-unit product pages with verification recorded in the track.*
 
-- [ ] **Track: Unit 1 Page Evaluation and Polish**
+- [~] **Track: Unit 1 Page Evaluation and Polish**
   *Link: [./tracks/unit1_page_polish_20260407/](./tracks/unit1_page_polish_20260407/)*
-  *Status: Queued after non-unit pages.*
+  *Status: Active. Audit and fix layout, overflow, spacing, alignment, and responsive issues on Unit 1 product pages.*
 
 - [ ] **Track: Unit 2 Page Evaluation and Polish**
   *Link: [./tracks/unit2_page_polish_20260407/](./tracks/unit2_page_polish_20260407/)*
