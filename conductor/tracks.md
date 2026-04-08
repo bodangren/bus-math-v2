@@ -45,9 +45,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/non_unit_page_polish_20260407/](./archive/non_unit_page_polish_20260407/)*
   *Closeout: archived on 2026-04-08 after completing page-level audits and fixes for all non-unit product pages with verification recorded in the track.*
 
-- [~] **Track: Unit 1 Page Evaluation and Polish**
+- [x] **Track: Unit 1 Page Evaluation and Polish**
   *Link: [./tracks/unit1_page_polish_20260407/](./tracks/unit1_page_polish_20260407/)*
-  *Status: Active. Audit and fix layout, overflow, spacing, alignment, and responsive issues on Unit 1 product pages.*
+  *Closeout: completed on 2026-04-08 after verifying all Unit 1 surfaces look clean on desktop and mobile widths with all lint, test, and build gates passing.*
 
 - [ ] **Track: Unit 2 Page Evaluation and Polish**
   *Link: [./tracks/unit2_page_polish_20260407/](./tracks/unit2_page_polish_20260407/)*
