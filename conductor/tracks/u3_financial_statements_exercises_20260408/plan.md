@@ -21,10 +21,10 @@
 - [x] Run lint, test, build
 
 ### Phase 4: Implement chart-linking-simulator
-- [ ] Write test file `__tests__/components/activities/exercises/ChartLinkingSimulator.test.tsx`
-- [ ] Implement component `components/activities/exercises/ChartLinkingSimulator.tsx`
-- [ ] Register in `lib/activities/registry.ts`
-- [ ] Run lint, test, build
+- [x] Write test file `__tests__/components/exercises/ChartLinkingSimulator.test.tsx`
+- [x] Implement component `components/activities/exercises/ChartLinkingSimulator.tsx`
+- [x] Register in `lib/activities/registry.ts`
+- [x] Run lint, test, build
 
 ### Phase 5: Implement cross-sheet-link-simulator
 - [ ] Write test file `__tests__/components/activities/exercises/CrossSheetLinkSimulator.test.tsx`

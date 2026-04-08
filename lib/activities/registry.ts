@@ -48,6 +48,7 @@ import { MonthEndClosePractice } from '@/components/activities/exercises/MonthEn
 import { IncomeStatementPractice } from '@/components/activities/exercises/IncomeStatementPractice';
 import { CashFlowPractice } from '@/components/activities/exercises/CashFlowPractice';
 import { BalanceSheetPractice } from '@/components/activities/exercises/BalanceSheetPractice';
+import { ChartLinkingSimulator } from '@/components/activities/exercises/ChartLinkingSimulator';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -121,8 +122,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'income-statement-practice': IncomeStatementPractice,
   'cash-flow-practice': CashFlowPractice,
   'balance-sheet-practice': BalanceSheetPractice,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'chart-linking-simulator': (() => null) as unknown as ComponentType<any>,
+  'chart-linking-simulator': ChartLinkingSimulator,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'cross-sheet-link-simulator': (() => null) as unknown as ComponentType<any>,
 
