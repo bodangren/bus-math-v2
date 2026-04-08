@@ -27,12 +27,12 @@
 - [x] Run lint, test, build
 
 ### Phase 5: Implement cross-sheet-link-simulator
-- [ ] Write test file `__tests__/components/activities/exercises/CrossSheetLinkSimulator.test.tsx`
-- [ ] Implement component `components/activities/exercises/CrossSheetLinkSimulator.tsx`
-- [ ] Register in `lib/activities/registry.ts`
-- [ ] Run lint, test, build
+- [x] Write test file `__tests__/components/exercises/CrossSheetLinkSimulator.test.tsx`
+- [x] Implement component `components/activities/exercises/CrossSheetLinkSimulator.tsx`
+- [x] Register in `lib/activities/registry.ts`
+- [x] Run lint, test, build
 
 ### Phase 6: Final Verification
-- [ ] Update `tech-debt.md`
-- [ ] Run full lint, test, build
-- [ ] Archive track
+- [x] Update `tech-debt.md`
+- [x] Run full lint, test, build
+- [x] Archive track

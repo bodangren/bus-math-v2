@@ -49,6 +49,7 @@ import { IncomeStatementPractice } from '@/components/activities/exercises/Incom
 import { CashFlowPractice } from '@/components/activities/exercises/CashFlowPractice';
 import { BalanceSheetPractice } from '@/components/activities/exercises/BalanceSheetPractice';
 import { ChartLinkingSimulator } from '@/components/activities/exercises/ChartLinkingSimulator';
+import { CrossSheetLinkSimulator } from '@/components/activities/exercises/CrossSheetLinkSimulator';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -123,8 +124,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'cash-flow-practice': CashFlowPractice,
   'balance-sheet-practice': BalanceSheetPractice,
   'chart-linking-simulator': ChartLinkingSimulator,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'cross-sheet-link-simulator': (() => null) as unknown as ComponentType<any>,
+  'cross-sheet-link-simulator': CrossSheetLinkSimulator,
 
   // Exercises — Cluster 4: U2 Transactions & Adjustments
   'adjustment-practice': AdjustmentPractice,

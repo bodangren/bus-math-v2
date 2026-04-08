@@ -97,8 +97,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/u2_transactions_adjustments_exercises_20260408/](./archive/u2_transactions_adjustments_exercises_20260408/)*
   *Closeout: archived on 2026-04-08 after implementing all three transactions & adjustments exercises (adjustment-practice, closing-entry-practice, month-end-close-practice), updating the activity registry, running full verification (lint, test, build), and updating tech-debt.md.*
 
-- [~] **Track: U3 Financial Statements & Reporting Exercise Implementation**
-  *Link: [./tracks/u3_financial_statements_exercises_20260408/](./tracks/u3_financial_statements_exercises_20260408/)*
+- [x] **Track: U3 Financial Statements & Reporting Exercise Implementation**
+  *Link: [./archive/u3_financial_statements_exercises_20260408/](./archive/u3_financial_statements_exercises_20260408/)*
+  *Closeout: archived on 2026-04-08 after implementing all five U3 exercises (income-statement-practice, cash-flow-practice, balance-sheet-practice, chart-linking-simulator, cross-sheet-link-simulator), updating activity registry, running full verification (lint, test, build), and updating tech-debt.md.*
 
 ## Archive Ledger
 
