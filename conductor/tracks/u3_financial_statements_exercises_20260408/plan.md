@@ -3,10 +3,10 @@
 ## Phases
 
 ### Phase 1: Implement income-statement-practice
-- [ ] Write test file `__tests__/components/activities/exercises/IncomeStatementPractice.test.tsx`
-- [ ] Implement component `components/activities/exercises/IncomeStatementPractice.tsx`
-- [ ] Register in `lib/activities/registry.ts`
-- [ ] Run lint, test, build
+- [x] Write test file `__tests__/components/activities/exercises/IncomeStatementPractice.test.tsx`
+- [x] Implement component `components/activities/exercises/IncomeStatementPractice.tsx`
+- [x] Register in `lib/activities/registry.ts`
+- [x] Run lint, test, build
 
 ### Phase 2: Implement cash-flow-practice
 - [ ] Write test file `__tests__/components/activities/exercises/CashFlowPractice.test.tsx`

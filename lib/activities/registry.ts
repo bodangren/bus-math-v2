@@ -45,6 +45,7 @@ import { InventoryAlgorithmShowtell } from '@/components/activities/exercises/In
 import { AdjustmentPractice } from '@/components/activities/exercises/AdjustmentPractice';
 import { ClosingEntryPractice } from '@/components/activities/exercises/ClosingEntryPractice';
 import { MonthEndClosePractice } from '@/components/activities/exercises/MonthEndClosePractice';
+import { IncomeStatementPractice } from '@/components/activities/exercises/IncomeStatementPractice';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -115,8 +116,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'break-even-mastery': BreakEvenMastery,
 
   // Exercises — Cluster 3: U3 Financial Statements & Reporting
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'income-statement-practice': (() => null) as unknown as ComponentType<any>,
+  'income-statement-practice': IncomeStatementPractice,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'cash-flow-practice': (() => null) as unknown as ComponentType<any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
