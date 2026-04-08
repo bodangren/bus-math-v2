@@ -71,13 +71,12 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — post Pass 9)
+## Current High-Level Priorities (2026-04-08 — Pass 10, security track complete)
 
-1. **Security Vulnerability Remediation** — 26 npm vulns (Rollup RCE 8.8, tar 8.8, minimatch ReDoS 8.7, serialize-javascript RCE 8.1). Requires dependency upgrades. Coordinate approval per AGENTS.md constraints.
-2. **14 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `markup-margin-mastery`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes.
-3. **14 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `markup-margin-mastery`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes.
-4. **Dead Code Pruning** — 12 activity components exist on disk but are only imported by tests (FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed). Either register or remove.
-5. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
+1. **14 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `markup-margin-mastery`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes.
+2. **Dead Code Pruning** — 12 activity components exist on disk but are only imported by tests (FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed). Either register or remove.
+3. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
+4. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
@@ -151,6 +150,32 @@ Post-completion audit of Pass 6–8 changes. Scope: verify no regressions since 
 - resolveActivityComponentKey is a no-op cast (low)
 
 **Phase status**: Cleanup/polish phase FULLY VERIFIED. Ready to define next phase.
+
+## Code Review Summary (2026-04-08 — Security Track + Conductor Hygiene, Pass 10)
+
+Audited the Security Vulnerability Remediation track (phases 1-4), conductor documentation hygiene, and verified all gates after the drizzle-orm/drizzle-kit dependency upgrades.
+
+**Fixed during review: 3 issues**
+- **Duplicate priority list** (Medium): current_directive.md had identical priorities #2 and #3 ("14 Exercise Component Placeholders") — leftover from New Phase Planning track renumbering. Removed duplicate, renumbered, updated security track to completed status in priorities.
+- **Duplicate Phase 3 in plan.md** (Low): Security remediation plan had two "Phase 3: Verify" sections with conflicting task states (`[~]` vs `[x]`). Merged into single Phase 3 with all tasks `[x]`.
+- **Track completion hygiene** (Medium): Security remediation track was still `in_progress` in metadata.json and `[ ]` in tracks.md despite all phases being complete per commit history. Updated metadata to `completed`, archived track, updated tracks.md with closeout note.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+- `npm audit`: 4 moderate esbuild vulns remain (transitive via drizzle-kit); 0 high-severity
+
+**What was reviewed:**
+- **Security remediation track**: drizzle-kit 0.18.1→0.31.10, drizzle-orm 0.44.7→0.45.2. drizzle-zod 0.8.3 compatible (peer dep: drizzle-orm >= 0.36.0). All API patterns stable across upgrade.
+- **Drizzle config**: `drizzle.config.ts` uses `dialect: 'postgresql'` (correct for 0.31.x). No migration files; Supabase SQL is canonical schema source.
+- **Conductor state**: tracks/ directory now empty (all active tracks archived). tracks.md properly reflects completed + archived state.
+- **Priorities**: Fixed duplicate entry, recorded remaining esbuild vulns as new priority item.
+
+**New items recorded in tech-debt.md:**
+- None (existing items reviewed; all still accurate)
+
+**Phase status**: Security Vulnerability Remediation track COMPLETE. 4 moderate esbuild vulns remain (transitive via drizzle-kit — non-blocking). Ready for next track selection.
 
 ## Code Review Summary (2026-04-08 — Unit 6–7 Polish + Phase Audit, Pass 6)
 

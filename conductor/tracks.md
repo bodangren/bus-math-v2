@@ -41,8 +41,9 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [ ] **Track: Security Vulnerability Remediation**
-  *Link: [./tracks/security_vulnerability_remediation_20260408/](./tracks/security_vulnerability_remediation_20260408/)*
+- [x] **Track: Security Vulnerability Remediation**
+  *Link: [./archive/security_vulnerability_remediation_20260408/](./archive/security_vulnerability_remediation_20260408/)*
+  *Closeout: archived on 2026-04-08 after upgrading drizzle-kit (0.18.1→0.31.10) and drizzle-orm (0.44.7→0.45.2), resolving all high-severity npm vulnerabilities. 4 moderate esbuild vulns remain (transitive via drizzle-kit).*
 
 - [x] **Track: New Phase Planning**
   *Link: [./archive/new_phase_planning_20260408/](./archive/new_phase_planning_20260408/)*
