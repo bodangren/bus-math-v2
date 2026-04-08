@@ -65,9 +65,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/unit5_page_polish_20260407/](./tracks/unit5_page_polish_20260407/)*
   *Status: Completed on 2026-04-08 after auditing Unit 5 surfaces, fixing activity registry and adding submittedRef guard to DynamicMethodSelector, and verifying all lint/test/build gates pass.*
 
-- [ ] **Track: Unit 6 Page Evaluation and Polish**
-  *Link: [./tracks/unit6_page_polish_20260407/](./tracks/unit6_page_polish_20260407/)*
-  *Status: Queued after Unit 5.*
+- [x] **Track: Unit 6 Page Evaluation and Polish**
+   *Link: [./tracks/unit6_page_polish_20260407/](./tracks/unit6_page_polish_20260407/)*
+   *Status: Completed on 2026-04-08 after auditing Unit 6 surfaces, verifying all simulation/exercise components have submittedRef guards, and verifying all lint/test/build gates pass.*
 
 - [ ] **Track: Unit 7 Page Evaluation and Polish**
   *Link: [./tracks/unit7_page_polish_20260407/](./tracks/unit7_page_polish_20260407/)*
