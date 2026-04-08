@@ -67,13 +67,15 @@ function generateProblem(): BreakEvenProblem {
     label: 'Treated variable cost as a one-time fixed cost instead of per-unit',
   })
 
-  const wrongUnits3 = Math.ceil(fixedCosts / variableCostPerUnit)
-  const wrongDollars3 = wrongUnits3 * sellingPricePerUnit
-  wrongMethods.push({
-    breakEvenUnits: wrongUnits3,
-    breakEvenDollars: wrongDollars3,
-    label: 'Mixed up variable cost and contribution margin entirely',
-  })
+  if (variableCostPerUnit > 0) {
+    const wrongUnits3 = Math.ceil(fixedCosts / variableCostPerUnit)
+    const wrongDollars3 = wrongUnits3 * sellingPricePerUnit
+    wrongMethods.push({
+      breakEvenUnits: wrongUnits3,
+      breakEvenDollars: wrongDollars3,
+      label: 'Mixed up variable cost and contribution margin entirely',
+    })
+  }
 
   return {
     id: Math.random().toString(36).substr(2, 9),

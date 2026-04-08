@@ -71,12 +71,12 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — Pass 11, dead code pruning + markup-margin complete)
+## Current High-Level Priorities (2026-04-08 — Pass 12, U6 Inventory track complete)
 
-1. **13 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 14 — `markup-margin-mastery` now has a real component.
+1. **11 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 14 — U6 Inventory cluster (`markup-margin-mastery`, `break-even-mastery`, `inventory-algorithm-showtell`) now has real components.
 2. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
 3. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
-4. **U6 Inventory Track** — `markup-margin-mastery` Phase 1 complete. Phases 2-3 (break-even-mastery, inventory-algorithm-showtell) remain.
+4. **Exercise Test Coverage (Low)** — BreakEvenMastery, InventoryAlgorithmShowtell, and MarkupMarginMastery tests are shallow (render-only). Should exercise interaction paths when test-writing capacity resumes.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
@@ -200,6 +200,30 @@ Audited the Dead Code Pruning track completion and MarkupMarginMastery Phase 1 i
 - MarkupMarginMastery test coverage gap (low — doesn't test mastery completion behavior)
 
 **Phase status**: U6 Inventory track Phase 1 (markup-margin-mastery) COMPLETE. Phases 2-3 (break-even-mastery, inventory-algorithm-showtell) remain.
+
+## Code Review Summary (2026-04-08 — U6 Inventory Track Completion, Pass 12)
+
+Audited the U6 Inventory & Costing Exercise Implementation track completion — Phases 2-3 (break-even-mastery, inventory-algorithm-showtell) and track archival.
+
+**Fixed during review: 1 bug**
+- **BreakEvenMastery division-by-zero** (Low): Distractor 3 computes `fixedCosts / variableCostPerUnit` — produces Infinity if variableCostPerUnit is 0. Data ranges prevent this in practice, but added `if (variableCostPerUnit > 0)` guard for safety.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1491/1491 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **BreakEvenMastery**: Follows established exercise patterns (StraightLineMastery, MarkupMarginMastery). Has submittedRef guard (line 112), practice.v1 envelope submission, mastery threshold with consecutiveCorrect tracking, worked example view. 3 distractors model common misconceptions (forgot contribution margin, treated variable cost as fixed, mixed up variable cost and CM). Reset clears submittedRef. Optional chaining on callbacks. Division guard added for distractor 3.
+- **InventoryAlgorithmShowtell**: Interactive exploration of FIFO/LIFO/Weighted Average. Has submittedRef guard (line 126), practice.v1 envelope submission, insight collection. Textarea-based insight capture. onComplete fires after submittedRef guard. Component is read-only exploration (no grading logic needed).
+- **Activity registry**: `break-even-mastery` and `inventory-algorithm-showtell` now point to real components. 57 schema keys: 46 real + 11 placeholders (down from 13). Track archived with all phases [x].
+- **Test coverage**: Both test files pass but are shallow — BreakEvenMastery test 3 and InventoryAlgorithmShowtell tests 2-3 claim behavior verification but only check rendering.
+
+**New items recorded in tech-debt.md:**
+- BreakEvenMastery and InventoryAlgorithmShowtell tests are shallow (low)
+- BreakEvenMastery distractor 3 division guard (low — fixed)
+
+**Phase status**: U6 Inventory & Costing Exercise track COMPLETE. All 3 exercise components implemented, registered, and verified. 11 placeholder keys remain.
 
 ## Code Review Summary (2026-04-08 — Unit 6–7 Polish + Phase Audit, Pass 6)
 
