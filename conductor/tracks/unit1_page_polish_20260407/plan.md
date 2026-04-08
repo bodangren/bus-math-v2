@@ -14,7 +14,7 @@
 
 ## Phase 3: Unit 1 Local Polish
 
-- [ ] Fix Unit 1 overview and navigation issues
+- [~] Fix Unit 1 overview and navigation issues
 - [ ] Fix Unit 1 teacher page issues
 - [ ] Fix Unit 1 lesson page issues
 - [ ] Re-check all touched Unit 1 surfaces
