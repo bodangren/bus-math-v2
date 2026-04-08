@@ -22,8 +22,8 @@
 
 ## Phase 4: Verification
 
-- [ ] Re-check all in-scope pages on desktop and mobile widths
-- [ ] Run `npm run lint`
-- [ ] Run targeted tests for touched components/routes
-- [ ] Run `npm run build`
-- [ ] Record residual risks or intentional deferrals
+- [x] Re-check all in-scope pages on desktop and mobile widths
+- [x] Run `npm run lint`
+- [x] Run targeted tests for touched components/routes
+- [x] Run `npm run build`
+- [x] Record residual risks or intentional deferrals
