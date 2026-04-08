@@ -2,13 +2,13 @@
 
 ## Phase 1: Unit 3 Audit
 
-- [ ] Enumerate Unit 3 route and lesson coverage for student and teacher flows
-- [ ] Capture desktop and mobile audit notes for Unit 3 surfaces
-- [ ] Separate shared defects from Unit 3-local defects
+- [x] Enumerate Unit 3 route and lesson coverage for student and teacher flows
+- [x] Capture desktop and mobile audit notes for Unit 3 surfaces
+- [x] Separate shared defects from Unit 3-local defects
 
 ## Phase 2: Shared Fixes Needed For Unit 3
 
-- [ ] Write or update targeted regression coverage for risky shared changes
+- [~] Write or update targeted regression coverage for risky shared changes
 - [ ] Implement shared layout/component fixes required for Unit 3 correctness
 - [ ] Verify Unit 3 still renders correctly after shared updates
 
