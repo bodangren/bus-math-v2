@@ -348,6 +348,15 @@ export function PayStructureDecisionLab({ activity, onSubmit }: PayStructureDeci
   const salaryResult = computeSalary(salaryInputs)
   const commissionResult = computeCommission(commissionInputs)
 
+  const resetLab = () => {
+    setCurrent(0)
+    setSubmitted(false)
+    submittedRef.current = false
+    setHourlyInputs(activity?.props.initialHourly ?? defaultInitialHourly)
+    setSalaryInputs(activity?.props.initialSalary ?? defaultInitialSalary)
+    setCommissionInputs(activity?.props.initialCommission ?? defaultInitialCommission)
+  }
+
   const onNumericChange = <T extends object>(setter: React.Dispatch<React.SetStateAction<T>>, field: keyof T) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = parseFloat(e.target.value) || 0
@@ -526,53 +535,64 @@ export function PayStructureDecisionLab({ activity, onSubmit }: PayStructureDeci
             </Button>
             <div className="flex items-center gap-2">
               {current === scenarios.length - 1 && onSubmit && (
-                <Button
-                  onClick={() => {
-                    if (submittedRef.current) return
-                    const answers: Record<string, unknown> = {
-                      hourlyGross: hourlyResult.gross,
-                      hourlyNet: hourlyResult.net,
-                      salaryGross: salaryResult.gross,
-                      salaryNet: salaryResult.net,
-                      commissionGross: commissionResult.gross,
-                      commissionNet: commissionResult.net,
-                    }
-                    const parts = buildPracticeSubmissionParts(answers).map((part) => ({
-                      ...part,
-                      isCorrect: true,
-                      score: 1,
-                      maxScore: 1,
-                    }))
-                    const envelope = buildPracticeSubmissionEnvelope({
-                      activityId: activity?.id ?? 'pay-structure-decision-lab',
-                      mode: 'guided_practice',
-                      status: 'submitted',
-                      attemptNumber: 1,
-                      submittedAt: new Date(),
-                      answers,
-                      parts,
-                      artifact: {
-                        kind: 'pay_structure',
-                        scenarios: scenarios.map((s: { id: string }) => s.id),
-                        hourly: { inputs: hourlyInputs, result: hourlyResult },
-                        salary: { inputs: salaryInputs, result: salaryResult },
-                        commission: { inputs: commissionInputs, result: commissionResult },
-                      },
-                      analytics: {
-                        totalNetHourly: hourlyResult.net,
-                        totalNetSalary: salaryResult.net,
-                        totalNetCommission: commissionResult.net,
-                      },
-                    })
-                    submittedRef.current = true
-                    onSubmit(envelope)
-                    setSubmitted(true)
-                  }}
-                  disabled={submitted}
-                  className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
-                >
-                  <CheckCircle2 className="h-4 w-4" /> {submitted ? 'Submitted' : 'Submit'}
-                </Button>
+                <>
+                  <Button
+                    onClick={() => {
+                      if (submittedRef.current) return
+                      const answers: Record<string, unknown> = {
+                        hourlyGross: hourlyResult.gross,
+                        hourlyNet: hourlyResult.net,
+                        salaryGross: salaryResult.gross,
+                        salaryNet: salaryResult.net,
+                        commissionGross: commissionResult.gross,
+                        commissionNet: commissionResult.net,
+                      }
+                      const parts = buildPracticeSubmissionParts(answers).map((part) => ({
+                        ...part,
+                        isCorrect: true,
+                        score: 1,
+                        maxScore: 1,
+                      }))
+                      const envelope = buildPracticeSubmissionEnvelope({
+                        activityId: activity?.id ?? 'pay-structure-decision-lab',
+                        mode: 'guided_practice',
+                        status: 'submitted',
+                        attemptNumber: 1,
+                        submittedAt: new Date(),
+                        answers,
+                        parts,
+                        artifact: {
+                          kind: 'pay_structure',
+                          scenarios: scenarios.map((s: { id: string }) => s.id),
+                          hourly: { inputs: hourlyInputs, result: hourlyResult },
+                          salary: { inputs: salaryInputs, result: salaryResult },
+                          commission: { inputs: commissionInputs, result: commissionResult },
+                        },
+                        analytics: {
+                          totalNetHourly: hourlyResult.net,
+                          totalNetSalary: salaryResult.net,
+                          totalNetCommission: commissionResult.net,
+                        },
+                      })
+                      submittedRef.current = true
+                      onSubmit(envelope)
+                      setSubmitted(true)
+                    }}
+                    disabled={submitted}
+                    className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
+                  >
+                    <CheckCircle2 className="h-4 w-4" /> {submitted ? 'Submitted' : 'Submit'}
+                  </Button>
+                  {submitted && (
+                    <Button
+                      onClick={resetLab}
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
+                      Try Again
+                    </Button>
+                  )}
+                </>
               )}
               <Button
                 onClick={() => setCurrent((prev) => Math.min(prev + 1, scenarios.length - 1))}
