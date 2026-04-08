@@ -200,6 +200,7 @@ export function StartupJourney({ activity, initialState, onStateChange, onSubmit
   }, [gameState, onStateChange])
 
   const submittedRef = useRef(false)
+  const notificationTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
   useEffect(() => {
     if (
       onSubmit &&
@@ -252,6 +253,11 @@ export function StartupJourney({ activity, initialState, onStateChange, onSubmit
     }
   }, [gameState.gameStatus, gameState.funding, gameState.users, gameState.revenue, gameState.month, gameState.stage, gameState.decisions, activity, onSubmit])
 
+  useEffect(() => {
+    const timeouts = notificationTimeoutsRef.current
+    return () => { timeouts.forEach(clearTimeout) }
+  }, [])
+
   const getStageBadgeClass = useCallback(
     (stageId: string) => stageMap.get(stageId)?.badgeClassName ?? 'bg-slate-100 text-slate-800 border-slate-300',
     [stageMap]
@@ -290,9 +296,10 @@ export function StartupJourney({ activity, initialState, onStateChange, onSubmit
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
     setNotifications(prev => [...prev, { id, message, type }])
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id))
     }, 5000)
+    notificationTimeoutsRef.current.push(timeoutId)
   }, [])
 
   const makeDecision = useCallback(

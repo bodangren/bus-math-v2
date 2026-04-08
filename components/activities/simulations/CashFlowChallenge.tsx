@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -94,12 +94,20 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
   const [actionsLog, setActionsLog] = useState<string[]>([])
   const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
+  const notificationTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  useEffect(() => {
+    const timeouts = notificationTimeoutsRef.current
+    return () => { timeouts.forEach(clearTimeout) }
+  }, [])
+
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
     const id = Date.now().toString()
     setNotifications(prev => [...prev, { id, message, type }])
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id))
     }, 5000)
+    notificationTimeoutsRef.current.push(timeoutId)
   }, [])
 
   const getCashHealthStatus = (cash: number) => {

@@ -73,17 +73,18 @@ The following remain out of scope for this phase unless they block cleanup or pa
 
 ## Current High-Level Priorities (2026-04-08)
 
-1. **Unit-by-Unit Page Evaluation and Polish** — Units 1–2 complete. Execute Unit 3 track next (Units 3–8 remain).
+1. **Unit-by-Unit Page Evaluation and Polish** — Units 1–3 complete. Execute Unit 4 track next (Units 4–8 remain).
 2. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
 
-## Code Review Summary (2026-04-08 — Unit 1 Polish + Phase Audit, Pass 3)
+## Code Review Summary (2026-04-08 — Unit 2–3 Polish + Phase Audit, Pass 4)
 
-Audited the Unit 1 Page Polish track (Phases 2–4) and re-scanned all simulation/activity components for correctness.
+Audited the Unit 2 and Unit 3 Page Polish tracks and re-scanned all simulation components for timer cleanup correctness.
 
-**Fixed during review (3 bugs):**
-- **PitchPresentationBuilder**: hardcoded `activityId: 'pitch-presentation-builder'` at line 318 — analytics tracking broken for DB-driven activities. Fixed to `activity?.id ?? 'pitch-presentation-builder'`; test assertion updated to match mock id. *(was recorded as fixed on 2026-04-08 but code still had hardcoded value)*
-- **BusinessStressTest**: `survivalRate: roundsSurvived / disasters.length` at lines 112 and 184 — produces `NaN` when `disasters` array is empty (default is `[]`). Fixed with `disasters.length > 0` guard.
-- **InventoryManager**: margin display `(price - cost) / price` at line 770 — produces `Infinity` when `price === 0`. Fixed with `product.price > 0` guard.
+**Fixed during review (4 bugs):**
+- **InventoryManager**: `addNotification` setTimeout not cleaned up on unmount — would cause React state-update-on-unmounted warning. Fixed with `notificationTimeoutsRef` + `useEffect` cleanup.
+- **CashFlowChallenge**: Same setTimeout cleanup issue. Fixed with same pattern.
+- **StartupJourney**: Same setTimeout cleanup issue. Fixed with same pattern.
+- **LemonadeStand**: Same setTimeout cleanup issue. Fixed alongside existing `salesIntervalRef` cleanup effect.
 
 **Verification gates:**
 - `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
@@ -91,9 +92,7 @@ Audited the Unit 1 Page Polish track (Phases 2–4) and re-scanned all simulatio
 - `npm run build`: passes cleanly
 
 **Remaining items recorded in tech-debt.md:**
-- 3 depreciation simulators still lack handler-level submittedRef guards (AssetRegisterSimulator, DepreciationMethodComparisonSimulator, MethodComparisonSimulator)
 - 17 exercise component keys have schema but no React component (placeholders registered)
-- InventoryManager addNotification setTimeout not cleaned up on unmount
 - ScenarioSwitchShowTell has no reset mechanism for submittedRef
 - auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure
 - lib/ai/retry.ts extracts HTTP status codes via regex on error messages — fragile coupling

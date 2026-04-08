@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -98,6 +98,12 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
   const runtimeIdCounterRef = useRef(0)
   const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
+  const notificationTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  useEffect(() => {
+    const timeouts = notificationTimeoutsRef.current
+    return () => { timeouts.forEach(clearTimeout) }
+  }, [])
 
   const generateRuntimeId = useCallback((prefix: 'event' | 'notification') => {
     runtimeIdCounterRef.current += 1
@@ -132,9 +138,10 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
     const id = generateRuntimeId('notification')
     setNotifications(prev => [...prev, { id, message, type }])
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id))
     }, 5000)
+    notificationTimeoutsRef.current.push(timeoutId)
   }, [generateRuntimeId])
 
   const getDemandColor = (demand: string) => {

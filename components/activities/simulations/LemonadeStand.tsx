@@ -207,6 +207,7 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
   const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
   const salesIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const notificationTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
 
   const heroDescription = activity.description ?? activity.props.description
   const supplyOptions = activity.props.supplyOptions
@@ -234,10 +235,12 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
   }, [baseState, initialState])
 
   useEffect(() => {
+    const timeouts = notificationTimeoutsRef.current
     return () => {
       if (salesIntervalRef.current) {
         clearInterval(salesIntervalRef.current)
       }
+      timeouts.forEach(clearTimeout)
     }
   }, [])
 
@@ -248,9 +251,10 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
   const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error' | 'info') => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
     setNotifications(prev => [...prev, { id, message, type }])
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id))
     }, 4000)
+    notificationTimeoutsRef.current.push(timeoutId)
   }, [])
 
   const buySupply = useCallback((supplyId: SupplyId) => {
