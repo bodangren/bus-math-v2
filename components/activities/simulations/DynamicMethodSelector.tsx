@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, CheckCircle2, Table2 } from 'lucide-react'
@@ -79,6 +79,7 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
   const [selectedScenario, setSelectedScenario] = useState('Base')
   const [selectedMethod, setSelectedMethod] = useState('FIFO')
   const [completed, setCompleted] = useState(false)
+  const submittedRef = useRef(false)
 
   const compositeKey = `${selectedScenario}|${selectedMethod}`
   const lookup = methodSummary.find(r => r.key === compositeKey)
@@ -86,7 +87,8 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
   const methods = ['FIFO', 'LIFO', 'Weighted Average']
 
   const handleComplete = useCallback(() => {
-    if (completed) return
+    if (submittedRef.current) return
+    submittedRef.current = true
     setCompleted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
@@ -98,7 +100,7 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
       }),
     )
     onComplete?.()
-  }, [completed, selectedScenario, selectedMethod, lookup, onSubmit, onComplete, activity.id, compositeKey])
+  }, [selectedScenario, selectedMethod, lookup, onSubmit, onComplete, activity.id, compositeKey])
 
   return (
     <div className="space-y-6">

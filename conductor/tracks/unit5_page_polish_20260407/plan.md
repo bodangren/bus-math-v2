@@ -8,16 +8,16 @@
 
 ## Phase 2: Shared Fixes Needed For Unit 5
 
-- [ ] Write or update targeted regression coverage for risky shared changes
-- [ ] Implement shared layout/component fixes required for Unit 5 correctness
-- [ ] Verify Unit 5 still renders correctly after shared updates
+- [x] Write or update targeted regression coverage for risky shared changes (registry fix tested)
+- [x] Implement shared layout/component fixes required for Unit 5 correctness (fixed activity registry)
+- [x] Verify Unit 5 still renders correctly after shared updates (lint, test, build all pass)
 
 ## Phase 3: Unit 5 Local Polish
 
-- [ ] Fix Unit 5 overview and navigation issues
-- [ ] Fix Unit 5 teacher page issues
-- [ ] Fix Unit 5 lesson page issues
-- [ ] Re-check all touched Unit 5 surfaces
+- [x] Fix Unit 5 overview and navigation issues
+- [x] Fix Unit 5 teacher page issues
+- [x] Fix Unit 5 lesson page issues (added submittedRef guard to DynamicMethodSelector)
+- [x] Re-check all touched Unit 5 surfaces
 
 ## Phase 4: Verification
 
