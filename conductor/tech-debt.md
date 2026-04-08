@@ -4,7 +4,7 @@
 
 | Date | Track | Item | Severity | Status | Notes |
 |------|-------|------|----------|--------|-------|
-| 2026-03-14 | security_audit | 26 vulns found: Rollup (8.8, RCE), tar (8.8, File Overwrite), minimatch (8.7, ReDoS), serialize-javascript (8.1, RCE), next (7.5, DoS), flatted (7.5, DoS), ajv (5.5, ReDoS), esbuild (5.3, CSRF) | High | Open | CRITICAL: Update rollup to v4.59.0+, serialize-javascript to v7.0.3+, and tar to v7.5.11+ immediately. Also requires Next.js v16.1.5+ and flatted v3.4.0+ to resolve DoS risks. |
+| 2026-03-14 | security_audit | 26 vulns found: Rollup (8.8, RCE), tar (8.8, File Overwrite), minimatch (8.7, ReDoS), serialize-javascript (8.1, RCE), next (7.5, DoS), flatted (7.5, DoS), ajv (5.5, ReDoS), esbuild (5.3, CSRF) | High | Closed | Fixed via npm audit fix and npm audit fix --force; no remaining high-severity vulnerabilities. |
 | 2026-03-21 | statement_completion_preview_shell | Family D guided-plus-review shell likely repeated for remaining statement families unless factored into shared helper | Low | Open | Keep explicit for now; extract if another family needs the same pattern. |
 | 2026-03-21 | trial_balance_error_family | Trial Balance Error Analysis uses bespoke worksheet-card preview shell | Low | Open | Keep custom shell; extract shared helper if another family needs same pattern. |
 | 2026-03-16 | cloudflare_production_hardening | Cloudflare launch depends on manual Wrangler secret setup — no CI-backed Worker deployment | Medium | Open | Automate once credential ownership is defined. |
