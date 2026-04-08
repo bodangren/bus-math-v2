@@ -42,6 +42,7 @@ import { CapitalizationExpenseMastery } from '@/components/activities/exercises/
 import { MarkupMarginMastery } from '@/components/activities/exercises/MarkupMarginMastery';
 import { BreakEvenMastery } from '@/components/activities/exercises/BreakEvenMastery';
 import { InventoryAlgorithmShowtell } from '@/components/activities/exercises/InventoryAlgorithmShowtell';
+import { AdjustmentPractice } from '@/components/activities/exercises/AdjustmentPractice';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -124,12 +125,11 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'cross-sheet-link-simulator': (() => null) as unknown as ComponentType<any>,
 
   // Exercises — Cluster 4: U2 Transactions & Adjustments
+  'adjustment-practice': AdjustmentPractice,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'closing-entry-practice': (() => null) as unknown as ComponentType<any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'month-end-close-practice': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'adjustment-practice': (() => null) as unknown as ComponentType<any>,
 
   // Exercises — Cluster 5: U8 Integrated Model & Validation
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

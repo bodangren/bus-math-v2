@@ -1,10 +1,10 @@
 # Implementation Plan: U2 Transactions & Adjustments Exercise Implementation
 
 ## Phase 1: Implement adjustment-practice
-- [ ] Write test file for adjustment-practice
-- [ ] Implement AdjustmentPractice component
-- [ ] Register component in lib/activities/registry.ts
-- [ ] Run tests and lint
+- [x] Write test file for adjustment-practice
+- [x] Implement AdjustmentPractice component
+- [x] Register component in lib/activities/registry.ts
+- [x] Run tests and lint
 
 ## Phase 2: Implement closing-entry-practice
 - [ ] Write test file for closing-entry-practice
