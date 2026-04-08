@@ -101,7 +101,7 @@ export function ChartLinkingSimulator({ activity, onSubmit, onComplete }: ChartL
       }),
     )
     onComplete?.()
-  }, [financialState, insights, onSubmit, onComplete, activity.id])
+  }, [financialState, insights, onSubmit, onComplete, activity.id, statements])
 
   return (
     <div className="space-y-6">

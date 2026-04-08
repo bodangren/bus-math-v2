@@ -71,10 +71,10 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — Pass 15, U3 Phases 1-3 complete)
+## Current High-Level Priorities (2026-04-09 — Pass 16, U3 fully complete)
 
-1. **U3 Track Phases 4-5** — `chart-linking-simulator`, `cross-sheet-link-simulator`. Implement, register, verify each. Follow established exercise/simulator pattern.
-2. **5 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 7 — `cash-flow-practice` and `balance-sheet-practice` now have real components.
+1. **Next Phase Definition** — All exercise implementation tracks (U2, U3, U6) and all cleanup/polish tracks are complete. Define next phase: either remaining exercise-family work (U1, U4, U5, U7, U8 exercise clusters) or move to the Milestone 7 planned queue (Engine Stabilization → Curriculum Rollout → Visual/Teaching → Legacy Cleanup → Teacher Error).
+2. **3 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 5 — `chart-linking-simulator` and `cross-sheet-link-simulator` now have real components.
 3. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
 4. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
 5. **Exercise Test Coverage (Low)** — All exercise mastery tests are shallow (render-only). Cannot deterministically test mastery completion due to `Array.sort` shuffle non-determinism with mocked `Math.random`. Acceptable — mastery logic (`consecutiveCorrect >= masteryTarget`) is trivially correct.
@@ -367,6 +367,29 @@ Audited U3 Financial Statements & Reporting Exercise track Phases 2-3 (cash-flow
 - Exercise mastery tests are shallow across the board (all 9 tests) — cannot deterministically test mastery completion due to `Array.sort` shuffle non-determinism with mocked Math.random (low)
 
 **Phase status**: U3 Financial Statements & Reporting Exercise track Phases 1-3 COMPLETE. Phases 4-5 (chart-linking-simulator, cross-sheet-link-simulator) remain. 5 placeholder keys remain.
+
+## Code Review Summary (2026-04-09 — U3 Track Completion, Pass 16)
+
+Audited U3 Financial Statements & Reporting Exercise track Phases 4-5 (chart-linking-simulator, cross-sheet-link-simulator) and track archival.
+
+**Fixed during review: 1 lint warning**
+- **ChartLinkingSimulator missing dep** (Low): `handleComplete` useCallback used `statements` (derived from `financialState`) in the submission envelope but did not include it in the dependency array. Added `statements` to deps. Lint warning count restored to 1 (pre-existing worker default export).
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1515/1515 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **ChartLinkingSimulator**: Interactive simulator for exploring income statement ↔ balance sheet linkages. Has submittedRef guard (line 64, check at line 78), practice.v1 envelope submission via `buildSimulationSubmissionEnvelope`, insight capture. Correct ordering: `submittedRef.current = true` before `setCompleted(true)`. Optional chaining on callbacks (`onSubmit?.()`, `onComplete?.()`). No reset function — consistent with showtell pattern (InventoryAlgorithmShowtell, ScenarioSwitchShowTell). Balance sheet uses simplified placeholder values (totalAssets = revenue) — acceptable for exploration, not accounting accuracy.
+- **CrossSheetLinkSimulator**: Interactive cross-sheet reference simulator. Same pattern as ChartLinkingSimulator — submittedRef guard (line 62, check at line 105), practice.v1 envelope, insight capture, correct ordering. `calculateSheet2` has `sheet2` in deps (unnecessary — only reads B3 which doesn't change) but no functional impact. No reset function — consistent with showtell pattern.
+- **Activity registry**: `chart-linking-simulator` and `cross-sheet-link-simulator` now point to real components. 57 schema keys: 54 real + 3 placeholders (down from 5). Remaining placeholders: `profit-calculator`, `budget-worksheet`, `error-checking-system`.
+- **Test coverage**: Both test files are shallow (render-only, 3 tests each) — consistent with established showtell/exercise test pattern. No interaction testing.
+
+**New items recorded in tech-debt.md:**
+- Placeholder count corrected from 4 to 3
+
+**Phase status**: U3 Financial Statements & Reporting Exercise track COMPLETE (all 5 phases). All exercise implementation tracks (U2, U3, U6) now complete. 3 placeholder keys remain. Ready for next phase definition.
 
 ## Notes
 
