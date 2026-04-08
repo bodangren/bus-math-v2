@@ -71,12 +71,13 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — Pass 12, U6 Inventory track complete)
+## Current High-Level Priorities (2026-04-08 — Pass 13, U2 Phases 1-2 complete)
 
-1. **11 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 14 — U6 Inventory cluster (`markup-margin-mastery`, `break-even-mastery`, `inventory-algorithm-showtell`) now has real components.
-2. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
-3. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
-4. **Exercise Test Coverage (Low)** — BreakEvenMastery, InventoryAlgorithmShowtell, and MarkupMarginMastery tests are shallow (render-only). Should exercise interaction paths when test-writing capacity resumes.
+1. **9 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `month-end-close-practice`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 11 — `adjustment-practice` and `closing-entry-practice` now have real components.
+2. **U2 Track Phase 3 Remaining** — `month-end-close-practice` is the last exercise in the U2 Transactions & Adjustments track. Implement, register, verify, then archive.
+3. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
+4. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
+5. **Exercise Test Coverage (Low)** — BreakEvenMastery, InventoryAlgorithmShowtell, MarkupMarginMastery, AdjustmentPractice, and ClosingEntryPractice tests are shallow (render-only). Should exercise interaction paths when test-writing capacity resumes.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
@@ -286,6 +287,31 @@ Audited Unit 4 and Unit 5 Page Polish tracks. Full codebase review of all 18 sim
 - auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure
 - lib/ai/retry.ts extracts HTTP status codes via regex on error messages — fragile coupling
 - 6 of 7 practice families do not emit omitted-entry tag for blank/undefined student responses
+
+## Code Review Summary (2026-04-08 — U2 Phases 1-2, Pass 13)
+
+Audited U2 Transactions & Adjustments Exercise track Phases 1-2 (adjustment-practice, closing-entry-practice) and full verification gates.
+
+**No code changes during review** — all changes from the two implementation commits are clean.
+
+**Fixed during review: 0 bugs** — No serious issues found. Both components follow established exercise patterns correctly.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: all tests pass (AdjustmentPractice 3/3, ClosingEntryPractice 3/3); 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **AdjustmentPractice**: Follows established exercise patterns (StraightLineMastery, MarkupMarginMastery, BreakEvenMastery). Has submittedRef guard (line 95, check at line 127), practice.v1 envelope submission via `buildSimulationSubmissionEnvelope`, mastery threshold with consecutiveCorrect tracking, worked example view, 3 scenario kinds (deferral, accrual, depreciation) with pedagogically sound distractors. Optional chaining on callbacks (`onSubmit?.()`, `onComplete?.()`). Reset clears submittedRef (line 172). `hasCompleted` ref prevents duplicate onComplete.
+- **ClosingEntryPractice**: Same pattern. Has submittedRef guard (line 117, check at line 149), practice.v1 envelope, mastery threshold, worked example view, 5 scenario kinds (close_revenue, close_expenses, close_income_summary net income, close_income_summary net loss, close_dividends). Distractors model common mistakes (swapped debit/credit, closing to wrong account, forgetting to close). Optional chaining on callbacks. Reset clears submittedRef (line 194).
+- **Activity registry**: `adjustment-practice` and `closing-entry-practice` now point to real components. 9 placeholders remain (down from 11). Registry correctly removed 2 `(() => null)` entries.
+- **Tech debt**: placeholder count already updated to 9 in tech-debt.md (Phase 2 docs commit). Verified 9 `(() => null)` entries in registry — count is accurate.
+- **Test coverage**: Both test files pass but are shallow — all 6 tests (3 per component) only verify rendering. Tests named "calls onSubmit when answer is checked" and "calls onComplete when mastery is achieved" do not exercise actual interaction or assert callback invocation. Follows pre-existing pattern (see Pass 11-12 findings for MarkupMarginMastery, BreakEvenMastery, InventoryAlgorithmShowtell).
+
+**New items recorded in tech-debt.md:**
+- None — existing shallow-test items (Pass 11, Pass 12) already cover the pattern. AdjustmentPractice and ClosingEntryPractice are additional instances of the same low-severity gap.
+
+**Phase status**: U2 Transactions & Adjustments Exercise track Phases 1-2 COMPLETE. Phase 3 (month-end-close-practice) and Phase 4 (Final Verification) remain.
 
 ## Notes
 
