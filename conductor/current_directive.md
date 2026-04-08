@@ -71,12 +71,12 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — Pass 10, security track complete)
+## Current High-Level Priorities (2026-04-08 — Pass 11, dead code pruning + markup-margin complete)
 
-1. **14 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `markup-margin-mastery`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes.
-2. **Dead Code Pruning** — 12 activity components exist on disk but are only imported by tests (FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed). Either register or remove.
-3. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
-4. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
+1. **13 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 14 — `markup-margin-mastery` now has a real component.
+2. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
+3. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
+4. **U6 Inventory Track** — `markup-margin-mastery` Phase 1 complete. Phases 2-3 (break-even-mastery, inventory-algorithm-showtell) remain.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
@@ -176,6 +176,30 @@ Audited the Security Vulnerability Remediation track (phases 1-4), conductor doc
 - None (existing items reviewed; all still accurate)
 
 **Phase status**: Security Vulnerability Remediation track COMPLETE. 4 moderate esbuild vulns remain (transitive via drizzle-kit — non-blocking). Ready for next track selection.
+
+## Code Review Summary (2026-04-08 — Dead Code Pruning + MarkupMarginMastery, Pass 11)
+
+Audited the Dead Code Pruning track completion and MarkupMarginMastery Phase 1 implementation for the U6 Inventory & Costing Exercise track.
+
+**No code changes during review** — all changes are clean.
+
+**Fixed during review: 0 bugs** — No serious issues found. Dead code pruning was safe (no orphaned imports, `accounting-types.ts` correctly retained for `JournalEntryActivity`). MarkupMarginMastery follows established exercise patterns correctly.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1485/1485 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Dead Code Pruning**: Removed 12 components + 12 test files (FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed). Verified zero remaining imports anywhere in codebase. `accounting-types.ts` correctly retained (used by JournalEntryActivity). `reports/` directory now empty.
+- **MarkupMarginMastery**: Follows established exercise patterns (StraightLineMastery, DDBComparisonMastery). Has `submittedRef` guard, `practice.v1` envelope submission via `buildSimulationSubmissionEnvelope`, mastery threshold support, worked example view. Distractors model common misconceptions (swapped denominators, forgot subtraction, wrong direction). Optional chaining on callbacks (`onSubmit?.()`). Reset function clears `submittedRef`.
+- **Activity registry**: `markup-margin-mastery` now points to real component. 57 schema keys: 44 real + 13 placeholders (down from 14). `inventory-algorithm-showtell` and `break-even-mastery` still `(() => null)` placeholders.
+- **Test coverage**: 3 tests for MarkupMarginMastery (render, onSubmit, onComplete render). Third test ("calls onComplete when mastery is achieved") only verifies rendering, not actual mastery completion behavior — low severity, noted.
+
+**New items recorded in tech-debt.md:**
+- MarkupMarginMastery test coverage gap (low — doesn't test mastery completion behavior)
+
+**Phase status**: U6 Inventory track Phase 1 (markup-margin-mastery) COMPLETE. Phases 2-3 (break-even-mastery, inventory-algorithm-showtell) remain.
 
 ## Code Review Summary (2026-04-08 — Unit 6–7 Polish + Phase Audit, Pass 6)
 
