@@ -57,9 +57,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/unit3_page_polish_20260407/](./tracks/unit3_page_polish_20260407/)*
   *Closeout: completed on 2026-04-08 after auditing Unit 3 surfaces and verifying all lint/test/build gates pass.*
 
-- [~] **Track: Unit 4 Page Evaluation and Polish**
+- [x] **Track: Unit 4 Page Evaluation and Polish**
   *Link: [./tracks/unit4_page_polish_20260407/](./tracks/unit4_page_polish_20260407/)*
-  *Status: In Progress (Phase 1).*
+  *Status: Completed on 2026-04-08 after auditing Unit 4 surfaces, adding reset to PayStructureDecisionLab, and verifying all lint/test/build gates pass.*
 
 - [ ] **Track: Unit 5 Page Evaluation and Polish**
   *Link: [./tracks/unit5_page_polish_20260407/](./tracks/unit5_page_polish_20260407/)*
