@@ -8,9 +8,9 @@
 
 ## Phase 2: Shared Fixes Needed For Unit 1
 
-- [ ] Write or update targeted regression coverage for risky shared changes
-- [ ] Implement shared layout/component fixes required for Unit 1 correctness
-- [ ] Verify Unit 1 still renders correctly after shared updates
+- [x] Write or update targeted regression coverage for risky shared changes
+- [x] Implement shared layout/component fixes required for Unit 1 correctness (InventoryManager prop type aligned to Activity pattern)
+- [x] Verify Unit 1 still renders correctly after shared updates (all tests passing)
 
 ## Phase 3: Unit 1 Local Polish
 

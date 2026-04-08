@@ -2,64 +2,73 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { InventoryManager } from '../../../components/activities/simulations/InventoryManager'
-import type { InventoryManagerActivityProps } from '@/types/activities'
+import { InventoryManager, type InventoryManagerActivity } from '../../../components/activities/simulations/InventoryManager'
 
-const mockActivity: InventoryManagerActivityProps = {
-  title: 'Inventory Manager',
+const mockActivity: InventoryManagerActivity = {
+  id: 'inventory-manager-test',
+  displayName: 'Inventory Manager',
   description: 'Manage retail inventory for 30 days. Balance stock levels, demand, and profitability!',
-  products: [
-    {
-      id: 'product-1',
-      name: 'Laptops',
-      icon: 'laptop',
-      quantity: 0,
-      cost: 800,
-      price: 1200,
-      demand: 'medium',
-      demandHistory: [0, 0, 0, 0, 0],
-      totalSold: 0,
-      totalOrdered: 0
-    },
-    {
-      id: 'product-2',
-      name: 'Phones',
-      icon: 'smartphone',
-      quantity: 0,
-      cost: 400,
-      price: 600,
-      demand: 'high',
-      demandHistory: [0, 0, 0, 0, 0],
-      totalSold: 0,
-      totalOrdered: 0
-    },
-    {
-      id: 'product-3',
-      name: 'Tablets',
-      icon: 'tablet',
-      quantity: 0,
-      cost: 300,
-      price: 450,
-      demand: 'low',
-      demandHistory: [0, 0, 0, 0, 0],
-      totalSold: 0,
-      totalOrdered: 0
+  componentKey: 'inventory-manager',
+  props: {
+    title: 'Inventory Manager',
+    description: 'Manage retail inventory for 30 days. Balance stock levels, demand, and profitability!',
+    products: [
+      {
+        id: 'product-1',
+        name: 'Laptops',
+        icon: 'laptop',
+        quantity: 0,
+        cost: 800,
+        price: 1200,
+        demand: 'medium',
+        demandHistory: [0, 0, 0, 0, 0],
+        totalSold: 0,
+        totalOrdered: 0
+      },
+      {
+        id: 'product-2',
+        name: 'Phones',
+        icon: 'smartphone',
+        quantity: 0,
+        cost: 400,
+        price: 600,
+        demand: 'high',
+        demandHistory: [0, 0, 0, 0, 0],
+        totalSold: 0,
+        totalOrdered: 0
+      },
+      {
+        id: 'product-3',
+        name: 'Tablets',
+        icon: 'tablet',
+        quantity: 0,
+        cost: 300,
+        price: 450,
+        demand: 'low',
+        demandHistory: [0, 0, 0, 0, 0],
+        totalSold: 0,
+        totalOrdered: 0
+      }
+    ],
+    initialState: {
+      cash: 10000,
+      day: 1,
+      maxDays: 30,
+      products: [],
+      financials: {
+        totalRevenue: 0,
+        totalExpenses: 0,
+        storageCost: 0,
+        dailyStorageCost: 50
+      },
+      profitTarget: 2000,
+      gameStatus: 'playing'
     }
-  ],
-  initialState: {
-    cash: 10000,
-    day: 1,
-    maxDays: 30,
-    products: [],
-    financials: {
-      totalRevenue: 0,
-      totalExpenses: 0,
-      storageCost: 0,
-      dailyStorageCost: 50
-    },
-    profitTarget: 2000,
-    gameStatus: 'playing'
-  }
+  },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 }
 
 describe('InventoryManager', () => {
@@ -145,12 +154,15 @@ describe('InventoryManager', () => {
     const user = userEvent.setup()
 
     // Start with some inventory
-    const activityWithStock = {
+    const activityWithStock: InventoryManagerActivity = {
       ...mockActivity,
-      products: mockActivity.products.map(p => ({
-        ...p,
-        quantity: p.name === 'Phones' ? 10 : 0
-      }))
+      props: {
+        ...mockActivity.props,
+        products: mockActivity.props.products.map(p => ({
+          ...p,
+          quantity: p.name === 'Phones' ? 10 : 0
+        }))
+      }
     }
 
     render(<InventoryManager activity={activityWithStock} />)
@@ -168,17 +180,21 @@ describe('InventoryManager', () => {
     const onSubmit = vi.fn()
 
     // Setup winning scenario
-    const winningActivity = {
+    const winningActivity: InventoryManagerActivity = {
       ...mockActivity,
-      initialState: {
-        ...mockActivity.initialState,
-        day: 30,
-        maxDays: 30,
-        financials: {
-          totalRevenue: 5000,
-          totalExpenses: 2000,
-          storageCost: 100,
-          dailyStorageCost: 50
+      props: {
+        ...mockActivity.props,
+        initialState: {
+          ...mockActivity.props.initialState,
+          day: 30,
+          maxDays: 30,
+          financials: {
+            ...mockActivity.props.initialState.financials,
+            totalRevenue: 5000,
+            totalExpenses: 2000,
+            storageCost: 100,
+            dailyStorageCost: 50
+          }
         }
       }
     }
@@ -199,7 +215,7 @@ describe('InventoryManager', () => {
     expect(onSubmit).toHaveBeenCalled()
     const envelope = onSubmit.mock.calls[0][0]
     expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
-    expect(envelope).toHaveProperty('activityId', 'inventory-manager')
+    expect(envelope).toHaveProperty('activityId', 'inventory-manager-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
     expect(envelope).toHaveProperty('status', 'submitted')
     expect(envelope).toHaveProperty('parts')
@@ -232,11 +248,14 @@ describe('InventoryManager', () => {
   })
 
   it('shows game over when cash goes negative', async () => {
-    const lowCashActivity = {
+    const lowCashActivity: InventoryManagerActivity = {
       ...mockActivity,
-      initialState: {
-        ...mockActivity.initialState,
-        cash: 100
+      props: {
+        ...mockActivity.props,
+        initialState: {
+          ...mockActivity.props.initialState,
+          cash: 100
+        }
       }
     }
 
@@ -283,11 +302,14 @@ describe('InventoryManager', () => {
   })
 
   it('disables order buttons when insufficient cash', () => {
-    const lowCashActivity = {
+    const lowCashActivity: InventoryManagerActivity = {
       ...mockActivity,
-      initialState: {
-        ...mockActivity.initialState,
-        cash: 500
+      props: {
+        ...mockActivity.props,
+        initialState: {
+          ...mockActivity.props.initialState,
+          cash: 500
+        }
       }
     }
 
@@ -313,12 +335,15 @@ describe('InventoryManager', () => {
     vi.spyOn(Date, 'now').mockReturnValue(1234567890)
     vi.spyOn(Math, 'random').mockReturnValue(0)
 
-    const stockedActivity = {
+    const stockedActivity: InventoryManagerActivity = {
       ...mockActivity,
-      products: mockActivity.products.map((product) => ({
-        ...product,
-        quantity: product.name === 'Phones' ? 10 : 0
-      }))
+      props: {
+        ...mockActivity.props,
+        products: mockActivity.props.products.map((product) => ({
+          ...product,
+          quantity: product.name === 'Phones' ? 10 : 0
+        }))
+      }
     }
 
     render(<InventoryManager activity={stockedActivity} />)

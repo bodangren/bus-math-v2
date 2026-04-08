@@ -30,8 +30,14 @@ import {
   Warehouse,
   BarChart3
 } from 'lucide-react'
+import type { Activity } from '@/lib/db/schema/validators'
 import type { InventoryManagerActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
+export type InventoryManagerActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'inventory-manager'
+  props: InventoryManagerActivityProps
+}
 
 interface Product {
   id: string
@@ -70,7 +76,7 @@ interface GameState {
 }
 
 interface InventoryManagerProps {
-  activity: InventoryManagerActivityProps
+  activity: InventoryManagerActivity
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
@@ -88,6 +94,7 @@ const getIconForProduct = (iconName: string) => {
 }
 
 export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) {
+  const { title, description, initialState, products } = activity.props
   const runtimeIdCounterRef = useRef(0)
   const [submitted, setSubmitted] = useState(false)
   const submittedRef = useRef(false)
@@ -98,20 +105,20 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
   }, [])
 
   const [gameState, setGameState] = useState<GameState>({
-    cash: activity.initialState.cash,
-    day: activity.initialState.day,
-    maxDays: activity.initialState.maxDays,
-    totalRevenue: activity.initialState.financials.totalRevenue,
-    totalExpenses: activity.initialState.financials.totalExpenses,
-    storageCost: activity.initialState.financials.storageCost,
-    dailyStorageCost: activity.initialState.financials.dailyStorageCost,
-    products: activity.products.map((product) => ({
+    cash: initialState.cash,
+    day: initialState.day,
+    maxDays: initialState.maxDays,
+    totalRevenue: initialState.financials.totalRevenue,
+    totalExpenses: initialState.financials.totalExpenses,
+    storageCost: initialState.financials.storageCost,
+    dailyStorageCost: initialState.financials.dailyStorageCost,
+    products: products.map((product) => ({
       ...product,
       icon: getIconForProduct(product.icon)
     })),
     marketEvents: [],
-    gameStatus: activity.initialState.gameStatus,
-    profitTarget: activity.initialState.profitTarget
+    gameStatus: initialState.gameStatus,
+    profitTarget: initialState.profitTarget
   })
 
   const [notifications, setNotifications] = useState<Array<{
@@ -385,26 +392,26 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
 
   const resetGame = useCallback(() => {
     setGameState({
-      cash: activity.initialState.cash,
-      day: activity.initialState.day,
-      maxDays: activity.initialState.maxDays,
-      totalRevenue: activity.initialState.financials.totalRevenue,
-      totalExpenses: activity.initialState.financials.totalExpenses,
-      storageCost: activity.initialState.financials.storageCost,
-      dailyStorageCost: activity.initialState.financials.dailyStorageCost,
-      products: activity.products.map((product) => ({
+      cash: initialState.cash,
+      day: initialState.day,
+      maxDays: initialState.maxDays,
+      totalRevenue: initialState.financials.totalRevenue,
+      totalExpenses: initialState.financials.totalExpenses,
+      storageCost: initialState.financials.storageCost,
+      dailyStorageCost: initialState.financials.dailyStorageCost,
+      products: products.map((product) => ({
         ...product,
         icon: getIconForProduct(product.icon)
       })),
       marketEvents: [],
-      gameStatus: activity.initialState.gameStatus,
-      profitTarget: activity.initialState.profitTarget
+      gameStatus: initialState.gameStatus,
+      profitTarget: initialState.profitTarget
     })
     setNotifications([])
     setSubmitted(false)
     submittedRef.current = false
     addNotification('Game reset successfully', 'info')
-  }, [activity, addNotification])
+  }, [initialState, products, addNotification])
 
   const handleSubmit = useCallback(() => {
     if (submittedRef.current) return
@@ -425,7 +432,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
         maxScore: 1,
       }))
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: 'inventory-manager',
+        activityId: activity?.id ?? 'inventory-manager',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
@@ -434,7 +441,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
         parts,
         artifact: {
           kind: 'inventory_manager',
-          title: activity.title,
+          title,
           finalProfit,
           totalRevenue: gameState.totalRevenue,
           totalExpenses: gameState.totalExpenses,
@@ -455,7 +462,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
       setSubmitted(true)
       addNotification('Results submitted as practice evidence!', 'success')
     }
-  }, [gameState, onSubmit, addNotification, activity.title])
+  }, [gameState, onSubmit, addNotification, activity.id, title])
 
   const profit = gameState.totalRevenue - gameState.totalExpenses
   const totalInventoryValue = gameState.products.reduce((sum, p) => sum + (p.quantity * p.cost), 0)
@@ -468,10 +475,10 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Package className="w-8 h-8 text-purple-600" />
-            {activity.title}
+            {title}
           </CardTitle>
           <CardDescription className="text-lg">
-            {activity.description}
+            {description}
           </CardDescription>
           <div className="mt-4">
             <Button
