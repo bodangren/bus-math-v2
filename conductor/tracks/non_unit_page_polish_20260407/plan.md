@@ -8,9 +8,9 @@
 
 ## Phase 2: Shared Layout Fixes
 
-- [ ] Write or update targeted regression coverage for risky shared layout changes
-- [ ] Implement shared header, footer, shell, spacing, or container fixes needed across multiple non-unit pages
-- [ ] Verify the shared fixes on the affected page set
+- [x] Write or update targeted regression coverage for risky shared layout changes
+- [x] Implement shared header, footer, shell, spacing, or container fixes needed across multiple non-unit pages
+- [x] Verify the shared fixes on the affected page set
 
 ## Phase 3: Page-Level Polish
 
