@@ -2,13 +2,17 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import type { AssetTimeMachineActivity } from '../../../components/activities/simulations/AssetTimeMachine'
 import { AssetTimeMachine } from '../../../components/activities/simulations/AssetTimeMachine'
 
-const mockActivity = {
+const mockActivity: AssetTimeMachineActivity = {
   id: 'asset-time-machine-test',
-  title: 'The Asset Time-Machine',
+  displayName: 'The Asset Time-Machine',
   description: 'Track asset depreciation over time',
+  componentKey: 'asset-time-machine',
   props: {
+    title: 'The Asset Time-Machine',
+    description: 'Track asset depreciation over time',
     assetName: 'Server',
     initialCost: 10000,
     years: 2,
@@ -17,6 +21,10 @@ const mockActivity = {
       { year: 2, event: 'Obsolescence', repairCost: 1000, upgradeCost: 3000, impact: 'End of useful life' },
     ],
   },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 }
 
 describe('AssetTimeMachine', () => {

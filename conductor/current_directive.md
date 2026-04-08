@@ -98,6 +98,29 @@ Audited the past 2–3 completed tracks (Repo Cleanup, Dead Props Cleanup, Simul
 - InventoryManager addNotification setTimeout not cleaned up on unmount
 - ScenarioSwitchShowTell has no reset mechanism for submittedRef
 
+## Code Review Summary (2026-04-08 — Phase Audit, Second Pass)
+
+Audited the last 2–3 phases: Non-Unit Page Polish (archived), Unit 1 Page Polish Phase 1 (audit complete), and post-review commits from prior audit.
+
+**Fixed during review (33 TS errors resolved):**
+- **PitchPresentationBuilder**: prop type was changed to `PitchPresentationBuilderActivity` (full Activity wrapper) but component body still accessed `activity.initialState`, `activity.title`, `activity.sectionDefinitions` directly instead of via `activity.props`. Fixed by destructuring `activity.props` at component top. *(30 TS errors)*
+- **activityRegistry**: was missing 20 exercise component keys (`straight-line-mastery`, `ddb-comparison-mastery`, etc.) defined in `exerciseActivityPropsSchemas`. Added 3 existing exercise component imports and 17 placeholder entries. *(1 TS error)*
+- **7 simulation test files**: mock activities used old prop-only shape `{ id, title, description, props }` instead of full Activity type requiring `displayName`, `componentKey`, `createdAt`, `updatedAt`, `gradingConfig`, `standardId`. Updated all 7 test files. *(20 TS errors)*
+- **GrowthPuzzle test**: assertion expected hardcoded `'growth-puzzle'` but mock `id` was `'growth-puzzle-test'`; updated assertion to match mock.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 pre-existing warnings (PitchPresentationBuilder `title` dep, worker default export)
+- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+- `npx tsc --noEmit`: 2 pre-existing errors (missing `@cloudflare/vite-plugin` types, `Fetcher` type)
+
+**Remaining items recorded in tech-debt.md:**
+- InventoryManager component prop type still uses narrow props-only type — needs Activity alignment
+- 17 exercise component keys have schema but no React component (placeholders registered)
+- 3 depreciation simulators lack handler-level early-return guards
+- InventoryManager addNotification setTimeout not cleaned up on unmount
+- ScenarioSwitchShowTell has no reset mechanism for submittedRef
+
 ## Notes
 
 - Existing open tech-debt items still matter, but this phase prioritizes the items that directly affect cleanup, rendered-page correctness, or the reliability of follow-on UI audits.

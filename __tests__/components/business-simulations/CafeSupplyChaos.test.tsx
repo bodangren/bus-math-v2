@@ -2,13 +2,17 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import type { CafeSupplyChaosActivity } from '../../../components/activities/simulations/CafeSupplyChaos'
 import { CafeSupplyChaos } from '../../../components/activities/simulations/CafeSupplyChaos'
 
-const mockActivity = {
+const mockActivity: CafeSupplyChaosActivity = {
   id: 'cafe-supply-chaos-test',
-  title: 'Cafe Supply Chaos',
+  displayName: 'Cafe Supply Chaos',
   description: 'Track inventory costs with FIFO vs LIFO',
+  componentKey: 'cafe-supply-chaos',
   props: {
+    title: 'Cafe Supply Chaos',
+    description: 'Track inventory costs with FIFO vs LIFO',
     days: 2,
     shipments: [
       { day: 1, quantity: 100, costPerUnit: 5 },
@@ -18,6 +22,10 @@ const mockActivity = {
       { day: 2, quantity: 50, pricePerUnit: 12 },
     ],
   },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 }
 
 describe('CafeSupplyChaos', () => {

@@ -30,6 +30,11 @@ import { BusinessStressTest } from '@/components/activities/simulations/Business
 import { PayStructureDecisionLab } from '@/components/activities/simulations/PayStructureDecisionLab';
 import { ClassificationActivity } from '@/components/activities/ClassificationActivity';
 
+// Exercises
+import { StraightLineMastery } from '@/components/activities/exercises/StraightLineMastery';
+import { DDBComparisonMastery } from '@/components/activities/exercises/DDBComparisonMastery';
+import { CapitalizationExpenseMastery } from '@/components/activities/exercises/CapitalizationExpenseMastery';
+
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
 
@@ -82,6 +87,53 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'profit-calculator': (() => null) as unknown as ComponentType<any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'budget-worksheet': (() => null) as unknown as ComponentType<any>,
+
+  // Exercises — Cluster 1: U5 Depreciation & Assets
+  'straight-line-mastery': StraightLineMastery,
+  'ddb-comparison-mastery': DDBComparisonMastery,
+  'capitalization-expense-mastery': CapitalizationExpenseMastery,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'depreciation-method-comparison': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'asset-register-simulator': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'dynamic-method-selector': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'method-comparison-simulator': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'scenario-switch-showtell': (() => null) as unknown as ComponentType<any>,
+
+  // Exercises — Cluster 2: U6 Inventory & Costing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'inventory-algorithm-showtell': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'markup-margin-mastery': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'break-even-mastery': (() => null) as unknown as ComponentType<any>,
+
+  // Exercises — Cluster 3: U3 Financial Statements & Reporting
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'income-statement-practice': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'cash-flow-practice': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'balance-sheet-practice': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'chart-linking-simulator': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'cross-sheet-link-simulator': (() => null) as unknown as ComponentType<any>,
+
+  // Exercises — Cluster 4: U2 Transactions & Adjustments
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'closing-entry-practice': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'month-end-close-practice': (() => null) as unknown as ComponentType<any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'adjustment-practice': (() => null) as unknown as ComponentType<any>,
+
+  // Exercises — Cluster 5: U8 Integrated Model & Validation
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  'error-checking-system': (() => null) as unknown as ComponentType<any>,
 };
 
 /**

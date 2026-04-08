@@ -3,9 +3,18 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import { PitchPresentationBuilder } from '../../../components/activities/simulations/PitchPresentationBuilder'
-import type { PitchPresentationBuilderActivityProps } from '@/types/activities'
+import type { PitchPresentationBuilderActivity } from '../../../components/activities/simulations/PitchPresentationBuilder'
 
-const mockActivity: PitchPresentationBuilderActivityProps = {
+const mockActivity: PitchPresentationBuilderActivity = {
+  id: 'test-pitch-presentation',
+  componentKey: 'pitch-presentation-builder',
+  displayName: 'Investor Pitch Builder',
+  description: 'Build a compelling 4-minute investor pitch for your startup business model',
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
+  props: {
   title: 'Investor Pitch Builder',
   description: 'Build a compelling 4-minute investor pitch for your startup business model',
   sectionDefinitions: {
@@ -77,6 +86,7 @@ const mockActivity: PitchPresentationBuilderActivityProps = {
       keyMetrics: {}
     },
     sectionDefinitions: {}
+  }
   }
 }
 

@@ -2,13 +2,17 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
+import type { NotebookOrganizerActivity } from '@/components/activities/simulations/NotebookOrganizer';
 import { NotebookOrganizer } from '@/components/activities/simulations/NotebookOrganizer';
 
-const activity = {
+const activity: NotebookOrganizerActivity = {
   id: 'notebook-test',
-  title: 'Notebook Organizer Practice',
+  displayName: 'Notebook Organizer Practice',
   description: 'Sort the notebook notes',
+  componentKey: 'notebook-organizer',
   props: {
+    title: 'Notebook Organizer Practice',
+    description: 'Sort the notebook notes',
     items: [
       {
         id: 'cash-note',
@@ -30,6 +34,10 @@ const activity = {
     initialMessage: 'Sort the notes into the right folders.',
     successMessage: 'Balanced and sorted.',
   },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 };
 
 describe('NotebookOrganizer', () => {

@@ -166,10 +166,11 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 }
 
 export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentationBuilderProps) {
+  const { title, description, initialState, sectionDefinitions } = activity.props
   const [pitchState, setPitchState] = useState<PitchState>({
-    businessModel: activity.initialState.businessModel,
-    sections: activity.initialState.sections,
-    financials: activity.initialState.financials,
+    businessModel: initialState.businessModel,
+    sections: initialState.sections,
+    financials: initialState.financials,
     currentSection: 'problem',
     presentationMode: 'build',
     isTimerRunning: false,
@@ -269,8 +270,8 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
   }, [pitchState.sections])
 
   const getTotalTargetTime = useCallback(() => {
-    return Object.values(activity.sectionDefinitions).reduce((sum, section) => sum + section.timeTarget, 0)
-  }, [activity.sectionDefinitions])
+    return Object.values(sectionDefinitions).reduce((sum, section) => sum + section.timeTarget, 0)
+  }, [sectionDefinitions])
 
   const exportPitchDeck = useCallback(() => {
     const pitchData = {
@@ -323,7 +324,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
         parts,
         artifact: {
           kind: 'pitch_presentation',
-          title: activity.title,
+          title: title,
           businessModel: pitchState.businessModel,
           sections: pitchState.sections,
           financials: pitchState.financials,
@@ -340,7 +341,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
       onSubmit(envelope)
       setSubmitted(true)
     }
-  }, [pitchState, onSubmit, calculateOverallProgress, activity])
+  }, [pitchState, onSubmit, calculateOverallProgress, activity, title])
 
   useEffect(() => {
     return () => {
@@ -353,7 +354,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
   const overallProgress = calculateOverallProgress()
   const totalTargetTime = getTotalTargetTime()
   const currentSection = pitchState.sections[pitchState.currentSection]
-  const sectionInfo = activity.sectionDefinitions[pitchState.currentSection]
+  const sectionInfo = sectionDefinitions[pitchState.currentSection]
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
@@ -362,10 +363,10 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
         <CardHeader className="text-center">
           <CardTitle className="text-3xl flex items-center justify-center gap-2">
             <Presentation className="w-8 h-8 text-indigo-600" />
-            {activity.title}
+            {title}
           </CardTitle>
           <CardDescription className="text-lg">
-            {activity.description}
+            {description}
           </CardDescription>
           <div className="mt-4">
             <Button
@@ -405,7 +406,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
             <div>
               <h4 className="font-semibold text-indigo-800 mb-3">📋 Pitch Structure (4 minutes total)</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {Object.entries(activity.sectionDefinitions).map(([key, section]) => (
+                {Object.entries(sectionDefinitions).map(([key, section]) => (
                   <div key={key} className="p-3 bg-white rounded-lg border">
                     <div className="flex items-center gap-2 mb-2">
                       {ICON_MAP[section.icon] || <AlertCircle className="w-5 h-5" />}
@@ -589,7 +590,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
           <Card>
             <CardContent className="p-6">
               <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-                {Object.entries(activity.sectionDefinitions).map(([key, section]) => (
+                {Object.entries(sectionDefinitions).map(([key, section]) => (
                   <Button
                     key={key}
                     variant={pitchState.currentSection === key ? 'default' : 'outline'}
@@ -724,8 +725,8 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
             {/* Section Timeline */}
             <div className="space-y-3">
               <h4 className="font-semibold text-green-800">Presentation Timeline:</h4>
-              {Object.entries(activity.sectionDefinitions).map(([key, section], index) => {
-                const startTime = Object.entries(activity.sectionDefinitions)
+              {Object.entries(sectionDefinitions).map(([key, section], index) => {
+                const startTime = Object.entries(sectionDefinitions)
                   .slice(0, index)
                   .reduce((sum, [, s]) => sum + s.timeTarget, 0)
                 const endTime = startTime + section.timeTarget
@@ -783,7 +784,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
                   <div className="space-y-2">
                     {Object.entries(pitchState.sections).map(([key, section]) => (
                       <div key={key} className="flex items-center justify-between text-sm">
-                        <span>{activity.sectionDefinitions[key as PitchSection].name}</span>
+                        <span>{sectionDefinitions[key as PitchSection].name}</span>
                         <div className="flex items-center gap-2">
                           <Progress value={section.completeness} className="w-16" />
                           <span>{section.completeness}%</span>

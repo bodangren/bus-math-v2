@@ -2,13 +2,17 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import type { CapitalNegotiationActivity } from '../../../components/activities/simulations/CapitalNegotiation'
 import { CapitalNegotiation } from '../../../components/activities/simulations/CapitalNegotiation'
 
-const mockActivity = {
+const mockActivity: CapitalNegotiationActivity = {
   id: 'capital-negotiation-test',
-  title: 'The Capital Negotiation',
+  displayName: 'The Capital Negotiation',
   description: 'Choose between debt and equity financing',
+  componentKey: 'capital-negotiation',
   props: {
+    title: 'The Capital Negotiation',
+    description: 'Choose between debt and equity financing',
     options: [
       {
         id: 'bank-loan',
@@ -37,6 +41,10 @@ const mockActivity = {
       },
     ],
   },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 }
 
 describe('CapitalNegotiation', () => {

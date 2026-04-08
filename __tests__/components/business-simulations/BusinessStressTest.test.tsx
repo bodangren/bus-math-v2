@@ -2,13 +2,17 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import type { BusinessStressTestActivity } from '../../../components/activities/simulations/BusinessStressTest'
 import { BusinessStressTest } from '../../../components/activities/simulations/BusinessStressTest'
 
-const mockActivity = {
+const mockActivity: BusinessStressTestActivity = {
   id: 'business-stress-test-test',
-  title: 'Business Stress Test',
+  displayName: 'Business Stress Test',
   description: 'Can the business survive market crises?',
+  componentKey: 'business-stress-test',
   props: {
+    title: 'Business Stress Test',
+    description: 'Can the business survive market crises?',
     initialState: {
       cash: 50000,
       revenue: 10000,
@@ -18,6 +22,10 @@ const mockActivity = {
       { id: 'd1', label: 'Market Crash', impact: { revenue: -2000 }, message: 'Revenue drops sharply' },
     ],
   },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 }
 
 describe('BusinessStressTest', () => {
@@ -69,11 +77,14 @@ describe('BusinessStressTest', () => {
     const user = userEvent.setup()
     const onSubmit = vi.fn()
 
-    const bankruptcyActivity = {
+    const bankruptcyActivity: BusinessStressTestActivity = {
       id: 'business-stress-test-bankruptcy',
-      title: 'Business Stress Test',
+      displayName: 'Business Stress Test',
       description: 'Can the business survive market crises?',
+      componentKey: 'business-stress-test',
       props: {
+        title: 'Business Stress Test',
+        description: 'Can the business survive market crises?',
         initialState: {
           cash: 5000,
           revenue: 10000,
@@ -84,6 +95,10 @@ describe('BusinessStressTest', () => {
           { id: 'd2', label: 'Recession', impact: { revenue: -3000 }, message: 'Economy contracts' },
         ],
       },
+      gradingConfig: null,
+      standardId: null,
+      createdAt: new Date('2026-01-01'),
+      updatedAt: new Date('2026-01-01'),
     }
 
     render(<BusinessStressTest activity={bankruptcyActivity} onSubmit={onSubmit} />)

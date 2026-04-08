@@ -2,12 +2,17 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import type { GrowthPuzzleActivity } from '../../../components/activities/simulations/GrowthPuzzle'
 import { GrowthPuzzle } from '../../../components/activities/simulations/GrowthPuzzle'
 
-const mockActivity = {
-  title: 'The Growth Puzzle',
+const mockActivity: GrowthPuzzleActivity = {
+  id: 'growth-puzzle-test',
+  displayName: 'The Growth Puzzle',
   description: 'How should Sarah use her profit?',
+  componentKey: 'growth-puzzle',
   props: {
+    title: 'The Growth Puzzle',
+    description: 'How should Sarah use her profit?',
     totalProfit: 500,
     options: [
       { id: 'opt-1', label: 'New Equipment', amount: 200, type: 'reinvestment' as const, impact: 'Boosts output', icon: 'rocket' },
@@ -16,6 +21,10 @@ const mockActivity = {
     ],
     successMessage: 'Great job allocating profit!',
   },
+  gradingConfig: null,
+  standardId: null,
+  createdAt: new Date('2026-01-01'),
+  updatedAt: new Date('2026-01-01'),
 }
 
 describe('GrowthPuzzle', () => {
@@ -72,7 +81,7 @@ describe('GrowthPuzzle', () => {
     expect(onSubmit).toHaveBeenCalled()
     const envelope = onSubmit.mock.calls[0][0]
     expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
-    expect(envelope).toHaveProperty('activityId', 'growth-puzzle')
+    expect(envelope).toHaveProperty('activityId', 'growth-puzzle-test')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
     expect(envelope).toHaveProperty('status', 'submitted')
     expect(envelope).toHaveProperty('parts')
