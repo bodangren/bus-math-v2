@@ -105,8 +105,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/next_phase_definition_20260409/](./archive/next_phase_definition_20260409/)*
   *Closeout: archived on 2026-04-09 after defining next phase (Remaining Exercise Family Work) and creating first track (remaining_exercise_placeholders_20260409).*
 
-- [~] **Track: Remaining Exercise Placeholders**
-  *Link: [./tracks/remaining_exercise_placeholders_20260409/](./tracks/remaining_exercise_placeholders_20260409/)*
+- [x] **Track: Remaining Exercise Placeholders**
+  *Link: [./archive/remaining_exercise_placeholders_20260409/](./archive/remaining_exercise_placeholders_20260409/)*
+  *Closeout: archived on 2026-04-09 after implementing all 3 remaining exercise placeholders (ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem), updating the activity registry, creating test files, running full verification (lint, test, build), and updating tech-debt.md.*
 
 ## Archive Ledger
 
