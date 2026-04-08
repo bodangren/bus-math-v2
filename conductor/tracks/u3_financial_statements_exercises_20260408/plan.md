@@ -15,10 +15,10 @@
 - [x] Run lint, test, build
 
 ### Phase 3: Implement balance-sheet-practice
-- [ ] Write test file `__tests__/components/activities/exercises/BalanceSheetPractice.test.tsx`
-- [ ] Implement component `components/activities/exercises/BalanceSheetPractice.tsx`
-- [ ] Register in `lib/activities/registry.ts`
-- [ ] Run lint, test, build
+- [x] Write test file `__tests__/components/activities/exercises/BalanceSheetPractice.test.tsx`
+- [x] Implement component `components/activities/exercises/BalanceSheetPractice.tsx`
+- [x] Register in `lib/activities/registry.ts`
+- [x] Run lint, test, build
 
 ### Phase 4: Implement chart-linking-simulator
 - [ ] Write test file `__tests__/components/activities/exercises/ChartLinkingSimulator.test.tsx`
