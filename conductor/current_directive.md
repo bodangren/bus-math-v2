@@ -37,6 +37,7 @@ Every active track in this phase must directly support at least one of these out
 - fix page-level UI defects on the rendered product, including horizontal overflow, clipped controls, broken wrapping, uneven spacing, misalignment, inconsistent container widths, and poor mobile behavior
 - preserve or improve student clarity and teacher signal on every touched page
 - close cleanup-adjacent tech debt discovered during the audit when it blocks repository hygiene or page correctness
+- Correct typescript warnings
 
 ## Phase Exit Gates
 

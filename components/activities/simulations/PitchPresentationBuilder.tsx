@@ -91,8 +91,14 @@ import {
   BarChart3,
   PieChart
 } from 'lucide-react'
+import type { Activity } from '@/lib/db/schema/validators'
 import type { PitchPresentationBuilderActivityProps } from '@/types/activities'
 import { buildPracticeSubmissionEnvelope, buildPracticeSubmissionParts, type PracticeSubmissionCallbackPayload } from '@/lib/practice/contract'
+
+export type PitchPresentationBuilderActivity = Omit<Activity, 'componentKey' | 'props'> & {
+  componentKey: 'pitch-presentation-builder'
+  props: PitchPresentationBuilderActivityProps
+}
 
 type PitchSection = 'problem' | 'solution' | 'market' | 'business-model' | 'financials' | 'ask'
 type BusinessType = 'saas' | 'ecommerce' | 'fintech' | 'healthtech' | 'marketplace' | 'ai-ml'
@@ -137,7 +143,7 @@ interface PitchState {
 }
 
 interface PitchPresentationBuilderProps {
-  activity: PitchPresentationBuilderActivityProps
+  activity: PitchPresentationBuilderActivity
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
 
