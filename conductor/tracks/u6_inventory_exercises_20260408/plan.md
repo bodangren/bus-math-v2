@@ -7,10 +7,10 @@
 - [x] Run tests and lint
 
 ## Phase 2: Implement break-even-mastery
-- [ ] Write test file for break-even-mastery
-- [ ] Implement BreakEvenMastery component
-- [ ] Register component in lib/activities/registry.ts
-- [ ] Run tests and lint
+- [x] Write test file for break-even-mastery
+- [x] Implement BreakEvenMastery component
+- [x] Register component in lib/activities/registry.ts
+- [x] Run tests and lint
 
 ## Phase 3: Implement inventory-algorithm-showtell
 - [ ] Write test file for inventory-algorithm-showtell

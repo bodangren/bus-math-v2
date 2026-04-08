@@ -40,6 +40,7 @@ import { StraightLineMastery } from '@/components/activities/exercises/StraightL
 import { DDBComparisonMastery } from '@/components/activities/exercises/DDBComparisonMastery';
 import { CapitalizationExpenseMastery } from '@/components/activities/exercises/CapitalizationExpenseMastery';
 import { MarkupMarginMastery } from '@/components/activities/exercises/MarkupMarginMastery';
+import { BreakEvenMastery } from '@/components/activities/exercises/BreakEvenMastery';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -108,8 +109,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'inventory-algorithm-showtell': (() => null) as unknown as ComponentType<any>,
   'markup-margin-mastery': MarkupMarginMastery,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'break-even-mastery': (() => null) as unknown as ComponentType<any>,
+  'break-even-mastery': BreakEvenMastery,
 
   // Exercises — Cluster 3: U3 Financial Statements & Reporting
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
