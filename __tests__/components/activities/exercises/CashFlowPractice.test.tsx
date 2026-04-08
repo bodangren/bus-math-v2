@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import { vi } from 'vitest'
 import { CashFlowPractice } from '@/components/activities/exercises/CashFlowPractice'
-import { expect, vi } from 'vitest'
 
 describe('CashFlowPractice', () => {
   it('renders without crashing', () => {
@@ -12,7 +12,13 @@ describe('CashFlowPractice', () => {
     const onSubmit = vi.fn()
     render(<CashFlowPractice activity={{}} onSubmit={onSubmit} />)
     
-    expect(screen.getByText(/Cash Flow Practice/i)).toBeInTheDocument()
+    const firstOption = screen.getAllByRole('button')[0]
+    fireEvent.click(firstOption)
+    
+    const checkButton = screen.getByText(/Check Answer/i)
+    fireEvent.click(checkButton)
+    
+    expect(onSubmit).toHaveBeenCalled()
   })
 
   it('calls onComplete when mastery is achieved', () => {
