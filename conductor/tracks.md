@@ -49,9 +49,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./tracks/unit1_page_polish_20260407/](./tracks/unit1_page_polish_20260407/)*
   *Closeout: completed on 2026-04-08 after verifying all Unit 1 surfaces look clean on desktop and mobile widths with all lint, test, and build gates passing.*
 
-- [~] **Track: Unit 2 Page Evaluation and Polish**
+- [x] **Track: Unit 2 Page Evaluation and Polish**
   *Link: [./tracks/unit2_page_polish_20260407/](./tracks/unit2_page_polish_20260407/)*
-  *Status: In Progress.*
+  *Closeout: completed on 2026-04-08 after adding submittedRef guards to AssetRegisterSimulator, DepreciationMethodComparisonSimulator, and MethodComparisonSimulator, updating tech-debt.md, and verifying all lint/test/build gates pass.*
 
 - [ ] **Track: Unit 3 Page Evaluation and Polish**
   *Link: [./tracks/unit3_page_polish_20260407/](./tracks/unit3_page_polish_20260407/)*

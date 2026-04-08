@@ -73,9 +73,8 @@ The following remain out of scope for this phase unless they block cleanup or pa
 
 ## Current High-Level Priorities (2026-04-08)
 
-1. **Unit-by-Unit Page Evaluation and Polish** — Unit 1 complete. Execute Unit 2 track next (Units 2–8 remain).
-2. **3 Depreciation Simulators Missing submittedRef Guards** — AssetRegisterSimulator, DepreciationMethodComparisonSimulator, MethodComparisonSimulator still have no handler-level early-return guard; rely solely on disabled button prop.
-3. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
+1. **Unit-by-Unit Page Evaluation and Polish** — Units 1–2 complete. Execute Unit 3 track next (Units 3–8 remain).
+2. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
 
 ## Code Review Summary (2026-04-08 — Unit 1 Polish + Phase Audit, Pass 3)
 
