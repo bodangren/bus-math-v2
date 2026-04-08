@@ -93,6 +93,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/u6_inventory_exercises_20260408/](./archive/u6_inventory_exercises_20260408/)*
   *Closeout: archived on 2026-04-08 after implementing all three inventory costing exercises (markup-margin-mastery, break-even-mastery, inventory-algorithm-showtell), updating the activity registry, running full verification (lint, test, build), and updating tech-debt.md.*
 
+- [~] **Track: U2 Transactions & Adjustments Exercise Implementation**
+  *Link: [./tracks/u2_transactions_adjustments_exercises_20260408/](./tracks/u2_transactions_adjustments_exercises_20260408/)*
+
 ## Archive Ledger
 
 - [x] **Track: Practice Contract Completion -- Remaining Components and Evidence Wiring**
