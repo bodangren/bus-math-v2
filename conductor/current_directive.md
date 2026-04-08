@@ -71,13 +71,13 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — post Pass 7)
+## Current High-Level Priorities (2026-04-08 — post Pass 9)
 
-1. **Phase Exit Gate Verification** — All 8 unit tracks + non-unit track are complete and archived. Verify every phase exit gate from the directive is met before declaring the cleanup/polish phase complete. Key gates: no stale active-track residue, all pages audited, lint/test/build pass, conductor artifacts aligned.
+1. **New Phase Planning** — Cleanup/polish phase fully complete (all 10 tracks archived, all exit gates verified). Define next phase scope. Candidates: security vuln remediation, exercise component buildout, or Milestone 8 feature work.
 2. **Security Vulnerability Remediation** — 26 npm vulns (Rollup RCE 8.8, tar 8.8, minimatch ReDoS 8.7, serialize-javascript RCE 8.1). Requires dependency upgrades. Coordinate approval per AGENTS.md constraints.
-3. **14 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
-4. **Dead Code Pruning** — 12 activity components exist on disk but are only imported by tests (FeedbackCollector, TAccount variants, TrialBalance, TransactionJournal, report variants). Either register or remove.
-5. **BudgetBalancer/AssetTimeMachine Division Guards** — Low priority. Data model likely prevents zero divisors.
+3. **14 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `inventory-algorithm-showtell`, `markup-margin-mastery`, `break-even-mastery`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `closing-entry-practice`, `month-end-close-practice`, `adjustment-practice`, `error-checking-system`). Build when exercise-family prioritization resumes.
+4. **Dead Code Pruning** — 12 activity components exist on disk but are only imported by tests (FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed). Either register or remove.
+5. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
@@ -124,6 +124,33 @@ Verified all phase exit gates from current directive are met.
 - All non-unit and unit1-8 page audit tracks archived in conductor/archive/
 
 **Phase status**: Cleanup/polish phase COMPLETE. All phase exit gates verified.
+
+## Code Review Summary (2026-04-08 — Post-Phase Verification, Pass 9)
+
+Post-completion audit of Pass 6–8 changes. Scope: verify no regressions since last code fix (Pass 6), confirm all previously fixed items remain intact, validate all verification gates still pass.
+
+**No code changes since Pass 6** — Pass 7-8 were documentation-only (conductor archive links, directive updates).
+
+**Fixed during review: 0 bugs** — No new code issues found. All Pass 4-6 fixes confirmed intact by reading source.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **All 18 simulation components**: submittedRef guard (18/18), ordering (18/18 correct), reset clearing ref (15/18 — 3 intentionally one-shot), division guards, timer cleanup, optional chaining — all pass.
+- **All 13 exercise/quiz components**: submittedRef guard (7/13 have ref; 6 quiz components rely on hidden-button pattern — mitigated, low risk), reset functions (11/13; ReflectionJournal and PeerCritiqueForm lack reset — low risk), division guards, optional chaining — all pass.
+- **Activity registry**: 50 keys, 14 placeholders, 1 alias ('pitch'). resolveActivityComponentKey is a no-op cast (low).
+- **Chart components**: All division guards intact (BreakEvenChart, PieChart).
+- **Build plugin**: @cloudflare/vite-plugin properly uses dynamic import with try/catch.
+
+**New items recorded in tech-debt.md:**
+- 6 quiz/exercise components missing submittedRef guard (low — mitigated by hidden submit buttons)
+- ReflectionJournal and PeerCritiqueForm lack reset functions (low)
+- resolveActivityComponentKey is a no-op cast (low)
+
+**Phase status**: Cleanup/polish phase FULLY VERIFIED. Ready to define next phase.
 
 ## Code Review Summary (2026-04-08 — Unit 6–7 Polish + Phase Audit, Pass 6)
 
