@@ -767,7 +767,7 @@ export function InventoryManager({ activity, onSubmit }: InventoryManagerProps) 
                     <div>
                       <p className="text-gray-600">Margin</p>
                       <p className="font-semibold text-blue-600">
-                        {(((product.price - product.cost) / product.price) * 100).toFixed(0)}%
+                        {product.price > 0 ? (((product.price - product.cost) / product.price) * 100).toFixed(0) : '0'}%
                       </p>
                     </div>
                   </div>

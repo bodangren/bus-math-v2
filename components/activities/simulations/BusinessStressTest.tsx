@@ -109,7 +109,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         analytics: {
           finalCash,
           roundsSurvived,
-          survivalRate: roundsSurvived / disasters.length,
+          survivalRate: disasters.length > 0 ? roundsSurvived / disasters.length : 0,
         },
       })
 
@@ -181,7 +181,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         analytics: {
           finalCash: 0,
           roundsSurvived: round,
-          survivalRate: round / disasters.length,
+          survivalRate: disasters.length > 0 ? round / disasters.length : 0,
         },
       })
 

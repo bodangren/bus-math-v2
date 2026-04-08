@@ -315,7 +315,7 @@ describe('PitchPresentationBuilder', () => {
     expect(onSubmit).toHaveBeenCalled()
     const envelope = onSubmit.mock.calls[0][0]
     expect(envelope).toHaveProperty('contractVersion', 'practice.v1')
-    expect(envelope).toHaveProperty('activityId', 'pitch-presentation-builder')
+    expect(envelope).toHaveProperty('activityId', 'test-pitch-presentation')
     expect(envelope).toHaveProperty('mode', 'guided_practice')
     expect(envelope).toHaveProperty('status', 'submitted')
     expect(envelope).toHaveProperty('parts')

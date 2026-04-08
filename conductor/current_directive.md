@@ -73,53 +73,32 @@ The following remain out of scope for this phase unless they block cleanup or pa
 
 ## Current High-Level Priorities (2026-04-08)
 
-1. **Non-Unit Page Polish — Phase 3 (Page-Level Polish)** — audit notes confirm all non-unit pages look clean after the Phase 2 shared layout fixes and acknowledgments restyling. Resume Phase 3 page-level fixes if any residual issues remain on specific pages.
-2. **Unit-by-Unit Page Evaluation and Polish** — execute one unit per track (Units 1–8) after the non-unit pass is archived.
-3. **Simulation Prop Type Alignment** — PitchPresentationBuilder and InventoryManager still use narrow props-only types instead of the canonical `Omit<Activity, ...> & { props: ... }` pattern. Align these to unblock `activity.id ?? fallback` adoption.
+1. **Unit-by-Unit Page Evaluation and Polish** — Unit 1 complete. Execute Unit 2 track next (Units 2–8 remain).
+2. **3 Depreciation Simulators Missing submittedRef Guards** — AssetRegisterSimulator, DepreciationMethodComparisonSimulator, MethodComparisonSimulator still have no handler-level early-return guard; rely solely on disabled button prop.
+3. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
 
-## Code Review Summary (2026-04-08)
+## Code Review Summary (2026-04-08 — Unit 1 Polish + Phase Audit, Pass 3)
 
-Audited the past 2–3 completed tracks (Repo Cleanup, Dead Props Cleanup, Simulation Double-Submit Guards) and the active Non-Unit Page Polish track.
+Audited the Unit 1 Page Polish track (Phases 2–4) and re-scanned all simulation/activity components for correctness.
 
-**Fixed during review:**
-- BusinessStressTest: replaced `(activity as any)` casts with `'in'` operator type narrowing (resolved 4 lint errors)
-- BusinessStressTest: added missing `activityArtifactTitle` to useEffect dependency array (reactive bug)
-- PayStructureDecisionLab: `activityId` now uses `activity?.id ?? 'pay-structure-decision-lab'` instead of hardcoded string
-- GrowthPuzzle: `activityId` now uses `activity?.id ?? 'growth-puzzle'` instead of hardcoded string
-
-**Verification gates:**
-- `npm run lint`: 0 errors, 1 pre-existing warning (vinext worker)
-- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
-- `npm run build`: passes cleanly
-
-**Remaining low-priority items recorded in tech-debt.md:**
-- PitchPresentationBuilder and InventoryManager need prop type changes before `activity.id` adoption
-- 3 depreciation simulators lack handler-level early-return guards (rely on disabled button only)
-- InventoryManager addNotification setTimeout not cleaned up on unmount
-- ScenarioSwitchShowTell has no reset mechanism for submittedRef
-
-## Code Review Summary (2026-04-08 — Phase Audit, Second Pass)
-
-Audited the last 2–3 phases: Non-Unit Page Polish (archived), Unit 1 Page Polish Phase 1 (audit complete), and post-review commits from prior audit.
-
-**Fixed during review (33 TS errors resolved):**
-- **PitchPresentationBuilder**: prop type was changed to `PitchPresentationBuilderActivity` (full Activity wrapper) but component body still accessed `activity.initialState`, `activity.title`, `activity.sectionDefinitions` directly instead of via `activity.props`. Fixed by destructuring `activity.props` at component top. *(30 TS errors)*
-- **activityRegistry**: was missing 20 exercise component keys (`straight-line-mastery`, `ddb-comparison-mastery`, etc.) defined in `exerciseActivityPropsSchemas`. Added 3 existing exercise component imports and 17 placeholder entries. *(1 TS error)*
-- **7 simulation test files**: mock activities used old prop-only shape `{ id, title, description, props }` instead of full Activity type requiring `displayName`, `componentKey`, `createdAt`, `updatedAt`, `gradingConfig`, `standardId`. Updated all 7 test files. *(20 TS errors)*
-- **GrowthPuzzle test**: assertion expected hardcoded `'growth-puzzle'` but mock `id` was `'growth-puzzle-test'`; updated assertion to match mock.
+**Fixed during review (3 bugs):**
+- **PitchPresentationBuilder**: hardcoded `activityId: 'pitch-presentation-builder'` at line 318 — analytics tracking broken for DB-driven activities. Fixed to `activity?.id ?? 'pitch-presentation-builder'`; test assertion updated to match mock id. *(was recorded as fixed on 2026-04-08 but code still had hardcoded value)*
+- **BusinessStressTest**: `survivalRate: roundsSurvived / disasters.length` at lines 112 and 184 — produces `NaN` when `disasters` array is empty (default is `[]`). Fixed with `disasters.length > 0` guard.
+- **InventoryManager**: margin display `(price - cost) / price` at line 770 — produces `Infinity` when `price === 0`. Fixed with `product.price > 0` guard.
 
 **Verification gates:**
-- `npm run lint`: 0 errors, 2 pre-existing warnings (PitchPresentationBuilder `title` dep, worker default export)
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
 - `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
 - `npm run build`: passes cleanly
-- `npx tsc --noEmit`: 2 pre-existing errors (missing `@cloudflare/vite-plugin` types, `Fetcher` type)
 
 **Remaining items recorded in tech-debt.md:**
-- InventoryManager component prop type still uses narrow props-only type — needs Activity alignment
+- 3 depreciation simulators still lack handler-level submittedRef guards (AssetRegisterSimulator, DepreciationMethodComparisonSimulator, MethodComparisonSimulator)
 - 17 exercise component keys have schema but no React component (placeholders registered)
-- 3 depreciation simulators lack handler-level early-return guards
 - InventoryManager addNotification setTimeout not cleaned up on unmount
 - ScenarioSwitchShowTell has no reset mechanism for submittedRef
+- auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure
+- lib/ai/retry.ts extracts HTTP status codes via regex on error messages — fragile coupling
+- 6 of 7 practice families do not emit omitted-entry tag for blank/undefined student responses
 
 ## Notes
 

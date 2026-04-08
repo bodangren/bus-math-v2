@@ -315,7 +315,7 @@ export function PitchPresentationBuilder({ activity, onSubmit }: PitchPresentati
       }))
 
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: 'pitch-presentation-builder',
+        activityId: activity?.id ?? 'pitch-presentation-builder',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
