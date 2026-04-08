@@ -2,9 +2,9 @@
 
 ## Phase 1: Audit Setup
 
-- [~] Enumerate the in-scope non-unit routes and their auth requirements
-- [ ] Capture desktop and mobile audit notes for each page
-- [ ] Identify shared layout defects versus page-local defects
+- [x] Enumerate the in-scope non-unit routes and their auth requirements
+- [x] Capture desktop and mobile audit notes for each page
+- [x] Identify shared layout defects versus page-local defects
 
 ## Phase 2: Shared Layout Fixes
 
