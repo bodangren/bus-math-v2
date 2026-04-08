@@ -208,7 +208,7 @@ export default async function StudentDashboard() {
               ))}
             </section>
         )}
-      </div>
+        </div>
       </div>
     </main>
   );
