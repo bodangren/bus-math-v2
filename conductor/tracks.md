@@ -41,6 +41,13 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [ ] **Track: Security Vulnerability Remediation**
+  *Link: [./tracks/security_vulnerability_remediation_20260408/](./tracks/security_vulnerability_remediation_20260408/)*
+
+- [x] **Track: New Phase Planning**
+  *Link: [./archive/new_phase_planning_20260408/](./archive/new_phase_planning_20260408/)*
+  *Closeout: archived on 2026-04-08 after defining next phase (Security Vulnerability Remediation) and creating first track.*
+
 - [x] **Track: Non-Unit Page Evaluation and Polish**
   *Link: [./archive/non_unit_page_polish_20260407/](./archive/non_unit_page_polish_20260407/)*
   *Closeout: archived on 2026-04-08 after completing page-level audits and fixes for all non-unit product pages with verification recorded in the track.*
