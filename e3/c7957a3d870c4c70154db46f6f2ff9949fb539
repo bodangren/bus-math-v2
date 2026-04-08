@@ -1,0 +1,1 @@
+Review Pass 6 (2026-04-08): Unit 6-7 Polish audit. Fixed 4 bugs (3 submittedRef ordering in CapitalNegotiation/CafeSupplyChaos/AssetTimeMachine, 1 division guard in LemonadeStand). All gates pass. Unit 8 is last remaining track before phase exit.
