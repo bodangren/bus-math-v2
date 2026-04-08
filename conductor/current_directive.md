@@ -71,12 +71,42 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — post Pass 6)
+## Current High-Level Priorities (2026-04-08 — post Pass 7)
 
-1. **Unit 8 Page Evaluation and Polish** — Last remaining page-polish track. Execute next.
-2. **Phase Exit Review** — After Unit 8 completes, verify all phase exit gates from the directive are met before declaring the cleanup/polish phase complete.
-3. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
-4. **BudgetBalancer Division Guards** — Low priority unless scope changes. Data model likely prevents zero income.
+1. **Phase Exit Gate Verification** — All 8 unit tracks + non-unit track are complete and archived. Verify every phase exit gate from the directive is met before declaring the cleanup/polish phase complete. Key gates: no stale active-track residue, all pages audited, lint/test/build pass, conductor artifacts aligned.
+2. **Security Vulnerability Remediation** — 26 npm vulns (Rollup RCE 8.8, tar 8.8, minimatch ReDoS 8.7, serialize-javascript RCE 8.1). Requires dependency upgrades. Coordinate approval per AGENTS.md constraints.
+3. **14 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
+4. **Dead Code Pruning** — 12 activity components exist on disk but are only imported by tests (FeedbackCollector, TAccount variants, TrialBalance, TransactionJournal, report variants). Either register or remove.
+5. **BudgetBalancer/AssetTimeMachine Division Guards** — Low priority. Data model likely prevents zero divisors.
+
+## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
+
+Audited Unit 8 Page Polish track and full codebase sweep of all 21 simulation/exercise components, activity registry, and conductor state.
+
+**No code changes since Pass 6** — only archival of unit1-8 page polish tracks.
+
+**Fixed during review: 0 bugs** — No new issues found since Pass 6. All previously fixed items verified intact by reading source.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Unit 8**: Audit-only track. No code changes needed — all surfaces clean.
+- **submittedRef guard pattern**: 21/21 simulation+exercise components pass.
+- **Reset functions**: All 16 components with reset functions clear submittedRef.current = false. 3 one-shot components (DynamicMethodSelector, ScenarioSwitchShowTell, PitchPresentationBuilder) intentionally have no reset.
+- **Timer cleanup**: All 5 timer-using components have proper useEffect cleanup. No issues.
+- **Division-by-zero**: All previously fixed guards remain intact. BudgetBalancer monthlyIncome and AssetTimeMachine initialCost divisions remain unguarded (low priority, data model prevents zero).
+- **Optional chaining**: 16/21 components use `onSubmit?.()`. 5 components (GrowthPuzzle, InventoryManager, PayStructureDecisionLab, PitchPresentationBuilder, StartupJourney) use `if (onSubmit)` guard instead — safe but inconsistent.
+- **Activity registry**: 57 schema keys, 57 registry entries (43 real + 14 placeholders). Perfect 1:1 match. 12 unregistered dead-code components identified.
+- **Conductor state**: All 8 unit polish tracks archived. Phase cleanup tracks complete.
+
+**New items recorded in tech-debt.md:**
+- AssetTimeMachine: valueRetention divides by initialCost (low)
+- 12 dead-code activity components not in registry (low)
+
+**Phase status**: All cleanup/polish tracks complete. Phase exit verification pending.
 
 ## Code Review Summary (2026-04-08 — Unit 6–7 Polish + Phase Audit, Pass 6)
 
