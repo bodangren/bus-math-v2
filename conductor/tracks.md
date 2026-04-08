@@ -89,8 +89,9 @@ Strictly serial. Complete and archive each track before starting the next.
    *Link: [./archive/unit8_page_polish_20260407/](./archive/unit8_page_polish_20260407/)*
    *Closeout: archived on 2026-04-08 after auditing all Unit 8 surfaces, verifying no issues, and confirming all lint/test/build gates pass.*
 
-- [~] **Track: U6 Inventory & Costing Exercise Implementation**
-  *Link: [./tracks/u6_inventory_exercises_20260408/](./tracks/u6_inventory_exercises_20260408/)*
+- [x] **Track: U6 Inventory & Costing Exercise Implementation**
+  *Link: [./archive/u6_inventory_exercises_20260408/](./archive/u6_inventory_exercises_20260408/)*
+  *Closeout: archived on 2026-04-08 after implementing all three inventory costing exercises (markup-margin-mastery, break-even-mastery, inventory-algorithm-showtell), updating the activity registry, running full verification (lint, test, build), and updating tech-debt.md.*
 
 ## Archive Ledger
 

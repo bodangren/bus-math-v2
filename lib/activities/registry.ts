@@ -41,6 +41,7 @@ import { DDBComparisonMastery } from '@/components/activities/exercises/DDBCompa
 import { CapitalizationExpenseMastery } from '@/components/activities/exercises/CapitalizationExpenseMastery';
 import { MarkupMarginMastery } from '@/components/activities/exercises/MarkupMarginMastery';
 import { BreakEvenMastery } from '@/components/activities/exercises/BreakEvenMastery';
+import { InventoryAlgorithmShowtell } from '@/components/activities/exercises/InventoryAlgorithmShowtell';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -106,8 +107,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'scenario-switch-showtell': ScenarioSwitchShowTell,
 
   // Exercises — Cluster 2: U6 Inventory & Costing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'inventory-algorithm-showtell': (() => null) as unknown as ComponentType<any>,
+  'inventory-algorithm-showtell': InventoryAlgorithmShowtell,
   'markup-margin-mastery': MarkupMarginMastery,
   'break-even-mastery': BreakEvenMastery,
 
