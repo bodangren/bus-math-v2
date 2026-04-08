@@ -46,36 +46,36 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: archived on 2026-04-08 after completing page-level audits and fixes for all non-unit product pages with verification recorded in the track.*
 
 - [x] **Track: Unit 1 Page Evaluation and Polish**
-  *Link: [./tracks/unit1_page_polish_20260407/](./tracks/unit1_page_polish_20260407/)*
-  *Closeout: completed on 2026-04-08 after verifying all Unit 1 surfaces look clean on desktop and mobile widths with all lint, test, and build gates passing.*
+  *Link: [./archive/unit1_page_polish_20260407/](./archive/unit1_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after verifying all Unit 1 surfaces look clean on desktop and mobile widths with all lint, test, and build gates passing.*
 
 - [x] **Track: Unit 2 Page Evaluation and Polish**
-  *Link: [./tracks/unit2_page_polish_20260407/](./tracks/unit2_page_polish_20260407/)*
-  *Closeout: completed on 2026-04-08 after adding submittedRef guards to AssetRegisterSimulator, DepreciationMethodComparisonSimulator, and MethodComparisonSimulator, updating tech-debt.md, and verifying all lint/test/build gates pass.*
+  *Link: [./archive/unit2_page_polish_20260407/](./archive/unit2_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after adding submittedRef guards to AssetRegisterSimulator, DepreciationMethodComparisonSimulator, and MethodComparisonSimulator, updating tech-debt.md, and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 3 Page Evaluation and Polish**
-  *Link: [./tracks/unit3_page_polish_20260407/](./tracks/unit3_page_polish_20260407/)*
-  *Closeout: completed on 2026-04-08 after auditing Unit 3 surfaces and verifying all lint/test/build gates pass.*
+  *Link: [./archive/unit3_page_polish_20260407/](./archive/unit3_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after auditing Unit 3 surfaces and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 4 Page Evaluation and Polish**
-  *Link: [./tracks/unit4_page_polish_20260407/](./tracks/unit4_page_polish_20260407/)*
-  *Status: Completed on 2026-04-08 after auditing Unit 4 surfaces, adding reset to PayStructureDecisionLab, and verifying all lint/test/build gates pass.*
+  *Link: [./archive/unit4_page_polish_20260407/](./archive/unit4_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after auditing Unit 4 surfaces, adding reset to PayStructureDecisionLab, and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 5 Page Evaluation and Polish**
-  *Link: [./tracks/unit5_page_polish_20260407/](./tracks/unit5_page_polish_20260407/)*
-  *Status: Completed on 2026-04-08 after auditing Unit 5 surfaces, fixing activity registry and adding submittedRef guard to DynamicMethodSelector, and verifying all lint/test/build gates pass.*
+  *Link: [./archive/unit5_page_polish_20260407/](./archive/unit5_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after auditing Unit 5 surfaces, fixing activity registry and adding submittedRef guard to DynamicMethodSelector, and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 6 Page Evaluation and Polish**
-   *Link: [./tracks/unit6_page_polish_20260407/](./tracks/unit6_page_polish_20260407/)*
-   *Status: Completed on 2026-04-08 after auditing Unit 6 surfaces, verifying all simulation/exercise components have submittedRef guards, and verifying all lint/test/build gates pass.*
+   *Link: [./archive/unit6_page_polish_20260407/](./archive/unit6_page_polish_20260407/)*
+   *Closeout: archived on 2026-04-08 after auditing Unit 6 surfaces, verifying all simulation/exercise components have submittedRef guards, and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 7 Page Evaluation and Polish**
-  *Link: [./tracks/unit7_page_polish_20260407/](./tracks/unit7_page_polish_20260407/)*
-  *Status: Completed on 2026-04-08 after auditing Unit 7 surfaces, fixing GrowthPuzzle and CapitalNegotiation reset buttons to call reset functions that clear submittedRef, and verifying all lint/test/build gates pass.*
+  *Link: [./archive/unit7_page_polish_20260407/](./archive/unit7_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after auditing Unit 7 surfaces, fixing GrowthPuzzle and CapitalNegotiation reset buttons to call reset functions that clear submittedRef, and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 8 Page Evaluation and Polish**
-  *Link: [./tracks/unit8_page_polish_20260407/](./tracks/unit8_page_polish_20260407/)*
-  *Status: Completed on 2026-04-08 after auditing all Unit 8 surfaces, verifying no issues, and confirming all lint/test/build gates pass.*
+  *Link: [./archive/unit8_page_polish_20260407/](./archive/unit8_page_polish_20260407/)*
+  *Closeout: archived on 2026-04-08 after auditing all Unit 8 surfaces, verifying no issues, and confirming all lint/test/build gates pass.*
 
 ## Archive Ledger
 
