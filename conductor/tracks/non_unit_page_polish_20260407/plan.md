@@ -14,11 +14,11 @@
 
 ## Phase 3: Page-Level Polish
 
-- [~] Fix public page issues
-- [ ] Fix auth page issues
-- [ ] Fix student non-unit page issues
-- [ ] Fix teacher non-unit page issues
-- [ ] Fix settings page issues
+- [x] Fix public page issues
+- [x] Fix auth page issues
+- [x] Fix student non-unit page issues
+- [x] Fix teacher non-unit page issues
+- [x] Fix settings page issues
 
 ## Phase 4: Verification
 
