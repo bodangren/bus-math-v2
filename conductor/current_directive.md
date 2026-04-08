@@ -71,13 +71,24 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-09 — Pass 16, U3 fully complete)
+## Current High-Level Priorities (2026-04-09 — Pass 17, Next Phase Defined)
 
-1. **Next Phase Definition** — All exercise implementation tracks (U2, U3, U6) and all cleanup/polish tracks are complete. Define next phase: either remaining exercise-family work (U1, U4, U5, U7, U8 exercise clusters) or move to the Milestone 7 planned queue (Engine Stabilization → Curriculum Rollout → Visual/Teaching → Legacy Cleanup → Teacher Error).
-2. **3 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 5 — `chart-linking-simulator` and `cross-sheet-link-simulator` now have real components.
-3. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
-4. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
-5. **Exercise Test Coverage (Low)** — All exercise mastery tests are shallow (render-only). Cannot deterministically test mastery completion due to `Array.sort` shuffle non-determinism with mocked `Math.random`. Acceptable — mastery logic (`consecutiveCorrect >= masteryTarget`) is trivially correct.
+1. **Remaining Exercise Placeholders** — 3 schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `error-checking-system`). First track in new phase is implementation of these 3 placeholders.
+2. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
+3. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
+4. **Exercise Test Coverage (Low)** — All exercise mastery tests are shallow (render-only). Cannot deterministically test mastery completion due to `Array.sort` shuffle non-determinism with mocked `Math.random`. Acceptable — mastery logic (`consecutiveCorrect >= masteryTarget`) is trivially correct.
+
+## New Phase: Remaining Exercise Family Work
+This phase focuses on completing the remaining exercise clusters and filling placeholder gaps.
+
+### Execution Order
+1. **Remaining Exercise Placeholders** (profit-calculator, budget-worksheet, error-checking-system)
+2. **U1 Exercise Cluster**
+3. **U4 Exercise Cluster**
+4. **U5 Exercise Cluster**
+5. **U7 Exercise Cluster**
+6. **U8 Exercise Cluster**
+7. **Milestone 7 Planned Queue** (Engine Stabilization → Curriculum Rollout → Visual/Teaching → Legacy Cleanup → Teacher Error)
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 

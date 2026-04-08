@@ -17,6 +17,11 @@ Define the next phase of work for the project after completing all cleanup/polis
 - Next phase must be aligned with project goals
 - First track must be well-defined with clear phases
 
+## Decision
+- Next phase: **Remaining Exercise Family Work**
+- Rationale: Continue completing exercise clusters to fill remaining gaps, starting with the 3 remaining placeholders, then moving to other units
+- First track: Implement remaining 3 exercise placeholders (profit-calculator, budget-worksheet, error-checking-system)
+
 ## Acceptance Criteria
 1. spec.md and plan.md are created for this track
 2. Current project state is summarized
