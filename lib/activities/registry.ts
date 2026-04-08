@@ -46,6 +46,7 @@ import { AdjustmentPractice } from '@/components/activities/exercises/Adjustment
 import { ClosingEntryPractice } from '@/components/activities/exercises/ClosingEntryPractice';
 import { MonthEndClosePractice } from '@/components/activities/exercises/MonthEndClosePractice';
 import { IncomeStatementPractice } from '@/components/activities/exercises/IncomeStatementPractice';
+import { CashFlowPractice } from '@/components/activities/exercises/CashFlowPractice';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -117,8 +118,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
 
   // Exercises — Cluster 3: U3 Financial Statements & Reporting
   'income-statement-practice': IncomeStatementPractice,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'cash-flow-practice': (() => null) as unknown as ComponentType<any>,
+  'cash-flow-practice': CashFlowPractice,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'balance-sheet-practice': (() => null) as unknown as ComponentType<any>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

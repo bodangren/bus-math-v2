@@ -9,10 +9,10 @@
 - [x] Run lint, test, build
 
 ### Phase 2: Implement cash-flow-practice
-- [ ] Write test file `__tests__/components/activities/exercises/CashFlowPractice.test.tsx`
-- [ ] Implement component `components/activities/exercises/CashFlowPractice.tsx`
-- [ ] Register in `lib/activities/registry.ts`
-- [ ] Run lint, test, build
+- [x] Write test file `__tests__/components/activities/exercises/CashFlowPractice.test.tsx`
+- [x] Implement component `components/activities/exercises/CashFlowPractice.tsx`
+- [x] Register in `lib/activities/registry.ts`
+- [x] Run lint, test, build
 
 ### Phase 3: Implement balance-sheet-practice
 - [ ] Write test file `__tests__/components/activities/exercises/BalanceSheetPractice.test.tsx`
