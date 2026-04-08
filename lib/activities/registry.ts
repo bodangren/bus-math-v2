@@ -39,6 +39,7 @@ import { ScenarioSwitchShowTell } from '@/components/activities/simulations/Scen
 import { StraightLineMastery } from '@/components/activities/exercises/StraightLineMastery';
 import { DDBComparisonMastery } from '@/components/activities/exercises/DDBComparisonMastery';
 import { CapitalizationExpenseMastery } from '@/components/activities/exercises/CapitalizationExpenseMastery';
+import { MarkupMarginMastery } from '@/components/activities/exercises/MarkupMarginMastery';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -106,8 +107,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   // Exercises — Cluster 2: U6 Inventory & Costing
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'inventory-algorithm-showtell': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'markup-margin-mastery': (() => null) as unknown as ComponentType<any>,
+  'markup-margin-mastery': MarkupMarginMastery,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   'break-even-mastery': (() => null) as unknown as ComponentType<any>,
 

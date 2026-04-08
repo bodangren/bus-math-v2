@@ -86,8 +86,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: archived on 2026-04-08 after auditing Unit 7 surfaces, fixing GrowthPuzzle and CapitalNegotiation reset buttons to call reset functions that clear submittedRef, and verifying all lint/test/build gates pass.*
 
 - [x] **Track: Unit 8 Page Evaluation and Polish**
-  *Link: [./archive/unit8_page_polish_20260407/](./archive/unit8_page_polish_20260407/)*
-  *Closeout: archived on 2026-04-08 after auditing all Unit 8 surfaces, verifying no issues, and confirming all lint/test/build gates pass.*
+   *Link: [./archive/unit8_page_polish_20260407/](./archive/unit8_page_polish_20260407/)*
+   *Closeout: archived on 2026-04-08 after auditing all Unit 8 surfaces, verifying no issues, and confirming all lint/test/build gates pass.*
+
+- [~] **Track: U6 Inventory & Costing Exercise Implementation**
+  *Link: [./tracks/u6_inventory_exercises_20260408/](./tracks/u6_inventory_exercises_20260408/)*
 
 ## Archive Ledger
 
