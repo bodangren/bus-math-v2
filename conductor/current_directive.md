@@ -70,11 +70,32 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-07)
+## Current High-Level Priorities (2026-04-08)
 
-1. **Repo Cleanup and Surface Hygiene** — active first track; establish a clean, trustworthy baseline.
-2. **Non-Unit Page Evaluation and Polish** — next track after cleanup closes.
-3. **Unit-by-Unit Page Evaluation and Polish** — execute one unit per track after the non-unit pass is complete.
+1. **Non-Unit Page Polish — Phase 3 (Page-Level Polish)** — audit notes confirm all non-unit pages look clean after the Phase 2 shared layout fixes and acknowledgments restyling. Resume Phase 3 page-level fixes if any residual issues remain on specific pages.
+2. **Unit-by-Unit Page Evaluation and Polish** — execute one unit per track (Units 1–8) after the non-unit pass is archived.
+3. **Simulation Prop Type Alignment** — PitchPresentationBuilder and InventoryManager still use narrow props-only types instead of the canonical `Omit<Activity, ...> & { props: ... }` pattern. Align these to unblock `activity.id ?? fallback` adoption.
+
+## Code Review Summary (2026-04-08)
+
+Audited the past 2–3 completed tracks (Repo Cleanup, Dead Props Cleanup, Simulation Double-Submit Guards) and the active Non-Unit Page Polish track.
+
+**Fixed during review:**
+- BusinessStressTest: replaced `(activity as any)` casts with `'in'` operator type narrowing (resolved 4 lint errors)
+- BusinessStressTest: added missing `activityArtifactTitle` to useEffect dependency array (reactive bug)
+- PayStructureDecisionLab: `activityId` now uses `activity?.id ?? 'pay-structure-decision-lab'` instead of hardcoded string
+- GrowthPuzzle: `activityId` now uses `activity?.id ?? 'growth-puzzle'` instead of hardcoded string
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (vinext worker)
+- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**Remaining low-priority items recorded in tech-debt.md:**
+- PitchPresentationBuilder and InventoryManager need prop type changes before `activity.id` adoption
+- 3 depreciation simulators lack handler-level early-return guards (rely on disabled button only)
+- InventoryManager addNotification setTimeout not cleaned up on unmount
+- ScenarioSwitchShowTell has no reset mechanism for submittedRef
 
 ## Notes
 

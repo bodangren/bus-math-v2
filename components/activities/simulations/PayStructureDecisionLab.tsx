@@ -544,7 +544,7 @@ export function PayStructureDecisionLab({ activity, onSubmit }: PayStructureDeci
                       maxScore: 1,
                     }))
                     const envelope = buildPracticeSubmissionEnvelope({
-                      activityId: 'pay-structure-decision-lab',
+                      activityId: activity?.id ?? 'pay-structure-decision-lab',
                       mode: 'guided_practice',
                       status: 'submitted',
                       attemptNumber: 1,

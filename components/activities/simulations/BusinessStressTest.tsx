@@ -53,8 +53,10 @@ export interface BusinessStressTestProps {
 export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessStressTestProps) {
   const initialState = activity?.props.initialState ?? defaultInitialState
   const disasters = activity?.props.disasters ?? defaultDisasters
-  const activityTitle = activity?.props?.title ?? (activity as any)?.title ?? (activity as any)?.displayName ?? 'Business Stress-Test'
-  const activityArtifactTitle = activity?.props?.title ?? (activity as any)?.title ?? (activity as any)?.displayName ?? 'Business Stress Test'
+  const topTitle = activity && 'title' in activity ? activity.title : undefined
+  const topDisplayName = activity && 'displayName' in activity ? activity.displayName : undefined
+  const activityTitle = activity?.props?.title ?? topTitle ?? topDisplayName ?? 'Business Stress-Test'
+  const activityArtifactTitle = activity?.props?.title ?? topTitle ?? topDisplayName ?? 'Business Stress Test'
   const [cash, setCash] = useState(initialState.cash)
   const [revenue, setRevenue] = useState(initialState.revenue)
   const [expenses, setExpenses] = useState(initialState.expenses)
@@ -186,7 +188,7 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
       onSubmit?.(envelope)
       onComplete?.({ finalCash: 0, roundsSurvived: round })
     }
-  }, [cash, isGameOver, round, activity, disasters.length, onSubmit, onComplete])
+  }, [cash, isGameOver, round, activity, activityArtifactTitle, disasters.length, onSubmit, onComplete])
 
   const reset = () => {
     setCash(initialState.cash)

@@ -117,7 +117,7 @@ export function GrowthPuzzle({ activity, onComplete, onSubmit }: GrowthPuzzlePro
         maxScore: 1,
       }))
       const envelope = buildPracticeSubmissionEnvelope({
-        activityId: 'growth-puzzle',
+        activityId: activity?.id ?? 'growth-puzzle',
         mode: 'guided_practice',
         status: 'submitted',
         attemptNumber: 1,
