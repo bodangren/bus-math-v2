@@ -44,6 +44,7 @@ import { BreakEvenMastery } from '@/components/activities/exercises/BreakEvenMas
 import { InventoryAlgorithmShowtell } from '@/components/activities/exercises/InventoryAlgorithmShowtell';
 import { AdjustmentPractice } from '@/components/activities/exercises/AdjustmentPractice';
 import { ClosingEntryPractice } from '@/components/activities/exercises/ClosingEntryPractice';
+import { MonthEndClosePractice } from '@/components/activities/exercises/MonthEndClosePractice';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -128,8 +129,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   // Exercises — Cluster 4: U2 Transactions & Adjustments
   'adjustment-practice': AdjustmentPractice,
   'closing-entry-practice': ClosingEntryPractice,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'month-end-close-practice': (() => null) as unknown as ComponentType<any>,
+  'month-end-close-practice': MonthEndClosePractice,
 
   // Exercises — Cluster 5: U8 Integrated Model & Validation
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
