@@ -101,6 +101,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/u3_financial_statements_exercises_20260408/](./archive/u3_financial_statements_exercises_20260408/)*
   *Closeout: archived on 2026-04-08 after implementing all five U3 exercises (income-statement-practice, cash-flow-practice, balance-sheet-practice, chart-linking-simulator, cross-sheet-link-simulator), updating activity registry, running full verification (lint, test, build), and updating tech-debt.md.*
 
+- [~] **Track: Next Phase Definition**
+  *Link: [./tracks/next_phase_definition_20260409/](./tracks/next_phase_definition_20260409/)*
+
 ## Archive Ledger
 
 - [x] **Track: Practice Contract Completion -- Remaining Components and Evidence Wiring**
