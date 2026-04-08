@@ -71,13 +71,13 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08 — Pass 13, U2 Phases 1-2 complete)
+## Current High-Level Priorities (2026-04-08 — Pass 14, U2 complete, U3 Phase 1 complete)
 
-1. **9 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `income-statement-practice`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `month-end-close-practice`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 11 — `adjustment-practice` and `closing-entry-practice` now have real components.
-2. **U2 Track Phase 3 Remaining** — `month-end-close-practice` is the last exercise in the U2 Transactions & Adjustments track. Implement, register, verify, then archive.
+1. **U3 Track Phases 2-5** — `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`. Implement, register, verify each. Follow established exercise pattern from IncomeStatementPractice/AdjustmentPractice.
+2. **7 Exercise Component Placeholders** — Schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `cash-flow-practice`, `balance-sheet-practice`, `chart-linking-simulator`, `cross-sheet-link-simulator`, `error-checking-system`). Build when exercise-family prioritization resumes. Down from 8 — `income-statement-practice` now has a real component.
 3. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
 4. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
-5. **Exercise Test Coverage (Low)** — BreakEvenMastery, InventoryAlgorithmShowtell, MarkupMarginMastery, AdjustmentPractice, and ClosingEntryPractice tests are shallow (render-only). Should exercise interaction paths when test-writing capacity resumes.
+5. **Exercise Test Coverage (Low)** — All exercise tests are shallow (render-only). Should exercise interaction paths when test-writing capacity resumes. IncomeStatementPractice test #3 now asserts onComplete; remaining 6 exercise tests need same treatment.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
@@ -312,6 +312,35 @@ Audited U2 Transactions & Adjustments Exercise track Phases 1-2 (adjustment-prac
 - None — existing shallow-test items (Pass 11, Pass 12) already cover the pattern. AdjustmentPractice and ClosingEntryPractice are additional instances of the same low-severity gap.
 
 **Phase status**: U2 Transactions & Adjustments Exercise track Phases 1-2 COMPLETE. Phase 3 (month-end-close-practice) and Phase 4 (Final Verification) remain.
+
+## Code Review Summary (2026-04-08 — U2 Completion + U3 Phase 1, Pass 14)
+
+Audited U2 Transactions & Adjustments Exercise track Phase 3-4 completion (month-end-close-practice) and U3 Financial Statements & Reporting Exercise track Phase 1 (income-statement-practice).
+
+**Fixed during review: 1 bug**
+- **MonthEndClosePractice missing mastery tracking** (Medium): Component fired `onComplete` on first correct answer instead of tracking consecutive correct streak. All other 8 exercise components use `consecutiveCorrect >= masteryTarget` pattern with progress bar. Added mastery state (streak, consecutiveCorrect, masteryTarget), Progress import, useEffect for mastery detection, progress bar UI, and updated CardDescription to show target. Removed stale `onComplete` from handleSubmit dependency array.
+
+**Fixed during review: 2 test issues**
+- **IncomeStatementPractice test #3** (Medium): Test named "calls onComplete when mastery is achieved" clicked all buttons in a forEach loop without asserting onComplete fires. Rewrote to click first option, submit, and assert onComplete was called.
+- **MonthEndClosePractice lint warning** (Low): handleSubmit useCallback had `onComplete` in dependency array but no longer used after mastery refactor. Removed from deps.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1503/1503 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **MonthEndClosePractice**: Previously fired onComplete on first correct answer — now tracks consecutiveCorrect with masteryTarget (default 5). Progress bar added. handleSubmit uses submittedRef guard, practice.v1 envelope submission. handleNewProblem clears submittedRef. Follows established pattern (AdjustmentPractice, ClosingEntryPractice).
+- **IncomeStatementPractice**: Follows established exercise patterns. Has submittedRef guard (line 117, check at line 149), practice.v1 envelope submission, mastery threshold with consecutiveCorrect tracking, worked example view. 5 scenario kinds (revenue, expense, gross_profit, operating_income, net_income). Distractors model common misconceptions. Optional chaining on callbacks. Reset clears submittedRef.
+- **Activity registry**: `month-end-close-practice` and `income-statement-practice` now point to real components. 57 schema keys: 50 real + 7 placeholders (down from 8).
+- **Test directory convention**: Exercise tests split across `__tests__/components/exercises/` (12 files) and `__tests__/components/activities/exercises/` (1 file — IncomeStatementPractice). Most exercises use `__tests__/components/exercises/`.
+- **MonthEndClosePractice test**: Located at `__tests__/components/exercises/` (correct convention). 3 tests pass but all are shallow — render-only, no interaction testing. Consistent with pre-existing pattern.
+
+**New items recorded in tech-debt.md:**
+- Exercise test directory path inconsistency (IncomeStatementPractice test at different path)
+- Exercise tests remain shallow across the board
+
+**Phase status**: U2 Transactions & Adjustments Exercise track COMPLETE and archived. U3 Financial Statements & Reporting Exercise track Phase 1 COMPLETE. Phases 2-5 (cash-flow-practice, balance-sheet-practice, chart-linking-simulator, cross-sheet-link-simulator) remain.
 
 ## Notes
 

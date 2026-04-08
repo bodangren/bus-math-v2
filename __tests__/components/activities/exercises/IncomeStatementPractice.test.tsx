@@ -26,14 +26,11 @@ describe('IncomeStatementPractice', () => {
     render(<IncomeStatementPractice activity={{ props: { masteryThreshold: 1 } }} onComplete={onComplete} />)
     
     const options = screen.getAllByRole('button')
-    options.forEach(option => {
-      fireEvent.click(option)
-      const checkButton = screen.getByText(/Check Answer/i)
-      fireEvent.click(checkButton)
-      const newButton = screen.queryByText(/New Scenario/i)
-      if (newButton) {
-        fireEvent.click(newButton)
-      }
-    })
+    fireEvent.click(options[0])
+    
+    const checkButton = screen.getByText(/Check Answer/i)
+    fireEvent.click(checkButton)
+    
+    expect(onComplete).toHaveBeenCalled()
   })
 })

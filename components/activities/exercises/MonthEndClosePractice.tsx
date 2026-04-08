@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useCallback, useRef, useMemo } from 'react'
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { CheckCircle, XCircle, RefreshCw, HelpCircle, Target, Calculator } from 'lucide-react'
 import type { PracticeSubmissionEnvelope } from '@/lib/practice/contract'
 import { buildSimulationSubmissionEnvelope, createSimulationPart } from '@/lib/practice/simulation-submission'
@@ -94,20 +95,33 @@ function generateProblem(): CloseProblem {
 export interface MonthEndClosePracticeProps {
   activity: {
     id?: string
+    props?: {
+      masteryThreshold?: number
+    }
   }
   onSubmit?: (submission: PracticeSubmissionEnvelope) => void
   onComplete?: () => void
 }
 
 export function MonthEndClosePractice({ activity, onSubmit, onComplete }: MonthEndClosePracticeProps) {
+  const masteryTarget = activity.props?.masteryThreshold ?? 5
   const [problem, setProblem] = useState<CloseProblem>(generateProblem)
   const [userAnswer, setUserAnswer] = useState<string>('')
   const [submitted, setSubmitted] = useState(false)
   const [correct, setCorrect] = useState<boolean | null>(null)
+  const [streak, setStreak] = useState(0)
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0)
   const [showWorkedExample, setShowWorkedExample] = useState(false)
   const [selectedDistractor, setSelectedDistractor] = useState<number | null>(null)
   const hasCompleted = useRef(false)
   const submittedRef = useRef(false)
+
+  useEffect(() => {
+    if (consecutiveCorrect >= masteryTarget && !hasCompleted.current) {
+      hasCompleted.current = true
+      onComplete?.()
+    }
+  }, [consecutiveCorrect, masteryTarget, onComplete])
 
   const shuffledOptions = useMemo(() => {
     const opts: {
@@ -143,9 +157,11 @@ export function MonthEndClosePractice({ activity, onSubmit, onComplete }: MonthE
     if (selectedOption.distractorIndex !== undefined) {
       setSelectedDistractor(selectedOption.distractorIndex)
     }
-    if (isCorrect && !hasCompleted.current) {
-      hasCompleted.current = true
-      onComplete?.()
+    if (isCorrect) {
+      setConsecutiveCorrect(prev => prev + 1)
+      setStreak(prev => prev + 1)
+    } else {
+      setConsecutiveCorrect(0)
     }
 
     onSubmit?.(
@@ -166,7 +182,7 @@ export function MonthEndClosePractice({ activity, onSubmit, onComplete }: MonthE
         },
       }),
     )
-  }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem, onComplete])
+  }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem])
 
   const handleNewProblem = useCallback(() => {
     setProblem(generateProblem())
@@ -182,6 +198,7 @@ export function MonthEndClosePractice({ activity, onSubmit, onComplete }: MonthE
     setShowWorkedExample(true)
   }, [])
 
+  const progressToMastery = (consecutiveCorrect / masteryTarget) * 100
   const selectedDistractorData = problem.distractors[selectedDistractor ?? -1]
 
   return (
@@ -192,10 +209,24 @@ export function MonthEndClosePractice({ activity, onSubmit, onComplete }: MonthE
           Month‑End Close Practice
         </CardTitle>
         <CardDescription className="text-cyan-600">
-          Practice the full month‑end close cycle step‑by‑step.
+          Practice the full month‑end close cycle step‑by‑step. Target: {masteryTarget} consecutive correct answers.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Current streak: <strong>{streak}</strong></span>
+            <span className="text-gray-600">Mastery progress: <strong>{Math.round(progressToMastery)}%</strong></span>
+          </div>
+          <Progress value={progressToMastery} className="h-2" />
+          {consecutiveCorrect >= masteryTarget && (
+            <div className="flex items-center gap-2 text-green-700 bg-green-50 p-2 rounded">
+              <CheckCircle className="h-4 w-4" />
+              <span className="font-medium">Mastery achieved! {masteryTarget} correct in a row.</span>
+            </div>
+          )}
+        </div>
+
         <div className="bg-white p-6 rounded-lg border border-cyan-200">
           <div className="space-y-4">
             <p className="text-lg text-gray-800 font-medium">
