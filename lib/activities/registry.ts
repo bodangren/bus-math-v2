@@ -50,6 +50,9 @@ import { CashFlowPractice } from '@/components/activities/exercises/CashFlowPrac
 import { BalanceSheetPractice } from '@/components/activities/exercises/BalanceSheetPractice';
 import { ChartLinkingSimulator } from '@/components/activities/exercises/ChartLinkingSimulator';
 import { CrossSheetLinkSimulator } from '@/components/activities/exercises/CrossSheetLinkSimulator';
+import { ProfitCalculator } from '@/components/activities/exercises/ProfitCalculator';
+import { BudgetWorksheet } from '@/components/activities/exercises/BudgetWorksheet';
+import { ErrorCheckingSystem } from '@/components/activities/exercises/ErrorCheckingSystem';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -98,11 +101,9 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'spreadsheet-evaluator': SpreadsheetEvaluator,
   'data-cleaning': DataCleaningActivity,
 
-  // Placeholder for remaining activity types - to be implemented
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'profit-calculator': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'budget-worksheet': (() => null) as unknown as ComponentType<any>,
+  // Core activities
+  'profit-calculator': ProfitCalculator,
+  'budget-worksheet': BudgetWorksheet,
 
   // Exercises — Cluster 1: U5 Depreciation & Assets
   'straight-line-mastery': StraightLineMastery,
@@ -132,8 +133,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'month-end-close-practice': MonthEndClosePractice,
 
   // Exercises — Cluster 5: U8 Integrated Model & Validation
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'error-checking-system': (() => null) as unknown as ComponentType<any>,
+  'error-checking-system': ErrorCheckingSystem,
 };
 
 /**
