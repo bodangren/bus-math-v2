@@ -41,13 +41,9 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Repo Cleanup and Surface Hygiene**
-  *Link: [./tracks/repo_cleanup_surface_hygiene_20260407/](./tracks/repo_cleanup_surface_hygiene_20260407/)*
-  *Status: Active. Remove confirmed-unused files and stale active-surface residue, then leave the repo in a clean baseline for page-by-page UI audits.*
-
-- [ ] **Track: Non-Unit Page Evaluation and Polish**
+- [~] **Track: Non-Unit Page Evaluation and Polish**
   *Link: [./tracks/non_unit_page_polish_20260407/](./tracks/non_unit_page_polish_20260407/)*
-  *Status: Queued after cleanup. Audit and fix layout, overflow, spacing, alignment, and responsive issues on non-unit product pages before unit-by-unit passes begin.*
+  *Status: Active. Audit and fix layout, overflow, spacing, alignment, and responsive issues on non-unit product pages before unit-by-unit passes begin.*
 
 - [ ] **Track: Unit 1 Page Evaluation and Polish**
   *Link: [./tracks/unit1_page_polish_20260407/](./tracks/unit1_page_polish_20260407/)*

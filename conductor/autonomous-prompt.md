@@ -8,5 +8,9 @@ Step 3: Implement a SINGLE PHASE autonomously with TDD (Red-Green-Refactor). Use
 Step 4: Verify. Run full test suite, run build, correct any build errors.
 Step 5: Finalize.
 - Update `tech-debt.md` and `lessons-learned.md` (keep ≤50 lines).
-- Commit and push phase checkpoint.
-CRITICAL: All shell commands MUST use non-interactive flags (--yes, --no-interactive, etc.). Unattended run only.
+- Commit witha note and push phase checkpoint.
+CRITICAL: 
+1. All shell commands MUST use non-interactive flags (--yes, --no-interactive, etc.). Unattended run only.
+2. DO NOT ask the user any questions or for any intervention. This is an autonomous run.
+3. Respect the case of file paths. This is a unix system and case matters.
+
