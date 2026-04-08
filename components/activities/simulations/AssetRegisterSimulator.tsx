@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -46,6 +46,7 @@ export function AssetRegisterSimulator({ activity, onSubmit, onComplete }: Asset
   const [userAnnualExpense, setUserAnnualExpense] = useState('')
   const [userYear3BV, setUserYear3BV] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const [showReveal, setShowReveal] = useState(false)
   const [stage, setStage] = useState<'predict' | 'calculate' | 'audit'>('predict')
 
@@ -58,10 +59,12 @@ export function AssetRegisterSimulator({ activity, onSubmit, onComplete }: Asset
   const annualExpenseCorrect = !isNaN(annualExpenseNum) && Math.abs(annualExpenseNum - correctAnnualExpense) < 1
   const year3BVCorrect = !isNaN(year3BVNum) && Math.abs(year3BVNum - correctYear3BV) < 1
 
-  const handleReset = () => { setUserAnnualExpense(''); setUserYear3BV(''); setSubmitted(false); setShowReveal(false) }
+  const handleReset = () => { setUserAnnualExpense(''); setUserYear3BV(''); setSubmitted(false); submittedRef.current = false; setShowReveal(false) }
 
   const handleSubmit = useCallback(() => {
+    if (submittedRef.current) return
     if (isNaN(annualExpenseNum) || isNaN(year3BVNum)) return
+    submittedRef.current = true
     setSubmitted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -34,6 +34,7 @@ export function MethodComparisonSimulator({ activity, onSubmit, onComplete }: Me
   const [userDDB, setUserDDB] = useState('')
   const [userUOP, setUserUOP] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const [showReveal, setShowReveal] = useState(false)
 
   const asset = scenarios[scenarioIndex]
@@ -47,10 +48,12 @@ export function MethodComparisonSimulator({ activity, onSubmit, onComplete }: Me
   const ddbCorrect = !isNaN(ddbNum) && Math.abs(ddbNum - correctDDB) < 1
   const uopCorrect = correctUOP !== null ? (!isNaN(uopNum) && Math.abs(uopNum - correctUOP) < 1) : true
 
-  const handleReset = () => { setUserSL(''); setUserDDB(''); setUserUOP(''); setSubmitted(false); setShowReveal(false) }
+  const handleReset = () => { setUserSL(''); setUserDDB(''); setUserUOP(''); setSubmitted(false); submittedRef.current = false; setShowReveal(false) }
 
   const handleSubmit = useCallback(() => {
+    if (submittedRef.current) return
     if (isNaN(slNum) || isNaN(ddbNum) || (correctUOP !== null && isNaN(uopNum))) return
+    submittedRef.current = true
     setSubmitted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({

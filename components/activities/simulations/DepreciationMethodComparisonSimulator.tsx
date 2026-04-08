@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -46,6 +46,7 @@ export function DepreciationMethodComparisonSimulator({ activity, onSubmit, onCo
   const [userYear1SL, setUserYear1SL] = useState('')
   const [userYear1DDB, setUserYear1DDB] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const [showReveal, setShowReveal] = useState(false)
   const [stage, setStage] = useState<'predict' | 'compare' | 'audit'>('predict')
 
@@ -58,9 +59,11 @@ export function DepreciationMethodComparisonSimulator({ activity, onSubmit, onCo
   const slCorrect = !isNaN(slNum) && Math.abs(slNum - correctSL) < 1
   const ddbCorrect = !isNaN(ddbNum) && Math.abs(ddbNum - correctDDB) < 1
 
-  const handleReset = () => { setUserYear1SL(''); setUserYear1DDB(''); setSubmitted(false); setShowReveal(false) }
+  const handleReset = () => { setUserYear1SL(''); setUserYear1DDB(''); setSubmitted(false); submittedRef.current = false; setShowReveal(false) }
   const handleSubmit = useCallback(() => {
+    if (submittedRef.current) return
     if (isNaN(slNum) || isNaN(ddbNum)) return
+    submittedRef.current = true
     setSubmitted(true)
     onSubmit?.(
       buildSimulationSubmissionEnvelope({
