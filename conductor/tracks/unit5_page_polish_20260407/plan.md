@@ -2,8 +2,8 @@
 
 ## Phase 1: Unit 5 Audit
 
-- [ ] Enumerate Unit 5 route and lesson coverage for student and teacher flows
-- [ ] Capture desktop and mobile audit notes for Unit 5 surfaces
+- [x] Enumerate Unit 5 route and lesson coverage for student and teacher flows
+- [~] Capture desktop and mobile audit notes for Unit 5 surfaces
 - [ ] Separate shared defects from Unit 5-local defects
 
 ## Phase 2: Shared Fixes Needed For Unit 5

@@ -29,6 +29,11 @@ import { CapitalNegotiation } from '@/components/activities/simulations/CapitalN
 import { BusinessStressTest } from '@/components/activities/simulations/BusinessStressTest';
 import { PayStructureDecisionLab } from '@/components/activities/simulations/PayStructureDecisionLab';
 import { ClassificationActivity } from '@/components/activities/ClassificationActivity';
+import { AssetRegisterSimulator } from '@/components/activities/simulations/AssetRegisterSimulator';
+import { DepreciationMethodComparisonSimulator } from '@/components/activities/simulations/DepreciationMethodComparisonSimulator';
+import { DynamicMethodSelector } from '@/components/activities/simulations/DynamicMethodSelector';
+import { MethodComparisonSimulator } from '@/components/activities/simulations/MethodComparisonSimulator';
+import { ScenarioSwitchShowTell } from '@/components/activities/simulations/ScenarioSwitchShowTell';
 
 // Exercises
 import { StraightLineMastery } from '@/components/activities/exercises/StraightLineMastery';
@@ -92,16 +97,11 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'straight-line-mastery': StraightLineMastery,
   'ddb-comparison-mastery': DDBComparisonMastery,
   'capitalization-expense-mastery': CapitalizationExpenseMastery,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'depreciation-method-comparison': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'asset-register-simulator': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'dynamic-method-selector': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'method-comparison-simulator': (() => null) as unknown as ComponentType<any>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  'scenario-switch-showtell': (() => null) as unknown as ComponentType<any>,
+  'depreciation-method-comparison': DepreciationMethodComparisonSimulator,
+  'asset-register-simulator': AssetRegisterSimulator,
+  'dynamic-method-selector': DynamicMethodSelector,
+  'method-comparison-simulator': MethodComparisonSimulator,
+  'scenario-switch-showtell': ScenarioSwitchShowTell,
 
   // Exercises — Cluster 2: U6 Inventory & Costing
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
