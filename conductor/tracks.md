@@ -69,9 +69,9 @@ Strictly serial. Complete and archive each track before starting the next.
    *Link: [./tracks/unit6_page_polish_20260407/](./tracks/unit6_page_polish_20260407/)*
    *Status: Completed on 2026-04-08 after auditing Unit 6 surfaces, verifying all simulation/exercise components have submittedRef guards, and verifying all lint/test/build gates pass.*
 
-- [ ] **Track: Unit 7 Page Evaluation and Polish**
+- [x] **Track: Unit 7 Page Evaluation and Polish**
   *Link: [./tracks/unit7_page_polish_20260407/](./tracks/unit7_page_polish_20260407/)*
-  *Status: Queued after Unit 6.*
+  *Status: Completed on 2026-04-08 after auditing Unit 7 surfaces, fixing GrowthPuzzle and CapitalNegotiation reset buttons to call reset functions that clear submittedRef, and verifying all lint/test/build gates pass.*
 
 - [ ] **Track: Unit 8 Page Evaluation and Polish**
   *Link: [./tracks/unit8_page_polish_20260407/](./tracks/unit8_page_polish_20260407/)*
