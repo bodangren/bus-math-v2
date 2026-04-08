@@ -71,10 +71,46 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
-## Current High-Level Priorities (2026-04-08)
+## Current High-Level Priorities (2026-04-08 — post Pass 6)
 
-1. **Unit-by-Unit Page Evaluation and Polish** — Units 1–5 complete. Execute Unit 6 track next (Units 6–8 remain).
-2. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
+1. **Unit 8 Page Evaluation and Polish** — Last remaining page-polish track. Execute next.
+2. **Phase Exit Review** — After Unit 8 completes, verify all phase exit gates from the directive are met before declaring the cleanup/polish phase complete.
+3. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
+4. **BudgetBalancer Division Guards** — Low priority unless scope changes. Data model likely prevents zero income.
+
+## Code Review Summary (2026-04-08 — Unit 6–7 Polish + Phase Audit, Pass 6)
+
+Audited Unit 6 and Unit 7 Page Polish tracks. Full codebase review of all 18 simulation components, 3 exercise components, 6 chart components, and activity registry.
+
+**Fixed during review: 4 bugs**
+- **submittedRef ordering** (Medium): CapitalNegotiation.tsx, CafeSupplyChaos.tsx, AssetTimeMachine.tsx — all three set `setIsComplete(true)` before `submittedRef.current = true`, creating a theoretical double-submit window. Moved `submittedRef.current = true` to immediately after the guard check in all three.
+- **Division-by-zero** (Low): LemonadeStand.tsx `getMaxCupsFromInventory` — `lemonsPerCup` division unguarded while `sugarPerCup` has a zero guard. Added matching `lemonsPerCup > 0` guard.
+
+**Recorded in tech-debt.md:**
+- BudgetBalancer: `monthlyIncome` divisions unguarded in `advanceMonth` and render — NaN/Infinity if income is 0 (data model presumably prevents this)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Unit 6**: Audit-only track. No code changes needed — all surfaces clean.
+- **Unit 7**: GrowthPuzzle and CapitalNegotiation reset buttons now correctly call `resetGame()`/`reset()` (fixes from Pass 5 commit range). Confirmed `submittedRef` is properly cleared in both reset functions.
+- **submittedRef guard pattern**: 18/18 simulations pass; 3/3 exercises pass. All submit handlers guard correctly.
+- **Reset functions**: All 6 components with reset functions clear `submittedRef.current = false`. Confirmed ordering fix applied to 3 previously-inconsistent components.
+- **Division-by-zero**: All chart and exercise divisions guarded. LemonadeStand inconsistency fixed.
+- **Timer cleanup**: All 5 timer-using components have proper useEffect cleanup. No issues.
+- **Optional chaining**: All `onSubmit` and `onComplete` calls use consistent `?.()` pattern.
+
+**Remaining items recorded in tech-debt.md:**
+- 17 exercise component keys have schema but no React component (placeholders registered)
+- PitchPresentationBuilder: resetTimer does not clear submittedRef (harmless — reset in practice mode, submit in review mode)
+- ScenarioSwitchShowTell and DynamicMethodSelector: no reset mechanism (one-shot by design)
+- auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure
+- lib/ai/retry.ts extracts HTTP status codes via regex on error messages — fragile coupling
+- 6 of 7 practice families do not emit omitted-entry tag for blank/undefined student responses
+- BudgetBalancer: monthlyIncome divisions unguarded (new)
 
 ## Code Review Summary (2026-04-08 — Unit 4–5 Polish + Phase Audit, Pass 5)
 

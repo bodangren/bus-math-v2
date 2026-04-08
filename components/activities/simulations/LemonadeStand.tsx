@@ -314,7 +314,7 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
     
     return Math.min(
       cups,
-      Math.floor(lemons / lemonsPerCup),
+      lemonsPerCup > 0 ? Math.floor(lemons / lemonsPerCup) : cups,
       sugarPerCup > 0 ? Math.floor(sugar / sugarPerCup) : cups
     )
   }, [gameState.inventory, gameState.recipe])

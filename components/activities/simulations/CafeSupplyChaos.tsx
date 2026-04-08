@@ -129,6 +129,7 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
 
     if (nextDay > days) {
       const allSales = [...sales, dailyResult]
+      submittedRef.current = true
       setIsComplete(true)
 
       const answers = Object.fromEntries(
@@ -170,7 +171,6 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
         },
       })
 
-      submittedRef.current = true
       onSubmit?.(envelope)
       onComplete?.({ method: method!, sales: allSales })
     } else {

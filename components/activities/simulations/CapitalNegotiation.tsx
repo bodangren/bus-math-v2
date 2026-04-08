@@ -69,6 +69,7 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
 
   const handleFinalize = () => {
     if (submittedRef.current) return
+    submittedRef.current = true
     setIsComplete(true)
 
     const selection = selectedOption?.id ?? ''
@@ -107,7 +108,6 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
       },
     })
 
-    submittedRef.current = true
     onSubmit?.(envelope)
     onComplete?.({ selection })
   }

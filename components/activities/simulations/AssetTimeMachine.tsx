@@ -95,6 +95,7 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
     
     if (nextYear >= years) {
       const result: AssetTimeMachineResult = { totalExpenses: updatedTotalExpenses, finalValue: nextValue, history: [...history, entry] }
+      submittedRef.current = true
       setIsComplete(true)
 
       const answers = Object.fromEntries(
@@ -131,7 +132,6 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
         },
       })
 
-      submittedRef.current = true
       onSubmit?.(envelope)
       onComplete?.(result)
     } else {
