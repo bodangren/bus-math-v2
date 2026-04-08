@@ -73,27 +73,33 @@ The following remain out of scope for this phase unless they block cleanup or pa
 
 ## Current High-Level Priorities (2026-04-08)
 
-1. **Unit-by-Unit Page Evaluation and Polish** — Units 1–3 complete. Execute Unit 4 track next (Units 4–8 remain).
+1. **Unit-by-Unit Page Evaluation and Polish** — Units 1–5 complete. Execute Unit 6 track next (Units 6–8 remain).
 2. **17 Exercise Component Placeholders** — Schema-defined keys with no React component. Build when exercise-family prioritization resumes.
 
-## Code Review Summary (2026-04-08 — Unit 2–3 Polish + Phase Audit, Pass 4)
+## Code Review Summary (2026-04-08 — Unit 4–5 Polish + Phase Audit, Pass 5)
 
-Audited the Unit 2 and Unit 3 Page Polish tracks and re-scanned all simulation components for timer cleanup correctness.
+Audited Unit 4 and Unit 5 Page Polish tracks. Full codebase review of all 18 simulation components, 3 exercise components, 6 chart components, and activity registry.
 
-**Fixed during review (4 bugs):**
-- **InventoryManager**: `addNotification` setTimeout not cleaned up on unmount — would cause React state-update-on-unmounted warning. Fixed with `notificationTimeoutsRef` + `useEffect` cleanup.
-- **CashFlowChallenge**: Same setTimeout cleanup issue. Fixed with same pattern.
-- **StartupJourney**: Same setTimeout cleanup issue. Fixed with same pattern.
-- **LemonadeStand**: Same setTimeout cleanup issue. Fixed alongside existing `salesIntervalRef` cleanup effect.
+**Fixed during review: 0 bugs** — No serious issues found. All changes from Unit 4 and Unit 5 tracks are clean.
 
 **Verification gates:**
 - `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
 - `npm test`: 1518/1518 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
 - `npm run build`: passes cleanly
 
+**What was reviewed:**
+- **PayStructureDecisionLab**: `resetLab()` function correctly clears `submittedRef`, `submitted`, `current`, and all 3 input states. "Try Again" button rendered after submission. Good.
+- **DynamicMethodSelector**: `submittedRef` guard correctly prevents double-submit. `completed` state used for UI disabling. No reset function needed (one-shot component). Good.
+- **Activity registry**: All 5 previously-placeholder Unit 5 keys (`depreciation-method-comparison`, `asset-register-simulator`, `dynamic-method-selector`, `method-comparison-simulator`, `scenario-switch-showtell`) now point to real components. Good.
+- **submittedRef guard pattern**: 18/18 simulations pass; 3/3 exercises pass. Guard checked in all submit handlers; 15/18 simulations have reset clearing submittedRef (3 intentionally one-shot).
+- **Optional chaining**: All `onSubmit` and `onComplete` calls use consistent `?.()` across all simulation and exercise components.
+- **Division-by-zero**: All chart and exercise divisions are guarded. No unguarded risks.
+- **Timer cleanup**: No new setTimeout/setInterval issues introduced. All existing fixes from Pass 4 remain intact.
+
 **Remaining items recorded in tech-debt.md:**
 - 17 exercise component keys have schema but no React component (placeholders registered)
-- ScenarioSwitchShowTell has no reset mechanism for submittedRef
+- PitchPresentationBuilder: resetTimer does not clear submittedRef — harmless in practice (reset only in practice mode, submit only in review mode) but architecturally inconsistent
+- ScenarioSwitchShowTell and DynamicMethodSelector: no reset mechanism (one-shot by design)
 - auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure
 - lib/ai/retry.ts extracts HTTP status codes via regex on error messages — fragile coupling
 - 6 of 7 practice families do not emit omitted-entry tag for blank/undefined student responses
@@ -102,3 +108,4 @@ Audited the Unit 2 and Unit 3 Page Polish tracks and re-scanned all simulation c
 
 - Existing open tech-debt items still matter, but this phase prioritizes the items that directly affect cleanup, rendered-page correctness, or the reliability of follow-on UI audits.
 - If a page audit exposes a deeper runtime or auth defect, fix it in the owning track only when it is necessary to make the page correct and testable; otherwise record it and keep the serialized queue moving.
+- Code review audits should verify "fixed" items by reading source (per lessons-learned). Confirmed: all Pass 4 fixes are intact.

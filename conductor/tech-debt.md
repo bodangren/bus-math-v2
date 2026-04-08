@@ -28,3 +28,5 @@
 | 2026-04-08 | code_review_apr8_phase4 | CashFlowChallenge addNotification setTimeout not cleaned up on unmount | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup. |
 | 2026-04-08 | code_review_apr8_phase4 | StartupJourney addNotification setTimeout not cleaned up on unmount | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup. |
 | 2026-04-08 | code_review_apr8_phase4 | LemonadeStand addNotification setTimeout not cleaned up on unmount | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup alongside existing salesIntervalRef cleanup. |
+| 2026-04-08 | code_review_apr8_pass5 | PitchPresentationBuilder resetTimer does not clear submittedRef — architecturally inconsistent | Low | Open | Harmless in practice (reset in practice mode, submit in review mode). Add submittedRef reset if component ever adds "Try Again" after submission. |
+| 2026-04-08 | code_review_apr8_pass5 | Unit 5 registry had 5 placeholder nulls for simulation components | Medium | Closed | Fixed in unit5_page_polish: replaced 5 (() => null) placeholders with real component imports. |
