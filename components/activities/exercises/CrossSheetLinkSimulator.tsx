@@ -127,8 +127,8 @@ export function CrossSheetLinkSimulator({ activity, onSubmit, onComplete }: Cros
         artifact: {
           initialSheet1,
           initialSheet2,
-          finalSheet1,
-          finalSheet2,
+          finalSheet1: sheet1,
+          finalSheet2: sheet2,
           insightCount: insights.length,
         },
       }),

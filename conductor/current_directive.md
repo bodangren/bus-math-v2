@@ -71,12 +71,36 @@ The following remain out of scope for this phase unless they block cleanup or pa
 - dependency upgrades or package additions without explicit approval
 - broad architectural refactors unrelated to cleanup or rendered-page quality
 
+## Code Review Summary (2026-04-09 — Next Phase Definition + Conductor Hygiene, Pass 17)
+
+Audited the Next Phase Definition track completion, Remaining Exercise Placeholders track creation, and full verification gates.
+
+**Fixed during review: 2 issues**
+- **CrossSheetLinkSimulator undefined variables** (Medium): `artifact` object in `handleComplete` referenced `finalSheet1` and `finalSheet2` which don't exist as variables — the state variables are `sheet1` and `sheet2`. The `answers` object correctly used `finalSheet1: sheet1` (object key rename) but `artifact` used bare variable references. TypeScript catches this as `TS2552`. Fixed: `finalSheet1: sheet1, finalSheet2: sheet2`.
+- **Track metadata status mismatch** (Low): `remaining_exercise_placeholders_20260409/metadata.json` had `"status": "pending"` but `tracks.md` shows `[~]` (in_progress). Updated metadata to `"in_progress"`.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1515/1515 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+- `npx tsc --noEmit`: 0 new errors (2 pre-existing: @cloudflare/vite-plugin module, worker Fetcher type)
+
+**What was reviewed:**
+- **Since Pass 16**: Only 2 commits (Next Phase Definition track + archive), all conductor documentation. No code changes since Pass 16.
+- **CrossSheetLinkSimulator**: Fixed TS2552 error — `artifact` object now correctly references `sheet1`/`sheet2`.
+- **Activity registry**: 51 keys, 48 real + 3 placeholders (`profit-calculator`, `budget-worksheet`, `error-checking-system`). Count may differ from schema (49 keys) due to alias (`pitch`) and type cast.
+- **Conductor state**: tracks.md has 1 active track (`remaining_exercise_placeholders_20260409`), all others archived. Metadata.json status fixed to match.
+- **Test count drift**: 1515 tests (was 1518 in Pass 7-8) — likely from test file consolidation during dead code pruning.
+
+**Phase status**: Next phase (Remaining Exercise Family Work) defined. Active track `remaining_exercise_placeholders_20260409` ready for implementation.
+
 ## Current High-Level Priorities (2026-04-09 — Pass 17, Next Phase Defined)
 
-1. **Remaining Exercise Placeholders** — 3 schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `error-checking-system`). First track in new phase is implementation of these 3 placeholders.
+1. **Remaining Exercise Placeholders** — 3 schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `error-checking-system`). Active track: `remaining_exercise_placeholders_20260409`.
 2. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
 3. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
 4. **Exercise Test Coverage (Low)** — All exercise mastery tests are shallow (render-only). Cannot deterministically test mastery completion due to `Array.sort` shuffle non-determinism with mocked `Math.random`. Acceptable — mastery logic (`consecutiveCorrect >= masteryTarget`) is trivially correct.
+5. **TypeScript Strictness** — 2 pre-existing TS errors in vite.config.ts (`@cloudflare/vite-plugin` module) and worker/index.ts (`Fetcher` type). Build bypasses tsc via esbuild. Consider fixing or suppressing.
 
 ## New Phase: Remaining Exercise Family Work
 This phase focuses on completing the remaining exercise clusters and filling placeholder gaps.
