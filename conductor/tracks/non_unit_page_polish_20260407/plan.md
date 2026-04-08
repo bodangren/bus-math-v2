@@ -14,7 +14,7 @@
 
 ## Phase 3: Page-Level Polish
 
-- [ ] Fix public page issues
+- [~] Fix public page issues
 - [ ] Fix auth page issues
 - [ ] Fix student non-unit page issues
 - [ ] Fix teacher non-unit page issues
