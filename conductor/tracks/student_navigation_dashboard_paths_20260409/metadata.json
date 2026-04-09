@@ -1,7 +1,7 @@
 {
   "track_id": "student_navigation_dashboard_paths_20260409",
   "type": "feature",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-04-09T00:00:00Z",
   "updated_at": "2026-04-09T00:00:00Z",
   "description": "Repair shared dashboard links, student breadcrumbs, and unit/dashboard return paths so authenticated users are never stranded."
