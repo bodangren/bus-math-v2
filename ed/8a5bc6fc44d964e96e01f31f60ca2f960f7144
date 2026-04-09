@@ -1,0 +1,29 @@
+Phase 2 Task 2: Verify role behavior through targeted tests
+
+Completed role behavior verification:
+
+1. UserMenu role-aware dashboard links:
+   - Already implemented and tested in Phase 1 Task 1
+   - 9 tests cover: unauthenticated state, role-aware dashboard links for student/teacher/admin
+
+2. Login-form redirects:
+   - Already uses role-based routing (no hardcoded paths to replace)
+   - Tests verify correct redirect for student role
+   - Tests verify correct redirect for teacher role
+   - Tests verify redirect to query param
+
+3. Teacher page redirects:
+   - Fixed erroneous "/student/dashboard" fallback → now redirects to /auth/login
+   - Removed unused studentDashboardPath import
+   - Tests verify teacher dashboard renders correctly
+
+4. Test coverage:
+   - npm test: 1598 tests pass (all tests passing)
+   - npm run lint: 0 errors, 1 pre-existing warning (worker default export)
+   - All role behavior verified through existing tests
+
+5. Phase 2 Task 2 complete
+   - Role behavior verified through targeted tests
+   - All tests passing
+   - Lint clean (0 errors)
+   - Next: run npm run build
