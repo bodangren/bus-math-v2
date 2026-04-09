@@ -75,7 +75,7 @@ export function TeacherLessonPlanPageContent({
               {lesson.title}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Use this to direct to student back into the published lesson sequence.
+              Use this to direct students back into the published lesson sequence.
             </p>
           </div>
         </header>

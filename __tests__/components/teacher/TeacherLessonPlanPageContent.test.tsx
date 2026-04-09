@@ -50,7 +50,7 @@ describe('TeacherLessonPlanPageContent', () => {
     const mainTitle = headings.find(h => h.textContent === 'Test Lesson');
     expect(mainTitle).toBeInTheDocument();
     expect(
-      screen.getByText(/Use this to direct to student back into/),
+      screen.getByText(/Use this to direct students back into/),
     ).toBeInTheDocument();
   });
 

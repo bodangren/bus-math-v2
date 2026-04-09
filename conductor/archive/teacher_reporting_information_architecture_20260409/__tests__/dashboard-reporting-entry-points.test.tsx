@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitestest';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { TeacherDashboardContent } from '@/components/teacher/TeacherDashboardContent';
 import type { StudentDashboardRow } from '@/lib/teacher/intervention';

@@ -17,8 +17,8 @@ This repository is no longer at the "prototype" stage. It already contains a sub
 
 However, this repository is **not yet a fully classroom-complete education app** if the bar includes:
 
-- polished end-to-end student navigation and return paths
-- coherent teacher reporting information architecture
+- ~~polished end-to-end student navigation and return paths~~ — complete
+- ~~coherent teacher reporting information architecture~~ — complete
 - complete gradebook visibility for independent practice and assessment evidence
 - teacher-facing competency heatmaps
 - downloadable workbook, dataset, rubric, checklist, and guide files for the full course
@@ -30,12 +30,12 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 - Conductor Milestones 1-7 are marked complete.
 - Milestone 8, `Classroom Product Completeness`, is still open.
-- Across the active Milestone 8 plans, 4 checklist items are complete and 116 remain pending.
+- Across the active Milestone 8 plans, 4 tracks are complete and 3 remain pending.
 - The active roadmap contains 7 serial tracks:
-  1. Full Lesson Phase Integrity Audit
-  2. Student Navigation and Dashboard Return Paths
-  3. Student Completion and Resume Loop
-  4. Teacher Reporting Information Architecture
+  1. ~~Full Lesson Phase Integrity Audit~~ — complete
+  2. ~~Student Navigation and Dashboard Return Paths~~ — complete
+  3. ~~Student Completion and Resume Loop~~ — complete
+  4. ~~Teacher Reporting Information Architecture~~ — complete
   5. Teacher Gradebook Completion
   6. Teacher Competency Heatmaps and Mastery Views
   7. Education App Readiness Hardening
@@ -83,8 +83,8 @@ The target product is:
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 7 |
-| Active Milestone 8 track status | 1 in progress, 6 not started |
-| Archived track directories | 93 |
+| Active Milestone 8 track status | 4 complete, 3 not started |
+| Archived track directories | 97 |
 | Test files under `__tests__` and `tests` | 271 |
 
 ### My real assessment
@@ -92,8 +92,8 @@ The target product is:
 | Area | Status | Notes |
 |---|---|---|
 | Platform foundation | Strong | Convex, Vinext/App Router, JWT auth, route guards, publishing pipeline |
-| Student runtime | Strong but incomplete | Dashboard and lesson runtime exist; navigation and return-path contract still incomplete |
-| Teacher runtime | Strong but incomplete | Dashboard and multiple reporting surfaces exist; IA, gradebook depth, and competency views remain unfinished |
+| Student runtime | Strong | Dashboard, lesson runtime, navigation, breadcrumbs, resume/review contract complete |
+| Teacher runtime | Strong but incomplete | Dashboard, reporting IA, breadcrumbs, and gradebook entry points complete; gradebook depth and competency views remain unfinished |
 | Curriculum runtime coverage | Strong | Manifest and tests show 8 units + capstone published as authored runtime content |
 | Downloadable instructional assets | Weak | Referenced extensively in authored content, but not present as actual repo files |
 | Classroom launch readiness | Partial | Good internal app base, but still missing key product-completeness work |
@@ -129,17 +129,20 @@ This section summarizes the major implemented feature waves from earlier Conduct
 - lesson-complete panel with dashboard return and next-lesson recommendation
 - objective-aware phase shell and guidance cards
 - student-only write boundaries for phase completion, spreadsheet drafts, spreadsheet submission, and assessment submission
+- coherent student navigation with breadcrumbs, dashboard return paths, and role-aware links
+- completed-lesson review actions and resume/review/start-state contract
 
 ### 4. Teacher Experience
 
-- teacher dashboard with classroom metrics
+- teacher dashboard with classroom metrics and course gradebook entry point
 - intervention queue for at-risk, inactive, on-track, and completed students
 - course overview grid
-- unit-level gradebook route
-- lesson-level follow-up / lesson monitoring route
+- unit-level gradebook route with breadcrumb to course gradebook
+- lesson-level follow-up / lesson monitoring route with full breadcrumb chain
 - student detail page with progress, unit summaries, and next-best lesson guidance
 - submission detail modal for lesson/student evidence inspection
 - teacher CSV export and student account management actions
+- canonical teacher reporting drill-down: Dashboard → Course Gradebook → Unit Gradebook → Lesson Report
 
 ### 5. Practice Engine and Evidence Loop
 

@@ -78,9 +78,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: make completed-lesson, resume, review, and next-lesson behavior coherent across the student dashboard and lesson runtime.*
   *Closeout: completed on 2026-04-09. All 4 phases complete: continue-state contract audit (Phase 1), dashboard action consistency (Phase 2), lesson completion experience verification (Phase 3), and final verification (Phase 4). Dashboard now shows 'Review Lesson' for completed lessons and individual action buttons. Lesson renderer correctly handles completed state with recommended lesson links. All verification gates pass (lint 0 errors/1 warning, test 1592/1592 pass with 2 pre-existing Supabase suite failures, build passes).*
 
-- [ ] **Track: Teacher Reporting Information Architecture**
-  *Link: [./tracks/teacher_reporting_information_architecture_20260409/](./tracks/teacher_reporting_information_architecture_20260409/)*
+- [x] **Track: Teacher Reporting Information Architecture**
+  *Link: [./archive/teacher_reporting_information_architecture_20260409/](./archive/teacher_reporting_information_architecture_20260409/)*
   *Scope: expose reporting from the teacher dashboard and define the canonical course → unit → lesson → student drill-down structure with consistent breadcrumbs and entry points.*
+  *Closeout: completed on 2026-04-09 after completing all 4 phases: reporting IA audit and hierarchy definition, dashboard course gradebook entry point, shared breadcrumbs and wayfinding, and final verification. Added "View Course Gradebook" button to teacher dashboard, fixed unit gradebook breadcrumb to link to /teacher/gradebook, added full breadcrumb chain to lesson report page. All verification gates pass (lint 0 errors/1 warning, test 1607/1607 pass with 2 pre-existing Supabase suite failures, build passes). Ready for archive.*
 
 - [ ] **Track: Teacher Gradebook Completion**
   *Link: [./tracks/teacher_gradebook_completion_20260409/](./tracks/teacher_gradebook_completion_20260409/)*

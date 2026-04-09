@@ -66,15 +66,45 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-09 — Classroom Product Completeness Replan)
+## Current High-Level Priorities (2026-04-10 — Post Teacher Reporting IA Review)
 
-1. **Full Lesson Phase Integrity Audit** — finish the active audit and remove remaining authored/runtime drift or lesson-surface defects before feature expansion.
-2. **Student Navigation and Dashboard Return Paths** — add canonical student wayfinding, valid unit/dashboard links, and role-aware dashboard destinations in shared chrome.
-3. **Student Completion and Resume Loop** — make completed lessons, resume behavior, review behavior, and next-lesson guidance coherent instead of ad hoc.
-4. **Teacher Reporting Information Architecture** — expose reporting from the teacher dashboard and normalize the course → unit → lesson → student navigation contract.
-5. **Teacher Gradebook + Competency Completion** — finish gradebook evidence visibility, then surface the stored competency data as actionable teacher heatmaps.
+1. **Teacher Gradebook Completion** — complete the teacher gradebook so unit-level progress includes independent practice, assessment, and detailed submission visibility for every student.
+2. **Teacher Competency Heatmaps and Mastery Views** — turn existing competency tracking data into course-, unit-, and student-level teacher heatmap views with actionable mastery drill-downs.
+3. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-10 — Teacher Reporting IA Completion, Pass 21)
+
+Autonomous code review covering all 4 phases of the Teacher Reporting Information Architecture track.
+
+**Fixed during review: 4 issues**
+- **vitestest typo** (Low): Conductor track test file `dashboard-reporting-entry-points.test.tsx` imported from `'vitestest'` instead of `'vitest'`. Fixed import. File is under conductor/tracks/ (not in vitest include pattern) so was never executed.
+- **Grammar error** (Low): `TeacherLessonPlanPageContent.tsx` description text said "Use this to direct to student back into" — fixed to "Use this to direct students back into". Updated test assertion in `TeacherLessonPlanPageContent.test.tsx` to match.
+- **Stale track metadata** (Low): Teacher Reporting IA track metadata.json had status `new` despite all 4 phases complete per commit history. Updated to `completed`.
+- **Date typo** (Low): phase4-track-closeout.md header said "2024-04-09" instead of "2026-04-09". Fixed.
+
+**Archived during review:**
+- Teacher Reporting Information Architecture track moved to archive. tracks.md updated with closeout note.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1607/1607 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Phase 1 (Reporting IA Definition)**: Audit of all teacher reporting surfaces. Defined canonical hierarchy: Dashboard → Course Gradebook → Unit Gradebook → Lesson Report → Student Detail. Identified 4 navigation gaps.
+- **Phase 2 (Dashboard Entry Points)**: Added "View Course Gradebook" button to teacher dashboard header. Button links to `/teacher/gradebook`. Preserved existing workflow actions.
+- **Phase 3 (Shared Reporting Wayfinding)**: Fixed unit gradebook breadcrumb to link to `/teacher/gradebook` instead of `/teacher`. Added full breadcrumb chain to lesson report page. Removed orphaned "Back to unit gradebook" button. Added regression tests.
+- **Phase 4 (Verification and Documentation)**: All verification gates pass. Track closeout documentation created.
+- **backHref dead code**: `TeacherLessonMonitoringViewModel` still produces `backHref` but `TeacherLessonPlanPageContent` no longer uses it. Recorded as low-severity tech debt.
+- **Student dashboard lesson cards**: Review/completion/resume actions (Start Lesson, Resume Lesson, Review Lesson) properly derive status from phase completion. `ArrowRight` icon imported correctly.
+
+**New items recorded in tech-debt.md:**
+- backHref dead code in lesson-monitoring view model (Low)
+- 3 closed items (vitestest typo, grammar error, stale metadata)
+
+**Phase status**: Teacher Reporting Information Architecture track COMPLETE and archived. 3 tracks remain in Milestone 8: Teacher Gradebook Completion, Teacher Competency Heatmaps, Education App Readiness Hardening.
 
 ## Code Review Summary (2026-04-09 — Full Lesson Audit Completion, Pass 20)
 
