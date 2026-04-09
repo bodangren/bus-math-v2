@@ -19,8 +19,8 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 - ~~polished end-to-end student navigation and return paths~~ — complete
 - ~~coherent teacher reporting information architecture~~ — complete
-- complete gradebook visibility for independent practice and assessment evidence
-- teacher-facing competency heatmaps
+- ~~complete gradebook visibility for independent practice and assessment evidence~~ — complete
+- teacher-facing competency heatmaps (in progress)
 - downloadable workbook, dataset, rubric, checklist, and guide files for the full course
 - complete capstone supporting pages and asset packets
 
@@ -30,14 +30,14 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 - Conductor Milestones 1-7 are marked complete.
 - Milestone 8, `Classroom Product Completeness`, is still open.
-- Across the active Milestone 8 plans, 4 tracks are complete and 3 remain pending.
+- Across the active Milestone 8 plans, 5 tracks are complete, 1 is in progress, and 1 remains pending.
 - The active roadmap contains 7 serial tracks:
   1. ~~Full Lesson Phase Integrity Audit~~ — complete
   2. ~~Student Navigation and Dashboard Return Paths~~ — complete
   3. ~~Student Completion and Resume Loop~~ — complete
   4. ~~Teacher Reporting Information Architecture~~ — complete
-  5. Teacher Gradebook Completion
-  6. Teacher Competency Heatmaps and Mastery Views
+  5. ~~Teacher Gradebook Completion~~ — complete
+  6. Teacher Competency Heatmaps and Mastery Views (in progress)
   7. Education App Readiness Hardening
 
 ### Real interpretation
@@ -83,7 +83,7 @@ The target product is:
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 7 |
-| Active Milestone 8 track status | 4 complete, 3 not started |
+| Active Milestone 8 track status | 5 complete, 1 in progress, 1 not started |
 | Archived track directories | 97 |
 | Test files under `__tests__` and `tests` | 271 |
 
@@ -134,7 +134,7 @@ This section summarizes the major implemented feature waves from earlier Conduct
 
 ### 4. Teacher Experience
 
-- teacher dashboard with classroom metrics and course gradebook entry point
+- teacher dashboard with classroom metrics, course gradebook entry point, and competency heatmap entry point
 - intervention queue for at-risk, inactive, on-track, and completed students
 - course overview grid
 - unit-level gradebook route with breadcrumb to course gradebook
@@ -273,10 +273,10 @@ The student experience is already a real product surface, but it is still missin
 
 ### What is still incomplete
 
-- teacher reporting entry points and breadcrumbs need a clearer information architecture
-- gradebook logic still centers on lesson completion + mastery color/status cells
-- explicit independent-practice and assessment visibility is not yet complete enough to satisfy the active gradebook-completion track
-- competency data exists, but there is no shipped teacher heatmap surface yet
+- ~~teacher reporting entry points and breadcrumbs need a clearer information architecture~~ — complete
+- ~~gradebook logic still centers on lesson completion + mastery color/status cells~~ — complete
+- ~~explicit independent-practice and assessment visibility is not yet complete enough to satisfy the active gradebook-completion track~~ — complete
+- competency heatmap rendering exists but drill-down and context views remain unfinished
 - final reporting hardening and workflow verification are still queued
 
 ### Current teacher-product interpretation
@@ -341,9 +341,9 @@ These are the major remaining blockers.
 
 ### Teacher-reporting blockers
 
-- incomplete reporting information architecture
-- incomplete gradebook detail for independent practice and assessment evidence
-- missing teacher competency heatmap surfaces
+- ~~incomplete reporting information architecture~~ — complete
+- ~~incomplete gradebook detail for independent practice and assessment evidence~~ — complete
+- competency heatmap drill-down and context views remain unfinished
 
 ### Asset-packaging blockers
 
@@ -371,8 +371,8 @@ This is the active Conductor Milestone 8 roadmap as of April 9, 2026.
 | 2 | Student Navigation and Dashboard Return Paths | Complete | Fix shared dashboard links, wayfinding, and return paths |
 | 3 | Student Completion and Resume Loop | Complete | Make start/resume/review/continue behavior coherent |
 | 4 | Teacher Reporting Information Architecture | Complete | Define and expose the reporting drill-down structure |
-| 5 | Teacher Gradebook Completion | Not started | Add real independent-practice and assessment visibility |
-| 6 | Teacher Competency Heatmaps and Mastery Views | Not started | Ship teacher-facing mastery heatmap surfaces |
+| 5 | Teacher Gradebook Completion | Complete | Add real independent-practice and assessment visibility |
+| 6 | Teacher Competency Heatmaps and Mastery Views | In progress | Ship teacher-facing mastery heatmap surfaces |
 | 7 | Education App Readiness Hardening | Not started | Add final classroom-loop hardening and smoke coverage |
 
 ### 1. Full Lesson Phase Integrity Audit
@@ -432,15 +432,19 @@ Needed outcome:
 
 Goal:
 
-- complete the gradebook so unit-level progress includes:
-  - lesson completion
-  - independent practice visibility
-  - assessment visibility
-  - detailed submission drill-down
+- ~~complete the gradebook so unit-level progress includes:~~
+  - ~~lesson completion~~
+  - ~~independent practice visibility~~
+  - ~~assessment visibility~~
+  - ~~detailed submission drill-down~~
 
 Needed outcome:
 
-- teachers can interpret cells as evidence, not just percentages/colors
+- ~~teachers can interpret cells as evidence, not just percentages/colors~~
+
+Status:
+
+- complete
 
 ### 6. Teacher Competency Heatmaps and Mastery Views
 
@@ -451,6 +455,10 @@ Goal:
 Needed outcome:
 
 - standards-level intervention becomes visible and actionable
+
+Status:
+
+- in progress — heatmap rendering and course-level view are complete; drill-down and context views remain
 
 ### 7. Education App Readiness Hardening
 

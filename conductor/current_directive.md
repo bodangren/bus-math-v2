@@ -66,13 +66,41 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Code Review Pass 22)
+## Current High-Level Priorities (2026-04-10 — Post Code Review Pass 23)
 
-1. **Teacher Gradebook Completion** — complete the teacher gradebook so unit-level progress includes independent practice, assessment, and detailed submission visibility for every student.
-2. **Teacher Competency Heatmaps and Mastery Views** — turn existing competency tracking data into course-, unit-, and student-level teacher heatmap views with actionable mastery drill-downs.
-3. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
+1. **Teacher Competency Heatmaps Phase 3-4** — add unit/student drill-down from the heatmap, link back to gradebook/reporting context, and complete verification gates.
+2. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-10 — Gradebook + Competency Heatmap, Pass 23)
+
+Autonomous code review covering Teacher Gradebook Completion (Phase 3-4) and Teacher Competency Heatmaps (Phases 1-2).
+
+**Fixed during review: 1 issue**
+- **gradebook-data.test.ts broken after function signature expansion** (High): `assembleGradebookRows` was expanded from 7 to 9 parameters (adding `rawActivities` and `rawActivitySubmissions`), but 11 test calls in `gradebook-data.test.ts` still passed only 7 args, causing `rawActivities is not iterable` runtime error and 12 test failures. Fixed all 11 calls to pass `[], []` for the new parameters.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1618/1630 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response" mismatch, 3 SubmissionDetailModal integration Convex mock, 5 GradebookDrillDown integration Convex mock)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Gradebook Phase 3-4 (independent practice and assessment visibility)**: `assembleGradebookRows` expanded to accept `rawActivities` and `rawActivitySubmissions` params. New `PracticeAndAssessmentData` type added to `GradebookCell`. `buildGradebookCell` accepts optional `independentPractice` and `assessment` params. The assembly function builds `activityIdsByLessonId` and `submissionByUserAndActivity` lookup maps, then iterates activities per lesson to find independent_practice and assessment submissions. Convex query `getTeacherGradebookData` now fetches activities and activity_submissions, maps them to the raw types, and passes them through. Clean pure-function architecture, well-tested contract tests in `gradebook-expanded-contract.test.ts`.
+- **Competency Heatmap Phase 1 (reporting contract)**: New `lib/teacher/competency-heatmap.ts` with pure types and assembly functions. `assembleCompetencyHeatmapRows` transforms raw students/standards/competency data into heatmap rows with color-coded cells. `assembleStudentCompetencyDetail` assembles per-student drill-down with lesson context from primary lesson standards. `computeCompetencyColor` maps mastery levels to green/yellow/red/gray. Filters inactive standards. Tests cover color computation, row assembly, inactive filtering, empty inputs, and student detail with lesson context.
+- **Competency Heatmap Phase 2 (heatmap rendering)**: New `CompetencyHeatmapGrid.tsx` component renders an accessible table with sortable student names, color-coded mastery cells, and standard code headers. Reuses `cellBgClass` from gradebook module. New `/teacher/competency` page with auth guard, breadcrumb to dashboard, and legend explaining color thresholds. "View Competency Heatmap" button added to teacher dashboard header alongside existing "View Course Gradebook".
+- **Convex queries**: `getTeacherCompetencyHeatmapData` fetches all competency_standards (not org-scoped — acceptable if standards are global), filters by isActive, fetches student_competency by student with `Promise.all`, and passes through to pure assembly. Auth check via `getAuthorizedTeacher`.
+
+**Pre-existing issues confirmed (not fixed):**
+- SubmissionDetailModal "view raw response" button: 4 unit tests expect it but component has no such UI (Pass 22 finding)
+- Security RLS tests: 2 test files fail due to Supabase credential dependency (Pass 22 finding)
+- GradebookDrillDown/SubmissionDetailModal integration tests: 8 tests fail due to Convex mock issues (Pass 22 finding)
+
+**New items recorded in tech-debt.md:**
+- tracks.md gradebook link had 2024→2026 date typo (Low — fixed)
+- Teacher Gradebook Completion track not archived despite complete status (Low — fixed)
+
+**Phase status**: Teacher Gradebook Completion track COMPLETE and archived. Teacher Competency Heatmaps track Phases 1-2 COMPLETE, Phases 3-4 remain. 1 track (Education App Readiness Hardening) remains after heatmap completion.
 
 ## Code Review Summary (2026-04-10 — Lint & Test Stabilization, Pass 22)
 

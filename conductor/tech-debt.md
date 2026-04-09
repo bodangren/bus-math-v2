@@ -54,3 +54,5 @@
 | 2026-04-09 | teacher_reporting_ia | Teacher Reporting IA track metadata.json was stale: status `new` despite all 4 phases complete | Low | Closed | Updated to `completed`, archived track, updated tracks.md. |
 | 2026-04-10 | code_review_pass22 | SubmissionDetailModal tests expect "view raw response" button but component has no such UI — 4 unit tests fail | Medium | Open | Add raw-response toggle to component, or rewrite tests to match current implementation. |
 | 2026-04-10 | code_review_pass22 | 2 security RLS test files (competency-rls.test.ts, rls.test.ts) fail — pre-existing Supabase credential dependency | Low | Open | Pre-existing; requires Supabase client credentials not available in test environment. |
+| 2026-04-10 | code_review_pass23 | tracks.md gradebook link had 2024→2026 date typo | Low | Closed | Fixed: `teacher_gradebook_completion_20240409` → `teacher_gradebook_completion_20260409`. |
+| 2026-04-10 | code_review_pass23 | Teacher Gradebook Completion track not archived despite complete status | Low | Closed | Moved track directory to archive, updated tracks.md link to ./archive/. |

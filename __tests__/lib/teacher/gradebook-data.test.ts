@@ -62,6 +62,8 @@ describe('assembleGradebookRows', () => {
       [std1, std11],
       [],
       [],
+      [],
+      [],
     );
     const l11 = lessons.find(l => l.orderIndex === 11);
     expect(l11?.isUnitTest).toBe(true);
@@ -78,6 +80,8 @@ describe('assembleGradebookRows', () => {
       [std1],
       [],
       [],
+      [],
+      [],
     );
     expect(rows).toHaveLength(2);
   });
@@ -89,6 +93,8 @@ describe('assembleGradebookRows', () => {
       [lv1],
       pv1,
       [std1],
+      [],
+      [],
       [],
       [],
     );
@@ -104,6 +110,8 @@ describe('assembleGradebookRows', () => {
       [std1],
       [],
       [],
+      [],
+      [],
     );
     expect(rows[0].displayName).toBe('Alice Brown');
   });
@@ -115,6 +123,8 @@ describe('assembleGradebookRows', () => {
       [lv1],
       pv1,
       [std1],
+      [],
+      [],
       [],
       [],
     );
@@ -139,6 +149,8 @@ describe('assembleGradebookRows', () => {
       [std1],
       allCompleted,
       [],
+      [],
+      [],
     );
     const cell = rows[0].cells[0];
     expect(cell.completionStatus).toBe('completed');
@@ -156,6 +168,8 @@ describe('assembleGradebookRows', () => {
       pv1,
       [std1],
       partial,
+      [],
+      [],
       [],
     );
     const cell = rows[0].cells[0];
@@ -175,6 +189,8 @@ describe('assembleGradebookRows', () => {
       [std1, std2],
       [],
       competency,
+      [],
+      [],
     );
 
     const aliceRow = rows.find(r => r.studentId === 'alice')!;
@@ -197,6 +213,8 @@ describe('assembleGradebookRows', () => {
       [std1],
       [],
       competency,
+      [],
+      [],
     );
     expect(rows[0].cells[0].color).toBe('green');
   });
@@ -214,6 +232,8 @@ describe('assembleGradebookRows', () => {
       [nonPrimary],
       [],
       competency,
+      [],
+      [],
     );
     // Non-primary standard should not count → no mastery → gray
     expect(rows[0].cells[0].masteryLevel).toBeNull();
@@ -234,6 +254,8 @@ describe('assembleGradebookRows', () => {
       [std1],
       otherProgress,
       [],
+      [],
+      [],
     );
     // alice has no progress rows → not_started
     expect(rows[0].cells[0].completionStatus).toBe('not_started');
@@ -246,6 +268,8 @@ describe('assembleGradebookRows', () => {
       [lv1, lv2],
       [...pv1, ...pv2],
       [std1, std2],
+      [],
+      [],
       [],
       [],
     );
