@@ -19,7 +19,7 @@
 - [x] Add regression coverage for the primary student wayfinding states
 
 ## Phase 4: Verification and Documentation
-- [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the touched navigation surfaces
+- [~] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the touched navigation surfaces
 - [ ] Update active Conductor docs if the canonical student navigation contract changes
 - [ ] Record any follow-on navigation debt that is intentionally deferred
 - [ ] Prepare the track for archive with a concise verification summary
