@@ -1,13 +1,13 @@
 # Implementation Plan: Teacher Reporting Information Architecture
 
 ## Phase 1: Reporting IA Definition
-- [ ] Audit the current teacher dashboard, course gradebook, unit gradebook, lesson report, and student detail entry points
-- [ ] Define the canonical dashboard → course → unit → lesson → student reporting hierarchy
-- [ ] Identify the missing reporting destinations and the minimum navigation contract needed before deeper reporting work
-- [ ] Add or update failing tests for teacher dashboard reporting entry points and route-level orientation
+- [x] Audit the current teacher dashboard, course gradebook, unit gradebook, lesson report, and student detail entry points
+- [x] Define the canonical dashboard → course → unit → lesson → student reporting hierarchy
+- [x] Identify the missing reporting destinations and the minimum navigation contract needed before deeper reporting work
+- [x] Add or update failing tests for teacher dashboard reporting entry points and route-level orientation
 
 ## Phase 2: Dashboard Entry Points
-- [ ] Add explicit reporting entry points to the teacher dashboard for the course gradebook and related reporting destinations
+- [~] Add explicit reporting entry points to the teacher dashboard for the course gradebook and related reporting destinations
 - [ ] Ensure the dashboard makes reporting discoverable without requiring teachers to infer clickable table cells
 - [ ] Preserve existing teacher workflow actions (imports, CSV, student actions) while improving information architecture
 - [ ] Run `npm run lint` and targeted teacher-dashboard tests

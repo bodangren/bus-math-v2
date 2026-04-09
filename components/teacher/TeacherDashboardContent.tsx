@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CheckCircle2, LineChart, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -126,6 +127,11 @@ export function TeacherDashboardContent({
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
+            <Button asChild variant="default">
+              <Link href="/teacher/gradebook">
+                View Course Gradebook
+              </Link>
+            </Button>
             <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />
