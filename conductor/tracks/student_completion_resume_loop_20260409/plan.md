@@ -25,7 +25,7 @@
 - [x] Run the relevant broader tests for shared student progress helpers
 
 ## Phase 4: Verification and Documentation
-- [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the completion-loop changes
-- [ ] Update active Conductor docs if the student completion-loop contract changes
-- [ ] Record any intentionally deferred recommendation/product gaps in `tech-debt.md` if needed
-- [ ] Prepare the track for archive with verification evidence
+- [x] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the completion-loop changes
+- [x] Update active Conductor docs if the student completion-loop contract changes
+- [x] Record any intentionally deferred recommendation/product gaps in `tech-debt.md` if needed
+- [x] Prepare the track for archive with verification evidence
