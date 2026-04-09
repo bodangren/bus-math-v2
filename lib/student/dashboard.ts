@@ -20,7 +20,7 @@ type UnitStatus = LessonStatus;
 
 export interface DashboardLessonAction extends StudentDashboardLesson {
   status: LessonStatus;
-  actionLabel: 'Start Lesson' | 'Resume Lesson';
+  actionLabel: 'Start Lesson' | 'Resume Lesson' | 'Review Lesson';
 }
 
 export interface StudentDashboardSummary {
@@ -65,14 +65,10 @@ function getLessonStatus(lesson: StudentDashboardLesson): LessonStatus {
 function toLessonAction(lesson: StudentDashboardLesson): DashboardLessonAction | null {
   const status = getLessonStatus(lesson);
 
-  if (status === 'completed') {
-    return null;
-  }
-
   return {
     ...lesson,
     status,
-    actionLabel: status === 'in_progress' ? 'Resume Lesson' : 'Start Lesson',
+    actionLabel: status === 'in_progress' ? 'Resume Lesson' : status === 'completed' ? 'Review Lesson' : 'Start Lesson',
   };
 }
 

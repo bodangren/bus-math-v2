@@ -73,7 +73,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: add real student unit/dashboard wayfinding, role-aware dashboard links in shared chrome, and valid breadcrumb/return paths so students and teachers are never stranded in authenticated flows.*
   *Closeout: completed on 2026-04-09. All 4 phases complete: navigation contract audit, shared chrome/dashboard destinations, student lesson/unit wayfinding, and verification. Added breadcrumbs to lesson renderer, updated navigation helpers, added regression tests. All verification gates pass (lint 0 errors/1 warning, test 1586/1588 pass with 2 pre-existing Supabase suite failures, build passes).*
 
-- [ ] **Track: Student Completion and Resume Loop**
+- [~] **Track: Student Completion and Resume Loop**
   *Link: [./tracks/student_completion_resume_loop_20260409/](./tracks/student_completion_resume_loop_20260409/)*
   *Scope: make completed-lesson, resume, review, and next-lesson behavior coherent across the student dashboard and lesson runtime.*
 
