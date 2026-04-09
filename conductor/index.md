@@ -8,6 +8,7 @@ This file is the root for active project context. Files under `conductor/archive
 - **Product Guidelines**: [./product-guidelines.md](./product-guidelines.md)
 - **Tech Stack**: [./tech-stack.md](./tech-stack.md)
 - **Architecture Reference**: [./architecture.md](./architecture.md)
+- **Generic Course App Roadmap**: [./course-app-roadmap.md](./course-app-roadmap.md)
 - **Workflow**: [./workflow.md](./workflow.md)
 - **Current Directive**: [./current_directive.md](./current_directive.md)
 - **Lessons Learned**: [./lessons-learned.md](./lessons-learned.md)
