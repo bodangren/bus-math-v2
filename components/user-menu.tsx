@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getRoleAwareDashboardPath } from "@/lib/student/navigation";
 
 export function UserMenu() {
   const { user, profile, signOut, loading } = useAuth();
@@ -52,8 +53,11 @@ export function UserMenu() {
     }
     return name.substring(0, 2).toUpperCase();
   };
-  
+
   const initials = getInitials(displayName);
+
+  // Determine role-aware dashboard link
+  const dashboardPath = getRoleAwareDashboardPath(profile?.role);
 
   return (
     <DropdownMenu>
@@ -76,6 +80,12 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href={dashboardPath} className="flex items-center cursor-pointer">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                <span>Dashboard</span>
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/settings" className="flex items-center cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
