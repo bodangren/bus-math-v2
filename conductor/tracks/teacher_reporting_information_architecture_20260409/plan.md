@@ -7,10 +7,10 @@
 - [x] Add or update failing tests for teacher dashboard reporting entry points and route-level orientation
 
 ## Phase 2: Dashboard Entry Points
-- [~] Add explicit reporting entry points to the teacher dashboard for the course gradebook and related reporting destinations
-- [ ] Ensure the dashboard makes reporting discoverable without requiring teachers to infer clickable table cells
-- [ ] Preserve existing teacher workflow actions (imports, CSV, student actions) while improving information architecture
-- [ ] Run `npm run lint` and targeted teacher-dashboard tests
+- [x] Add explicit reporting entry points to the teacher dashboard for the course gradebook and related reporting destinations
+- [x] Ensure that dashboard makes reporting discoverable without requiring teachers to infer clickable table cells
+- [x] Preserve existing teacher workflow actions (imports, CSV, student actions) while improving information architecture
+- [x] Run `npm run lint` and targeted teacher-dashboard tests
 
 ## Phase 3: Shared Reporting Wayfinding
 - [ ] Implement shared breadcrumbs and back-link behavior across course, unit, lesson, and student reporting pages
