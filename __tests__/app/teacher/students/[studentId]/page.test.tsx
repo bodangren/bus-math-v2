@@ -131,7 +131,7 @@ describe('Teacher student detail page', () => {
     );
     expect(screen.getByRole('link', { name: /back to dashboard/i })).toHaveAttribute(
       'href',
-      '/teacher',
+      '/teacher/dashboard',
     );
     expect(mockFetchInternalQuery).toHaveBeenCalledWith(
       'internal.teacher.getTeacherStudentDetail',
