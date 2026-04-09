@@ -19,10 +19,10 @@
 - [x] Reseed and verify touched runtime content where activity data changes
 
 ## Phase 4: Units 5-6 Sweep
-- [ ] Audit every phase in Units 5 and 6 in the real student lesson runtime on desktop and mobile widths
-- [ ] Fix confirmed issues in touched phases and activity components
-- [ ] Add regression coverage for newly fixed Unit 5-6 issues
-- [ ] Reseed and verify touched runtime content where activity data changes
+- [x] Audit every phase in Units 5 and 6 in the real student lesson runtime on desktop and mobile widths
+- [x] Fix confirmed issues in touched phases and activity components
+- [x] Add regression coverage for newly fixed Unit 5-6 issues
+- [x] Reseed and verify touched runtime content where activity data changes
 
 ## Phase 5: Units 7-8 and Capstone Sweep
 - [ ] Audit every phase in Units 7 and 8 plus capstone in the real student lesson runtime on desktop and mobile widths
