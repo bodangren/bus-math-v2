@@ -1,12 +1,13 @@
 # Implementation Plan: Teacher Competency Heatmaps and Mastery Views
 
 ## Phase 1: Competency Reporting Contract
-- [ ] Audit the existing competency schema, teacher helpers, and any current reporting seams that already expose mastery data
-- [ ] Define the canonical course/unit/student competency reporting contract and drill-down expectations
-- [ ] Add or update failing tests for the competency view-model assembly and primary route states
-- [ ] Record any data or labeling inconsistencies that must be resolved before UI work
+- [x] Audit the existing competency schema, teacher helpers, and any current reporting seams that already expose mastery data
+- [x] Define the canonical course/unit/student competency reporting contract and drill-down expectations
+- [x] Add or update failing tests for the competency view-model assembly and primary route states
+- [x] Record any data or labeling inconsistencies that must be resolved before UI work
 
 ## Phase 2: Heatmap Rendering
+- [~] Implement the primary teacher competency heatmap surface and shared legend/mastery labeling
 - [ ] Implement the primary teacher competency heatmap surface and shared legend/mastery labeling
 - [ ] Ensure the heatmap remains readable with realistic student and standard counts
 - [ ] Link the heatmap into the teacher reporting hierarchy established by the previous track
