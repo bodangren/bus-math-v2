@@ -1,0 +1,37 @@
+Phase 3 Task 1: Implement canonical student breadcrumb and return
+
+Status: Already implemented via existing components
+
+Investigation:
+
+1. LessonRenderer breadcrumb navigation:
+   - Shows: Dashboard > Lesson
+   - Uses: studentDashboardPath() helper for Dashboard link
+   - Shows: lesson.title in breadcrumb
+   - Implementation is correct and canonical
+
+2. PhaseHeader breadcrumb navigation:
+   - Shows: Home > Student > Unit > Lesson > Phase
+   - Uses: formatCurriculumSegmentLabel() for unit/lesson labels
+   - Supports navigationOverrides for customizing breadcrumb behavior
+   - Implementation is correct and canonical
+
+3. Lesson error states:
+   - NoPhaseError and AccessCheckError both show "Return to Dashboard" links
+   - Both use studentDashboardPath() helper
+   - Implementation is correct
+
+4. Student unit navigation:
+   - No dedicated student unit surface exists (by design)
+   - Unit cards on dashboard use studentUnit() anchor pattern
+   - This is intentional: unit anchors scroll to dashboard sections
+
+Conclusion:
+
+The canonical student breadcrumb and return-path flow is already correctly implemented via:
+- LessonRenderer component (lesson breadcrumbs)
+- PhaseHeader component (phase breadcrumbs)
+- Error state components (NoPhaseError, AccessCheckError)
+- Navigation helpers (studentDashboardPath, studentUnitAnchor)
+
+No changes needed for Task 1. Moving to Task 2.
