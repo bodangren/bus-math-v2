@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   buildTeacherLessonMonitoringViewModel,
@@ -11,8 +11,11 @@ import {
 } from '@/lib/teacher/lesson-monitoring';
 import { TeacherLessonPlan } from '@/components/teacher/TeacherLessonPlan';
 import { LessonErrorSummary } from '@/components/teacher/LessonErrorSummary';
+import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 
-type TeacherLessonPlanPageContentProps = TeacherLessonMonitoringViewModel;
+type TeacherLessonPlanPageContentProps = TeacherLessonMonitoringViewModel & {
+  unitNumber: number;
+};
 
 export function TeacherLessonPlanPageContent({
   lesson,
@@ -20,10 +23,10 @@ export function TeacherLessonPlanPageContent({
   lessonNumber,
   availableLessons,
   lessonHrefByNumber,
-  backHref,
   previousLessonHref,
   nextLessonHref,
   empty,
+  unitNumber,
 }: TeacherLessonPlanPageContentProps) {
   const router = useRouter();
 
@@ -45,22 +48,37 @@ export function TeacherLessonPlanPageContent({
   return (
     <main className="min-h-screen bg-muted/10 py-10">
       <div className="container mx-auto max-w-6xl px-4 space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="space-y-1">
-            <p className="text-sm uppercase tracking-wide text-muted-foreground">
-              Teacher Monitoring
-            </p>
+        <header className="space-y-6">
+          <nav className="flex items-center gap-2 text-sm text-muted-foreground" aria-label="Breadcrumb">
+            <Link href="/teacher" className="hover:text-foreground">
+              Teacher Dashboard
+            </Link>
+            <ChevronLeft className="size-3 rotate-180" aria-hidden="true" />
+            <Link href="/teacher/gradebook" className="hover:text-foreground">
+              Course Gradebook
+            </Link>
+            <ChevronLeft className="size-3 rotate-180" aria-hidden="true" />
+            <Link
+              href={`/teacher/units/${unitNumber}`}
+              className="hover:text-foreground"
+            >
+              {formatCurriculumSegmentLabel(unitNumber)} Gradebook
+            </Link>
+            <ChevronLeft className="size-3 rotate-180" aria-hidden="true" />
+            <span className="text-foreground font-medium">
+              Lesson {lessonNumber}
+            </span>
+          </nav>
+
+          <div>
             <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-              Lesson Follow-Up
+              {lesson.title}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Use the published lesson plan to guide lesson-level follow-up and in-class support.
+              Use this to direct to student back into the published lesson sequence.
             </p>
           </div>
-          <Button asChild variant="outline">
-            <Link href={backHref}>Back to unit gradebook</Link>
-          </Button>
-        </div>
+        </header>
 
         {empty ? (
           <Card>

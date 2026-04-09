@@ -13,7 +13,7 @@
 - [x] Run `npm run lint` and targeted teacher-dashboard tests
 
 ## Phase 3: Shared Reporting Wayfinding
-- [ ] Implement shared breadcrumbs and back-link behavior across course, unit, lesson, and student reporting pages
+- [~] Implement shared breadcrumbs and back-link behavior across course, unit, lesson, and student reporting pages
 - [ ] Normalize route titles, labels, and page descriptions so the reporting hierarchy is legible
 - [ ] Add regression coverage for the canonical teacher reporting drill-down paths
 - [ ] Run the relevant broader route/component tests for teacher reporting pages

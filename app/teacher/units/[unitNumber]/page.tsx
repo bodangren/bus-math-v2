@@ -43,11 +43,11 @@ export default async function UnitGradebookPage({ params }: PageProps) {
       <div className="container mx-auto px-4 space-y-6">
         <header className="space-y-1">
           <Link
-            href="/teacher"
+            href="/teacher/gradebook"
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
-            Teacher Dashboard
+            Course Gradebook
           </Link>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             {formatCurriculumSegmentLabel(unitNumber)} — Gradebook

@@ -52,5 +52,5 @@ export default async function TeacherLessonPage({
   }
 
   const viewModel = buildTeacherLessonMonitoringViewModel(result);
-  return <TeacherLessonPlanPageContent {...viewModel} />;
+  return <TeacherLessonPlanPageContent {...viewModel} unitNumber={unitNumber} />;
 }
