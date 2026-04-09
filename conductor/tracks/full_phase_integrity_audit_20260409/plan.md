@@ -1,10 +1,10 @@
 # Implementation Plan: Full Lesson Phase Integrity Audit
 
 ## Phase 1: Audit Checklist and Guardrails
-- [~] Define the reusable audit checklist for interaction fidelity, layout integration, copy rendering, dataset invariants, and runtime-source parity
-- [ ] Identify existing coverage gaps for these issue classes
-- [ ] Add or extend the first source/seed/component guard tests needed to support the audit
-- [ ] Record any systemic risks discovered before the unit-by-unit sweep
+- [x] Define the reusable audit checklist for interaction fidelity, layout integration, copy rendering, dataset invariants, and runtime-source parity
+- [x] Identify existing coverage gaps for these issue classes
+- [x] Add or extend the first source/seed/component guard tests needed to support the audit
+- [x] Record any systemic risks discovered before the unit-by-unit sweep
 
 ## Phase 2: Units 1-2 Sweep
 - [ ] Audit every phase in Units 1 and 2 in the real student lesson runtime on desktop and mobile widths
