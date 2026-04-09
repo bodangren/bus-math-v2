@@ -1,0 +1,29 @@
+Phase 1 Task 1: Navigation Contract Audit
+
+Completed navigation inventory and added role-aware dashboard link:
+
+1. Navigation Contract Audit:
+   - Audit complete: confirmed student dashboard at /student/dashboard, teacher dashboard at /teacher/dashboard
+   - Student unit routes: unit anchors use #unit-N pattern to scroll to unit sections on student dashboard
+   - Student lesson routes: /student/lesson/[slug] and /student/lesson/[slug]?phase=N working correctly
+   - Breadcrumb/return paths: No dedicated student unit surface; lesson pages link to /student/dashboard
+
+2. Added canonical navigation helpers:
+   - teacherDashboardPath(): returns /teacher/dashboard
+   - getRoleAwareDashboardPath(role): returns correct dashboard based on role (student→/student/dashboard, teacher/admin→/teacher/dashboard)
+   - Student helpers (studentDashboardPath, studentUnitAnchor, studentLessonPath, studentLessonPhasePath) already existed
+
+3. Updated UserMenu component:
+   - Added role-aware Dashboard link in dropdown menu
+   - Students go to /student/dashboard, teachers/admins go to /teacher/dashboard
+   - Added LayoutDashboard icon for Dashboard link
+   - Settings and Log out links remain unchanged
+
+4. Test coverage:
+   - Added 12 tests for navigation helpers (student/teacher dashboards, role-aware routing, unit anchors, lesson paths)
+   - Added 9 tests for UserMenu (unauthenticated state, role-aware dashboard links)
+   - All 21 tests passing
+
+5. Phase 1 Task 1 complete
+   - Navigation contract audit complete
+   - Next: confirm student unit-level routes exist vs dead/impl
