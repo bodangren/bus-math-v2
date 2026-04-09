@@ -25,10 +25,10 @@
 - [x] Reseed and verify touched runtime content where activity data changes
 
 ## Phase 5: Units 7-8 and Capstone Sweep
-- [ ] Audit every phase in Units 7 and 8 plus capstone in the real student lesson runtime on desktop and mobile widths
-- [ ] Fix confirmed issues in touched phases and activity components
-- [ ] Add regression coverage for newly fixed Unit 7-8/capstone issues
-- [ ] Reseed and verify touched runtime content where activity data changes
+- [x] Audit every phase in Units 7 and 8 plus capstone in the real student lesson runtime on desktop and mobile widths
+- [x] Fix confirmed issues in touched phases and activity components
+- [x] Add regression coverage for newly fixed Unit 7-8/capstone issues
+- [x] Reseed and verify touched runtime content where activity data changes
 
 ## Phase 6: Final Verification and Documentation
 - [ ] Run final relevant lint, targeted tests, full test, and build gates for the completed audit
