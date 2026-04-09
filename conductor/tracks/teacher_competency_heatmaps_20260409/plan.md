@@ -7,11 +7,10 @@
 - [x] Record any data or labeling inconsistencies that must be resolved before UI work
 
 ## Phase 2: Heatmap Rendering
-- [~] Implement the primary teacher competency heatmap surface and shared legend/mastery labeling
-- [ ] Implement the primary teacher competency heatmap surface and shared legend/mastery labeling
-- [ ] Ensure the heatmap remains readable with realistic student and standard counts
-- [ ] Link the heatmap into the teacher reporting hierarchy established by the previous track
-- [ ] Run `npm run lint` and targeted competency/reporting tests
+- [x] Implement the primary teacher competency heatmap surface and shared legend/mastery labeling
+- [x] Ensure the heatmap remains readable with realistic student and standard counts
+- [x] Link the heatmap into the teacher reporting hierarchy established by the previous track
+- [x] Run `npm run lint` and targeted competency/reporting tests
 
 ## Phase 3: Drill-Down and Context
 - [ ] Add unit-scoped or student-scoped drill-down behavior from the competency surface
