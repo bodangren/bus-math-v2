@@ -12,8 +12,7 @@ export default async function TeacherDashboardPage() {
   });
 
   if (!data) {
-    // Teacher not found or not authorized
-    redirect("/student/dashboard");
+    redirect("/auth/login");
   }
 
   const courseOverview = await fetchInternalQuery(
@@ -24,7 +23,7 @@ export default async function TeacherDashboardPage() {
   );
 
   if (!courseOverview) {
-    redirect("/student/dashboard");
+    redirect("/auth/login");
   }
 
   return (
