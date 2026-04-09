@@ -1,0 +1,26 @@
+Phase 1 Task 3: Define canonical route helpers and breadcrumb contract
+
+Completed navigation contract definition:
+
+1. Created navigation-contract.md artifact:
+   - Documents surface-to-surface path matrix
+   - Confirms no dedicated student unit surface (unit anchors scroll to dashboard sections)
+   - Defines breadcrumb contract for student and teacher surfaces
+   - Identifies action items (replace hardcoded paths, add breadcrumb components)
+
+2. Updated components to use canonical helpers:
+   - app/student/lesson/[lessonSlug]/page.tsx: NoPhaseError and AccessCheckError now use studentDashboardPath()
+   - app/teacher/students/[studentId]/page.tsx: "Back to dashboard" link now uses teacher
+DashboardPath()
+
+3. Verification:
+   - npm run lint: 0 errors, 1 pre-existing warning (worker default export)
+   - npm test: 21 tests pass (12 navigation helpers + 9 UserMenu tests)
+   - All hardcoded dashboard paths replaced with canonical helpers
+
+4. Phase 1 Task 3 complete
+   - Navigation contract defined in navigation-con
+tract.md
+   - Canonical helpers added and tested
+   - Components updated to use helpers
+   - Next: add tests for breadcrumb behavior
