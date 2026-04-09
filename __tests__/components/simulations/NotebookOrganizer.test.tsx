@@ -1,9 +1,16 @@
+import { triggerDrag } from '@/lib/test-utils/mock-dnd';
 import { render, screen, waitFor, within } from '@testing-library/react';
+import { act } from 'react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import type { DropResult } from '@hello-pangea/dnd';
 
 import type { NotebookOrganizerActivity } from '@/components/activities/simulations/NotebookOrganizer';
-import { NotebookOrganizer } from '@/components/activities/simulations/NotebookOrganizer';
+import {
+  getNotebookFolderDroppableId,
+  NotebookOrganizer,
+  NOTEBOOK_QUEUE_DROPPABLE,
+} from '@/components/activities/simulations/NotebookOrganizer';
 
 const activity: NotebookOrganizerActivity = {
   id: 'notebook-test',
@@ -41,6 +48,57 @@ const activity: NotebookOrganizerActivity = {
 };
 
 describe('NotebookOrganizer', () => {
+  const dragNoteTo = (itemId: string, category: 'asset' | 'liability' | 'equity') =>
+    act(() => {
+      triggerDrag({
+        draggableId: itemId,
+        type: 'DEFAULT',
+        source: { droppableId: NOTEBOOK_QUEUE_DROPPABLE, index: 0 },
+        destination: { droppableId: getNotebookFolderDroppableId(category), index: 0 },
+        reason: 'DROP',
+        mode: 'FLUID',
+        combine: null,
+      } as DropResult);
+    });
+
+  it('supports dragging notes into folders', async () => {
+    const onSubmit = vi.fn();
+    const onComplete = vi.fn();
+
+    render(<NotebookOrganizer activity={activity} onSubmit={onSubmit} onComplete={onComplete} />);
+
+    dragNoteTo('cash-note', 'asset');
+    dragNoteTo('owner-note', 'equity');
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledWith(
+        expect.objectContaining({
+          contractVersion: 'practice.v1',
+          activityId: 'notebook-test',
+          mode: 'guided_practice',
+          status: 'submitted',
+          artifact: expect.objectContaining({
+            kind: 'notebook_organizer',
+            placedItems: {
+              'cash-note': 'asset',
+              'owner-note': 'equity',
+            },
+          }),
+        }),
+      );
+    });
+
+    expect(onComplete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        totals: expect.objectContaining({
+          asset: 100,
+          liability: 0,
+          equity: 100,
+        }),
+      }),
+    );
+  });
+
   it('emits a canonical practice submission when the notebook is solved', async () => {
     const user = userEvent.setup();
     const onSubmit = vi.fn();

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { UserMenu } from "@/components/user-menu";
 
 const navItems = [
@@ -15,6 +16,11 @@ const navItems = [
 
 export function HeaderSimple() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header
@@ -52,7 +58,7 @@ export function HeaderSimple() {
             aria-label="Main navigation"
           >
             {navItems.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = mounted && pathname === item.href;
               return (
                 <Link
                   key={item.href}

@@ -273,7 +273,7 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
         items: [
           { id: 'item1', label: 'Cash in Bank', amount: 4200, category: 'asset', description: 'Money available for business use.', icon: 'cash' },
           { id: 'item2', label: 'New Laptop', amount: 1200, category: 'asset', description: 'Computer used for client server work.', icon: 'equipment' },
-          { id: 'item3', label: 'Bank Loan', amount: 3000, category: 'liability', description: 'Money borrowed to buy equipment.', icon: 'bill' },
+          { id: 'item3', label: 'Bank Loan', amount: 1450, category: 'liability', description: 'Money borrowed to buy equipment.', icon: 'bill' },
           { id: 'item4', label: 'Sarah\'s Investment', amount: 5000, category: 'equity', description: 'Personal savings put into the business.', icon: 'owner' },
           { id: 'item5', label: 'Client Unpaid Invoice', amount: 1500, category: 'asset', description: 'Money a client owes TechStart.', icon: 'receivable' },
           { id: 'item6', label: 'Credit Card Bill', amount: 450, category: 'liability', description: 'Unpaid balance for office supplies.', icon: 'bill' },
@@ -308,12 +308,12 @@ In **Lesson 2**, you will go deeper into account classification. You'll learn:
           { id: 'item1', label: 'Cash in Bank', amount: 4200, category: 'asset', description: 'Money available for business use.', icon: 'cash' },
           { id: 'item2', label: 'New Laptop', amount: 1200, category: 'asset', description: 'Computer used for client server work.', icon: 'equipment' },
           { id: 'item3', label: 'Bank Loan', amount: 3000, category: 'liability', description: 'Money borrowed to buy equipment.', icon: 'bill' },
-          { id: 'item4', label: 'Sarah\'s Investment', amount: 5000, category: 'equity', description: 'Personal savings put into the business.', icon: 'owner' },
+          { id: 'item4', label: 'Sarah\'s Investment', amount: 2500, category: 'equity', description: 'Personal savings put into the business.', icon: 'owner' },
           { id: 'item5', label: 'Client Unpaid Invoice', amount: 1500, category: 'asset', description: 'Money a client owes TechStart.', icon: 'receivable' },
           { id: 'item6', label: 'Credit Card Bill', amount: 450, category: 'liability', description: 'Unpaid balance for office supplies.', icon: 'bill' },
           { id: 'item7', label: 'Prepaid Insurance', amount: 600, category: 'asset', description: 'Insurance paid in advance for 6 months.', icon: 'receivable' },
           { id: 'item8', label: 'Unearned Revenue', amount: 800, category: 'liability', description: 'Client deposit for services not yet performed.', icon: 'bill' },
-          { id: 'item9', label: 'Retained Earnings', amount: 960, category: 'equity', description: 'Profits kept in the business from prior months.', icon: 'owner' },
+          { id: 'item9', label: 'Retained Earnings', amount: 750, category: 'equity', description: 'Profits kept in the business from prior months.', icon: 'owner' },
         ],
       },
       gradingConfig: {

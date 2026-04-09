@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { LESSON_01_SEED_DATA } from '../../../supabase/seed/unit1/lesson-01';
 
+function totalsForNotebookActivity(activity: { props: { items: Array<{ amount: number; category: 'asset' | 'liability' | 'equity' }> } }) {
+  return activity.props.items.reduce(
+    (totals, item) => {
+      totals[item.category] += item.amount;
+      return totals;
+    },
+    { asset: 0, liability: 0, equity: 0 },
+  );
+}
+
 describe('Lesson 01 seed data — Launch Unit: A=L+E', () => {
   it('defines exactly 6 phases', () => {
     expect(LESSON_01_SEED_DATA.phases).toHaveLength(6);
@@ -103,6 +113,20 @@ describe('Lesson 01 seed data — Launch Unit: A=L+E', () => {
 
     expect(guidedActivity?.componentKey).toBe('notebook-organizer');
     expect(independentActivity?.componentKey).toBe('notebook-organizer');
+  });
+
+  it('all notebook-organizer activities use a balanced accounting dataset', () => {
+    const notebookActivities = LESSON_01_SEED_DATA.activities.filter(
+      (activity) => activity.componentKey === 'notebook-organizer',
+    );
+
+    for (const activity of notebookActivities) {
+      const totals = totalsForNotebookActivity(activity);
+      expect(
+        totals.asset,
+        `${activity.displayName} should satisfy Assets = Liabilities + Equity`,
+      ).toBe(totals.liability + totals.equity);
+    }
   });
 
   it('no section contains placeholder text', () => {

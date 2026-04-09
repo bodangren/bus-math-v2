@@ -134,11 +134,12 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   const isBypassRole = userProfile?.role === 'teacher' || userProfile?.role === 'admin';
 
   const requestedPhaseNumber = phaseParam ? parseInt(phaseParam, 10) : 1;
+  let effectivePhaseNumber = requestedPhaseNumber;
   let isLessonComplete = false;
   let recommendedLesson = null;
 
   if (isNaN(requestedPhaseNumber) || requestedPhaseNumber < 1 || requestedPhaseNumber > lessonPhases.length) {
-    redirect(`/student/lesson/${lessonSlug}?phase=1`);
+    effectivePhaseNumber = 1;
   }
 
   if (!isBypassRole) {
@@ -192,8 +193,8 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
           }
         }
 
-        if (targetPhaseNumber !== requestedPhaseNumber) {
-          redirect(`/student/lesson/${lessonSlug}?phase=${targetPhaseNumber}`);
+        if (targetPhaseNumber !== effectivePhaseNumber) {
+          effectivePhaseNumber = targetPhaseNumber;
         }
       } catch (progressError) {
         console.error('Error loading lesson progress from Convex:', progressError);
@@ -239,7 +240,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
       canAccess = await fetchInternalQuery(internal.api.canAccessPhase, {
         userId,
         lessonId: convexLesson._id,
-        phaseNumber: requestedPhaseNumber,
+        phaseNumber: effectivePhaseNumber,
       });
     } catch (accessError) {
       console.error('Error checking phase access:', accessError);
@@ -267,7 +268,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
         }
       }
 
-      redirect(`/student/lesson/${lessonSlug}?phase=${latestAccessiblePhase}`);
+      effectivePhaseNumber = latestAccessiblePhase;
     }
   }
 
@@ -275,7 +276,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
     <LessonRenderer
       lesson={lesson}
       phases={lessonPhases}
-      currentPhaseNumber={requestedPhaseNumber}
+      currentPhaseNumber={effectivePhaseNumber}
       lessonSlug={lessonSlug}
       isLessonComplete={isLessonComplete}
       recommendedLesson={recommendedLesson}

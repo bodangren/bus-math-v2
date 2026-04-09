@@ -63,7 +63,7 @@ Full Phase Integrity Audit [active] → Student Navigation [1] → Student Compl
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [ ] **Track: Full Lesson Phase Integrity Audit**
+- [~] **Track: Full Lesson Phase Integrity Audit**
   *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
   *Scope: audit every published lesson phase for false interaction affordances, layout/overflow defects, copy rendering defects, impossible teaching datasets, and authored-runtime drift in seeded activity props.*
 

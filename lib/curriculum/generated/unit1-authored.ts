@@ -222,7 +222,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "item3",
               "label": "Bank Loan",
-              "amount": 3000,
+              "amount": 1450,
               "category": "liability",
               "description": "Money borrowed to buy equipment.",
               "icon": "bill"
@@ -313,7 +313,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "item4",
               "label": "Sarah's Investment",
-              "amount": 5000,
+              "amount": 2500,
               "category": "equity",
               "description": "Personal savings put into the business.",
               "icon": "owner"
@@ -353,7 +353,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "item9",
               "label": "Retained Earnings",
-              "amount": 960,
+              "amount": 750,
               "category": "equity",
               "description": "Profits kept in the business from prior months.",
               "icon": "owner"
@@ -728,15 +728,15 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "sarahs-capital",
               "label": "Sarah's Capital",
-              "amount": 5000,
+              "amount": 500,
               "category": "equity",
-              "description": "Sarah's original $5,000 investment to launch TechStart",
+              "description": "Sarah's remaining owner claim after the month's changes",
               "icon": "owner"
             },
             {
               "id": "retained-earnings",
               "label": "Retained Earnings",
-              "amount": 1500,
+              "amount": 200,
               "category": "equity",
               "description": "Profits from prior months kept in the business",
               "icon": "owner"
@@ -744,7 +744,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "net-income",
               "label": "Current Net Income",
-              "amount": 800,
+              "amount": 100,
               "category": "equity",
               "description": "This month's profit (Revenue minus Expenses)",
               "icon": "owner"
@@ -753,8 +753,16 @@ export const AUTHORED_UNIT_1_LESSONS = [
           "showHintsByDefault": true,
           "problemTemplate": {
             "parameters": {
-              "assets": { "min": 3000, "max": 9000, "step": 100 },
-              "liabilities": { "min": 1000, "max": 5000, "step": 100 }
+              "assets": {
+                "min": 3000,
+                "max": 9000,
+                "step": 100
+              },
+              "liabilities": {
+                "min": 1000,
+                "max": 5000,
+                "step": 100
+              }
             },
             "answerFormula": "assets - liabilities",
             "questionTemplate": "Given assets {{assets}} and liabilities {{liabilities}}, compute equity.",
@@ -851,15 +859,15 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "sarahs-capital",
               "label": "Sarah's Capital",
-              "amount": 5000,
+              "amount": 500,
               "category": "equity",
-              "description": "Sarah's original $5,000 investment to launch TechStart",
+              "description": "Sarah's remaining owner claim after the month's changes",
               "icon": "owner"
             },
             {
               "id": "retained-earnings",
               "label": "Retained Earnings",
-              "amount": 2000,
+              "amount": 250,
               "category": "equity",
               "description": "Profits from prior months kept in the business",
               "icon": "owner"
@@ -867,7 +875,7 @@ export const AUTHORED_UNIT_1_LESSONS = [
             {
               "id": "current-net-income",
               "label": "Current Net Income",
-              "amount": 1100,
+              "amount": 150,
               "category": "equity",
               "description": "This month's profit (Revenue minus Expenses)",
               "icon": "owner"
@@ -876,8 +884,16 @@ export const AUTHORED_UNIT_1_LESSONS = [
           "showHintsByDefault": false,
           "problemTemplate": {
             "parameters": {
-              "assets": { "min": 3000, "max": 12000, "step": 100 },
-              "liabilities": { "min": 800, "max": 7000, "step": 100 }
+              "assets": {
+                "min": 3000,
+                "max": 12000,
+                "step": 100
+              },
+              "liabilities": {
+                "min": 800,
+                "max": 7000,
+                "step": 100
+              }
             },
             "answerFormula": "assets - liabilities",
             "questionTemplate": "Given assets {{assets}} and liabilities {{liabilities}}, compute equity.",

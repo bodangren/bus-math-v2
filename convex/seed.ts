@@ -7,6 +7,10 @@
  *
  * `seedUnit1Lesson1` is kept as a compatibility alias, but it now seeds the
  * full published curriculum manifest rather than a one-off lesson.
+ *
+ * Published activity props are sourced from the generated authored manifest in
+ * `lib/curriculum/generated`, so reseeding should be run after regenerating
+ * authored modules.
  */
 
 import { mutation, type MutationCtx } from "./_generated/server";
@@ -17,6 +21,7 @@ import {
   type PublishedCurriculumLesson,
   type PublishedSection,
 } from "../lib/curriculum/published-manifest";
+import { resolveLatestPublishedLessonVersion } from "../lib/progress/published-curriculum";
 
 function base64UrlEncodeBytes(bytes: Uint8Array): string {
   let binary = "";
@@ -347,6 +352,102 @@ async function seedPublishedCurriculumHandler(ctx: MutationCtx) {
   };
 }
 
+async function repairPublishedActivityPropsHandler(ctx: MutationCtx) {
+  const now = Date.now();
+  const seedPlan = buildPublishedCurriculumSeedPlan();
+  let repairedCount = 0;
+
+  for (const lesson of seedPlan.lessons) {
+    const lessonRow = await ctx.db
+      .query("lessons")
+      .withIndex("by_slug", (q) => q.eq("slug", lesson.slug))
+      .unique();
+    if (!lessonRow) {
+      continue;
+    }
+
+    const versions = await ctx.db
+      .query("lesson_versions")
+      .withIndex("by_lesson", (q) => q.eq("lessonId", lessonRow._id))
+      .collect();
+    const latestVersion = resolveLatestPublishedLessonVersion(versions);
+    if (!latestVersion) {
+      continue;
+    }
+
+    const phaseRows = await ctx.db
+      .query("phase_versions")
+      .withIndex("by_lesson_version", (q) => q.eq("lessonVersionId", latestVersion._id))
+      .collect();
+    const phaseByNumber = new Map(phaseRows.map((phase) => [phase.phaseNumber, phase]));
+
+    for (const plannedPhase of lesson.phases) {
+      const phaseRow = phaseByNumber.get(plannedPhase.phaseNumber);
+      if (!phaseRow) {
+        continue;
+      }
+
+      const sectionRows = await ctx.db
+        .query("phase_sections")
+        .withIndex("by_phase_version", (q) => q.eq("phaseVersionId", phaseRow._id))
+        .collect();
+      sectionRows.sort((a, b) => a.sequenceOrder - b.sequenceOrder);
+
+      for (let index = 0; index < plannedPhase.sections.length; index += 1) {
+        const plannedSection = plannedPhase.sections[index];
+        const sectionRow = sectionRows[index];
+
+        if (
+          plannedSection.sectionType !== "activity" ||
+          sectionRow?.sectionType !== "activity" ||
+          typeof plannedSection.content.activityId !== "string" ||
+          typeof sectionRow.content.activityId !== "string"
+        ) {
+          continue;
+        }
+
+        const plannedActivity = lesson.activities.find(
+          (activity) => activity.key === plannedSection.content.activityId,
+        );
+        if (!plannedActivity) {
+          continue;
+        }
+
+        const activityRow = await ctx.db.get(sectionRow.content.activityId as Id<"activities">);
+        if (!activityRow) {
+          continue;
+        }
+
+        const shouldPatch =
+          activityRow.componentKey !== plannedActivity.componentKey ||
+          activityRow.displayName !== plannedActivity.displayName ||
+          (activityRow.description ?? null) !== (plannedActivity.description ?? null) ||
+          JSON.stringify(activityRow.props) !== JSON.stringify(plannedActivity.props) ||
+          JSON.stringify(activityRow.gradingConfig ?? null) !== JSON.stringify(plannedActivity.gradingConfig ?? null);
+
+        if (!shouldPatch) {
+          continue;
+        }
+
+        await ctx.db.patch(activityRow._id, {
+          componentKey: plannedActivity.componentKey,
+          displayName: plannedActivity.displayName,
+          description: plannedActivity.description,
+          props: plannedActivity.props,
+          gradingConfig: plannedActivity.gradingConfig,
+          updatedAt: now,
+        });
+        repairedCount += 1;
+      }
+    }
+  }
+
+  return {
+    status: "repaired",
+    repairedCount,
+  };
+}
+
 export const seedPublishedCurriculum = mutation({
   args: {},
   handler: seedPublishedCurriculumHandler,
@@ -355,6 +456,11 @@ export const seedPublishedCurriculum = mutation({
 export const seedUnit1Lesson1 = mutation({
   args: {},
   handler: seedPublishedCurriculumHandler,
+});
+
+export const repairPublishedActivityProps = mutation({
+  args: {},
+  handler: repairPublishedActivityPropsHandler,
 });
 
 export const seedDemoAccounts = mutation({

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 import {
   type LucideIcon,
   DollarSign,
@@ -23,6 +24,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { cn } from '@/lib/utils'
 
 export const NOTEBOOK_ORGANIZER_SUPPORTED_MODES = [
   'guided_practice',
@@ -52,6 +54,13 @@ export interface NotebookOrganizerProps {
   }) => void
   onSubmit?: (payload: PracticeSubmissionCallbackPayload) => void
 }
+
+export const NOTEBOOK_QUEUE_DROPPABLE = 'notebook-organizer-queue'
+const NOTEBOOK_FOLDER_DROPPABLES = {
+  asset: 'notebook-organizer-folder-asset',
+  liability: 'notebook-organizer-folder-liability',
+  equity: 'notebook-organizer-folder-equity',
+} as const
 
 const ITEM_ICONS: Record<string, LucideIcon> = {
   cash: DollarSign,
@@ -115,6 +124,19 @@ function buildSubmission(args: {
   })
 }
 
+export function getNotebookFolderDroppableId(category: NotebookItem['category']) {
+  return NOTEBOOK_FOLDER_DROPPABLES[category]
+}
+
+function resolveNotebookCategory(droppableId: string): NotebookItem['category'] | null {
+  const entry = Object.entries(NOTEBOOK_FOLDER_DROPPABLES).find(([, value]) => value === droppableId)
+  if (!entry) {
+    return null
+  }
+
+  return entry[0] as NotebookItem['category']
+}
+
 export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOrganizerProps) {
   const { items, successMessage, initialMessage } = activity.props
   const [placedItems, setPlacedItems] = useState<Record<string, string>>({})
@@ -161,8 +183,42 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
     }
   }, [activity, allItemsPlaced, correctPlacements, equationBalanced, initialMessage, isComplete, items, onComplete, onSubmit, placedItems, successMessage, totals])
 
-  const handlePlaceItem = (itemId: string, category: string) => {
-    setPlacedItems((prev) => ({ ...prev, [itemId]: category }))
+  const handlePlaceItem = (itemId: string, category: NotebookItem['category']) => {
+    setPlacedItems((prev) => {
+      if (prev[itemId] === category) {
+        return prev
+      }
+
+      return { ...prev, [itemId]: category }
+    })
+  }
+
+  const handleRemoveItem = (itemId: string) => {
+    setPlacedItems((prev) => {
+      if (!(itemId in prev)) {
+        return prev
+      }
+
+      const next = { ...prev }
+      delete next[itemId]
+      return next
+    })
+  }
+
+  const handleDragEnd = ({ destination, draggableId, source }: DropResult) => {
+    if (!destination || destination.droppableId === source.droppableId) {
+      return
+    }
+
+    if (destination.droppableId === NOTEBOOK_QUEUE_DROPPABLE) {
+      handleRemoveItem(draggableId)
+      return
+    }
+
+    const category = resolveNotebookCategory(destination.droppableId)
+    if (category) {
+      handlePlaceItem(draggableId, category)
+    }
   }
 
   const resetGame = () => {
@@ -198,51 +254,65 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
     const folderItems = items.filter((item) => placedItems[item.id] === id)
 
     return (
-      <Card className={`border-2 ${colorClass} h-full flex flex-col`}>
-        <CardHeader className="pb-2">
-          <CardTitle className="flex items-center gap-2 text-lg">
+      <Card className={`border-2 ${colorClass} flex h-full min-w-0 flex-col`}>
+        <CardHeader className="min-w-0 pb-2">
+          <CardTitle className="flex min-w-0 items-center gap-2 text-lg">
             <Icon className="h-5 w-5" />
-            {title}
+            <span className="break-words">{title}</span>
           </CardTitle>
           <div className="text-2xl font-bold">${totals[id].toLocaleString()}</div>
         </CardHeader>
-        <CardContent className="max-h-[300px] flex-1 space-y-2 overflow-y-auto">
-          {folderItems.length === 0 ? (
-            <div className="rounded-lg border-2 border-dashed py-4 text-center text-sm italic text-slate-400">
-              Drag items here
-            </div>
-          ) : (
-            folderItems.map((item) => {
-              const ItemIcon = ITEM_ICONS[item.icon] || FileText
-              return (
-                <div
-                  key={item.id}
-                  className="group flex items-center justify-between rounded border bg-white p-2 shadow-sm"
-                >
-                  <div className="flex items-center gap-2">
-                    <ItemIcon className="h-4 w-4 text-slate-500" />
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold">${item.amount.toLocaleString()}</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const next = { ...placedItems }
-                        delete next[item.id]
-                        setPlacedItems(next)
-                      }}
-                      className="text-slate-300 hover:text-red-500"
-                      aria-label={`Remove ${item.label}`}
-                    >
-                      ×
-                    </button>
-                  </div>
+        <Droppable droppableId={getNotebookFolderDroppableId(id)}>
+          {(provided) => (
+            <CardContent
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="min-w-0 flex-1 space-y-2"
+            >
+              {folderItems.length === 0 ? (
+                <div className="rounded-lg border-2 border-dashed py-4 text-center text-sm italic text-slate-400">
+                  Drag items here
                 </div>
-              )
-            })
+              ) : (
+                folderItems.map((item, index) => {
+                  const ItemIcon = ITEM_ICONS[item.icon] || FileText
+                  return (
+                    <Draggable key={item.id} draggableId={item.id} index={index}>
+                      {(dragProvided, snapshot) => (
+                        <div
+                          ref={dragProvided.innerRef}
+                          {...dragProvided.draggableProps}
+                          {...dragProvided.dragHandleProps}
+                          className={cn(
+                            'group flex flex-wrap items-start gap-2 rounded border bg-white p-2 shadow-sm transition-shadow',
+                            snapshot.isDragging && 'ring-2 ring-amber-400 shadow-lg'
+                          )}
+                        >
+                          <div className="flex min-w-0 flex-1 items-start gap-2">
+                            <ItemIcon className="h-4 w-4 text-slate-500" />
+                            <span className="break-words text-sm font-medium">{item.label}</span>
+                          </div>
+                          <div className="ml-auto flex shrink-0 items-center gap-2">
+                            <span className="text-sm font-bold">${item.amount.toLocaleString()}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveItem(item.id)}
+                              className="text-slate-300 hover:text-red-500"
+                              aria-label={`Remove ${item.label}`}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  )
+                })
+              )}
+              {provided.placeholder}
+            </CardContent>
           )}
-        </CardContent>
+        </Droppable>
       </Card>
     )
   }
@@ -250,10 +320,10 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
   const unplacedItems = items.filter((item) => !placedItems[item.id])
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-4">
+    <div className="mx-auto w-full max-w-full space-y-4 px-3 py-4 sm:space-y-6 sm:px-4">
       <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
         <CardHeader className="space-y-4 text-center">
-          <CardTitle className="flex items-center justify-center gap-2 text-3xl">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl sm:text-3xl">
             <FileText className="h-8 w-8 text-amber-600" />
             {resolvedTitle}
           </CardTitle>
@@ -312,7 +382,7 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
       <Card className="bg-slate-50 border-slate-200">
         <CardContent className="p-6">
           <div className="flex flex-col items-center gap-4">
-            <div className="flex w-full max-w-2xl items-center gap-8">
+            <div className="flex w-full max-w-3xl flex-col items-center gap-4 sm:flex-row sm:gap-8">
               <div className="flex-1 text-center">
                 <div className="text-sm font-bold uppercase text-blue-600">What We Have</div>
                 <div className="text-3xl font-black">${totals.asset.toLocaleString()}</div>
@@ -337,7 +407,7 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
               </div>
             </div>
 
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-lg">
               <Progress
                 value={allItemsPlaced ? 100 : (Object.keys(placedItems).length / items.length) * 100}
                 className="h-2"
@@ -350,64 +420,87 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        <div className="space-y-4 lg:col-span-1">
-          <h3 className="flex items-center gap-2 px-2 font-bold text-slate-700">
-            <RefreshCw className="h-4 w-4" />
-            Sarah&apos;s Notes
-          </h3>
-          <div className="max-h-[600px] space-y-3 overflow-y-auto pr-2">
-            {unplacedItems.length === 0 ? (
-              <div className="rounded-xl border-2 border-dashed border-green-200 bg-green-50 p-6 text-center">
-                <CheckCircle className="mx-auto mb-2 h-8 w-8 text-green-500" />
-                <p className="text-sm font-medium text-green-700">All notes sorted!</p>
-              </div>
-            ) : (
-              unplacedItems.map((item) => {
-                const ItemIcon = ITEM_ICONS[item.icon] || FileText
-                return (
-                  <Card key={item.id} className="cursor-grab transition-shadow hover:shadow-md active:cursor-grabbing">
-                    <CardContent className="space-y-2 p-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <ItemIcon className="h-4 w-4 text-slate-500" />
-                          <div>
-                            <p className="font-medium">{item.label}</p>
-                            <p className="text-xs text-slate-500">{item.description}</p>
-                          </div>
-                        </div>
-                        <span className="text-sm font-bold">${item.amount.toLocaleString()}</span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2 pt-2">
-                        {(['asset', 'liability', 'equity'] as const).map((category) => (
-                          <Button
-                            key={category}
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePlaceItem(item.id, category)}
-                            className="text-xs capitalize"
-                          >
-                            {category}
-                          </Button>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })
-            )}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(260px,320px)_minmax(0,1fr)]">
+          <div className="min-w-0 space-y-4">
+            <h3 className="flex items-center gap-2 px-2 font-bold text-slate-700">
+              <RefreshCw className="h-4 w-4" />
+              Sarah&apos;s Notes
+            </h3>
+            <Droppable droppableId={NOTEBOOK_QUEUE_DROPPABLE}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="min-w-0 space-y-3 rounded-xl border border-dashed border-slate-200 bg-white/50 p-3"
+                >
+                  {unplacedItems.length === 0 ? (
+                    <div className="rounded-xl border-2 border-dashed border-green-200 bg-green-50 p-6 text-center">
+                      <CheckCircle className="mx-auto mb-2 h-8 w-8 text-green-500" />
+                      <p className="text-sm font-medium text-green-700">All notes sorted!</p>
+                    </div>
+                  ) : (
+                    unplacedItems.map((item, index) => {
+                      const ItemIcon = ITEM_ICONS[item.icon] || FileText
+                      return (
+                        <Draggable key={item.id} draggableId={item.id} index={index}>
+                          {(dragProvided, snapshot) => (
+                            <Card
+                              ref={dragProvided.innerRef}
+                              {...dragProvided.draggableProps}
+                              {...dragProvided.dragHandleProps}
+                              className={cn(
+                                'min-w-0 cursor-grab transition-shadow hover:shadow-md active:cursor-grabbing',
+                                snapshot.isDragging && 'ring-2 ring-amber-400 shadow-lg'
+                              )}
+                            >
+                              <CardContent className="space-y-2 p-3">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex min-w-0 flex-1 items-start gap-2">
+                                    <ItemIcon className="h-4 w-4 text-slate-500" />
+                                    <div className="min-w-0">
+                                      <p className="break-words font-medium">{item.label}</p>
+                                      <p className="break-words text-xs text-slate-500">{item.description}</p>
+                                    </div>
+                                  </div>
+                                  <span className="shrink-0 text-right text-sm font-bold">${item.amount.toLocaleString()}</span>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 pt-2">
+                                  {(['asset', 'liability', 'equity'] as const).map((category) => (
+                                    <Button
+                                      key={category}
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handlePlaceItem(item.id, category)}
+                                      className="text-xs capitalize"
+                                    >
+                                      {category}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
+                        </Draggable>
+                      )
+                    })
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           </div>
-        </div>
 
-        <div className="lg:col-span-3">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {renderFolder('asset', 'What We Have', 'border-blue-200 bg-blue-50', DollarSign)}
-            {renderFolder('liability', 'What We Owe', 'border-red-200 bg-red-50', CreditCard)}
-            {renderFolder('equity', 'Sarah&apos;s Stake', 'border-purple-200 bg-purple-50', User)}
+          <div className="min-w-0">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {renderFolder('asset', 'What We Have', 'border-blue-200 bg-blue-50', DollarSign)}
+              {renderFolder('liability', 'What We Owe', 'border-red-200 bg-red-50', CreditCard)}
+              {renderFolder('equity', "Sarah's Stake", 'border-purple-200 bg-purple-50', User)}
+            </div>
           </div>
         </div>
-      </div>
+      </DragDropContext>
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
         <div className="text-sm text-slate-600">
