@@ -1,1 +1,8 @@
-Phase 1 complete. Continue-state contract defined with test coverage. Gap found: completed lessons lack Review action.
+Phase 1: Continue-State Contract
+
+- Audited current dashboard and lesson-runtime resume/completion behavior
+- Defined canonical start/resume/review/next-action contract for student lesson states
+- Added failing tests around continue-state derivation and completed-lesson actions
+- Recorded findings: Completed lessons returned null from toLessonAction (no review action)
+- Identified gap: Dashboard and lesson runtime need 'Review Lesson' action for completed lessons
+- Confirmed buildLessonContinueContinue correctly derives next lesson recommendations
