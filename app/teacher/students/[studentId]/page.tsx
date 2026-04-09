@@ -15,6 +15,7 @@ import {
 } from '@/lib/teacher/progress';
 import { buildTeacherStudentDetailViewModel } from '@/lib/teacher/student-detail';
 import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
+import { teacherDashboardPath } from '@/lib/student/navigation';
 
 interface TeacherStudentDetailPageProps {
   params: Promise<{
@@ -92,7 +93,7 @@ export default async function TeacherStudentDetailPage({
             </h1>
           </div>
           <Button asChild variant="outline">
-            <Link href="/teacher">Back to dashboard</Link>
+            <Link href={teacherDashboardPath()}>Back to dashboard</Link>
           </Button>
         </div>
 

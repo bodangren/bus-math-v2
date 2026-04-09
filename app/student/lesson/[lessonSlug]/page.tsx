@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import { LessonRenderer } from '@/components/student/LessonRenderer';
 import { getServerSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, fetchQuery, api, internal } from '@/lib/convex/server';
+import { studentDashboardPath } from '@/lib/student/navigation';
 import {
   fallbackPublishedPhaseTitle,
   publishedPhaseMetadata,
@@ -35,7 +36,7 @@ function NoPhaseError({ lessonTitle }: { lessonTitle: string }) {
           contact your instructor.
         </p>
         <a
-          href="/student/dashboard"
+          href={studentDashboardPath()}
           className="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
           Return to Dashboard
@@ -55,10 +56,10 @@ function AccessCheckError({ lessonTitle }: { lessonTitle: string }) {
           may be due to a temporary server issue.
         </p>
         <p className="text-red-700 mb-4">
-          Please try again in a few moments. If the problem persists, contact your instructor.
+          Please try again in a few moments. If problem persists, contact your instructor.
         </p>
         <a
-          href="/student/dashboard"
+          href={studentDashboardPath()}
           className="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
           Return to Dashboard
