@@ -13,10 +13,10 @@
 - [x] Run `npm run lint` and the targeted test suite for shared navigation changes
 
 ## Phase 3: Student Lesson and Unit Wayfinding
-- [ ] Implement the canonical student breadcrumb and return-path flow across lesson, completion, empty, and error states
-- [ ] Add the required student unit surface or redirect strategy so unit links are real and intentional
-- [ ] Fix any dead-end lesson links uncovered during the implementation
-- [ ] Add regression coverage for the primary student wayfinding states
+- [x] Implement the canonical student breadcrumb and return-path flow across lesson, completion, empty, and error states
+- [x] Add the required student unit surface or redirect strategy so unit links are real and intentional
+- [x] Fix any dead-end lesson links uncovered during the implementation
+- [x] Add regression coverage for the primary student wayfinding states
 
 ## Phase 4: Verification and Documentation
 - [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the touched navigation surfaces
