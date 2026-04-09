@@ -1,0 +1,17 @@
+conductor: Phase 1 complete - Competency Reporting Contract
+
+Tasks completed:
+1. ✅ Audit existing competency schema, teacher helpers, and reporting seams
+2. ✅ Define canonical course/unit/student competency reporting contract
+3. ✅ Add failing tests for competency view-model assembly (15 tests passing)
+4. ✅ Record data/labeling inconsistencies (none found)
+
+Files created:
+- lib/teacher/competency-heatmap.ts (pure assembly functions)
+- __tests__/lib/teacher/competency-heatmap.test.ts (15 tests)
+- phase1-competency-reporting-contract.md (contract docs)
+- phase1-summary.md (completion summary)
+
+Verification: 15/15 tests passing, no lint errors.
+
+Next: Phase 2 - Heatmap Rendering
