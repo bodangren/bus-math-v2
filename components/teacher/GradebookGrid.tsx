@@ -195,6 +195,8 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                             studentName: row.displayName,
                             lessonId: lesson.lessonId,
                             lessonTitle: lesson.lessonTitle,
+                            independentPractice: cell.independentPractice,
+                            assessment: cell.assessment,
                           })
                         }
                         tabIndex={0}
