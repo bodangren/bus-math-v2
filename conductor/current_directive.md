@@ -76,6 +76,34 @@ The following remain out of scope unless a later explicit track opens them:
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
+## Code Review Summary (2026-04-09 — Classroom Product Completeness Review, Pass 18)
+
+Autonomous code review covering the last 3 phases: remaining exercise placeholders (ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem), classroom completeness roadmap planning, and full lesson integrity audit Phases 1-2 (NotebookOrganizer refactor, Unit 1-2 seed data, lesson page runtime updates, README rewrite).
+
+**Fixed during review: 3 issues**
+- **Lesson page test expectations stale** (Medium): Two tests in `__tests__/app/student/lesson/[lessonSlug]/page.test.tsx` expected `redirect()` to be called when no `phaseParam` is provided. The page was refactored in commit `4590a94` to render directly with `resolveLessonLandingPhase` instead of redirecting. Tests updated to assert `currentPhaseNumber` and `lessonComplete` via the rendered `LessonRenderer` mock output instead of checking `redirect` spy calls.
+- **Cloudflare launch hardening test stale** (Medium): Test in `__tests__/config/cloudflare-launch-hardening.test.ts` asserted README contains `cloudflare-launch-checklist` text, but the README was rewritten as a status report in commit `fe48a02`. Updated test to check `conductor/architecture.md` instead, which correctly references the launch checklist.
+- **Tech-debt.md placeholder count stale** (Low): tech-debt.md recorded 3 placeholder keys but the registry now has 0 — all placeholders (profit-calculator, budget-worksheet, error-checking-system) were implemented in commit `6eff9ea`. Updated tech-debt.md to reflect completion.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
+- `npm test`: 1528/1528 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Remaining exercise placeholders** (ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem): All three follow established exercise patterns with submittedRef guard, `buildSimulationSubmissionEnvelope` submission, proper optional chaining on callbacks. ProfitCalculator has division guard on profitMargin. BudgetWorksheet and ErrorCheckingSystem are interactive exploration/worksheets. All registered in activity registry — 0 placeholder keys remain.
+- **NotebookOrganizer refactor**: Significant layout and UX overhaul. Has submittedRef guard, practice.v1 envelope submission, `resetGame` function that clears submittedRef. Auto-submit on correct completion via useEffect with submittedRef guard. Manual submit button with proper disabled state. Tests cover drag-and-drop, button-based placement, practice.v1 envelope shape, and double-submit protection.
+- **Full lesson integrity audit Phases 1-2**: Audit checklist defined, guard tests added (activity-completeness), Unit 1-2 seed data revised for accounting balance. Seed data tests validate dataset balance (A=L+E), phase structure, standards linkage, and no placeholder text.
+- **Lesson page runtime**: Phase resolution uses `resolveLessonLandingPhase` from `lib/student/lesson-runtime.ts`. Handles completed lessons (shows final phase with dashboard recommendation), incomplete lessons (redirects to first incomplete phase), and explicit phase params. Teacher/admin bypass phase locking. Access checks use `internal.api.canAccessPhase`.
+- **Header-simple**: Added Search nav link, responsive layout. Clean.
+- **Activity registry**: 57 schema keys, 57 registry entries (all real — 0 placeholders). Perfect 1:1 match confirmed by activity-completeness test.
+- **All 24 exercise/simulation components**: submittedRef guard (21/24 have ref; 3 one-shot intentionally). Reset functions clear submittedRef. Optional chaining consistent. Division guards intact.
+
+**New items recorded in tech-debt.md:**
+- None — all existing items reviewed and still accurate.
+
+**Phase status**: Full Lesson Phase Integrity Audit Phases 1-2 COMPLETE. Phase 3 (Units 3-4 sweep) is next.
+
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
 Audited Unit 8 Page Polish track and full codebase sweep of all 21 simulation/exercise components, activity registry, and conductor state.

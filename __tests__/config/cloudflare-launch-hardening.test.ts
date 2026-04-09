@@ -31,10 +31,10 @@ describe('Cloudflare launch hardening', () => {
   });
 
   it('links the launch checklist from the active deployment docs', () => {
-    const readme = read('README.md');
+    const architectureDoc = read('conductor/architecture.md');
     const runtimeDoc = read('conductor/docs/architecture/runtime.md');
 
-    expect(readme).toContain('cloudflare-launch-checklist');
+    expect(architectureDoc).toContain('cloudflare-launch-checklist');
     expect(runtimeDoc).toContain('cloudflare-launch-checklist');
   });
 });

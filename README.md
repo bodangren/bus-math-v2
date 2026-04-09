@@ -478,6 +478,119 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 - add app routes or downloadable surfaces for capstone guidelines and rubrics
 - decide whether Units 2-8 should gain the same detailed markdown source-doc parity that Unit 1 already has
 
+## Wishlist Roadmap Items
+
+These are not part of the active Conductor Milestone 8 sequence yet. They are future product ideas that should be scoped deliberately after classroom-completeness work is stabilized.
+
+### 1. Student One-Shot Lesson Chatbot
+
+Goal:
+
+- add a small bottom-right lesson helper for students to ask one question about the current lesson
+
+Desired product shape:
+
+- lives in the bottom-right corner of the lesson experience
+- single-turn only
+- no back-and-forth thread
+- scoped tightly to the active lesson context
+- uses `openrouter/free`
+
+Why it is attractive:
+
+- gives students quick clarification without turning the lesson into an open-ended chat product
+- reduces the temptation to use external tools during a lesson
+- keeps the support interaction bounded and low-cost
+
+Important constraints:
+
+- one-shot only should be enforced in product design, not just in prompt wording
+- lesson context should be passed in a narrowly scoped way so the assistant answers the current lesson, not the whole internet
+- requests and responses should be filtered and logged defensively because "one turn" reduces but does not eliminate jailbreak attempts
+- rate limiting and role checks should be required so only authenticated students can use it in the intended surface
+- the UX should reset after each response rather than preserving conversational memory
+
+Likely implementation work:
+
+- create a teacher-safe and student-safe AI route for one-shot lesson Q&A
+- define the exact lesson context package:
+  - lesson title
+  - current phase
+  - learning objectives
+  - selected content summary or published phase content
+- add UI for the bottom-right helper on lesson pages
+- add request guards, rate limits, and abuse controls
+- add analytics so usage can be measured before expanding scope
+
+Suggested future track framing:
+
+- `Student One-Shot Lesson Helper`
+
+Definition of done:
+
+- a student can ask one question from the lesson page
+- the response is lesson-scoped and concise
+- no second-turn conversation is supported
+- abuse controls and rate limits are in place
+
+### 2. AI Feedback for Submitted Excel Spreadsheets
+
+Goal:
+
+- give students preliminary automated feedback on submitted spreadsheet work, including a provisional score, improvement guidance, and the ability to revise and resubmit
+
+Desired product shape:
+
+- student submits a spreadsheet activity
+- system evaluates the workbook and generates:
+  - preliminary score
+  - concise strengths summary
+  - targeted improvement feedback
+  - clear next steps for revision
+- student can revise and resubmit
+- teacher still remains the final authority when needed
+
+Why it is attractive:
+
+- gives faster formative feedback on workbook quality
+- supports revision cycles instead of one-and-done submission
+- makes spreadsheet lessons feel more like a real build-and-improve workflow
+
+Important constraints:
+
+- the current deterministic spreadsheet scoring/evaluation path should remain the base layer; AI feedback should augment it, not replace it
+- provisional score labeling must be explicit so students do not mistake AI output for final teacher grading
+- resubmission rules need to be defined carefully:
+  - unlimited or capped attempts
+  - whether best score or latest score is teacher-visible
+  - what evidence teachers see across attempts
+- feedback should reference actual workbook mistakes or missing requirements whenever possible, not generic encouragement
+- the product should preserve teacher visibility into:
+  - original submission
+  - revised submission
+  - AI-generated feedback
+  - score changes across attempts
+
+Likely implementation work:
+
+- extend spreadsheet submission records to support attempt history cleanly
+- define a deterministic plus AI feedback pipeline for spreadsheet activities
+- generate preliminary score and feedback after submission
+- expose student-facing revise/resubmit UX
+- update teacher evidence views to show attempt history and AI feedback artifacts
+- define clear policy copy for "preliminary", "revision", and "final review" states
+
+Suggested future track framing:
+
+- `Spreadsheet AI Feedback and Revision Loop`
+
+Definition of done:
+
+- spreadsheet submissions receive preliminary AI-assisted feedback
+- students can revise and resubmit within the defined attempt policy
+- teacher reporting shows attempt history and feedback artifacts
+- deterministic scoring and AI commentary stay aligned instead of drifting
+
 ## Definition of Done for "Classroom Complete"
 
 This project should call itself classroom-complete only when all of the following are true:

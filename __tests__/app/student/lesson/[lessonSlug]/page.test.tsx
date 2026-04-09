@@ -387,7 +387,7 @@ describe('LessonPage', () => {
     expect(mockFetchInternalQuery).toHaveBeenCalledTimes(1);
   });
 
-  it('redirects to the first incomplete phase using Convex lesson progress', async () => {
+  it('renders first incomplete phase using Convex lesson progress when no phase param', async () => {
     mockFetchQuery.mockImplementation(async (name: unknown) => {
       if (name === 'api.api.getLessonWithContent') return makeConvexContent();
       if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
@@ -408,17 +408,16 @@ describe('LessonPage', () => {
       return null;
     });
 
-    try {
-      await LessonPage({
-        params: Promise.resolve({ lessonSlug: 'test-lesson' }),
-        searchParams: Promise.resolve({}),
-      });
-    } catch {}
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({}),
+    });
+    render(page);
 
-    expect(redirect).toHaveBeenCalledWith('/student/lesson/test-lesson?phase=3');
+    expect(screen.getByTestId('current-phase')).toHaveTextContent('3');
   });
 
-  it('redirects completed lessons to the final phase instead of restarting from phase 1', async () => {
+  it('renders final phase for completed lessons instead of restarting from phase 1', async () => {
     mockFetchQuery.mockImplementation(async (name: unknown) => {
       if (name === 'api.api.getLessonWithContent') return makeConvexContent();
       if (name === 'api.api.getLessonBySlugOrId') return { _id: 'cvx-lesson-1' };
@@ -440,14 +439,14 @@ describe('LessonPage', () => {
       return null;
     });
 
-    try {
-      await LessonPage({
-        params: Promise.resolve({ lessonSlug: 'test-lesson' }),
-        searchParams: Promise.resolve({}),
-      });
-    } catch {}
+    const page = await LessonPage({
+      params: Promise.resolve({ lessonSlug: 'test-lesson' }),
+      searchParams: Promise.resolve({}),
+    });
+    render(page);
 
-    expect(redirect).toHaveBeenCalledWith('/student/lesson/test-lesson?phase=3');
+    expect(screen.getByTestId('current-phase')).toHaveTextContent('3');
+    expect(screen.getByTestId('lesson-complete')).toHaveTextContent('true');
   });
 
   it('passes completion state and next recommendation into the lesson renderer', async () => {
