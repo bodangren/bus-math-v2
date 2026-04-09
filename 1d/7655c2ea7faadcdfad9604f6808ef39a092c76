@@ -1,0 +1,9 @@
+Phase 2: Dashboard Action Consistency
+
+- Updated toLessonAction to return 'Review Lesson' for completed lessons
+- Fixed dashboard view-models to properly filter nulls from lesson actions
+- Added individual action buttons to each lesson card with correct labels (Start/Resume/Review)
+- Updated unit nextLesson logic to prioritize in-progress, then not-started
+- Maintained global nextLesson priority order (in-progress, not-started)
+- Added tests for completed lesson review behavior
+- All verification gates pass (lint 0 errors, 1592/1592 tests pass)
