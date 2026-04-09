@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { LessonStepper, type StepperPhase } from '@/components/lesson/LessonStepper';
 import { PhaseRenderer } from '@/components/lesson/PhaseRenderer';
 import { PhaseGuidanceCard } from '@/components/student/PhaseGuidanceCard';
@@ -168,6 +168,15 @@ export function LessonRenderer({
   return (
     <div className="container mx-auto p-8">
       <div className="max-w-4xl mx-auto">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
+          <Link href={studentDashboardPath()} className="hover:text-foreground">
+            Dashboard
+          </Link>
+          <ArrowRight className="h-3 w-3" />
+          <span className="text-foreground">{lesson.title}</span>
+        </nav>
+
         {/* Lesson Header */}
         <div className="mb-8">
           <div className="text-sm text-muted-foreground mb-2">
