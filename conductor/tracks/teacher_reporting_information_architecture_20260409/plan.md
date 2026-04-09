@@ -13,13 +13,13 @@
 - [x] Run `npm run lint` and targeted teacher-dashboard tests
 
 ## Phase 3: Shared Reporting Wayfinding
-- [~] Implement shared breadcrumbs and back-link behavior across course, unit, lesson, and student reporting pages
-- [ ] Normalize route titles, labels, and page descriptions so the reporting hierarchy is legible
-- [ ] Add regression coverage for the canonical teacher reporting drill-down paths
-- [ ] Run the relevant broader route/component tests for teacher reporting pages
+- [x] Implement shared breadcrumbs and back-link behavior across course, unit, lesson, and student reporting pages
+- [x] Normalize route titles, labels, and page descriptions so the reporting hierarchy is legible
+- [x] Add regression coverage for the canonical teacher reporting drill-down paths
+- [x] Run the relevant broader route/component tests for teacher reporting pages
 
 ## Phase 4: Verification and Documentation
-- [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the reporting IA changes
-- [ ] Update active Conductor docs if the teacher reporting hierarchy changes
-- [ ] Record any deeper reporting work intentionally deferred to the gradebook or competency tracks
-- [ ] Prepare the track for archive with verification evidence
+- [x] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the reporting IA changes
+- [x] Update active Conductor docs if the teacher reporting hierarchy changes
+- [x] Record any deeper reporting work intentionally deferred to the gradebook or competency tracks
+- [x] Prepare the track for archive with verification evidence
