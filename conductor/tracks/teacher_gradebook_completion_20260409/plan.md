@@ -1,10 +1,10 @@
 # Implementation Plan: Teacher Gradebook Completion
 
 ## Phase 1: Gradebook Contract Definition
-- [ ] Audit the current course and unit gradebook data/view contracts and identify what is missing for independent practice, assessment, and evidence drill-down
-- [ ] Define the canonical gradebook semantics for lesson, independent-practice, assessment, and unit-test visibility
-- [ ] Add or update failing tests around the gradebook view-model and rendering contract
-- [ ] Record any data-shape gaps that must be closed before UI completion
+- [x] Audit  the current course and unit gradebook data/view contracts and identify what is missing for independent practice, assessment, and evidence drill-down
+- [x] Define  the canonical gradebook semantics for lesson, independent-practice, assessment, and unit-test visibility
+- [x] Add or update failing tests around the gradebook view-model and rendering contract
+- [x] Record any data-shape gaps that must be closed before UI completion
 
 ## Phase 2: Unit Gradebook Expansion
 - [ ] Expand the unit-level gradebook so teachers can inspect detailed progress for all students across the unit
