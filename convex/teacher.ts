@@ -344,7 +344,7 @@ export const getTeacherGradebookData = internalQuery({
     }));
 
     if (rawLessonVersions.length === 0) {
-      return assembleGradebookRows([], rawLessons, [], [], [], [], []);
+      return assembleGradebookRows([], rawLessons, [], [], [], [], [], []);
     }
 
     const lessonVersionIds = new Set(rawLessonVersions.map((version) => version.id));
@@ -375,7 +375,7 @@ export const getTeacherGradebookData = internalQuery({
     }));
 
     if (students.length === 0) {
-      return assembleGradebookRows([], rawLessons, rawLessonVersions, rawPhaseVersions, rawPrimaryStandards, [], []);
+      return assembleGradebookRows([], rawLessons, rawLessonVersions, rawPhaseVersions, rawPrimaryStandards, [], [], [], []);
     }
 
     const phaseIds = new Set(rawPhaseVersions.map((phase) => phase.id));
@@ -417,6 +417,38 @@ export const getTeacherGradebookData = internalQuery({
         masteryLevel: row.masteryLevel,
       }));
 
+    const rawActivities = (await ctx.db.query("activities").collect())
+      .filter((activity) => rawLessons.some((lesson) => lesson.id === activity.lessonId))
+      .map((activity) => ({
+        id: activity._id,
+        lessonId: activity.lessonId,
+      }));
+
+    const activityIds = new Set(rawActivities.map((activity) => activity.id));
+
+    const rawActivitySubmissions = (
+      await Promise.all(
+        students.map((student) =>
+          ctx.db
+            .query("activity_submissions")
+            .withIndex("by_user", (q) => q.eq("userId", student._id))
+            .collect(),
+        ),
+      )
+    )
+      .flat()
+      .filter((submission) => activityIds.has(submission.activityId))
+      .map((submission) => ({
+        id: submission._id,
+        userId: submission.userId,
+        activityId: submission.activityId,
+        mode: submission.submissionData.mode,
+        status: submission.submissionData.status,
+        score: submission.score ?? null,
+        maxScore: submission.maxScore ?? null,
+        gradedAt: submission.gradedAt ?? null,
+      }));
+
     return assembleGradebookRows(
       rawStudents,
       rawLessons,
@@ -425,6 +457,8 @@ export const getTeacherGradebookData = internalQuery({
       rawPrimaryStandards,
       progressRows,
       competencyRows,
+      rawActivities,
+      rawActivitySubmissions,
     );
   },
 });

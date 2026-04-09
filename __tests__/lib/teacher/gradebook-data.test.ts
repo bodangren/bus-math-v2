@@ -47,6 +47,8 @@ describe('assembleGradebookRows', () => {
       [std1, std2, std11],
       [],
       [],
+      [],
+      [],
     );
     expect(lessons.map(l => l.orderIndex)).toEqual([1, 2, 11]);
   });
