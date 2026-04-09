@@ -84,8 +84,8 @@ The target product is:
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 7 |
 | Active Milestone 8 track status | 1 in progress, 6 not started |
-| Archived track directories | 92 |
-| Test files under `__tests__` and `tests` | 282 |
+| Archived track directories | 93 |
+| Test files under `__tests__` and `tests` | 271 |
 
 ### My real assessment
 

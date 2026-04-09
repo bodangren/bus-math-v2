@@ -96,7 +96,7 @@ describe('Phase 3: Units 3-4 Curriculum Audit', () => {
       /FIXME/i,
       /XXX/i,
       /placeholder/i,
-      /<describe\|<explain>/i,
+      /<describe|<explain>/i,
     ];
 
     const allSections = unit3Lessons.flatMap(lesson =>
@@ -118,7 +118,7 @@ describe('Phase 3: Units 3-4 Curriculum Audit', () => {
       /FIXME/i,
       /XXX/i,
       /placeholder/i,
-      /<describe\|<explain>/i,
+      /<describe|<explain>/i,
     ];
 
     const allSections = unit4Lessons.flatMap(lesson =>
