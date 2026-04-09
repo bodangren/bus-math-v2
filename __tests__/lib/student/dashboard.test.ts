@@ -6,7 +6,7 @@ import {
 } from '@/lib/student/dashboard';
 
 describe('buildStudentDashboardViewModel', () => {
-  it('derives course metrics, unit progress, and the next in-progress lesson', () => {
+  it('derives course metrics, unit progress, and next in-progress lesson', () => {
     const units: StudentDashboardUnit[] = [
       {
         unitNumber: 1,
@@ -104,7 +104,7 @@ describe('buildStudentDashboardViewModel', () => {
     expect(viewModel.summary.progressPercentage).toBe(20);
   });
 
-  it('returns no next lesson when the course is fully complete', () => {
+  it('returns no next lesson when course is fully complete', () => {
     const units: StudentDashboardUnit[] = [
       {
         unitNumber: 1,
@@ -128,6 +128,7 @@ describe('buildStudentDashboardViewModel', () => {
 
     expect(viewModel.summary.progressPercentage).toBe(100);
     expect(viewModel.summary.completedUnits).toBe(1);
+    expect(viewModel.summary.completedLessons).toBe(1);
     expect(viewModel.nextLesson).toBeNull();
     expect(viewModel.units[0].status).toBe('completed');
   });

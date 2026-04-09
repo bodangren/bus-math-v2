@@ -13,10 +13,10 @@
 - Gap: Dashboard and lesson runtime need "Review Lesson" action for completed lessons
 
 ## Phase 2: Dashboard Action Consistency
-- [ ] Update dashboard view-models and UI so lesson and unit cards expose the canonical action labels and destinations
-- [ ] Ensure completed lessons surface intentional review behavior instead of only resume semantics
-- [ ] Verify the next recommended lesson contract remains aligned with published progress data
-- [ ] Run `npm run lint` and targeted dashboard tests
+- [x] Update dashboard view-models and UI so lesson and unit cards expose the canonical action labels and destinations
+- [x] Ensure completed lessons surface intentional review behavior instead of only resume semantics
+- [x] Verify the next recommended lesson contract remains aligned with published progress data
+- [x] Run `npm run lint` and targeted dashboard tests
 
 ## Phase 3: Lesson Completion Experience
 - [ ] Update the completed-lesson panel and related lesson-runtime states to match the canonical completion loop

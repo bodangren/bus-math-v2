@@ -173,35 +173,55 @@ export default async function StudentDashboard() {
                     ) : null}
 
                     <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                      {unit.lessons.map((lesson) => (
-                        <Card key={lesson.id} className="border-border/60 shadow-none">
-                          <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between gap-3">
-                              <Badge variant="secondary">Lesson</Badge>
-                              <span className="text-xs text-muted-foreground">
-                                {lesson.progressPercentage}%
-                              </span>
-                            </div>
-                            <CardTitle className="text-lg leading-snug">
-                              <Link
-                                href={studentLessonPath(lesson.slug)}
-                                className="hover:underline"
-                              >
-                                {lesson.title}
-                              </Link>
-                            </CardTitle>
-                            {lesson.description ? (
-                              <CardDescription>{lesson.description}</CardDescription>
-                            ) : null}
-                          </CardHeader>
-                          <CardContent className="space-y-3">
-                            <Progress value={lesson.progressPercentage} className="h-2" />
-                            <p className="text-sm text-muted-foreground">
-                              {lesson.completedPhases}/{lesson.totalPhases} phases complete
-                            </p>
-                          </CardContent>
-                        </Card>
-                      ))}
+                      {unit.lessons.map((lesson) => {
+                        const status = lesson.totalPhases > 0 && lesson.completedPhases >= lesson.totalPhases
+                          ? 'completed'
+                          : lesson.completedPhases > 0 || lesson.progressPercentage > 0
+                            ? 'in_progress'
+                            : 'not_started';
+                        
+                        const actionLabel = status === 'in_progress' 
+                          ? 'Resume Lesson' 
+                          : status === 'completed' 
+                            ? 'Review Lesson' 
+                            : 'Start Lesson';
+                        
+                        return (
+                          <Card key={lesson.id} className="border-border/60 shadow-none">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <Badge variant="secondary">Lesson</Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {lesson.progressPercentage}%
+                                </span>
+                              </div>
+                              <CardTitle className="text-lg leading-snug">
+                                <Link
+                                  href={studentLessonPath(lesson.slug)}
+                                  className="hover:underline"
+                                >
+                                  {lesson.title}
+                                </Link>
+                              </CardTitle>
+                              {lesson.description ? (
+                                <CardDescription>{lesson.description}</CardDescription>
+                              ) : null}
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                              <Progress value={lesson.progressPercentage} className="h-2" />
+                              <p className="text-sm text-muted-foreground">
+                                {lesson.completedPhases}/{lesson.totalPhases} phases complete
+                              </p>
+                              <Button asChild variant={status === 'completed' ? 'outline' : 'default'} className="w-full">
+                                <Link href={studentLessonPath(lesson.slug)}>
+                                  {actionLabel}
+                                  <ArrowRight className="ml-2 h-4 w-4" />
+                                </Link>
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
                     </div>
                   </CardContent>
                 </Card>

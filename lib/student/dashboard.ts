@@ -112,9 +112,11 @@ export function buildStudentDashboardViewModel(
       if (status === 'in_progress') inProgressLessons += 1;
     }
 
+    const lessonActions = lessons.map(toLessonAction).filter((l): l is DashboardLessonAction => l !== null);
+    
     const nextLesson =
-      lessons.map(toLessonAction).find((lesson): lesson is DashboardLessonAction => lesson?.status === 'in_progress') ??
-      lessons.map(toLessonAction).find((lesson): lesson is DashboardLessonAction => lesson?.status === 'not_started') ??
+      lessonActions.find((lesson) => lesson.status === 'in_progress') ??
+      lessonActions.find((lesson) => lesson.status === 'not_started') ??
       null;
 
     const unitCompletedLessons = lessons.filter((lesson) => getLessonStatus(lesson) === 'completed').length;

@@ -7,7 +7,7 @@ import {
 import type { StudentDashboardUnit } from '@/lib/student/dashboard';
 
 describe('resolveLessonLandingPhase', () => {
-  it('returns the first incomplete phase for partially completed lessons', () => {
+  it('returns first incomplete phase for partially completed lessons', () => {
     expect(
       resolveLessonLandingPhase({
         totalPhases: 4,
@@ -16,7 +16,7 @@ describe('resolveLessonLandingPhase', () => {
     ).toBe(3);
   });
 
-  it('returns the final phase when every phase is already complete', () => {
+  it('returns final phase when every phase is already complete', () => {
     expect(
       resolveLessonLandingPhase({
         totalPhases: 4,
@@ -56,7 +56,7 @@ describe('buildLessonContinueState', () => {
     },
   ];
 
-  it('reuses the dashboard next lesson recommendation when the current lesson is complete', () => {
+  it('reuses dashboard next lesson recommendation when current lesson is complete', () => {
     expect(buildLessonContinueState(units, 'lesson-1')).toEqual({
       recommendedLesson: {
         unitNumber: 1,
@@ -68,9 +68,60 @@ describe('buildLessonContinueState', () => {
     });
   });
 
-  it('suppresses the recommendation when the current lesson is still the dashboard next lesson', () => {
+  it('suppresses recommendation when current lesson is still dashboard next lesson', () => {
     expect(buildLessonContinueState(units, 'lesson-2')).toEqual({
       recommendedLesson: null,
+    });
+  });
+
+  it('returns in-progress lesson when viewing a completed lesson', () => {
+    const mixedUnits: StudentDashboardUnit[] = [
+      {
+        unitNumber: 1,
+        unitTitle: 'Unit 1',
+        lessons: [
+          {
+            id: 'lesson-1',
+            unitNumber: 1,
+            title: 'Lesson 1',
+            slug: 'lesson-1',
+            description: 'Completed lesson 1',
+            completedPhases: 4,
+            totalPhases: 4,
+            progressPercentage: 100,
+          },
+          {
+            id: 'lesson-2',
+            unitNumber: 1,
+            title: 'Lesson 2',
+            slug: 'lesson-2',
+            description: 'In-progress lesson 2',
+            completedPhases: 2,
+            totalPhases: 4,
+            progressPercentage: 50,
+          },
+          {
+            id: 'lesson-3',
+            unitNumber: 1,
+            title: 'Lesson 3',
+            slug: 'lesson-3',
+            description: 'Not started lesson 3',
+            completedPhases: 0,
+            totalPhases: 4,
+            progressPercentage: 0,
+          },
+        ],
+      },
+    ];
+
+    expect(buildLessonContinueState(mixedUnits, 'lesson-1')).toEqual({
+      recommendedLesson: {
+        unitNumber: 1,
+        title: 'Lesson 2',
+        slug: 'lesson-2',
+        description: 'In-progress lesson 2',
+        actionLabel: 'Resume Lesson',
+      },
     });
   });
 });
