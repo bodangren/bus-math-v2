@@ -19,10 +19,10 @@
 - [x] Run `npm run lint` and targeted dashboard tests
 
 ## Phase 3: Lesson Completion Experience
-- [ ] Update the completed-lesson panel and related lesson-runtime states to match the canonical completion loop
-- [ ] Ensure the lesson runtime and dashboard share the same continue-state logic or helper seam
-- [ ] Add regression coverage for completed, in-progress, and next-recommended lesson behavior
-- [ ] Run the relevant broader tests for shared student progress helpers
+- [x] Update the completed-lesson panel and related lesson-runtime states to match the canonical completion loop
+- [x] Ensure the lesson runtime and dashboard share the same continue-state logic or helper seam
+- [x] Add regression coverage for completed, in-progress, and next-recommended lesson behavior
+- [x] Run the relevant broader tests for shared student progress helpers
 
 ## Phase 4: Verification and Documentation
 - [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the completion-loop changes
