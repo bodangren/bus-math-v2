@@ -22,13 +22,23 @@ export interface GradebookLesson {
   isUnitTest: boolean;
 }
 
+export interface PracticeAndAssessmentData {
+  completed: boolean;
+  score: number | null;
+  maxScore: number | null;
+}
+
 export interface GradebookCell {
   lesson: GradebookLesson;
   completionStatus: LessonCompletionStatus;
-  /** Average mastery level (0–100) for the lesson's primary standard, or null if no data. */
+  /** Average mastery level (0–100) for lesson's primary standard, or null if no data. */
   masteryLevel: number | null;
   /** Deterministic display color derived from completionStatus and masteryLevel. */
   color: CellColor;
+  /** Independent practice completion and score data for this lesson. */
+  independentPractice: PracticeAndAssessmentData | null;
+  /** Assessment completion and score data for this lesson. */
+  assessment: PracticeAndAssessmentData | null;
 }
 
 export interface GradebookRow {
@@ -112,10 +122,12 @@ export function buildGradebookCell(
   lesson: GradebookLesson,
   phases: PhaseProgressStatus[],
   masteryLevel: number | null,
+  independentPractice: PracticeAndAssessmentData | null = null,
+  assessment: PracticeAndAssessmentData | null = null,
 ): GradebookCell {
   const completionStatus = computeLessonStatus(phases);
   const color = computeCellColor(completionStatus, masteryLevel);
-  return { lesson, completionStatus, masteryLevel, color };
+  return { lesson, completionStatus, masteryLevel, color, independentPractice, assessment };
 }
 
 // ---------------------------------------------------------------------------
@@ -228,6 +240,22 @@ export interface RawProgressRow {
   status: PhaseProgressStatus;
 }
 
+export interface RawActivity {
+  id: string;
+  lessonId: string;
+}
+
+export interface RawActivitySubmission {
+  id: string;
+  userId: string;
+  activityId: string;
+  mode: 'worked_example' | 'guided_practice' | 'independent_practice' | 'assessment';
+  status: 'draft' | 'submitted' | 'graded' | 'returned';
+  score: number | null;
+  maxScore: number | null;
+  gradedAt: number | null;
+}
+
 export interface RawCompetencyRow {
   studentId: string;
   standardId: string;
@@ -253,6 +281,8 @@ export function assembleGradebookRows(
   rawPrimaryStandards: RawLessonStandard[],
   progressRows: RawProgressRow[],
   competencyRows: RawCompetencyRow[],
+  rawActivities: RawActivity[],
+  rawActivitySubmissions: RawActivitySubmission[],
 ): { rows: GradebookRow[]; lessons: GradebookLesson[] } {
   const sortedLessons = [...rawLessons].sort((a, b) => a.orderIndex - b.orderIndex);
 
@@ -293,6 +323,20 @@ export function assembleGradebookRows(
     competencyIndex.set(`${row.studentId}|${row.standardId}`, row.masteryLevel);
   }
 
+  // lessonId → activityId (for looking up activities by lesson)
+  const activityIdsByLessonId = new Map<string, Set<string>>();
+  for (const activity of rawActivities) {
+    const set = activityIdsByLessonId.get(activity.lessonId) ?? new Set<string>();
+    set.add(activity.id);
+    activityIdsByLessonId.set(activity.lessonId, set);
+  }
+
+  // "userId|activityId" → submission (for quick lookup)
+  const submissionByUserAndActivity = new Map<string, RawActivitySubmission>();
+  for (const submission of rawActivitySubmissions) {
+    submissionByUserAndActivity.set(`${submission.userId}|${submission.activityId}`, submission);
+  }
+
   const gradebookLessons: GradebookLesson[] = sortedLessons.map(lesson => ({
     lessonId: lesson.id,
     lessonTitle: lesson.title,
@@ -317,7 +361,30 @@ export function assembleGradebookRows(
           ? (competencyIndex.get(`${student.id}|${standardId}`) ?? null)
           : null;
 
-      return buildGradebookCell(gl, phaseStatuses, masteryLevel);
+      const lessonActivityIds = activityIdsByLessonId.get(gl.lessonId) ?? new Set<string>();
+      let independentPractice: PracticeAndAssessmentData | null = null;
+      let assessment: PracticeAndAssessmentData | null = null;
+
+      for (const activityId of lessonActivityIds) {
+        const submission = submissionByUserAndActivity.get(`${student.id}|${activityId}`);
+        if (!submission) continue;
+
+        if (submission.mode === 'independent_practice') {
+          independentPractice = {
+            completed: submission.status === 'submitted' || submission.status === 'graded',
+            score: submission.score,
+            maxScore: submission.maxScore,
+          };
+        } else if (submission.mode === 'assessment') {
+          assessment = {
+            completed: submission.status === 'submitted' || submission.status === 'graded',
+            score: submission.score,
+            maxScore: submission.maxScore,
+          };
+        }
+      }
+
+      return buildGradebookCell(gl, phaseStatuses, masteryLevel, independentPractice, assessment);
     });
 
     return {

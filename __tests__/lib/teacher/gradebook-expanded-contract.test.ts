@@ -1,10 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { buildGradebookCell, computeLessonStatus } from '@/lib/teacher/gradebook';
+import { assembleGradebookRows, buildGradebookCell, computeLessonStatus } from '@/lib/teacher/gradebook';
 
 // ---------------------------------------------------------------------------
 // Phase 1: Gradebook Contract Definition Tests
-// ---------------------------------------------------------------------------
-// These tests define the canonical gradebook semantics for lesson completion,
+// These tests define canonical gradebook semantics for lesson completion,
 // independent practice, assessment, and unit test visibility.
 // ---------------------------------------------------------------------------
 
@@ -25,53 +24,145 @@ describe('Gradebook Contract - Independent Practice and Assessment', () => {
 
   describe('independent practice visibility', () => {
     it('should track independent practice completion separately from lesson phase completion', () => {
-      // This test defines the expected shape for independent practice tracking
-      // Currently, the gradebook only tracks lesson-level completion via phases
-      // The expanded contract should include independent practice status per lesson
-      
-      // TODO: Implement independent practice tracking in gradebook contract
-      // Expected behavior:
-      // - Cell should show independent practice completion status
-      // - Independent practice should be distinct from lesson phase completion
-      // - Teachers should see which students have completed independent practice
-      
-      // For now, this test documents the requirement
-      expect(true).toBe(true);
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }];
+      const submissions = [{
+        id: 'sub-1',
+        userId: 'student-1',
+        activityId: 'activity-1',
+        mode: 'independent_practice',
+        status: 'submitted',
+        score: 8,
+        maxScore: 10,
+        gradedAt: 1234567890,
+      }];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      expect(rows).toHaveLength(1);
+      expect(rows[0].cells).toHaveLength(1);
+      const cell = rows[0].cells[0];
+      expect(cell.independentPractice).not.toBeNull();
+      expect(cell.independentPractice?.completed).toBe(true);
+      expect(cell.independentPractice?.score).toBe(8);
+      expect(cell.independentPractice?.maxScore).toBe(10);
     });
 
     it('should expose independent practice scores when available', () => {
-      // TODO: Implement independent practice score visibility
-      // Expected behavior:
-      // - Cell should show independent practice score
-      // - Drill-down should show independent practice submission evidence
-      
-      expect(true).toBe(true);
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }];
+      const submissions = [{
+        id: 'sub-1',
+        userId: 'student-1',
+        activityId: 'activity-1',
+        mode: 'independent_practice',
+        status: 'graded',
+        score: 7,
+        maxScore: 10,
+        gradedAt: 1234567890,
+      }];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      const cell = rows[0].cells[0];
+      expect(cell.independentPractice?.score).toBe(7);
+      expect(cell.independentPractice?.maxScore).toBe(10);
     });
   });
 
   describe('assessment visibility', () => {
     it('should track assessment completion and scores separately', () => {
-      // This test defines assessment tracking requirements
-      // Assessments are a different mode than independent practice
-      // and should be tracked separately for gradebook purposes
-      
-      // TODO: Implement assessment tracking in gradebook contract
-      // Expected behavior:
-      // - Cell should show assessment completion status
-      // - Cell should show assessment score
-      // - Drill-down should show assessment submission evidence
-      
-      expect(true).toBe(true);
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }];
+      const submissions = [{
+        id: 'sub-1',
+        userId: 'student-1',
+        activityId: 'activity-1',
+        mode: 'assessment',
+        status: 'graded',
+        score: 9,
+        maxScore: 10,
+        gradedAt: 1234567890,
+      }];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      const cell = rows[0].cells[0];
+      expect(cell.assessment).not.toBeNull();
+      expect(cell.assessment?.completed).toBe(true);
+      expect(cell.assessment?.score).toBe(9);
+      expect(cell.assessment?.maxScore).toBe(10);
     });
 
-    it('should distinguish assessment from independent practice in the same lesson', () => {
-      // TODO: Implement mode separation in gradebook contract
-      // Expected behavior:
-      // - A lesson can have both independent practice and assessment
-      // - The gradebook should show both independently
-      // - Teachers should be able to see assessment vs practice performance
-      
-      expect(true).toBe(true);
+    it('should distinguish assessment from independent practice in same lesson', () => {
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }, { id: 'activity-2', lessonId: 'lesson-1' }];
+      const submissions = [
+        {
+          id: 'sub-1',
+          userId: 'student-1',
+          activityId: 'activity-1',
+          mode: 'independent_practice',
+          status: 'submitted',
+          score: 8,
+          maxScore: 10,
+          gradedAt: null,
+        },
+        {
+          id: 'sub-2',
+          userId: 'student-1',
+          activityId: 'activity-2',
+          mode: 'assessment',
+          status: 'graded',
+          score: 9,
+          maxScore: 10,
+          gradedAt: 1234567890,
+        },
+      ];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      const cell = rows[0].cells[0];
+      expect(cell.independentPractice?.score).toBe(8);
+      expect(cell.independentPractice?.completed).toBe(true);
+      expect(cell.assessment?.score).toBe(9);
+      expect(cell.assessment?.completed).toBe(true);
     });
   });
 
@@ -85,7 +176,7 @@ describe('Gradebook Contract - Independent Practice and Assessment', () => {
     it('should track unit test completion separately from regular lessons', () => {
       const completedPhases = Array(6).fill('completed') as Array<'completed'>;
       const cell = buildGradebookCell(unitTestLesson, completedPhases, 95);
-      
+
       expect(cell.completionStatus).toBe('completed');
       expect(cell.masteryLevel).toBe(95);
       expect(cell.color).toBe('green');
@@ -109,51 +200,99 @@ describe('Gradebook Contract - Independent Practice and Assessment', () => {
     it('should show mastery level from primary standard', () => {
       const cell = buildGradebookCell(lesson, ['completed', 'not_started', 'not_started', 'not_started', 'not_started', 'not_started'], 85);
       expect(cell.masteryLevel).toBe(85);
-      expect(cell.color).toBe('green'); // mastery >= 80 makes it green
+      expect(cell.color).toBe('green');
     });
 
     it('should differentiate lesson progress from independent practice progress', () => {
-      // This test documents the requirement for separate tracking
-      // Lesson progress = phase completion across all lesson phases
-      // Independent practice = completion of independent practice activities
-      
-      // TODO: Implement dual tracking in gradebook contract
-      // Expected behavior:
-      // - A student can have completed all lesson phases but not independent practice
-      // - A student can have completed independent practice but not all lesson phases
-      // - The gradebook should show both states distinctly
-      
-      expect(true).toBe(true);
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }];
+      const submissions = [{
+        id: 'sub-1',
+        userId: 'student-1',
+        activityId: 'activity-1',
+        mode: 'independent_practice',
+        status: 'submitted',
+        score: 10,
+        maxScore: 10,
+        gradedAt: 1234567890,
+      }];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      const cell = rows[0].cells[0];
+      expect(cell.completionStatus).toBe('not_started');
+      expect(cell.independentPractice?.completed).toBe(true);
     });
   });
 
   describe('data shape gaps', () => {
     it('should identify that activity_submissions contains mode field', () => {
-      // This test documents that the data source (activity_submissions)
-      // already contains the mode field (guided_practice, independent_practice, assessment)
-      // The gap is in aggregating and displaying this data in the gradebook
-      
-      // TODO: Implement mode-based aggregation in getTeacherGradebookData
-      // Expected behavior:
-      // - Query activity_submissions filtered by mode
-      // - Aggregate independent practice completions per student/lesson
-      // - Aggregate assessment scores per student/lesson
-      // - Expose this data in the gradebook cell structure
-      
-      expect(true).toBe(true);
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }];
+      const submissions = [{
+        id: 'sub-1',
+        userId: 'student-1',
+        activityId: 'activity-1',
+        mode: 'independent_practice',
+        status: 'submitted',
+        score: 8,
+        maxScore: 10,
+        gradedAt: 1234567890,
+      }];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      const cell = rows[0].cells[0];
+      expect(cell.independentPractice).not.toBeNull();
+      expect(cell.assessment).toBeNull();
     });
 
     it('should identify that submission detail modal already shows practice evidence', () => {
-      // This test documents that the drill-down surface exists
-      // but the gradebook cell doesn't yet expose mode-specific data
-      
-      // TODO: Wire mode-specific data into gradebook cell display
-      // Expected behavior:
-      // - Gradebook cell should show independent practice status indicator
-      // - Gradebook cell should show assessment score
-      // - Clicking should open SubmissionDetailModal with filtered evidence
-      
-      expect(true).toBe(true);
+      const activities = [{ id: 'activity-1', lessonId: 'lesson-1' }];
+      const submissions = [{
+        id: 'sub-1',
+        userId: 'student-1',
+        activityId: 'activity-1',
+        mode: 'assessment',
+        status: 'graded',
+        score: 9,
+        maxScore: 10,
+        gradedAt: 1234567890,
+      }];
+
+      const { rows } = assembleGradebookRows(
+        [{ id: 'student-1', username: 's1', displayName: 'Student One' }],
+        [{ id: 'lesson-1', title: 'Lesson 1', orderIndex: 1, unitNumber: 1 }],
+        [{ id: 'lv-1', lessonId: 'lesson-1' }],
+        [{ id: 'pv-1', lessonVersionId: 'lv-1', phaseNumber: 1 }],
+        [],
+        [],
+        [],
+        activities,
+        submissions,
+      );
+
+      const cell = rows[0].cells[0];
+      expect(cell.assessment).not.toBeNull();
+      expect(cell.independentPractice).toBeNull();
     });
   });
 });

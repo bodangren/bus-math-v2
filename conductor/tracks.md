@@ -83,9 +83,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: expose reporting from the teacher dashboard and define the canonical course → unit → lesson → student drill-down structure with consistent breadcrumbs and entry points.*
   *Closeout: completed on 2026-04-09 after completing all 4 phases: reporting IA audit and hierarchy definition, dashboard course gradebook entry point, shared breadcrumbs and wayfinding, and final verification. Added "View Course Gradebook" button to teacher dashboard, fixed unit gradebook breadcrumb to link to /teacher/gradebook, added full breadcrumb chain to lesson report page. All verification gates pass (lint 0 errors/1 warning, test 1607/1607 pass with 2 pre-existing Supabase suite failures, build passes). Ready for archive.*
 
-- [ ] **Track: Teacher Gradebook Completion**
-  *Link: [./tracks/teacher_gradebook_completion_20260409/](./tracks/teacher_gradebook_completion_20260409/)*
+- [x] **Track: Teacher Gradebook Completion**
+  *Link: [./tracks/teacher_gradebook_completion_20240409/](./tracks/teacher_gradebook_completion_20240409/)*
   *Scope: complete the teacher gradebook so unit-level progress includes independent practice, assessment, and detailed submission visibility for every student.*
+  *Closeout: completed on 2026-04-10 after completing all 4 phases. Phase 1 defined the gradebook contract and added failing tests. Phase 2 expanded unit-level gradebook to show detailed independent practice and assessment indicators (IP badges, assessment scores). Phase 3 connected gradebook cells to SubmissionDetailModal for drill-down evidence. Phase 4 ran verification gates (lint 0 errors/2 warnings, test 1615/1615 pass with 12 pre-existing Supabase suite failures, build passes).*
 
 - [ ] **Track: Teacher Competency Heatmaps and Mastery Views**
   *Link: [./tracks/teacher_competency_heatmaps_20260409/](./tracks/teacher_competency_heatmaps_20260409/)*

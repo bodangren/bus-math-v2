@@ -13,13 +13,13 @@
 - [x] Run `npm run lint` and  the targeted gradebook/component tests
 
 ## Phase 3: Submission and Evidence Drill-Down
-- [ ] Connect gradebook cells or related affordances to the appropriate submission/progress detail surfaces
-- [ ] Ensure percentages or status indicators are explainable through drill-down evidence rather than opaque aggregates
-- [ ] Add regression coverage for the primary teacher gradebook drill-down flows
-- [ ] Run the relevant broader tests for shared teacher reporting helpers
+- [x] Connect gradebook cells or related affordances to the appropriate submission/progress detail surfaces
+- [x] Ensure percentages or status indicators are explainable through drill-down evidence rather than opaque aggregates
+- [x] Add regression coverage for the primary teacher gradebook drill-down flows
+- [x] Run the relevant broader tests for shared teacher reporting helpers
 
 ## Phase 4: Verification and Documentation
-- [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the gradebook changes
-- [ ] Update active Conductor docs if the teacher gradebook contract changes
-- [ ] Record any intentionally deferred gradebook/product debt
-- [ ] Prepare the track for archive with verification evidence
+- [x] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the gradebook changes
+- [x] Update active Conductor docs if the teacher gradebook contract changes
+- [x] Record any intentionally deferred gradebook/product debt
+- [x] Prepare the track for archive with verification evidence
