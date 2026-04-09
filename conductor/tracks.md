@@ -13,6 +13,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 5 | Capstone and Textbook Completion | Complete (2026-03-14) |
 | 6 | Production Hardening and Launch | Complete (2026-03-16) |
 | 7 | Practice Contract and Evidence Loop | Complete (2026-04-06) |
+| 8 | Classroom Product Completeness | Planned |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
@@ -37,9 +38,58 @@ Engine Stabilization [14] → Curriculum Rollout [8] → Visual/Teaching [19] �
 
 ---
 
+### Milestone 8 — Classroom Product Completeness
+
+Close the classroom-blocking gaps that still prevent the shipped curriculum runtime from behaving like a complete course app for daily student and teacher use. This milestone is about wayfinding, dashboard re-entry, reporting information architecture, complete gradebook views, competency visibility, and final workflow hardening.
+
+**Execution graph** (remaining roadmap, strictly serial after the active audit):
+```
+Full Phase Integrity Audit [active] → Student Navigation [1] → Student Completion Loop [2] → Teacher Reporting IA [3] → Gradebook Completion [4] → Competency Heatmaps [5] → Education App Readiness [6]
+```
+
+**Rationale for serial ordering (2026-04-09 roadmap):**
+- The full lesson audit must finish first so new navigation and reporting work does not get layered onto known lesson-surface defects or authored/runtime drift.
+- Student navigation comes before completion-loop work because the current product still has weak or dead return paths, inconsistent breadcrumbs, and missing dashboard entry points in shared chrome.
+- Student completion-loop work should stabilize the student flow before teacher reporting expands, so teacher views reflect a coherent student journey rather than a partially repaired one.
+- Teacher reporting information architecture must land before detailed gradebook and competency views so those deeper surfaces have obvious dashboard entry points, breadcrumbs, and drill-down contracts.
+- Gradebook completion must precede competency heatmaps because teachers need trustworthy lesson/unit evidence and assessment visibility before higher-level mastery aggregation is meaningful.
+- Education-app hardening comes last so verification, auth/report integrity, and release checks target the final student + teacher workflow shape instead of intermediate surfaces.
+
+**Exit gate**: students can move cleanly between dashboard, unit, lesson, and completion states; shared user chrome exposes the right dashboard destination for the signed-in role; teachers can reach course-, unit-, lesson-, and student-level reporting from the dashboard; gradebook views expose independent practice and assessment status; competency tracking has a teacher-facing heatmap view; and the end-to-end classroom loops are covered by aligned docs and verification.
+
+---
+
 ## Planned Queue
 
 Strictly serial. Complete and archive each track before starting the next.
+
+- [ ] **Track: Full Lesson Phase Integrity Audit**
+  *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
+  *Scope: audit every published lesson phase for false interaction affordances, layout/overflow defects, copy rendering defects, impossible teaching datasets, and authored-runtime drift in seeded activity props.*
+
+- [ ] **Track: Student Navigation and Dashboard Return Paths**
+  *Link: [./tracks/student_navigation_dashboard_paths_20260409/](./tracks/student_navigation_dashboard_paths_20260409/)*
+  *Scope: add real student unit/dashboard wayfinding, role-aware dashboard links in shared chrome, and valid breadcrumb/return paths so students and teachers are never stranded in authenticated flows.*
+
+- [ ] **Track: Student Completion and Resume Loop**
+  *Link: [./tracks/student_completion_resume_loop_20260409/](./tracks/student_completion_resume_loop_20260409/)*
+  *Scope: make completed-lesson, resume, review, and next-lesson behavior coherent across the student dashboard and lesson runtime.*
+
+- [ ] **Track: Teacher Reporting Information Architecture**
+  *Link: [./tracks/teacher_reporting_information_architecture_20260409/](./tracks/teacher_reporting_information_architecture_20260409/)*
+  *Scope: expose reporting from the teacher dashboard and define the canonical course → unit → lesson → student drill-down structure with consistent breadcrumbs and entry points.*
+
+- [ ] **Track: Teacher Gradebook Completion**
+  *Link: [./tracks/teacher_gradebook_completion_20260409/](./tracks/teacher_gradebook_completion_20260409/)*
+  *Scope: complete the teacher gradebook so unit-level progress includes independent practice, assessment, and detailed submission visibility for every student.*
+
+- [ ] **Track: Teacher Competency Heatmaps and Mastery Views**
+  *Link: [./tracks/teacher_competency_heatmaps_20260409/](./tracks/teacher_competency_heatmaps_20260409/)*
+  *Scope: turn existing competency tracking data into course-, unit-, and student-level teacher heatmap views with actionable mastery drill-downs.*
+
+- [ ] **Track: Education App Readiness Hardening**
+  *Link: [./tracks/education_app_readiness_hardening_20260409/](./tracks/education_app_readiness_hardening_20260409/)*
+  *Scope: harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.*
 
 - [x] **Track: Dead Code Pruning**
   *Link: [./archive/dead_code_pruning_20260408/](./archive/dead_code_pruning_20260408/)*

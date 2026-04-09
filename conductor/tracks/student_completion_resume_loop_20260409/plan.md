@@ -1,0 +1,25 @@
+# Implementation Plan: Student Completion and Resume Loop
+
+## Phase 1: Continue-State Contract
+- [ ] Audit the current dashboard and lesson-runtime resume/completion behavior
+- [ ] Define the canonical start/resume/review/next-action contract for student lesson states
+- [ ] Add or update failing tests around continue-state derivation and completed-lesson actions
+- [ ] Record any mismatches between existing dashboard view-models and lesson-runtime behavior
+
+## Phase 2: Dashboard Action Consistency
+- [ ] Update dashboard view-models and UI so lesson and unit cards expose the canonical action labels and destinations
+- [ ] Ensure completed lessons surface intentional review behavior instead of only resume semantics
+- [ ] Verify the next recommended lesson contract remains aligned with published progress data
+- [ ] Run `npm run lint` and targeted dashboard tests
+
+## Phase 3: Lesson Completion Experience
+- [ ] Update the completed-lesson panel and related lesson-runtime states to match the canonical completion loop
+- [ ] Ensure the lesson runtime and dashboard share the same continue-state logic or helper seam
+- [ ] Add regression coverage for completed, in-progress, and next-recommended lesson behavior
+- [ ] Run the relevant broader tests for shared student progress helpers
+
+## Phase 4: Verification and Documentation
+- [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the completion-loop changes
+- [ ] Update active Conductor docs if the student completion-loop contract changes
+- [ ] Record any intentionally deferred recommendation/product gaps in `tech-debt.md` if needed
+- [ ] Prepare the track for archive with verification evidence

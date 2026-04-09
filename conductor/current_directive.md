@@ -1,118 +1,80 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring, and Cloudflare deployment are complete. Milestones 1–7 closed on March 16, 2026 through April 6, 2026.
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, and Cloudflare deployment are complete. Milestones 1–7 closed between 2026-03-16 and 2026-04-06.
 
-The project is now in a post-milestone cleanup and polish phase beginning on April 7, 2026.
+Cleanup and page-polish work is functionally complete except for the active full lesson audit. The project now transitions into a classroom product-completeness roadmap: finish the audit, then close the missing student-navigation and teacher-reporting workflows that still prevent the app from behaving like a complete education product.
 
 ## Phase Focus
 
-This phase has two serialized goals:
+This directive now has three serialized goals:
 
-1. clean the repository so the active codebase and Conductor surface contain only live, intentional files and references
-2. run a page-by-page product audit and fix visible UI discrepancies such as overflow, clipping, alignment drift, spacing imbalance, and responsive layout failures
+1. finish the active lesson-phase integrity audit so the current runtime surface is trustworthy
+2. close classroom-blocking product gaps in student wayfinding, dashboard re-entry, teacher reporting access, gradebook completeness, and competency visibility
+3. harden the completed student and teacher workflows with aligned docs and verification
 
 ## Required Execution Order
 
-Tracks in this phase must run in this order:
+Tracks in this roadmap must run in this order:
 
-1. **Repo Cleanup and Surface Hygiene**
-2. **Non-Unit Page Evaluation and Polish**
-3. **Unit 1 Page Evaluation and Polish**
-4. **Unit 2 Page Evaluation and Polish**
-5. **Unit 3 Page Evaluation and Polish**
-6. **Unit 4 Page Evaluation and Polish**
-7. **Unit 5 Page Evaluation and Polish**
-8. **Unit 6 Page Evaluation and Polish**
-9. **Unit 7 Page Evaluation and Polish**
-10. **Unit 8 Page Evaluation and Polish**
+1. **Full Lesson Phase Integrity Audit**
+2. **Student Navigation and Dashboard Return Paths**
+3. **Student Completion and Resume Loop**
+4. **Teacher Reporting Information Architecture**
+5. **Teacher Gradebook Completion**
+6. **Teacher Competency Heatmaps and Mastery Views**
+7. **Education App Readiness Hardening**
 
-One implementation track may be active at a time. Do not begin the next UI audit track until the current track is verified, documented, and archived.
+One implementation track may be active at a time. The six roadmap tracks after the audit are planned now, but they must remain pending until the active audit is verified, documented, and archived.
 
 ## In-Bounds Work
 
-Every active track in this phase must directly support at least one of these outcomes:
+Every track in this roadmap must directly support at least one of these outcomes:
 
-- remove unused files, dead exports, stale imports, obsolete helper surfaces, and planning residue that no longer belong to the active product
-- reconcile Conductor queue hygiene so the active registry and active track directory describe the same reality
-- fix page-level UI defects on the rendered product, including horizontal overflow, clipped controls, broken wrapping, uneven spacing, misalignment, inconsistent container widths, and poor mobile behavior
-- preserve or improve student clarity and teacher signal on every touched page
-- close cleanup-adjacent tech debt discovered during the audit when it blocks repository hygiene or page correctness
-- Correct typescript warnings
+- remove or repair dead-end student navigation paths so dashboard, unit, lesson, and completion states form a coherent loop
+- expose role-appropriate dashboard destinations in shared authenticated navigation
+- add the missing teacher reporting entry points, breadcrumbs, drill-down paths, and view hierarchy needed for daily classroom use
+- complete the teacher gradebook so independent practice, assessment, and submission visibility are available at unit and lesson depth
+- turn existing competency data into teacher-facing heatmap and mastery views
+- harden auth, verification, and reporting contracts around the completed education-app flows
 
 ## Phase Exit Gates
 
-This phase is only complete when all of the following are true:
+This roadmap is only complete when all of the following are true:
 
-- the repository no longer contains confirmed-unused project files or stale active-track residue
-- non-unit pages have been audited and corrected
-- each instructional unit has completed its own page-polish track
-- touched pages render cleanly on desktop and mobile widths without obvious overflow or alignment defects
-- Conductor planning artifacts accurately reflect the active queue and archive state
-- required verification for each track has been run and recorded
+- every published lesson phase has passed the integrity audit
+- a signed-in student can move cleanly between dashboard, unit, lesson, and completed-lesson states
+- the shared user menu exposes the correct dashboard destination for the signed-in role
+- the teacher dashboard exposes obvious entry points to course, unit, lesson, and student reporting
+- the teacher gradebook includes independent practice and assessment visibility
+- competency tracking is visible through teacher-facing heatmap/mastery views
+- required lint, tests, build, and route-flow verification have been run and recorded for the finished roadmap
 
-## Quality Bar For Page Audits
+## Quality Bar
 
-For every page-polish track:
-
-- inspect the real rendered page, not just the source
-- verify desktop and mobile layouts
-- fix visible issues before moving on, rather than recording obvious defects for later
-- preserve the existing visual language unless a correction is necessary for clarity, hierarchy, or responsiveness
-- keep the curriculum-first product story intact across public, student, and teacher surfaces
+- prefer canonical navigation helpers and shared chrome over one-off links
+- fix misleading or dead routes when found instead of documenting obvious product traps for later
+- preserve the established visual language unless a change is required for clarity, hierarchy, or responsive behavior
+- keep Convex as the runtime source of truth for student progress, teacher reporting, and competency views
+- treat teacher reporting as a classroom workflow, not a demo surface: entry points, drill-down, and interpretation all matter
 
 ## Deferred Work
 
-The following remain out of scope for this phase unless they block cleanup or page correctness:
+The following remain out of scope unless a later explicit track opens them:
 
-- new product features
-- new curriculum content beyond the existing 8 units and capstone
-- admin tooling
-- in-app curriculum authoring
+- admin tooling or in-app curriculum authoring
+- LMS-style assignments, messaging, discussions, or grading ecosystems beyond the in-product reporting loop
 - dependency upgrades or package additions without explicit approval
-- broad architectural refactors unrelated to cleanup or rendered-page quality
+- broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Code Review Summary (2026-04-09 — Next Phase Definition + Conductor Hygiene, Pass 17)
+## Current High-Level Priorities (2026-04-09 — Classroom Product Completeness Replan)
 
-Audited the Next Phase Definition track completion, Remaining Exercise Placeholders track creation, and full verification gates.
+1. **Full Lesson Phase Integrity Audit** — finish the active audit and remove remaining authored/runtime drift or lesson-surface defects before feature expansion.
+2. **Student Navigation and Dashboard Return Paths** — add canonical student wayfinding, valid unit/dashboard links, and role-aware dashboard destinations in shared chrome.
+3. **Student Completion and Resume Loop** — make completed lessons, resume behavior, review behavior, and next-lesson guidance coherent instead of ad hoc.
+4. **Teacher Reporting Information Architecture** — expose reporting from the teacher dashboard and normalize the course → unit → lesson → student navigation contract.
+5. **Teacher Gradebook + Competency Completion** — finish gradebook evidence visibility, then surface the stored competency data as actionable teacher heatmaps.
 
-**Fixed during review: 2 issues**
-- **CrossSheetLinkSimulator undefined variables** (Medium): `artifact` object in `handleComplete` referenced `finalSheet1` and `finalSheet2` which don't exist as variables — the state variables are `sheet1` and `sheet2`. The `answers` object correctly used `finalSheet1: sheet1` (object key rename) but `artifact` used bare variable references. TypeScript catches this as `TS2552`. Fixed: `finalSheet1: sheet1, finalSheet2: sheet2`.
-- **Track metadata status mismatch** (Low): `remaining_exercise_placeholders_20260409/metadata.json` had `"status": "pending"` but `tracks.md` shows `[~]` (in_progress). Updated metadata to `"in_progress"`.
-
-**Verification gates:**
-- `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
-- `npm test`: 1515/1515 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
-- `npm run build`: passes cleanly
-- `npx tsc --noEmit`: 0 new errors (2 pre-existing: @cloudflare/vite-plugin module, worker Fetcher type)
-
-**What was reviewed:**
-- **Since Pass 16**: Only 2 commits (Next Phase Definition track + archive), all conductor documentation. No code changes since Pass 16.
-- **CrossSheetLinkSimulator**: Fixed TS2552 error — `artifact` object now correctly references `sheet1`/`sheet2`.
-- **Activity registry**: 51 keys, 48 real + 3 placeholders (`profit-calculator`, `budget-worksheet`, `error-checking-system`). Count may differ from schema (49 keys) due to alias (`pitch`) and type cast.
-- **Conductor state**: tracks.md has 1 active track (`remaining_exercise_placeholders_20260409`), all others archived. Metadata.json status fixed to match.
-- **Test count drift**: 1515 tests (was 1518 in Pass 7-8) — likely from test file consolidation during dead code pruning.
-
-**Phase status**: Next phase (Remaining Exercise Family Work) defined. Active track `remaining_exercise_placeholders_20260409` ready for implementation.
-
-## Current High-Level Priorities (2026-04-09 — Pass 17, Next Phase Defined)
-
-1. **Remaining Exercise Placeholders** — 3 schema-defined keys with no React component (`profit-calculator`, `budget-worksheet`, `error-checking-system`). Active track: `remaining_exercise_placeholders_20260409`.
-2. **Remaining esbuild Vulnerabilities** — 4 moderate-severity esbuild vulns remain (transitive via drizzle-kit). Requires drizzle-kit upgrade or esbuild fix upstream. Non-blocking.
-3. **Division Guards (Low)** — BudgetBalancer `/ monthlyIncome` (5 sites) and AssetTimeMachine `/ initialCost` (2 sites) remain unguarded. Data model prevents zero; add guards if scope changes.
-4. **Exercise Test Coverage (Low)** — All exercise mastery tests are shallow (render-only). Cannot deterministically test mastery completion due to `Array.sort` shuffle non-determinism with mocked `Math.random`. Acceptable — mastery logic (`consecutiveCorrect >= masteryTarget`) is trivially correct.
-5. **TypeScript Strictness** — 2 pre-existing TS errors in vite.config.ts (`@cloudflare/vite-plugin` module) and worker/index.ts (`Fetcher` type). Build bypasses tsc via esbuild. Consider fixing or suppressing.
-
-## New Phase: Remaining Exercise Family Work
-This phase focuses on completing the remaining exercise clusters and filling placeholder gaps.
-
-### Execution Order
-1. **Remaining Exercise Placeholders** (profit-calculator, budget-worksheet, error-checking-system)
-2. **U1 Exercise Cluster**
-3. **U4 Exercise Cluster**
-4. **U5 Exercise Cluster**
-5. **U7 Exercise Cluster**
-6. **U8 Exercise Cluster**
-7. **Milestone 7 Planned Queue** (Engine Stabilization → Curriculum Rollout → Visual/Teaching → Legacy Cleanup → Teacher Error)
+Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
 ## Code Review Summary (2026-04-08 — Unit 8 Polish + Phase Audit, Pass 7)
 
