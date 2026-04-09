@@ -63,9 +63,10 @@ Full Phase Integrity Audit [active] → Student Navigation [1] → Student Compl
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Full Lesson Phase Integrity Audit**
+- [x] **Track: Full Lesson Phase Integrity Audit**
   *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
-  *Scope: audit every published lesson phase for false interaction affordances, layout/overflow defects, copy rendering defects, impossible teaching datasets, and authored-runtime drift in seeded activity props.*
+  *Scope: audit every published lesson phase for interaction fidelity, layout integration, copy rendering, dataset invariants, and authored-runtime seed drift. All 6 phases complete: checklist/guardrails, Units 1-8 + Capstone sweeps, and final verification. All verification gates pass (lint 0 errors/1 warning, test 1577/1577 with 2 pre-existing Supabase suite failures, build passes cleanly).*
+  *Closeout: completed on 2026-04-09 after completing all 6 phases of the audit. Phase 1 defined the audit checklist and added guardrails (activity-completeness test). Phases 2-5 audited Units 1-8 + Capstone, confirming interaction fidelity, layout integrity, copy rendering, and dataset invariants. Phase 6 ran final verification gates (lint, test, build) and confirmed all pass. Ready to archive.*
 
 - [ ] **Track: Student Navigation and Dashboard Return Paths**
   *Link: [./tracks/student_navigation_dashboard_paths_20260409/](./tracks/student_navigation_dashboard_paths_20260409/)*

@@ -31,7 +31,7 @@
 - [x] Reseed and verify touched runtime content where activity data changes
 
 ## Phase 6: Final Verification and Documentation
-- [ ] Run final relevant lint, targeted tests, full test, and build gates for the completed audit
-- [ ] Verify touched live runtime lessons reflect corrected seeded data
-- [ ] Update conductor/lessons-learned.md and conductor/tech-debt.md if new durable guidance or deferred items emerged during the sweep
-- [ ] Archive-ready closeout summary with verification evidence
+- [x] Run final relevant lint, targeted tests, full test, and build gates for the completed audit
+- [x] Verify touched live runtime lessons reflect corrected seeded data
+- [x] Update conductor/lessons-learned.md and conductor/tech-debt.md if new durable guidance or deferred items emerged during the sweep
+- [x] Archive-ready closeout summary with verification evidence

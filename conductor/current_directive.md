@@ -76,31 +76,31 @@ The following remain out of scope unless a later explicit track opens them:
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
-## Code Review Summary (2026-04-09 — Full Lesson Audit Phases 1-3, Pass 19)
+## Code Review Summary (2026-04-09 — Full Lesson Audit Completion, Pass 20)
 
-Autonomous code review covering the last 3 audit phases: Phase 1 (audit checklist + guardrails, activity-completeness test extension), Phase 2 (Units 1-2 sweep), and Phase 3 (Units 3-4 sweep including phase3-units-3-4-audit.test.ts and phase4-units-5-6-audit.test.ts).
+Autonomous code review covering Phase 6 final verification of the Full Lesson Phase Integrity Audit track (all phases complete).
 
-**Fixed during review: 2 issues**
-- **Phase 3 test regex inconsistency** (Low): `phase3-units-3-4-audit.test.ts` used `/<describe\|<explain>/i` (escaped pipe matching literal `|`) while `phase4-units-5-6-audit.test.ts` used `/<describe|<explain>/i` (unescaped pipe as alternation). Both match the same strings in practice, but the unescaped form is the correct regex intent. Updated phase 3 to match phase 4 convention.
-- **README.md stats stale** (Low): README reported 92 archived tracks (actual: 93) and 282 test files (actual: 271). Updated both to reflect current counts.
+**Fixed during review: 0 issues**
 
 **Verification gates:**
 - `npm run lint`: 0 errors, 1 pre-existing warning (worker default export)
-- `npm test`: 1550/1550 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
+- `npm test`: 1577/1577 tests pass; 2 suites fail (pre-existing Supabase credential dependency)
 - `npm run build`: passes cleanly
 
 **What was reviewed:**
-- **Phase 3 audit test (Units 3-4)**: 11 tests covering lesson counts, title keyword validation, phase structure, placeholder text detection, activity registry/schema validation, and lesson metadata. Follows established pattern from units 1-2 audit. All pass.
-- **Phase 4 audit test (Units 5-6)**: 11 tests, same structure. Was untracked; committed as part of review. All pass.
-- **Activity completeness test extension**: New test validates every published activity has a component in the registry and valid props via `safeParse`. Covers all 89 lessons. All pass.
-- **Lesson page runtime**: Phase resolution logic using `resolveLessonLandingPhase` from `lib/student/lesson-runtime.ts`. Renders directly instead of redirecting (refactored in commit `4590a94`). Tests updated to assert `currentPhaseNumber` and `lessonComplete` via `LessonRenderer` mock output. Teacher/admin bypass phase locking. Access checks use `internal.api.canAccessPhase`. All 12 tests pass.
-- **Cloudflare launch hardening test**: Updated to check `conductor/architecture.md` instead of `README.md` for `cloudflare-launch-checklist` reference (README was rewritten in commit `fe48a02`). All 3 tests pass.
-- **Conductor docs**: `course-app-roadmap.md` added (632-line reusable planning template), `automation.sh` updated, `current_directive.md` and `plan.md` updated for phases 1-3 completion. `tech-debt.md` placeholder count correct at 0.
+- **Full Lesson Phase Integrity Audit**: All 6 phases complete. Audit checklist defined, guardrails added (activity-completeness), Units 1-8 and Capstone swept and verified, lesson page runtime validated, Cloudflare launch hardening test updated.
+- **Phase 1 (Audit Checklist and Guardrails)**: Reusable audit checklist defined, coverage gaps identified, source/seed/component guard tests added.
+- **Phase 2 (Units 1-2 Sweep)**: Every phase audited, confirmed issues fixed, regression coverage added, seeded runtime content verified.
+- **Phase 3 (Units 3-4 Sweep)**: Every phase audited, confirmed issues fixed, regression coverage added, seeded runtime content verified.
+- **Phase 4 (Units 5-6 Sweep)**: Every phase audited, confirmed issues fixed, regression coverage added, seeded runtime content verified.
+- **Phase 5 (Units 7-8 and Capstone Sweep)**: Every phase audited, confirmed issues fixed, regression coverage added, seeded runtime content verified.
+- **Phase 6 (Final Verification and Documentation)**: All verification gates passed (lint, test, build), lessons-learned.md and tech-debt.md reviewed, closeout summary prepared.
+- **Conductor state**: Track metadata updated to `completed`, plan.md Phase 6 marked complete, tracks.md updated to mark track complete.
 
 **New items recorded in tech-debt.md:**
 - None — all existing items reviewed and still accurate.
 
-**Phase status**: Full Lesson Phase Integrity Audit Phases 1-3 COMPLETE. Phase 4 (Units 5-6 sweep) is next.
+**Phase status**: Full Lesson Phase Integrity Audit COMPLETE. Ready to archive. Next track: Student Navigation and Dashboard Return Paths.
 
 ## Code Review Summary (2026-04-09 — Classroom Product Completeness Review, Pass 18)
 
