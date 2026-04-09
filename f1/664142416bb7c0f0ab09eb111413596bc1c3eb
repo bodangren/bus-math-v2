@@ -1,0 +1,16 @@
+Conductor roadmap planning commit.
+
+Scope:
+- Added Milestone 8: Classroom Product Completeness to conductor/tracks.md
+- Reframed conductor/current_directive.md around post-audit student navigation, teacher reporting, gradebook, competency, and hardening work
+- Added six queued track artifacts with spec.md, plan.md, metadata.json, and index.md for:
+  - student_navigation_dashboard_paths_20260409
+  - student_completion_resume_loop_20260409
+  - teacher_reporting_information_architecture_20260409
+  - teacher_gradebook_completion_20260409
+  - teacher_competency_heatmaps_20260409
+  - education_app_readiness_hardening_20260409
+
+Verification:
+- No lint/tests/build run; Conductor documentation change only
+- Commit intentionally excludes unrelated working-tree edits and the separate untracked full_phase_integrity_audit_20260409 directory
