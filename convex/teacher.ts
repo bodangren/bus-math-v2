@@ -3,6 +3,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { assembleCourseOverviewRows } from "../lib/teacher/course-overview";
 import { assembleGradebookRows } from "../lib/teacher/gradebook";
+import { assembleCompetencyHeatmapRows } from "../lib/teacher/competency-heatmap";
 import {
   buildLatestPublishedLessonVersionMap,
   buildPublishedPhaseIdSet,
@@ -307,6 +308,64 @@ export const getTeacherCourseOverviewData = internalQuery({
       rawPrimaryStandards,
       competencyRows,
     );
+  },
+});
+
+export const getTeacherCompetencyHeatmapData = internalQuery({
+  args: { userId: v.id("profiles") },
+  handler: async (ctx, args) => {
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return null;
+    }
+
+    const students = await listOrganizationStudents(ctx, teacher.organizationId);
+    const rawStandards = (await ctx.db.query("competency_standards").collect())
+      .map((standard) => ({
+        id: standard._id,
+        code: standard.code,
+        description: standard.description,
+        studentFriendlyDescription: standard.studentFriendlyDescription ?? null,
+        category: standard.category ?? null,
+        isActive: standard.isActive,
+      }));
+
+    if (rawStandards.length === 0 || students.length === 0) {
+      return { rows: [], standards: [] };
+    }
+
+    const activeStandardIds = new Set(
+      rawStandards.filter((s) => s.isActive).map((s) => s.id)
+    );
+
+    const rawStudents = students.map((student) => ({
+      id: student._id,
+      username: student.username,
+      displayName: student.displayName ?? null,
+    }));
+
+    const competencyRows = (
+      await Promise.all(
+        students.map((student) =>
+          ctx.db
+            .query("student_competency")
+            .withIndex("by_student", (q) => q.eq("studentId", student._id))
+            .collect(),
+        ),
+      )
+    )
+      .flat()
+      .filter((row) => activeStandardIds.has(row.standardId))
+      .map((row) => ({
+        studentId: row.studentId,
+        standardId: row.standardId,
+        masteryLevel: row.masteryLevel,
+        evidenceActivityId: row.evidenceActivityId ?? null,
+        lastUpdated: row.lastUpdated,
+        updatedBy: row.updatedBy ?? null,
+      }));
+
+    return assembleCompetencyHeatmapRows(rawStudents, rawStandards, competencyRows);
   },
 });
 

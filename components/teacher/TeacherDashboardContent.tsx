@@ -132,6 +132,11 @@ export function TeacherDashboardContent({
                 View Course Gradebook
               </Link>
             </Button>
+            <Button asChild variant="outline">
+              <Link href="/teacher/competency">
+                View Competency Heatmap
+              </Link>
+            </Button>
             <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />
