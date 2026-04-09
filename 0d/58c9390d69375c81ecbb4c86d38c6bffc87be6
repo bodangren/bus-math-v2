@@ -1,0 +1,27 @@
+Phase 2 Task 1: Implement role-aware dashboard links in shared chrome
+
+Completed role-aware dashboard link in shared UserMenu:
+
+1. UserMenu component already implemented:
+   - Role-aware Dashboard link added in Phase 1 Task 1
+   - Students go to /student/dashboard
+   - Teachers/admins go to /teacher/dashboard
+   - Uses getRoleAwareDashboardPath() helper
+   - LayoutDashboard icon added
+
+2. Verified hardcoded dashboard paths elsewhere:
+   - components/login-form.tsx: Already uses role-based routing (no hardcoded paths to replace)
+   - app/teacher/page.tsx: Fixed erroneous "/student/dashboard" fallback → now redirects to /auth/login
+
+3. Test coverage:
+   - UserMenu tests from Phase 1 Task 1 verify role-aware dashboard links
+   - All 21 tests passing (12 navigation helpers + 9 UserMenu tests)
+
+4. Verification:
+   - npm run lint: 0 errors, 1 pre-existing warning (worker default export)
+   - All hardcoded dashboard paths in shared chrome replaced with canonical helpers
+
+5. Phase 2 Task 1 complete
+   - Shared UserMenu role-aware dashboard links: ✅ Complete (Phase 1)
+   - No duplicated inline dashboard destinations found to replace
+   - Next: verify role behavior through targeted tests
