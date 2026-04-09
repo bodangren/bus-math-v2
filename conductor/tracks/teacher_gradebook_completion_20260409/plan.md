@@ -7,10 +7,10 @@
 - [x] Record any data-shape gaps that must be closed before UI completion
 
 ## Phase 2: Unit Gradebook Expansion
-- [ ] Expand the unit-level gradebook so teachers can inspect detailed progress for all students across the unit
-- [ ] Add or refine the UI affordances that distinguish lesson progress, independent practice, assessment, and unit-test states
-- [ ] Ensure the unit page remains readable on realistic class rosters and viewport sizes
-- [ ] Run `npm run lint` and the targeted gradebook/component tests
+- [x] Expand  the unit-level gradebook so teachers can inspect detailed progress for all students across the unit
+- [x] Add or refine  the UI affordances that distinguish lesson progress, independent practice, assessment, and unit-test states
+- [x] Ensure  the unit page remains readable on realistic class rosters and viewport
+- [x] Run `npm run lint` and  the targeted gradebook/component tests
 
 ## Phase 3: Submission and Evidence Drill-Down
 - [ ] Connect gradebook cells or related affordances to the appropriate submission/progress detail surfaces

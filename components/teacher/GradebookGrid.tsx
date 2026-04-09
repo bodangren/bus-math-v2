@@ -177,8 +177,10 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                   const cell = cellByLessonId.get(lesson.lessonId);
                   const color = cell?.color ?? 'gray';
                   const mastery = cell?.masteryLevel ?? null;
+                  const independentPractice = cell?.independentPractice;
+                  const { assessment } = cell || {};
                   const colorLabel = cellColorLabel(color);
-
+  
                   return (
                     <td
                       key={lesson.lessonId}
@@ -198,7 +200,25 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                         tabIndex={0}
                         className="w-full rounded px-1 py-1 hover:ring-2 hover:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
-                        {mastery !== null ? `${mastery}%` : '—'}
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-sm font-semibold">
+                            {mastery !== null ? `${mastery}%` : '—'}
+                          </span>
+                          {(independentPractice?.completed || assessment?.completed) && (
+                            <div className="flex gap-1 text-xs">
+                              {independentPractice?.completed && (
+                                <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white font-medium" title="Independent practice completed">
+                                  IP
+                                </span>
+                              )}
+                              {assessment?.completed && (
+                                <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-white font-medium" title="Assessment completed">
+                                  A: {assessment.score ?? '—'}/{assessment.maxScore ?? '—'}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </button>
                     </td>
                   );
@@ -209,8 +229,10 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                   const cell = cellByLessonId.get(unitTestLesson.lessonId);
                   const color = cell?.color ?? 'gray';
                   const mastery = cell?.masteryLevel ?? null;
+                  const independentPractice = cell?.independentPractice;
+                  const { assessment } = cell || {};
                   const colorLabel = cellColorLabel(color);
-
+  
                   return (
                     <td
                       key={unitTestLesson.lessonId}
@@ -230,7 +252,25 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                         tabIndex={0}
                         className="w-full rounded px-1 py-1 hover:ring-2 hover:ring-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
-                        {mastery !== null ? `${mastery}%` : '—'}
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-sm font-semibold">
+                            {mastery !== null ? `${mastery}%` : '—'}
+                          </span>
+                          {(independentPractice?.completed || assessment?.completed) && (
+                            <div className="flex gap-1 text-xs">
+                              {({} as any).independentPractice?.completed && (
+                                <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white font-medium" title="Independent practice completed">
+                                  IP
+                                </span>
+                              )}
+                              {assessment?.completed && (
+                                <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-white font-medium" title="Assessment completed">
+                                  A: {assessment.score ?? '—'}/{assessment.maxScore ?? '—'}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </button>
                     </td>
                   );
