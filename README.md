@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 9, 2026
+Last updated: April 10, 2026
 
 ## Status Snapshot
 
@@ -367,10 +367,10 @@ This is the active Conductor Milestone 8 roadmap as of April 9, 2026.
 
 | Order | Track | Status | Primary outcome |
 |---|---|---|---|
-| 1 | Full Lesson Phase Integrity Audit | In progress | Stabilize lesson surfaces before layering new workflow work |
-| 2 | Student Navigation and Dashboard Return Paths | Not started | Fix shared dashboard links, wayfinding, and return paths |
-| 3 | Student Completion and Resume Loop | Not started | Make start/resume/review/continue behavior coherent |
-| 4 | Teacher Reporting Information Architecture | Not started | Define and expose the reporting drill-down structure |
+| 1 | Full Lesson Phase Integrity Audit | Complete | Stabilize lesson surfaces before layering new workflow work |
+| 2 | Student Navigation and Dashboard Return Paths | Complete | Fix shared dashboard links, wayfinding, and return paths |
+| 3 | Student Completion and Resume Loop | Complete | Make start/resume/review/continue behavior coherent |
+| 4 | Teacher Reporting Information Architecture | Complete | Define and expose the reporting drill-down structure |
 | 5 | Teacher Gradebook Completion | Not started | Add real independent-practice and assessment visibility |
 | 6 | Teacher Competency Heatmaps and Mastery Views | Not started | Ship teacher-facing mastery heatmap surfaces |
 | 7 | Education App Readiness Hardening | Not started | Add final classroom-loop hardening and smoke coverage |

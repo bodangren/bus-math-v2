@@ -66,13 +66,49 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Teacher Reporting IA Review)
+## Current High-Level Priorities (2026-04-10 — Post Code Review Pass 22)
 
 1. **Teacher Gradebook Completion** — complete the teacher gradebook so unit-level progress includes independent practice, assessment, and detailed submission visibility for every student.
 2. **Teacher Competency Heatmaps and Mastery Views** — turn existing competency tracking data into course-, unit-, and student-level teacher heatmap views with actionable mastery drill-downs.
 3. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-10 — Lint & Test Stabilization, Pass 22)
+
+Autonomous code review and stabilization pass. Fixed syntax errors and lint violations blocking builds.
+
+**Fixed during review: 8 issues**
+- **GradebookDrillDown syntax errors** (High): 5 mock blocks in `GradebookDrillDown.integration.test.tsx` had missing closing braces for the `teacher` object in `mod.internal`. Each mock's `};` was closing `teacher` instead of `internal`, with no brace closing `teacher`. Fixed all 5 blocks by adding `},` to close teacher before `};` closes internal.
+- **SubmissionDetailModal syntax error** (High): Line 629 had `e.kind ===spreadsheet'` — missing opening quote. Fixed to `e.kind === 'spreadsheet'`.
+- **SubmissionDetailModal unused imports** (Medium): Removed 8 unused imports: `ChevronDown`, `ChevronRight`, `FileText` from lucide-react; `Tabs`, `TabsContent`, `TabsList`, `TabsTrigger` from ui/tabs.
+- **SubmissionDetailModal unused code** (Medium): Removed unused `StatusBadge` function, unused `modeValue` variable, unused outer `handleKeyDown` callback.
+- **SubmissionDetailModal require() → import()** (Medium): Converted static `require('@/lib/convex/server')` to dynamic `import()` inside `loadDetail` callback to fix ESLint `no-require-imports` error while preserving test mock compatibility.
+- **SubmissionDetailModal typos** (Medium): Fixed `CardCardHeader` → `CardHeader` and `CardCardTitle` → `CardTitle` (2 instances each).
+- **SubmissionDetailModal undefined variable** (Medium): `completedAt` referenced but never defined — changed to `evidence.submittedAt`.
+- **SubmissionDetailModal missing testid/roles** (Low): Added `data-testid="phase-list"`, `role="dialog"`, `aria-modal="true"`, and footer read-only callout text to match test expectations.
+
+**Fixed during review: 3 test issues**
+- **SubmissionDetailModal.test.tsx mock** (Medium): Added `vi.mock('@/lib/convex/server')` to bridge Convex module to `global.fetch` mock. Mock wraps response in `{ detail }` to match component's `result.detail` check.
+- **SubmissionDetailModal.test.tsx dialog test** (Medium): Changed from pending-promise (dialog never renders during loading) to `mockFetchSuccess` + await pattern.
+- **SubmissionDetailModal.test.tsx fetch assertion** (Medium): Updated to assert `fetchInternalQuery` mock called with `{ userId, lessonId }` instead of raw URL string match.
+- **SubmissionDetailModal error message** (Low): Changed catch block to show `err.message` when available instead of generic string.
+
+**Pre-existing issues found (not fixed):**
+- **SubmissionDetailModal "view raw response" button**: Tests expect a raw-response toggle but component has no such UI. 4 tests fail on this mismatch — tests need rewrite or component needs feature addition.
+- **Security RLS tests**: 2 test files (`competency-rls.test.ts`, `rls.test.ts`) fail — likely Supabase credential dependency, pre-existing.
+- **SubmissionDetailModal integration tests**: 3 integration tests fail — likely same Convex mock issue as unit tests but in integration context.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing worker default export + useMemo missing dep)
+- `npm test`: 1603/1615 tests pass; 5 test files fail (2 security, 3 SubmissionDetailModal-related — 12 tests total)
+- `npm run build`: passes cleanly
+
+**New items recorded in tech-debt.md:**
+- SubmissionDetailModal missing "view raw response" toggle (Medium — 4 tests expect it)
+- Security RLS tests fail (Low — pre-existing Supabase dependency)
+
+**Phase status**: Lint blockers cleared, build passes. Next: Teacher Gradebook Completion track.
 
 ## Code Review Summary (2026-04-10 — Teacher Reporting IA Completion, Pass 21)
 

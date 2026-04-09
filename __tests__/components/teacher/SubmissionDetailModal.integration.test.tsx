@@ -63,7 +63,7 @@ describe('SubmissionDetailModal integration', () => {
   });
 
   it('filters submissions by activityId and userId', async () => {
-    vi.mocked(fetchInternalQuery).mockImplementation(async (query, args) => {
+    vi.mocked(fetchInternalQuery).mockImplementation(async (query) => {
       if (query.name === 'getTeacherSubmissionDetail') {
         return {
           phases: [],

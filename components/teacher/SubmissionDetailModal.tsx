@@ -3,19 +3,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   CheckCircle2,
-  ChevronDown,
-  ChevronRight,
   Circle,
-  FileText,
   Loader2,
   Table2,
   X,
 } from 'lucide-react';
-import { SpreadsheetWrapper } from '@/components/activities/spreadsheet/SpreadsheetWrapper';
+import { SpreadsheetWrapper, type SpreadsheetData } from '@/components/activities/spreadsheet/SpreadsheetWrapper';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import type {
   PhaseDetail,
   PhaseStatus,
@@ -82,28 +79,6 @@ function PhaseStatusIcon({ status }: { status: PhaseStatus }) {
     return <span className="inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-amber-500/40 text-amber-600" aria-hidden="true">•</span>;
   }
   return <Circle className="size-4 shrink-0 text-muted-foreground/50" aria-hidden="true" />;
-}
-
-function StatusBadge({ status }: { status: PhaseStatus }) {
-  if (status === 'completed') {
-    return (
-      <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
-        Completed
-      </span>
-    );
-  }
-  if (status === 'in_progress') {
-    return (
-      <span className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">
-        In Progress
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-      Not Started
-    </span>
-  );
 }
 
 function formatTimestamp(value: string | null) {
@@ -385,9 +360,6 @@ function PracticeEvidenceCard({
   const [showRaw, setShowRaw] = useState(false);
   const isPractice = evidence.kind === 'practice';
   const submissionData = isPractice ? (evidence.submissionData as Record<string, unknown>) : null;
-  const modeValue = isPractice && typeof submissionData?.mode === 'string'
-    ? submissionData.mode
-    : null;
   const parts = isPractice && Array.isArray(submissionData?.parts)
     ? (submissionData.parts as Record<string, unknown>[])
     : [];
@@ -435,9 +407,9 @@ function PracticeEvidenceCard({
             </p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-            {completedAt ? (
+            {evidence.submittedAt ? (
               <span className="rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
-                Completed {formatTimestamp(completedAt)}
+                Completed {formatTimestamp(evidence.submittedAt)}
               </span>
             ) : null}
             {evidence.attemptNumber && evidence.attemptNumber > 1 ? (
@@ -456,7 +428,7 @@ function PracticeEvidenceCard({
               <SpreadsheetWrapper
                 readOnly
                 className="text-xs"
-                initialData={artifactSpreadsheetData as any}
+                initialData={artifactSpreadsheetData as SpreadsheetData}
               />
             </div>
             <div className="text-xs text-muted-foreground">
@@ -556,13 +528,12 @@ export function SubmissionDetailModal({
   const [error, setError] = useState<string | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  const { fetchInternalQuery, internal } = require('@/lib/convex/server');
-
   const loadDetail = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
+      const { fetchInternalQuery, internal } = await import('@/lib/convex/server');
       const result = await fetchInternalQuery(
         internal.teacher.getTeacherLessonMonitoringData,
         {
@@ -578,7 +549,7 @@ export function SubmissionDetailModal({
         setError('No submission data found for this student');
       }
     } catch (err) {
-      setError('Failed to load submission data');
+      setError(err instanceof Error ? err.message : 'Failed to load submission data');
       console.error(err);
     } finally {
       setLoading(false);
@@ -588,15 +559,6 @@ export function SubmissionDetailModal({
   useEffect(() => {
     loadDetail();
   }, [loadDetail]);
-
-  const'handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose],
-  );
 
   useEffect(() => {
     if (!closeBtnRef.current) return;
@@ -626,7 +588,7 @@ export function SubmissionDetailModal({
     const allPhases = detail.phases.flatMap((phase) => {
       const evidence = phase.evidence || [];
       const evidenceWithMode = evidence.filter((e) => {
-        if (e.kind ===spreadsheet') return false;
+        if (e.kind === 'spreadsheet') return false;
         const submissionData = e.submissionData as Record<string, unknown>;
         const mode = typeof submissionData?.mode === 'string' ? submissionData.mode : null;
         return mode === activeTab;
@@ -670,7 +632,7 @@ export function SubmissionDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-lg border border-border bg-background shadow-lg">
+      <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-lg border border-border bg-background shadow-lg" role="dialog" aria-modal="true">
         <div className="flex flex-col h-full">
           <div className="flex items-start justify-between border-b border-border p-4">
             <div>
@@ -762,12 +724,12 @@ export function SubmissionDetailModal({
                 </div>
 
                 <Card className="border-border/80 bg-muted/10">
-                  <CardCardHeader className="px-4 py-4">
+                  <CardHeader className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <Table2 className="size-4 text-muted-foreground" />
-                      <CardCardTitle className="text-sm font-semibold">Submission Snapshot</CardCardTitle>
+                      <CardTitle className="text-sm font-semibold">Submission Snapshot</CardTitle>
                     </div>
-                  </CardCardHeader>
+                  </CardHeader>
                   <CardContent className="px-4 pb-4">
                     <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
                       <div className="grid gap-3 sm:grid-cols-2">
@@ -822,7 +784,7 @@ export function SubmissionDetailModal({
                   </CardContent>
                 </Card>
 
-                <div className="space-y-4">
+                <div className="space-y-4" data-testid="phase-list">
                   <p className="text-sm font-semibold text-foreground">
                     {activeTab === 'all'
                       ? 'All Submissions'
@@ -842,6 +804,9 @@ export function SubmissionDetailModal({
                 </div>
               </>
             )}
+          </div>
+          <div className="border-t border-border p-3 text-center text-xs text-muted-foreground">
+            Read-only evidence review — student submissions are view-only
           </div>
         </div>
       </div>

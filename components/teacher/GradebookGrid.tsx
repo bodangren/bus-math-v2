@@ -260,7 +260,7 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                           </span>
                           {(independentPractice?.completed || assessment?.completed) && (
                             <div className="flex gap-1 text-xs">
-                              {({} as any).independentPractice?.completed && (
+                              {independentPractice?.completed && (
                                 <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white font-medium" title="Independent practice completed">
                                   IP
                                 </span>

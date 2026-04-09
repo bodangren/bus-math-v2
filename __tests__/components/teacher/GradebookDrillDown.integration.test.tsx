@@ -43,8 +43,8 @@ describe('Gradebook Drill-Down Integration', () => {
               ],
             },
           }),
-        };
-      });
+        },
+      };
       return mod;
     });
 
@@ -137,8 +137,8 @@ describe('Gradebook Drill-Down Integration', () => {
               ],
             },
           }),
-        };
-      });
+        },
+      };
       return mod;
     });
 
@@ -223,13 +223,13 @@ describe('Gradebook Drill-Down Integration', () => {
                       maxScore: 100,
                       gradedAt: 1234567890,
                     },
-                  },
+                  ],
                 },
               ],
             },
           }),
-        };
-      });
+        },
+      };
       return mod;
     });
 
@@ -314,7 +314,6 @@ describe('Gradebook Drill-Down Integration', () => {
                       score: 85,
                       maxScore: 100,
                     },
-                    },
                     {
                       kind: 'practice',
                       activityId: 'activity2',
@@ -334,13 +333,13 @@ describe('Gradebook Drill-Down Integration', () => {
                       maxScore: 100,
                       gradedAt: 1234567890,
                     },
-                  },
+                  ],
                 },
               ],
             },
           }),
-        };
-      });
+        },
+      };
       return mod;
     });
 
@@ -433,8 +432,7 @@ describe('Gradebook Drill-Down Integration', () => {
                       score: 85,
                       maxScore: 100,
                     },
-                  },
-                  {
+                    {
                       kind: 'practice',
                       activityId: 'activity2',
                       activityTitle: 'Assessment',
@@ -453,14 +451,13 @@ describe('Gradebook Drill-Down Integration', () => {
                       maxScore: 100,
                       gradedAt: 1234567890,
                     },
-                  },
+                  ],
                 },
               ],
             },
           }),
-        };
+        },
       };
-      });
       return mod;
     });
 

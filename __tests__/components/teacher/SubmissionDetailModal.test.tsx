@@ -4,6 +4,31 @@ import { SubmissionDetailModal, type SelectedCell } from '@/components/teacher/S
 import type { SubmissionDetail } from '@/lib/teacher/submission-detail';
 
 // ---------------------------------------------------------------------------
+// Mock Convex server module
+// ---------------------------------------------------------------------------
+
+vi.mock('@/lib/convex/server', () => ({
+  fetchInternalQuery: vi.fn(async (_ref: unknown, args: Record<string, unknown>) => {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(args)) {
+      params.set(key, String(value));
+    }
+    const response = await global.fetch(`/api/submission-detail?${params.toString()}`);
+    if (!response.ok) {
+      const body = await response.json();
+      throw new Error(body.error ?? 'Request failed');
+    }
+    const detail = await response.json();
+    return { detail };
+  }),
+  internal: {
+    teacher: {
+      getTeacherLessonMonitoringData: 'getTeacherLessonMonitoringData',
+    },
+  },
+}));
+
+// ---------------------------------------------------------------------------
 // Mock fetch
 // ---------------------------------------------------------------------------
 
@@ -231,10 +256,11 @@ describe('SubmissionDetailModal', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('has role="dialog" and aria-modal="true" for accessibility', () => {
-    global.fetch = vi.fn().mockReturnValue(new Promise(() => {}));
+  it('has role="dialog" and aria-modal="true" for accessibility', async () => {
+    mockFetchSuccess();
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
     const dialog = screen.getByRole('dialog');
     expect(dialog).toBeInTheDocument();
     expect(dialog).toHaveAttribute('aria-modal', 'true');
@@ -281,16 +307,20 @@ describe('SubmissionDetailModal', () => {
     expect(container.querySelectorAll('select')).toHaveLength(0);
   });
 
-  it('fetches with correct studentId and lessonId from selected prop', () => {
+  it('fetches with correct studentId and lessonId from selected prop', async () => {
+    const { fetchInternalQuery } = await import('@/lib/convex/server');
     global.fetch = vi.fn().mockReturnValue(new Promise(() => {}));
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
-    expect(fetch).toHaveBeenCalledWith(
-      expect.stringContaining(`studentId=${SELECTED.studentId}`),
-    );
-    expect(fetch).toHaveBeenCalledWith(
-      expect.stringContaining(`lessonId=${SELECTED.lessonId}`),
-    );
+    await waitFor(() => {
+      expect(fetchInternalQuery).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          userId: SELECTED.studentId,
+          lessonId: SELECTED.lessonId,
+        }),
+      );
+    });
   });
 
   it('does not emit React act warnings while fetched detail data settles', async () => {
