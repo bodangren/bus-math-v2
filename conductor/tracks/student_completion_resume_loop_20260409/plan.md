@@ -1,10 +1,16 @@
 # Implementation Plan: Student Completion and Resume Loop
 
 ## Phase 1: Continue-State Contract
-- [ ] Audit the current dashboard and lesson-runtime resume/completion behavior
-- [ ] Define the canonical start/resume/review/next-action contract for student lesson states
-- [ ] Add or update failing tests around continue-state derivation and completed-lesson actions
-- [ ] Record any mismatches between existing dashboard view-models and lesson-runtime behavior
+- [x] Audit the current dashboard and lesson-runtime resume/completion behavior
+- [x] Define the canonical start/resume/review/next-action contract for student lesson states
+- [x] Add or update failing tests around continue-state derivation and completed-lesson actions
+- [x] Record any mismatches between existing dashboard view-models and lesson-runtime behavior
+
+**Findings:**
+- Current implementation correctly handles not-started (Start Lesson) and in-progress (Resume Lesson) lessons
+- Completed lessons return null from toLessonAction — no review action available
+- buildLessonContinueState correctly derives next lesson recommendations
+- Gap: Dashboard and lesson runtime need "Review Lesson" action for completed lessons
 
 ## Phase 2: Dashboard Action Consistency
 - [ ] Update dashboard view-models and UI so lesson and unit cards expose the canonical action labels and destinations
