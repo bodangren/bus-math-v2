@@ -7,7 +7,7 @@
 - [x] Record any systemic risks discovered before the unit-by-unit sweep
 
 ## Phase 2: Units 1-2 Sweep
-- [ ] Audit every phase in Units 1 and 2 in the real student lesson runtime on desktop and mobile widths
+- [~] Audit every phase in Units 1 and 2 in the real student lesson runtime on desktop and mobile widths
 - [ ] Fix confirmed issues in touched phases and activity components
 - [ ] Add regression coverage for newly fixed Unit 1-2 issues
 - [ ] Reseed and verify touched runtime content where activity data changes
