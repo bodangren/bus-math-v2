@@ -27,7 +27,7 @@ import type {
   TeacherPublishedPhase,
 } from '@/lib/teacher/lesson-monitoring';
 import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
-import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks';
+import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
 
 interface TeacherLessonPlanProps {
   lesson: TeacherPublishedLesson;

@@ -15,7 +15,7 @@ import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
 import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigation';
 import { cn } from '@/lib/utils';
-import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks';
+import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
 import { Download } from 'lucide-react';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
