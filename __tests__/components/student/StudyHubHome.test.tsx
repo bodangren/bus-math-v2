@@ -23,7 +23,7 @@ describe("StudyHubHome", () => {
     (useStudyHooks.useTermMastery as Mock).mockReturnValue([]);
     (useStudyHooks.useDueTerms as Mock).mockReturnValue([]);
     (useStudyHooks.useRecentSessions as Mock).mockReturnValue([]);
-    (useStudyHooks.useGlossaryTermDisplay as Mock).mockReturnValue({
+    (useStudyHooks.getGlossaryTermDisplay as Mock).mockReturnValue({
       prompt: "Test Term",
       answer: "Test Definition",
     });
