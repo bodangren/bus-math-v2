@@ -33,15 +33,15 @@
 - [x] Verify all hub home tests pass
 
 ## Phase 5: Flashcard Study Mode
-- [ ] Write failing tests for FlashcardPlayer component (render, flip, correct/incorrect, requeue, summary, unit filter)
-- [ ] Implement FlashcardPlayer component with flip animation, correct/incorrect marking, requeue on incorrect
-- [ ] Create `/student/study/flashcards` route
-- [ ] Implement session recording to Convex on completion
-- [ ] Implement "Study Weak Terms" mode (low-mastery filter)
-- [ ] Verify all flashcard tests pass
+- [x] Write failing tests for FlashcardPlayer component (render, flip, correct/incorrect, requeue, summary, unit filter)
+- [x] Implement FlashcardPlayer component with flip animation, correct/incorrect marking, requeue on incorrect
+- [x] Create `/student/study/flashcards` route
+- [x] Implement session recording to Convex on completion
+- [x] Implement "Study Weak Terms" mode (low-mastery filter)
+- [x] Verify all flashcard tests pass
 
 ## Phase 6: Verification and Documentation
-- [ ] Write integration tests for the full flashcard study flow (hub → flashcards → session → results persisted)
+- [~] Write integration tests for the full flashcard study flow (hub → flashcards → session → results persisted)
 - [ ] Verify FSRS scheduling produces correct due dates after reviews
 - [ ] Verify language mode switching changes prompt/answer fields
 - [ ] Verify Convex data integrity under concurrent study sessions

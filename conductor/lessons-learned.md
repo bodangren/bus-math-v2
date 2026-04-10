@@ -53,3 +53,4 @@
 - When using 'fs' in Next.js route handlers, use import * as fs from 'fs' instead of import fs from 'fs' for better compatibility with Vitest mocking.
 - Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
 - When building study features, start with static glossary data and Convex schema foundation before building UI surfaces.
+- Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
