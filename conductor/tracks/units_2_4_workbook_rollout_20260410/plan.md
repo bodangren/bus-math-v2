@@ -5,7 +5,7 @@
 - [x] Audit Unit 3 (Statements in Balance) authored blueprints to identify every lesson requiring a workbook
 - [x] Audit Unit 4 (Payroll in Motion) authored blueprints to identify every lesson requiring a workbook
 - [x] Document the full inventory of workbook files needed across all three units
-- [~] Verify the Unit 1 pilot pattern, naming convention, and templates are stable and ready to replicate
+- [x] Verify the Unit 1 pilot pattern, naming convention, and templates are stable and ready to replicate
 
 ## Phase 2: Unit 2 Workbook Creation and Integration
 - [ ] Create student template `.xlsx` workbooks for each identified Unit 2 lesson
