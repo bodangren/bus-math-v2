@@ -22,7 +22,7 @@
 - [x] Implement language mode preference storage and retrieval
 - [ ] Write failing tests for study hooks with mock Convex queries
 - [x] Implement preference-derived prompt/answer field selection
-- [ ] Verify study hooks and language mode tests pass
+- [x] Verify study hooks and language mode tests pass
 
 ## Phase 4: Practice Hub Home
 - [ ] Write failing tests for the practice hub home component (render, unit filter, due counts, weak topics, recent sessions)
