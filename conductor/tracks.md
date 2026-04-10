@@ -165,7 +165,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home route. All phases complete.*
   *Closeout: completed on 2026-04-11 after completing all 6 phases: Phase 1 (Glossary + Convex schema), Phase 2 (FSRS engine), Phase 3 (Study data hooks and language modes), Phase 4 (Practice Hub Home), Phase 5 (Flashcard Study Mode), and Phase 6 (Verification and Documentation). All verification gates pass (lint 0 errors/2 pre-existing warnings, test 1666/1678 pass, build clean). Ready for archive.*
 
-- [ ] **Track: Study Modes and Progress Dashboard**
+- [x] **Track: Study Modes and Progress Dashboard**
   *Link: [./tracks/study_modes_progress_20260410/](./tracks/study_modes_progress_20260410/)*
   *Scope: complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.*
 

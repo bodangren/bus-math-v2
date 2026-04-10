@@ -42,10 +42,10 @@
 - [x] Verify all export and hub home tests pass
 
 ## Phase 6: Verification and Documentation
-- [ ] Write integration tests for all four study mode flows (hub → mode → session → results persisted)
-- [ ] Verify Convex data integrity across concurrent study sessions
-- [ ] Test matching and speed round on mobile viewports
-- [ ] Test review session with edge cases (no due terms, all terms due, single term due)
-- [ ] Run `npm run lint`, `npm test`, and `npm run build`
-- [ ] Update Conductor docs with study mode architecture and session recording conventions
-- [ ] Prepare the track for archive with verification evidence
+- [x] Write integration tests for all four study mode flows (hub → mode → session → results persisted)
+- [x] Verify Convex data integrity across concurrent study sessions
+- [x] Test matching and speed round on mobile viewports
+- [x] Test review session with edge cases (no due terms, all terms due, single term due)
+- [x] Run `npm run lint`, `npm test`, and `npm run build`
+- [x] Update Conductor docs with study mode architecture and session recording conventions
+- [x] Prepare the track for archive with verification evidence
