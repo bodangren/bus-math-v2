@@ -254,22 +254,27 @@ export const recordSession = mutation({
     activityType: v.union(
       v.literal("flashcards"),
       v.literal("matching"),
+      v.literal("matching_game"),
       v.literal("speed_round"),
       v.literal("srs_review"),
       v.literal("practice_test")
     ),
-    curriculumScope: v.object({
+    termCount: v.optional(v.number()),
+    correctCount: v.optional(v.number()),
+    totalCount: v.optional(v.number()),
+    maxStreak: v.optional(v.number()),
+    curriculumScope: v.optional(v.object({
       type: v.union(v.literal("all_units"), v.literal("unit")),
       unitNumber: v.optional(v.number()),
-    }),
-    results: v.object({
+    })),
+    results: v.optional(v.object({
       itemsSeen: v.number(),
       itemsCorrect: v.number(),
       itemsIncorrect: v.number(),
       durationSeconds: v.number(),
-    }),
-    startedAt: v.number(),
-    endedAt: v.number(),
+    })),
+    startedAt: v.optional(v.number()),
+    endedAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -281,14 +286,20 @@ export const recordSession = mutation({
       .unique();
     if (!profile) throw new Error("Profile not found");
 
+    const now = Date.now();
     const session = await ctx.db.insert("study_sessions", {
       userId: profile._id,
-      activityType: args.activityType,
-      curriculumScope: args.curriculumScope,
-      results: args.results,
-      startedAt: args.startedAt,
-      endedAt: args.endedAt,
-      createdAt: Date.now(),
+      activityType: args.activityType === "matching_game" ? "matching" : args.activityType,
+      curriculumScope: args.curriculumScope ?? { type: "all_units" },
+      results: args.results ?? {
+        itemsSeen: args.termCount ?? args.totalCount ?? 0,
+        itemsCorrect: args.correctCount ?? 0,
+        itemsIncorrect: (args.totalCount ?? 0) - (args.correctCount ?? 0),
+        durationSeconds: 0,
+      },
+      startedAt: args.startedAt ?? now,
+      endedAt: args.endedAt ?? now,
+      createdAt: now,
     });
 
     return { sessionId: session };

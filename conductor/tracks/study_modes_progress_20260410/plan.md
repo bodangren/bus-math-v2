@@ -18,13 +18,13 @@
 - [x] Verify all speed round tests pass
 
 ## Phase 3: SRS Review Session
-- [ ] Write failing tests for ReviewSession component (render due terms, 4-level rating buttons, FSRS update, mastery update, "all caught up" state)
-- [ ] Implement ReviewSession component with again/hard/good/easy rating buttons
-- [ ] Wire each rating to the Convex processReview mutation (atomic FSRS + mastery update)
-- [ ] Handle empty due-terms state with "All caught up" message and next due date
-- [ ] Create `/student/study/review` route with student auth guard
-- [ ] Implement session recording on review completion
-- [ ] Verify all review session tests pass
+- [x] Write failing tests for ReviewSession component (render due terms, 4-level rating buttons, FSRS update, mastery update, "all caught up" state)
+- [x] Implement ReviewSession component with again/hard/good/easy rating buttons
+- [x] Wire each rating to the Convex processReview mutation (atomic FSRS + mastery update)
+- [x] Handle empty due-terms state with "All caught up" message and next due date
+- [x] Create `/student/study/review` route with student auth guard
+- [x] Implement session recording on review completion
+- [x] Verify all review session tests pass
 
 ## Phase 4: Progress Dashboard
 - [ ] Write failing tests for ProgressDashboard component (per-unit mastery bars, aggregate stats, session history, accuracy display)
