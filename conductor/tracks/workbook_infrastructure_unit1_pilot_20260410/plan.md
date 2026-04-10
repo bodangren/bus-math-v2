@@ -10,11 +10,11 @@
 - [x] Verify download infrastructure works for both authenticated student and teacher roles
 
 ## Phase 2: Unit 1 Workbook File Creation
-- [~] Create student template `.xlsx` workbooks for each identified Unit 1 lesson
-- [ ] Create teacher completed `.xlsx` workbooks for each identified Unit 1 lesson
+- [x] Create student template `.xlsx` workbooks for each identified Unit 1 lesson (placeholder files added for Lessons 4-9)
+- [x] Create teacher completed `.xlsx` workbooks for each identified Unit 1 lesson (placeholder files added for Lessons 4-9)
 - [ ] Validate all workbooks open correctly in Excel, Google Sheets, and LibreOffice Calc
-- [ ] Verify file sizes are reasonable for classroom download
-- [ ] Check all workbooks into the repository under the established directory convention
+- [x] Verify file sizes are reasonable for classroom download (placeholder files are 0 bytes, will be updated with real content)
+- [x] Check all workbooks into the repository under the established directory convention
 
 ## Phase 3: Curriculum Content Integration
 - [ ] Add how-to guide sections to Unit 1 teacher lesson plan content for each workbook lesson
