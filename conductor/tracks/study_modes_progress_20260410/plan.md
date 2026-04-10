@@ -27,12 +27,12 @@
 - [x] Verify all review session tests pass
 
 ## Phase 4: Progress Dashboard
-- [ ] Write failing tests for ProgressDashboard component (per-unit mastery bars, aggregate stats, session history, accuracy display)
-- [ ] Implement `/student/study/progress` route with student auth guard
-- [ ] Implement ProgressDashboard with per-unit mastery breakdown
-- [ ] Show aggregate stats: total terms, sessions, accuracy, streak
-- [ ] Show session history from Convex queries
-- [ ] Verify all progress dashboard tests pass
+- [x] Write failing tests for ProgressDashboard component (per-unit mastery bars, aggregate stats, session history, accuracy display)
+- [x] Implement `/student/study/progress` route with student auth guard
+- [x] Implement ProgressDashboard with per-unit mastery breakdown
+- [x] Show aggregate stats: total terms, sessions, accuracy, streak
+- [x] Show session history from Convex queries
+- [x] Verify all progress dashboard tests pass
 
 ## Phase 5: Export and Hub Home Update
 - [ ] Write failing tests for export page (JSON generation, CSV generation, download trigger)
