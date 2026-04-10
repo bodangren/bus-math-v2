@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 28)
+Last updated: April 11, 2026 (Code Review Pass 30)
 
 ## Status Snapshot
 
@@ -29,17 +29,14 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 ### Current overall status
 
-- Conductor Milestones 1-8 are marked complete.
-- Milestone 9, `Workbook System and AI Features`, is next.
-- Milestone 10, `Student Study Tools`, is planned.
-- Across the completed Milestone 8, all 7 serial tracks finished:
-  1. ~~Full Lesson Phase Integrity Audit~~ — complete
-  2. ~~Student Navigation and Dashboard Return Paths~~ — complete
-  3. ~~Student Completion and Resume Loop~~ — complete
-  4. ~~Teacher Reporting Information Architecture~~ — complete
-  5. ~~Teacher Gradebook Completion~~ — complete
-  6. ~~Teacher Competency Heatmaps and Mastery Views~~ — complete
-  7. ~~Education App Readiness Hardening~~ — complete
+- Conductor Milestones 1-9 are marked complete.
+- Milestone 10, `Student Study Tools`, is active (Study Hub Foundation track in progress).
+- Across the completed Milestone 9, all 5 serial tracks finished:
+  1. ~~Workbook Infrastructure and Unit 1 Pilot~~ — complete
+  2. ~~Units 2-4 Workbook Rollout~~ — complete
+  3. ~~Units 5-8 Workbook Rollout and Capstone Assets~~ — complete
+  4. ~~Student One-Shot Lesson Chatbot~~ — complete
+  5. ~~AI Feedback for Spreadsheet Submissions~~ — complete
 
 ### Real interpretation
 
@@ -76,6 +73,7 @@ The target product is:
 | 6. Production Hardening and Launch | Complete on March 16, 2026 |
 | 7. Practice Contract and Evidence Loop | Complete on April 6, 2026 |
 | 8. Classroom Product Completeness | Complete on April 10, 2026 |
+| 9. Workbook System and AI Features | Complete on April 11, 2026 |
 
 ### Repo-level indicators
 
@@ -83,7 +81,7 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 4 (1 in-progress Milestone 9, 3 planned Milestone 10) |
+| Active Conductor tracks | 4 (1 in-progress Milestone 10, 3 planned Milestone 10) |
 | Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
 | Archived track directories | 101 |
 | Test files under `__tests__` and `tests` | 298 |
@@ -494,75 +492,36 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 - add app routes or downloadable surfaces for capstone guidelines and rubrics
 - decide whether Units 2-8 should gain the same detailed markdown source-doc parity that Unit 1 already has
 
-## Active Milestone 9 Tracks
+## Active Milestone 10 Tracks
 
-### 1. Student One-Shot Lesson Chatbot
+### 1. AI Feedback for Submitted Excel Spreadsheets
 
-Track: `student_lesson_chatbot_20260410` — **COMPLETE** (archived).
+Track: `spreadsheet_ai_feedback_20260410` — **COMPLETE** (archived).
 
-Shipped: OpenRouter provider adapter, lesson context packaging, API route with auth/rate limiting, and student UI component (floating button, expandable interface, one-shot constraint). All verification gates pass. Archived on 2026-04-10.
+Shipped: attempt history schema, AI feedback pipeline, submit route integration, student revision UX, teacher visibility with AI artifacts. All verification gates pass. Archived on 2026-04-11.
 
-### 2. AI Feedback for Submitted Excel Spreadsheets
+### 2. Study Hub Foundation and Flashcards
 
-Track: `spreadsheet_ai_feedback_20260410` — **IN PROGRESS** (Phases 1-5 complete, Phase 6 next).
+Track: `study_hub_foundation_flashcards_20260410` — **IN PROGRESS** (Phases 1-2 complete, Phase 3 next).
 
 Goal:
 
-- give students preliminary automated feedback on submitted spreadsheet work, including a provisional score, improvement guidance, and the ability to revise and resubmit
+- port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home
 
-Status: Phases 1-5 complete. Schema, AI feedback pipeline, submit route integration, student revision UX, and teacher visibility all shipped. Phase 6 (verification, integration tests, documentation) is next.
+Status: Phases 1-2 complete. Glossary data (10 bilingual terms), Convex study schema (4 tables), and FSRS engine integration all shipped. Phase 3 (Study Data Hooks and Language Modes) is next.
 
 Desired product shape:
 
-- student submits a spreadsheet activity
-- system evaluates the workbook and generates:
-  - preliminary score
-  - concise strengths summary
-  - targeted improvement feedback
-  - clear next steps for revision
-- student can revise and resubmit
-- teacher still remains the final authority when needed
-
-Why it is attractive:
-
-- gives faster formative feedback on workbook quality
-- supports revision cycles instead of one-and-done submission
-- makes spreadsheet lessons feel more like a real build-and-improve workflow
-
-Important constraints:
-
-- the current deterministic spreadsheet scoring/evaluation path should remain the base layer; AI feedback should augment it, not replace it
-- provisional score labeling must be explicit so students do not mistake AI output for final teacher grading
-- resubmission rules need to be defined carefully:
-  - unlimited or capped attempts
-  - whether best score or latest score is teacher-visible
-  - what evidence teachers see across attempts
-- feedback should reference actual workbook mistakes or missing requirements whenever possible, not generic encouragement
-- the product should preserve teacher visibility into:
-  - original submission
-  - revised submission
-  - AI-generated feedback
-  - score changes across attempts
-
-Likely implementation work:
-
-- extend spreadsheet submission records to support attempt history cleanly
-- define a deterministic plus AI feedback pipeline for spreadsheet activities
-- generate preliminary score and feedback after submission
-- expose student-facing revise/resubmit UX
-- update teacher evidence views to show attempt history and AI feedback artifacts
-- define clear policy copy for "preliminary", "revision", and "final review" states
-
-Suggested future track framing:
-
-- `Spreadsheet AI Feedback and Revision Loop`
+- students can study vocabulary through flashcards with spaced repetition scheduling
+- bilingual glossary supports EN/ZH language modes
+- progress dashboard shows per-unit mastery and session history
 
 Definition of done:
 
-- spreadsheet submissions receive preliminary AI-assisted feedback
-- students can revise and resubmit within the defined attempt policy
-- teacher reporting shows attempt history and feedback artifacts
-- deterministic scoring and AI commentary stay aligned instead of drifting
+- flashcard study mode works end-to-end with Convex persistence
+- FSRS scheduling produces correct due dates after reviews
+- language mode switching changes prompt/answer fields
+- practice hub home route with unit filter, due counts, and mode cards
 
 ## Definition of Done for "Classroom Complete"
 
@@ -587,7 +546,7 @@ This repo is already a serious education product codebase with:
 - real progress tracking
 - real practice evidence and review infrastructure
 
-But it is still **one workstream away from full curriculum artifact completeness** — Milestone 8 (Classroom Product Completeness) is closed, and Milestone 9 (Workbook System and AI Features) is the next priority.
+But it is still **one workstream away from full curriculum artifact completeness** — Milestone 9 (Workbook System and AI Features) is closed, and Milestone 10 (Student Study Tools) is the active priority.
 
 If the question is:
 

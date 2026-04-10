@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { scheduleNewTerm, processReview as processFsrsReview } from "@/lib/study/srs";
+import { scheduleNewTerm, processReview as processFsrsReview, proficiencyBand, updateMastery } from "@/lib/study/srs";
+import { getGlossaryTermsByUnit } from "@/lib/study/glossary";
 
 export const getStudyPreferences = query({
   args: {},
@@ -71,7 +72,7 @@ export const updatePreferences = mutation({
 
 export const getTermMasteryByUnit = query({
   args: { unitNumber: v.optional(v.number()) },
-  handler: async (ctx) => {
+  handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthenticated");
 
@@ -86,7 +87,11 @@ export const getTermMasteryByUnit = query({
       .withIndex("by_user", (q) => q.eq("userId", profile._id))
       .collect();
 
-    return mastery;
+    if (args.unitNumber === undefined) return mastery;
+
+    const unitTerms = getGlossaryTermsByUnit(args.unitNumber);
+    const unitSlugs = new Set(unitTerms.map(t => t.slug));
+    return mastery.filter(m => unitSlugs.has(m.termSlug));
   },
 });
 
@@ -191,11 +196,12 @@ export const processReview = mutation({
     const delta = fsrsResult.masteryDelta;
 
     if (!mastery) {
+      const newScore = updateMastery(0.5, delta);
       await ctx.db.insert("term_mastery", {
         userId: profile._id,
         termSlug: args.termSlug,
-        masteryScore: 0.5 + delta,
-        proficiencyBand: "learning",
+        masteryScore: newScore,
+        proficiencyBand: proficiencyBand(newScore),
         seenCount: 1,
         correctCount: args.rating !== "again" ? 1 : 0,
         incorrectCount: args.rating === "again" ? 1 : 0,
@@ -204,14 +210,8 @@ export const processReview = mutation({
         updatedAt: now,
       });
     } else {
-      let newScore = mastery.masteryScore + delta;
-      newScore = Math.max(0, Math.min(1, newScore));
-
-      let newBand: "new" | "learning" | "familiar" | "mastered" =
-        mastery.proficiencyBand;
-      if (newScore < 0.3) newBand = "learning";
-      else if (newScore < 0.7) newBand = "familiar";
-      else newBand = "mastered";
+      const newScore = updateMastery(mastery.masteryScore, delta);
+      const newBand = proficiencyBand(newScore);
 
       await ctx.db.patch(mastery._id, {
         masteryScore: newScore,

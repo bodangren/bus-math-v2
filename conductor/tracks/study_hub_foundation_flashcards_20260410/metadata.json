@@ -3,6 +3,6 @@
   "type": "feature",
   "status": "in_progress",
   "created_at": "2026-04-10T12:00:00Z",
-  "updated_at": "2026-04-10T12:00:00Z",
+  "updated_at": "2026-04-11T12:00:00Z",
   "description": "Port v1 SRS/flashcard system to v2: bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home."
 }

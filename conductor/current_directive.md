@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Post AI Feedback Full Track, Pass 29)
+## Current High-Level Priorities (2026-04-11 — Study Hub Phases 1-2, Pass 30)
 
 Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is **complete**.
 
@@ -88,12 +88,44 @@ Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workb
 2. **Units 2-4 Workbook Rollout** — COMPLETE.
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
 4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
-5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. All phases complete. Archived. Verification gates: lint 0 errors/2 pre-existing warnings, test 1650/1662 pass (12 pre-existing failures), build clean.
-6. **Study Hub Foundation and Flashcards** — NEXT TRACK. port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
+5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
+6. **Study Hub Foundation and Flashcards** — IN PROGRESS. Phase 1 (Glossary + Convex schema) complete. Phase 2 (FSRS engine) complete. Phase 3 (Study data hooks and language modes) next.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Study Hub Phases 1-2, Pass 30)
+
+Autonomous code review covering Study Hub Foundation and Flashcards Phase 1 (Glossary Data and Convex Schema) and Phase 2 (FSRS Engine Integration).
+
+**Fixed during review: 3 issues**
+- **getTermMasteryByUnit ignored unitNumber parameter** (Medium): Function accepted optional `unitNumber` arg but never used it — always returned all mastery records for the user. Fixed by importing `getGlossaryTermsByUnit` and filtering results against the unit's term slugs when `unitNumber` is provided.
+- **processReview duplicated mastery/band logic** (Low): Convex mutation manually clamped scores and computed proficiency bands inline instead of calling shared `updateMastery()` and `proficiencyBand()` from `lib/study/srs.ts`. Refactored to use the shared helpers.
+- **New term mastery score not clamped** (Medium): On first review, mastery was inserted as `0.5 + delta` without clamping to [0,1]. While current delta values (-0.2 to 0.2) keep it in range, the pattern is fragile. Fixed by calling `updateMastery(0.5, delta)`.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1666/1678 tests pass; 5 test files fail (13 tests total — all pre-existing: 2 security RLS Supabase, 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock, 3 SubmissionDetailModal unit)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Phase 1 (Glossary Data and Convex Schema)**: New `lib/study/glossary.ts` with 10 bilingual glossary terms (EN/ZH) covering Units 1, 3-6. `GlossaryTerm` interface with slug, bilingual terms/definitions, unit/topic/synonym/related metadata. Helper functions: getGlossaryTermBySlug, getGlossaryTermsByUnit, getGlossaryTermsByTopic, getAllGlossaryTopics, getAllGlossaryUnits. Well-tested (11 tests). Convex schema extended with 4 new tables: study_preferences (language mode), term_mastery (score, band, counts), due_reviews (FSRS scheduling), study_sessions (activity tracking). New `convex/study.ts` with 6 queries/mutations: getStudyPreferences, updatePreferences, getTermMasteryByUnit, getDueTerms, getRecentSessions, processReview, recordSession. Schema test updated to expect 27 tables.
+- **Phase 2 (FSRS Engine Integration)**: New `lib/study/srs.ts` as ts-fsrs adapter. `scheduleNewTerm` creates FSRS card with initial scheduling. `processReview` maps again/hard/good/easy ratings to FSRS Rating enum, returns updated card state, scheduled due time, and mastery delta. Pure utility functions: getDueTerms, proficiencyBand, updateMastery. Well-tested (6 tests). `ts-fsrs@5.3.2` added to dependencies (approval noted in plan). Convex processReview mutation integrates FSRS scheduling with atomic mastery and due_review updates.
+
+**Pre-existing issues confirmed (not fixed):**
+- 13 test failures remain (same set as Pass 29 + flaky SubmissionDetailModal test)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+
+**New items recorded in tech-debt.md:**
+- getTermMasteryByUnit unused unitNumber (Medium — fixed)
+- processReview duplicated logic (Low — fixed)
+- New term mastery unclamped (Medium — fixed)
+- proficiencyBand never returns "new" (Low — open)
+- due_reviews.fsrsState v.any() (Low — open)
+- Glossary covers only 5 of 8 units (Medium — open)
+
+**Phase status**: Study Hub Phase 1-2 COMPLETE. Phase 3 (Study Data Hooks and Language Modes) next. All verification gates pass.
 
 ## Code Review Summary (2026-04-11 — AI Feedback Full Track, Pass 29)
 

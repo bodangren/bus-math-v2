@@ -13,9 +13,9 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 5 | Capstone and Textbook Completion | Complete (2026-03-14) |
 | 6 | Production Hardening and Launch | Complete (2026-03-16) |
 | 7 | Practice Contract and Evidence Loop | Complete (2026-04-06) |
-| 8 | Classroom Product Completeness | Planned |
-| 9 | Workbook System and AI Features | Planned |
-| 10 | Student Study Tools | Planned |
+| 8 | Classroom Product Completeness | Complete (2026-04-10) |
+| 9 | Workbook System and AI Features | Complete (2026-04-11) |
+| 10 | Student Study Tools | Active (Study Hub in progress) |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
@@ -160,9 +160,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: extend spreadsheet submissions with AI-assisted feedback (preliminary score, strengths, improvements, next steps), revision loop with attempt history, and teacher visibility into all attempts and AI artifacts.*
   *Status: All phases complete (Pass 29). Verification gates: lint 0 errors/2 pre-existing warnings, test 1650/1662 pass (12 pre-existing failures), build clean.*
 
-- [ ] **Track: Study Hub Foundation and Flashcards**
+- [~] **Track: Study Hub Foundation and Flashcards**
   *Link: [./tracks/study_hub_foundation_flashcards_20260410/](./tracks/study_hub_foundation_flashcards_20260410/)*
-  *Scope: port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home route.*
+  *Scope: port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home route. Phase 1 (Glossary + Convex schema) complete. Phase 2 (FSRS engine) complete. Phase 3 next.*
 
 - [ ] **Track: Study Modes and Progress Dashboard**
   *Link: [./tracks/study_modes_progress_20260410/](./tracks/study_modes_progress_20260410/)*
