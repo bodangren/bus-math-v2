@@ -210,7 +210,7 @@ Across authored curriculum modules and manifests, the repo references many workb
 Repo audit result:
 
 - 59 referenced `.xlsx`, `.csv`, and `.pdf` curriculum asset filenames were detected
-- 0 matching actual files were found under `public`, `docs`, `lib`, or `conductor`
+- 8 matching files found under `public/workbooks/` (Unit 1, Lessons 4-7, student + teacher)
 
 That means:
 
@@ -225,7 +225,7 @@ That means:
 | Unit 1 authored source docs | Strong |
 | Units 2-8 authored runtime representation | Strong |
 | Units 2-8 detailed markdown source parity | Partial |
-| XLSX lesson workbooks | Not shipped as real files yet |
+| XLSX lesson workbooks | 8 files shipped (Unit 1, Lessons 4-7); Units 2-8 remain |
 | CSV lesson datasets | Not shipped as real files yet |
 | PDF guides/rubrics/checklists | Not shipped as real files yet |
 | Capstone support packet | Referenced, not actually packaged |
@@ -335,10 +335,10 @@ These are the major remaining blockers.
 
 ### Product-flow blockers
 
-- shared authenticated dashboard link missing from user menu
-- no student unit route
-- inconsistent or incomplete dashboard/unit/lesson return-path contract
-- incomplete student completion/resume/review loop consistency
+- ~~shared authenticated dashboard link missing from user menu~~ — complete (Milestone 8, Track 2)
+- ~~no student unit route~~ — complete (Milestone 8, Track 2)
+- ~~inconsistent or incomplete dashboard/unit/lesson return-path contract~~ — complete (Milestone 8, Tracks 2-3)
+- ~~incomplete student completion/resume/review loop consistency~~ — complete (Milestone 8, Track 3)
 
 ### Teacher-reporting blockers
 
@@ -388,7 +388,7 @@ Why it matters:
 
 Status:
 
-- in progress
+- complete — all 6 phases finished on April 9, 2026
 
 ### 2. Student Navigation and Dashboard Return Paths
 

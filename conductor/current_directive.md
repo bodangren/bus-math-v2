@@ -84,7 +84,7 @@ The following remain out of scope unless a later explicit track opens them:
 
 Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial tracks finished. Milestone 9 (Workbook System and AI Features) begins.
 
-1. **Workbook Infrastructure and Unit 1 Pilot** — build workbook download/serving infrastructure, create Unit 1 workbooks as the exemplar, establish how-to and 40-point rubric patterns. Phase 1-2 in progress (placeholder files added, real content needed).
+1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE. Built workbook download/serving infrastructure via API route with auth and role checks. Created Unit 1 workbooks (Lessons 4-7, student + teacher). Established how-to guide and 40-point rubric patterns. 8 workbook files shipped.
 2. **Units 2-4 Workbook Rollout** — apply the workbook pattern to Units 2, 3, and 4.
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — complete workbook rollout for Units 5-8, create capstone asset package, build capstone routes.
 4. **Student One-Shot Lesson Chatbot** — add one-shot lesson-scoped AI helper via OpenRouter for authenticated students.
@@ -94,6 +94,41 @@ Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial t
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-10 — Workbook Infrastructure, Pass 25)
+
+Autonomous code review covering Workbook Infrastructure and Unit 1 Pilot track (Phases 1-4) and post-Phase-4 archive cleanup.
+
+**Fixed during review: 1 issue**
+- **lessons-learned.md garbled entry** (Medium): Line 52 had broken text with dangling references ("Use a separate file (e.g., workbooks.client.ts) that uses a known workbooks.client.ts)!"). Rewrote as a clean bullet point matching the file's established format.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1630/1642 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response" mismatch, 2 security RLS Supabase dependency, 5 GradebookDrillDown integration Convex mock, 1 SubmissionDetailModal integration Convex mock)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Workbook API route** (`app/api/workbooks/[unit]/[lesson]/[type]/route.ts`): Auth via `getRequestSessionClaims`, parameter validation with `/^\d{2}$/` regex, role-based access (students can't access teacher workbooks), path traversal protection via `startsWith` check, file serving with correct Content-Type and Content-Disposition headers. Clean and well-tested (8 test cases).
+- **Client workbook helpers** (`lib/curriculum/workbooks.client.ts`): `getWorkbookPath` builds URL paths, `lessonHasWorkbooks` checks against a hardcoded Set of known workbooks (currently Unit 1, Lessons 4-7). The hardcoded set is a maintainability concern — it will become stale when Units 2-4 workbooks are added.
+- **Server workbook helpers** (`lib/curriculum/workbooks.ts`): `workbookExists` uses `fs.existsSync`, `lessonHasWorkbooks` checks if either student or teacher file exists. Split correctly from client version to avoid Node.js module import errors in client components.
+- **LessonRenderer workbook section**: Added workbook download card with student download link and 40-point rubric info. Uses `lessonHasWorkbooks` from client helper. Button links to API route (fixed from initial public path in commit `9ca079f`).
+- **TeacherLessonPlan workbook section**: Added workbook materials card with student and teacher download links, how-to guide info, and 40-point rubric info. Same `lessonHasWorkbooks` gate. Correctly includes `FileText` in existing import.
+- **Workbook files**: 8 `.xlsx` files for Unit 1 Lessons 4-7 (student + teacher). All non-zero size. Empty files for Lessons 8-9 were removed in a later commit.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 24: 4 SubmissionDetailModal "view raw response", 2 security RLS, 5 GradebookDrillDown integration, 1 SubmissionDetailModal integration)
+
+**New items recorded in tech-debt.md:**
+- `workbooks.client.ts` hardcoded workbook set will become stale during Units 2-4 rollout (Medium)
+- No test coverage for `workbooks.ts` or `workbooks.client.ts` helpers (Low)
+- `lessonHasWorkbooks` checks EITHER student OR teacher, but UI renders BOTH download links — 404 if only one exists (Low)
+
+**Updated during review:**
+- lessons-learned.md: fixed garbled client/server helper split entry
+- README.md: updated workbook asset count from 0 to 8, marked product-flow blockers as complete, fixed Lesson Phase Integrity Audit status to complete
+- current_directive.md: updated Workbook Infrastructure priority #1 to COMPLETE
+
+**Phase status**: Workbook Infrastructure and Unit 1 Pilot track COMPLETE. All 4 phases verified, archived. Next track: Units 2-4 Workbook Rollout.
 
 ## Code Review Summary (2026-04-10 — Gradebook + Competency Heatmap, Pass 23)
 
