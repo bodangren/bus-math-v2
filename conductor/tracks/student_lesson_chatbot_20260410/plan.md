@@ -19,14 +19,14 @@
 - [x] Verify all route tests pass
 
 ## Phase 3: Student UI Component
-- [ ] Write failing tests for the chatbot UI component (render, submit, reset, dismiss, accessibility)
-- [ ] Implement the floating bottom-right chatbot button component
-- [ ] Implement the expandable input and response display
-- [ ] Enforce one-shot constraint in UI (reset after response, no conversation history)
-- [ ] Add dismiss/close behavior
-- [ ] Add loading state and error handling for AI call failures
-- [ ] Integrate the chatbot component into the lesson page layout (student-only, authenticated-only)
-- [ ] Verify all UI component tests pass
+- [x] Write failing tests for the chatbot UI component (render, submit, reset, dismiss, accessibility)
+- [x] Implement the floating bottom-right chatbot button component
+- [x] Implement the expandable input and response display
+- [x] Enforce one-shot constraint in UI (reset after response, no conversation history)
+- [x] Add dismiss/close behavior
+- [x] Add loading state and error handling for AI call failures
+- [x] Integrate the chatbot component into the lesson page layout (student-only, authenticated-only)
+- [x] Verify all UI component tests pass
 
 ## Phase 4: Integration and Verification
 - [ ] Write integration tests for the full chatbot flow (button → question → response → reset)

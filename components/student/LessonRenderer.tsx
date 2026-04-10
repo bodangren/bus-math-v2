@@ -17,7 +17,8 @@ import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigatio
 import { cn } from '@/lib/utils';
 import { lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
 import { Download } from 'lucide-react';
-import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
+import { LessonChatbot } from '@/components/student/LessonChatbot';
+import { useAuth } from '@/components/auth/AuthProvider';
 
 interface Phase {
   id: string;
@@ -74,6 +75,7 @@ export function LessonRenderer({
 }: LessonRendererProps) {
   const router = useRouter();
   const { data: progressData, isLoading, refetch } = usePhaseProgress(lesson.slug);
+  const { profile, loading: authLoading } = useAuth();
 
   // Find the current phase
   const currentPhase = phases.find(p => p.phaseNumber === currentPhaseNumber);
@@ -340,6 +342,10 @@ export function LessonRenderer({
           </Button>
         </div>
       </div>
+
+      {!authLoading && profile?.role === 'student' && (
+        <LessonChatbot lessonId={lesson.slug} phaseNumber={currentPhaseNumber} />
+      )}
     </div>
   );
 }
