@@ -10,7 +10,7 @@
 - [x] Verify download infrastructure works for both authenticated student and teacher roles
 
 ## Phase 2: Unit 1 Workbook File Creation
-- [ ] Create student template `.xlsx` workbooks for each identified Unit 1 lesson
+- [~] Create student template `.xlsx` workbooks for each identified Unit 1 lesson
 - [ ] Create teacher completed `.xlsx` workbooks for each identified Unit 1 lesson
 - [ ] Validate all workbooks open correctly in Excel, Google Sheets, and LibreOffice Calc
 - [ ] Verify file sizes are reasonable for classroom download
