@@ -18,10 +18,10 @@
 - [x] Integrate processReview with Convex mutations (atomic mastery + FSRS state update)
 
 ## Phase 3: Study Data Hooks and Language Modes
-- [ ] Implement Convex-backed study hooks: useStudyData, useStudyDueCount, useUnitMastery
-- [ ] Implement language mode preference storage and retrieval
+- [x] Implement Convex-backed study hooks: useStudyData, useStudyDueCount, useUnitMastery
+- [x] Implement language mode preference storage and retrieval
 - [ ] Write failing tests for study hooks with mock Convex queries
-- [ ] Implement preference-derived prompt/answer field selection
+- [x] Implement preference-derived prompt/answer field selection
 - [ ] Verify study hooks and language mode tests pass
 
 ## Phase 4: Practice Hub Home
