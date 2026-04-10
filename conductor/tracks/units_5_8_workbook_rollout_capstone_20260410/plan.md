@@ -1,12 +1,12 @@
 # Implementation Plan: Units 5-8 Workbook Rollout and Capstone Assets
 
 ## Phase 1: Units 5-8 Lesson Audit and Planning
-- [ ] Audit Unit 5 (Assets That Age) wave2 blueprints to identify every lesson requiring a workbook
-- [ ] Audit Unit 6 (Inventory and Project Costing Intelligence) wave2 blueprints to identify every lesson requiring a workbook
-- [ ] Audit Unit 7 (Financing the Future) wave2 blueprints to identify every lesson requiring a workbook
-- [ ] Audit Unit 8 (Integrated Model Sprint) wave2 blueprints to identify every lesson requiring a workbook
-- [ ] Cross-reference with explicit wave2 asset filenames (guidedWorkbook, groupDatasets fields)
-- [ ] Document the full inventory of workbook files needed across all four units
+- [x] Audit Unit 5 (Assets That Age) wave2 blueprints to identify every lesson requiring a workbook
+- [x] Audit Unit 6 (Inventory and Project Costing Intelligence) wave2 blueprints to identify every lesson requiring a workbook
+- [x] Audit Unit 7 (Financing the Future) wave2 blueprints to identify every lesson requiring a workbook
+- [x] Audit Unit 8 (Integrated Model Sprint) wave2 blueprints to identify every lesson requiring a workbook
+- [x] Cross-reference with explicit wave2 asset filenames (guidedWorkbook, groupDatasets fields)
+- [x] Document the full inventory of workbook files needed across all four units
 
 ## Phase 2: Unit 5 Workbook Creation and Integration
 - [ ] Create student template `.xlsx` workbooks for each identified Unit 5 lesson
