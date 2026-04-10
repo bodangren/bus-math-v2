@@ -1,0 +1,1 @@
+Phase 3 (Study Data Hooks and Language Modes) complete: added useStudy.test.ts with 17 tests covering all study hooks (useStudyPreferences, useTermMastery, useDueTerms, useRecentSessions, useProcessReview, useRecordSession, useGlossaryTermDisplay), all tests pass
