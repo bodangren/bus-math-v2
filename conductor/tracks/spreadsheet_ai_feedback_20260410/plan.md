@@ -31,13 +31,13 @@
 - [x] Run `npm run lint` and targeted spreadsheet tests
 
 ## Phase 4: Student Revision UX
-- [ ] Write failing tests for the revise/resubmit UI flow
-- [ ] Implement the student feedback display: preliminary score, strengths, improvements, next steps
-- [ ] Add "AI Preliminary" score labeling throughout student-facing surfaces
-- [ ] Implement "Revise and Resubmit" button with attempt counter ("Attempt 2 of 3")
-- [ ] Pre-load previous submission data when student initiates revision
-- [ ] Add "Awaiting Teacher Review" state when max attempts reached
-- [ ] Verify all student revision UX tests pass
+- [x] Write failing tests for the revise/resubmit UI flow
+- [x] Implement the student feedback display: preliminary score, strengths, improvements, next steps
+- [x] Add "AI Preliminary" score labeling throughout student-facing surfaces
+- [x] Implement "Revise and Resubmit" button with attempt counter ("Attempt 2 of 3")
+- [x] Pre-load previous submission data when student initiates revision
+- [x] Add "Awaiting Teacher Review" state when max attempts reached
+- [x] Verify all student revision UX tests pass
 
 ## Phase 5: Teacher Visibility and Review
 - [ ] Write failing tests for teacher attempt history view
