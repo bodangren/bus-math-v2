@@ -1,0 +1,1 @@
+Workbook Infrastructure track: Phase 4 fixes - corrected download buttons to point to /api/workbooks route instead of public file path, removed unused imports, ran lint/test/build. Pre-existing test failures (SubmissionDetailModal, GradebookDrillDown) are unchanged and documented in tech-debt.md.
