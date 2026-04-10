@@ -1,14 +1,14 @@
 # Implementation Plan: AI Feedback for Spreadsheet Submissions
 
 ## Phase 1: Submission Schema and Attempt History
-- [ ] Extend Convex spreadsheet submission schema to support multiple attempts per activity
-- [ ] Define the AI feedback artifact schema (preliminary score, strengths, improvements, next steps)
-- [ ] Add attempt counter and attempt policy configuration to the activity/assignment model
-- [ ] Write failing tests for attempt history storage and retrieval (Convex queries/mutations)
-- [ ] Implement Convex mutations for storing attempts and AI feedback artifacts
-- [ ] Implement Convex query for teachers to retrieve full attempt history
-- [ ] Implement Convex mutation for teacher score overrides
-- [ ] Verify all attempt history tests pass
+- [x] Extend Convex spreadsheet submission schema to support multiple attempts per activity
+- [x] Define the AI feedback artifact schema (preliminary score, strengths, improvements, next steps)
+- [x] Add attempt counter and attempt policy configuration to the activity/assignment model
+- [x] Write failing tests for attempt history storage and retrieval (Convex queries/mutations)
+- [x] Implement Convex mutations for storing attempts and AI feedback artifacts
+- [x] Implement Convex query for teachers to retrieve full attempt history
+- [x] Implement Convex mutation for teacher score overrides
+- [x] Verify all attempt history tests pass
 
 ## Phase 2: AI Feedback Pipeline
 - [ ] Define the AI feedback prompt template: workbook analysis against rubric, cell-level error identification

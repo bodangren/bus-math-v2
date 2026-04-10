@@ -8,7 +8,7 @@ describe('Convex Schema Translation', () => {
     
     // Verify table count after auth_credentials addition
     const tableNames = Object.keys(schema.tables);
-    expect(tableNames.length).toBe(22);
+    expect(tableNames.length).toBe(23);
     
     // Check some specific core tables
     expect(tableNames).toContain('organizations');

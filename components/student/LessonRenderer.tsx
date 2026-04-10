@@ -19,6 +19,7 @@ import { lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
 import { Download } from 'lucide-react';
 import { LessonChatbot } from '@/components/student/LessonChatbot';
 import { useAuth } from '@/components/auth/AuthProvider';
+import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
 interface Phase {
   id: string;

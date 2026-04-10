@@ -76,6 +76,10 @@ export const getSpreadsheetResponse = internalQuery({
       )
       .unique();
 
+    if (!response) {
+      return null;
+    }
+
     // Get attempt count from the attempts table
     const attempts = await ctx.db
       .query("spreadsheet_submission_attempts")
@@ -83,10 +87,6 @@ export const getSpreadsheetResponse = internalQuery({
         q.eq("studentId", args.studentId).eq("activityId", args.activityId)
       )
       .collect();
-
-    if (!response) {
-      return null;
-    }
 
     return {
       studentId: response.studentId,
@@ -359,8 +359,6 @@ export const updateAttemptWithAiFeedback = internalMutation({
     }),
   },
   handler: async (ctx, args) => {
-    const now = Date.now();
-
     await ctx.db.patch(args.attemptId, {
       aiFeedback: args.aiFeedback,
     });

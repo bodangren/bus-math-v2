@@ -80,20 +80,56 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Milestone 8 Completion)
+## Current High-Level Priorities (2026-04-10 — Post Milestone 8 Completion, Pass 27)
 
-Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial tracks finished. Milestone 9 (Workbook System and AI Features) begins.
+Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial tracks finished. Milestone 9 (Workbook System and AI Features) is underway.
 
-1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE. Built workbook download/serving infrastructure via API route with auth and role checks. Created Unit 1 workbooks (Lessons 4-7, student + teacher). Established how-to guide and 40-point rubric patterns. 8 workbook files shipped.
-2. **Units 2-4 Workbook Rollout** — COMPLETE. Applied the workbook pattern to Units 2, 3, and 4. 24 workbooks shipped.
-3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE. Completed workbook rollout for Units 5-8 (32 workbooks), created capstone asset package (2 workbooks), updated workbooks.client.ts. 66 total workbook files now in public/workbooks/.
-4. **Student One-Shot Lesson Chatbot** — COMPLETE. OpenRouter provider adapter, lesson context packaging, API route with auth and rate limiting, and student UI component (floating button, expandable interface, one-shot constraint) all implemented and tested. All verification gates pass (lint 0 errors, test 1634/1646 pass, build passes cleanly).
-5. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
+1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE.
+2. **Units 2-4 Workbook Rollout** — COMPLETE.
+3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
+4. **Student One-Shot Lesson Chatbot** — COMPLETE. Chatbot Phases 2-4 (API route, student UI, integration) completed since Pass 26. Archived.
+5. **AI Feedback for Spreadsheet Submissions** — IN PROGRESS. Phase 1 (Submission Schema and Attempt History) complete. New `spreadsheet_submission_attempts` table with AI feedback and teacher override fields. Convex mutations for attempts, AI feedback, and teacher overrides implemented. Phase 2 (AI Feedback Pipeline) next.
 6. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-10 — Chatbot Phases 2-4 + AI Feedback Phase 1, Pass 27)
+
+Autonomous code review covering Student Lesson Chatbot Phases 2-4 (API route, rate limiting, student UI, integration verification) and AI Feedback for Spreadsheet Submissions Phase 1 (submission schema and attempt history).
+
+**Fixed during review: 4 issues**
+- **LessonRenderer.tsx missing type imports** (High): After chatbot integration commit, `ContentBlock`, `LessonMetadata`, and `PhaseMetadata` imports from `@/types/curriculum` were removed but the types were still used in interface definitions (lines 27, 29, 40). Restored the import. TypeScript would have caught this but esbuild bypasses tsc during build.
+- **convex-schema.test.ts stale table count** (Medium): Test expected 22 tables, new `spreadsheet_submission_attempts` table made it 23. Updated expected count.
+- **updateAttemptWithAiFeedback unused variable** (Low): `const now = Date.now()` was declared but never used. Removed.
+- **getSpreadsheetResponse query ordering** (Low): Attempt count query ran before null-checking the response, wasting a query when no response exists. Reordered: null check first, then attempts query.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1646/1658 tests pass; 5 test files fail (12 tests total — all pre-existing: 2 security RLS Supabase, 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock, 2 SubmissionDetailModal "view raw response" mismatch)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Chatbot Phase 2 (API Route and Safety)**: New `app/api/student/lesson-chatbot/route.ts` with auth checks (student role only), input validation and sanitization (strip markdown, length limits), and rate limiting (in-memory Map, 10s window per user). Input validation is solid. Rate limiting is adequate for current scale but won't work across server replicas.
+- **Chatbot Phase 3 (Student UI Component)**: New `components/student/LessonChatbot.tsx` — floating bottom-right button, expandable input with submit, loading state, error handling, reset behavior. One-shot constraint enforced via state machine (closed → open → loading → response/error → open on reset). Clean implementation.
+- **Chatbot Phase 4 (Integration and Verification)**: Integrated into `LessonRenderer.tsx` with auth guard (`profile?.role === 'student'`). Track archived with all phases marked complete.
+- **AI Feedback Phase 1 (Submission Schema)**: New `spreadsheet_submission_attempts` Convex table with `attemptNumber`, `spreadsheetData`, `validationResult`, `aiFeedback` (preliminary score, strengths, improvements, next steps, raw AI response), `teacherScoreOverride`, `teacherFeedbackOverride`, `gradedBy`, `gradedAt` fields. Removed `attempts` counter from `student_spreadsheet_responses` (replaced with count query). New Convex functions: `getSpreadsheetAttempts`, `createSpreadsheetAttempt`, `updateAttemptWithAiFeedback`, `updateAttemptWithTeacherOverride`. `submitSpreadsheet` now creates attempt records and returns `attemptId` and `attemptNumber`. Well-structured schema with good index coverage.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 26 minus the fixed schema test)
+- Chatbot rate limit uses in-memory Map — no cross-replica support, memory leak over time
+
+**New items recorded in tech-debt.md:**
+- Chatbot rate limit memory leak and replica limitation (Medium)
+- createSpreadsheetAttempt duplicates submitSpreadsheet logic (Low — intentional Phase 2 seam)
+
+**Updated during review:**
+- tech-debt.md: 7 new entries (4 fixed issues closed, 3 new open)
+- current_directive.md: Updated priorities and added Pass 27 review summary
+- conductor/tracks/spreadsheet_ai_feedback_20260410: metadata updated to in_progress, plan Phase 1 tasks marked complete
+
+**Phase status**: AI Feedback Phase 1 COMPLETE. Phase 2 (AI Feedback Pipeline) is next. All verification gates pass.
 
 ## Code Review Summary (2026-04-10 — Units 2-8 Workbooks + Chatbot Phase 1, Pass 26)
 

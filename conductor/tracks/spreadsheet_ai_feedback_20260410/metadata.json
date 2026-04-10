@@ -1,8 +1,8 @@
 {
   "track_id": "spreadsheet_ai_feedback_20260410",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-04-10T12:00:00Z",
-  "updated_at": "2026-04-10T12:00:00Z",
+  "updated_at": "2026-04-10T22:00:00Z",
   "description": "Add AI-assisted feedback to spreadsheet submissions: preliminary scoring, improvement guidance, revision loop with attempt history, and teacher visibility."
 }

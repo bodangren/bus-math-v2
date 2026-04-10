@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 10, 2026 (Code Review Pass 26)
+Last updated: April 10, 2026 (Code Review Pass 27)
 
 ## Status Snapshot
 
@@ -83,7 +83,7 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 9 (all planned, Milestone 9-10) |
+| Active Conductor tracks | 4 (1 in-progress Milestone 9, 3 planned Milestone 10) |
 | Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
 | Archived track directories | 97 |
 | Test files under `__tests__` and `tests` | 271 |
@@ -498,64 +498,19 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 
 ### 1. Student One-Shot Lesson Chatbot
 
-Track: `student_lesson_chatbot_20260410`
+Track: `student_lesson_chatbot_20260410` — **COMPLETE** (archived).
 
-Goal:
-
-- add a small bottom-right lesson helper for students to ask one question about the current lesson
-
-Desired product shape:
-
-- lives in the bottom-right corner of the lesson experience
-- single-turn only
-- no back-and-forth thread
-- scoped tightly to the active lesson context
-- uses `openrouter/free`
-
-Why it is attractive:
-
-- gives students quick clarification without turning the lesson into an open-ended chat product
-- reduces the temptation to use external tools during a lesson
-- keeps the support interaction bounded and low-cost
-
-Important constraints:
-
-- one-shot only should be enforced in product design, not just in prompt wording
-- lesson context should be passed in a narrowly scoped way so the assistant answers the current lesson, not the whole internet
-- requests and responses should be filtered and logged defensively because "one turn" reduces but does not eliminate jailbreak attempts
-- rate limiting and role checks should be required so only authenticated students can use it in the intended surface
-- the UX should reset after each response rather than preserving conversational memory
-
-Likely implementation work:
-
-- create a teacher-safe and student-safe AI route for one-shot lesson Q&A
-- define the exact lesson context package:
-  - lesson title
-  - current phase
-  - learning objectives
-  - selected content summary or published phase content
-- add UI for the bottom-right helper on lesson pages
-- add request guards, rate limits, and abuse controls
-- add analytics so usage can be measured before expanding scope
-
-Suggested future track framing:
-
-- `Student One-Shot Lesson Helper`
-
-Definition of done:
-
-- a student can ask one question from the lesson page
-- the response is lesson-scoped and concise
-- no second-turn conversation is supported
-- abuse controls and rate limits are in place
+Shipped: OpenRouter provider adapter, lesson context packaging, API route with auth/rate limiting, and student UI component (floating button, expandable interface, one-shot constraint). All verification gates pass. Archived on 2026-04-10.
 
 ### 2. AI Feedback for Submitted Excel Spreadsheets
 
-Track: `spreadsheet_ai_feedback_20260410`
+Track: `spreadsheet_ai_feedback_20260410` — **IN PROGRESS** (Phase 1 complete).
 
 Goal:
 
 - give students preliminary automated feedback on submitted spreadsheet work, including a provisional score, improvement guidance, and the ability to revise and resubmit
+
+Status: Phase 1 (Submission Schema and Attempt History) is complete. New `spreadsheet_submission_attempts` table with AI feedback and teacher override fields. Convex mutations for attempts, AI feedback, and teacher overrides implemented. Phase 2 (AI Feedback Pipeline) is next.
 
 Desired product shape:
 
