@@ -19,6 +19,10 @@ export async function GET(
     return NextResponse.json({ error: 'Invalid type' }, { status: 400 });
   }
 
+  if (!/^\d{2}$/.test(unit) || !/^\d{2}$/.test(lesson)) {
+    return NextResponse.json({ error: 'Invalid unit or lesson' }, { status: 400 });
+  }
+
   const role = session.role;
   const requestedType = type;
 
@@ -27,7 +31,12 @@ export async function GET(
   }
 
   const fileName = `unit_${unit}_lesson_${lesson}_${requestedType}.xlsx`;
-  const publicPath = path.join(process.cwd(), 'public', 'workbooks', fileName);
+  const workbooksDir = path.join(process.cwd(), 'public', 'workbooks');
+  const publicPath = path.join(workbooksDir, fileName);
+
+  if (!publicPath.startsWith(workbooksDir)) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
 
   if (!fs.existsSync(publicPath)) {
     return NextResponse.json({ error: 'File not found' }, { status: 404 });

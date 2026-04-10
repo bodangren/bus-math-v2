@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 10, 2026
+Last updated: April 10, 2026 (Code Review Pass 24)
 
 ## Status Snapshot
 
@@ -20,7 +20,8 @@ However, this repository is **not yet a fully classroom-complete education app**
 - ~~polished end-to-end student navigation and return paths~~ — complete
 - ~~coherent teacher reporting information architecture~~ — complete
 - ~~complete gradebook visibility for independent practice and assessment evidence~~ — complete
-- teacher-facing competency heatmaps (in progress)
+- ~~teacher-facing competency heatmaps~~ — complete
+- ~~education app readiness hardening~~ — complete
 - downloadable workbook, dataset, rubric, checklist, and guide files for the full course
 - complete capstone supporting pages and asset packets
 
@@ -28,17 +29,17 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 ### Current overall status
 
-- Conductor Milestones 1-7 are marked complete.
-- Milestone 8, `Classroom Product Completeness`, is still open.
-- Across the active Milestone 8 plans, 5 tracks are complete, 1 is in progress, and 1 remains pending.
-- The active roadmap contains 7 serial tracks:
+- Conductor Milestones 1-8 are marked complete.
+- Milestone 9, `Workbook System and AI Features`, is next.
+- Milestone 10, `Student Study Tools`, is planned.
+- Across the completed Milestone 8, all 7 serial tracks finished:
   1. ~~Full Lesson Phase Integrity Audit~~ — complete
   2. ~~Student Navigation and Dashboard Return Paths~~ — complete
   3. ~~Student Completion and Resume Loop~~ — complete
   4. ~~Teacher Reporting Information Architecture~~ — complete
   5. ~~Teacher Gradebook Completion~~ — complete
-  6. Teacher Competency Heatmaps and Mastery Views (in progress)
-  7. Education App Readiness Hardening
+  6. ~~Teacher Competency Heatmaps and Mastery Views~~ — complete
+  7. ~~Education App Readiness Hardening~~ — complete
 
 ### Real interpretation
 
@@ -74,7 +75,7 @@ The target product is:
 | 5. Capstone and Textbook Completion | Complete on March 14, 2026 |
 | 6. Production Hardening and Launch | Complete on March 16, 2026 |
 | 7. Practice Contract and Evidence Loop | Complete on April 6, 2026 |
-| 8. Classroom Product Completeness | Planned / active |
+| 8. Classroom Product Completeness | Complete on April 10, 2026 |
 
 ### Repo-level indicators
 
@@ -82,8 +83,8 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 7 |
-| Active Milestone 8 track status | 5 complete, 1 in progress, 1 not started |
+| Active Conductor tracks | 9 (all planned, Milestone 9-10) |
+| Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
 | Archived track directories | 97 |
 | Test files under `__tests__` and `tests` | 271 |
 
@@ -93,7 +94,7 @@ The target product is:
 |---|---|---|
 | Platform foundation | Strong | Convex, Vinext/App Router, JWT auth, route guards, publishing pipeline |
 | Student runtime | Strong | Dashboard, lesson runtime, navigation, breadcrumbs, resume/review contract complete |
-| Teacher runtime | Strong but incomplete | Dashboard, reporting IA, breadcrumbs, and gradebook entry points complete; gradebook depth and competency views remain unfinished |
+| Teacher runtime | Strong | Dashboard, reporting IA, breadcrumbs, gradebook with IP/assessment visibility, competency heatmap with student drill-down complete |
 | Curriculum runtime coverage | Strong | Manifest and tests show 8 units + capstone published as authored runtime content |
 | Downloadable instructional assets | Weak | Referenced extensively in authored content, but not present as actual repo files |
 | Classroom launch readiness | Partial | Good internal app base, but still missing key product-completeness work |
@@ -276,8 +277,8 @@ The student experience is already a real product surface, but it is still missin
 - ~~teacher reporting entry points and breadcrumbs need a clearer information architecture~~ — complete
 - ~~gradebook logic still centers on lesson completion + mastery color/status cells~~ — complete
 - ~~explicit independent-practice and assessment visibility is not yet complete enough to satisfy the active gradebook-completion track~~ — complete
-- competency heatmap rendering exists but drill-down and context views remain unfinished
-- final reporting hardening and workflow verification are still queued
+- competency heatmap rendering and drill-down to student detail pages are complete
+- final reporting hardening and workflow verification are complete
 
 ### Current teacher-product interpretation
 
@@ -343,7 +344,7 @@ These are the major remaining blockers.
 
 - ~~incomplete reporting information architecture~~ — complete
 - ~~incomplete gradebook detail for independent practice and assessment evidence~~ — complete
-- competency heatmap drill-down and context views remain unfinished
+- ~~competency heatmap drill-down and context views remain unfinished~~ — complete
 
 ### Asset-packaging blockers
 
@@ -372,8 +373,8 @@ This is the active Conductor Milestone 8 roadmap as of April 9, 2026.
 | 3 | Student Completion and Resume Loop | Complete | Make start/resume/review/continue behavior coherent |
 | 4 | Teacher Reporting Information Architecture | Complete | Define and expose the reporting drill-down structure |
 | 5 | Teacher Gradebook Completion | Complete | Add real independent-practice and assessment visibility |
-| 6 | Teacher Competency Heatmaps and Mastery Views | In progress | Ship teacher-facing mastery heatmap surfaces |
-| 7 | Education App Readiness Hardening | Not started | Add final classroom-loop hardening and smoke coverage |
+| 6 | Teacher Competency Heatmaps and Mastery Views | Complete | Ship teacher-facing mastery heatmap surfaces with student drill-down |
+| 7 | Education App Readiness Hardening | Complete | Add final classroom-loop hardening and smoke coverage |
 
 ### 1. Full Lesson Phase Integrity Audit
 
@@ -458,7 +459,7 @@ Needed outcome:
 
 Status:
 
-- in progress — heatmap rendering and course-level view are complete; drill-down and context views remain
+- complete — heatmap rendering, course-level view, and student drill-down are all shipped
 
 ### 7. Education App Readiness Hardening
 
@@ -471,6 +472,10 @@ Goal:
 Needed outcome:
 
 - the repo has a credible launch-readiness story, not just a feature list
+
+Status:
+
+- complete — all Milestone 8 tracks finished, verification gates pass
 
 ## Additional Roadmap Beyond Milestone 8
 
@@ -625,7 +630,7 @@ This repo is already a serious education product codebase with:
 - real progress tracking
 - real practice evidence and review infrastructure
 
-But it is still **one milestone away from classroom workflow completeness** and **more than one workstream away from full curriculum artifact completeness**.
+But it is still **one workstream away from full curriculum artifact completeness** — Milestone 8 (Classroom Product Completeness) is closed, and Milestone 9 (Workbook System and AI Features) is the next priority.
 
 If the question is:
 

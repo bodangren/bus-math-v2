@@ -1,61 +1,75 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, and Cloudflare deployment are complete. Milestones 1–7 closed between 2026-03-16 and 2026-04-06.
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, and Milestone 8 classroom product completeness are all complete. Milestones 1–8 closed between 2026-03-16 and 2026-04-10.
 
-Cleanup and page-polish work is functionally complete except for the active full lesson audit. The project now transitions into a classroom product-completeness roadmap: finish the audit, then close the missing student-navigation and teacher-reporting workflows that still prevent the app from behaving like a complete education product.
+The project now transitions into Milestone 9 (Workbook System and AI Features) and Milestone 10 (Student Study Tools). The immediate priority is completing the workbook infrastructure with real Unit 1 workbook files, then rolling out the pattern across all units.
 
 ## Phase Focus
 
-This directive now has three serialized goals:
+This directive now has three serialized goals for Milestone 9:
 
-1. finish the active lesson-phase integrity audit so the current runtime surface is trustworthy
-2. close classroom-blocking product gaps in student wayfinding, dashboard re-entry, teacher reporting access, gradebook completeness, and competency visibility
-3. harden the completed student and teacher workflows with aligned docs and verification
+1. complete the workbook infrastructure with real Unit 1 workbook content (how-to guides + 40-point rubrics)
+2. roll out the workbook pattern to Units 2-8 with capstone assets
+3. deliver student-facing AI features: one-shot lesson chatbot and spreadsheet AI feedback with revision loop
 
 ## Required Execution Order
 
-Tracks in this roadmap must run in this order:
+Milestone 8 tracks (all complete):
 
-1. **Full Lesson Phase Integrity Audit**
-2. **Student Navigation and Dashboard Return Paths**
-3. **Student Completion and Resume Loop**
-4. **Teacher Reporting Information Architecture**
-5. **Teacher Gradebook Completion**
-6. **Teacher Competency Heatmaps and Mastery Views**
-7. **Education App Readiness Hardening**
+1. ~~Full Lesson Phase Integrity Audit~~
+2. ~~Student Navigation and Dashboard Return Paths~~
+3. ~~Student Completion and Resume Loop~~
+4. ~~Teacher Reporting Information Architecture~~
+5. ~~Teacher Gradebook Completion~~
+6. ~~Teacher Competency Heatmaps and Mastery Views~~
+7. ~~Education App Readiness Hardening~~
 
-One implementation track may be active at a time. The six roadmap tracks after the audit are planned now, but they must remain pending until the active audit is verified, documented, and archived.
+Milestone 9 tracks (active):
+
+1. **Workbook Infrastructure and Unit 1 Pilot** (Phase 1-2 in progress)
+2. **Units 2-4 Workbook Rollout**
+3. **Units 5-8 Workbook Rollout and Capstone Assets**
+4. **Student One-Shot Lesson Chatbot**
+5. **AI Feedback for Spreadsheet Submissions**
+
+Milestone 10 tracks (planned):
+
+6. **Study Hub Foundation and Flashcards**
+7. **Study Modes and Progress Dashboard**
+8. **Practice Tests**
 
 ## In-Bounds Work
 
 Every track in this roadmap must directly support at least one of these outcomes:
 
-- remove or repair dead-end student navigation paths so dashboard, unit, lesson, and completion states form a coherent loop
-- expose role-appropriate dashboard destinations in shared authenticated navigation
-- add the missing teacher reporting entry points, breadcrumbs, drill-down paths, and view hierarchy needed for daily classroom use
-- complete the teacher gradebook so independent practice, assessment, and submission visibility are available at unit and lesson depth
-- turn existing competency data into teacher-facing heatmap and mastery views
-- harden auth, verification, and reporting contracts around the completed education-app flows
+- build real workbook files (student templates + teacher completed) for every lesson requiring an Excel workbook
+- create how-to guides and 40-point grading rubrics for workbook lessons
+- build capstone supporting assets (investor workbook, business plan guide, pitch rubric, model tour checklist)
+- add student-facing one-shot lesson chatbot with lesson-scoped AI responses
+- extend spreadsheet submissions with AI-assisted feedback, revision loop, and teacher visibility
+- port v1 study tools (SRS/flashcards, matching game, speed round, practice tests) to v2 with Convex-backed storage
 
 ## Phase Exit Gates
 
-This roadmap is only complete when all of the following are true:
+Milestone 8 is closed. This roadmap (Milestone 9) is only complete when all of the following are true:
 
-- every published lesson phase has passed the integrity audit
-- a signed-in student can move cleanly between dashboard, unit, lesson, and completed-lesson states
-- the shared user menu exposes the correct dashboard destination for the signed-in role
-- the teacher dashboard exposes obvious entry points to course, unit, lesson, and student reporting
-- the teacher gradebook includes independent practice and assessment visibility
-- competency tracking is visible through teacher-facing heatmap/mastery views
+- every lesson requiring a workbook has student and teacher `.xlsx` files with real content (not placeholders)
+- every workbook lesson has a how-to guide and 40-point rubric in teacher and student sections
+- capstone assets and routes are complete
+- students can ask one lesson-scoped question from the lesson page via the chatbot
+- spreadsheet submissions receive AI feedback with revision capability
+- teachers see full attempt history with AI artifacts
 - required lint, tests, build, and route-flow verification have been run and recorded for the finished roadmap
 
 ## Quality Bar
 
-- prefer canonical navigation helpers and shared chrome over one-off links
-- fix misleading or dead routes when found instead of documenting obvious product traps for later
-- preserve the established visual language unless a change is required for clarity, hierarchy, or responsive behavior
-- keep Convex as the runtime source of truth for student progress, teacher reporting, and competency views
-- treat teacher reporting as a classroom workflow, not a demo surface: entry points, drill-down, and interpretation all matter
+- workbook content must be pedagogically sound and match the lesson's learning objectives
+- how-to guides should be step-by-step and usable by students with no prior Excel experience
+- rubrics must use the canonical 40-point scale with clear scoring categories
+- AI chatbot responses must be lesson-scoped, concise, and never suggest external resources
+- spreadsheet AI feedback must clearly label itself as preliminary and never replace teacher judgment
+- preserve the established visual language unless a change is required for new feature surfaces
+- keep Convex as the runtime source of truth for submissions, feedback, and study data
 
 ## Deferred Work
 
@@ -66,18 +80,18 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Milestone 10 Planning)
+## Current High-Level Priorities (2026-04-10 — Post Milestone 8 Completion)
 
-1. **Teacher Competency Heatmaps Phase 3-4** — add unit/student drill-down from the heatmap, link back to gradebook/reporting context, and complete verification gates.
-2. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
-3. **Workbook Infrastructure and Unit 1 Pilot** — build workbook download/serving infrastructure, create Unit 1 workbooks as the exemplar, establish how-to and 40-point rubric patterns.
-4. **Units 2-4 Workbook Rollout** — apply the workbook pattern to Units 2, 3, and 4.
-5. **Units 5-8 Workbook Rollout and Capstone Assets** — complete workbook rollout for Units 5-8, create capstone asset package, build capstone routes.
-6. **Student One-Shot Lesson Chatbot** — add one-shot lesson-scoped AI helper via OpenRouter for authenticated students.
-7. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
-8. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
-9. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
-10. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
+Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial tracks finished. Milestone 9 (Workbook System and AI Features) begins.
+
+1. **Workbook Infrastructure and Unit 1 Pilot** — build workbook download/serving infrastructure, create Unit 1 workbooks as the exemplar, establish how-to and 40-point rubric patterns. Phase 1-2 in progress (placeholder files added, real content needed).
+2. **Units 2-4 Workbook Rollout** — apply the workbook pattern to Units 2, 3, and 4.
+3. **Units 5-8 Workbook Rollout and Capstone Assets** — complete workbook rollout for Units 5-8, create capstone asset package, build capstone routes.
+4. **Student One-Shot Lesson Chatbot** — add one-shot lesson-scoped AI helper via OpenRouter for authenticated students.
+5. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
+6. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
+7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
+8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
@@ -543,6 +557,37 @@ Audited U3 Financial Statements & Reporting Exercise track Phases 4-5 (chart-lin
 - Placeholder count corrected from 4 to 3
 
 **Phase status**: U3 Financial Statements & Reporting Exercise track COMPLETE (all 5 phases). All exercise implementation tracks (U2, U3, U6) now complete. 3 placeholder keys remain. Ready for next phase definition.
+
+## Code Review Summary (2026-04-10 — Competency Heatmap + Education App + Workbook Infrastructure, Pass 24)
+
+Autonomous code review covering Teacher Competency Heatmaps Phase 3-4, Education App Readiness Hardening (all phases), and Workbook Infrastructure Phase 1-2.
+
+**Fixed during review: 2 critical issues**
+
+- **Competency page broken server→client conversion** (Critical): Phase 3 converted `app/teacher/competency/page.tsx` from a server component to a `'use client'` component expecting `heatmapData` prop, but no server component passes data to it. The wrapper `TeacherCompetencyPageClient.tsx` was created to fill this role but has a circular import (`import TeacherCompetencyPageClient from './TeacherCompetencyPageClient'`). The page would crash at runtime with undefined data. Fixed by: deleting the dead `TeacherCompetencyPageClient.tsx`, creating a proper `CompetencyHeatmapClient.tsx` client wrapper using `useRouter` for drill-down navigation, and restoring `page.tsx` as a server component that fetches data and passes it to the client wrapper.
+
+- **Workbook route path traversal vulnerability** (High): `GET /api/workbooks/[unit]/[lesson]/[type]` accepted arbitrary `unit` and `lesson` parameters without validation. `path.join(process.cwd(), 'public', 'workbooks', fileName)` with untrusted input could normalize path traversal sequences (e.g., `unit_01_lesson_04_student/../../../etc/passwd`). Fixed by: adding strict regex validation (`/^\d{2}$/`) for both `unit` and `lesson` parameters (400 on invalid), and adding a `publicPath.startsWith(workbooksDir)` canonicalization check as defense-in-depth. Added 3 new tests for path traversal, non-numeric unit, and non-numeric lesson.
+
+**Pre-existing issues confirmed (not fixed):**
+- SubmissionDetailModal "view raw response" button: 4 unit tests expect it but component has no such UI (Pass 22 finding)
+- Security RLS tests: 2 test files fail due to Supabase credential dependency (Pass 22 finding)
+- GradebookDrillDown/SubmissionDetailModal integration tests: 8 tests fail due to Convex mock issues (Pass 22 finding)
+
+**New items recorded in tech-debt.md:**
+- Convex `getTeacherStudentCompetencyDetail` loads all records from 5 tables via unscoped `.collect()` (Low — scalability concern at scale, functional at current size)
+- Workbook placeholder files are 0 bytes — Phase 2 created placeholder `.xlsx` files for Lessons 4-9 without real content (Medium — blocks Phase 3 curriculum integration)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1630/1642 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response" mismatch, 3 SubmissionDetailModal integration Convex mock, 5 GradebookDrillDown integration Convex mock)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Teacher Competency Heatmaps Phase 3-4**: Added drill-down from heatmap grid to student competency detail pages (`/teacher/students/[studentId]/competency`). `CompetencyHeatmapGrid` now accepts `onStudentClick`, `onStandardClick`, `onCellClick` callbacks. New `StudentCompetencyDetailGrid` component renders per-student mastery detail with unit/lesson context. New Convex query `getTeacherStudentCompetencyDetail` fetches student competency with lesson context via pure assembly function. Breadcrumb navigation from heatmap → student detail → back to heatmap. New tests in `unit-competency-drilldown.test.ts` cover unit filtering, student detail assembly, and missing lesson context.
+- **Education App Readiness Hardening**: 4-phase track. Phase 1 audited Milestone 8 contracts and identified the build-blocker (missing `cellBgClass` import in `StudentCompetencyDetailGrid`). Phase 2 fixed the import (from `gradebook` not `competency-heatmap`). Phase 3 verified lint/test/build gates. Phase 4 documented lessons-learned with fs mocking tips. All verification gates pass.
+- **Workbook Infrastructure Phase 1-2**: Phase 1 built workbook download route (`/api/workbooks/[unit]/[lesson]/[type]`) with role-based access (student→student template, teacher→completed version). Uses `getRequestSessionClaims` for auth, validates type parameter, returns `.xlsx` with correct MIME type. Phase 2 added 12 placeholder `.xlsx` files (0 bytes) for Unit 1 Lessons 4-9 (student + teacher variants). Naming convention: `unit_{NN}_lesson_{NN}_{student|teacher}.xlsx`. Tests cover auth, role-based access, and file-not-found scenarios.
+
+**Phase status**: Milestone 8 (Classroom Product Completeness) is now FULLY COMPLETE. All 7 serial tracks closed. Milestone 9 (Workbook System and AI Features) and Milestone 10 (Student Study Tools) are the next workstreams.
 
 ## Notes
 

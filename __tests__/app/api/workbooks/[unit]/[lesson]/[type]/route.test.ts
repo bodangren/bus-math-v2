@@ -130,4 +130,55 @@ describe('GET /api/workbooks/[unit]/[lesson]/[type]', () => {
 
     expect(response.status).toBe(404);
   });
+
+  it('returns 400 for path traversal in unit parameter', async () => {
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'profile_123',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
+    const response = await GET(
+      buildRequest('http://localhost/api/workbooks/../../etc/04/student'),
+      buildContext('../../etc', '04', 'student')
+    );
+
+    expect(response.status).toBe(400);
+  });
+
+  it('returns 400 for non-numeric unit parameter', async () => {
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'profile_123',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
+    const response = await GET(
+      buildRequest('http://localhost/api/workbooks/abc/04/student'),
+      buildContext('abc', '04', 'student')
+    );
+
+    expect(response.status).toBe(400);
+  });
+
+  it('returns 400 for non-numeric lesson parameter', async () => {
+    mockGetRequestSessionClaims.mockResolvedValue({
+      sub: 'profile_123',
+      username: 'student',
+      role: 'student',
+      iat: 1,
+      exp: 2,
+    });
+
+    const response = await GET(
+      buildRequest('http://localhost/api/workbooks/01/xyz/student'),
+      buildContext('01', 'xyz', 'student')
+    );
+
+    expect(response.status).toBe(400);
+  });
 });
