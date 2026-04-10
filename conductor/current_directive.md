@@ -29,7 +29,7 @@ Milestone 9 tracks (active):
 1. ~~Workbook Infrastructure and Unit 1 Pilot~~ — complete
 2. ~~Units 2-4 Workbook Rollout~~ — complete
 3. ~~Units 5-8 Workbook Rollout and Capstone Assets~~ — complete
-4. **Student One-Shot Lesson Chatbot** (Phase 1 in progress)
+4. ~~Student One-Shot Lesson Chatbot~~ — complete
 5. **AI Feedback for Spreadsheet Submissions**
 
 Milestone 10 tracks (planned):
@@ -87,7 +87,7 @@ Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial t
 1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE. Built workbook download/serving infrastructure via API route with auth and role checks. Created Unit 1 workbooks (Lessons 4-7, student + teacher). Established how-to guide and 40-point rubric patterns. 8 workbook files shipped.
 2. **Units 2-4 Workbook Rollout** — COMPLETE. Applied the workbook pattern to Units 2, 3, and 4. 24 workbooks shipped.
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE. Completed workbook rollout for Units 5-8 (32 workbooks), created capstone asset package (2 workbooks), updated workbooks.client.ts. 66 total workbook files now in public/workbooks/.
-4. **Student One-Shot Lesson Chatbot** — IN PROGRESS (Phase 1 complete). OpenRouter provider adapter and lesson context packaging implemented with tests. Phase 2 (API route and safety) next.
+4. **Student One-Shot Lesson Chatbot** — COMPLETE. OpenRouter provider adapter, lesson context packaging, API route with auth and rate limiting, and student UI component (floating button, expandable interface, one-shot constraint) all implemented and tested. All verification gates pass (lint 0 errors, test 1634/1646 pass, build passes cleanly).
 5. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
 6. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
