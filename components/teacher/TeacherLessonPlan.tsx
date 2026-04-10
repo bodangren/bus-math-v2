@@ -27,7 +27,7 @@ import type {
   TeacherPublishedPhase,
 } from '@/lib/teacher/lesson-monitoring';
 import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
-import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
+import { lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
 
 interface TeacherLessonPlanProps {
   lesson: TeacherPublishedLesson;
@@ -255,21 +255,21 @@ export function TeacherLessonPlan({
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-semibold mb-3">Student Materials</h4>
-                <Button asChild variant="outline" className="w-full justify-start">
-                  <a href={getWorkbookPath(lesson.unitNumber, lessonNumber, 'student')} download>
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Student Workbook (.xlsx)
-                  </a>
-                </Button>
+                 <Button asChild variant="outline" className="w-full justify-start">
+                   <a href={`/api/workbooks/${String(lesson.unitNumber).padStart(2, '0')}/${String(lessonNumber).padStart(2, '0')}/student`} download>
+                     <Download className="h-4 w-4 mr-2" />
+                     Download Student Workbook (.xlsx)
+                   </a>
+                 </Button>
               </div>
               <div>
                 <h4 className="font-semibold mb-3">Teacher Materials</h4>
-                <Button asChild variant="outline" className="w-full justify-start">
-                  <a href={getWorkbookPath(lesson.unitNumber, lessonNumber, 'teacher')} download>
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Teacher Workbook (.xlsx)
-                  </a>
-                </Button>
+                 <Button asChild variant="outline" className="w-full justify-start">
+                   <a href={`/api/workbooks/${String(lesson.unitNumber).padStart(2, '0')}/${String(lessonNumber).padStart(2, '0')}/teacher`} download>
+                     <Download className="h-4 w-4 mr-2" />
+                     Download Teacher Workbook (.xlsx)
+                   </a>
+                 </Button>
               </div>
             </div>
             <div className="bg-blue-50 dark:bg-blue-950/10 p-4 rounded-lg border border-blue-200 dark:border-blue-800">

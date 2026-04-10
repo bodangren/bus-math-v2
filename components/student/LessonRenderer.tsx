@@ -15,7 +15,7 @@ import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
 import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigation';
 import { cn } from '@/lib/utils';
-import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
+import { lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
 import { Download } from 'lucide-react';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
@@ -210,12 +210,12 @@ export function LessonRenderer({
                 Workbook Materials
               </h2>
               <div className="space-y-3">
-                <Button asChild variant="outline" className="w-full justify-start">
-                  <a href={getWorkbookPath(lesson.unitNumber, lesson.orderIndex, 'student')} download>
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Student Workbook (.xlsx)
-                  </a>
-                </Button>
+                 <Button asChild variant="outline" className="w-full justify-start">
+                   <a href={`/api/workbooks/${String(lesson.unitNumber).padStart(2, '0')}/${String(lesson.orderIndex).padStart(2, '0')}/student`} download>
+                     <Download className="h-4 w-4 mr-2" />
+                     Download Student Workbook (.xlsx)
+                   </a>
+                 </Button>
                 <div className="text-sm text-blue-700 dark:text-blue-300">
                   <p className="font-medium">40-Point Grading Rubric</p>
                   <p className="text-xs mt-1">
