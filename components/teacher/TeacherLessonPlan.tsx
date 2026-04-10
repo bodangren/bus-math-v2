@@ -19,13 +19,15 @@ import {
   UserCheck,
   Flag,
   Info,
-  ChevronDown
+  ChevronDown,
+  Download
 } from "lucide-react"
 import type {
   TeacherPublishedLesson,
   TeacherPublishedPhase,
 } from '@/lib/teacher/lesson-monitoring';
 import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
+import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks';
 
 interface TeacherLessonPlanProps {
   lesson: TeacherPublishedLesson;
@@ -239,6 +241,52 @@ export function TeacherLessonPlan({
           )}
         </CardContent>
       </Card>
+
+      {/* Workbook Materials */}
+      {lessonHasWorkbooks(lesson.unitNumber, lessonNumber) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-6 w-6 text-primary" />
+              Workbook Materials
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold mb-3">Student Materials</h4>
+                <Button asChild variant="outline" className="w-full justify-start">
+                  <a href={getWorkbookPath(lesson.unitNumber, lessonNumber, 'student')} download>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Student Workbook (.xlsx)
+                  </a>
+                </Button>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-3">Teacher Materials</h4>
+                <Button asChild variant="outline" className="w-full justify-start">
+                  <a href={getWorkbookPath(lesson.unitNumber, lessonNumber, 'teacher')} download>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Teacher Workbook (.xlsx)
+                  </a>
+                </Button>
+              </div>
+            </div>
+            <div className="bg-blue-50 dark:bg-blue-950/10 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h5 className="font-medium text-blue-800 dark:text-blue-200 mb-2">How-To Guide</h5>
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                Step-by-step instructions for completing this workbook are available in the lesson phases below.
+              </p>
+            </div>
+            <div className="bg-amber-50 dark:bg-amber-950/10 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+              <h5 className="font-medium text-amber-800 dark:text-amber-200 mb-2">40-Point Grading Rubric</h5>
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                This assignment is scored on a 40-point scale. Full rubric details are included in the lesson phases.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Lesson Phases */}
       {phases.length > 0 && (

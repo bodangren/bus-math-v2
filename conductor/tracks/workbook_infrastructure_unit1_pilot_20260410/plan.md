@@ -17,8 +17,8 @@
 - [x] Check all workbooks into the repository under the established directory convention
 
 ## Phase 3: Curriculum Content Integration
-- [ ] Add how-to guide sections to Unit 1 teacher lesson plan content for each workbook lesson
-- [ ] Add 40-point grading rubrics to Unit 1 teacher lesson plan content for each workbook lesson
+- [x] Add how-to guide sections to Unit 1 teacher lesson plan content for each workbook lesson
+- [~] Add 40-point grading rubrics to Unit 1 teacher lesson plan content for each workbook lesson
 - [ ] Add 40-point grading rubrics to Unit 1 student-facing lesson content for each workbook lesson
 - [ ] Update the authored curriculum files to include how-to and rubric content
 - [ ] Publish updated curriculum to Convex and verify content renders correctly

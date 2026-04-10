@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, FileText } from 'lucide-react';
 import { LessonStepper, type StepperPhase } from '@/components/lesson/LessonStepper';
 import { PhaseRenderer } from '@/components/lesson/PhaseRenderer';
 import { PhaseGuidanceCard } from '@/components/student/PhaseGuidanceCard';
@@ -15,6 +15,8 @@ import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
 import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
 import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigation';
 import { cn } from '@/lib/utils';
+import { getWorkbookPath, lessonHasWorkbooks } from '@/lib/curriculum/workbooks';
+import { Download } from 'lucide-react';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
 interface Phase {
@@ -198,6 +200,29 @@ export function LessonRenderer({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {lessonHasWorkbooks(lesson.unitNumber, lesson.orderIndex) && (
+            <div className="border rounded-lg p-4 bg-blue-50 dark:bg-blue-950/10 border-blue-200 dark:border-blue-800">
+              <h2 className="font-semibold mb-3 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                Workbook Materials
+              </h2>
+              <div className="space-y-3">
+                <Button asChild variant="outline" className="w-full justify-start">
+                  <a href={getWorkbookPath(lesson.unitNumber, lesson.orderIndex, 'student')} download>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download Student Workbook (.xlsx)
+                  </a>
+                </Button>
+                <div className="text-sm text-blue-700 dark:text-blue-300">
+                  <p className="font-medium">40-Point Grading Rubric</p>
+                  <p className="text-xs mt-1">
+                    This assignment will be scored using a 40-point scale. Follow the instructions in the lesson phases carefully.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
