@@ -89,7 +89,7 @@ Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workb
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
 4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
 5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
-6. **Study Hub Foundation and Flashcards** — IN PROGRESS. Phase 1 (Glossary + Convex schema) complete. Phase 2 (FSRS engine) complete. Phase 3 (Study data hooks and language modes) next.
+6. **Study Hub Foundation and Flashcards** — IN PROGRESS. Phase 1 (Glossary + Convex schema) complete. Phase 2 (FSRS engine) complete. Phase 3 (Study data hooks and language modes) complete. Phase 4 (Practice Hub Home) next.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
