@@ -25,12 +25,12 @@
 - [x] Verify study hooks and language mode tests pass
 
 ## Phase 4: Practice Hub Home
-- [ ] Write failing tests for the practice hub home component (render, unit filter, due counts, weak topics, recent sessions)
-- [ ] Implement `/student/study` route page
-- [ ] Implement PracticeHubHome component with unit filter, due review stats, mode cards (flashcards active, others "coming soon"), recent sessions, weak topics
-- [ ] Add student auth guard to the route
-- [ ] Add navigation link to the practice hub from student dashboard
-- [ ] Verify all hub home tests pass
+- [x] Write failing tests for the practice hub home component (render, unit filter, due counts, weak topics, recent sessions)
+- [x] Implement `/student/study` route page
+- [x] Implement PracticeHubHome component with unit filter, due review stats, mode cards (flashcards active, others "coming soon"), recent sessions, weak topics
+- [x] Add student auth guard to the route
+- [x] Add navigation link to the practice hub from student dashboard
+- [x] Verify all hub home tests pass
 
 ## Phase 5: Flashcard Study Mode
 - [ ] Write failing tests for FlashcardPlayer component (render, flip, correct/incorrect, requeue, summary, unit filter)

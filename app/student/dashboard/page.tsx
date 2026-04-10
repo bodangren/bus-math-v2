@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookOpenCheck, CheckCircle2, Compass } from "lucide-react";
+import { ArrowRight, BookOpenCheck, CheckCircle2, Compass, GraduationCap } from "lucide-react";
 import { requireStudentSessionClaims } from "@/lib/auth/server";
 import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import { buildStudentDashboardViewModel, type StudentDashboardUnit } from "@/lib/student/dashboard";
@@ -63,6 +63,14 @@ export default async function StudentDashboard() {
                   Welcome back, {claims.username}. Keep moving through each unit with a clear next
                   step and a quick view of the course.
                 </CardDescription>
+                <div className="flex flex-wrap gap-3">
+                  <Button asChild variant="outline">
+                    <Link href="/student/study">
+                      <GraduationCap className="mr-2 h-4 w-4" />
+                      Study Hub
+                    </Link>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
