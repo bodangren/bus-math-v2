@@ -1,6 +1,7 @@
 'use client';
 
-import { computeCompetencyColor, cellBgClass, type StudentCompetencyDetail } from '@/lib/teacher/competency-heatmap';
+import { computeCompetencyColor, type StudentCompetencyDetail } from '@/lib/teacher/competency-heatmap';
+import { cellBgClass } from '@/lib/teacher/gradebook';
 
 interface StudentCompetencyDetailGridProps {
   detail: StudentCompetencyDetail;
