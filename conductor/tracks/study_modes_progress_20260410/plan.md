@@ -9,13 +9,13 @@
 - [x] Verify all matching game tests pass
 
 ## Phase 2: Speed Round
-- [ ] Write failing tests for SpeedRoundGame component (countdown timer, MCQ display, answer submission, lives tracking, streak tracking, game-over summary)
-- [ ] Implement SpeedRoundGame component with 90s timer, 3 lives, multiple-choice, streak counter
-- [ ] Generate MCQ questions from glossary data (term → 4 definition choices with distractors)
-- [ ] Create `/student/study/speed-round` route with student auth guard
-- [ ] Implement session recording to Convex on game completion
-- [ ] Implement unit filtering via query params
-- [ ] Verify all speed round tests pass
+- [x] Write failing tests for SpeedRoundGame component (countdown timer, MCQ display, answer submission, lives tracking, streak tracking, game-over summary)
+- [x] Implement SpeedRoundGame component with 90s timer, 3 lives, multiple-choice, streak counter
+- [x] Generate MCQ questions from glossary data (term → 4 definition choices with distractors)
+- [x] Create `/student/study/speed-round` route with student auth guard
+- [x] Implement session recording to Convex on game completion
+- [x] Implement unit filtering via query params
+- [x] Verify all speed round tests pass
 
 ## Phase 3: SRS Review Session
 - [ ] Write failing tests for ReviewSession component (render due terms, 4-level rating buttons, FSRS update, mastery update, "all caught up" state)
