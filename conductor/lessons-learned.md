@@ -52,3 +52,4 @@
 
 - When mocking 'fs' in Vitest for Node.js ESM code that uses import * as fs from 'fs', use importOriginal and spread the actual fs module, then override the functions you need to mock.
 - When using 'fs' in Next.js route handlers, use import * as fs from 'fs' instead of import fs from 'fs' for better compatibility with Vitest mocking.
+- Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
