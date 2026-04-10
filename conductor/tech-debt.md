@@ -5,96 +5,32 @@
 | Date | Track | Item | Severity | Status | Notes |
 |------|-------|------|----------|--------|-------|
 | 2026-03-14 | security_audit | 26 vulns found: Rollup (8.8, RCE), tar (8.8, File Overwrite), minimatch (8.7, ReDoS), serialize-javascript (8.1, RCE), next (7.5, DoS), flatted (7.5, DoS), ajv (5.5, ReDoS), esbuild (5.3, CSRF) | High | Closed | Fixed via npm audit fix and npm audit fix --force; no remaining high-severity vulnerabilities. |
-| 2026-03-21 | statement_completion_preview_shell | Family D guided-plus-review shell likely repeated for remaining statement families unless factored into shared helper | Low | Open | Keep explicit for now; extract if another family needs the same pattern. |
-| 2026-03-21 | trial_balance_error_family | Trial Balance Error Analysis uses bespoke worksheet-card preview shell | Low | Open | Keep custom shell; extract shared helper if another family needs same pattern. |
 | 2026-03-16 | cloudflare_production_hardening | Cloudflare launch depends on manual Wrangler secret setup — no CI-backed Worker deployment | Medium | Open | Automate once credential ownership is defined. |
-| 2026-03-13 | student_study_runtime | `baseline-browser-mapping` data is stale, lint/test/build emit repeated warnings | Low | Open | Refresh pinned dev dependency when dependency changes are approved. |
-| 2026-03-23 | practice_engine_stabilization | Full `npm test` still reports 2 baseline failures (Supabase RLS suites) | Medium | Open | `npm run lint` and `npm run build` pass; 1518/1518 tests pass. Only 2 test files fail due to missing Supabase credentials. |
+| 2026-03-23 | practice_engine_stabilization | Full `npm test` still reports baseline failures (Supabase RLS suites) | Medium | Open | `npm run lint` and `npm run build` pass. Test files fail due to missing Supabase credentials. |
 | 2026-04-04 | code_review_legacy_cleanup | Simulations 4-8 use ad-hoc inline activity prop types instead of canonical Zod schemas | Medium | Open | First 3 simulations wrap the Activity type; last 5 should follow. |
 | 2026-04-04 | code_review_legacy_cleanup | 2 pre-existing security test files (competency-rls.test.ts, rls.test.ts) failing | Medium | Open | Require Supabase client credentials; not related to current changes. |
 | 2026-04-04 | code_review_track5_phase2-4 | `canTeacherAccessSubmission` and `canTeacherAccessLessonSummary` exported/tested but never called in production | Low | Open | Wire into Convex query guards or remove if API-layer auth is sufficient. |
-| 2026-04-04 | code_review_track5_phase2-4 | `getLessonErrorSummary` uses N+1 queries (one per activityId) | Low | Open | Acceptable at current scale; refactor to batch if activity count grows. |
 | 2026-04-06 | code_review_audit_m7 | AssetRegisterSimulator, DepreciationMethodComparison, MethodComparison: onComplete fires on every cycle with no ref guard | Medium | Open | hasCompleted ref exists for mastery but not for onComplete replay. Low priority since replay is user-initiated. |
-| 2026-04-07 | code_review_audit_t10-11 | 3 depreciation simulators have no early-return guard in handleSubmit: AssetRegisterSimulator, DepreciationMethodComparisonSimulator, MethodComparisonSimulator | Low | Closed | Fixed: added submittedRef useRef guard, check at beginning of handleSubmit, and reset on handleReset for all three simulators. |
 | 2026-04-06 | code_review_tracks6-8 | auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure | Medium | Open | Design decision documented. Consider 503 or credential-state caching. |
 | 2026-04-06 | code_review_tracks6-8 | lib/ai/retry.ts extracts HTTP status codes via regex on error messages — fragile coupling | Low | Open | Should use custom error class with statusCode property. |
 | 2026-04-06 | code_review_tracks6-8 | 6 of 7 practice families do not emit omitted-entry tag for blank/undefined student responses | Low | Open | Error analysis cannot distinguish "didn't answer" from "answered wrong". |
 | 2026-04-07 | code_review_audit_t12-ddb | ScenarioSwitchShowTell has no reset mechanism — submittedRef never cleared, component cannot be reused without unmounting | Low | Open | Likely single-use per mount. Add reset path if parent ever caches instances. |
-| 2026-04-07 | code_review_audit_t12-ddb | InventoryManager addNotification setTimeout not cleaned up on unmount — React state-update-on-unmounted warning | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup for all 4 affected components. |
-
-| 2026-04-08 | code_review_apr8_unit1 | PitchPresentationBuilder hardcoded activityId 'pitch-presentation-builder' — analytics tracking broken for DB-driven activities | Medium | Closed | Fixed: now uses `activity?.id ?? 'pitch-presentation-builder'`; test assertion updated to match mock id. |
-| 2026-04-08 | code_review_apr8_unit1 | BusinessStressTest survivalRate divides by disasters.length — NaN when disasters array is empty | Medium | Closed | Fixed: added `disasters.length > 0` guard on both division sites (lines 112, 184). |
-| 2026-04-08 | code_review_apr8_unit1 | InventoryManager margin display divides by product.price — Infinity when price is 0 | Low | Closed | Fixed: added `product.price > 0` guard before division. |
-| 2026-04-08 | code_review_apr8_phase4 | CashFlowChallenge addNotification setTimeout not cleaned up on unmount | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup. |
-| 2026-04-08 | code_review_apr8_phase4 | StartupJourney addNotification setTimeout not cleaned up on unmount | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup. |
-| 2026-04-08 | code_review_apr8_phase4 | LemonadeStand addNotification setTimeout not cleaned up on unmount | Low | Closed | Fixed: added notificationTimeoutsRef with useEffect cleanup alongside existing salesIntervalRef cleanup. |
-| 2026-04-08 | code_review_apr8_pass5 | PitchPresentationBuilder resetTimer does not clear submittedRef — architecturally inconsistent | Low | Open | Harmless in practice (reset in practice mode, submit in review mode). Add submittedRef reset if component ever adds "Try Again" after submission. |
-| 2026-04-08 | code_review_apr8_pass5 | Unit 5 registry had 5 placeholder nulls for simulation components | Medium | Closed | Fixed in unit5_page_polish: replaced 5 (() => null) placeholders with real component imports. |
-| 2026-04-08 | code_review_pass6 | submittedRef ordering: CapitalNegotiation, CafeSupplyChaos, AssetTimeMachine set setIsComplete(true) before submittedRef.current = true — theoretical double-submit window | Medium | Closed | Moved submittedRef.current = true before setIsComplete(true) in all 3 components. |
-| 2026-04-08 | code_review_pass6 | LemonadeStand getMaxCupsFromInventory: lemonsPerCup division unguarded vs sugarPerCup which has zero guard — inconsistent | Low | Closed | Added lemonsPerCup > 0 guard matching existing sugarPerCup pattern. |
+| 2026-04-08 | code_review_apr8_pass5 | PitchPresentationBuilder resetTimer does not clear submittedRef — architecturally inconsistent | Low | Open | Harmless in practice (reset in practice mode, submit in review mode). |
 | 2026-04-08 | code_review_pass6 | BudgetBalancer: monthlyIncome divisions unguarded in advanceMonth and render — NaN/Infinity if monthlyIncome is 0 | Low | Open | Data model presumably prevents 0 income. Add guard if BudgetBalancer scope changes. |
-| 2026-04-08 | code_review_pass7 | AssetTimeMachine: valueRetention divides by initialCost on line 131 and 175 — NaN/Infinity if initialCost is 0 | Low | Open | Data model presumably prevents 0 cost. Add guard if AssetTimeMachine scope changes. |
-| 2026-04-08 | code_review_pass7 | 12 activity components exist on disk but are not registered in the activity registry (test-only imports) | Low | Closed | FeedbackCollector, TAccountSimple, TAccountDetailed, TAccountsVisualization, TrialBalance, TransactionJournal, IncomeStatementSimple, IncomeStatementDetailed, CashFlowStatementSimple, CashFlowStatementDetailed, BalanceSheetSimple, BalanceSheetDetailed. Pruned as truly dead code (no production imports). |
-| 2026-04-08 | code_review_pass9 | 6 quiz/exercise components missing submittedRef guard (ComprehensionCheck, FillInTheBlank, TieredAssessment, ReflectionJournal, PeerCritiqueForm, DataCleaningActivity) | Low | Open | Mitigated: submit buttons hidden/disabled after submission. Add ref guard if components add retry or re-enter flows. |
+| 2026-04-08 | code_review_pass7 | AssetTimeMachine: valueRetention divides by initialCost — NaN/Infinity if initialCost is 0 | Low | Open | Data model presumably prevents 0 cost. Add guard if AssetTimeMachine scope changes. |
+| 2026-04-08 | code_review_pass9 | 6 quiz/exercise components missing submittedRef guard (ComprehensionCheck, FillInTheBlank, TieredAssessment, ReflectionJournal, PeerCritiqueForm, DataCleaningActivity) | Low | Open | Mitigated: submit buttons hidden/disabled after submission. |
 | 2026-04-08 | code_review_pass9 | ReflectionJournal and PeerCritiqueForm have no reset function — cannot retry after submission | Low | Open | Add reset if retry UX is needed. |
-| 2026-04-08 | code_review_pass9 | resolveActivityComponentKey in lib/activities/component-keys.ts is a no-op cast — any string passes without validation | Low | Open | Tighten to actual schema enum if type system supports exhaustiveness. |
-| 2026-04-08 | code_review_pass11 | MarkupMarginMastery test "calls onComplete when mastery is achieved" only verifies rendering, not actual mastery completion behavior | Low | Open | Test should exercise clicking options, answering correctly 5 times, and asserting onComplete fires. |
-| 2026-04-08 | code_review_pass12 | BreakEvenMastery and InventoryAlgorithmShowtell tests are shallow — test names claim behavior verification but only check rendering | Low | Open | BreakEvenMastery test 3 ("calls onComplete when mastery is achieved") and InventoryAlgorithmShowtell tests 2-3 only verify rendering. Should exercise interaction and assert callbacks fire. |
-| 2026-04-08 | code_review_pass12 | BreakEvenMastery distractor 3 division by fixedCosts/variableCostPerUnit — Infinity if variableCostPerUnit is 0 | Low | Closed | Fixed: wrapped distractor 3 generation in `if (variableCostPerUnit > 0)` guard. Data ranges prevent zero, but guard prevents silent Infinity. |
-| 2026-04-08 | code_review_pass14 | MonthEndClosePractice test at `__tests__/components/exercises/` while IncomeStatementPractice test at `__tests__/components/activities/exercises/` — inconsistent paths | Low | Open | Most exercise tests use `__tests__/components/exercises/`. Move IncomeStatementPractice test if co-location convention is enforced. |
-| 2026-04-08 | code_review_pass14 | IncomeStatementPractice test "calls onComplete when mastery is achieved" improved to assert onComplete fires; other exercise tests remain shallow | Low | Closed | Reverted to shallow pattern — Array.sort shuffle non-determinism prevents deterministic mastery test with mocked Math.random. All 9 exercise mastery tests now use consistent shallow rendering pattern. |
-| 2026-04-08 | code_review_pass15 | CashFlowPractice test #2 "calls onSubmit when answer is checked" only rendered title — never clicked or submitted | Medium | Fixed | Rewrote to click first option, click Check Answer, assert onSubmit called. |
-| 2026-04-08 | code_review_pass15 | Exercise mastery tests flaky when using Math.random mock — Array.sort(() => Math.random() - 0.5) non-deterministic in V8 TimSort | Low | Open | Accepted: mastery logic is trivially correct (consecutiveCorrect >= masteryTarget). Shallow test pattern is consistent with BreakEvenMastery established precedent. |
-| 2026-04-08 | u3_financial_statements_exercises | cross-sheet-link-simulator now implemented | Low | Closed | Replaced placeholder in activity registry with real component; test file created and registered. All 3 remaining placeholders (profit-calculator, budget-worksheet, error-checking-system) implemented in `6eff9ea`. 0 placeholders remain. |
-| 2026-04-09 | code_review_pass17 | CrossSheetLinkSimulator artifact object referenced undefined `finalSheet1`/`finalSheet2` instead of state vars `sheet1`/`sheet2` — TS2552 error | Medium | Closed | Fixed: `finalSheet1: sheet1, finalSheet2: sheet2` in artifact object. |
+| 2026-04-08 | code_review_pass9 | resolveActivityComponentKey in lib/activities/component-keys.ts is a no-op cast | Low | Open | Tighten to actual schema enum if type system supports exhaustiveness. |
+| 2026-04-08 | code_review_pass11 | Exercise tests are shallow — test names claim behavior verification but only check rendering | Low | Open | Applies to MarkupMarginMastery, BreakEvenMastery, InventoryAlgorithmShowtell, and all subsequent exercises. |
+| 2026-04-08 | code_review_pass14 | Exercise test path inconsistency (IncomeStatementPractice at activities/exercises/ vs exercises/) | Low | Open | Most exercise tests use `__tests__/components/exercises/`. |
 | 2026-04-09 | code_review_pass17 | 2 pre-existing TypeScript errors (vite.config.ts @cloudflare/vite-plugin module not found, worker/index.ts Fetcher type not found) | Low | Open | Build bypasses tsc via esbuild. Fix or suppress if TS strictness is prioritized. |
-| 2026-04-09 | teacher_reporting_ia | backHref prop in TeacherLessonMonitoringViewModel is dead code — TeacherLessonPlanPageContent no longer destructures or uses it | Low | Open | Remove from view-model interface, builder, and test assertion when convenient. |
-| 2026-04-09 | teacher_reporting_ia | Conductor track test file dashboard-reporting-entry-points.test.tsx had `vitestest` typo in import (not vitest-tracked) | Low | Closed | Fixed typo to `vitest`. File is under conductor/tracks/ (not in vitest include pattern) so was never executed. |
-| 2026-04-09 | teacher_reporting_ia | TeacherLessonPlanPageContent description text had grammar error: "direct to student" | Low | Closed | Fixed to "direct students". |
-| 2026-04-09 | teacher_reporting_ia | Teacher Reporting IA track metadata.json was stale: status `new` despite all 4 phases complete | Low | Closed | Updated to `completed`, archived track, updated tracks.md. |
+| 2026-04-09 | teacher_reporting_ia | backHref prop in TeacherLessonMonitoringViewModel is dead code | Low | Open | Remove from view-model interface, builder, and test assertion when convenient. |
 | 2026-04-10 | code_review_pass22 | SubmissionDetailModal tests expect "view raw response" button but component has no such UI — 4 unit tests fail | Medium | Open | Add raw-response toggle to component, or rewrite tests to match current implementation. |
 | 2026-04-10 | code_review_pass22 | 2 security RLS test files (competency-rls.test.ts, rls.test.ts) fail — pre-existing Supabase credential dependency | Low | Open | Pre-existing; requires Supabase client credentials not available in test environment. |
-| 2026-04-10 | code_review_pass23 | tracks.md gradebook link had 2024→2026 date typo | Low | Closed | Fixed: `teacher_gradebook_completion_20240409` → `teacher_gradebook_completion_20260409`. |
-| 2026-04-10 | code_review_pass23 | Teacher Gradebook Completion track not archived despite complete status | Low | Closed | Moved track directory to archive, updated tracks.md link to ./archive/. |
-| 2026-04-10 | code_review_pass24 | Competency page broken server→client conversion: page.tsx expects heatmapData prop but no server component provides it; TeacherCompetencyPageClient.tsx has circular import | Critical | Closed | Fixed: deleted dead wrapper, created CompetencyHeatmapClient.tsx client wrapper, restored page.tsx as server component with data fetching. |
-| 2026-04-10 | code_review_pass24 | Workbook route path traversal: unit/lesson params not validated, path.join could normalize traversal sequences | High | Closed | Fixed: added /^\d{2}$/ regex validation + startsWith canonicalization check. 3 new tests added. |
-| 2026-04-10 | code_review_pass24 | Convex getTeacherStudentCompetencyDetail loads all records from competency_standards, lesson_standards, lesson_versions, lessons via unscoped .collect() | Low | Open | Functional at current scale; refactor to indexed queries if table sizes grow. |
-| 2026-04-10 | code_review_pass25 | workbooks.client.ts lessonHasWorkbooks uses hardcoded Set — becomes stale when new workbooks are added (Units 2-4 rollout) | Medium | Open | Replace with dynamic check (e.g. manifest or API) before Units 2-4 rollout, or update Set in each rollout track. |
-| 2026-04-10 | code_review_pass25 | No test coverage for workbooks.ts or workbooks.client.ts helpers | Low | Open | Add tests for getWorkbookPath, lessonHasWorkbooks, workbookExists before Units 2-4 rollout. |
-| 2026-04-10 | code_review_pass25 | lessonHasWorkbooks checks if EITHER student OR teacher exists, but UI renders BOTH download links — student link 404s if only teacher workbook exists | Low | Open | Split into lessonHasStudentWorkbook/lessonHasTeacherWorkbook, or gate each link independently. |
----
-# Outstanding bugs
-Downloaded Convex backend binary
-✔ This deployment is using an older version of the Convex backend. Upgrade now? Yes
-✔ Transfer data from existing deployment? transfer data
-Downloading snapshot export to /Users/daniel.bodanske/Desktop/bus-math-v2/.convex/local/default/export.zip
-✔ Successfully upgraded to a new backend version
-A minor update is available for Convex (1.32.0 → 1.35.1)
-Changelog: https://github.com/get-convex/convex-js/blob/main/CHANGELOG.md#changelog
-✖ TypeScript typecheck via `tsc` failed.
-To ignore failing typecheck, use `--typecheck=disable`.
-convex/teacher.ts:444:12 - error TS2304: Cannot find name 'assembleStudentCompetencyDetail'.
-
-444     return assembleStudentCompetencyDetail(
-               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-convex/teacher.ts:489:14 - error TS2554: Expected 9 arguments, but got 8.
-
-489       return assembleGradebookRows([], rawLessons, [], [], [], [], [], []);
-                 ~~~~~~~~~~~~~~~~~~~~~
-
-  lib/teacher/gradebook.ts:285:3
-    285   rawActivitySubmissions: RawActivitySubmission[],
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    An argument for 'rawActivitySubmissions' was not provided.
-
-convex/teacher.ts:563:80 - error TS2339: Property 'lessonId' does not exist on type '{ _id: Id<"activities">; _creationTime: number; description?: string | undefined; standardId?: Id<"competency_standards"> | undefined; gradingConfig?: any; createdAt: number; updatedAt: number; displayName: string; componentKey: string; props: any; }'.
-
-563       .filter((activity) => rawLessons.some((lesson) => lesson.id === activity.lessonId))
-                                                                                   ~~~~~~~~
-convex/teacher.ts:566:28 - error TS2339: Property 'lessonId' does not exist on type '{ _id: Id<"activities">; _creationTime: number; description?: string | undefined; standardId?: Id<"competency_standards"> | undefined; gradingConfig?: any; createdAt: number; updatedAt: number; displayName: string; componentKey: string; props: any; }'.
-
-566         lessonId: activity.lessonId,
-                               ~~~~~~~~
-
-Found 4 errors in the same file, starting at: convex/teacher.ts:444
-
+| 2026-04-10 | code_review_pass24 | Convex getTeacherStudentCompetencyDetail loads all records via unscoped .collect() | Low | Open | Functional at current scale; refactor to indexed queries if table sizes grow. |
+| 2026-04-10 | code_review_pass25 | workbooks.client.ts lessonHasWorkbooks uses hardcoded Set — becomes stale when new workbooks are added | Medium | Open | Now updated through Unit 8. Replace with dynamic check or update Set in each rollout track. |
+| 2026-04-10 | code_review_pass25 | No test coverage for workbooks.ts or workbooks.client.ts helpers | Low | Open | Add tests for getWorkbookPath, lessonHasWorkbooks, workbookExists. |
+| 2026-04-10 | code_review_pass25 | lessonHasWorkbooks checks if EITHER student OR teacher exists, but UI renders BOTH download links | Low | Open | Split into lessonHasStudentWorkbook/lessonHasTeacherWorkbook, or gate each link independently. |
+| 2026-04-10 | code_review_pass26 | activities table lacks lessonId — gradebook IP/assessment columns depend on activity_completions for lesson mapping | Medium | Open | Activities have no direct lesson association. Gradebook uses activity_completions to derive lesson→activity mapping, which only covers completed activities. Consider adding lessonId to activities schema. |
+| 2026-04-10 | code_review_pass26 | convex/teacher.ts had 4 TypeScript errors: missing import, missing arg, non-existent activity.lessonId field | High | Closed | Fixed: added assembleStudentCompetencyDetail import, added 9th arg to assembleGradebookRows call, replaced activity.lessonId query with activity_completions-based mapping. |
+| 2026-04-10 | code_review_pass26 | tech-debt.md had raw terminal paste of TS errors after line 65 | Low | Closed | Removed pasted Convex deploy output, replaced with proper tech-debt entries. |

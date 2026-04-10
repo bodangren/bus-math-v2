@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 10, 2026 (Code Review Pass 24)
+Last updated: April 10, 2026 (Code Review Pass 26)
 
 ## Status Snapshot
 
@@ -23,7 +23,7 @@ However, this repository is **not yet a fully classroom-complete education app**
 - ~~teacher-facing competency heatmaps~~ — complete
 - ~~education app readiness hardening~~ — complete
 - downloadable workbook, dataset, rubric, checklist, and guide files for the full course
-- complete capstone supporting pages and asset packets
+- complete capstone supporting pages and asset packets (workbooks shipped, routes pending)
 
 ## Executive Summary
 
@@ -210,7 +210,7 @@ Across authored curriculum modules and manifests, the repo references many workb
 Repo audit result:
 
 - 59 referenced `.xlsx`, `.csv`, and `.pdf` curriculum asset filenames were detected
-- 8 matching files found under `public/workbooks/` (Unit 1, Lessons 4-7, student + teacher)
+- 66 matching files found under `public/workbooks/` (all 8 units, Lessons 4-7, student + teacher, plus 2 capstone workbooks)
 
 That means:
 
@@ -225,10 +225,10 @@ That means:
 | Unit 1 authored source docs | Strong |
 | Units 2-8 authored runtime representation | Strong |
 | Units 2-8 detailed markdown source parity | Partial |
-| XLSX lesson workbooks | 8 files shipped (Unit 1, Lessons 4-7); Units 2-8 remain |
+| XLSX lesson workbooks | 66 files shipped (all 8 units, Lessons 4-7, student + teacher + 2 capstone); some referenced filenames still missing |
 | CSV lesson datasets | Not shipped as real files yet |
 | PDF guides/rubrics/checklists | Not shipped as real files yet |
-| Capstone support packet | Referenced, not actually packaged |
+| Capstone support packet | 2 workbook files shipped; routes and remaining PDFs pending |
 
 ## Student Experience: Real Status
 
@@ -348,11 +348,11 @@ These are the major remaining blockers.
 
 ### Asset-packaging blockers
 
-- missing `.xlsx` workbooks
+- ~~missing `.xlsx` workbooks~~ — 66 workbooks shipped (all 8 units + 2 capstone)
 - missing `.csv` datasets
 - missing `.pdf` guides
 - missing `.pdf` rubrics
-- missing capstone support packet files
+- ~~missing capstone support packet files~~ — 2 capstone workbooks shipped; routes and remaining PDFs pending
 
 ### Release-readiness blockers
 
@@ -494,11 +494,11 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 - add app routes or downloadable surfaces for capstone guidelines and rubrics
 - decide whether Units 2-8 should gain the same detailed markdown source-doc parity that Unit 1 already has
 
-## Wishlist Roadmap Items
-
-These are not part of the active Conductor Milestone 8 sequence yet. They are future product ideas that should be scoped deliberately after classroom-completeness work is stabilized.
+## Active Milestone 9 Tracks
 
 ### 1. Student One-Shot Lesson Chatbot
+
+Track: `student_lesson_chatbot_20260410`
 
 Goal:
 
@@ -550,6 +550,8 @@ Definition of done:
 - abuse controls and rate limits are in place
 
 ### 2. AI Feedback for Submitted Excel Spreadsheets
+
+Track: `spreadsheet_ai_feedback_20260410`
 
 Goal:
 

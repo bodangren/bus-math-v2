@@ -26,10 +26,10 @@ Milestone 8 tracks (all complete):
 
 Milestone 9 tracks (active):
 
-1. **Workbook Infrastructure and Unit 1 Pilot** (Phase 1-2 in progress)
-2. **Units 2-4 Workbook Rollout**
-3. **Units 5-8 Workbook Rollout and Capstone Assets**
-4. **Student One-Shot Lesson Chatbot**
+1. ~~Workbook Infrastructure and Unit 1 Pilot~~ — complete
+2. ~~Units 2-4 Workbook Rollout~~ — complete
+3. ~~Units 5-8 Workbook Rollout and Capstone Assets~~ — complete
+4. **Student One-Shot Lesson Chatbot** (Phase 1 in progress)
 5. **AI Feedback for Spreadsheet Submissions**
 
 Milestone 10 tracks (planned):
@@ -85,15 +85,52 @@ The following remain out of scope unless a later explicit track opens them:
 Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial tracks finished. Milestone 9 (Workbook System and AI Features) begins.
 
 1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE. Built workbook download/serving infrastructure via API route with auth and role checks. Created Unit 1 workbooks (Lessons 4-7, student + teacher). Established how-to guide and 40-point rubric patterns. 8 workbook files shipped.
-2. **Units 2-4 Workbook Rollout** — apply the workbook pattern to Units 2, 3, and 4.
-3. **Units 5-8 Workbook Rollout and Capstone Assets** — complete workbook rollout for Units 5-8, create capstone asset package, build capstone routes.
-4. **Student One-Shot Lesson Chatbot** — add one-shot lesson-scoped AI helper via OpenRouter for authenticated students.
+2. **Units 2-4 Workbook Rollout** — COMPLETE. Applied the workbook pattern to Units 2, 3, and 4. 24 workbooks shipped.
+3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE. Completed workbook rollout for Units 5-8 (32 workbooks), created capstone asset package (2 workbooks), updated workbooks.client.ts. 66 total workbook files now in public/workbooks/.
+4. **Student One-Shot Lesson Chatbot** — IN PROGRESS (Phase 1 complete). OpenRouter provider adapter and lesson context packaging implemented with tests. Phase 2 (API route and safety) next.
 5. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
 6. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-10 — Units 2-8 Workbooks + Chatbot Phase 1, Pass 26)
+
+Autonomous code review covering Units 2-4 Workbook Rollout, Units 5-8 Workbook Rollout and Capstone Assets, Student Lesson Chatbot Phase 1 (Provider and Infrastructure), and post-Phase-25 documentation cleanup.
+
+**Fixed during review: 4 issues**
+- **convex/teacher.ts missing import** (High): `assembleStudentCompetencyDetail` was called at line 444 but never imported from `lib/teacher/competency-heatmap`. Only `assembleCompetencyHeatmapRows` was imported. Added to import statement.
+- **convex/teacher.ts missing argument** (High): `assembleGradebookRows` called with 8 arguments at line 489, but the function signature requires 9 (added `rawActivitySubmissions` parameter in a previous track). Added missing 9th arg `[]`.
+- **convex/teacher.ts non-existent field** (High): Lines 562-567 queried `activity.lessonId` from the `activities` table, but the Convex schema has no `lessonId` field on activities. The filter always returned empty, silently breaking IP/assessment gradebook columns. Replaced with `activity_completions`-based mapping to derive lesson→activity relationships from completion records.
+- **tech-debt.md raw terminal paste** (Low): Lines 66-100 contained raw Convex deploy terminal output pasted in as "Outstanding bugs" — not structured tech-debt. Removed and replaced with proper entries for the issues found.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1634/1646 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response" mismatch, 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Units 2-4 Workbook Rollout**: 24 `.xlsx` files created (4 lessons × 3 units × 2 types). `workbooks.client.ts` Set updated with all 24 entries. Track archived. All phases complete per commit history.
+- **Units 5-8 Workbook Rollout and Capstone Assets**: 32 `.xlsx` files created (4 lessons × 4 units × 2 types) + 2 capstone workbooks. `workbooks.client.ts` Set updated to 66 entries. Track archived. All phases complete per commit history.
+- **Student Lesson Chatbot Phase 1**: New `lib/ai/providers.ts` (OpenRouter provider with retry, timeout, env resolution). New `lib/ai/lesson-context.ts` (lesson context packaging with HTML stripping, size bounding). Both well-tested. Phase 2 (API route and safety) next.
+- **workbooks.client.ts**: Now has 66 entries covering all 8 units + 2 capstone workbooks. `hasStudentWorkbook` and `hasTeacherWorkbook` functions added (addressing Pass 25 tech-debt about gate-each-link independently). Still uses hardcoded Set — will need update if more workbook lessons are added.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 25)
+- `activities` table lacks `lessonId` — gradebook IP/assessment mapping now uses `activity_completions`, which only covers completed activities. Consider adding `lessonId` to activities schema for complete coverage.
+
+**New items recorded in tech-debt.md:**
+- activities table lacks lessonId — gradebook depends on activity_completions for lesson mapping (Medium)
+- convex/teacher.ts had 4 TS errors: missing import, missing arg, non-existent activity.lessonId (High — fixed)
+- tech-debt.md had raw terminal paste (Low — fixed)
+
+**Updated during review:**
+- README.md: Updated workbook counts (8→66), capstone status, pass number, Milestone 9 tracks section
+- current_directive.md: Updated workbook track statuses to COMPLETE, chatbot to IN PROGRESS
+- tech-debt.md: Removed raw terminal paste, added 3 new entries, cleaned stale entries
+
+**Phase status**: Workbook system (Milestones 9.1-9.3) COMPLETE. Chatbot Phase 1 COMPLETE, Phase 2 next. All verification gates pass.
 
 ## Code Review Summary (2026-04-10 — Workbook Infrastructure, Pass 25)
 

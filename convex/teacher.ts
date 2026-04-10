@@ -3,7 +3,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 import { assembleCourseOverviewRows } from "../lib/teacher/course-overview";
 import { assembleGradebookRows } from "../lib/teacher/gradebook";
-import { assembleCompetencyHeatmapRows } from "../lib/teacher/competency-heatmap";
+import { assembleCompetencyHeatmapRows, assembleStudentCompetencyDetail } from "../lib/teacher/competency-heatmap";
 import {
   buildLatestPublishedLessonVersionMap,
   buildPublishedPhaseIdSet,
@@ -486,7 +486,7 @@ export const getTeacherGradebookData = internalQuery({
     }));
 
     if (rawLessonVersions.length === 0) {
-      return assembleGradebookRows([], rawLessons, [], [], [], [], [], []);
+      return assembleGradebookRows([], rawLessons, [], [], [], [], [], [], []);
     }
 
     const lessonVersionIds = new Set(rawLessonVersions.map((version) => version.id));
@@ -559,12 +559,14 @@ export const getTeacherGradebookData = internalQuery({
         masteryLevel: row.masteryLevel,
       }));
 
-    const rawActivities = (await ctx.db.query("activities").collect())
-      .filter((activity) => rawLessons.some((lesson) => lesson.id === activity.lessonId))
-      .map((activity) => ({
-        id: activity._id,
-        lessonId: activity.lessonId,
-      }));
+    const lessonIdSet = new Set(rawLessons.map((l) => l.id));
+    const allCompletions = (await ctx.db.query("activity_completions").collect())
+      .filter((c) => lessonIdSet.has(c.lessonId));
+
+    const rawActivities = allCompletions.map((c) => ({
+      id: c.activityId,
+      lessonId: c.lessonId,
+    }));
 
     const activityIds = new Set(rawActivities.map((activity) => activity.id));
 
