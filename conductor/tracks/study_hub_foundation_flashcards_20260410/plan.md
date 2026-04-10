@@ -20,7 +20,7 @@
 ## Phase 3: Study Data Hooks and Language Modes
 - [x] Implement Convex-backed study hooks: useStudyData, useStudyDueCount, useUnitMastery
 - [x] Implement language mode preference storage and retrieval
-- [ ] Write failing tests for study hooks with mock Convex queries
+- [x] Write failing tests for study hooks with mock Convex queries
 - [x] Implement preference-derived prompt/answer field selection
 - [x] Verify study hooks and language mode tests pass
 
