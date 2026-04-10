@@ -110,7 +110,7 @@ export async function GET(
     const attempts = await fetchInternalQuery(internal.activities.getSpreadsheetAttempts, {
       studentId: targetStudentId as never,
       activityId: activityId as never,
-    });
+    }) || [];
 
     return NextResponse.json({
       readOnly: true,
