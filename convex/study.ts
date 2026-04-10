@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { scheduleNewTerm, processReview as processFsrsReview } from "@/lib/study/srs";
 
 export const getStudyPreferences = query({
   args: {},
@@ -157,26 +158,43 @@ export const processReview = mutation({
     if (!profile) throw new Error("Profile not found");
 
     const now = Date.now();
-    const ratingDeltas = {
-      again: -0.2,
-      hard: -0.05,
-      good: 0.1,
-      easy: 0.2,
-    };
-    const delta = ratingDeltas[args.rating];
 
-    let mastery = await ctx.db
+    const mastery = await ctx.db
       .query("term_mastery")
       .withIndex("by_user_and_term", (q) =>
         q.eq("userId", profile._id).eq("termSlug", args.termSlug)
       )
       .unique();
 
+    const dueReview = await ctx.db
+      .query("due_reviews")
+      .withIndex("by_user_and_term", (q) =>
+        q.eq("userId", profile._id).eq("termSlug", args.termSlug)
+      )
+      .unique();
+
+    let fsrsResult;
+    if (!dueReview) {
+      const scheduled = scheduleNewTerm(args.termSlug);
+      fsrsResult = processFsrsReview(scheduled, args.rating);
+    } else {
+      fsrsResult = processFsrsReview(
+        {
+          termSlug: args.termSlug,
+          fsrsState: dueReview.fsrsState,
+          scheduledFor: dueReview.scheduledFor,
+        },
+        args.rating
+      );
+    }
+
+    const delta = fsrsResult.masteryDelta;
+
     if (!mastery) {
-      mastery = await ctx.db.insert("term_mastery", {
+      await ctx.db.insert("term_mastery", {
         userId: profile._id,
         termSlug: args.termSlug,
-        masteryScore: 0.5,
+        masteryScore: 0.5 + delta,
         proficiencyBand: "learning",
         seenCount: 1,
         correctCount: args.rating !== "again" ? 1 : 0,
@@ -204,6 +222,25 @@ export const processReview = mutation({
         incorrectCount:
           mastery.incorrectCount + (args.rating === "again" ? 1 : 0),
         lastReviewedAt: now,
+        updatedAt: now,
+      });
+    }
+
+    if (!dueReview) {
+      await ctx.db.insert("due_reviews", {
+        userId: profile._id,
+        termSlug: args.termSlug,
+        scheduledFor: fsrsResult.scheduledFor,
+        fsrsState: fsrsResult.fsrsState,
+        isDue: false,
+        createdAt: now,
+        updatedAt: now,
+      });
+    } else {
+      await ctx.db.patch(dueReview._id, {
+        scheduledFor: fsrsResult.scheduledFor,
+        fsrsState: fsrsResult.fsrsState,
+        isDue: false,
         updatedAt: now,
       });
     }

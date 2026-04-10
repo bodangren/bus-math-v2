@@ -10,12 +10,12 @@
 - [x] Verify all Convex schema tests pass
 
 ## Phase 2: FSRS Engine Integration
-- [ ] Request approval for `ts-fsrs` dependency addition
-- [ ] Install `ts-fsrs` and create the FSRS adapter module (`lib/study/srs.ts`)
-- [ ] Write failing tests for FSRS adapter: scheduleNewTerm, processReview, getDueTerms, proficiencyBand, updateMastery
-- [ ] Implement the FSRS adapter with SchedulerState serialization
-- [ ] Verify all FSRS adapter tests pass
-- [ ] Integrate processReview with Convex mutations (atomic mastery + FSRS state update)
+- [x] Request approval for `ts-fsrs` dependency addition
+- [x] Install `ts-fsrs` and create the FSRS adapter module (`lib/study/srs.ts`)
+- [x] Write failing tests for FSRS adapter: scheduleNewTerm, processReview, getDueTerms, proficiencyBand, updateMastery
+- [x] Implement the FSRS adapter with SchedulerState serialization
+- [x] Verify all FSRS adapter tests pass
+- [x] Integrate processReview with Convex mutations (atomic mastery + FSRS state update)
 
 ## Phase 3: Study Data Hooks and Language Modes
 - [ ] Implement Convex-backed study hooks: useStudyData, useStudyDueCount, useUnitMastery
