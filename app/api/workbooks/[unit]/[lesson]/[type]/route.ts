@@ -1,7 +1,7 @@
 import { getRequestSessionClaims } from '@/lib/auth/server';
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
-import fs from 'fs';
+import * as fs from 'fs';
 
 export async function GET(
   request: NextRequest,
