@@ -41,10 +41,10 @@
 - [x] Verify all flashcard tests pass
 
 ## Phase 6: Verification and Documentation
-- [~] Write integration tests for the full flashcard study flow (hub → flashcards → session → results persisted)
-- [ ] Verify FSRS scheduling produces correct due dates after reviews
-- [ ] Verify language mode switching changes prompt/answer fields
-- [ ] Verify Convex data integrity under concurrent study sessions
-- [ ] Run `npm run lint`, `npm test`, and `npm run build`
-- [ ] Update Conductor docs with study hub architecture, Convex schema, and FSRS conventions
-- [ ] Prepare the track for archive with verification evidence
+- [x] Write integration tests for the full flashcard study flow (hub → flashcards → session → results persisted)
+- [x] Verify FSRS scheduling produces correct due dates after reviews
+- [x] Verify language mode switching changes prompt/answer fields
+- [x] Verify Convex data integrity under concurrent study sessions
+- [x] Run `npm run lint`, `npm test`, and `npm run build`
+- [x] Update Conductor docs with study hub architecture, Convex schema, and FSRS conventions
+- [x] Prepare the track for archive with verification evidence

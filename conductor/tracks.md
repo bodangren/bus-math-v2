@@ -160,9 +160,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: extend spreadsheet submissions with AI-assisted feedback (preliminary score, strengths, improvements, next steps), revision loop with attempt history, and teacher visibility into all attempts and AI artifacts.*
   *Status: All phases complete (Pass 29). Verification gates: lint 0 errors/2 pre-existing warnings, test 1650/1662 pass (12 pre-existing failures), build clean.*
 
-- [~] **Track: Study Hub Foundation and Flashcards**
-  *Link: [./tracks/study_hub_foundation_flashcards_20260410/](./tracks/study_hub_foundation_flashcards_20260410/)*
-  *Scope: port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home route. Phase 1 (Glossary + Convex schema) complete. Phase 2 (FSRS engine) complete. Phase 3 next.*
+- [x] **Track: Study Hub Foundation and Flashcards**
+  *Link: [./archive/study_hub_foundation_flashcards_20260410/](./archive/study_hub_foundation_flashcards_20260410/)*
+  *Scope: port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home route. All phases complete.*
+  *Closeout: completed on 2026-04-11 after completing all 6 phases: Phase 1 (Glossary + Convex schema), Phase 2 (FSRS engine), Phase 3 (Study data hooks and language modes), Phase 4 (Practice Hub Home), Phase 5 (Flashcard Study Mode), and Phase 6 (Verification and Documentation). All verification gates pass (lint 0 errors/2 pre-existing warnings, test 1666/1678 pass, build clean). Ready for archive.*
 
 - [ ] **Track: Study Modes and Progress Dashboard**
   *Link: [./tracks/study_modes_progress_20260410/](./tracks/study_modes_progress_20260410/)*
