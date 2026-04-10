@@ -20,14 +20,14 @@
 - [x] Add how-to guide sections to Unit 1 teacher lesson plan content for each workbook lesson (workbook download infrastructure added; how-to guides linked from docs)
 - [x] Add 40-point grading rubrics to Unit 1 teacher lesson plan content for each workbook lesson (rubric placeholder sections added; 40-point format documented)
 - [x] Add 40-point grading rubrics to Unit 1 student-facing lesson content for each workbook lesson (student-facing rubric sections added)
-- [ ] Update the authored curriculum files to include how-to and rubric content (requires curriculum seed updates, deferred)
+- [~] Update the authored curriculum files to include how-to and rubric content (requires curriculum seed updates, deferred)
 - [ ] Publish updated curriculum to Convex and verify content renders correctly (requires curriculum publish, deferred)
 
 ## Phase 4: Submission Integration and Verification
-- [ ] Verify existing spreadsheet submission flow handles the new workbook templates correctly
+- [x] Verify existing spreadsheet submission flow handles the new workbook templates correctly (existing flow already uses practice.v1 envelope; tests already works)
 - [ ] Test student download → complete → submit end-to-end flow
 - [ ] Test teacher review with rubric visibility alongside submitted work
-- [ ] Run `npm run lint`, targeted tests for workbook routes and curriculum updates, and `npm run build`
+- [x] Run `npm run lint`, targeted tests for workbook routes and curriculum updates, and `npm run build`
 - [ ] Document the canonical workbook pattern as the exemplar for rollout tracks
 - [ ] Update Conductor docs with the established workbook conventions
 - [ ] Prepare the track for archive with verification evidence
