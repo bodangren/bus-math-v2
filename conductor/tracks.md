@@ -15,6 +15,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 7 | Practice Contract and Evidence Loop | Complete (2026-04-06) |
 | 8 | Classroom Product Completeness | Planned |
 | 9 | Workbook System and AI Features | Planned |
+| 10 | Student Study Tools | Planned |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
@@ -80,6 +81,24 @@ Workbook Infrastructure + Unit 1 Pilot [1] → Units 2-4 Rollout [2] → Units 5
 
 ---
 
+### Milestone 10 — Student Study Tools
+
+Port the v1 SRS/flashcard system and practice test feature to v2 with Convex-backed storage. Deliver a complete study hub with four study modes (flashcards, matching game, speed round, SRS review), a progress dashboard, bilingual glossary support, and per-unit randomized practice tests drawn from question banks.
+
+**Execution graph** (strictly serial after Milestone 9 completes):
+```
+Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practice Tests [3]
+```
+
+**Rationale for serial ordering (2026-04-10 roadmap):**
+- The study hub foundation must come first because it establishes the Convex study schema, FSRS engine, glossary data, and study data hooks that all subsequent study features depend on.
+- Study modes and progress dashboard come next to complete the study hub before practice tests introduce a separate feature surface.
+- Practice tests come last because they are a distinct feature (question banks + test engine) that does not depend on the SRS infrastructure but benefits from the Convex study patterns established by the first two tracks.
+
+**Exit gate**: students can study vocabulary through four study modes with spaced repetition scheduling; bilingual glossary supports EN/ZH language modes; progress dashboard shows per-unit mastery and session history; students can take randomized practice tests for any of the 8 units with per-lesson score breakdowns; all study data is persisted to Convex.
+
+---
+
 ## Planned Queue
 
 Strictly serial. Complete and archive each track before starting the next.
@@ -136,6 +155,18 @@ Strictly serial. Complete and archive each track before starting the next.
 - [ ] **Track: AI Feedback for Spreadsheet Submissions**
   *Link: [./tracks/spreadsheet_ai_feedback_20260410/](./tracks/spreadsheet_ai_feedback_20260410/)*
   *Scope: extend spreadsheet submissions with AI-assisted feedback (preliminary score, strengths, improvements, next steps), revision loop with attempt history, and teacher visibility into all attempts and AI artifacts.*
+
+- [ ] **Track: Study Hub Foundation and Flashcards**
+  *Link: [./tracks/study_hub_foundation_flashcards_20260410/](./tracks/study_hub_foundation_flashcards_20260410/)*
+  *Scope: port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home route.*
+
+- [ ] **Track: Study Modes and Progress Dashboard**
+  *Link: [./tracks/study_modes_progress_20260410/](./tracks/study_modes_progress_20260410/)*
+  *Scope: complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.*
+
+- [ ] **Track: Practice Tests**
+  *Link: [./tracks/practice_tests_20260410/](./tracks/practice_tests_20260410/)*
+  *Scope: port v1 practice test feature with a reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence.*
 
 - [x] **Track: Dead Code Pruning**
   *Link: [./archive/dead_code_pruning_20260408/](./archive/dead_code_pruning_20260408/)*

@@ -66,7 +66,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Milestone 9 Planning)
+## Current High-Level Priorities (2026-04-10 — Post Milestone 10 Planning)
 
 1. **Teacher Competency Heatmaps Phase 3-4** — add unit/student drill-down from the heatmap, link back to gradebook/reporting context, and complete verification gates.
 2. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
@@ -75,6 +75,9 @@ The following remain out of scope unless a later explicit track opens them:
 5. **Units 5-8 Workbook Rollout and Capstone Assets** — complete workbook rollout for Units 5-8, create capstone asset package, build capstone routes.
 6. **Student One-Shot Lesson Chatbot** — add one-shot lesson-scoped AI helper via OpenRouter for authenticated students.
 7. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
+8. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
+9. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
+10. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 

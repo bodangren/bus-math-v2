@@ -47,3 +47,4 @@
 - "Continue Lesson" / "Try Again" buttons that only set isComplete=false must NOT re-arm submittedRef — partial reset without clearing negotiation state allows re-submission of the same envelope.
 - Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.
 - `setTimeout` in `addNotification` must store the timeout ID and clear it in a `useEffect` cleanup; copy the ref to a local variable in the effect body to satisfy the `react-hooks/exhaustive-deps` lint rule.
+- When building cross-component utility helpers (like cellBgClass for coloring gradebook/heatmap cells), make sure all consuming components import from the correct source file, and verify exports match imports with a full build.
