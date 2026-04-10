@@ -1,8 +1,0 @@
-{
-  "track_id": "student_lesson_chatbot_20260410",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-04-10T12:00:00Z",
-  "updated_at": "2026-04-10T12:00:00Z",
-  "description": "Add a one-shot lesson chatbot for authenticated students: bottom-right helper, single-turn, lesson-scoped AI responses via OpenRouter."
-}
