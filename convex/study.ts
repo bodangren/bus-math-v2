@@ -305,3 +305,32 @@ export const recordSession = mutation({
     return { sessionId: session };
   },
 });
+
+export const getExportData = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
+
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_username", (q) => q.eq("username", identity.email!))
+      .unique();
+    if (!profile) throw new Error("Profile not found");
+
+    const [preferences, termMastery, dueReviews, studySessions] = await Promise.all([
+      ctx.db.query("study_preferences").withIndex("by_user", (q) => q.eq("userId", profile._id)).unique(),
+      ctx.db.query("term_mastery").withIndex("by_user", (q) => q.eq("userId", profile._id)).collect(),
+      ctx.db.query("due_reviews").withIndex("by_user", (q) => q.eq("userId", profile._id)).collect(),
+      ctx.db.query("study_sessions").withIndex("by_user_and_started", (q) => q.eq("userId", profile._id)).order("desc").collect(),
+    ]);
+
+    return {
+      preferences,
+      termMastery,
+      dueReviews,
+      studySessions,
+      exportedAt: Date.now(),
+    };
+  },
+});

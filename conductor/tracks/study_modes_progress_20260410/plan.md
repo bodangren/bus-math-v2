@@ -35,11 +35,11 @@
 - [x] Verify all progress dashboard tests pass
 
 ## Phase 5: Export and Hub Home Update
-- [ ] Write failing tests for export page (JSON generation, CSV generation, download trigger)
-- [ ] Implement `/student/study/export` route with JSON and CSV export
-- [ ] Update PracticeHubHome to activate matching, speed-round, and review mode cards
-- [ ] Add session counts and last-played info to mode cards
-- [ ] Verify all export and hub home tests pass
+- [x] Write failing tests for export page (JSON generation, CSV generation, download trigger)
+- [x] Implement `/student/study/export` route with JSON and CSV export
+- [x] Update PracticeHubHome to activate matching, speed-round, and review mode cards
+- [x] Add session counts and last-played info to mode cards
+- [x] Verify all export and hub home tests pass
 
 ## Phase 6: Verification and Documentation
 - [ ] Write integration tests for all four study mode flows (hub → mode → session → results persisted)

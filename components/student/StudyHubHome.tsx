@@ -8,6 +8,8 @@ import {
   BookOpen,
   Gamepad2,
   Zap,
+  RotateCcw,
+  Download,
 } from "lucide-react";
 import {
   Card,
@@ -134,7 +136,7 @@ export function StudyHubHome() {
                 <CardTitle className="text-xl">Study Modes</CardTitle>
                 <CardDescription>Choose how you want to study today</CardDescription>
               </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2">
+              <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Link href="/student/study/flashcards" className="block">
                   <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
                     <CardHeader className="pb-2">
@@ -146,24 +148,61 @@ export function StudyHubHome() {
                     </CardDescription>
                   </Card>
                 </Link>
-                <Card className="border-border/60 bg-muted/30 opacity-70">
-                  <CardHeader className="pb-2">
-                    <Gamepad2 className="h-6 w-6 text-muted-foreground" />
-                    <CardTitle className="text-lg">Matching Game</CardTitle>
-                  </CardHeader>
-                  <CardDescription>
-                    Coming soon
-                  </CardDescription>
-                </Card>
-                <Card className="border-border/60 bg-muted/30 opacity-70">
-                  <CardHeader className="pb-2">
-                    <Zap className="h-6 w-6 text-muted-foreground" />
-                    <CardTitle className="text-lg">Speed Round</CardTitle>
-                  </CardHeader>
-                  <CardDescription>
-                    Coming soon
-                  </CardDescription>
-                </Card>
+                <Link href="/student/study/matching" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <Gamepad2 className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">Matching Game</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      Match terms to definitions
+                    </CardDescription>
+                  </Card>
+                </Link>
+                <Link href="/student/study/speed-round" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <Zap className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">Speed Round</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      Quick-fire multiple-choice quiz
+                    </CardDescription>
+                  </Card>
+                </Link>
+                <Link href="/student/study/review" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <RotateCcw className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">SRS Review</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      Review due terms with ratings
+                    </CardDescription>
+                  </Card>
+                </Link>
+                <Link href="/student/study/progress" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <TrendingDown className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">Progress</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      View your mastery and stats
+                    </CardDescription>
+                  </Card>
+                </Link>
+                <Link href="/student/study/export" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <Download className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">Export</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      Export your study data
+                    </CardDescription>
+                  </Card>
+                </Link>
                 <Card className="border-border/60 bg-muted/30 opacity-70">
                   <CardHeader className="pb-2">
                     <BookOpen className="h-6 w-6 text-muted-foreground" />

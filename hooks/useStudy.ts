@@ -36,6 +36,10 @@ export function useRecordSession() {
   return useMutation(api.study.recordSession);
 }
 
+export function useExportData() {
+  return useQuery(api.study.getExportData);
+}
+
 export function getGlossaryTermDisplay(term: GlossaryTerm, languageMode: LanguageMode) {
   switch (languageMode) {
     case "en_to_en":
