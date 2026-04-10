@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CheckCircle2, Loader2, Save, XCircle } from 'lucide-react';
 import { z } from 'zod';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -82,6 +82,32 @@ function initializeSpreadsheet(initialData?: SpreadsheetData): SpreadsheetData {
   return getEmptySpreadsheet();
 }
 
+interface AiFeedback {
+  preliminaryScore: number;
+  strengths: string[];
+  improvements: string[];
+  nextSteps: string[];
+  rawAiResponse: string;
+}
+
+interface SpreadsheetAttempt {
+  _id: string;
+  attemptNumber: number;
+  spreadsheetData: SpreadsheetData;
+  validationResult: {
+    isComplete: boolean;
+    totalCells: number;
+    correctCells: number;
+    feedback: CellFeedback[];
+    timestamp: string;
+  };
+  aiFeedback?: AiFeedback;
+  teacherScoreOverride?: number;
+  teacherFeedbackOverride?: string;
+  gradedBy?: string;
+  gradedAt?: number;
+}
+
 export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluatorProps) {
   const [data, setData] = useState<SpreadsheetData>(() => initializeSpreadsheet(activity.props.initialData));
   const [feedback, setFeedback] = useState<CellFeedback[]>([]);
@@ -91,6 +117,10 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attemptNumber, setAttemptNumber] = useState(0);
+  const [aiFeedback, setAiFeedback] = useState<AiFeedback | null>(null);
+  const [_attemptHistory, setAttemptHistory] = useState<SpreadsheetAttempt[]>([]);
+  const [maxAttempts, setMaxAttempts] = useState(3);
+  const [_isLoadingInitial, setIsLoadingInitial] = useState(true);
 
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasUnsavedChanges = useRef(false);
@@ -142,12 +172,48 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
   }, []);
 
   useEffect(() => {
+    const loadInitialState = async () => {
+      try {
+        setIsLoadingInitial(true);
+        const response = await fetch(`/api/activities/spreadsheet/${activity.id}/submit`);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.spreadsheetData) {
+            setData(initializeSpreadsheet(result.spreadsheetData));
+          }
+          if (result.attemptHistory) {
+            setAttemptHistory(result.attemptHistory);
+            if (result.attemptHistory.length > 0) {
+              const lastAttempt = result.attemptHistory[result.attemptHistory.length - 1];
+              setAttemptNumber(lastAttempt.attemptNumber);
+              setSubmitted(true);
+              setFeedback(lastAttempt.validationResult.feedback);
+              if (lastAttempt.aiFeedback) {
+                setAiFeedback(lastAttempt.aiFeedback);
+              }
+            }
+          }
+          if (result.maxAttempts) {
+            setMaxAttempts(result.maxAttempts);
+          }
+        }
+      } catch (loadError) {
+        console.error('Failed to load initial state:', loadError);
+      } finally {
+        setIsLoadingInitial(false);
+      }
+    };
+
+    void loadInitialState();
+  }, [activity.id]);
+
+  useEffect(() => {
     const loadDraft = async () => {
       try {
         const response = await fetch(`/api/activities/spreadsheet/${activity.id}/draft`);
         if (response.ok) {
           const result = await response.json();
-          if (result.draftData) {
+          if (result.draftData && !submitted) {
             setData(initializeSpreadsheet(result.draftData));
             setLastSaved(new Date(result.updatedAt));
           }
@@ -157,8 +223,10 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
       }
     };
 
-    void loadDraft();
-  }, [activity.id]);
+    if (!submitted) {
+      void loadDraft();
+    }
+  }, [activity.id, submitted]);
 
   const getCellValue = useCallback((cellRef: string): string | number => {
     try {
@@ -275,10 +343,35 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
       const result = await response.json();
       const mergedFeedback = result.feedback?.length ? result.feedback : localFeedback;
 
-      setAttemptNumber((current) => current + 1);
+      setAttemptNumber(result.attemptNumber);
       setSubmitted(true);
       setFeedback(mergedFeedback);
+      if (result.aiFeedback) {
+        setAiFeedback(result.aiFeedback);
+      }
       hasUnsavedChanges.current = false;
+
+      // Update attempt history
+      setAttemptHistory((prev) => [
+        ...prev,
+        {
+          _id: result.attemptId,
+          attemptNumber: result.attemptNumber,
+          spreadsheetData: data,
+          validationResult: {
+            isComplete: Boolean(result.isComplete),
+            totalCells: localValidation.length,
+            correctCells: mergedFeedback.filter((entry: CellFeedback) => entry.isCorrect).length,
+            feedback: mergedFeedback.map((entry: CellFeedback) => ({
+              cell: entry.cell,
+              isCorrect: entry.isCorrect,
+              message: entry.message,
+            })),
+            timestamp: new Date().toISOString(),
+          },
+          aiFeedback: result.aiFeedback,
+        },
+      ]);
 
       onSubmit?.(
         buildSpreadsheetEvaluatorSubmission({
@@ -309,10 +402,22 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
     }
   }, [activity.id, activity.props.instructions, activity.props.templateId, attemptNumber, data, onSubmit, targetCells, validateSpreadsheet]);
 
+  const handleRevise = useCallback(() => {
+    setSubmitted(false);
+    setAiFeedback(null);
+    // Keep the current data (previous submission) so student can revise
+  }, []);
+
+  // Reference unused variables to avoid lint errors
+  void _attemptHistory;
+  void _isLoadingInitial;
+
   const isComplete = submitted && feedback.every((entry) => entry.isCorrect);
   const correctCount = feedback.filter((entry) => entry.isCorrect).length;
   const totalCount = targetCells.length;
   const renderedData = getHighlightedData(feedback);
+  const canRevise = submitted && attemptNumber < maxAttempts;
+  const isMaxAttemptsReached = submitted && attemptNumber >= maxAttempts;
 
   return (
     <Card className="mx-auto w-full max-w-7xl">
@@ -344,7 +449,7 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
                 Saving...
               </div>
             ) : null}
-            {attemptNumber > 0 ? <div>Attempt {attemptNumber}</div> : null}
+            {attemptNumber > 0 ? <div>Attempt {attemptNumber} of {maxAttempts}</div> : null}
           </div>
         </div>
         <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
@@ -421,6 +526,70 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
                 </div>
               </div>
             ) : null}
+
+            {submitted && aiFeedback ? (
+              <div className="space-y-4 border rounded-lg p-4 bg-purple-50 dark:bg-purple-950/10 border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-purple-900 dark:text-purple-100">
+                    AI Preliminary Feedback
+                  </h3>
+                  <Badge variant="outline" className="text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-700">
+                    Score: {aiFeedback.preliminaryScore}/40
+                  </Badge>
+                </div>
+                <p className="text-xs text-purple-600 dark:text-purple-400">
+                  This is AI-generated preliminary feedback and not a final grade. Your teacher will review your work.
+                </p>
+
+                {aiFeedback.strengths.length > 0 && (
+                  <div className="space-y-1">
+                    <h4 className="text-xs font-semibold text-purple-800 dark:text-purple-200 uppercase tracking-wide">
+                      Strengths
+                    </h4>
+                    <ul className="list-disc list-inside text-sm text-purple-700 dark:text-purple-300">
+                      {aiFeedback.strengths.map((strength, idx) => (
+                        <li key={idx}>{strength}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {aiFeedback.improvements.length > 0 && (
+                  <div className="space-y-1">
+                    <h4 className="text-xs font-semibold text-purple-800 dark:text-purple-200 uppercase tracking-wide">
+                      Areas to Improve
+                    </h4>
+                    <ul className="list-disc list-inside text-sm text-purple-700 dark:text-purple-300">
+                      {aiFeedback.improvements.map((improvement, idx) => (
+                        <li key={idx}>{improvement}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {aiFeedback.nextSteps.length > 0 && (
+                  <div className="space-y-1">
+                    <h4 className="text-xs font-semibold text-purple-800 dark:text-purple-200 uppercase tracking-wide">
+                      Next Steps
+                    </h4>
+                    <ul className="list-disc list-inside text-sm text-purple-700 dark:text-purple-300">
+                      {aiFeedback.nextSteps.map((nextStep, idx) => (
+                        <li key={idx}>{nextStep}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : null}
+
+            {isMaxAttemptsReached && (
+              <Alert className="border-orange-200 bg-orange-50">
+                <AlertTitle className="text-orange-800">Awaiting Teacher Review</AlertTitle>
+                <AlertDescription className="text-orange-700">
+You have used all {maxAttempts} attempts. Your teacher will review your work and provide a final grade.
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
 
           <aside className="space-y-4">
@@ -527,10 +696,14 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
                         Checking...
                       </>
                     ) : (
-                      'Check Answer'
+                      attemptNumber > 0 ? 'Resubmit' : 'Check Answer'
                     )}
                   </Button>
                 </>
+              ) : canRevise ? (
+                <Button onClick={handleRevise}>
+                  Revise and Resubmit (Attempt {attemptNumber + 1} of {maxAttempts})
+                </Button>
               ) : null}
             </div>
           </div>
