@@ -9,29 +9,29 @@
 - [x] Document the full inventory of workbook files needed across all four units
 
 ## Phase 2: Unit 5 Workbook Creation and Integration
-- [ ] Create student template `.xlsx` workbooks for each identified Unit 5 lesson
-- [ ] Create teacher completed `.xlsx` workbooks for each identified Unit 5 lesson
-- [ ] Validate all Unit 5 workbooks for cross-platform compatibility and file size
+- [x] Create student template `.xlsx` workbooks for each identified Unit 5 lesson
+- [x] Create teacher completed `.xlsx` workbooks for each identified Unit 5 lesson
+- [x] Validate all Unit 5 workbooks for cross-platform compatibility and file size
 - [ ] Add how-to guide sections to Unit 5 teacher lesson plans
 - [ ] Add 40-point grading rubrics to Unit 5 teacher and student lesson content
-- [ ] Check all Unit 5 workbooks into the repository
+- [x] Check all Unit 5 workbooks into the repository
 
 ## Phase 3: Unit 6 Workbook Creation and Integration
-- [ ] Create student template `.xlsx` workbooks for each identified Unit 6 lesson
-- [ ] Create teacher completed `.xlsx` workbooks for each identified Unit 6 lesson
-- [ ] Validate all Unit 6 workbooks for cross-platform compatibility and file size
+- [x] Create student template `.xlsx` workbooks for each identified Unit 6 lesson
+- [x] Create teacher completed `.xlsx` workbooks for each identified Unit 6 lesson
+- [x] Validate all Unit 6 workbooks for cross-platform compatibility and file size
 - [ ] Add how-to guide sections to Unit 6 teacher lesson plans
 - [ ] Add 40-point grading rubrics to Unit 6 teacher and student lesson content
-- [ ] Check all Unit 6 workbooks into the repository
+- [x] Check all Unit 6 workbooks into the repository
 
 ## Phase 4: Units 7-8 Workbook Creation and Integration
-- [ ] Create student template `.xlsx` workbooks for each identified Unit 7 lesson
-- [ ] Create teacher completed `.xlsx` workbooks for each identified Unit 7 lesson
-- [ ] Create student template `.xlsx` workbooks for each identified Unit 8 lesson
-- [ ] Create teacher completed `.xlsx` workbooks for each identified Unit 8 lesson
-- [ ] Validate all Unit 7-8 workbooks for cross-platform compatibility and file size
+- [x] Create student template `.xlsx` workbooks for each identified Unit 7 lesson
+- [x] Create teacher completed `.xlsx` workbooks for each identified Unit 7 lesson
+- [x] Create student template `.xlsx` workbooks for each identified Unit 8 lesson
+- [x] Create teacher completed `.xlsx` workbooks for each identified Unit 8 lesson
+- [x] Validate all Unit 7-8 workbooks for cross-platform compatibility and file size
 - [ ] Add how-to guide sections and 40-point grading rubrics to Unit 7-8 teacher and student lesson content
-- [ ] Check all Unit 7-8 workbooks into the repository
+- [x] Check all Unit 7-8 workbooks into the repository
 
 ## Phase 5: Capstone Asset Package
 - [ ] Create `capstone_investor_ready_workbook.xlsx` student template
