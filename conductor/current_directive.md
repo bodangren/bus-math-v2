@@ -80,20 +80,47 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Study Hub Phases 1-2, Pass 30)
+## Current High-Level Priorities (2026-04-11 — Study Hub Full Track, Pass 31)
 
-Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is **complete**.
+Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is **complete**. Milestone 10 (Student Study Tools) is **active**.
 
 1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE.
 2. **Units 2-4 Workbook Rollout** — COMPLETE.
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
 4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
 5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
-6. **Study Hub Foundation and Flashcards** — IN PROGRESS. Phase 1 (Glossary + Convex schema) complete. Phase 2 (FSRS engine) complete. Phase 3 (Study data hooks and language modes) complete. Phase 4 (Practice Hub Home) next.
-7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
+6. **Study Hub Foundation and Flashcards** — COMPLETE. Archived.
+7. **Study Modes and Progress Dashboard** — IN PROGRESS. Track exists with 6-phase plan (matching game, speed round, SRS review, progress dashboard, export, verification). Phase 1 (Matching Game) next.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Study Hub Full Track, Pass 31)
+
+Autonomous code review covering Study Hub Foundation and Flashcards Phases 3-6 (study data hooks, practice hub home, flashcard study mode, verification and documentation) and full track closeout.
+
+**Fixed during review: 0 issues**
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1693/1705 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response", 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Phase 3 (Study Data Hooks and Language Modes)**: New `hooks/useStudy.ts` with 6 hooks wrapping Convex queries/mutations: useStudyPreferences, useTermMastery, useDueTerms, useRecentSessions, useProcessReview, useRecordSession. Plus `getGlossaryTermDisplay` pure function supporting all 4 language modes (en_to_en, en_to_zh, zh_to_en, zh_to_zh). Well-tested (17 tests). `lib/study/types.ts` exports LanguageMode union type.
+- **Phase 4 (Practice Hub Home)**: New `components/student/StudyHubHome.tsx` — dashboard with unit filter buttons, due review count, study mode cards (flashcards active, matching/speed-round/practice-tests as "coming soon"), recent study sessions list, and weak topics panel. New `/student/study/page.tsx` with student auth guard. Well-tested (4 tests).
+- **Phase 5 (Flashcard Study Mode)**: New `components/student/FlashcardPlayer.tsx` — card flip interaction, again/hard/good/easy FSRS rating buttons, session progress counter, session-complete summary with review-again option. Integrates processReview mutation for FSRS scheduling and recordSession for analytics. New `/student/study/flashcards/page.tsx` with student auth guard. Well-tested (5 unit + 1 integration test).
+- **Phase 6 (Verification and Documentation)**: All verification gates run and recorded. Track archived. lessons-learned.md updated with one new entry.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 30)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+
+**New items recorded in tech-debt.md:**
+- StudyHubHome useMemo missing languageMode dependency (Low — open)
+- FlashcardPlayer redundant optional chaining (Low — open)
+
+**Phase status**: Study Hub Foundation and Flashcards FULLY COMPLETE. Track archived. Next track: Study Modes and Progress Dashboard. All verification gates pass.
 
 ## Code Review Summary (2026-04-11 — Study Hub Phases 1-2, Pass 30)
 

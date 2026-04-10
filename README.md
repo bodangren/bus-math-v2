@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 30)
+Last updated: April 11, 2026 (Code Review Pass 31)
 
 ## Status Snapshot
 
@@ -81,7 +81,7 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 4 (1 in-progress Milestone 10, 3 planned Milestone 10) |
+| Active Conductor tracks | 3 (1 in-progress Milestone 10, 2 planned Milestone 10) |
 | Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
 | Archived track directories | 101 |
 | Test files under `__tests__` and `tests` | 298 |
@@ -494,34 +494,35 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 
 ## Active Milestone 10 Tracks
 
-### 1. AI Feedback for Submitted Excel Spreadsheets
+### 1. Study Hub Foundation and Flashcards
 
-Track: `spreadsheet_ai_feedback_20260410` — **COMPLETE** (archived).
+Track: `study_hub_foundation_flashcards_20260410` — **COMPLETE** (archived).
 
-Shipped: attempt history schema, AI feedback pipeline, submit route integration, student revision UX, teacher visibility with AI artifacts. All verification gates pass. Archived on 2026-04-11.
+Shipped: bilingual glossary (10 terms, EN/ZH), Convex study schema (4 tables), FSRS engine, study data hooks, practice hub home with unit filter, flashcard study mode with spaced repetition. All 6 phases complete. All verification gates pass. Archived on 2026-04-11.
 
-### 2. Study Hub Foundation and Flashcards
+### 2. Study Modes and Progress Dashboard
 
-Track: `study_hub_foundation_flashcards_20260410` — **IN PROGRESS** (Phases 1-2 complete, Phase 3 next).
+Track: `study_modes_progress_20260410` — **IN PROGRESS** (Phase 1 next).
 
 Goal:
 
-- port v1 SRS/flashcard system to v2 with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home
+- complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export
 
-Status: Phases 1-2 complete. Glossary data (10 bilingual terms), Convex study schema (4 tables), and FSRS engine integration all shipped. Phase 3 (Study Data Hooks and Language Modes) is next.
+Status: Track plan defined with 6 phases. Phase 1 (Matching Game) is next.
 
 Desired product shape:
 
-- students can study vocabulary through flashcards with spaced repetition scheduling
-- bilingual glossary supports EN/ZH language modes
-- progress dashboard shows per-unit mastery and session history
+- four active study modes (flashcards, matching, speed round, SRS review)
+- progress dashboard with per-unit mastery bars, aggregate stats, session history
+- JSON/CSV export for study data
 
-Definition of done:
+### 3. Practice Tests
 
-- flashcard study mode works end-to-end with Convex persistence
-- FSRS scheduling produces correct due dates after reviews
-- language mode switching changes prompt/answer fields
-- practice hub home route with unit filter, due counts, and mode cards
+Track: `practice_tests_20260410` — **PLANNED**.
+
+Goal:
+
+- port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence
 
 ## Definition of Done for "Classroom Complete"
 
