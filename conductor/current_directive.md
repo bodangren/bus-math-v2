@@ -80,20 +80,56 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Milestone 8 Completion, Pass 27)
+## Current High-Level Priorities (2026-04-11 — Post AI Feedback Phases 2-5, Pass 28)
 
-Milestone 8 (Classroom Product Completeness) is now **complete**. All 7 serial tracks finished. Milestone 9 (Workbook System and AI Features) is underway.
+Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is nearing completion. Only Phase 6 (verification) of the AI Feedback track remains.
 
 1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE.
 2. **Units 2-4 Workbook Rollout** — COMPLETE.
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
-4. **Student One-Shot Lesson Chatbot** — COMPLETE. Chatbot Phases 2-4 (API route, student UI, integration) completed since Pass 26. Archived.
-5. **AI Feedback for Spreadsheet Submissions** — IN PROGRESS. Phase 1 (Submission Schema and Attempt History) complete. New `spreadsheet_submission_attempts` table with AI feedback and teacher override fields. Convex mutations for attempts, AI feedback, and teacher overrides implemented. Phase 2 (AI Feedback Pipeline) next.
+4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
+5. **AI Feedback for Spreadsheet Submissions** — IN PROGRESS. Phases 1-5 complete. Phase 6 (verification, integration tests, documentation) remains. All verification gates pass (lint 0/2, test 1650/1662 with 12 pre-existing failures, build clean).
 6. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — AI Feedback Phases 2-5, Pass 28)
+
+Autonomous code review covering AI Feedback for Spreadsheet Submissions Phases 2-5 (AI feedback pipeline, submit route integration, student revision UX, teacher visibility).
+
+**Fixed during review: 2 issues**
+- **Draft loading race condition** (High): Two `useEffect` hooks ran concurrently on mount — `loadInitialState` fetched prior submissions while `loadDraft` fetched the student's draft. Both called `setData()`, and if the draft fetch resolved after the initial state fetch, it would overwrite submitted data with the draft. Fixed by making the draft effect depend on a new `isInitialLoaded` flag: draft only loads after initial state completes and only if the student hasn't submitted.
+- **Dead state variables** (Low): `_attemptHistory` and `_isLoadingInitial` were declared but immediately voided to suppress lint. Replaced `_attemptHistory` with `[, setAttemptHistory]` (standard unused-tuple-element pattern) and renamed `_isLoadingInitial` to `isInitialLoaded` with real dependency wiring in both effects.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1650/1662 tests pass; 5 test files fail (12 tests total — all pre-existing: 2 security RLS Supabase, 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock, 2 SubmissionDetailModal "view raw response" mismatch)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Phase 2 (AI Feedback Pipeline)**: New `lib/ai/spreadsheet-feedback.ts` — `generateAiFeedback` function builds a structured prompt from target cells and validation results, calls OpenRouter provider, parses JSON response into `AiFeedback` type (preliminary score on 40-point scale, strengths, improvements, next steps). Falls back to deterministic scoring when AI provider is unavailable or response is unparseable. Score clamped to 0-40. Arrays sliced to max 3 items. Clean architecture with graceful degradation. Tests cover no-provider fallback, score clamping, AI success path, and parse-error fallback.
+- **Phase 3 (Submit Route Integration)**: Submit route now calls `generateAiFeedback` after `submitSpreadsheet` mutation, then `updateAttemptWithAiFeedback` to persist feedback on the attempt record. AI feedback is returned in the POST response for immediate client display. GET route now returns `attemptHistory` and `maxAttempts` alongside existing response data. Submit flow: validate → create attempt → generate AI feedback → persist feedback → build submission envelope → submit assessment → update competency.
+- **Phase 4 (Student Revision UX)**: `SpreadsheetEvaluator.tsx` now shows AI Preliminary Feedback panel (purple-themed card with score badge, strengths, improvements, next steps) after submission. "Revise and Resubmit" button appears when `attemptNumber < maxAttempts`. "Awaiting Teacher Review" alert when max attempts reached. Attempt counter shows "Attempt N of M". On mount, component loads initial state from GET endpoint (prior attempts, feedback, maxAttempts). Draft loading deferred until initial state loads.
+- **Phase 5 (Teacher Visibility)**: `SubmissionDetailModal.tsx` now displays AI feedback in an amber-themed card per spreadsheet attempt, with teacher override in a green-themed card. `submission-detail.ts` `SpreadsheetEvidence` interface extended with `attemptNumber`, `aiFeedback`, `teacherScoreOverride`, `teacherFeedbackOverride`. `convex/teacher.ts` `getSubmissionDetail` now fetches from `spreadsheet_submission_attempts` instead of `student_spreadsheet_responses`, grouping attempts by activity and emitting each as separate evidence with AI feedback and teacher override fields.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 27)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+
+**New items recorded in tech-debt.md:**
+- Draft loading race condition (High — fixed)
+- Dead state variables pattern (Low — fixed)
+- generateAiFeedback parsed response not validated (Low — open)
+- Student view doesn't show attempt history (Low — open)
+
+**Updated during review:**
+- tech-debt.md: 2 issues closed, 2 new open items
+- current_directive.md: Updated priorities and added Pass 28 review summary
+- SpreadsheetEvaluator.tsx: Fixed race condition, cleaned state variable pattern
+
+**Phase status**: AI Feedback Phases 1-5 COMPLETE. Phase 6 (verification and documentation) next. All verification gates pass.
 
 ## Code Review Summary (2026-04-10 — Chatbot Phases 2-4 + AI Feedback Phase 1, Pass 27)
 

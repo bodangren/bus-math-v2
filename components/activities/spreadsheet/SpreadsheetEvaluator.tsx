@@ -118,9 +118,9 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
   const [error, setError] = useState<string | null>(null);
   const [attemptNumber, setAttemptNumber] = useState(0);
   const [aiFeedback, setAiFeedback] = useState<AiFeedback | null>(null);
-  const [_attemptHistory, setAttemptHistory] = useState<SpreadsheetAttempt[]>([]);
+  const [, setAttemptHistory] = useState<SpreadsheetAttempt[]>([]);
   const [maxAttempts, setMaxAttempts] = useState(3);
-  const [_isLoadingInitial, setIsLoadingInitial] = useState(true);
+  const [isInitialLoaded, setIsInitialLoaded] = useState(false);
 
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasUnsavedChanges = useRef(false);
@@ -174,7 +174,7 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
   useEffect(() => {
     const loadInitialState = async () => {
       try {
-        setIsLoadingInitial(true);
+        setIsInitialLoaded(false);
         const response = await fetch(`/api/activities/spreadsheet/${activity.id}/submit`);
         if (response.ok) {
           const result = await response.json();
@@ -200,7 +200,7 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
       } catch (loadError) {
         console.error('Failed to load initial state:', loadError);
       } finally {
-        setIsLoadingInitial(false);
+        setIsInitialLoaded(true);
       }
     };
 
@@ -208,6 +208,9 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
   }, [activity.id]);
 
   useEffect(() => {
+    if (!isInitialLoaded) return;
+    if (submitted) return;
+
     const loadDraft = async () => {
       try {
         const response = await fetch(`/api/activities/spreadsheet/${activity.id}/draft`);
@@ -223,10 +226,8 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
       }
     };
 
-    if (!submitted) {
-      void loadDraft();
-    }
-  }, [activity.id, submitted]);
+    void loadDraft();
+  }, [activity.id, isInitialLoaded, submitted]);
 
   const getCellValue = useCallback((cellRef: string): string | number => {
     try {
@@ -407,10 +408,6 @@ export function SpreadsheetEvaluator({ activity, onSubmit }: SpreadsheetEvaluato
     setAiFeedback(null);
     // Keep the current data (previous submission) so student can revise
   }, []);
-
-  // Reference unused variables to avoid lint errors
-  void _attemptHistory;
-  void _isLoadingInitial;
 
   const isComplete = submitted && feedback.every((entry) => entry.isCorrect);
   const correctCount = feedback.filter((entry) => entry.isCorrect).length;

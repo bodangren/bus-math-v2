@@ -158,6 +158,7 @@ Strictly serial. Complete and archive each track before starting the next.
 - [ ] **Track: AI Feedback for Spreadsheet Submissions**
   *Link: [./tracks/spreadsheet_ai_feedback_20260410/](./tracks/spreadsheet_ai_feedback_20260410/)*
   *Scope: extend spreadsheet submissions with AI-assisted feedback (preliminary score, strengths, improvements, next steps), revision loop with attempt history, and teacher visibility into all attempts and AI artifacts.*
+  *Status: Phases 1-5 complete (Pass 28). Phase 6 (verification and documentation) next.*
 
 - [ ] **Track: Study Hub Foundation and Flashcards**
   *Link: [./tracks/study_hub_foundation_flashcards_20260410/](./tracks/study_hub_foundation_flashcards_20260410/)*

@@ -3,6 +3,6 @@
   "type": "feature",
   "status": "in_progress",
   "created_at": "2026-04-10T12:00:00Z",
-  "updated_at": "2026-04-10T22:00:00Z",
+  "updated_at": "2026-04-11T00:30:00Z",
   "description": "Add AI-assisted feedback to spreadsheet submissions: preliminary scoring, improvement guidance, revision loop with attempt history, and teacher visibility."
 }

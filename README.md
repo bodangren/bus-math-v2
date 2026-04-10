@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 10, 2026 (Code Review Pass 27)
+Last updated: April 11, 2026 (Code Review Pass 28)
 
 ## Status Snapshot
 
@@ -85,8 +85,8 @@ The target product is:
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 4 (1 in-progress Milestone 9, 3 planned Milestone 10) |
 | Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
-| Archived track directories | 97 |
-| Test files under `__tests__` and `tests` | 271 |
+| Archived track directories | 101 |
+| Test files under `__tests__` and `tests` | 298 |
 
 ### My real assessment
 
@@ -504,13 +504,13 @@ Shipped: OpenRouter provider adapter, lesson context packaging, API route with a
 
 ### 2. AI Feedback for Submitted Excel Spreadsheets
 
-Track: `spreadsheet_ai_feedback_20260410` — **IN PROGRESS** (Phase 1 complete).
+Track: `spreadsheet_ai_feedback_20260410` — **IN PROGRESS** (Phases 1-5 complete, Phase 6 next).
 
 Goal:
 
 - give students preliminary automated feedback on submitted spreadsheet work, including a provisional score, improvement guidance, and the ability to revise and resubmit
 
-Status: Phase 1 (Submission Schema and Attempt History) is complete. New `spreadsheet_submission_attempts` table with AI feedback and teacher override fields. Convex mutations for attempts, AI feedback, and teacher overrides implemented. Phase 2 (AI Feedback Pipeline) is next.
+Status: Phases 1-5 complete. Schema, AI feedback pipeline, submit route integration, student revision UX, and teacher visibility all shipped. Phase 6 (verification, integration tests, documentation) is next.
 
 Desired product shape:
 
