@@ -1,12 +1,12 @@
 # Implementation Plan: Student One-Shot Lesson Chatbot
 
 ## Phase 1: Provider and Infrastructure
-- [ ] Add OpenRouter provider configuration to `lib/ai/providers.ts` (or new provider file)
-- [ ] Add `OPENROUTER_API_KEY` environment variable support
-- [ ] Define the lesson context package type and assembly function
-- [ ] Write failing tests for lesson context packaging (bounded size, correct fields, Convex data integration)
-- [ ] Implement lesson context assembly from Convex published curriculum data
-- [ ] Verify the AI provider and retry wrapper work with OpenRouter endpoint
+- [x] Add OpenRouter provider configuration to `lib/ai/providers.ts` (or new provider file)
+- [x] Add `OPENROUTER_API_KEY` environment variable support
+- [x] Define the lesson context package type and assembly function
+- [x] Write failing tests for lesson context packaging (bounded size, correct fields, Convex data integration)
+- [x] Implement lesson context assembly from Convex published curriculum data
+- [x] Verify the AI provider and retry wrapper work with OpenRouter endpoint
 
 ## Phase 2: API Route and Safety
 - [ ] Create `app/api/student/lesson-chatbot/route.ts` with POST handler
