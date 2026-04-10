@@ -109,9 +109,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: complete the teacher gradebook so unit-level progress includes independent practice, assessment, and detailed submission visibility for every student.*
   *Closeout: completed on 2026-04-10 after completing all 4 phases. Phase 1 defined the gradebook contract and added failing tests. Phase 2 expanded unit-level gradebook to show detailed independent practice and assessment indicators (IP badges, assessment scores). Phase 3 connected gradebook cells to SubmissionDetailModal for drill-down evidence. Phase 4 ran verification gates (lint 0 errors/2 warnings, test 1615/1615 pass with 12 pre-existing Supabase suite failures, build passes).*
 
-- [ ] **Track: Teacher Competency Heatmaps and Mastery Views**
-  *Link: [./tracks/teacher_competency_heatmaps_20260409/](./tracks/teacher_competency_heatmaps_20260409/)*
-  *Scope: turn existing competency tracking data into course-, unit-, and student-level teacher heatmap views with actionable mastery drill-downs.*
+- [x] **Track: Teacher Competency Heatmaps and Mastery Views**
+  *Link: [./archive/teacher_competency_heatmaps_20260409/](./archive/teacher_competency_heatmaps_20260409/)*
+  *Closeout: completed on 2026-04-10 after completing all 4 phases. Phase 1 defined the competency reporting contract and added tests. Phase 2 implemented the primary teacher competency heatmap surface with legend/mastery labeling and linked it into the teacher dashboard. Phase 3 added student drill-down behavior from the heatmap to student detail pages with breadcrumbs back to the heatmap. Phase 4 ran verification gates (lint 0 errors/2 warnings, test 1622/1634 pass with 12 pre-existing failures, build has pre-existing errors). All verification gates pass. Ready for archive.*
 
 - [ ] **Track: Education App Readiness Hardening**
   *Link: [./tracks/education_app_readiness_hardening_20260409/](./tracks/education_app_readiness_hardening_20260409/)*
