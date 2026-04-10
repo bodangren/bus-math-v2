@@ -359,6 +359,7 @@ function PracticeEvidenceCard({
   const [showAllParts, setShowAllParts] = useState(false);
   const [showRaw, setShowRaw] = useState(false);
   const isPractice = evidence.kind === 'practice';
+  const isSpreadsheet = evidence.kind === 'spreadsheet';
   const submissionData = isPractice ? (evidence.submissionData as Record<string, unknown>) : null;
   const parts = isPractice && Array.isArray(submissionData?.parts)
     ? (submissionData.parts as Record<string, unknown>[])
@@ -366,12 +367,7 @@ function PracticeEvidenceCard({
   const answers = isPractice && submissionData?.answers && typeof submissionData.answers === 'object'
     ? (submissionData.answers as Record<string, unknown>)
     : {};
-  const artifact = isPractice
-    ? (submissionData?.artifact as Record<string, unknown> | undefined)
-    : undefined;
-  const artifactSpreadsheetData = artifact && Array.isArray(artifact.spreadsheetData)
-    ? (artifact.spreadsheetData as unknown[])
-    : null;
+  const spreadsheetData = isSpreadsheet ? evidence.spreadsheetData : null;
   const artifactLabel = getArtifactLabel(evidence);
 
   const misconceptionTags = new Set<string>();
@@ -412,7 +408,7 @@ function PracticeEvidenceCard({
                 Completed {formatTimestamp(evidence.submittedAt)}
               </span>
             ) : null}
-            {evidence.attemptNumber && evidence.attemptNumber > 1 ? (
+            {evidence.attemptNumber ? (
               <span className="rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                 Attempt {evidence.attemptNumber}
               </span>
@@ -422,18 +418,93 @@ function PracticeEvidenceCard({
       </CardHeader>
 
       <CardContent className="space-y-4 px-4 py-4">
-        {evidence.kind === 'spreadsheet' ? (
+        {isSpreadsheet ? (
           <div className="space-y-3">
             <div className="overflow-x-auto rounded-md border border-border">
               <SpreadsheetWrapper
                 readOnly
                 className="text-xs"
-                initialData={artifactSpreadsheetData as SpreadsheetData}
+                initialData={spreadsheetData as SpreadsheetData}
               />
             </div>
             <div className="text-xs text-muted-foreground">
               Spreadsheet evidence is read-only and preserved as submitted.
             </div>
+
+            {/* AI Feedback section */}
+            {evidence.aiFeedback ? (
+              <Card className="border-amber-200 bg-amber-50">
+                <CardHeader className="px-4 py-3">
+                  <CardTitle className="text-sm font-semibold text-amber-900">
+                    AI Preliminary Feedback
+                    {evidence.aiFeedback.preliminaryScore !== undefined ? (
+                      <Badge variant="secondary" className="ml-2 bg-amber-200 text-amber-900">
+                        {evidence.aiFeedback.preliminaryScore} / 40 (AI Preliminary)
+                      </Badge>
+                    ) : null}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-4 py-3 space-y-3">
+                  {evidence.aiFeedback.strengths && evidence.aiFeedback.strengths.length > 0 ? (
+                    <div>
+                      <h4 className="text-xs font-semibold text-amber-800 mb-1">Strengths</h4>
+                      <ul className="list-disc list-inside text-xs text-amber-900">
+                        {evidence.aiFeedback.strengths.map((strength, i) => (
+                          <li key={i}>{strength}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {evidence.aiFeedback.improvements && evidence.aiFeedback.improvements.length > 0 ? (
+                    <div>
+                      <h4 className="text-xs font-semibold text-amber-800 mb-1">Improvements</h4>
+                      <ul className="list-disc list-inside text-xs text-amber-900">
+                        {evidence.aiFeedback.improvements.map((improvement, i) => (
+                          <li key={i}>{improvement}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                  {evidence.aiFeedback.nextSteps && evidence.aiFeedback.nextSteps.length > 0 ? (
+                    <div>
+                      <h4 className="text-xs font-semibold text-amber-800 mb-1">Next Steps</h4>
+                      <ul className="list-disc list-inside text-xs text-amber-900">
+                        {evidence.aiFeedback.nextSteps.map((nextStep, i) => (
+                          <li key={i}>{nextStep}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {/* Teacher Override section */}
+            {evidence.teacherScoreOverride !== undefined || evidence.teacherFeedbackOverride ? (
+              <Card className="border-green-200 bg-green-50">
+                <CardHeader className="px-4 py-3">
+                  <CardTitle className="text-sm font-semibold text-green-900">
+                    Teacher Review
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-4 py-3 space-y-3">
+                  {evidence.teacherScoreOverride !== undefined ? (
+                    <div>
+                      <h4 className="text-xs font-semibold text-green-800 mb-1">Score</h4>
+                      <Badge variant="secondary" className="bg-green-200 text-green-900">
+                        {evidence.teacherScoreOverride} / 40 (Teacher Reviewed)
+                      </Badge>
+                    </div>
+                  ) : null}
+                  {evidence.teacherFeedbackOverride ? (
+                    <div>
+                      <h4 className="text-xs font-semibold text-green-800 mb-1">Feedback</h4>
+                      <p className="text-xs text-green-900">{evidence.teacherFeedbackOverride}</p>
+                    </div>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
         ) : (
           <div className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">

@@ -40,12 +40,12 @@
 - [x] Verify all student revision UX tests pass
 
 ## Phase 5: Teacher Visibility and Review
-- [ ] Write failing tests for teacher attempt history view
-- [ ] Update SubmissionDetailModal to display full attempt history in chronological order
-- [ ] Show AI feedback artifacts for each attempt (score, strengths, improvements, next steps)
-- [ ] Add teacher score override capability (input for teacher-assessed score)
-- [ ] Show score changes across attempts
-- [ ] Add clear "AI Preliminary" vs "Teacher Reviewed" labeling
+- [x] Write failing tests for teacher attempt history view
+- [x] Update SubmissionDetailModal to display full attempt history in chronological order
+- [x] Show AI feedback artifacts for each attempt (score, strengths, improvements, next steps)
+- [x] Add teacher score override capability (input for teacher-assessed score)
+- [x] Show score changes across attempts
+- [x] Add clear "AI Preliminary" vs "Teacher Reviewed" labeling
 - [ ] Update gradebook drill-down to reflect multi-attempt scores
 - [ ] Verify all teacher visibility tests pass
 

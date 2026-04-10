@@ -34,9 +34,7 @@ interface TeacherStudentDetailUnitRow {
   }>;
 }
 
-interface SpreadsheetSubmission {
-  spreadsheetData?: unknown;
-}
+
 
 interface PracticeSubmissionEvidence {
   contractVersion?: string;
@@ -789,11 +787,18 @@ export const getSubmissionDetail = internalQuery({
         phaseByActivityId.set(c.activityId, c.phaseNumber);
       }
 
-      const [spreadsheetRows, practiceRows, activityRows] = await Promise.all([
+      const [, spreadsheetAttempts, practiceRows, activityRows] = await Promise.all([
         ctx.db
           .query("student_spreadsheet_responses")
           .withIndex("by_student", (q) => q.eq("studentId", args.studentId))
           .filter((q) => q.or(...activityIds.map((id) => q.eq(q.field("activityId"), id))))
+          .collect(),
+
+        ctx.db
+          .query("spreadsheet_submission_attempts")
+          .withIndex("by_student", (q) => q.eq("studentId", args.studentId))
+          .filter((q) => q.or(...activityIds.map((id) => q.eq(q.field("activityId"), id))))
+          .order("asc")
           .collect(),
 
         ctx.db
@@ -806,6 +811,15 @@ export const getSubmissionDetail = internalQuery({
           activityIds.map(async (activityId) => [activityId, await ctx.db.get(activityId)] as const),
         ),
       ]);
+
+      // Group attempts by activity ID
+      const attemptsByActivityId = new Map<string, typeof spreadsheetAttempts>();
+      for (const attempt of spreadsheetAttempts) {
+        const activityId = attempt.activityId;
+        const existing = attemptsByActivityId.get(activityId) ?? [];
+        existing.push(attempt);
+        attemptsByActivityId.set(activityId, existing);
+      }
 
       const activityById = new Map<
         string,
@@ -822,20 +836,37 @@ export const getSubmissionDetail = internalQuery({
         });
       }
 
-      for (const row of spreadsheetRows) {
-        const phaseNum = phaseByActivityId.get(row.activityId);
-        const spreadsheetRow = row as SpreadsheetSubmission;
-        if (phaseNum !== undefined && spreadsheetRow.spreadsheetData) {
-          spreadsheetByPhaseNumber.set(phaseNum, spreadsheetRow.spreadsheetData);
+      // Process spreadsheet attempts (instead of just latest response)
+      for (const [activityId, attempts] of attemptsByActivityId.entries()) {
+        const phaseNum = phaseByActivityId.get(activityId);
+        if (phaseNum === undefined) continue;
 
-          const activity = activityById.get(row.activityId);
-          const evidence: SubmissionEvidence = {
+        const activity = activityById.get(activityId);
+        
+        // Set the latest attempt as the phase's spreadsheet data
+        const latestAttempt = attempts[attempts.length - 1];
+        if (latestAttempt?.spreadsheetData) {
+          spreadsheetByPhaseNumber.set(phaseNum, latestAttempt.spreadsheetData);
+        }
+
+        // Add all attempts as evidence
+        for (const attempt of attempts) {
+          const evidence: SubmissionEvidence & {
+            attemptNumber?: number;
+            aiFeedback?: unknown;
+            teacherScoreOverride?: number | null;
+            teacherFeedbackOverride?: string | null;
+          } = {
             kind: 'spreadsheet',
-            activityId: row.activityId,
+            activityId,
             activityTitle: activity?.displayName ?? 'Spreadsheet activity',
             componentKey: activity?.componentKey ?? 'spreadsheet',
-            submittedAt: new Date(row.updatedAt).toISOString(),
-            spreadsheetData: spreadsheetRow.spreadsheetData,
+            submittedAt: new Date(attempt.submittedAt).toISOString(),
+            spreadsheetData: attempt.spreadsheetData,
+            attemptNumber: attempt.attemptNumber,
+            aiFeedback: attempt.aiFeedback,
+            teacherScoreOverride: attempt.teacherScoreOverride,
+            teacherFeedbackOverride: attempt.teacherFeedbackOverride,
           };
 
           const existingEvidence = evidenceByPhaseNumber.get(phaseNum) ?? [];

@@ -36,6 +36,16 @@ export interface SpreadsheetEvidence {
   componentKey: string;
   submittedAt: string | null;
   spreadsheetData: SpreadsheetData;
+  attemptNumber?: number;
+  aiFeedback?: {
+    preliminaryScore: number;
+    strengths: string[];
+    improvements: string[];
+    nextSteps: string[];
+    rawAiResponse: string;
+  } | null;
+  teacherScoreOverride?: number | null;
+  teacherFeedbackOverride?: string | null;
 }
 
 export interface PracticeEvidence {
