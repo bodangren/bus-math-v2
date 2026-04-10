@@ -113,7 +113,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/teacher_competency_heatmaps_20260409/](./archive/teacher_competency_heatmaps_20260409/)*
   *Closeout: completed on 2026-04-10 after completing all 4 phases. Phase 1 defined the competency reporting contract and added tests. Phase 2 implemented the primary teacher competency heatmap surface with legend/mastery labeling and linked it into the teacher dashboard. Phase 3 added student drill-down behavior from the heatmap to student detail pages with breadcrumbs back to the heatmap. Phase 4 ran verification gates (lint 0 errors/2 warnings, test 1622/1634 pass with 12 pre-existing failures, build has pre-existing errors). All verification gates pass. Ready for archive.*
 
-- [ ] **Track: Education App Readiness Hardening**
+- [~] **Track: Education App Readiness Hardening**
   *Link: [./tracks/education_app_readiness_hardening_20260409/](./tracks/education_app_readiness_hardening_20260409/)*
   *Scope: harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.*
 

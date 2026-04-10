@@ -1,7 +1,7 @@
 # Implementation Plan: Education App Readiness Hardening
 
 ## Phase 1: Workflow Integrity Audit
-- [ ] Audit the completed Milestone 8 navigation, dashboard, reporting, gradebook, and competency contracts for remaining integrity gaps
+- [~] Audit the completed Milestone 8 navigation, dashboard, reporting, gradebook, and competency contracts for remaining integrity gaps
 - [ ] Prioritize the highest-signal auth, route, reporting, or verification issues that still block classroom readiness
 - [ ] Add or update failing smoke/contract tests that describe the final expected student and teacher workflows
 - [ ] Record any issues that should be fixed now versus formally deferred

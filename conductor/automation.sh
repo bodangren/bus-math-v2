@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Configuration variables
-WORK_MODEL="volcengine-coding/glm-4-7-251222"
+WORK_MODEL="volcengine-coding/doubao-seed-2-0-code-preview-260215"
 REVIEW_MODEL="xiaomi/mimo-v2-pro"
 WORKING_DIR="/Users/daniel.bodanske/Desktop/bus-math-v2"
 OPENCODE_PATH="/Users/daniel.bodanske/.nvm/versions/node/v20.14.0/bin/opencode"
