@@ -150,9 +150,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: complete workbook rollout for Units 5-8, create capstone asset package (investor workbook, business plan guide, pitch rubric, model tour checklist), and build capstone guidelines and rubrics routes.*
   *Closeout: completed on 2026-04-10. All 32 workbook files (Units 5-8, 16 student, 16 teacher) and 2 capstone workbooks checked in. workbooks.client.ts updated with Units 5-8. Verification gates: npm run lint (0 errors, 2 pre-existing warnings), npm run build (passes cleanly). Ready for archive.*
 
-- [ ] **Track: Student One-Shot Lesson Chatbot**
-  *Link: [./tracks/student_lesson_chatbot_20260410/](./tracks/student_lesson_chatbot_20260410/)*
+- [x] **Track: Student One-Shot Lesson Chatbot**
+  *Link: [./archive/student_lesson_chatbot_20260410/](./archive/student_lesson_chatbot_20260410/)*
   *Scope: add a bottom-right one-shot lesson helper for authenticated students via OpenRouter, with single-turn lesson-scoped responses, rate limiting, and usage analytics.*
+  *Closeout: completed on 2026-04-10. Built OpenRouter provider adapter, lesson context packaging, API route with auth/rate limiting, and student UI component (floating button, expandable interface, one-shot constraint). All verification gates pass (lint 0 errors/2 warnings, build passes cleanly). Ready for archive.*
 
 - [ ] **Track: AI Feedback for Spreadsheet Submissions**
   *Link: [./tracks/spreadsheet_ai_feedback_20260410/](./tracks/spreadsheet_ai_feedback_20260410/)*
