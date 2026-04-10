@@ -48,3 +48,5 @@
 - Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.
 - `setTimeout` in `addNotification` must store the timeout ID and clear it in a `useEffect` cleanup; copy the ref to a local variable in the effect body to satisfy the `react-hooks/exhaustive-deps` lint rule.
 - When building cross-component utility helpers (like cellBgClass for coloring gradebook/heatmap cells), make sure all consuming components import from the correct source file, and verify exports match imports with a full build.
+- When mocking 'fs' in Vitest for Node.js ESM code that uses import * as fs from 'fs', use importOriginal and spread the actual fs module, then override the functions you need to mock.
+- When using 'fs' in Next.js route handlers, use import * as fs from 'fs' instead of import fs from 'fs' for better compatibility with Vitest mocking.
