@@ -4,6 +4,9 @@ import { resolveOpenRouterProviderFromEnv } from '@/lib/ai/providers';
 import { assembleLessonChatbotContext } from '@/lib/ai/lesson-context';
 import { buildPublishedCurriculumManifest } from '@/lib/curriculum/published-manifest';
 
+const RATE_LIMIT_WINDOW_MS = 10000;
+const lastRequestByUser = new Map<string, number>();
+
 interface ChatbotRequest {
   lessonId: string;
   phaseNumber: number;
@@ -49,6 +52,16 @@ export async function POST(request: NextRequest) {
   if (session.role !== 'student') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
+
+  const now = Date.now();
+  const lastRequest = lastRequestByUser.get(session.sub);
+  if (lastRequest && now - lastRequest < RATE_LIMIT_WINDOW_MS) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment before trying again.' },
+      { status: 429 },
+    );
+  }
+  lastRequestByUser.set(session.sub, now);
 
   let body: ChatbotRequest;
   try {

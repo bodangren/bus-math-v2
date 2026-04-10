@@ -12,7 +12,7 @@
 - [x] Create `app/api/student/lesson-chatbot/route.ts` with POST handler
 - [x] Add student role authentication check (reuse existing auth guards)
 - [x] Add input validation and sanitization (question length, content type checks)
-- [ ] Implement rate limiting middleware or per-student throttle
+- [x] Implement rate limiting middleware or per-student throttle
 - [x] Write failing tests for the API route: auth check, input validation, rate limiting, response shape
 - [x] Implement the route: assemble context, call AI provider, return response
 - [x] Add request logging for analytics
