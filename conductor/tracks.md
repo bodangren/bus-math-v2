@@ -155,10 +155,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: add a bottom-right one-shot lesson helper for authenticated students via OpenRouter, with single-turn lesson-scoped responses, rate limiting, and usage analytics.*
   *Closeout: completed on 2026-04-10. Built OpenRouter provider adapter, lesson context packaging, API route with auth/rate limiting, and student UI component (floating button, expandable interface, one-shot constraint). All verification gates pass (lint 0 errors/2 warnings, build passes cleanly). Ready for archive.*
 
-- [ ] **Track: AI Feedback for Spreadsheet Submissions**
-  *Link: [./tracks/spreadsheet_ai_feedback_20260410/](./tracks/spreadsheet_ai_feedback_20260410/)*
+- [x] **Track: AI Feedback for Spreadsheet Submissions**
+  *Link: [./archive/spreadsheet_ai_feedback_20260410/](./archive/spreadsheet_ai_feedback_20260410/)*
   *Scope: extend spreadsheet submissions with AI-assisted feedback (preliminary score, strengths, improvements, next steps), revision loop with attempt history, and teacher visibility into all attempts and AI artifacts.*
-  *Status: Phases 1-5 complete (Pass 28). Phase 6 (verification and documentation) next.*
+  *Status: All phases complete (Pass 29). Verification gates: lint 0 errors/2 pre-existing warnings, test 1650/1662 pass (12 pre-existing failures), build clean.*
 
 - [ ] **Track: Study Hub Foundation and Flashcards**
   *Link: [./tracks/study_hub_foundation_flashcards_20260410/](./tracks/study_hub_foundation_flashcards_20260410/)*

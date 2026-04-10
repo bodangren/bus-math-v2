@@ -80,20 +80,46 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Post AI Feedback Phases 2-5, Pass 28)
+## Current High-Level Priorities (2026-04-11 — Post AI Feedback Full Track, Pass 29)
 
-Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is nearing completion. Only Phase 6 (verification) of the AI Feedback track remains.
+Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is **complete**.
 
 1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE.
 2. **Units 2-4 Workbook Rollout** — COMPLETE.
 3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
 4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
-5. **AI Feedback for Spreadsheet Submissions** — IN PROGRESS. Phases 1-5 complete. Phase 6 (verification, integration tests, documentation) remains. All verification gates pass (lint 0/2, test 1650/1662 with 12 pre-existing failures, build clean).
-6. **Study Hub Foundation and Flashcards** — port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
+5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. All phases complete. Archived. Verification gates: lint 0 errors/2 pre-existing warnings, test 1650/1662 pass (12 pre-existing failures), build clean.
+6. **Study Hub Foundation and Flashcards** — NEXT TRACK. port v1 SRS/flashcard system with bilingual glossary, Convex study schema, FSRS engine, flashcard mode, and practice hub home.
 7. **Study Modes and Progress Dashboard** — complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.
 8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — AI Feedback Full Track, Pass 29)
+
+Autonomous code review covering AI Feedback for Spreadsheet Submissions Phase 6 (Verification and Documentation) and full track closeout.
+
+**Fixed during review: 0 issues**
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1650/1662 tests pass; 5 test files fail (12 tests total — all pre-existing: 2 security RLS Supabase, 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock, 2 SubmissionDetailModal "view raw response" mismatch)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Phase 6 (Verification and Documentation)**: All verification gates run and recorded. Track metadata updated, plan.md marked complete, tracks.md updated, and current_directive.md priorities refreshed. Track ready for archive.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 28)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+
+**Updated during review:**
+- tech-debt.md: No changes, all items reviewed
+- current_directive.md: Updated priorities and added Pass 29 review summary
+- tracks.md: Marked AI Feedback track complete, link updated to archive/
+- conductor/tracks/spreadsheet_ai_feedback_20260410/plan.md: Phase 6 marked complete
+
+**Phase status**: AI Feedback for Spreadsheet Submissions FULLY COMPLETE. Track archived. Milestone 9 (Workbook System and AI Features) complete. Next track: Study Hub Foundation and Flashcards.
 
 ## Code Review Summary (2026-04-11 — AI Feedback Phases 2-5, Pass 28)
 
