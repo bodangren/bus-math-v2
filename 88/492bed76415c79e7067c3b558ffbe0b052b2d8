@@ -1,0 +1,1 @@
+Phase 5 tasks completed: updated StudyHubHome to activate matching, speed round, and review mode cards, added export page with JSON and CSV export, added getExportData query to convex/study.ts, useExportData hook, ExportPage component, and /student/study/export route, lint passes, build passes
