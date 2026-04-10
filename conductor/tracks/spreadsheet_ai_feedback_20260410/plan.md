@@ -46,8 +46,8 @@
 - [x] Add teacher score override capability (input for teacher-assessed score)
 - [x] Show score changes across attempts
 - [x] Add clear "AI Preliminary" vs "Teacher Reviewed" labeling
-- [ ] Update gradebook drill-down to reflect multi-attempt scores
-- [ ] Verify all teacher visibility tests pass
+- [x] Update gradebook drill-down to reflect multi-attempt scores
+- [x] Verify all teacher visibility tests pass
 
 ## Phase 6: Verification and Documentation
 - [ ] Write integration tests for the full flow: submit → AI feedback → revise → resubmit → teacher review
