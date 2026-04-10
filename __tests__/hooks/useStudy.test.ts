@@ -30,7 +30,7 @@ const {
   useRecentSessions,
   useProcessReview,
   useRecordSession,
-  useGlossaryTermDisplay,
+  getGlossaryTermDisplay,
 } = await import('../../hooks/useStudy');
 
 describe('useStudy hooks', () => {
@@ -133,7 +133,7 @@ describe('useStudy hooks', () => {
     });
   });
 
-  describe('useGlossaryTermDisplay', () => {
+  describe('getGlossaryTermDisplay', () => {
     const mockTerm = {
       slug: 'asset',
       term_en: 'Asset',
@@ -143,32 +143,32 @@ describe('useStudy hooks', () => {
       unitNumber: 1,
       topic: 'accounting-basics',
       synonyms: [],
-      related: [],
+      relatedTerms: [],
     };
 
     it('returns en_to_en mode', () => {
-      const result = useGlossaryTermDisplay(mockTerm, 'en_to_en');
+      const result = getGlossaryTermDisplay(mockTerm, 'en_to_en');
       expect(result).toEqual({ prompt: 'Asset', answer: 'An economic resource owned by a business' });
     });
 
     it('returns en_to_zh mode', () => {
-      const result = useGlossaryTermDisplay(mockTerm, 'en_to_zh');
+      const result = getGlossaryTermDisplay(mockTerm, 'en_to_zh');
       expect(result).toEqual({ prompt: 'Asset', answer: '资产' });
     });
 
     it('returns zh_to_en mode', () => {
-      const result = useGlossaryTermDisplay(mockTerm, 'zh_to_en');
+      const result = getGlossaryTermDisplay(mockTerm, 'zh_to_en');
       expect(result).toEqual({ prompt: '资产', answer: 'Asset' });
     });
 
     it('returns zh_to_zh mode', () => {
-      const result = useGlossaryTermDisplay(mockTerm, 'zh_to_zh');
+      const result = getGlossaryTermDisplay(mockTerm, 'zh_to_zh');
       expect(result).toEqual({ prompt: '资产', answer: '企业拥有的经济资源' });
     });
 
     it('returns default en_to_en for unknown mode', () => {
       // @ts-expect-error testing invalid mode
-      const result = useGlossaryTermDisplay(mockTerm, 'invalid_mode');
+      const result = getGlossaryTermDisplay(mockTerm, 'invalid_mode');
       expect(result).toEqual({ prompt: 'Asset', answer: 'An economic resource owned by a business' });
     });
   });

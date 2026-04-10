@@ -5,6 +5,9 @@ import {
   ChevronRight,
   Calendar,
   TrendingDown,
+  BookOpen,
+  Gamepad2,
+  Zap,
 } from "lucide-react";
 import {
   Card,
@@ -15,12 +18,13 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import {
   useStudyPreferences,
   useTermMastery,
   useDueTerms,
   useRecentSessions,
-  useGlossaryTermDisplay,
+  getGlossaryTermDisplay,
 } from "@/hooks/useStudy";
 import { getAllGlossaryUnits, getGlossaryTermBySlug } from "@/lib/study/glossary";
 import type { GlossaryTerm } from "@/lib/study/glossary";
@@ -34,7 +38,7 @@ function WeakTopicItem({
   mastery: number;
   languageMode: ReturnType<typeof useStudyPreferences>["languageMode"];
 }) {
-  const display = useGlossaryTermDisplay(term, languageMode);
+  const display = getGlossaryTermDisplay(term, languageMode);
   return (
     <div
       key={term.slug}
@@ -130,8 +134,45 @@ export function StudyHubHome() {
                 <CardTitle className="text-xl">Study Modes</CardTitle>
                 <CardDescription>Choose how you want to study today</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div>Study modes coming soon!</div>
+              <CardContent className="grid gap-4 md:grid-cols-2">
+                <Link href="/student/study/flashcards" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">Flashcards</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      Review terms with spaced repetition
+                    </CardDescription>
+                  </Card>
+                </Link>
+                <Card className="border-border/60 bg-muted/30 opacity-70">
+                  <CardHeader className="pb-2">
+                    <Gamepad2 className="h-6 w-6 text-muted-foreground" />
+                    <CardTitle className="text-lg">Matching Game</CardTitle>
+                  </CardHeader>
+                  <CardDescription>
+                    Coming soon
+                  </CardDescription>
+                </Card>
+                <Card className="border-border/60 bg-muted/30 opacity-70">
+                  <CardHeader className="pb-2">
+                    <Zap className="h-6 w-6 text-muted-foreground" />
+                    <CardTitle className="text-lg">Speed Round</CardTitle>
+                  </CardHeader>
+                  <CardDescription>
+                    Coming soon
+                  </CardDescription>
+                </Card>
+                <Card className="border-border/60 bg-muted/30 opacity-70">
+                  <CardHeader className="pb-2">
+                    <BookOpen className="h-6 w-6 text-muted-foreground" />
+                    <CardTitle className="text-lg">Practice Tests</CardTitle>
+                  </CardHeader>
+                  <CardDescription>
+                    Coming soon
+                  </CardDescription>
+                </Card>
               </CardContent>
             </Card>
           </section>
