@@ -62,3 +62,39 @@
 | 2026-04-10 | code_review_pass25 | workbooks.client.ts lessonHasWorkbooks uses hardcoded Set — becomes stale when new workbooks are added (Units 2-4 rollout) | Medium | Open | Replace with dynamic check (e.g. manifest or API) before Units 2-4 rollout, or update Set in each rollout track. |
 | 2026-04-10 | code_review_pass25 | No test coverage for workbooks.ts or workbooks.client.ts helpers | Low | Open | Add tests for getWorkbookPath, lessonHasWorkbooks, workbookExists before Units 2-4 rollout. |
 | 2026-04-10 | code_review_pass25 | lessonHasWorkbooks checks if EITHER student OR teacher exists, but UI renders BOTH download links — student link 404s if only teacher workbook exists | Low | Open | Split into lessonHasStudentWorkbook/lessonHasTeacherWorkbook, or gate each link independently. |
+---
+# Outstanding bugs
+Downloaded Convex backend binary
+✔ This deployment is using an older version of the Convex backend. Upgrade now? Yes
+✔ Transfer data from existing deployment? transfer data
+Downloading snapshot export to /Users/daniel.bodanske/Desktop/bus-math-v2/.convex/local/default/export.zip
+✔ Successfully upgraded to a new backend version
+A minor update is available for Convex (1.32.0 → 1.35.1)
+Changelog: https://github.com/get-convex/convex-js/blob/main/CHANGELOG.md#changelog
+✖ TypeScript typecheck via `tsc` failed.
+To ignore failing typecheck, use `--typecheck=disable`.
+convex/teacher.ts:444:12 - error TS2304: Cannot find name 'assembleStudentCompetencyDetail'.
+
+444     return assembleStudentCompetencyDetail(
+               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+convex/teacher.ts:489:14 - error TS2554: Expected 9 arguments, but got 8.
+
+489       return assembleGradebookRows([], rawLessons, [], [], [], [], [], []);
+                 ~~~~~~~~~~~~~~~~~~~~~
+
+  lib/teacher/gradebook.ts:285:3
+    285   rawActivitySubmissions: RawActivitySubmission[],
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    An argument for 'rawActivitySubmissions' was not provided.
+
+convex/teacher.ts:563:80 - error TS2339: Property 'lessonId' does not exist on type '{ _id: Id<"activities">; _creationTime: number; description?: string | undefined; standardId?: Id<"competency_standards"> | undefined; gradingConfig?: any; createdAt: number; updatedAt: number; displayName: string; componentKey: string; props: any; }'.
+
+563       .filter((activity) => rawLessons.some((lesson) => lesson.id === activity.lessonId))
+                                                                                   ~~~~~~~~
+convex/teacher.ts:566:28 - error TS2339: Property 'lessonId' does not exist on type '{ _id: Id<"activities">; _creationTime: number; description?: string | undefined; standardId?: Id<"competency_standards"> | undefined; gradingConfig?: any; createdAt: number; updatedAt: number; displayName: string; componentKey: string; props: any; }'.
+
+566         lessonId: activity.lessonId,
+                               ~~~~~~~~
+
+Found 4 errors in the same file, starting at: convex/teacher.ts:444
+
