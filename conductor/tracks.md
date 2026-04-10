@@ -141,9 +141,9 @@ Strictly serial. Complete and archive each track before starting the next.
    *Link: [./archive/workbook_infrastructure_unit1_pilot_20260410/](./archive/workbook_infrastructure_unit1_pilot_20260410/)*
    *Scope: build workbook download/serving infrastructure with role-based access, create the complete Unit 1 workbook set (student templates + teacher completed), and establish the canonical how-to guide and 40-point grading rubric patterns. All 4 phases complete. Verification gates: lint 0 errors/2 warnings, test 1618/1630 pass (12 pre-existing failures), build passes cleanly.*
 
-- [ ] **Track: Units 2-4 Workbook Rollout**
+- [x] **Track: Units 2-4 Workbook Rollout**
   *Link: [./tracks/units_2_4_workbook_rollout_20260410/](./tracks/units_2_4_workbook_rollout_20260410/)*
-  *Scope: apply the canonical workbook pattern to Units 2 (Flow of Transactions), 3 (Statements in Balance), and 4 (Payroll in Motion) with student templates, teacher completed versions, how-to guides, and 40-point rubrics.*
+  *Scope: apply the canonical workbook pattern to Units 2 (Flow of Transactions), 3 (Statements in Balance), and 4 (Payroll in Motion) with student templates, teacher completed versions, how-to guides, and 40-point rubrics. All 24 workbooks created, known workbooks set updated, lint/test/build gates passed.*
 
 - [ ] **Track: Units 5-8 Workbook Rollout and Capstone Assets**
   *Link: [./tracks/units_5_8_workbook_rollout_capstone_20260410/](./tracks/units_5_8_workbook_rollout_capstone_20260410/)*
