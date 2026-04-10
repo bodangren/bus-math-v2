@@ -49,7 +49,7 @@
 - `setTimeout` in `addNotification` must store the timeout ID and clear it in a `useEffect` cleanup; copy the ref to a local variable in the effect body to satisfy the `react-hooks/exhaustive-deps` lint rule.
 - When building cross-component utility helpers (like cellBgClass for coloring gradebook/heatmap cells), make sure all consuming components import from the correct source file, and verify exports match imports with a full build.
 - When creating shared helpers that use Node.js core modules (fs, path), split into server and client versions. Client-side helpers must avoid Node.js core module usage. Use a separate file (e.g., `workbooks.client.ts`) with static data or pure functions for client consumption.
-
 - When mocking 'fs' in Vitest for Node.js ESM code that uses import * as fs from 'fs', use importOriginal and spread the actual fs module, then override the functions you need to mock.
 - When using 'fs' in Next.js route handlers, use import * as fs from 'fs' instead of import fs from 'fs' for better compatibility with Vitest mocking.
 - Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
+- When building study features, start with static glossary data and Convex schema foundation before building UI surfaces.
