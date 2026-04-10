@@ -11,16 +11,16 @@
 - [x] Verify all attempt history tests pass
 
 ## Phase 2: AI Feedback Pipeline
-- [ ] Define the AI feedback prompt template: workbook analysis against rubric, cell-level error identification
-- [ ] Write failing tests for the AI feedback generation function (input: submitted data + expected template; output: score, strengths, improvements, next steps)
-- [ ] Implement the AI feedback pipeline function:
+- [x] Define the AI feedback prompt template: workbook analysis against rubric, cell-level error identification
+- [x] Write failing tests for the AI feedback generation function (input: submitted data + expected template; output: score, strengths, improvements, next steps)
+- [x] Implement the AI feedback pipeline function:
   - Receive submitted spreadsheet data and the expected workbook template
   - Compare cell values, formulas, and formatting against expectations
   - Call AI provider with structured prompt and comparison data
   - Parse AI response into the four feedback artifacts
   - Align preliminary score with the 40-point rubric categories
-- [ ] Handle AI provider failures gracefully (fallback to deterministic-only feedback)
-- [ ] Verify all AI feedback pipeline tests pass
+- [x] Handle AI provider failures gracefully (fallback to deterministic-only feedback)
+- [x] Verify all AI feedback pipeline tests pass
 
 ## Phase 3: Submit Route Integration
 - [ ] Extend the spreadsheet submit route to trigger AI feedback after deterministic validation
