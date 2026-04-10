@@ -1,13 +1,13 @@
 # Implementation Plan: Workbook Infrastructure and Unit 1 Pilot
 
 ## Phase 1: Workbook System Design and Infrastructure
-- [ ] Audit Unit 1 authored lesson content to identify every lesson that requires an Excel workbook
-- [ ] Define the canonical workbook naming convention, directory structure, and file format requirements
-- [ ] Define the how-to guide template format for teacher lesson plans
-- [ ] Define the 40-point grading rubric template format and scoring categories
-- [ ] Write failing tests for workbook download routing (role-gated: student gets template, teacher gets completed)
-- [ ] Implement workbook download routes or Convex-backed file serving with role-based access
-- [ ] Verify download infrastructure works for both authenticated student and teacher roles
+- [x] Audit Unit 1 authored lesson content to identify every lesson that requires an Excel workbook
+- [x] Define the canonical workbook naming convention, directory structure, and file format requirements
+- [x] Define the how-to guide template format for teacher lesson plans
+- [x] Define the 40-point grading rubric template format and scoring categories
+- [x] Write failing tests for workbook download routing (role-gated: student gets template, teacher gets completed)
+- [x] Implement workbook download routes or Convex-backed file serving with role-based access
+- [x] Verify download infrastructure works for both authenticated student and teacher roles
 
 ## Phase 2: Unit 1 Workbook File Creation
 - [ ] Create student template `.xlsx` workbooks for each identified Unit 1 lesson
