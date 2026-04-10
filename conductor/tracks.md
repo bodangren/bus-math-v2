@@ -137,9 +137,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.*
   *Closeout: completed on 2026-04-10 after completing all 4 phases. Phase 1 audited the completed Milestone 8 contracts and identified the build-blocker (missing cellBgClass import). Phase 2 fixed the build error (imported cellBgClass from gradebook instead of competency-heatmap). Phase 3 verified lint/test/build gates (lint 0 errors/2 warnings, test 1622/1634 passed, build passed cleanly). Phase 4 updated lessons-learned.md with durable guidance and documented verification gates.*
 
-- [ ] **Track: Workbook Infrastructure and Unit 1 Pilot**
-  *Link: [./tracks/workbook_infrastructure_unit1_pilot_20260410/](./tracks/workbook_infrastructure_unit1_pilot_20260410/)*
-  *Scope: build workbook download/serving infrastructure with role-based access, create the complete Unit 1 workbook set (student templates + teacher completed), and establish the canonical how-to guide and 40-point grading rubric patterns.*
+- [x] **Track: Workbook Infrastructure and Unit 1 Pilot**
+   *Link: [./archive/workbook_infrastructure_unit1_pilot_20260410/](./archive/workbook_infrastructure_unit1_pilot_20260410/)*
+   *Scope: build workbook download/serving infrastructure with role-based access, create the complete Unit 1 workbook set (student templates + teacher completed), and establish the canonical how-to guide and 40-point grading rubric patterns. All 4 phases complete. Verification gates: lint 0 errors/2 warnings, test 1618/1630 pass (12 pre-existing failures), build passes cleanly.*
 
 - [ ] **Track: Units 2-4 Workbook Rollout**
   *Link: [./tracks/units_2_4_workbook_rollout_20260410/](./tracks/units_2_4_workbook_rollout_20260410/)*
