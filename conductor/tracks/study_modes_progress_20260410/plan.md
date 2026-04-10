@@ -1,12 +1,12 @@
 # Implementation Plan: Study Modes and Progress Dashboard
 
 ## Phase 1: Matching Game
-- [ ] Write failing tests for MatchingGame component (render pairs, select term, select definition, check match, wrong-flash feedback, timer, summary)
-- [ ] Implement MatchingGame component with 6-pair grid, match animation, and timer
-- [ ] Create `/student/study/matching` route with student auth guard
-- [ ] Implement session recording to Convex on game completion
-- [ ] Implement unit filtering via query params
-- [ ] Verify all matching game tests pass
+- [x] Write failing tests for MatchingGame component (render pairs, select term, select definition, check match, wrong-flash feedback, timer, summary)
+- [x] Implement MatchingGame component with 6-pair grid, match animation, and timer
+- [x] Create `/student/study/matching` route with student auth guard
+- [x] Implement session recording to Convex on game completion
+- [x] Implement unit filtering via query params
+- [x] Verify all matching game tests pass
 
 ## Phase 2: Speed Round
 - [ ] Write failing tests for SpeedRoundGame component (countdown timer, MCQ display, answer submission, lives tracking, streak tracking, game-over summary)
