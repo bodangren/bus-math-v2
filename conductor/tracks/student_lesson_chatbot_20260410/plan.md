@@ -29,11 +29,11 @@
 - [x] Verify all UI component tests pass
 
 ## Phase 4: Integration and Verification
-- [ ] Write integration tests for the full chatbot flow (button → question → response → reset)
-- [ ] Verify lesson context scoping: responses reference lesson content, not general knowledge
-- [ ] Verify rate limiting works correctly under simulated load
-- [ ] Verify unauthenticated and non-student users cannot access the chatbot
-- [ ] Test on both desktop and mobile viewports
-- [ ] Run `npm run lint`, `npm test`, and `npm run build`
-- [ ] Update Conductor docs with the student AI infrastructure and chatbot conventions
-- [ ] Prepare the track for archive with verification evidence
+- [x] Write integration tests for the full chatbot flow (button → question → response → reset)
+- [x] Verify lesson context scoping: responses reference lesson content, not general knowledge
+- [x] Verify rate limiting works correctly under simulated load
+- [x] Verify unauthenticated and non-student users cannot access the chatbot
+- [x] Test on both desktop and mobile viewports
+- [x] Run `npm run lint`, `npm test`, and `npm run build`
+- [x] Update Conductor docs with the student AI infrastructure and chatbot conventions
+- [x] Prepare the track for archive with verification evidence
