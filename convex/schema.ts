@@ -324,4 +324,77 @@ export default defineSchema({
     .index("by_lesson", ["lessonId"])
     .index("by_idempotency_key", ["idempotencyKey"])
     .index("by_student_and_activity", ["studentId", "activityId"]),
+
+  study_preferences: defineTable({
+    userId: v.id("profiles"),
+    languageMode: v.union(
+      v.literal("en_to_en"),
+      v.literal("en_to_zh"),
+      v.literal("zh_to_en"),
+      v.literal("zh_to_zh")
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
+
+  term_mastery: defineTable({
+    userId: v.id("profiles"),
+    termSlug: v.string(),
+    masteryScore: v.number(), // 0-1
+    proficiencyBand: v.union(
+      v.literal("new"),
+      v.literal("learning"),
+      v.literal("familiar"),
+      v.literal("mastered")
+    ),
+    seenCount: v.number(),
+    correctCount: v.number(),
+    incorrectCount: v.number(),
+    lastReviewedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_and_term", ["userId", "termSlug"]),
+
+  due_reviews: defineTable({
+    userId: v.id("profiles"),
+    termSlug: v.string(),
+    scheduledFor: v.number(), // Unix timestamp (ms)
+    fsrsState: v.any(), // JSONB: serialized FSRS scheduler state
+    isDue: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_and_term", ["userId", "termSlug"])
+    .index("by_user_and_due", ["userId", "isDue"]),
+
+  study_sessions: defineTable({
+    userId: v.id("profiles"),
+    activityType: v.union(
+      v.literal("flashcards"),
+      v.literal("matching"),
+      v.literal("speed_round"),
+      v.literal("srs_review"),
+      v.literal("practice_test")
+    ),
+    curriculumScope: v.object({
+      type: v.union(v.literal("all_units"), v.literal("unit")),
+      unitNumber: v.optional(v.number()),
+    }),
+    results: v.object({
+      itemsSeen: v.number(),
+      itemsCorrect: v.number(),
+      itemsIncorrect: v.number(),
+      durationSeconds: v.number(),
+    }),
+    startedAt: v.number(),
+    endedAt: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_and_activity", ["userId", "activityType"])
+    .index("by_user_and_started", ["userId", "startedAt"]),
 });

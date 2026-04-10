@@ -1,13 +1,13 @@
 # Implementation Plan: Study Hub Foundation and Flashcards
 
 ## Phase 1: Glossary Data and Convex Schema
-- [ ] Port v1 glossary data to v2 as a static data module with lookup helpers
-- [ ] Write failing tests for glossary lookup helpers (by unit, by slug, by topic, filtered subsets)
-- [ ] Implement glossary helpers and verify tests pass
-- [ ] Design Convex study schema tables: studyPreferences, termMastery, dueReviews, studySessions
-- [ ] Write failing tests for Convex queries and mutations (getStudyPreferences, getTermMasteryByUnit, getDueTerms, updatePreferences, processReview, recordSession)
-- [ ] Implement Convex tables, queries, and mutations
-- [ ] Verify all Convex schema tests pass
+- [x] Port v1 glossary data to v2 as a static data module with lookup helpers
+- [x] Write failing tests for glossary lookup helpers (by unit, by slug, by topic, filtered subsets)
+- [x] Implement glossary helpers and verify tests pass
+- [x] Design Convex study schema tables: studyPreferences, termMastery, dueReviews, studySessions
+- [x] Write failing tests for Convex queries and mutations (getStudyPreferences, getTermMasteryByUnit, getDueTerms, updatePreferences, processReview, recordSession)
+- [x] Implement Convex tables, queries, and mutations
+- [x] Verify all Convex schema tests pass
 
 ## Phase 2: FSRS Engine Integration
 - [ ] Request approval for `ts-fsrs` dependency addition
