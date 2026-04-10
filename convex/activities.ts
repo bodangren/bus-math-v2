@@ -54,7 +54,6 @@ export const saveSpreadsheetDraft = internalMutation({
         spreadsheetData: args.draftData,
         draftData: args.draftData,
         isCompleted: false,
-        attempts: 0,
         createdAt: now,
         updatedAt: now,
       });
@@ -77,6 +76,14 @@ export const getSpreadsheetResponse = internalQuery({
       )
       .unique();
 
+    // Get attempt count from the attempts table
+    const attempts = await ctx.db
+      .query("spreadsheet_submission_attempts")
+      .withIndex("by_student_and_activity", (q) =>
+        q.eq("studentId", args.studentId).eq("activityId", args.activityId)
+      )
+      .collect();
+
     if (!response) {
       return null;
     }
@@ -86,7 +93,8 @@ export const getSpreadsheetResponse = internalQuery({
       spreadsheetData: response.spreadsheetData,
       draftData: response.draftData,
       isCompleted: response.isCompleted,
-      attempts: response.attempts,
+      attempts: attempts.length,
+      maxAttempts: response.maxAttempts,
       lastValidationResult: response.lastValidationResult,
       submittedAt: response.submittedAt,
       updatedAt: response.updatedAt,
@@ -124,6 +132,27 @@ export const submitSpreadsheet = internalMutation({
   handler: async (ctx, args) => {
     const now = Date.now();
 
+    // Get existing attempts to compute attempt number
+    const existingAttempts = await ctx.db
+      .query("spreadsheet_submission_attempts")
+      .withIndex("by_student_and_activity", (q) =>
+        q.eq("studentId", args.userId).eq("activityId", args.activityId)
+      )
+      .collect();
+    const attemptNumber = existingAttempts.length + 1;
+
+    // Create the attempt record
+    const attemptId = await ctx.db.insert("spreadsheet_submission_attempts", {
+      studentId: args.userId,
+      activityId: args.activityId,
+      attemptNumber,
+      spreadsheetData: args.spreadsheetData,
+      validationResult: args.validationResult,
+      submittedAt: now,
+      createdAt: now,
+    });
+
+    // Update or create the student_spreadsheet_responses record
     const existingResponse = await ctx.db
       .query("student_spreadsheet_responses")
       .withIndex("by_student_and_activity", (q) =>
@@ -135,7 +164,6 @@ export const submitSpreadsheet = internalMutation({
       await ctx.db.patch(existingResponse._id, {
         spreadsheetData: args.spreadsheetData,
         isCompleted: args.isCompleted,
-        attempts: existingResponse.attempts + 1,
         lastValidationResult: args.validationResult,
         submittedAt: args.isCompleted ? now : existingResponse.submittedAt,
         updatedAt: now,
@@ -146,7 +174,6 @@ export const submitSpreadsheet = internalMutation({
         activityId: args.activityId,
         spreadsheetData: args.spreadsheetData,
         isCompleted: args.isCompleted,
-        attempts: 1,
         lastValidationResult: args.validationResult,
         submittedAt: args.isCompleted ? now : undefined,
         createdAt: now,
@@ -154,7 +181,7 @@ export const submitSpreadsheet = internalMutation({
       });
     }
 
-    return { success: true };
+    return { success: true, attemptId, attemptNumber };
   },
 });
 
@@ -274,6 +301,92 @@ export const getActivityById = internalQuery({
       createdAt: activity.createdAt,
       updatedAt: activity.updatedAt,
     };
+  },
+});
+
+export const getSpreadsheetAttempts = internalQuery({
+  args: {
+    studentId: v.id("profiles"),
+    activityId: v.id("activities"),
+  },
+  handler: async (ctx, args) => {
+    const attempts = await ctx.db
+      .query("spreadsheet_submission_attempts")
+      .withIndex("by_student_and_activity", (q) =>
+        q.eq("studentId", args.studentId).eq("activityId", args.activityId)
+      )
+      .order("asc")
+      .collect();
+
+    return attempts;
+  },
+});
+
+export const createSpreadsheetAttempt = internalMutation({
+  args: {
+    studentId: v.id("profiles"),
+    activityId: v.id("activities"),
+    attemptNumber: v.number(),
+    spreadsheetData: v.any(),
+    validationResult: v.any(),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+
+    const attemptId = await ctx.db.insert("spreadsheet_submission_attempts", {
+      studentId: args.studentId,
+      activityId: args.activityId,
+      attemptNumber: args.attemptNumber,
+      spreadsheetData: args.spreadsheetData,
+      validationResult: args.validationResult,
+      submittedAt: now,
+      createdAt: now,
+    });
+
+    return { attemptId };
+  },
+});
+
+export const updateAttemptWithAiFeedback = internalMutation({
+  args: {
+    attemptId: v.id("spreadsheet_submission_attempts"),
+    aiFeedback: v.object({
+      preliminaryScore: v.number(),
+      strengths: v.array(v.string()),
+      improvements: v.array(v.string()),
+      nextSteps: v.array(v.string()),
+      rawAiResponse: v.string(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+
+    await ctx.db.patch(args.attemptId, {
+      aiFeedback: args.aiFeedback,
+    });
+
+    return { success: true };
+  },
+});
+
+export const updateAttemptWithTeacherOverride = internalMutation({
+  args: {
+    attemptId: v.id("spreadsheet_submission_attempts"),
+    teacherScoreOverride: v.optional(v.number()),
+    teacherFeedbackOverride: v.optional(v.string()),
+    gradedBy: v.id("profiles"),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+
+    await ctx.db.patch(args.attemptId, {
+      teacherScoreOverride: args.teacherScoreOverride,
+      teacherFeedbackOverride: args.teacherFeedbackOverride,
+      gradedBy: args.gradedBy,
+      gradedAt: now,
+    });
+
+    return { success: true };
   },
 });
 

@@ -272,7 +272,7 @@ export default defineSchema({
     activityId: v.id("activities"),
     spreadsheetData: v.any(), // JSONB
     isCompleted: v.boolean(),
-    attempts: v.number(),
+    maxAttempts: v.optional(v.number()),
     lastValidationResult: v.optional(v.any()), // JSONB
     submittedAt: v.optional(v.number()),
     draftData: v.optional(v.any()), // JSONB
@@ -282,6 +282,31 @@ export default defineSchema({
     .index("by_student", ["studentId"])
     .index("by_activity", ["activityId"])
     .index("by_student_and_activity", ["studentId", "activityId"]),
+
+  spreadsheet_submission_attempts: defineTable({
+    studentId: v.id("profiles"),
+    activityId: v.id("activities"),
+    attemptNumber: v.number(),
+    spreadsheetData: v.any(), // JSONB
+    validationResult: v.any(), // JSONB
+    aiFeedback: v.optional(v.object({
+      preliminaryScore: v.number(),
+      strengths: v.array(v.string()),
+      improvements: v.array(v.string()),
+      nextSteps: v.array(v.string()),
+      rawAiResponse: v.string(),
+    })),
+    teacherScoreOverride: v.optional(v.number()),
+    teacherFeedbackOverride: v.optional(v.string()),
+    gradedBy: v.optional(v.id("profiles")),
+    gradedAt: v.optional(v.number()),
+    submittedAt: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_student", ["studentId"])
+    .index("by_activity", ["activityId"])
+    .index("by_student_and_activity", ["studentId", "activityId"])
+    .index("by_student_activity_attempt", ["studentId", "activityId", "attemptNumber"]),
 
   activity_completions: defineTable({
     studentId: v.id("profiles"),
