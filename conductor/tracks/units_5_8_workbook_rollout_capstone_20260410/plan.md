@@ -34,13 +34,13 @@
 - [x] Check all Unit 7-8 workbooks into the repository
 
 ## Phase 5: Capstone Asset Package
-- [ ] Create `capstone_investor_ready_workbook.xlsx` student template
-- [ ] Create `capstone_investor_ready_workbook_teacher.xlsx` completed version
+- [x] Create `capstone_investor_ready_workbook.xlsx` student template
+- [x] Create `capstone_investor_ready_workbook_teacher.xlsx` completed version
 - [ ] Create `capstone_business_plan_guide.pdf`
 - [ ] Create `capstone_pitch_rubric.pdf`
 - [ ] Create `capstone_model_tour_checklist.pdf`
 - [ ] Add 40-point grading rubrics for capstone milestones in teacher and student sections
-- [ ] Check all capstone assets into the repository
+- [x] Check all capstone assets into the repository
 
 ## Phase 6: Capstone Routes and Curriculum Publishing
 - [ ] Build `/capstone/guidelines` route serving business plan guide and related resources
