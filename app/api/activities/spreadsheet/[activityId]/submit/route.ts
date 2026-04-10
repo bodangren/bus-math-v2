@@ -8,6 +8,7 @@ import {
   type TargetCell,
 } from '@/lib/activities/spreadsheet-validation';
 import { buildSpreadsheetEvaluatorSubmission } from '@/lib/activities/spreadsheet-practice';
+import { generateAiFeedback } from '@/lib/ai/spreadsheet-feedback';
 
 const targetCellSchema = z.object({
   cell: z.string().regex(/^[A-Z]+[0-9]+$/),
@@ -106,6 +107,11 @@ export async function GET(
       );
     }
 
+    const attempts = await fetchInternalQuery(internal.activities.getSpreadsheetAttempts, {
+      studentId: targetStudentId as never,
+      activityId: activityId as never,
+    });
+
     return NextResponse.json({
       readOnly: true,
       activityId,
@@ -113,7 +119,9 @@ export async function GET(
       spreadsheetData: response.spreadsheetData,
       draftData: response.draftData,
       isCompleted: response.isCompleted,
-      attempts: response.attempts,
+      attempts: attempts.length,
+      attemptHistory: attempts,
+      maxAttempts: response.maxAttempts,
       lastValidationResult: response.lastValidationResult,
       submittedAt: response.submittedAt,
       updatedAt: response.updatedAt,
@@ -214,11 +222,27 @@ export async function POST(
       payload.spreadsheetData,
       parsedEvaluatorProps.data.targetCells as TargetCell[]
     );
-    const existingResponse = await fetchInternalQuery(internal.activities.getSpreadsheetResponse, {
-      studentId: userId as never,
+
+    const { attemptId, attemptNumber } = await fetchInternalMutation(internal.activities.submitSpreadsheet, {
+      userId: userId as never,
       activityId: activityId as never,
+      spreadsheetData: payload.spreadsheetData,
+      isCompleted: validationResult.isComplete,
+      validationResult,
     });
-    const attemptNumber = (existingResponse?.attempts ?? 0) + 1;
+
+    const aiFeedback = await generateAiFeedback({
+      spreadsheetData: payload.spreadsheetData,
+      validationResult,
+      targetCells: parsedEvaluatorProps.data.targetCells as TargetCell[],
+      activityName: activity.displayName || 'Business Math Spreadsheet Activity',
+    });
+
+    await fetchInternalMutation(internal.activities.updateAttemptWithAiFeedback, {
+      attemptId: attemptId as never,
+      aiFeedback,
+    });
+
     const submissionData = buildSpreadsheetEvaluatorSubmission({
       activityId,
       templateId: parsedEvaluatorProps.data.templateId,
@@ -258,6 +282,8 @@ export async function POST(
       isComplete: validationResult.isComplete,
       feedback: validationResult.feedback,
       attemptNumber,
+      attemptId,
+      aiFeedback,
       masteryUpdate,
     });
   } catch (error) {

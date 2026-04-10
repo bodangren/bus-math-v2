@@ -23,12 +23,12 @@
 - [x] Verify all AI feedback pipeline tests pass
 
 ## Phase 3: Submit Route Integration
-- [ ] Extend the spreadsheet submit route to trigger AI feedback after deterministic validation
-- [ ] Store AI feedback artifacts alongside the submission attempt record
-- [ ] Write failing tests for the updated submit flow (submission → AI feedback → attempt stored)
-- [ ] Implement the integration: submit → validate → AI analyze → store attempt + feedback
-- [ ] Verify the submit route tests pass
-- [ ] Run `npm run lint` and targeted spreadsheet tests
+- [x] Extend the spreadsheet submit route to trigger AI feedback after deterministic validation
+- [x] Store AI feedback artifacts alongside the submission attempt record
+- [x] Write failing tests for the updated submit flow (submission → AI feedback → attempt stored)
+- [x] Implement the integration: submit → validate → AI analyze → store attempt + feedback
+- [x] Verify the submit route tests pass
+- [x] Run `npm run lint` and targeted spreadsheet tests
 
 ## Phase 4: Student Revision UX
 - [ ] Write failing tests for the revise/resubmit UI flow
