@@ -369,6 +369,89 @@ export const getTeacherCompetencyHeatmapData = internalQuery({
   },
 });
 
+export const getTeacherStudentCompetencyDetail = internalQuery({
+  args: {
+    userId: v.id("profiles"),
+    studentId: v.id("profiles"),
+  },
+  handler: async (ctx, args) => {
+    const teacher = await getAuthorizedTeacher(ctx, args.userId);
+    if (!teacher) {
+      return null;
+    }
+
+    const student = await ctx.db.get(args.studentId);
+    if (
+      !student ||
+      student.role !== "student" ||
+      student.organizationId !== teacher.organizationId
+    ) {
+      return null;
+    }
+
+    const rawStandards = (await ctx.db.query("competency_standards").collect())
+      .map((standard) => ({
+        id: standard._id,
+        code: standard.code,
+        description: standard.description,
+        studentFriendlyDescription: standard.studentFriendlyDescription ?? null,
+        category: standard.category ?? null,
+        isActive: standard.isActive,
+      }));
+
+    const competencyRows = (
+      await ctx.db
+        .query("student_competency")
+        .withIndex("by_student", (q) => q.eq("studentId", args.studentId))
+        .collect()
+    )
+      .map((row) => ({
+        studentId: row.studentId,
+        standardId: row.standardId,
+        masteryLevel: row.masteryLevel,
+        evidenceActivityId: row.evidenceActivityId ?? null,
+        lastUpdated: row.lastUpdated,
+        updatedBy: row.updatedBy ?? null,
+      }));
+
+    const lessonStandards = (await ctx.db.query("lesson_standards").collect())
+      .map((ls) => ({
+        standardId: ls.standardId,
+        lessonVersionId: ls.lessonVersionId,
+        isPrimary: ls.isPrimary,
+      }));
+
+    const lessonVersions = (await ctx.db.query("lesson_versions").collect())
+      .filter((lv) => lv.status === "published")
+      .map((lv) => ({
+        id: lv._id,
+        lessonId: lv.lessonId,
+      }));
+
+    const lessons = (await ctx.db.query("lessons").collect())
+      .map((lesson) => ({
+        id: lesson._id,
+        unitNumber: lesson.unitNumber,
+        title: lesson.title,
+      }));
+
+    const rawStudent = {
+      id: student._id,
+      username: student.username,
+      displayName: student.displayName ?? null,
+    };
+
+    return assembleStudentCompetencyDetail(
+      rawStudent,
+      rawStandards,
+      competencyRows,
+      lessonStandards,
+      lessonVersions,
+      lessons,
+    );
+  },
+});
+
 export const getTeacherGradebookData = internalQuery({
   args: {
     userId: v.id("profiles"),

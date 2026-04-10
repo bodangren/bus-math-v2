@@ -1,24 +1,29 @@
-import { redirect } from 'next/navigation';
+'use client';
+
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { requireTeacherSessionClaims } from '@/lib/auth/server';
-import { fetchInternalQuery, internal } from '@/lib/convex/server';
 import { CompetencyHeatmapGrid } from '@/components/teacher/CompetencyHeatmapGrid';
 import type { CompetencyHeatmapResponse } from '@/lib/teacher/competency-heatmap';
 
-export default async function TeacherCompetencyPage() {
-  const claims = await requireTeacherSessionClaims('/teacher/competency');
+interface TeacherCompetencyPageProps {
+  heatmapData: CompetencyHeatmapResponse;
+}
 
-  const competencyHeatmap = await fetchInternalQuery(
-    internal.teacher.getTeacherCompetencyHeatmapData,
-    {
-      userId: claims.sub as never,
-    },
-  );
+export default function TeacherCompetencyPage({ heatmapData }: TeacherCompetencyPageProps) {
+  const { rows, standards } = heatmapData;
 
-  if (!competencyHeatmap) redirect('/teacher');
+  const handleStudentClick = (studentId: string) => {
+    window.location.href = `/teacher/students/${studentId}/competency`;
+  };
 
-  const { rows, standards } = competencyHeatmap as CompetencyHeatmapResponse;
+  const handleStandardClick = (standardId: string) => {
+    console.log('Standard clicked:', standardId);
+  };
+
+  const handleCellClick = (studentId: string, standardId: string) => {
+    console.log('Cell clicked:', studentId, standardId);
+    window.location.href = `/teacher/students/${studentId}/competency`;
+  };
 
   return (
     <main className="min-h-screen bg-muted/10 py-10">
@@ -35,10 +40,19 @@ export default async function TeacherCompetencyPage() {
             {rows.length} student{rows.length !== 1 ? 's' : ''} · {standards.length} standard{standards.length !== 1 ? 's' : ''} ·
             Color indicates mastery level: {<span className="ml-2 text-green-600 font-medium">green</span>} ≥80%, {<span className="text-yellow-600 font-medium">yellow</span>} 50-79%, {<span className="text-red-600 font-medium">red</span>} &lt;50%, {<span className="text-gray-400 font-medium">gray</span>} no data
           </p>
+          <p className="text-xs text-muted-foreground">
+            Click a student row or cell to view detailed competency data.
+          </p>
         </header>
 
         <section aria-label="Competency heatmap">
-          <CompetencyHeatmapGrid rows={rows} standards={standards} />
+          <CompetencyHeatmapGrid
+            rows={rows}
+            standards={standards}
+            onStudentClick={handleStudentClick}
+            onStandardClick={handleStandardClick}
+            onCellClick={handleCellClick}
+          />
         </section>
       </div>
     </main>

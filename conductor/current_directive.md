@@ -66,10 +66,15 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-10 — Post Code Review Pass 23)
+## Current High-Level Priorities (2026-04-10 — Post Milestone 9 Planning)
 
 1. **Teacher Competency Heatmaps Phase 3-4** — add unit/student drill-down from the heatmap, link back to gradebook/reporting context, and complete verification gates.
 2. **Education App Readiness Hardening** — harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.
+3. **Workbook Infrastructure and Unit 1 Pilot** — build workbook download/serving infrastructure, create Unit 1 workbooks as the exemplar, establish how-to and 40-point rubric patterns.
+4. **Units 2-4 Workbook Rollout** — apply the workbook pattern to Units 2, 3, and 4.
+5. **Units 5-8 Workbook Rollout and Capstone Assets** — complete workbook rollout for Units 5-8, create capstone asset package, build capstone routes.
+6. **Student One-Shot Lesson Chatbot** — add one-shot lesson-scoped AI helper via OpenRouter for authenticated students.
+7. **AI Feedback for Spreadsheet Submissions** — add AI-assisted feedback, revision loop, attempt history, and teacher visibility for spreadsheet submissions.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 

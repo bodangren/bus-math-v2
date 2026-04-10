@@ -13,13 +13,13 @@
 - [x] Run `npm run lint` and targeted competency/reporting tests
 
 ## Phase 3: Drill-Down and Context
-- [ ] Add unit-scoped or student-scoped drill-down behavior from the competency surface
-- [ ] Ensure competency views link back to the relevant gradebook/reporting context
-- [ ] Add regression coverage for the primary heatmap drill-down flows
-- [ ] Run the relevant broader tests for shared reporting helpers
+- [x] Add unit-scoped or student-scoped drill-down behavior from the competency surface
+- [x] Ensure competency views link back to the relevant gradebook/reporting context
+- [x] Add regression coverage for the primary heatmap drill-down flows
+- [x] Run the relevant broader tests for shared reporting helpers
 
 ## Phase 4: Verification and Documentation
-- [ ] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the competency-reporting changes
-- [ ] Update active Conductor docs if the competency reporting contract changes
-- [ ] Record any intentionally deferred competency UX or aggregation work
-- [ ] Prepare the track for archive with verification evidence
+- [x] Run final relevant lint, targeted tests, broader `npm test`, and build gates for the competency-reporting changes
+- [x] Update active Conductor docs if the competency reporting contract changes
+- [x] Record any intentionally deferred competency UX or aggregation work
+- [x] Prepare the track for archive with verification evidence

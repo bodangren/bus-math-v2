@@ -14,6 +14,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 6 | Production Hardening and Launch | Complete (2026-03-16) |
 | 7 | Practice Contract and Evidence Loop | Complete (2026-04-06) |
 | 8 | Classroom Product Completeness | Planned |
+| 9 | Workbook System and AI Features | Planned |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
@@ -59,6 +60,26 @@ Full Phase Integrity Audit [active] → Student Navigation [1] → Student Compl
 
 ---
 
+### Milestone 9 — Workbook System and AI Features
+
+Build the complete curriculum workbook system: Excel workbooks (student templates + teacher completed versions) for every lesson that requires one, with how-to guides in teacher lesson plans and 40-point grading rubrics in both teacher and student sections. Then add student-facing AI features: a one-shot lesson chatbot and AI-assisted feedback for spreadsheet submissions with a revision loop.
+
+**Execution graph** (strictly serial after Milestone 8 completes):
+```
+Workbook Infrastructure + Unit 1 Pilot [1] → Units 2-4 Rollout [2] → Units 5-8 Rollout + Capstone [3] → Student Lesson Chatbot [4] → Spreadsheet AI Feedback [5]
+```
+
+**Rationale for serial ordering (2026-04-10 roadmap):**
+- The Unit 1 pilot must come first to establish the canonical workbook pattern (naming, structure, how-to format, rubric format) that all rollout tracks replicate.
+- Units 2-4 rollout comes next to validate the pattern across the first half of the book while the Unit 1 exemplar is fresh.
+- Units 5-8 rollout + capstone assets complete the workbook system so the AI features can evaluate against the full workbook library.
+- The student chatbot comes before spreadsheet AI feedback because it establishes the student-facing AI provider pattern, rate limiting, and safety infrastructure that spreadsheet feedback builds on.
+- Spreadsheet AI feedback comes last because it is the most complex feature (extends submission pipeline, adds revision loop, requires teacher visibility into attempt history) and benefits from the AI infrastructure the chatbot already put in place.
+
+**Exit gate**: every lesson requiring a workbook has student and teacher `.xlsx` files; every workbook lesson has a how-to guide and 40-point rubric; capstone assets and routes are complete; students can ask one lesson-scoped question from the lesson page; spreadsheet submissions receive AI feedback with revision capability; teachers see full attempt history with AI artifacts.
+
+---
+
 ## Planned Queue
 
 Strictly serial. Complete and archive each track before starting the next.
@@ -95,6 +116,26 @@ Strictly serial. Complete and archive each track before starting the next.
 - [ ] **Track: Education App Readiness Hardening**
   *Link: [./tracks/education_app_readiness_hardening_20260409/](./tracks/education_app_readiness_hardening_20260409/)*
   *Scope: harden the completed student and teacher workflows with aligned auth/report contracts, clean verification gates, and end-to-end classroom smoke coverage.*
+
+- [ ] **Track: Workbook Infrastructure and Unit 1 Pilot**
+  *Link: [./tracks/workbook_infrastructure_unit1_pilot_20260410/](./tracks/workbook_infrastructure_unit1_pilot_20260410/)*
+  *Scope: build workbook download/serving infrastructure with role-based access, create the complete Unit 1 workbook set (student templates + teacher completed), and establish the canonical how-to guide and 40-point grading rubric patterns.*
+
+- [ ] **Track: Units 2-4 Workbook Rollout**
+  *Link: [./tracks/units_2_4_workbook_rollout_20260410/](./tracks/units_2_4_workbook_rollout_20260410/)*
+  *Scope: apply the canonical workbook pattern to Units 2 (Flow of Transactions), 3 (Statements in Balance), and 4 (Payroll in Motion) with student templates, teacher completed versions, how-to guides, and 40-point rubrics.*
+
+- [ ] **Track: Units 5-8 Workbook Rollout and Capstone Assets**
+  *Link: [./tracks/units_5_8_workbook_rollout_capstone_20260410/](./tracks/units_5_8_workbook_rollout_capstone_20260410/)*
+  *Scope: complete workbook rollout for Units 5-8, create capstone asset package (investor workbook, business plan guide, pitch rubric, model tour checklist), and build capstone guidelines and rubrics routes.*
+
+- [ ] **Track: Student One-Shot Lesson Chatbot**
+  *Link: [./tracks/student_lesson_chatbot_20260410/](./tracks/student_lesson_chatbot_20260410/)*
+  *Scope: add a bottom-right one-shot lesson helper for authenticated students via OpenRouter, with single-turn lesson-scoped responses, rate limiting, and usage analytics.*
+
+- [ ] **Track: AI Feedback for Spreadsheet Submissions**
+  *Link: [./tracks/spreadsheet_ai_feedback_20260410/](./tracks/spreadsheet_ai_feedback_20260410/)*
+  *Scope: extend spreadsheet submissions with AI-assisted feedback (preliminary score, strengths, improvements, next steps), revision loop with attempt history, and teacher visibility into all attempts and AI artifacts.*
 
 - [x] **Track: Dead Code Pruning**
   *Link: [./archive/dead_code_pruning_20260408/](./archive/dead_code_pruning_20260408/)*

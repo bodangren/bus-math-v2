@@ -1,0 +1,8 @@
+{
+  "track_id": "workbook_infrastructure_unit1_pilot_20260410",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-10T12:00:00Z",
+  "updated_at": "2026-04-10T12:00:00Z",
+  "description": "Build workbook download/serving infrastructure and create the complete Unit 1 workbook set as the exemplar pattern for all units."
+}
