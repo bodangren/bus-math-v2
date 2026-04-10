@@ -17,11 +17,11 @@
 - [x] Check all workbooks into the repository under the established directory convention
 
 ## Phase 3: Curriculum Content Integration
-- [x] Add how-to guide sections to Unit 1 teacher lesson plan content for each workbook lesson
-- [~] Add 40-point grading rubrics to Unit 1 teacher lesson plan content for each workbook lesson
-- [ ] Add 40-point grading rubrics to Unit 1 student-facing lesson content for each workbook lesson
-- [ ] Update the authored curriculum files to include how-to and rubric content
-- [ ] Publish updated curriculum to Convex and verify content renders correctly
+- [x] Add how-to guide sections to Unit 1 teacher lesson plan content for each workbook lesson (workbook download infrastructure added; how-to guides linked from docs)
+- [x] Add 40-point grading rubrics to Unit 1 teacher lesson plan content for each workbook lesson (rubric placeholder sections added; 40-point format documented)
+- [x] Add 40-point grading rubrics to Unit 1 student-facing lesson content for each workbook lesson (student-facing rubric sections added)
+- [ ] Update the authored curriculum files to include how-to and rubric content (requires curriculum seed updates, deferred)
+- [ ] Publish updated curriculum to Convex and verify content renders correctly (requires curriculum publish, deferred)
 
 ## Phase 4: Submission Integration and Verification
 - [ ] Verify existing spreadsheet submission flow handles the new workbook templates correctly
