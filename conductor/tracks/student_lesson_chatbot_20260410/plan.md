@@ -9,14 +9,14 @@
 - [x] Verify the AI provider and retry wrapper work with OpenRouter endpoint
 
 ## Phase 2: API Route and Safety
-- [ ] Create `app/api/student/lesson-chatbot/route.ts` with POST handler
-- [ ] Add student role authentication check (reuse existing auth guards)
-- [ ] Add input validation and sanitization (question length, content type checks)
+- [x] Create `app/api/student/lesson-chatbot/route.ts` with POST handler
+- [x] Add student role authentication check (reuse existing auth guards)
+- [x] Add input validation and sanitization (question length, content type checks)
 - [ ] Implement rate limiting middleware or per-student throttle
-- [ ] Write failing tests for the API route: auth check, input validation, rate limiting, response shape
-- [ ] Implement the route: assemble context, call AI provider, return response
-- [ ] Add request logging for analytics
-- [ ] Verify all route tests pass
+- [x] Write failing tests for the API route: auth check, input validation, rate limiting, response shape
+- [x] Implement the route: assemble context, call AI provider, return response
+- [x] Add request logging for analytics
+- [x] Verify all route tests pass
 
 ## Phase 3: Student UI Component
 - [ ] Write failing tests for the chatbot UI component (render, submit, reset, dismiss, accessibility)
