@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 35)
+Last updated: April 11, 2026 (Code Review Pass 36)
 
 ## Status Snapshot
 
@@ -82,8 +82,8 @@ The target product is:
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 0 (all tracks complete) |
 | Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
-| Archived track directories | 103 |
-| Test files under `__tests__` and `tests` | 301 |
+| Archived track directories | 108 |
+| Test files under `__tests__` and `tests` | 311 |
 
 ### My real assessment
 
@@ -498,7 +498,7 @@ All Milestone 10 tracks are complete. Milestone 10 (Student Study Tools) closed 
 
 Track: `study_hub_foundation_flashcards_20260410` — **COMPLETE** (archived).
 
-Shipped: bilingual glossary (10 terms, EN/ZH), Convex study schema (4 tables), FSRS engine, study data hooks, practice hub home with unit filter, flashcard study mode with spaced repetition. All 6 phases complete. All verification gates pass. Archived on 2026-04-11.
+Shipped: bilingual glossary (29 terms, EN/ZH, all 8 units), Convex study schema (4 tables), FSRS engine, study data hooks, practice hub home with unit filter, flashcard study mode with spaced repetition. All 6 phases complete. All verification gates pass. Archived on 2026-04-11.
 
 ### 2. Study Modes and Progress Dashboard
 

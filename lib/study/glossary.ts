@@ -107,7 +107,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     def_zh: '长期资产成本在其使用寿命内的分配。',
     units: [3, 4, 5],
     topics: ['financial-statements', 'cost-accounting'],
-    synonyms: ['amortization'],
+    synonyms: [],
     related: ['straight-line-depreciation', 'double-declining-balance'],
   },
   {

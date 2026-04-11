@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 35)
+## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 36)
 
 Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
@@ -104,6 +104,35 @@ If continuing development, the highest-value next steps are:
 5. **Convex schema hardening** — Replace `v.any()` with proper validators for `spreadsheetData`, `validationResult`, and `fsrsState`.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 36)
+
+Autonomous code review covering the Glossary Expansion track (since Pass 35) and full codebase health check.
+
+**Scope:** 3 commits since Pass 35 — the Glossary Expansion track adding 17 new terms for Units 2, 7, and 8, archiving the track, and removing stale track files.
+
+**Fixed during review: 1 issue**
+- **depreciation listed amortization as synonym** (Medium): Amortization refers to intangible asset cost allocation; depreciation refers to tangible assets. They are related but distinct concepts. Removed the incorrect synonym.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1743/1743 tests pass; 2 test files fail (pre-existing Supabase RLS suites on missing credentials — not real failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Glossary Expansion (all commits)**: 17 new terms properly structured with bilingual EN/ZH definitions, correct unit assignments, relevant topic/synonym/related metadata. Tests verify all 8 units covered with 5+ terms each. Track properly archived with metadata. tech-debt.md glossary coverage item closed. Clean, well-executed track.
+- **Full codebase health**: No regressions from Pass 35 fixes. All critical/high fixes from prior reviews remain intact (FlashcardPlayer/ReviewSession double-submit guard, SpeedRoundGame post-gameOver timeout race, maxAttempts server enforcement, AI feedback failure isolation). No new tech debt introduced.
+
+**Pre-existing issues confirmed (not fixed):**
+- 2 Supabase RLS test suites fail on missing credentials (pre-existing)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- `v.any()` used for `spreadsheetData`, `validationResult`, `fsrsState` in Convex schema
+
+**Updated during review:**
+- lib/study/glossary.ts: Removed incorrect amortization synonym from depreciation term
+- current_directive.md: Updated pass number to 36
+
+**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: artifact packaging (CSV datasets, PDF guides/rubrics/checklists), practice test question bank expansion for Units 2-8, FlashcardPlayer/ReviewSession deduplication, Convex schema hardening.
 
 ## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 35)
 
