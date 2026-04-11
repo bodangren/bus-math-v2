@@ -96,7 +96,7 @@ export const GLOSSARY: GlossaryTerm[] = [
     def_zh: '销售收入减去可变成本，代表可用于覆盖固定成本和贡献利润的金额。',
     units: [5, 6],
     topics: ['cost-accounting', 'cvp-analysis'],
-    synonyms: ['margin-of-safety'],
+    synonyms: [],
     related: ['variable-costs', 'fixed-costs', 'break-even-point'],
   },
   {

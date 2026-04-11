@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 34)
+Last updated: April 11, 2026 (Code Review Pass 35)
 
 ## Status Snapshot
 
@@ -81,9 +81,9 @@ The target product is:
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 0 (all tracks complete) |
-| Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
-| Archived track directories | 101 |
-| Test files under `__tests__` and `tests` | 298 |
+| Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
+| Archived track directories | 103 |
+| Test files under `__tests__` and `tests` | 301 |
 
 ### My real assessment
 

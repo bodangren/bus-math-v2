@@ -15,7 +15,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 7 | Practice Contract and Evidence Loop | Complete (2026-04-06) |
 | 8 | Classroom Product Completeness | Complete (2026-04-10) |
 | 9 | Workbook System and AI Features | Complete (2026-04-11) |
-| 10 | Student Study Tools | Active (Study Hub in progress) |
+| 10 | Student Study Tools | Complete (2026-04-11) |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 

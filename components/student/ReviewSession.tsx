@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { RotateCcw, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ export function ReviewSession() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionComplete, setSessionComplete] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const currentTermSlug = dueTerms?.[currentIndex]?.termSlug;
   const currentTerm = currentTermSlug ? getGlossaryTermBySlug(currentTermSlug) : undefined;
@@ -44,22 +45,27 @@ export function ReviewSession() {
   }
 
   const handleRating = async (rating: "again" | "hard" | "good" | "easy") => {
-    if (!currentTermSlug) return;
+    if (!currentTermSlug || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
 
-    await processReview({
-      termSlug: currentTermSlug,
-      rating,
-    });
-
-    if (currentIndex + 1 < (dueTerms?.length ?? 0)) {
-      setCurrentIndex(currentIndex + 1);
-      setIsFlipped(false);
-    } else {
-      setSessionComplete(true);
-      await recordSession({
-        activityType: "srs_review",
-        termCount: dueTerms?.length ?? 0,
+    try {
+      await processReview({
+        termSlug: currentTermSlug,
+        rating,
       });
+
+      if (currentIndex + 1 < (dueTerms?.length ?? 0)) {
+        setCurrentIndex(currentIndex + 1);
+        setIsFlipped(false);
+      } else {
+        setSessionComplete(true);
+        await recordSession({
+          activityType: "srs_review",
+          termCount: dueTerms?.length ?? 0,
+        });
+      }
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 

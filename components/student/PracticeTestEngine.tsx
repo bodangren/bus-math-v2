@@ -34,6 +34,7 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [, setScore] = useState<number>(0);
   const [, setPerLessonBreakdown] = useState<Record<string, { correct: number; total: number }>>({});
+  const [answeredCurrent, setAnsweredCurrent] = useState(false);
 
   // Refs to track running totals — avoids stale-state risk when transitioning to closing on last answer
   const scoreRef = useRef(0);
@@ -97,7 +98,8 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
 
   const handleAnswerQuestion = (selectedAnswer: string) => {
     const current = testQuestions[currentQuestionIndex];
-    if (!current) return;
+    if (!current || answeredCurrent) return;
+    setAnsweredCurrent(true);
     const { question, original } = current;
     const isCorrect = selectedAnswer === question.answer;
     
@@ -121,6 +123,7 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
 
     if (currentQuestionIndex < testQuestions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
+      setAnsweredCurrent(false);
     } else {
       setCurrentPhase('closing');
       
@@ -249,12 +252,15 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
                     variant="secondary"
                     className="w-full justify-start text-left"
                     onClick={() => handleAnswerQuestion(option)}
+                    disabled={answeredCurrent}
                   >
                     {option}
                   </Button>
                 ))}
               </div>
-              <div className="text-sm text-gray-600">{testQuestions[currentQuestionIndex].original.explanation}</div>
+              {answeredCurrent && (
+                <div className="text-sm text-gray-600">{testQuestions[currentQuestionIndex].original.explanation}</div>
+              )}
             </div>
           )}
 

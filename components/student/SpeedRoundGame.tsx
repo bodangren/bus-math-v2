@@ -29,6 +29,8 @@ export function SpeedRoundGame() {
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [timeLeft, setTimeLeft] = useState(90);
   const [gameState, setGameState] = useState<"idle" | "playing" | "gameOver">("playing");
+  const gameStateRef = useRef(gameState);
+  gameStateRef.current = gameState;
   const [answeredTerms, setAnsweredTerms] = useState<Set<string>>(new Set());
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -121,6 +123,7 @@ export function SpeedRoundGame() {
       setAnsweredTerms(newExclude);
       if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
       feedbackTimeoutRef.current = setTimeout(() => {
+        if (gameStateRef.current !== "playing") return;
         setFeedback(null);
         const question = generateQuestion(newExclude);
         setCurrentQuestion({
@@ -151,6 +154,7 @@ export function SpeedRoundGame() {
       setFeedback("wrong");
       if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
       feedbackTimeoutRef.current = setTimeout(() => {
+        if (gameStateRef.current !== "playing") return;
         setFeedback(null);
         const question = generateQuestion(answeredTerms);
         setCurrentQuestion({

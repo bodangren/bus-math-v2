@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 34)
+## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 35)
 
 Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
@@ -97,13 +97,60 @@ Milestones 1-10 are **complete**. All tracks archived. The project is in a stabi
 
 If continuing development, the highest-value next steps are:
 
-1. **Pre-existing test stabilization** — Fix 12 test failures across 5 test files (SubmissionDetailModal outdated UI expectations, GradebookDrillDown ARIA role mismatch, SubmissionDetailModal integration import name). Bring pass rate to 1739/1739.
-2. **Glossary expansion** — Units 2, 7, 8 have zero glossary terms. Expand to all 8 units for complete study hub coverage.
-3. **Artifact packaging** — Ship CSV datasets, PDF guides/rubrics/checklists, capstone guidelines/routes.
-4. **Practice test question banks** — Units 2-8 have 1 placeholder question each; expand to full banks.
-5. **Matching game deduplication** — FlashcardPlayer and ReviewSession are near-duplicates; extract shared component.
+1. **Glossary expansion** — Units 2, 7, 8 have zero glossary terms. Expand to all 8 units for complete study hub coverage.
+2. **Artifact packaging** — Ship CSV datasets, PDF guides/rubrics/checklists, capstone guidelines/routes.
+3. **Practice test question banks** — Units 2-8 have 1 placeholder question each; expand to full banks.
+4. **Matching game deduplication** — FlashcardPlayer and ReviewSession are near-duplicates; extract shared component.
+5. **Convex schema hardening** — Replace `v.any()` with proper validators for `spreadsheetData`, `validationResult`, and `fsrsState`.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 35)
+
+Autonomous code review covering Practice Tests, Study Modes, Study Hub, and AI Feedback tracks, plus accumulated tech debt and unarchived tracks.
+
+**Fixed during review: 6 issues**
+- **FlashcardPlayer/ReviewSession double-submit race condition** (Critical): Rating buttons were not disabled while async `processReview` mutation was in flight. Rapid clicks fired concurrent mutations corrupting FSRS state and double-counting mastery. Fixed: added `isSubmittingRef` guard to both components.
+- **SpeedRoundGame feedback timeout fires after game over** (Critical): When game ended (timer expired or lives lost), pending setTimeout callbacks still executed, mutating state on a game-over component. Fixed: timeout callbacks now check `gameStateRef.current !== "playing"` before mutating state.
+- **maxAttempts never initialized on server** (High): `student_spreadsheet_responses` insert never set `maxAttempts`, so the attempt limit was purely cosmetic — students could submit infinitely. Fixed: added `maxAttempts: 3` on insert, and server-side enforcement that throws if `existingAttempts.length >= maxAttempts`.
+- **AI feedback failure blocks entire submission** (High): If `generateAiFeedback` threw (network error, timeout, bad response), the entire submission returned 500 even though validation and persistence already succeeded. Fixed: wrapped in try/catch; submission succeeds with `aiFeedback: null` if AI is unavailable.
+- **Practice Test explanation visible before answering** (Medium): Explanation text rendered below MCQ options during assessment phase, giving away the correct answer. Fixed: explanation only renders after student selects an answer; answer buttons disabled after selection.
+- **Glossary wrong synonym** (Medium): `contribution-margin` listed `margin-of-safety` as a synonym — factually incorrect (they are distinct CVP concepts). Fixed: removed incorrect synonym entry.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1739/1739 tests pass (2 Supabase suite failures on missing credentials — pre-existing, not real failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Practice Tests (all 5 phases)**: Question banks, Convex schema, test engine, routes, verification. Found explanation leak (fixed), flaky shuffle test (recorded), questionCount re-clamping issue (recorded), notFound() in client component (recorded), silent save failure (recorded). Units 2-8 have only 1 placeholder question each (recorded).
+- **Study Modes and Progress Dashboard (all 6 phases)**: Matching game, speed round, SRS review, progress dashboard. Found SpeedRoundGame post-gameOver timeout race (fixed), wrong glossary synonym (fixed). SpeedRoundGame timer effect re-creates interval on each answer (recorded). MatchingGame card-creation logic duplicated (recorded).
+- **Study Hub Foundation and Flashcards (all 6 phases)**: Glossary data, FSRS engine, Convex schema, study hooks, practice hub home, flashcard player. Found FlashcardPlayer/ReviewSession double-submit race condition (critical, fixed). FSRS state unsafe `as Card` cast (recorded). `getGlossaryTermDisplay` in wrong file (recorded). ProgressDashboard hardcoded currentStreak: 0 (recorded). TrendingDown icon for Progress card (recorded).
+- **AI Feedback for Spreadsheet Submissions (all 6 phases)**: AI pipeline, submit route, student revision UX, teacher visibility. Found maxAttempts never initialized (high, fixed), AI failure blocks submission (high, fixed). `updateAttemptWithTeacherOverride` lacks auth guard (recorded). `v.any()` on critical fields (recorded). Dead code `createSpreadsheetAttempt` (recorded). Race condition in attempt numbering (recorded).
+
+**Pre-existing issues confirmed (not fixed):**
+- 2 Supabase RLS test suites fail on missing credentials (pre-existing)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- `v.any()` used for `spreadsheetData`, `validationResult`, `fsrsState` in Convex schema
+
+**Archived during review:**
+- `student_completion_resume_loop_20260409` moved to archive
+- `student_navigation_dashboard_paths_20260409` moved to archive
+
+**Updated during review:**
+- tech-debt.md: 6 issues closed, 9 new open items, trimmed to under 50 lines
+- current_directive.md: Updated priorities, added Pass 35 review summary, removed stale test stabilization priority (12 failures resolved)
+- README.md: Updated pass number, milestone 10 track count, archived track count, test file count
+- tracks.md: Fixed Milestone 10 status from "Active" to "Complete (2026-04-11)"
+- components/student/FlashcardPlayer.tsx: Added double-submit guard
+- components/student/ReviewSession.tsx: Added double-submit guard
+- components/student/SpeedRoundGame.tsx: Added gameStateRef check in timeout callbacks
+- components/student/PracticeTestEngine.tsx: Gated explanation behind answeredCurrent state
+- convex/activities.ts: Added maxAttempts initialization and server-side enforcement
+- app/api/activities/spreadsheet/[activityId]/submit/route.ts: Wrapped generateAiFeedback in try/catch
+- lib/study/glossary.ts: Removed wrong synonym
+
+**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: glossary expansion, artifact packaging, question bank expansion.
 
 ## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 34)
 

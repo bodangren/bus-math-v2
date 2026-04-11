@@ -231,17 +231,24 @@ export async function POST(
       validationResult,
     });
 
-    const aiFeedback = await generateAiFeedback({
-      spreadsheetData: payload.spreadsheetData,
-      validationResult,
-      targetCells: parsedEvaluatorProps.data.targetCells as TargetCell[],
-      activityName: activity.displayName || 'Business Math Spreadsheet Activity',
-    });
+    let aiFeedback;
+    try {
+      aiFeedback = await generateAiFeedback({
+        spreadsheetData: payload.spreadsheetData,
+        validationResult,
+        targetCells: parsedEvaluatorProps.data.targetCells as TargetCell[],
+        activityName: activity.displayName || 'Business Math Spreadsheet Activity',
+      });
+    } catch {
+      aiFeedback = null;
+    }
 
-    await fetchInternalMutation(internal.activities.updateAttemptWithAiFeedback, {
-      attemptId: attemptId as never,
-      aiFeedback,
-    });
+    if (aiFeedback) {
+      await fetchInternalMutation(internal.activities.updateAttemptWithAiFeedback, {
+        attemptId: attemptId as never,
+        aiFeedback,
+      });
+    }
 
     const submissionData = buildSpreadsheetEvaluatorSubmission({
       activityId,
