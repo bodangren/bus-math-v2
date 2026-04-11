@@ -1,0 +1,1 @@
+Removed unused createSpreadsheetAttempt mutation from convex/activities.ts. Updated tech-debt.md to mark item as closed. Lint and build pass.
