@@ -1,30 +1,10 @@
 import { internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { practiceSubmissionEnvelopeValidator } from "./practice_submission";
-
-const spreadsheetCellValidator = v.object({
-  value: v.union(v.string(), v.number()),
-  readOnly: v.optional(v.boolean()),
-  className: v.optional(v.string()),
-});
-
-const spreadsheetDataValidator = v.array(v.array(spreadsheetCellValidator));
-
-const cellFeedbackValidator = v.object({
-  cell: v.string(),
-  isCorrect: v.boolean(),
-  message: v.optional(v.string()),
-  expectedValue: v.optional(v.union(v.string(), v.number())),
-  actualValue: v.optional(v.union(v.string(), v.number())),
-});
-
-const validationResultValidator = v.object({
-  isComplete: v.boolean(),
-  totalCells: v.number(),
-  correctCells: v.number(),
-  feedback: v.array(cellFeedbackValidator),
-  timestamp: v.string(),
-});
+import {
+  spreadsheetDataValidator,
+  validationResultValidator,
+} from "./spreadsheet_validators";
 
 export const getSpreadsheetDraft = internalQuery({
   args: {
