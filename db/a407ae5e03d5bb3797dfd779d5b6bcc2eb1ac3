@@ -1,0 +1,1 @@
+Added PDF download API at /api/pdfs/[pdfName]/ with role-based access, capstone guidelines and rubrics pages, and placeholder PDF files in public/pdfs/; updated capstone page with download links
