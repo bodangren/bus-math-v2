@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 
 const mockFetchInternalQuery = vi.fn();
 vi.mock('@/lib/convex/server', () => ({
@@ -69,7 +69,8 @@ describe('Gradebook Drill-Down Integration', () => {
     const gradebookCell = screen.getByRole('cell');
     expect(gradebookCell).toBeInTheDocument();
 
-    fireEvent.click(gradebookCell);
+    const gradebookButton = within(gradebookCell).getByRole('button');
+    fireEvent.click(gradebookButton);
 
     await waitFor(() => {
       const modal = screen.getByRole('dialog');
@@ -293,14 +294,15 @@ describe('Gradebook Drill-Down Integration', () => {
     const gradebookCell = screen.getByRole('cell');
     expect(gradebookCell).toBeInTheDocument();
 
-    fireEvent.click(gradebookCell);
+    const gradebookButton = within(gradebookCell).getByRole('button');
+    fireEvent.click(gradebookButton);
 
     await waitFor(() => {
       const modal = screen.getByRole('dialog');
       expect(modal).toBeInTheDocument();
       
-      expect(screen.getByText(/Alice Brown/)).toBeInTheDocument();
-      expect(screen.getByText(/Accounting Equation/)).toBeInTheDocument();
+      expect(within(modal).getByText(/Alice Brown/)).toBeInTheDocument();
+      expect(within(modal).getByText(/Accounting Equation/)).toBeInTheDocument();
     });
   });
 });

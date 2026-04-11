@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { SubmissionDetailModal, type SelectedCell } from '@/components/teacher/SubmissionDetailModal';
 
 const mockFetchInternalQuery = vi.fn();
@@ -98,10 +98,11 @@ describe('SubmissionDetailModal integration', () => {
 
     await screen.findByTestId('phase-list');
     expect(mockFetchInternalQuery).toHaveBeenCalledWith(
-      expect.anything(),
+      undefined,
       expect.objectContaining({
         userId: SELECTED.studentId,
         lessonId: SELECTED.lessonId,
+        unitNumber: expect.any(Number),
       }),
     );
   });
@@ -111,7 +112,8 @@ describe('SubmissionDetailModal integration', () => {
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
     await screen.findByTestId('phase-list');
-    expect(screen.getByText('Independent Practice')).toBeInTheDocument();
-    expect(screen.getByText('Assessment')).toBeInTheDocument();
+    const phaseList = screen.getByTestId('phase-list');
+    expect(within(phaseList).getByText('Independent Practice')).toBeInTheDocument();
+    expect(within(phaseList).getByText('Assessment')).toBeInTheDocument();
   });
 });
