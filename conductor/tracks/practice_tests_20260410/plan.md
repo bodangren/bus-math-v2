@@ -1,12 +1,12 @@
 # Implementation Plan: Practice Tests
 
 ## Phase 1: Question Banks and Data Layer
-- [ ] Port v1 question bank files (all 8 units, 7,278 lines total) to v2 data directory
-- [ ] Define the shared question type interface and conversion helpers
-- [ ] Write failing tests for question bank helpers (filter by lesson, random draw, shuffle, MCQ conversion)
-- [ ] Implement question bank helpers with Fisher-Yates shuffle
-- [ ] Define per-unit practice test data configurations (lesson metadata, phase content, messaging)
-- [ ] Verify all question bank helper tests pass
+- [x] Port v1 question bank files (all 8 units, 7,278 lines total) to v2 data directory
+- [x] Define the shared question type interface and conversion helpers
+- [x] Write failing tests for question bank helpers (filter by lesson, random draw, shuffle, MCQ conversion)
+- [x] Implement question bank helpers with Fisher-Yates shuffle
+- [x] Define per-unit practice test data configurations (lesson metadata, phase content, messaging)
+- [x] Verify all question bank helper tests pass
 
 ## Phase 2: Convex Score Schema
 - [ ] Design Convex `practiceTestResults` table: userId, unitNumber, lessonsTested, questionCount, score, perLessonBreakdown, completedAt
