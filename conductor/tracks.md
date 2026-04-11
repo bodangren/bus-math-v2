@@ -103,9 +103,10 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Glossary Expansion**
-  *Link: [./tracks/glossary_expansion_20260411/](./tracks/glossary_expansion_20260411/)*
+- [x] **Track: Glossary Expansion**
+  *Link: [./archive/glossary_expansion_20260411/](./archive/glossary_expansion_20260411/)*
   *Scope: Expand glossary to include terms for Units 2, 7, and 8 to complete study hub coverage across all 8 units.*
+  *Closeout: completed on 2026-04-11. Added 17 new glossary terms covering Units 2,7,8, updated tests to verify all 8 units are covered, and updated tech-debt.md to close the glossary coverage item. All tests pass, lint passes, build passes.*
 
 - [x] **Track: Full Lesson Phase Integrity Audit**
   *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
