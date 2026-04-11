@@ -109,6 +109,26 @@ export default async function CapstonePage() {
               ? `${data.capstone.deliverable} — every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.`
               : '13 weeks of authentic business modeling where every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.'}
           </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+            <Link
+              href="/api/pdfs/capstone_business_plan_guide.pdf"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              Download Business Plan Guide
+            </Link>
+            <Link
+              href="/api/pdfs/capstone_pitch_rubric.pdf"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/90 transition-colors"
+            >
+              Download Pitch Rubric
+            </Link>
+            <Link
+              href="/api/pdfs/capstone_model_tour_checklist.pdf"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-muted text-muted-foreground rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors"
+            >
+              Download Model Tour Checklist
+            </Link>
+          </div>
           <p className="text-sm text-white/70 font-body">
             Need specifics? Review the <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/guidelines">Capstone Guidelines</Link> and <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/rubrics">Rubrics</Link> before Demo Day.
           </p>
