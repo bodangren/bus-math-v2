@@ -2,6 +2,32 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 import { practiceSubmissionEnvelopeValidator } from "./practice_submission";
 
+const spreadsheetCellValidator = v.object({
+  value: v.union(v.string(), v.number()),
+  readOnly: v.optional(v.boolean()),
+  className: v.optional(v.string()),
+});
+
+const spreadsheetDataValidator = v.array(v.array(spreadsheetCellValidator));
+
+const cellFeedbackValidator = v.object({
+  cell: v.string(),
+  isCorrect: v.boolean(),
+  message: v.optional(v.string()),
+  expectedValue: v.optional(v.union(v.string(), v.number())),
+  actualValue: v.optional(v.union(v.string(), v.number())),
+});
+
+const validationResultValidator = v.object({
+  isComplete: v.boolean(),
+  totalCells: v.number(),
+  correctCells: v.number(),
+  feedback: v.array(cellFeedbackValidator),
+  timestamp: v.string(),
+});
+
+const fsrsStateValidator = v.record(v.string(), v.any());
+
 export default defineSchema({
   organizations: defineTable({
     name: v.string(),
@@ -270,12 +296,12 @@ export default defineSchema({
   student_spreadsheet_responses: defineTable({
     studentId: v.id("profiles"),
     activityId: v.id("activities"),
-    spreadsheetData: v.any(), // JSONB
+    spreadsheetData: spreadsheetDataValidator, // JSONB
     isCompleted: v.boolean(),
     maxAttempts: v.optional(v.number()),
-    lastValidationResult: v.optional(v.any()), // JSONB
+    lastValidationResult: v.optional(validationResultValidator), // JSONB
     submittedAt: v.optional(v.number()),
-    draftData: v.optional(v.any()), // JSONB
+    draftData: v.optional(spreadsheetDataValidator), // JSONB
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -287,8 +313,8 @@ export default defineSchema({
     studentId: v.id("profiles"),
     activityId: v.id("activities"),
     attemptNumber: v.number(),
-    spreadsheetData: v.any(), // JSONB
-    validationResult: v.any(), // JSONB
+    spreadsheetData: spreadsheetDataValidator, // JSONB
+    validationResult: validationResultValidator, // JSONB
     aiFeedback: v.optional(v.object({
       preliminaryScore: v.number(),
       strengths: v.array(v.string()),
@@ -362,7 +388,7 @@ export default defineSchema({
     userId: v.id("profiles"),
     termSlug: v.string(),
     scheduledFor: v.number(), // Unix timestamp (ms)
-    fsrsState: v.any(), // JSONB: serialized FSRS scheduler state
+    fsrsState: fsrsStateValidator, // JSONB: serialized FSRS scheduler state
     isDue: v.boolean(),
     createdAt: v.number(),
     updatedAt: v.number(),

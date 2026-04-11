@@ -12,7 +12,7 @@
 | 2026-04-10 | code_review_pass26 | activities table lacks lessonId — gradebook IP/assessment columns depend on activity_completions for lesson mapping | Medium | Open | Activities have no direct lesson association. Consider adding lessonId to activities schema. |
 | 2026-04-10 | code_review_pass27 | chatbot rate limit uses in-memory Map — leaks memory, no cross-replica support | Medium | Open | Acceptable for now; upgrade to Convex-backed or Redis if scaling. |
 | 2026-04-11 | code_review_pass28 | generateAiFeedback parsed response fields not validated — AI could return wrong types for strengths/improvements/nextSteps | Low | Open | JSON.parse result is cast but not validated. Add zod validation or type guards. |
-| 2026-04-11 | code_review_pass30 | due_reviews.fsrsState stored as v.any() — no type safety for FSRS Card serialization | Low | Open | Functional for now; ts-fsrs Card is a plain object that survives JSON round-trip. |
+| 2026-04-11 | code_review_pass30 | due_reviews.fsrsState stored as v.any() — no type safety for FSRS Card serialization | Low | Closed | Replaced with fsrsStateValidator (v.record(v.string(), v.any())) in convex/schema.ts. |
 | 2026-04-11 | code_review_pass30 | Glossary covers 10 terms across Units 1, 3-6 — Units 2, 7, 8 have zero terms | Medium | Closed | Expanded glossary to include terms for all 8 units (Units 2,7,8 now covered). |
 | 2026-04-11 | code_review_pass31 | StudyHubHome useMemo for weakTopics missing languageMode dependency | Low | Open | Display won't update reactively if languageMode changes without termMastery refetch. |
 | 2026-04-11 | code_review_pass32 | PracticeTestEngine assessment has no post-answer feedback per question | Low | Open | Missing: show correct/incorrect feedback, highlight correct answer before advancing. |
@@ -27,7 +27,7 @@
 | 2026-04-11 | code_review_pass35 | Glossary contribution-margin has wrong synonym (margin-of-safety) | Medium | Closed | Fixed: removed incorrect synonym entry. |
 | 2026-04-11 | code_review_pass35 | submitSpreadsheet attempt numbering has race condition window | Low | Open | Two concurrent submissions could receive same attemptNumber. Convex serializes per-doc but count+insert is not atomic. |
 | 2026-04-11 | code_review_pass35 | createSpreadsheetAttempt mutation is dead code | Low | Closed | Removed the unused mutation from convex/activities.ts. |
-| 2026-04-11 | code_review_pass35 | v.any() used for spreadsheetData and validationResult in Convex schema | Medium | Open | No runtime schema enforcement. Server route validates with zod but internal mutations bypass validation. |
+| 2026-04-11 | code_review_pass35 | v.any() used for spreadsheetData and validationResult in Convex schema | Medium | Closed | Replaced with spreadsheetDataValidator and validationResultValidator in convex/schema.ts and convex/activities.ts. |
 | 2026-04-11 | code_review_pass35 | generateQuestion in SpeedRoundGame can produce fewer than 4 options | Low | Open | If glossary has fewer than 4 terms, distractors slice yields fewer options. Currently guarded by fallback to full glossary. |
 | 2026-04-11 | code_review_pass36 | depreciation listed amortization as synonym — distinct concepts (tangible vs intangible) | Medium | Closed | Fixed: removed incorrect synonym entry. |
 | 2026-04-11 | code_review_pass37 | problem-generator "produces varied results without a seed" test is flaky — 9 possible cash values means ~11% collision rate | Low | Open | Pre-existing. Add retry or widen step/range to make collision negligible. |
