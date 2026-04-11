@@ -30,3 +30,4 @@
 | 2026-04-11 | code_review_pass35 | v.any() used for spreadsheetData and validationResult in Convex schema | Medium | Open | No runtime schema enforcement. Server route validates with zod but internal mutations bypass validation. |
 | 2026-04-11 | code_review_pass35 | generateQuestion in SpeedRoundGame can produce fewer than 4 options | Low | Open | If glossary has fewer than 4 terms, distractors slice yields fewer options. Currently guarded by fallback to full glossary. |
 | 2026-04-11 | code_review_pass36 | depreciation listed amortization as synonym — distinct concepts (tangible vs intangible) | Medium | Closed | Fixed: removed incorrect synonym entry. |
+| 2026-04-11 | code_review_pass37 | problem-generator "produces varied results without a seed" test is flaky — 9 possible cash values means ~11% collision rate | Low | Open | Pre-existing. Add retry or widen step/range to make collision negligible. |

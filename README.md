@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 36)
+Last updated: April 11, 2026 (Code Review Pass 37)
 
 ## Status Snapshot
 

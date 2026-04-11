@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 36)
+## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 37)
 
 Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
@@ -97,13 +97,49 @@ Milestones 1-10 are **complete**. All tracks archived. The project is in a stabi
 
 If continuing development, the highest-value next steps are:
 
-1. **Glossary expansion** — Units 2, 7, 8 have zero glossary terms. Expand to all 8 units for complete study hub coverage.
-2. **Artifact packaging** — Ship CSV datasets, PDF guides/rubrics/checklists, capstone guidelines/routes.
-3. **Practice test question banks** — Units 2-8 have 1 placeholder question each; expand to full banks.
-4. **Matching game deduplication** — FlashcardPlayer and ReviewSession are near-duplicates; extract shared component.
-5. **Convex schema hardening** — Replace `v.any()` with proper validators for `spreadsheetData`, `validationResult`, and `fsrsState`.
+1. **Artifact packaging** — Ship CSV datasets, PDF guides/rubrics/checklists, capstone guidelines/routes. Largest remaining classroom-readiness gap.
+2. **Convex schema hardening** — Replace `v.any()` with proper validators for `spreadsheetData`, `validationResult`, and `fsrsState`.
+3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
+4. **SpeedRoundGame timer refactor** — Interval re-creates on each answer; use refs to avoid potential stale closure.
+5. **Dead code cleanup** — Remove unused `createSpreadsheetAttempt` mutation.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 37)
+
+Autonomous code review covering Practice Test Question Banks expansion, FlashcardPlayer/ReviewSession deduplication, and glossary expansion (since Pass 36).
+
+**Scope:** 5 commits since Pass 36 — Practice Test Question Banks expansion for Units 2-8, FlashcardPlayer/ReviewSession deduplication via BaseReviewSession, glossary expansion for Units 2/7/8, track archival, and documentation updates.
+
+**Fixed during review: 0 issues**
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1742/1743 tests pass; 3 test files fail (pre-existing: 2 Supabase RLS suites on missing credentials, 1 flaky problem-generator random-variation test)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Practice Test Question Banks Expansion**: Units 2-8 expanded from 1 placeholder question to 3 questions each. All questions pedagogically sound with correct answers, plausible distractors, and accurate explanations. Unit configs include proper lesson metadata, phase content, and messaging. `getUnitConfig` helper covers all 8 units. Well-tested.
+- **FlashcardPlayer/ReviewSession Deduplication**: Clean extraction of `BaseReviewSession` component accepting `activityType`, `renderHeader`, `noTermsTitle`, and `noTermsMessage` props. FlashcardPlayer and ReviewSession reduced to 20-24 line wrappers. `isSubmittingRef` guard from Pass 35 preserved in shared component. Existing tests (FlashcardPlayer 5 tests, ReviewSession 6 tests, integration test) still pass.
+- **Glossary Expansion**: 17 new terms for Units 2, 7, 8. Bilingual EN/ZH definitions accurate. Unit assignments correct. All 8 units now covered with 5+ terms each. Tests verify coverage. Pass 36 amortization-as-synonym-of-depreciation fix preserved.
+- **tech-debt.md**: 3 items closed (glossary coverage, practice test placeholders, flashcard dedup). 1 new item added (flaky problem-generator test). Total: 15 open items, 17 closed.
+- **tracks.md**: 3 new archived tracks added. All tracks complete.
+- **README.md**: Pass number updated, Milestone 10 track status current.
+
+**New items recorded in tech-debt.md:**
+- problem-generator "produces varied results without a seed" flaky test (Low — open): ~11% collision rate with 9 possible cash values.
+
+**Pre-existing issues confirmed (not fixed):**
+- 2 Supabase RLS test suites fail on missing credentials (pre-existing)
+- problem-generator flaky test (pre-existing, newly recorded)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- `v.any()` used for `spreadsheetData`, `validationResult`, `fsrsState` in Convex schema
+
+**Updated during review:**
+- tech-debt.md: 3 items closed, 1 new open item, pass number updated
+- current_directive.md: Updated priorities, added Pass 37 summary
+
+**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: artifact packaging (CSVs, PDFs, capstone routes), Convex schema hardening, chatbot rate limiting upgrade.
 
 ## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 36)
 
