@@ -12,19 +12,19 @@
 
 ## Phase 2: Capstone Guidelines Page Tests
 
-- [ ] Write tests for capstone guidelines page (app/capstone/guidelines/page.tsx)
-  - [ ] Test page renders for authenticated users
-  - [ ] Test content and download links
-  - [ ] Test unauthenticated redirect
-- [ ] Run tests and verify they pass
+- [x] Write tests for capstone guidelines page (app/capstone/guidelines/page.tsx)
+  - [x] Test page renders for authenticated users
+  - [x] Test content and download links
+  - [x] Test unauthenticated redirect (not needed, page is public)
+- [x] Run tests and verify they pass
 
 ## Phase 3: Capstone Rubrics Page Tests
 
-- [ ] Write tests for capstone rubrics page (app/capstone/rubrics/page.tsx)
-  - [ ] Test page renders for authenticated users
-  - [ ] Test content and download links
-  - [ ] Test unauthenticated redirect
-- [ ] Run tests and verify they pass
+- [x] Write tests for capstone rubrics page (app/capstone/rubrics/page.tsx)
+  - [x] Test page renders for authenticated users
+  - [x] Test content and download links
+  - [x] Test unauthenticated redirect (not needed, page is public)
+- [x] Run tests and verify they pass
 
 ## Phase 4: Verification and Documentation
 
