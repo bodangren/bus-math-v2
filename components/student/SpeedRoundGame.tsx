@@ -31,6 +31,12 @@ export function SpeedRoundGame() {
   const [gameState, setGameState] = useState<"idle" | "playing" | "gameOver">("playing");
   const gameStateRef = useRef(gameState);
   gameStateRef.current = gameState;
+  const correctAnswersRef = useRef(correctAnswers);
+  correctAnswersRef.current = correctAnswers;
+  const totalQuestionsRef = useRef(totalQuestions);
+  totalQuestionsRef.current = totalQuestions;
+  const maxStreakRef = useRef(maxStreak);
+  maxStreakRef.current = maxStreak;
   const [answeredTerms, setAnsweredTerms] = useState<Set<string>>(new Set());
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -90,9 +96,9 @@ export function SpeedRoundGame() {
           setGameState("gameOver");
           recordSession({
             activityType: "speed_round",
-            correctCount: correctAnswers,
-            totalCount: totalQuestions,
-            maxStreak,
+            correctCount: correctAnswersRef.current,
+            totalCount: totalQuestionsRef.current,
+            maxStreak: maxStreakRef.current,
           });
           return 0;
         }
@@ -100,7 +106,7 @@ export function SpeedRoundGame() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [gameState, correctAnswers, totalQuestions, maxStreak, recordSession]);
+  }, [gameState, recordSession]);
 
   useEffect(() => {
     return () => {
@@ -143,9 +149,9 @@ export function SpeedRoundGame() {
           setGameState("gameOver");
           recordSession({
             activityType: "speed_round",
-            correctCount: correctAnswers,
-            totalCount: totalQuestions + 1,
-            maxStreak,
+            correctCount: correctAnswersRef.current,
+            totalCount: totalQuestionsRef.current + 1,
+            maxStreak: maxStreakRef.current,
           });
         }
         return newLives;
