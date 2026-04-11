@@ -1,0 +1,1 @@
+Refactored SpeedRoundGame timer to use refs for correctAnswers, totalQuestions, maxStreak to avoid interval re-creation on every state change. Updated recordSession calls to use refs, simplified useEffect dependency array. Tests pass, lint passes.
