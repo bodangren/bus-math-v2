@@ -103,6 +103,10 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: PDF API and Capstone Page Tests**
+  *Link: [./tracks/pdf_api_capstone_tests_20260411/](./tracks/pdf_api_capstone_tests_20260411/)*
+  *Scope: Add test coverage for PDF download API and capstone guidelines/rubrics pages.*
+
 - [x] **Track: Flashcard/Review Session Deduplication**
   *Link: [./archive/flashcard_review_session_deduplication_20260411/](./archive/flashcard_review_session_deduplication_20260411/)*
   *Scope: Deduplicate FlashcardPlayer and ReviewSession components by extracting a shared BaseReviewSession component.*
