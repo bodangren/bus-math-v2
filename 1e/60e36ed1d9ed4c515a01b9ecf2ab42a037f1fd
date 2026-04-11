@@ -1,0 +1,1 @@
+Phase complete: removed resolveConvexProfileIdFromSupabaseUser from lib/convex/server.ts and deleted lib/supabase/server.ts. All tests pass, lint passes, build passes.
