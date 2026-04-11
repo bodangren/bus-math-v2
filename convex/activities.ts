@@ -331,31 +331,6 @@ export const getSpreadsheetAttempts = internalQuery({
   },
 });
 
-export const createSpreadsheetAttempt = internalMutation({
-  args: {
-    studentId: v.id("profiles"),
-    activityId: v.id("activities"),
-    attemptNumber: v.number(),
-    spreadsheetData: v.any(),
-    validationResult: v.any(),
-  },
-  handler: async (ctx, args) => {
-    const now = Date.now();
-
-    const attemptId = await ctx.db.insert("spreadsheet_submission_attempts", {
-      studentId: args.studentId,
-      activityId: args.activityId,
-      attemptNumber: args.attemptNumber,
-      spreadsheetData: args.spreadsheetData,
-      validationResult: args.validationResult,
-      submittedAt: now,
-      createdAt: now,
-    });
-
-    return { attemptId };
-  },
-});
-
 export const updateAttemptWithAiFeedback = internalMutation({
   args: {
     attemptId: v.id("spreadsheet_submission_attempts"),
