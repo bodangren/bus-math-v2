@@ -33,7 +33,7 @@
 - [x] Verify the route works correctly for all 8 units
 
 ## Phase 5: Verification and Documentation
-- [ ] Write integration tests for the full practice test flow (configure → take test → see score → persisted)
+- [x] Write integration tests for the full practice test flow (configure → take test → see score → persisted)
 - [ ] Verify the shared engine handles all 8 units without unit-specific code paths
 - [ ] Verify question randomization produces valid subsets
 - [ ] Verify score persistence and per-lesson breakdown accuracy
