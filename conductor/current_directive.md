@@ -91,7 +91,7 @@ Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workb
 5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
 6. **Study Hub Foundation and Flashcards** — COMPLETE. Archived.
 7. **Study Modes and Progress Dashboard** — COMPLETE. Archived.
-8. **Practice Tests** — IN PROGRESS. Phases 1-3 complete (question banks, Convex score schema, practice test engine). Phase 4 (routes and integration) next.
+8. **Practice Tests** — COMPLETE. All phases complete (question banks, Convex score schema, practice test engine, routes and integration, verification and documentation). Archived.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
