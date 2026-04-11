@@ -1,0 +1,1 @@
+Replaced v.any() with proper validators for spreadsheetData, validationResult, and fsrsState in convex/schema.ts and convex/activities.ts. Updated tech-debt.md to mark items as closed. Lint and build pass.
