@@ -109,7 +109,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-11. Added 17 new glossary terms covering Units 2,7,8, updated tests to verify all 8 units are covered, and updated tech-debt.md to close the glossary coverage item. All tests pass, lint passes, build passes.*
 
 - [x] **Track: Practice Test Question Banks Expansion**
-  *Link: [./tracks/practice_test_question_banks_20260411/](./tracks/practice_test_question_banks_20260411/)*
+  *Link: [./archive/practice_test_question_banks_20260411/](./archive/practice_test_question_banks_20260411/)*
   *Scope: Expand practice test question banks for Units 2-8 from 1 placeholder question each to full banks matching Unit 1's depth (3+ questions per unit).*
   *Closeout: completed on 2026-04-11. Expanded question banks for Units 2-8 to 3 questions each, covering key lessons and learning objectives. All tests pass, lint passes, build passes. Updated tech-debt.md to close the practice test question bank item.*
 
