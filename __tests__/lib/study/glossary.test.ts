@@ -88,5 +88,27 @@ describe('glossary', () => {
       expect(units.length).toBeGreaterThan(0);
       expect([...units].sort((a, b) => a - b)).toEqual(units);
     });
+
+    it('should include all units 1 through 8', () => {
+      const units = getAllGlossaryUnits();
+      expect(units).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    });
+  });
+
+  describe('unit coverage', () => {
+    it('should have at least 5 terms for Unit 2', () => {
+      const terms = getGlossaryTermsByUnit(2);
+      expect(terms.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it('should have at least 5 terms for Unit 7', () => {
+      const terms = getGlossaryTermsByUnit(7);
+      expect(terms.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it('should have at least 5 terms for Unit 8', () => {
+      const terms = getGlossaryTermsByUnit(8);
+      expect(terms.length).toBeGreaterThanOrEqual(5);
+    });
   });
 });

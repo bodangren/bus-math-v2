@@ -103,6 +103,10 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Glossary Expansion**
+  *Link: [./tracks/glossary_expansion_20260411/](./tracks/glossary_expansion_20260411/)*
+  *Scope: Expand glossary to include terms for Units 2, 7, and 8 to complete study hub coverage across all 8 units.*
+
 - [x] **Track: Full Lesson Phase Integrity Audit**
   *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
   *Scope: audit every published lesson phase for interaction fidelity, layout integration, copy rendering, dataset invariants, and authored-runtime seed drift. All 6 phases complete: checklist/guardrails, Units 1-8 + Capstone sweeps, and final verification. All verification gates pass (lint 0 errors/1 warning, test 1577/1577 with 2 pre-existing Supabase suite failures, build passes cleanly).*

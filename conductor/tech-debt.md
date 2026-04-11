@@ -13,7 +13,7 @@
 | 2026-04-10 | code_review_pass27 | chatbot rate limit uses in-memory Map — leaks memory, no cross-replica support | Medium | Open | Acceptable for now; upgrade to Convex-backed or Redis if scaling. |
 | 2026-04-11 | code_review_pass28 | generateAiFeedback parsed response fields not validated — AI could return wrong types for strengths/improvements/nextSteps | Low | Open | JSON.parse result is cast but not validated. Add zod validation or type guards. |
 | 2026-04-11 | code_review_pass30 | due_reviews.fsrsState stored as v.any() — no type safety for FSRS Card serialization | Low | Open | Functional for now; ts-fsrs Card is a plain object that survives JSON round-trip. |
-| 2026-04-11 | code_review_pass30 | Glossary covers 10 terms across Units 1, 3-6 — Units 2, 7, 8 have zero terms | Medium | Open | Need to expand glossary to all 8 units for complete study hub coverage. |
+| 2026-04-11 | code_review_pass30 | Glossary covers 10 terms across Units 1, 3-6 — Units 2, 7, 8 have zero terms | Medium | Closed | Expanded glossary to include terms for all 8 units (Units 2,7,8 now covered). |
 | 2026-04-11 | code_review_pass31 | StudyHubHome useMemo for weakTopics missing languageMode dependency | Low | Open | Display won't update reactively if languageMode changes without termMastery refetch. |
 | 2026-04-11 | code_review_pass32 | PracticeTestEngine assessment has no post-answer feedback per question | Low | Open | Missing: show correct/incorrect feedback, highlight correct answer before advancing. |
 | 2026-04-11 | practice_tests_phase4 | Practice tests only have placeholder questions for Units 2-8 | Low | Open | Units 2-8 have only 1 placeholder question each; expand to full question banks. |
