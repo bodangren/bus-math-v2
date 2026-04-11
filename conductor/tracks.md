@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Flashcard/Review Session Deduplication**
+  *Link: [./archive/flashcard_review_session_deduplication_20260411/](./archive/flashcard_review_session_deduplication_20260411/)*
+  *Scope: Deduplicate FlashcardPlayer and ReviewSession components by extracting a shared BaseReviewSession component.*
+  *Closeout: completed on 2026-04-11. Extracted shared BaseReviewSession component with props for activityType, renderHeader, and no-terms copy. FlashcardPlayer and ReviewSession are now thin wrappers. All tests pass, lint passes, build passes.*
+
 - [x] **Track: Glossary Expansion**
   *Link: [./archive/glossary_expansion_20260411/](./archive/glossary_expansion_20260411/)*
   *Scope: Expand glossary to include terms for Units 2, 7, and 8 to complete study hub coverage across all 8 units.*
