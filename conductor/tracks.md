@@ -118,9 +118,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Expand practice test question banks for Units 2-8 from 1 placeholder question each to full banks matching Unit 1's depth (3+ questions per unit).*
   *Closeout: completed on 2026-04-11. Expanded question banks for Units 2-8 to 3 questions each, covering key lessons and learning objectives. All tests pass, lint passes, build passes. Updated tech-debt.md to close the practice test question bank item.*
 
-- [~] **Track: Artifact Packaging**
+- [x] **Track: Artifact Packaging**
   *Link: [./tracks/artifact_packaging_20260411/](./tracks/artifact_packaging_20260411/)*
   *Scope: Ship CSV datasets, PDF guides/rubrics/checklists, and capstone guidelines/routes to close the largest remaining classroom-readiness gap.*
+  *Closeout: completed on 2026-04-11. Added PDF download API with role-based access, capstone guidelines and rubrics pages, and placeholder PDF files in public/pdfs/. Updated capstone page with download links. All verification gates pass (lint, build).*
 
 - [x] **Track: Full Lesson Phase Integrity Audit**
   *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
