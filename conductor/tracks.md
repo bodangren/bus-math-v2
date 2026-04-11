@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Supabase Residue Cleanup**
+  *Link: [./archive/supabase_residue_cleanup_20260411/](./archive/supabase_residue_cleanup_20260411/)*
+  *Scope: Remove remaining dead Supabase code (resolveConvexProfileIdFromSupabaseUser function and lib/supabase/server.ts shim).*
+  *Closeout: completed on 2026-04-11. Removed resolveConvexProfileIdFromSupabaseUser, SupabaseUserLike, and extractUsername from lib/convex/server.ts; deleted lib/supabase/server.ts. All tests pass, lint passes, build passes.*
+
 - [x] **Track: PDF API and Capstone Page Tests**
   *Link: [./archive/pdf_api_capstone_tests_20260411/](./archive/pdf_api_capstone_tests_20260411/)*
   *Scope: Add test coverage for PDF download API and capstone guidelines/rubrics pages.*

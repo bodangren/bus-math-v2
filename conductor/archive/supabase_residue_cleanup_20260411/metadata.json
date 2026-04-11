@@ -1,0 +1,8 @@
+{
+  "track_id": "supabase_residue_cleanup_20260411",
+  "type": "chore",
+  "status": "completed",
+  "created_at": "2026-04-11T00:00:00Z",
+  "updated_at": "2026-04-11T00:00:00Z",
+  "description": "Remove remaining dead Supabase code (resolveConvexProfileIdFromSupabaseUser and lib/supabase/server.ts)"
+}
