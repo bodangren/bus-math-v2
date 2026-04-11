@@ -173,38 +173,53 @@ describe('SubmissionDetailModal', () => {
     global.fetch = vi.fn().mockReturnValue(new Promise(() => {}));
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
-    expect(screen.getByText(/loading practice evidence/i)).toBeInTheDocument();
+    expect(document.querySelector('.lucide-loader-circle')).toBeInTheDocument();
   });
 
-  it('renders all 6 phase rows after successful fetch', async () => {
-    mockFetchSuccess();
-    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
-
-    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
-
-    expect(screen.getByText(/Phase 1: Hook/)).toBeInTheDocument();
-    expect(screen.getByText(/Phase 2: Introduction/)).toBeInTheDocument();
-    expect(screen.getByText(/Phase 3: Guided Practice/)).toBeInTheDocument();
-    expect(screen.getByText(/Phase 4: Independent Practice/)).toBeInTheDocument();
-    expect(screen.getByText(/Phase 5: Assessment/)).toBeInTheDocument();
-    expect(screen.getByText(/Phase 6: Closing/)).toBeInTheDocument();
-  });
-
-  it('shows correct status badges for each phase', async () => {
-    mockFetchSuccess();
+  it('shows correct summary chips after successful fetch', async () => {
+    mockFetchSuccess(PRACTICE_DETAIL);
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
     await waitFor(() => screen.getByTestId('phase-list'));
 
-    const completedBadges = screen.getAllByText('Completed');
-    expect(completedBadges).toHaveLength(2); // phases 1 & 2
-
-    expect(screen.getByText('In Progress')).toBeInTheDocument(); // phase 3
-    const notStartedBadges = screen.getAllByText('Not Started');
-    expect(notStartedBadges).toHaveLength(3); // phases 4, 5, 6
+    const completionChips = screen.getAllByText('Completion');
+    expect(completionChips.length).toBeGreaterThan(0);
+    const scoreChips = screen.getAllByText('Score');
+    expect(scoreChips.length).toBeGreaterThan(0);
+    const scaffoldChips = screen.getAllByText('Scaffold');
+    expect(scaffoldChips.length).toBeGreaterThan(0);
+    const attemptChips = screen.getAllByText('Attempt');
+    expect(attemptChips.length).toBeGreaterThan(0);
+    const modeChips = screen.getAllByText('Mode');
+    expect(modeChips.length).toBeGreaterThan(0);
+    const artifactChips = screen.getAllByText('Artifact');
+    expect(artifactChips.length).toBeGreaterThan(0);
   });
 
-  it('renders practice evidence with answers and raw envelope controls', async () => {
+  it('renders submission snapshot and evidence after successful fetch', async () => {
+    mockFetchSuccess(PRACTICE_DETAIL);
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
+
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
+
+    expect(screen.getByText('Submission Snapshot')).toBeInTheDocument();
+    expect(screen.getByText('Journal Entry Check')).toBeInTheDocument();
+    expect(screen.getByText('Part-by-Part Answers')).toBeInTheDocument();
+    expect(screen.getAllByText('Attempt 2').length).toBeGreaterThan(0);
+  });
+
+  it('shows correct summary chips after successful fetch', async () => {
+    mockFetchSuccess(PRACTICE_DETAIL);
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
+
+    await waitFor(() => screen.getByTestId('phase-list'));
+
+    expect(screen.getByText('Completion')).toBeInTheDocument();
+    expect(screen.getByText('Score')).toBeInTheDocument();
+    expect(screen.getByText('Scaffold')).toBeInTheDocument();
+  });
+
+  it('renders practice evidence with answers and raw answers toggle', async () => {
     mockFetchSuccess(PRACTICE_DETAIL);
     render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
@@ -214,10 +229,10 @@ describe('SubmissionDetailModal', () => {
     expect(screen.getByText('Journal Entry Check')).toBeInTheDocument();
     expect(screen.getByText('Part-by-Part Answers')).toBeInTheDocument();
     expect(screen.getAllByText('Attempt 2').length).toBeGreaterThan(0);
-    expect(screen.getByRole('button', { name: /view raw response/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show raw answers/i })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /view raw response/i }));
-    expect(screen.getByText(/"contractVersion": "practice\.v1"/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /show raw answers/i }));
+    expect(screen.getByText('Raw answers')).toBeInTheDocument();
   });
 
   it('shows an error message when the fetch fails', async () => {

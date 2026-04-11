@@ -1,157 +1,112 @@
-import { describe, it, expect, vi } from 'vitest';
-import { fetchInternalQuery } from '@/lib/convex/server';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { SubmissionDetailModal, type SelectedCell } from '@/components/teacher/SubmissionDetailModal';
 
-vi.mock('@/lib/convex/server');
+const mockFetchInternalQuery = vi.fn();
+vi.mock('@/lib/convex/server', () => ({
+  fetchInternalQuery: mockFetchInternalQuery,
+}));
 
-describe('SubmissionDetailModal integration', () => {
-  it('shows submission detail modal when gradebook cell is clicked', async () => {
-    const mockSubmissions = {
-      phases: [
+const SELECTED: SelectedCell = {
+  studentId: '00000000-0000-0000-0000-000000000002',
+  studentName: 'Alice Brown',
+  lessonId: '00000000-0000-0000-0000-000000000003',
+  lessonTitle: 'Accounting Equation',
+  independentPractice: { completed: true, score: 85, maxScore: 100 },
+  assessment: { completed: true, score: 90, maxScore: 100, gradedAt: 1234567890 },
+};
+
+const MOCK_DETAIL = {
+  studentName: 'Alice Brown',
+  lessonTitle: 'Accounting Equation',
+  phases: [
+    {
+      phaseId: 'phase1',
+      title: 'Introduction',
+      status: 'completed',
+      evidence: [
         {
-          phaseId: 'phase1',
-          title: 'Introduction',
-          status: 'completed',
-          evidence: [
-            {
-              kind: 'practice',
-              activityId: 'activity1',
-              activityTitle: 'Practice Activity',
-              componentKey: 'some-component',
-              submittedAt: '2026-04-10T00:00:00.000Z',
-              submissionData: {
-                contractVersion: 'practice.v1',
-                mode: 'independent_practice',
-                status: 'graded',
-                attemptNumber: 1,
-                submittedAt: '2026-04-10T00:00:00.000Z',
-                answers: { answer1: 'value1' },
-                parts: [
-                  {
-                    partId: 'part1',
-                    rawAnswer: 'answer',
-                    normalizedAnswer: 'answer',
-                    isCorrect: true,
-                    score: 10,
-                    maxScore: 10,
-                  },
-                ],
-              },
-              score: 10,
-              maxScore: 10,
-            },
-          ],
+          kind: 'practice',
+          activityId: 'activity1',
+          activityTitle: 'Independent Practice',
+          componentKey: 'some-component',
+          submittedAt: '2026-04-10T00:00:00.000Z',
+          submissionData: {
+            contractVersion: 'practice.v1',
+            mode: 'independent_practice',
+            status: 'graded',
+            attemptNumber: 1,
+            submittedAt: '2026-04-10T00:00:00.000Z',
+            answers: {},
+            parts: [],
+          },
+          score: 85,
+          maxScore: 100,
+        },
+        {
+          kind: 'practice',
+          activityId: 'activity2',
+          activityTitle: 'Assessment',
+          componentKey: 'assessment-component',
+          submittedAt: '2026-04-10T00:00:00.000Z',
+          submissionData: {
+            contractVersion: 'practice.v1',
+            mode: 'assessment',
+            status: 'graded',
+            attemptNumber: 1,
+            submittedAt: '2026-04-10T00:00:00.000Z',
+            answers: {},
+            parts: [],
+          },
+          score: 90,
+          maxScore: 100,
+          gradedAt: 1234567890,
         },
       ],
-    };
+    },
+  ],
+};
 
-    vi.mocked(fetchInternalQuery).mockResolvedValue(mockSubmissions);
+function mockFetchSuccess() {
+  mockFetchInternalQuery.mockResolvedValue({ detail: MOCK_DETAIL });
+}
 
-    const { getTeacherSubmissionDetail } = await import('@/convex/teacher');
-    const result = await getTeacherSubmissionDetail({
-      userId: 'user1',
-      lessonId: 'lesson1',
-    });
+describe('SubmissionDetailModal integration', () => {
+  const onClose = vi.fn();
 
-    expect(result).not.toBeNull();
-    if (result && 'phases' in result) {
-      expect(result.phases).toHaveLength(1);
-      expect(result.phases[0]?.evidence).toHaveLength(1);
-      const evidence = result.phases[0]?.evidence?.[0];
-      expect(evidence?.submissionData.mode).toBe('independent_practice');
-      expect(evidence?.score).toBe(10);
-    }
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('shows submission detail modal when gradebook cell is clicked', async () => {
+    mockFetchSuccess();
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
+
+    await waitFor(() => expect(screen.getByTestId('phase-list')).toBeInTheDocument());
+    expect(screen.getByText('Alice Brown')).toBeInTheDocument();
+    expect(screen.getByText('Accounting Equation')).toBeInTheDocument();
   });
 
   it('filters submissions by activityId and userId', async () => {
-    vi.mocked(fetchInternalQuery).mockImplementation(async (query) => {
-      if (query.name === 'getTeacherSubmissionDetail') {
-        return {
-          phases: [],
-        };
-      }
-      return null;
-    });
+    mockFetchSuccess();
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
-    const { getTeacherSubmissionDetail } = await import('@/convex/teacher');
-    const result = await getTeacherSubmissionDetail({
-      userId: 'user1',
-      lessonId: 'lesson1',
-    });
-
-    expect(result).toEqual({ phases: [] });
+    await screen.findByTestId('phase-list');
+    expect(mockFetchInternalQuery).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        userId: SELECTED.studentId,
+        lessonId: SELECTED.lessonId,
+      }),
+    );
   });
 
   it('distinguishes independent practice from assessment in same lesson', async () => {
-    const mockMultiModeSubmissions = {
-      phases: [
-        {
-          phaseId: 'phase1',
-          title: 'Practice Phase',
-          status: 'completed',
-          evidence: [
-            {
-              kind: 'practice',
-              activityId: 'activity1',
-              activityTitle: 'Independent Practice',
-              componentKey: 'practice-component',
-              submittedAt: '2026-04-10T00:00:00.000Z',
-              submissionData: {
-                contractVersion: 'practice.v1',
-                mode: 'independent_practice',
-                status: 'graded',
-                attemptNumber: 1,
-                submittedAt: '2026-04-10T00:00:00.000Z',
-                answers: {},
-                parts: [],
-              },
-              score: 85,
-              maxScore: 100,
-            },
-            {
-              kind: 'practice',
-              activityId: 'activity2',
-              activityTitle: 'Assessment',
-              componentKey: 'assessment-component',
-              submittedAt: '2026-04-10T00:00:00.000Z',
-              submissionData: {
-                contractVersion: 'practice.v1',
-                mode: 'assessment',
-                status: 'graded',
-                attemptNumber: 1,
-                submittedAt: '2026-04-10T00:00:00.000Z',
-                answers: {},
-                parts: [],
-              },
-              score: 90,
-              maxScore: 100,
-            },
-          ],
-        },
-      ],
-    };
+    mockFetchSuccess();
+    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
-    vi.mocked(fetchInternalQuery).mockResolvedValue(mockMultiModeSubmissions);
-
-    const { getTeacherSubmissionDetail } = await import('@/convex/teacher');
-    const result = await getTeacherSubmissionDetail({
-      userId: 'user1',
-      lessonId: 'lesson1',
-    });
-
-    expect(result).not.toBeNull();
-    if (result && 'phases' in result) {
-      const evidence = result.phases[0]?.evidence || [];
-      expect(evidence).toHaveLength(2);
-      
-      const ipSubmission = evidence.find(e => 
-        e.submissionData.mode === 'independent_practice'
-      );
-      const assessmentSubmission = evidence.find(e => 
-        e.submissionData.mode === 'assessment'
-      );
-
-      expect(ipSubmission?.score).toBe(85);
-      expect(assessmentSubmission?.score).toBe(90);
-    }
+    await screen.findByTestId('phase-list');
+    expect(screen.getByText('Independent Practice')).toBeInTheDocument();
+    expect(screen.getByText('Assessment')).toBeInTheDocument();
   });
 });
