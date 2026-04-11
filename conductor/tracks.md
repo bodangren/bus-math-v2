@@ -108,6 +108,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Expand glossary to include terms for Units 2, 7, and 8 to complete study hub coverage across all 8 units.*
   *Closeout: completed on 2026-04-11. Added 17 new glossary terms covering Units 2,7,8, updated tests to verify all 8 units are covered, and updated tech-debt.md to close the glossary coverage item. All tests pass, lint passes, build passes.*
 
+- [x] **Track: Practice Test Question Banks Expansion**
+  *Link: [./tracks/practice_test_question_banks_20260411/](./tracks/practice_test_question_banks_20260411/)*
+  *Scope: Expand practice test question banks for Units 2-8 from 1 placeholder question each to full banks matching Unit 1's depth (3+ questions per unit).*
+  *Closeout: completed on 2026-04-11. Expanded question banks for Units 2-8 to 3 questions each, covering key lessons and learning objectives. All tests pass, lint passes, build passes. Updated tech-debt.md to close the practice test question bank item.*
+
 - [x] **Track: Full Lesson Phase Integrity Audit**
   *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
   *Scope: audit every published lesson phase for interaction fidelity, layout integration, copy rendering, dataset invariants, and authored-runtime seed drift. All 6 phases complete: checklist/guardrails, Units 1-8 + Capstone sweeps, and final verification. All verification gates pass (lint 0 errors/1 warning, test 1577/1577 with 2 pre-existing Supabase suite failures, build passes cleanly).*

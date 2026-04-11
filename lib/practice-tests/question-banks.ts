@@ -136,6 +136,34 @@ const UNIT2_QUESTIONS: PracticeTestQuestion[] = [
     explanation: 'The accounting cycle starts with analyzing transactions to determine their effects on accounts.',
     objectiveTags: ['accounting-cycle', 'transactions'],
   },
+  {
+    id: 'unit2-question-2',
+    lessonId: 'unit2-lesson2',
+    lessonTitle: 'Journal Entries',
+    prompt: 'Which side of a T-account is used to record an increase in an asset account?',
+    correctAnswer: 'Debit',
+    distractors: [
+      'Credit',
+      'Left or right depending on the account',
+      'Both sides',
+    ],
+    explanation: 'Assets are increased with debits and decreased with credits.',
+    objectiveTags: ['journal-entries', 't-accounts', 'debits-credits'],
+  },
+  {
+    id: 'unit2-question-3',
+    lessonId: 'unit2-lesson3',
+    lessonTitle: 'Posting to Ledgers',
+    prompt: 'What is the process of transferring journal entry amounts to ledger accounts called?',
+    correctAnswer: 'Posting',
+    distractors: [
+      'Journalizing',
+      'Closing',
+      'Adjusting',
+    ],
+    explanation: 'Posting is the process of transferring journal entry amounts to the appropriate ledger accounts.',
+    objectiveTags: ['posting', 'ledgers', 'accounting-cycle'],
+  },
 ];
 
 export const UNIT2_CONFIG: PracticeTestUnitConfig = {
@@ -180,6 +208,34 @@ const UNIT3_QUESTIONS: PracticeTestQuestion[] = [
     ],
     explanation: 'The income statement shows revenues and expenses over a period, calculating net income.',
     objectiveTags: ['financial-statements', 'income-statement'],
+  },
+  {
+    id: 'unit3-question-2',
+    lessonId: 'unit3-lesson2',
+    lessonTitle: 'Income Statement',
+    prompt: 'Which of the following is an example of an operating expense?',
+    correctAnswer: 'Rent expense',
+    distractors: [
+      'Interest expense',
+      'Loss on sale of equipment',
+      'Income tax expense',
+    ],
+    explanation: 'Rent expense is a normal cost of doing business and classified as an operating expense.',
+    objectiveTags: ['income-statement', 'operating-expenses'],
+  },
+  {
+    id: 'unit3-question-3',
+    lessonId: 'unit3-lesson3',
+    lessonTitle: 'Balance Sheet',
+    prompt: 'Which of the following is classified as a current liability?',
+    correctAnswer: 'Accounts Payable',
+    distractors: [
+      'Notes Payable (due in 3 years)',
+      'Equipment',
+      'Common Stock',
+    ],
+    explanation: 'Accounts payable are obligations due within one year, making them current liabilities.',
+    objectiveTags: ['balance-sheet', 'current-liabilities'],
   },
 ];
 
@@ -226,6 +282,34 @@ const UNIT4_QUESTIONS: PracticeTestQuestion[] = [
     explanation: 'Federal income tax is a payroll deduction from the employee\'s gross pay.',
     objectiveTags: ['payroll', 'deductions'],
   },
+  {
+    id: 'unit4-question-2',
+    lessonId: 'unit4-lesson2',
+    lessonTitle: 'Payroll Taxes',
+    prompt: 'Which tax is paid by both the employee and the employer?',
+    correctAnswer: 'FICA tax',
+    distractors: [
+      'Federal income tax',
+      'Federal unemployment tax',
+      'State unemployment tax',
+    ],
+    explanation: 'FICA (Social Security and Medicare) taxes are paid by both employees and employers.',
+    objectiveTags: ['payroll-taxes', 'fica'],
+  },
+  {
+    id: 'unit4-question-3',
+    lessonId: 'unit4-lesson3',
+    lessonTitle: 'Payroll Journal Entries',
+    prompt: 'When recording payroll, what account is debited for employee gross wages?',
+    correctAnswer: 'Wage Expense',
+    distractors: [
+      'Cash',
+      'Wages Payable',
+      'Payroll Tax Expense',
+    ],
+    explanation: 'Gross wages earned by employees are recorded as a debit to Wage Expense.',
+    objectiveTags: ['payroll', 'journal-entries'],
+  },
 ];
 
 export const UNIT4_CONFIG: PracticeTestUnitConfig = {
@@ -270,6 +354,34 @@ const UNIT5_QUESTIONS: PracticeTestQuestion[] = [
     ],
     explanation: 'FIFO (First-In, First-Out) assumes the first items purchased are the first sold.',
     objectiveTags: ['inventory', 'costing-methods'],
+  },
+  {
+    id: 'unit5-question-2',
+    lessonId: 'unit5-lesson2',
+    lessonTitle: 'Inventory Costing',
+    prompt: 'In a period of rising prices, which inventory method results in the highest cost of goods sold?',
+    correctAnswer: 'LIFO',
+    distractors: [
+      'FIFO',
+      'Weighted average',
+      'Specific identification',
+    ],
+    explanation: 'LIFO (Last-In, First-Out) matches the most recent (higher) costs against revenue, resulting in higher COGS when prices are rising.',
+    objectiveTags: ['inventory', 'costing-methods', 'cogs'],
+  },
+  {
+    id: 'unit5-question-3',
+    lessonId: 'unit5-lesson3',
+    lessonTitle: 'Inventory Valuation',
+    prompt: 'Which accounting principle requires that inventory be valued at the lower of cost or market?',
+    correctAnswer: 'Conservatism',
+    distractors: [
+      'Consistency',
+      'Materiality',
+      'Matching',
+    ],
+    explanation: 'The conservatism principle requires that potential losses be recognized immediately, leading to the lower of cost or market rule for inventory.',
+    objectiveTags: ['inventory', 'valuation', 'accounting-principles'],
   },
 ];
 
@@ -316,6 +428,34 @@ const UNIT6_QUESTIONS: PracticeTestQuestion[] = [
     explanation: 'Gross margin = (Selling Price - Cost) / Selling Price = ($100 - $80)/$100 = 20%.',
     objectiveTags: ['markup', 'margin'],
   },
+  {
+    id: 'unit6-question-2',
+    lessonId: 'unit6-lesson2',
+    lessonTitle: 'Break-Even Analysis',
+    prompt: 'What is the formula for calculating the break-even point in units?',
+    correctAnswer: 'Fixed Costs / (Selling Price per Unit - Variable Cost per Unit)',
+    distractors: [
+      'Variable Costs / (Selling Price per Unit - Fixed Cost per Unit)',
+      'Fixed Costs / Variable Cost per Unit',
+      '(Selling Price per Unit - Variable Cost per Unit) / Fixed Costs',
+    ],
+    explanation: 'Break-even point (units) = Fixed Costs / Contribution Margin per Unit, where Contribution Margin per Unit = Selling Price per Unit - Variable Cost per Unit.',
+    objectiveTags: ['break-even', 'contribution-margin'],
+  },
+  {
+    id: 'unit6-question-3',
+    lessonId: 'unit6-lesson3',
+    lessonTitle: 'Inventory Algorithms',
+    prompt: 'Which inventory model helps determine the optimal order quantity to minimize total inventory costs?',
+    correctAnswer: 'Economic Order Quantity (EOQ)',
+    distractors: [
+      'Just-in-Time (JIT)',
+      'ABC Analysis',
+      'Safety Stock',
+    ],
+    explanation: 'The Economic Order Quantity (EOQ) model calculates the optimal order quantity that minimizes the sum of ordering costs and holding costs.',
+    objectiveTags: ['inventory', 'algorithms', 'eoq'],
+  },
 ];
 
 export const UNIT6_CONFIG: PracticeTestUnitConfig = {
@@ -361,6 +501,34 @@ const UNIT7_QUESTIONS: PracticeTestQuestion[] = [
     explanation: 'The payback period method ignores the time value of money.',
     objectiveTags: ['capital-budgeting', 'time-value-of-money'],
   },
+  {
+    id: 'unit7-question-2',
+    lessonId: 'unit7-lesson2',
+    lessonTitle: 'Time Value of Money',
+    prompt: 'What is the value today of a future amount of money called?',
+    correctAnswer: 'Present value',
+    distractors: [
+      'Future value',
+      'Annuity',
+      'Compound interest',
+    ],
+    explanation: 'Present value is the current value of a future sum of money, given a specific rate of return.',
+    objectiveTags: ['time-value-of-money', 'present-value'],
+  },
+  {
+    id: 'unit7-question-3',
+    lessonId: 'unit7-lesson3',
+    lessonTitle: 'Investment Decisions',
+    prompt: 'A positive net present value (NPV) indicates that an investment is expected to:',
+    correctAnswer: 'Generate more value than it costs',
+    distractors: [
+      'Lose money',
+      'Break even',
+      'Have an internal rate of return lower than the cost of capital',
+    ],
+    explanation: 'A positive NPV means the investment is expected to create value for the company.',
+    objectiveTags: ['investment-decisions', 'npv'],
+  },
 ];
 
 export const UNIT7_CONFIG: PracticeTestUnitConfig = {
@@ -405,6 +573,34 @@ const UNIT8_QUESTIONS: PracticeTestQuestion[] = [
     ],
     explanation: 'The current ratio (current assets / current liabilities) measures short-term liquidity.',
     objectiveTags: ['financial-analysis', 'ratios'],
+  },
+  {
+    id: 'unit8-question-2',
+    lessonId: 'unit8-lesson2',
+    lessonTitle: 'Ratio Analysis',
+    prompt: 'Which ratio measures a company\'s profitability relative to its shareholders\' equity?',
+    correctAnswer: 'Return on equity (ROE)',
+    distractors: [
+      'Return on assets (ROA)',
+      'Gross margin ratio',
+      'Asset turnover ratio',
+    ],
+    explanation: 'Return on equity (ROE) = Net Income / Average Shareholders\' Equity, measuring profitability relative to equity investment.',
+    objectiveTags: ['ratio-analysis', 'profitability'],
+  },
+  {
+    id: 'unit8-question-3',
+    lessonId: 'unit8-lesson3',
+    lessonTitle: 'Business Valuation',
+    prompt: 'Which valuation method estimates a company\'s value based on its future cash flows?',
+    correctAnswer: 'Discounted Cash Flow (DCF)',
+    distractors: [
+      'Price-to-Earnings (P/E) ratio',
+      'Book value',
+      'Liquidation value',
+    ],
+    explanation: 'Discounted Cash Flow (DCF) estimates value by discounting projected future cash flows to their present value.',
+    objectiveTags: ['business-valuation', 'dcf'],
   },
 ];
 
