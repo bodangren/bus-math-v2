@@ -9,10 +9,10 @@
 - [x] Verify all question bank helper tests pass
 
 ## Phase 2: Convex Score Schema
-- [ ] Design Convex `practiceTestResults` table: userId, unitNumber, lessonsTested, questionCount, score, perLessonBreakdown, completedAt
-- [ ] Write failing tests for Convex queries and mutations (save result, get results by unit, get results by student)
-- [ ] Implement Convex table, queries, and mutations
-- [ ] Verify all schema tests pass
+- [x] Design Convex `practiceTestResults` table: userId, unitNumber, lessonsTested, questionCount, score, perLessonBreakdown, completedAt
+- [x] Write failing tests for Convex queries and mutations (save result, get results by unit, get results by student)
+- [x] Implement Convex table, queries, and mutations
+- [x] Verify all schema tests pass
 
 ## Phase 3: Practice Test Engine
 - [ ] Write failing tests for PracticeTestEngine component (phase navigation, question delivery, answer submission, scoring, retry, per-lesson breakdown, reflection)

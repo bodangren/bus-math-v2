@@ -318,11 +318,12 @@ export const getExportData = query({
       .unique();
     if (!profile) throw new Error("Profile not found");
 
-    const [preferences, termMastery, dueReviews, studySessions] = await Promise.all([
+    const [preferences, termMastery, dueReviews, studySessions, practiceTestResults] = await Promise.all([
       ctx.db.query("study_preferences").withIndex("by_user", (q) => q.eq("userId", profile._id)).unique(),
       ctx.db.query("term_mastery").withIndex("by_user", (q) => q.eq("userId", profile._id)).collect(),
       ctx.db.query("due_reviews").withIndex("by_user", (q) => q.eq("userId", profile._id)).collect(),
       ctx.db.query("study_sessions").withIndex("by_user_and_started", (q) => q.eq("userId", profile._id)).order("desc").collect(),
+      ctx.db.query("practice_test_results").withIndex("by_user", (q) => q.eq("userId", profile._id)).collect(),
     ]);
 
     return {
@@ -330,7 +331,78 @@ export const getExportData = query({
       termMastery,
       dueReviews,
       studySessions,
+      practiceTestResults,
       exportedAt: Date.now(),
     };
+  },
+});
+
+export const getPracticeTestResults = query({
+  args: { unitNumber: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
+
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_username", (q) => q.eq("username", identity.email!))
+      .unique();
+    if (!profile) throw new Error("Profile not found");
+
+    let resultsQuery = ctx.db
+      .query("practice_test_results")
+      .withIndex("by_user", (q) => q.eq("userId", profile._id));
+
+    if (args.unitNumber !== undefined) {
+      resultsQuery = ctx.db
+        .query("practice_test_results")
+        .withIndex("by_user_and_unit", (q) =>
+          q.eq("userId", profile._id).eq("unitNumber", args.unitNumber)
+        );
+    }
+
+    const results = await resultsQuery.order("desc").collect();
+    return results;
+  },
+});
+
+export const savePracticeTestResult = mutation({
+  args: {
+    unitNumber: v.number(),
+    lessonsTested: v.array(v.string()),
+    questionCount: v.number(),
+    score: v.number(),
+    perLessonBreakdown: v.array(
+      v.object({
+        lessonId: v.string(),
+        correct: v.number(),
+        total: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
+
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_username", (q) => q.eq("username", identity.email!))
+      .unique();
+    if (!profile) throw new Error("Profile not found");
+
+    const now = Date.now();
+
+    const resultId = await ctx.db.insert("practice_test_results", {
+      userId: profile._id,
+      unitNumber: args.unitNumber,
+      lessonsTested: args.lessonsTested,
+      questionCount: args.questionCount,
+      score: args.score,
+      perLessonBreakdown: args.perLessonBreakdown,
+      completedAt: now,
+      createdAt: now,
+    });
+
+    return { resultId };
   },
 });

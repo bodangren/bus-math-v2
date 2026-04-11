@@ -8,13 +8,14 @@ describe('Convex Schema Translation', () => {
     
     // Verify table count after study tables addition
     const tableNames = Object.keys(schema.tables);
-    expect(tableNames.length).toBe(27);
+    expect(tableNames.length).toBe(28);
     
     // Check study tables
     expect(tableNames).toContain('study_preferences');
     expect(tableNames).toContain('term_mastery');
     expect(tableNames).toContain('due_reviews');
     expect(tableNames).toContain('study_sessions');
+    expect(tableNames).toContain('practice_test_results');
     
     // Check some specific core tables
     expect(tableNames).toContain('organizations');

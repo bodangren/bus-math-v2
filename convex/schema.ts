@@ -397,4 +397,22 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_and_activity", ["userId", "activityType"])
     .index("by_user_and_started", ["userId", "startedAt"]),
+
+  practice_test_results: defineTable({
+    userId: v.id("profiles"),
+    unitNumber: v.number(),
+    lessonsTested: v.array(v.string()),
+    questionCount: v.number(),
+    score: v.number(),
+    perLessonBreakdown: v.array(v.object({
+      lessonId: v.string(),
+      correct: v.number(),
+      total: v.number(),
+    })),
+    completedAt: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_and_unit", ["userId", "unitNumber"])
+    .index("by_user_and_completed", ["userId", "completedAt"]),
 });
