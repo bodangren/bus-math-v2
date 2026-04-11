@@ -1,8 +1,8 @@
 {
   "track_id": "practice_tests_20260410",
   "type": "feature",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-04-10T12:00:00Z",
-  "updated_at": "2026-04-11T09:40:00Z",
+  "updated_at": "2026-04-11T16:00:00Z",
   "description": "Port v1 practice test feature to v2 with a reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence."
 }

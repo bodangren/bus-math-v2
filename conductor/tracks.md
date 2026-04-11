@@ -171,9 +171,9 @@ Strictly serial. Complete and archive each track before starting the next.
    *Closeout: completed on 2026-04-11 after completing all 6 phases. All study components and routes implemented, session recording wired to Convex, and verification gates passed.*
 
 - [x] **Track: Practice Tests**
-  *Link: [./tracks/practice_tests_20260410/](./tracks/practice_tests_20260410/)*
+  *Link: [./archive/practice_tests_20260410/](./archive/practice_tests_20260410/)*
   *Scope: port v1 practice test feature with a reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence.*
-  *Status: All phases complete (question banks, Convex score schema, practice test engine, routes and integration, verification and documentation).*
+  *Closeout: completed on 2026-04-11 after completing all 5 phases: Phase 1 (question banks and data layer), Phase 2 (Convex score schema), Phase 3 (practice test engine), Phase 4 (routes and integration), Phase 5 (verification and documentation). All verification gates pass (lint 0 errors/2 pre‑existing warnings, build passes cleanly). Ready for archive.*
 
 - [x] **Track: Dead Code Pruning**
   *Link: [./archive/dead_code_pruning_20260408/](./archive/dead_code_pruning_20260408/)*
