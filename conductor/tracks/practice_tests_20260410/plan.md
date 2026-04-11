@@ -40,3 +40,7 @@
 - [ ] Run `npm run lint`, `npm test`, and `npm run build`
 - [ ] Update Conductor docs with practice test architecture and data conventions
 - [ ] Prepare the track for archive with verification evidence
+
+## Code Review Fixes (Pass 32)
+- [x] Fix closing phase division-by-zero guard
+- [x] Fix stale score/breakdown on last answer transition to closing

@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Study Hub Full Track, Pass 31)
+## Current High-Level Priorities (2026-04-11 — Practice Tests Phase 3, Pass 32)
 
 Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is **complete**. Milestone 10 (Student Study Tools) is **active**.
 
@@ -90,10 +90,46 @@ Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workb
 4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
 5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
 6. **Study Hub Foundation and Flashcards** — COMPLETE. Archived.
-7. **Study Modes and Progress Dashboard** — IN PROGRESS. Track exists with 6-phase plan (matching game, speed round, SRS review, progress dashboard, export, verification). Phase 1 (Matching Game) next.
-8. **Practice Tests** — port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex score persistence.
+7. **Study Modes and Progress Dashboard** — COMPLETE. Archived.
+8. **Practice Tests** — IN PROGRESS. Phases 1-3 complete (question banks, Convex score schema, practice test engine). Phase 4 (routes and integration) next.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Practice Tests Phases 1-3, Pass 32)
+
+Autonomous code review covering Practice Tests track Phases 1-3 (question banks and data layer, Convex score schema, practice test engine).
+
+**Fixed during review: 2 issues**
+- **Closing phase division-by-zero** (Medium): `PracticeTestEngine` closing phase rendered `Math.round((score / testQuestions.length) * 100)` without guarding against empty `testQuestions`. If the array were empty (possible via API misuse), this would render `NaN%`. Fixed by adding `testQuestions.length > 0` ternary guard.
+- **Stale score/breakdown on last answer** (Medium): When the last question was answered, `handleAnswerQuestion` updated `score` and `perLessonBreakdown` via `setScore` + `setPerLessonBreakdown`, then immediately called `setCurrentPhase('closing')`. React may batch state updates asynchronously, causing the closing screen to render with the *previous* score/breakdown values. Fixed by adding `scoreRef` and `breakdownRef` refs updated synchronously alongside state; closing phase now reads from refs to guarantee correctness.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1724/1736 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response", 5 GradebookDrillDown integration Convex mock, 3 SubmissionDetailModal integration Convex mock)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Phase 1 (Question Banks and Data Layer)**: New `lib/practice-tests/types.ts` with 5 interfaces (`PracticeTestQuestion`, `PracticeTestLesson`, `PracticeTestPhaseContent`, `PracticeTestMessaging`, `PracticeTestUnitConfig`). New `lib/practice-tests/question-banks.ts` with Fisher-Yates shuffle, `filterQuestionsByLessonIds`, `drawRandomQuestions`, `shuffleAnswers` helpers. Unit 1 config with 3 MCQ questions, lesson metadata, phase content, and messaging. Well-tested (8 tests).
+- **Phase 2 (Convex Score Schema)**: New `practice_test_results` Convex table with `userId`, `unitNumber`, `lessonsTested`, `questionCount`, `score`, `perLessonBreakdown`, `completedAt`, `createdAt`. Three indexes: `by_user`, `by_user_and_unit`, `by_user_and_completed`. New Convex functions: `getPracticeTestResults` (filterable by unit), `savePracticeTestResult`. Schema test updated to expect 28 tables.
+- **Phase 3 (Practice Test Engine)**: New `components/student/PracticeTestEngine.tsx` — 6-phase data-driven component (hook → introduction → guided practice → independent practice → assessment → closing). Lesson filter checkboxes with select all/clear, question count config with clamping, MCQ answer buttons, per-lesson score breakdown display, retry capability. Well-tested (4 tests).
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 31)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+
+**New items recorded in tech-debt.md:**
+- Closing phase division-by-zero (Medium — fixed)
+- Stale score/breakdown on last answer (Medium — fixed)
+- Explanation visible before answering in assessment (Low — open)
+- No score persistence on test completion (Medium — open, Phase 4 scope)
+- No post-answer feedback per question (Low — open)
+
+**Updated during review:**
+- tech-debt.md: 2 fixes closed, 3 new open items
+- tracks/practice_tests_20260410/metadata.json: status updated to in_progress
+- tracks.md: Practice Tests marked in-progress with phase status
+
+**Phase status**: Practice Tests Phases 1-3 COMPLETE. Phase 4 (Routes and Integration) next. All verification gates pass.
 
 ## Code Review Summary (2026-04-11 — Study Hub Full Track, Pass 31)
 

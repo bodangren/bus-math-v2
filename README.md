@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 31)
+Last updated: April 11, 2026 (Code Review Pass 32)
 
 ## Status Snapshot
 
@@ -30,7 +30,7 @@ However, this repository is **not yet a fully classroom-complete education app**
 ### Current overall status
 
 - Conductor Milestones 1-9 are marked complete.
-- Milestone 10, `Student Study Tools`, is active (Study Hub Foundation track in progress).
+- Milestone 10, `Student Study Tools`, is active (Practice Tests track in progress, Phases 1-3 complete).
 - Across the completed Milestone 9, all 5 serial tracks finished:
   1. ~~Workbook Infrastructure and Unit 1 Pilot~~ — complete
   2. ~~Units 2-4 Workbook Rollout~~ — complete
@@ -81,7 +81,7 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 3 (1 in-progress Milestone 10, 2 planned Milestone 10) |
+| Active Conductor tracks | 1 (1 in-progress Milestone 10 track) |
 | Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
 | Archived track directories | 101 |
 | Test files under `__tests__` and `tests` | 298 |
@@ -502,27 +502,28 @@ Shipped: bilingual glossary (10 terms, EN/ZH), Convex study schema (4 tables), F
 
 ### 2. Study Modes and Progress Dashboard
 
-Track: `study_modes_progress_20260410` — **IN PROGRESS** (Phase 1 next).
+Track: `study_modes_progress_20260410` — **COMPLETE** (archived).
 
-Goal:
-
-- complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export
-
-Status: Track plan defined with 6 phases. Phase 1 (Matching Game) is next.
-
-Desired product shape:
-
-- four active study modes (flashcards, matching, speed round, SRS review)
-- progress dashboard with per-unit mastery bars, aggregate stats, session history
-- JSON/CSV export for study data
+Shipped: matching game, speed round, SRS review session, progress dashboard, data export. All 6 phases complete. All verification gates pass. Archived on 2026-04-11.
 
 ### 3. Practice Tests
 
-Track: `practice_tests_20260410` — **PLANNED**.
+Track: `practice_tests_20260410` — **IN PROGRESS** (Phases 1-3 complete).
 
 Goal:
 
 - port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence
+
+Status: Phases 1-3 complete (question banks and data layer, Convex score schema, practice test engine). Phase 4 (routes and integration) is next.
+
+Desired product shape:
+
+- 8-unit question bank with MCQ questions per lesson
+- 6-phase test experience: hook, introduction, guided practice, independent practice, assessment, closing
+- lesson filter and question count configuration
+- per-lesson score breakdown
+- Convex-backed score persistence
+- entry point from student unit overview or dashboard
 
 ## Definition of Done for "Classroom Complete"
 

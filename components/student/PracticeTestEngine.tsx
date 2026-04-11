@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -21,8 +21,12 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
   const [questionCount, setQuestionCount] = useState<number>(Math.min(10, unitConfig.questions.length));
   const [testQuestions, setTestQuestions] = useState<{ question: ReturnType<typeof shuffleAnswers>; original: typeof unitConfig.questions[0] }[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [score, setScore] = useState<number>(0);
-  const [perLessonBreakdown, setPerLessonBreakdown] = useState<Record<string, { correct: number; total: number }>>({});
+  const [, setScore] = useState<number>(0);
+  const [, setPerLessonBreakdown] = useState<Record<string, { correct: number; total: number }>>({});
+
+  // Refs to track running totals — avoids stale-state risk when transitioning to closing on last answer
+  const scoreRef = useRef(0);
+  const breakdownRef = useRef<Record<string, { correct: number; total: number }>>({});
 
   const handleNextPhase = () => {
     const phases: Phase[] = ['hook', 'introduction', 'guided-practice', 'independent-practice', 'assessment', 'closing'];
@@ -64,6 +68,7 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
     setTestQuestions(shuffledQuestions);
     setCurrentQuestionIndex(0);
     setScore(0);
+    scoreRef.current = 0;
     const breakdown: Record<string, { correct: number; total: number }> = {};
     selectedLessonIds.forEach((lessonId) => {
       breakdown[lessonId] = { correct: 0, total: 0 };
@@ -73,6 +78,7 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
         breakdown[original.lessonId].total++;
       }
     });
+    breakdownRef.current = breakdown;
     setPerLessonBreakdown(breakdown);
     setCurrentPhase('assessment');
   };
@@ -82,7 +88,14 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
     const isCorrect = selectedAnswer === question.answer;
     
     if (isCorrect) {
+      scoreRef.current += 1;
       setScore((prev) => prev + 1);
+      if (breakdownRef.current[original.lessonId]) {
+        breakdownRef.current[original.lessonId] = {
+          ...breakdownRef.current[original.lessonId],
+          correct: breakdownRef.current[original.lessonId].correct + 1,
+        };
+      }
       setPerLessonBreakdown((prev) => ({
         ...prev,
         [original.lessonId]: {
@@ -100,6 +113,8 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
   };
 
   const handleRetryTest = () => {
+    scoreRef.current = 0;
+    breakdownRef.current = {};
     setCurrentPhase('introduction');
   };
 
@@ -213,13 +228,13 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
               <p className="text-lg mb-6">{unitConfig.phaseContent.closing}</p>
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-3">Your Score</h3>
-                <div className="text-4xl font-bold mb-2">{score}/{testQuestions.length}</div>
-                <div className="text-lg text-gray-600">{Math.round((score / testQuestions.length) * 100)}%</div>
+                <div className="text-4xl font-bold mb-2">{scoreRef.current}/{testQuestions.length}</div>
+                <div className="text-lg text-gray-600">{testQuestions.length > 0 ? Math.round((scoreRef.current / testQuestions.length) * 100) : 0}%</div>
               </div>
               <div className="mb-6">
                 <h3 className="text-md font-semibold mb-3">Per-lesson breakdown</h3>
                 <div className="space-y-2">
-                  {Object.entries(perLessonBreakdown).map(([lessonId, data]) => {
+                  {Object.entries(breakdownRef.current).map(([lessonId, data]) => {
                     const lesson = unitConfig.lessons.find((l) => l.id === lessonId);
                     return (
                       <div key={lessonId} className="flex justify-between">
