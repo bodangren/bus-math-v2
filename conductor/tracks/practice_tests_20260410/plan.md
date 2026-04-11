@@ -15,14 +15,14 @@
 - [x] Verify all schema tests pass
 
 ## Phase 3: Practice Test Engine
-- [ ] Write failing tests for PracticeTestEngine component (phase navigation, question delivery, answer submission, scoring, retry, per-lesson breakdown, reflection)
-- [ ] Implement PracticeTestEngine as a data-driven shared component
-- [ ] Implement 6-phase experience: Hook, Introduction (lesson filter + config), Guided Practice (strategy), Independent Practice (launch), Assessment (MCQ + score), Closing (reflection)
-- [ ] Implement lesson filter checkboxes with select all/clear
-- [ ] Implement question count configuration with clamping
-- [ ] Implement per-question feedback with explanations
-- [ ] Implement per-lesson score breakdown display
-- [ ] Verify all engine tests pass
+- [x] Write failing tests for PracticeTestEngine component (phase navigation, question delivery, answer submission, scoring, retry, per-lesson breakdown, reflection)
+- [x] Implement PracticeTestEngine as a data-driven shared component
+- [x] Implement 6-phase experience: Hook, Introduction (lesson filter + config), Guided Practice (strategy), Independent Practice (launch), Assessment (MCQ + score), Closing (reflection)
+- [x] Implement lesson filter checkboxes with select all/clear
+- [x] Implement question count configuration with clamping
+- [x] Implement per-question feedback with explanations
+- [x] Implement per-lesson score breakdown display
+- [x] Verify all engine tests pass
 
 ## Phase 4: Routes and Integration
 - [ ] Create `/student/unit/[unitNumber]/practice-test` route with student auth guard
