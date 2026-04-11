@@ -80,7 +80,31 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 39)
+## Code Review Summary (2026-04-12 — Full Codebase Audit, Pass 40)
+
+Autonomous code review covering the Supabase residue cleanup track (since Pass 39).
+
+**Scope:** 2 commits since Pass 39 — removal of unused `resolveConvexProfileIdFromSupabaseUser`, `SupabaseUserLike`, and `extractUsername` from `lib/convex/server.ts`, and deletion of dead `lib/supabase/server.ts` shim (132 lines). Track properly archived in `conductor/archive/supabase_residue_cleanup_20260411/`.
+
+**Fixed during review: 0 issues**
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1749/1749 tests pass (302 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Supabase residue cleanup**: Clean removal of dead code. `lib/convex/server.ts` now only exports `api`, `internal`, and Convex client utilities. No Supabase references remain in any source files (`.ts`, `.tsx`, `.js`, `.jsx`). Track metadata and plan properly archived. tech-debt.md updated to close the 2 Pass 39 cleanup items.
+
+**Pre-existing issues confirmed (not fixed):**
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- problem-generator flaky test (pre-existing)
+- Capstone rubrics page is a stub (no inline content)
+- exercises tests are shallow — test names claim behavior but only check rendering
+
+**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: real PDF content, CSV datasets, chatbot rate limiting.
+
+## Current High-Level Priorities (2026-04-12 — Full Codebase Audit, Pass 40)
 
 Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
