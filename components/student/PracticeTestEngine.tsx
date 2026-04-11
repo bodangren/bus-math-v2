@@ -11,11 +11,22 @@ import { PracticeTestUnitConfig, filterQuestionsByLessonIds, drawRandomQuestions
 
 interface PracticeTestEngineProps {
   unitConfig: PracticeTestUnitConfig;
+  onComplete?: (result: {
+    unitNumber: number;
+    lessonsTested: string[];
+    questionCount: number;
+    score: number;
+    perLessonBreakdown: Array<{
+      lessonId: string;
+      correct: number;
+      total: number;
+    }>;
+  }) => void;
 }
 
 type Phase = 'hook' | 'introduction' | 'guided-practice' | 'independent-practice' | 'assessment' | 'closing';
 
-export default function PracticeTestEngine({ unitConfig }: PracticeTestEngineProps) {
+export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeTestEngineProps) {
   const [currentPhase, setCurrentPhase] = useState<Phase>('hook');
   const [selectedLessonIds, setSelectedLessonIds] = useState<string[]>(unitConfig.lessons.map((l) => l.id));
   const [questionCount, setQuestionCount] = useState<number>(Math.min(10, unitConfig.questions.length));
@@ -27,6 +38,7 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
   // Refs to track running totals — avoids stale-state risk when transitioning to closing on last answer
   const scoreRef = useRef(0);
   const breakdownRef = useRef<Record<string, { correct: number; total: number }>>({});
+  const hasCalledOnCompleteRef = useRef(false);
 
   const handleNextPhase = () => {
     const phases: Phase[] = ['hook', 'introduction', 'guided-practice', 'independent-practice', 'assessment', 'closing'];
@@ -109,12 +121,29 @@ export default function PracticeTestEngine({ unitConfig }: PracticeTestEnginePro
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
       setCurrentPhase('closing');
+      
+      if (onComplete && !hasCalledOnCompleteRef.current) {
+        hasCalledOnCompleteRef.current = true;
+        const perLessonBreakdownArray = Object.entries(breakdownRef.current).map(([lessonId, data]) => ({
+          lessonId,
+          correct: data.correct,
+          total: data.total,
+        }));
+        onComplete({
+          unitNumber: unitConfig.unitNumber,
+          lessonsTested: selectedLessonIds,
+          questionCount: testQuestions.length,
+          score: scoreRef.current,
+          perLessonBreakdown: perLessonBreakdownArray,
+        });
+      }
     }
   };
 
   const handleRetryTest = () => {
     scoreRef.current = 0;
     breakdownRef.current = {};
+    hasCalledOnCompleteRef.current = false;
     setCurrentPhase('introduction');
   };
 

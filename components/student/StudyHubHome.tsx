@@ -203,15 +203,17 @@ export function StudyHubHome() {
                     </CardDescription>
                   </Card>
                 </Link>
-                <Card className="border-border/60 bg-muted/30 opacity-70">
-                  <CardHeader className="pb-2">
-                    <BookOpen className="h-6 w-6 text-muted-foreground" />
-                    <CardTitle className="text-lg">Practice Tests</CardTitle>
-                  </CardHeader>
-                  <CardDescription>
-                    Coming soon
-                  </CardDescription>
-                </Card>
+                <Link href="/student/study/practice-tests" className="block">
+                  <Card className="border-primary/20 bg-background hover:border-primary/40 transition-colors">
+                    <CardHeader className="pb-2">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-lg">Practice Tests</CardTitle>
+                    </CardHeader>
+                    <CardDescription>
+                      Test your knowledge with unit-specific practice tests
+                    </CardDescription>
+                  </Card>
+                </Link>
               </CardContent>
             </Card>
           </section>

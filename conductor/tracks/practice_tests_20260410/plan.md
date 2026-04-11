@@ -25,12 +25,12 @@
 - [x] Verify all engine tests pass
 
 ## Phase 4: Routes and Integration
-- [ ] Create `/student/unit/[unitNumber]/practice-test` route with student auth guard
-- [ ] Wire the route to supply unit-specific data to PracticeTestEngine
-- [ ] Implement score persistence to Convex on test completion
-- [ ] Add "Start Practice Test" entry point to student unit overview or dashboard
-- [ ] Add unit-specific messaging for the practice test callout cards
-- [ ] Verify the route works correctly for all 8 units
+- [x] Create `/student/study/practice-tests/[unitNumber]` route with student auth guard (and hub page at `/student/study/practice-tests`)
+- [x] Wire the route to supply unit-specific data to PracticeTestEngine
+- [x] Implement score persistence to Convex on test completion (plus study session recording)
+- [x] Add "Start Practice Test" entry point to Study Hub
+- [x] Add unit-specific messaging for the practice test callout cards
+- [x] Verify the route works correctly for all 8 units
 
 ## Phase 5: Verification and Documentation
 - [ ] Write integration tests for the full practice test flow (configure → take test → see score → persisted)

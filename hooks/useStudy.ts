@@ -40,6 +40,14 @@ export function useExportData() {
   return useQuery(api.study.getExportData);
 }
 
+export function usePracticeTestResults(unitNumber?: number) {
+  return useQuery(api.study.getPracticeTestResults, unitNumber !== undefined ? { unitNumber } : "skip");
+}
+
+export function useSavePracticeTestResult() {
+  return useMutation(api.study.savePracticeTestResult);
+}
+
 export function getGlossaryTermDisplay(term: GlossaryTerm, languageMode: LanguageMode) {
   switch (languageMode) {
     case "en_to_en":
