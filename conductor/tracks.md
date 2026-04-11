@@ -170,10 +170,10 @@ Strictly serial. Complete and archive each track before starting the next.
    *Scope: complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export. All 6 phases complete: matching game, speed round, SRS review, progress dashboard, export and hub home update, and verification. Verification gates: npm run lint (0 errors, 2 pre-existing warnings), npm test (1693/1705 tests pass, 12 pre-existing failures), npm run build (passes cleanly).*
    *Closeout: completed on 2026-04-11 after completing all 6 phases. All study components and routes implemented, session recording wired to Convex, and verification gates passed.*
 
-- [~] **Track: Practice Tests**
+- [x] **Track: Practice Tests**
   *Link: [./tracks/practice_tests_20260410/](./tracks/practice_tests_20260410/)*
   *Scope: port v1 practice test feature with a reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence.*
-  *Status: Phases 1-3 complete (question banks, Convex score schema, practice test engine). Phase 4 (routes and integration) next.*
+  *Status: All phases complete (question banks, Convex score schema, practice test engine, routes and integration, verification and documentation).*
 
 - [x] **Track: Dead Code Pruning**
   *Link: [./archive/dead_code_pruning_20260408/](./archive/dead_code_pruning_20260408/)*

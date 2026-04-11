@@ -34,12 +34,12 @@
 
 ## Phase 5: Verification and Documentation
 - [x] Write integration tests for the full practice test flow (configure → take test → see score → persisted)
-- [ ] Verify the shared engine handles all 8 units without unit-specific code paths
-- [ ] Verify question randomization produces valid subsets
-- [ ] Verify score persistence and per-lesson breakdown accuracy
-- [ ] Run `npm run lint`, `npm test`, and `npm run build`
-- [ ] Update Conductor docs with practice test architecture and data conventions
-- [ ] Prepare the track for archive with verification evidence
+- [x] Verify the shared engine handles all 8 units without unit-specific code paths
+- [x] Verify question randomization produces valid subsets
+- [x] Verify score persistence and per-lesson breakdown accuracy
+- [x] Run `npm run lint`, `npm test`, and `npm run build`
+- [x] Update Conductor docs with practice test architecture and data conventions
+- [x] Prepare the track for archive with verification evidence
 
 ## Code Review Fixes (Pass 32)
 - [x] Fix closing phase division-by-zero guard
