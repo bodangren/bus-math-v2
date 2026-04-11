@@ -1,10 +1,10 @@
 # Implementation Plan: Artifact Packaging
 
 ## Phase 1: Inventory and Infrastructure Audit
-- [ ] Inventory existing artifacts (CSV datasets, PDF guides, capstone resources)
-- [ ] Review existing workbook download infrastructure
-- [ ] Define file structure for new artifacts
-- [ ] Update tracks.md to mark track as in-progress
+- [x] Inventory existing artifacts (CSV datasets, PDF guides, capstone resources) — No existing CSVs; PDFs referenced in capstone-authored.ts are missing
+- [x] Review existing workbook download infrastructure — Reviewed app/api/workbooks/[unit]/[lesson]/[type]/route.ts; will extend this pattern for PDFs and CSVs
+- [x] Define file structure for new artifacts — public/datasets/ for CSVs, public/pdfs/ for PDFs
+- [x] Update tracks.md to mark track as in-progress (e3df335)
 
 ## Phase 2: CSV Dataset Packaging
 - [ ] Identify all CSV datasets used in the curriculum
