@@ -10,7 +10,6 @@ export default defineConfig({
     globals: true,
     include: [
       '__tests__/**/*.test.{ts,tsx}',
-      'tests/security/**/*.test.{ts,tsx}',
     ],
     reporters: 'default'
   },

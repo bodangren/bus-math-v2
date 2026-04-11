@@ -7,7 +7,7 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ unit: string; lesson: string; type: 'student' | 'teacher' }> }
 ) {
-  const session = await getRequestSessionClaims();
+  const session = await getRequestSessionClaims(request);
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

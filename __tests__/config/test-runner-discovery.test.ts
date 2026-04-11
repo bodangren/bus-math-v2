@@ -30,17 +30,14 @@ function listFiles(dir: string, matcher: RegExp): string[] {
 }
 
 describe('test runner discovery configuration', () => {
-  it('keeps Vitest discovery focused on __tests__ and security integration tests', () => {
+  it('keeps Vitest discovery focused on __tests__ directory', () => {
     const vitestConfig = fs.readFileSync(path.join(ROOT, 'vitest.config.ts'), 'utf8');
 
     expect(vitestConfig).toContain("'__tests__/**/*.test.{ts,tsx}'");
-    expect(vitestConfig).toContain("'tests/security/**/*.test.{ts,tsx}'");
 
     const unitTests = listFiles(path.join(ROOT, '__tests__'), /\.test\.(ts|tsx)$/);
-    const securityTests = listFiles(path.join(ROOT, 'tests/security'), /\.test\.(ts|tsx)$/);
 
     expect(unitTests.length).toBeGreaterThan(0);
-    expect(securityTests.length).toBeGreaterThan(0);
   });
 
   it('pins Playwright discovery to tests/e2e *.spec.ts files', () => {

@@ -44,7 +44,7 @@ Answer concisely, using only the lesson context above.`;
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getRequestSessionClaims();
+  const session = await getRequestSessionClaims(request);
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

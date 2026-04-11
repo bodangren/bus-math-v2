@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 38)
+## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 39)
 
 Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
@@ -101,10 +101,50 @@ If continuing development, the highest-value next steps are:
 1. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
 2. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
 3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
-4. **Validator consolidation** — Extract duplicated validators (spreadsheetData, validationResult) from schema.ts and activities.ts into shared module.
-5. **PDF API and capstone page tests** — New routes/pages have no test coverage.
+4. **Remove remaining dead Supabase code** — `lib/convex/server.ts` has unused `resolveConvexProfileIdFromSupabaseUser` function and `lib/supabase/server.ts` shim still exists.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 39)
+
+Autonomous code review covering the PDF API tests, capstone page tests, validator consolidation, and Supabase cleanup tracks (since Pass 38).
+
+**Scope:** 8 commits since Pass 38 — PDF API route tests, capstone guidelines/rubrics page tests, spreadsheet validator consolidation into shared module, Supabase package/RLS cleanup, and track archival.
+
+**Fixed during review: 2 issues**
+- **getRequestSessionClaims() called without request argument** (High): Three API routes (`pdfs/[pdfName]`, `workbooks/[unit]/[lesson]/[type]`, `student/lesson-chatbot`) called `getRequestSessionClaims()` without the required `request` argument. The function's signature requires `request: Request`; without it, the body crashes on `request.headers.get('cookie')` of undefined. The tests masked this because mocks don't assert on call arguments. Fixed: all three routes now pass `request`.
+- **Incomplete Supabase cleanup** (Medium): After the Supabase removal commits, several broken/dead references remained: `tests/e2e/lesson-flow.spec.ts` called deleted seed/cleanup routes and imported deleted package; `tests/e2e/utils/db-helpers.ts` imported deleted `@supabase/supabase-js`; `lib/supabase/client.ts` and `lib/supabase/server.ts` were dead files; `components/deploy-button.tsx` and `components/env-var-warning.tsx` were dead Vercel/Supabase template components; `lib/utils.ts` had a dead `hasEnvVars` export; `proxy.ts` still listed deleted API routes; `vitest.config.ts` still included the deleted `tests/security/` glob. Fixed: removed dead files, removed stale exports and proxy refs, updated vitest config and discovery test.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1749/1749 tests pass (302 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Spreadsheet validator consolidation**: Clean extraction of 4 validators (`spreadsheetCellValidator`, `spreadsheetDataValidator`, `cellFeedbackValidator`, `validationResultValidator`) into `convex/spreadsheet_validators.ts`. Both `schema.ts` and `activities.ts` import from the shared module. No duplication remains. Validators are well-formed Convex value definitions. One minor pre-existing observation: `timestamp` field uses `v.string()` while other timestamps use `v.number()` — predates this refactor.
+- **PDF API and capstone page tests**: 4 tests for PDF API route (auth, validation, missing file, happy path), 1 test for guidelines page, 1 test for rubrics page. Tests are well-structured. The `getRequestSessionClaims` missing-argument bug was caught during review.
+- **Supabase cleanup**: Packages removed from `package.json`, RLS test suites deleted. Partial cleanup found during review — fixed above.
+
+**Pre-existing issues confirmed (not fixed):**
+- `lib/convex/server.ts` has unused `resolveConvexProfileIdFromSupabaseUser` (dead code, harmless)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- Capstone rubrics page is a stub (no inline content)
+- problem-generator flaky test (pre-existing)
+
+**Updated during review:**
+- app/api/pdfs/[pdfName]/route.ts: Added missing `request` arg to `getRequestSessionClaims`
+- app/api/workbooks/[unit]/[lesson]/[type]/route.ts: Added missing `request` arg
+- app/api/student/lesson-chatbot/route.ts: Added missing `request` arg
+- vitest.config.ts: Removed deleted `tests/security/` glob
+- __tests__/config/test-runner-discovery.test.ts: Removed security test file check
+- proxy.ts: Removed deleted seed/cleanup-e2e route references
+- lib/utils.ts: Removed dead `hasEnvVars` export
+- Deleted: `tests/e2e/lesson-flow.spec.ts`, `tests/e2e/utils/db-helpers.ts`, `lib/supabase/client.ts`, `components/deploy-button.tsx`, `components/env-var-warning.tsx`
+- README.md: Updated pass number, test file count, archived track count
+- tech-debt.md: New entries for fixed issues
+- current_directive.md: Updated priorities, added Pass 39 summary
+
+**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: real PDF content, CSV datasets, chatbot rate limiting, remaining dead Supabase code.
 
 ## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 38)
 
