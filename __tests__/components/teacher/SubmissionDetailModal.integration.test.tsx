@@ -5,6 +5,11 @@ import { SubmissionDetailModal, type SelectedCell } from '@/components/teacher/S
 const mockFetchInternalQuery = vi.fn();
 vi.mock('@/lib/convex/server', () => ({
   fetchInternalQuery: mockFetchInternalQuery,
+  internal: {
+    teacher: {
+      getSubmissionDetail: 'getSubmissionDetail',
+    },
+  },
 }));
 
 const SELECTED: SelectedCell = {

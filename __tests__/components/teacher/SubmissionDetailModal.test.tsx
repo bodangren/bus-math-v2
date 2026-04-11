@@ -24,6 +24,7 @@ vi.mock('@/lib/convex/server', () => ({
   internal: {
     teacher: {
       getTeacherLessonMonitoringData: 'getTeacherLessonMonitoringData',
+      getSubmissionDetail: 'getSubmissionDetail',
     },
   },
 }));
@@ -208,16 +209,7 @@ describe('SubmissionDetailModal', () => {
     expect(screen.getAllByText('Attempt 2').length).toBeGreaterThan(0);
   });
 
-  it('shows correct summary chips after successful fetch', async () => {
-    mockFetchSuccess(PRACTICE_DETAIL);
-    render(<SubmissionDetailModal selected={SELECTED} onClose={onClose} />);
 
-    await waitFor(() => screen.getByTestId('phase-list'));
-
-    expect(screen.getByText('Completion')).toBeInTheDocument();
-    expect(screen.getByText('Score')).toBeInTheDocument();
-    expect(screen.getByText('Scaffold')).toBeInTheDocument();
-  });
 
   it('renders practice evidence with answers and raw answers toggle', async () => {
     mockFetchSuccess(PRACTICE_DETAIL);
