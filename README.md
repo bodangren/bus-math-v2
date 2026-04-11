@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 37)
+Last updated: April 11, 2026 (Code Review Pass 38)
 
 ## Status Snapshot
 
@@ -23,7 +23,7 @@ However, this repository is **not yet a fully classroom-complete education app**
 - ~~teacher-facing competency heatmaps~~ — complete
 - ~~education app readiness hardening~~ — complete
 - downloadable workbook, dataset, rubric, checklist, and guide files for the full course
-- complete capstone supporting pages and asset packets (workbooks shipped, routes pending)
+- ~~complete capstone supporting pages and asset packets (workbooks shipped, routes pending)~~ — routes shipped, placeholder PDFs shipped
 - ~~student study tools (flashcards, matching, speed round, practice tests)~~ — complete
 
 ## Executive Summary
@@ -73,6 +73,7 @@ The target product is:
 | 7. Practice Contract and Evidence Loop | Complete on April 6, 2026 |
 | 8. Classroom Product Completeness | Complete on April 10, 2026 |
 | 9. Workbook System and AI Features | Complete on April 11, 2026 |
+| 10. Student Study Tools | Complete on April 11, 2026 |
 
 ### Repo-level indicators
 
@@ -224,8 +225,8 @@ That means:
 | Units 2-8 detailed markdown source parity | Partial |
 | XLSX lesson workbooks | 66 files shipped (all 8 units, Lessons 4-7, student + teacher + 2 capstone); some referenced filenames still missing |
 | CSV lesson datasets | Not shipped as real files yet |
-| PDF guides/rubrics/checklists | Not shipped as real files yet |
-| Capstone support packet | 2 workbook files shipped; routes and remaining PDFs pending |
+| PDF guides/rubrics/checklists | 3 placeholder PDFs shipped (Artifact Packaging track); real content pending |
+| Capstone support packet | 2 workbook files + 3 placeholder PDFs + guidelines/rubrics routes shipped |
 
 ## Student Experience: Real Status
 
@@ -247,8 +248,8 @@ That means:
 ### What is not fully done yet
 
 - CSV lesson datasets not shipped as real files
-- PDF guides/rubrics/checklists not shipped as real files
-- capstone guidelines and rubrics routes pending
+- PDF guides/rubrics/checklists are placeholder files (real content pending)
+- ~~capstone guidelines and rubrics routes pending~~ — complete
 
 ### Current student-product interpretation
 
@@ -296,9 +297,9 @@ The teacher side is beyond "dashboard mockup" status. It is a meaningful reporti
 
 ### What is not implemented
 
-- `/capstone/guidelines` is linked from the capstone page but no such route exists in the app router
-- `/capstone/rubrics` is linked from the capstone page but no such route exists in the app router
-- referenced capstone workbook/rubric/guide/checklist files are not present as actual repo assets
+- ~~`/capstone/guidelines` is linked from the capstone page but no such route exists in the app router~~ — complete (Artifact Packaging track)
+- ~~`/capstone/rubrics` is linked from the capstone page but no such route exists in the app router~~ — complete (Artifact Packaging track)
+- ~~referenced capstone workbook/rubric/guide/checklist files are not present as actual repo assets~~ — placeholder PDFs shipped; real content pending
 
 ### Practical conclusion
 
@@ -346,9 +347,9 @@ These are the major remaining blockers.
 
 - ~~missing `.xlsx` workbooks~~ — 66 workbooks shipped (all 8 units + 2 capstone)
 - missing `.csv` datasets
-- missing `.pdf` guides
-- missing `.pdf` rubrics
-- ~~missing capstone support packet files~~ — 2 capstone workbooks shipped; routes and remaining PDFs pending
+- missing `.pdf` guides — placeholder files shipped (Artifact Packaging track)
+- missing `.pdf` rubrics — placeholder files shipped (Artifact Packaging track)
+- ~~missing capstone support packet files~~ — 2 capstone workbooks + 3 placeholder PDFs + guidelines/rubrics routes shipped
 
 ### Release-readiness blockers
 

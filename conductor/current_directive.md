@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 37)
+## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 38)
 
 Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
@@ -92,18 +92,60 @@ Milestones 1-10 are **complete**. All tracks archived. The project is in a stabi
 6. **Study Hub Foundation and Flashcards** — COMPLETE. Archived.
 7. **Study Modes and Progress Dashboard** — COMPLETE. Archived.
 8. **Practice Tests** — COMPLETE. Archived.
+9. **Artifact Packaging** — COMPLETE. Archived.
 
 ### Recommended Next Priorities
 
 If continuing development, the highest-value next steps are:
 
-1. **Artifact packaging** — Ship CSV datasets, PDF guides/rubrics/checklists, capstone guidelines/routes. Largest remaining classroom-readiness gap.
-2. **Convex schema hardening** — Replace `v.any()` with proper validators for `spreadsheetData`, `validationResult`, and `fsrsState`.
+1. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
+2. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
 3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
-4. **SpeedRoundGame timer refactor** — Interval re-creates on each answer; use refs to avoid potential stale closure.
-5. **Dead code cleanup** — Remove unused `createSpreadsheetAttempt` mutation.
+4. **Validator consolidation** — Extract duplicated validators (spreadsheetData, validationResult) from schema.ts and activities.ts into shared module.
+5. **PDF API and capstone page tests** — New routes/pages have no test coverage.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
+
+## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 38)
+
+Autonomous code review covering the Artifact Packaging track (since Pass 37) and SpeedRoundGame timer refactor.
+
+**Scope:** 7 commits since Pass 37 — Artifact Packaging track (PDF download API, capstone guidelines/rubrics pages, placeholder PDFs, track archival), SpeedRoundGame timer refactor using refs, Convex schema hardening (validators replacing v.any()), and dead code removal.
+
+**Fixed during review: 1 issue**
+- **PDF API TEACHER_ONLY_PDFS auth mismatch** (High): Capstone page showed download buttons for all 3 PDFs to all users (page is public, no auth context), but API route restricted pitch rubric and model tour checklist to teachers only, causing 403 for students. Removed TEACHER_ONLY_PDFS restriction — all capstone PDFs are accessible to any authenticated user.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1743/1743 tests pass; 2 test files fail (pre-existing Supabase RLS suites on missing credentials)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Artifact Packaging track (all phases)**: PDF download API with auth guard, filename validation regex, path traversal protection. Capstone guidelines and rubrics pages. 3 placeholder PDFs. Capstone page updated with download links and cross-links. Track properly archived.
+- **SpeedRoundGame timer refactor**: Correctly uses refs for `correctAnswers`, `totalQuestions`, `maxStreak` to avoid interval re-creation on each answer. Timer dependency array reduced to `[gameState, recordSession]`. Refs are updated synchronously on each render.
+- **Convex schema hardening**: Proper validators for `spreadsheetData`, `validationResult`, `fsrsState` replacing `v.any()`. Dead `createSpreadsheetAttempt` mutation removed. Validators duplicated across schema.ts and activities.ts (recorded as tech debt).
+- **README.md**: Updated to reflect Artifact Packaging completion, capstone routes existing, placeholder PDFs shipped, Milestone 10 added to milestone table.
+
+**Pre-existing issues confirmed (not fixed):**
+- 2 Supabase RLS test suites fail on missing credentials (pre-existing)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- problem-generator flaky test (pre-existing)
+- Capstone rubrics page is a stub (no inline content)
+- PDF API and capstone pages have no test coverage
+
+**New items recorded in tech-debt.md:**
+- PDF API auth mismatch (High — fixed)
+- PDF API and capstone pages untested (Low — open)
+- Capstone rubrics page stub content (Low — open)
+- Validator duplication across schema.ts and activities.ts (Low — open)
+
+**Updated during review:**
+- app/api/pdfs/[pdfName]/route.ts: Removed TEACHER_ONLY_PDFS restriction
+- README.md: Updated pass number, capstone status, milestone table, asset packaging blockers
+- tech-debt.md: 4 new entries, pass number updated
+- current_directive.md: Updated priorities, added Pass 38 summary
+
+**Phase status**: All Milestones 1-10 complete. Artifact Packaging track archived. Project in stabilization. No active tracks. Next priorities: real PDF content, CSV datasets, chatbot rate limiting, validator consolidation.
 
 ## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 37)
 

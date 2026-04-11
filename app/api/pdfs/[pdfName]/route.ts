@@ -3,11 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import * as fs from 'fs';
 
-const TEACHER_ONLY_PDFS = new Set([
-  'capstone_pitch_rubric.pdf',
-  'capstone_model_tour_checklist.pdf',
-]);
-
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ pdfName: string }> }
@@ -22,12 +17,6 @@ export async function GET(
 
   if (!/^[\w-]+\.pdf$/.test(pdfName)) {
     return NextResponse.json({ error: 'Invalid PDF name' }, { status: 400 });
-  }
-
-  const role = session.role;
-
-  if (TEACHER_ONLY_PDFS.has(pdfName) && role !== 'teacher') {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   const pdfsDir = path.join(process.cwd(), 'public', 'pdfs');
