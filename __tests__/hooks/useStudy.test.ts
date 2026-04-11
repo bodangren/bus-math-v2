@@ -62,9 +62,9 @@ describe('useStudy hooks', () => {
   });
 
   describe('useTermMastery', () => {
-    it('calls useQuery without args when unitNumber is not provided', () => {
+    it('calls useQuery with unitNumber undefined when not provided', () => {
       renderHook(() => useTermMastery());
-      expect(mockUseQuery).toHaveBeenCalledWith('api.study.getTermMasteryByUnit', 'skip');
+      expect(mockUseQuery).toHaveBeenCalledWith('api.study.getTermMasteryByUnit', { unitNumber: undefined });
     });
 
     it('calls useQuery with unitNumber when provided', () => {

@@ -64,6 +64,7 @@ export function getDueTerms(
 }
 
 export function proficiencyBand(masteryScore: number): 'new' | 'learning' | 'familiar' | 'mastered' {
+  if (masteryScore === 0) return 'new';
   if (masteryScore < 0.3) return 'learning';
   if (masteryScore < 0.7) return 'familiar';
   return 'mastered';

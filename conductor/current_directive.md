@@ -80,26 +80,78 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Current High-Level Priorities (2026-04-11 — Practice Tests Full Track, Pass 33)
+## Current High-Level Priorities (2026-04-11 — Full Codebase Audit, Pass 34)
 
-Milestone 8 (Classroom Product Completeness) is **complete**. Milestone 9 (Workbook System and AI Features) is **complete**. Milestone 10 (Student Study Tools) is **complete**.
+Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
 
-1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE.
-2. **Units 2-4 Workbook Rollout** — COMPLETE.
-3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE.
+1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE. Archived.
+2. **Units 2-4 Workbook Rollout** — COMPLETE. Archived.
+3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE. Archived.
 4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
 5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
 6. **Study Hub Foundation and Flashcards** — COMPLETE. Archived.
 7. **Study Modes and Progress Dashboard** — COMPLETE. Archived.
-8. **Practice Tests** — COMPLETE. All phases complete (question banks, Convex score schema, practice test engine, routes and integration, verification and documentation). Archived.
+8. **Practice Tests** — COMPLETE. Archived.
+
+### Recommended Next Priorities
+
+If continuing development, the highest-value next steps are:
+
+1. **Pre-existing test stabilization** — Fix 12 test failures across 5 test files (SubmissionDetailModal outdated UI expectations, GradebookDrillDown ARIA role mismatch, SubmissionDetailModal integration import name). Bring pass rate to 1739/1739.
+2. **Glossary expansion** — Units 2, 7, 8 have zero glossary terms. Expand to all 8 units for complete study hub coverage.
+3. **Artifact packaging** — Ship CSV datasets, PDF guides/rubrics/checklists, capstone guidelines/routes.
+4. **Practice test question banks** — Units 2-8 have 1 placeholder question each; expand to full banks.
+5. **Matching game deduplication** — FlashcardPlayer and ReviewSession are near-duplicates; extract shared component.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
-## Code Review Summary (2026-04-11 — Practice Tests Full Track, Pass 33)
+## Code Review Summary (2026-04-11 — Full Codebase Audit, Pass 34)
 
-Autonomous code review covering Practice Tests track Phases 4‑5 (routes and integration, verification and documentation) and full track closeout.
+Autonomous code review covering the full Milestone 9-10 codebase: AI Feedback for Spreadsheet Submissions (complete), Study Hub Foundation and Flashcards (complete), Study Modes and Progress Dashboard (complete), Practice Tests (complete), and accumulated tech debt.
 
-**Fixed during review: 0 issues**
+**Fixed during review: 12 issues**
+- **useTermMastery() always skips Convex query** (Critical): `ProgressDashboard` called `useTermMastery()` with no argument. The hook sent `"skip"` when `unitNumber` was undefined, so the aggregate stats query never executed — all "Overall Stats" fields showed zero. Fixed: hook now sends `{ unitNumber: undefined }` instead of `"skip"`.
+- **due_reviews.isDue never set to true** (Critical): After every `processReview`, `isDue` was set to `false`. `getDueTerms` filtered by `isDue === true`. No background process ever flipped it back. The SRS review loop was fundamentally broken — reviewed terms never resurfaced. Fixed: `getDueTerms` now queries by user index and filters `scheduledFor <= now` instead of relying on the broken `isDue` flag.
+- **proficiencyBand() never returns 'new'** (Medium): Return type allowed `'new'` but the function body returned `learning` for scores < 0.3, including zero. Fixed: added `if (masteryScore === 0) return 'new'` check.
+- **savePracticeTestResult no server-side validation** (Medium): Convex mutation accepted arbitrary score/questionCount/unitNumber without bounds checking. A buggy or malicious client could submit `score: 9999` for `questionCount: 5`. Fixed: added validation for score range (0 to questionCount), positive questionCount, and unit 1-8.
+- **SpeedRoundGame/MatchingGame setTimeout not cleaned up on unmount** (Medium): Feedback and wrong-pair timeouts fired after component unmount, causing React warnings and stale state. Fixed: stored timeout IDs in refs, added cleanup effects and cleanup-on-reset.
+- **PracticeTestEngine array index without bounds check** (Medium): `testQuestions[currentQuestionIndex]` accessed without guarding against empty array. Fixed: added `if (!current) return` guard in `handleAnswerQuestion`.
+- **parseInt without radix/range in practice-tests route** (Medium): URL param parsed without radix (octal risk in some engines) and no range validation. `/practice-tests/abc` yielded NaN. Fixed: added `parseInt(str, 10)`, range check 1-8, and early `notFound()`.
+- **handleRetryTest incomplete state reset** (Medium): Retry only reset refs and phase, leaving stale `testQuestions`, `currentQuestionIndex`, `score`, and `perLessonBreakdown` state. Fixed: now resets all state variables.
+- **ProgressDashboard division by zero** (Medium): When a unit had zero glossary terms, `stats.total` was 0, producing `NaN` in the progress bar. Fixed: added `stats.total > 0` ternary guard.
+- **PracticeTestEngine perLessonBreakdown undefined access** (Low): `prev[original.lessonId].correct` could throw if lessonId wasn't in breakdown. Fixed: added optional chaining with nullish coalescing.
+- **SpeedRoundGame/MatchingGame stale timeout on reset** (Medium): Reset didn't clear pending feedback/wrong-pair timeouts, causing stale state to fire after reset. Fixed: clear timeout refs in `resetGame`.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1727/1739 tests pass; 5 test files fail (12 tests total — all pre-existing: 4 SubmissionDetailModal "view raw response", 5 GradebookDrillDown ARIA role mismatch, 2 security RLS Supabase credential, 1 SubmissionDetailModal integration import name)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **AI Feedback for Spreadsheet Submissions (all 6 phases)**: Clean architecture with graceful AI fallback. `generateAiFeedback` clamps scores to 0-40, slices arrays to max 3. SpreadsheetEvaluator has correct race condition fix from Pass 28. Teacher visibility shows per-attempt AI feedback and override. One new issue: student view doesn't show attempt history panel (recorded as tech debt).
+- **Study Hub Foundation and Flashcards (all 6 phases)**: Glossary data, FSRS engine, Convex schema, study hooks, practice hub home, flashcard player. Found 2 critical bugs (useTermMastery skip, isDue never true) and 1 type contract violation (proficiencyBand 'new'). All fixed. FlashcardPlayer and ReviewSession are near-duplicates (recorded).
+- **Study Modes and Progress Dashboard (all 6 phases)**: Matching game, speed round, SRS review, progress dashboard. Found setTimeout cleanup issues in SpeedRoundGame and MatchingGame (fixed). SpeedRoundGame timer effect re-creates interval on every answer (recorded as low-priority tech debt). ProgressDashboard division by zero (fixed). MatchingGame recordSession not awaited (recorded as low).
+- **Practice Tests (all 5 phases)**: Question banks, Convex schema, test engine, routes, verification. Found array bounds issue, incomplete retry reset, parseInt validation, and missing server-side validation (all fixed). Explanation visible before answering and no post-answer feedback recorded as low-priority.
+
+**Pre-existing issues confirmed (not fixed):**
+- 12 test failures remain (same set as Pass 33)
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- 3 test failure root causes now documented: SubmissionDetailModal tests expect outdated UI, GradebookDrillDown tests use wrong ARIA role, SubmissionDetailModal integration test imports wrong function name
+
+**Updated during review:**
+- tech-debt.md: 12 issues closed, 10 new open items, trimmed to under 50 lines
+- current_directive.md: Updated priorities, added Pass 34 review summary
+- README.md: Updated to reflect Milestone 10 completion, corrected status snapshots, updated student experience section
+- hooks/useStudy.ts: Fixed useTermMastery skip behavior
+- convex/study.ts: Fixed getDueTerms to not rely on isDue, added savePracticeTestResult validation
+- lib/study/srs.ts: Fixed proficiencyBand to return 'new' for score 0
+- components/student/ProgressDashboard.tsx: Fixed division by zero
+- components/student/PracticeTestEngine.tsx: Fixed array bounds, retry reset, perLessonBreakdown guard
+- components/student/SpeedRoundGame.tsx: Added setTimeout cleanup
+- components/student/MatchingGame.tsx: Added setTimeout cleanup
+- app/student/study/practice-tests/[unitNumber]/page.tsx: Added parseInt validation
+
+**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: test stabilization, glossary expansion, artifact packaging.
 
 **Verification gates:**
 - `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)

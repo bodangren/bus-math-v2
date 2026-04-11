@@ -17,7 +17,7 @@ export function useStudyPreferences() {
 }
 
 export function useTermMastery(unitNumber?: number) {
-  return useQuery(api.study.getTermMasteryByUnit, unitNumber ? { unitNumber } : "skip");
+  return useQuery(api.study.getTermMasteryByUnit, { unitNumber: unitNumber ?? undefined });
 }
 
 export function useDueTerms() {

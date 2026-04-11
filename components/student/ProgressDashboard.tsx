@@ -63,7 +63,7 @@ function UnitProgressCard({ unitNumber }: { unitNumber: number }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <Progress value={(stats.studied / stats.total) * 100} className="h-2" />
+        <Progress value={stats.total > 0 ? (stats.studied / stats.total) * 100 : 0} className="h-2" />
         <div className="flex gap-2">
           <Badge variant="default" className="bg-green-600">
             {stats.mastered} Mastered

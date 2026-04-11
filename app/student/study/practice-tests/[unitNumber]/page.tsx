@@ -1,10 +1,16 @@
 import { requireStudentSessionClaims } from "@/lib/auth/server";
 import { PracticeTestPage } from "@/components/student/PracticeTestPage";
+import { notFound } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
 export default async function PracticeTestUnitPage({ params }: { params: { unitNumber: string } }) {
-  await requireStudentSessionClaims(`/student/study/practice-tests/${params.unitNumber}`);
+  const unitNumber = parseInt(params.unitNumber, 10);
+  if (!Number.isInteger(unitNumber) || unitNumber < 1 || unitNumber > 8) {
+    notFound();
+  }
 
-  return <PracticeTestPage unitNumber={parseInt(params.unitNumber)} />;
+  await requireStudentSessionClaims(`/student/study/practice-tests/${unitNumber}`);
+
+  return <PracticeTestPage unitNumber={unitNumber} />;
 }

@@ -96,7 +96,9 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
   };
 
   const handleAnswerQuestion = (selectedAnswer: string) => {
-    const { question, original } = testQuestions[currentQuestionIndex];
+    const current = testQuestions[currentQuestionIndex];
+    if (!current) return;
+    const { question, original } = current;
     const isCorrect = selectedAnswer === question.answer;
     
     if (isCorrect) {
@@ -105,14 +107,14 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
       if (breakdownRef.current[original.lessonId]) {
         breakdownRef.current[original.lessonId] = {
           ...breakdownRef.current[original.lessonId],
-          correct: breakdownRef.current[original.lessonId].correct + 1,
+          correct: (breakdownRef.current[original.lessonId]?.correct ?? 0) + 1,
         };
       }
       setPerLessonBreakdown((prev) => ({
         ...prev,
         [original.lessonId]: {
           ...prev[original.lessonId],
-          correct: prev[original.lessonId].correct + 1,
+          correct: (prev[original.lessonId]?.correct ?? 0) + 1,
         },
       }));
     }
@@ -144,6 +146,10 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
     scoreRef.current = 0;
     breakdownRef.current = {};
     hasCalledOnCompleteRef.current = false;
+    setTestQuestions([]);
+    setCurrentQuestionIndex(0);
+    setScore(0);
+    setPerLessonBreakdown({});
     setCurrentPhase('introduction');
   };
 

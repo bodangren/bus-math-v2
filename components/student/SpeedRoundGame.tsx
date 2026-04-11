@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { RotateCcw, Timer, Heart, Trophy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ export function SpeedRoundGame() {
   const [gameState, setGameState] = useState<"idle" | "playing" | "gameOver">("playing");
   const [answeredTerms, setAnsweredTerms] = useState<Set<string>>(new Set());
   const [feedback, setFeedback] = useState<"correct" | "wrong" | null>(null);
+  const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const terms = useMemo(() => {
     let availableTerms = unitParam
@@ -99,6 +100,12 @@ export function SpeedRoundGame() {
     return () => clearInterval(timer);
   }, [gameState, correctAnswers, totalQuestions, maxStreak, recordSession]);
 
+  useEffect(() => {
+    return () => {
+      if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+    };
+  }, []);
+
   const handleAnswer = (selectedOption: string) => {
     if (!currentQuestion || feedback) return;
     setTotalQuestions((prev) => prev + 1);
@@ -112,7 +119,8 @@ export function SpeedRoundGame() {
       setFeedback("correct");
       const newExclude = new Set([...answeredTerms, currentQuestion.termSlug]);
       setAnsweredTerms(newExclude);
-      setTimeout(() => {
+      if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = setTimeout(() => {
         setFeedback(null);
         const question = generateQuestion(newExclude);
         setCurrentQuestion({
@@ -141,7 +149,8 @@ export function SpeedRoundGame() {
       });
       setStreak(0);
       setFeedback("wrong");
-      setTimeout(() => {
+      if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = setTimeout(() => {
         setFeedback(null);
         const question = generateQuestion(answeredTerms);
         setCurrentQuestion({
@@ -158,6 +167,10 @@ export function SpeedRoundGame() {
   };
 
   const resetGame = () => {
+    if (feedbackTimeoutRef.current) {
+      clearTimeout(feedbackTimeoutRef.current);
+      feedbackTimeoutRef.current = null;
+    }
     setLives(3);
     setStreak(0);
     setMaxStreak(0);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { RotateCcw, Timer } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,7 @@ export function MatchingGame() {
   const [gameComplete, setGameComplete] = useState(false);
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
+  const wrongPairTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const terms = useMemo(() => {
     let availableTerms = unitParam
@@ -77,6 +78,12 @@ export function MatchingGame() {
     return () => clearInterval(timer);
   }, [startTime, gameComplete]);
 
+  useEffect(() => {
+    return () => {
+      if (wrongPairTimeoutRef.current) clearTimeout(wrongPairTimeoutRef.current);
+    };
+  }, []);
+
   const getCardState = (card: CardItem): MatchState => {
     if (matchedPairs.has(card.pairId)) return "matched";
     if (wrongPair.has(card.id)) return "wrong";
@@ -117,13 +124,18 @@ export function MatchingGame() {
       wrong.add(card.id);
       setWrongPair(wrong);
       setSelectedCard(null);
-      setTimeout(() => {
+      if (wrongPairTimeoutRef.current) clearTimeout(wrongPairTimeoutRef.current);
+      wrongPairTimeoutRef.current = setTimeout(() => {
         setWrongPair(new Set());
       }, 800);
     }
   };
 
   const resetGame = () => {
+    if (wrongPairTimeoutRef.current) {
+      clearTimeout(wrongPairTimeoutRef.current);
+      wrongPairTimeoutRef.current = null;
+    }
     const termCards: CardItem[] = terms.map((term) => {
       const display = getGlossaryTermDisplay(term, languageMode);
       return {

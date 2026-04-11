@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 11, 2026 (Code Review Pass 32)
+Last updated: April 11, 2026 (Code Review Pass 34)
 
 ## Status Snapshot
 
@@ -24,27 +24,26 @@ However, this repository is **not yet a fully classroom-complete education app**
 - ~~education app readiness hardening~~ — complete
 - downloadable workbook, dataset, rubric, checklist, and guide files for the full course
 - complete capstone supporting pages and asset packets (workbooks shipped, routes pending)
+- ~~student study tools (flashcards, matching, speed round, practice tests)~~ — complete
 
 ## Executive Summary
 
 ### Current overall status
 
-- Conductor Milestones 1-9 are marked complete.
-- Milestone 10, `Student Study Tools`, is active (Practice Tests track in progress, Phases 1-3 complete).
-- Across the completed Milestone 9, all 5 serial tracks finished:
-  1. ~~Workbook Infrastructure and Unit 1 Pilot~~ — complete
-  2. ~~Units 2-4 Workbook Rollout~~ — complete
-  3. ~~Units 5-8 Workbook Rollout and Capstone Assets~~ — complete
-  4. ~~Student One-Shot Lesson Chatbot~~ — complete
-  5. ~~AI Feedback for Spreadsheet Submissions~~ — complete
+- Conductor Milestones 1-10 are marked complete.
+- Milestone 11 (if opened) is not yet defined.
+- Across the completed Milestone 10, all 3 serial tracks finished:
+  1. ~~Study Hub Foundation and Flashcards~~ — complete
+  2. ~~Study Modes and Progress Dashboard~~ — complete
+  3. ~~Practice Tests~~ — complete
 
 ### Real interpretation
 
 - **Runtime textbook/app core**: strong and already usable for meaningful testing
-- **Student and teacher classroom workflow**: partially complete, but still missing important navigation and reporting polish
+- **Student and teacher classroom workflow**: complete — navigation, reporting, gradebook, competency heatmaps, and study tools all shipped
 - **Curriculum runtime publication**: substantially complete
-- **Curriculum artifact packaging**: materially incomplete
-- **Launch readiness as a full classroom course app**: not there yet
+- **Curriculum artifact packaging**: partially complete (workbooks done, CSVs/PDFs pending)
+- **Launch readiness as a full classroom course app**: close but missing downloadable artifact packet
 
 ## Project Target
 
@@ -81,7 +80,7 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 1 (1 in-progress Milestone 10 track) |
+| Active Conductor tracks | 0 (all tracks complete) |
 | Active Milestone 8 track status | 7 complete (Milestone 8 closed) |
 | Archived track directories | 101 |
 | Test files under `__tests__` and `tests` | 298 |
@@ -236,21 +235,20 @@ That means:
 - unit-by-unit dashboard cards render progress and next-lesson actions
 - `/student/lesson/[lessonSlug]` exists and resolves published content from Convex
 - lesson landing phase logic and progress-aware resume behavior exist
-- completed lessons already show a completion panel with:
+- completed lessons show a completion panel with:
   - back to dashboard
   - continue to recommended lesson when available
+- shared authenticated chrome exposes dashboard destination for both roles
+- breadcrumbs and return paths are consistent across student flows
+- student study hub with flashcards, matching game, speed round, SRS review, and practice tests
+- bilingual glossary with spaced repetition scheduling
+- progress dashboard with per-unit mastery tracking
 
 ### What is not fully done yet
 
-- there is no real student unit page route
-- shared authenticated chrome does not yet expose a dashboard destination
-- return paths and breadcrumb logic are still incomplete enough that they became Milestone 8 track work
-- completion/resume behavior still needs to be made fully coherent across:
-  - not started
-  - in progress
-  - completed
-  - review/revisit
-  - next recommended lesson
+- CSV lesson datasets not shipped as real files
+- PDF guides/rubrics/checklists not shipped as real files
+- capstone guidelines and rubrics routes pending
 
 ### Current student-product interpretation
 
@@ -494,6 +492,8 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 
 ## Active Milestone 10 Tracks
 
+All Milestone 10 tracks are complete. Milestone 10 (Student Study Tools) closed on April 11, 2026.
+
 ### 1. Study Hub Foundation and Flashcards
 
 Track: `study_hub_foundation_flashcards_20260410` — **COMPLETE** (archived).
@@ -508,22 +508,9 @@ Shipped: matching game, speed round, SRS review session, progress dashboard, dat
 
 ### 3. Practice Tests
 
-Track: `practice_tests_20260410` — **IN PROGRESS** (Phases 1-3 complete).
+Track: `practice_tests_20260410` — **COMPLETE** (archived).
 
-Goal:
-
-- port v1 practice test feature with reusable engine, 8-unit question banks, 6-phase test experience, and Convex-backed score persistence
-
-Status: Phases 1-3 complete (question banks and data layer, Convex score schema, practice test engine). Phase 4 (routes and integration) is next.
-
-Desired product shape:
-
-- 8-unit question bank with MCQ questions per lesson
-- 6-phase test experience: hook, introduction, guided practice, independent practice, assessment, closing
-- lesson filter and question count configuration
-- per-lesson score breakdown
-- Convex-backed score persistence
-- entry point from student unit overview or dashboard
+Shipped: 6-phase test experience (hook → introduction → guided practice → independent practice → assessment → closing) with per-unit question banks, lesson filter, question count configuration, per-lesson score breakdown, and Convex-backed score persistence. All 5 phases complete. All verification gates pass. Archived on 2026-04-11.
 
 ## Definition of Done for "Classroom Complete"
 
@@ -548,7 +535,7 @@ This repo is already a serious education product codebase with:
 - real progress tracking
 - real practice evidence and review infrastructure
 
-But it is still **one workstream away from full curriculum artifact completeness** — Milestone 9 (Workbook System and AI Features) is closed, and Milestone 10 (Student Study Tools) is the active priority.
+But the runtime and study tooling are **complete through Milestone 10**. The remaining work is primarily artifact packaging (CSVs, PDFs, capstone routes) rather than feature development.
 
 If the question is:
 
@@ -557,8 +544,8 @@ If the question is:
 The honest answer is:
 
 - **We are far along on runtime curriculum and platform work**
-- **we are moderately far along on teacher/student reporting and workflow**
-- **we are not yet far along enough on the actual downloadable classroom asset package**
+- **We are far along on student study tools and teacher reporting**
+- **We are not yet far enough on the actual downloadable classroom asset package (CSVs, PDFs, capstone routes)**
 
 ## Development Notes
 

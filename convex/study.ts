@@ -109,14 +109,14 @@ export const getDueTerms = query({
 
     const now = Date.now();
 
-    const dueReviews = await ctx.db
+    const allReviews = await ctx.db
       .query("due_reviews")
-      .withIndex("by_user_and_due", (q) =>
-        q.eq("userId", profile._id).eq("isDue", true)
+      .withIndex("by_user", (q) =>
+        q.eq("userId", profile._id)
       )
       .collect();
 
-    return dueReviews.filter((review) => review.scheduledFor <= now);
+    return allReviews.filter((review) => review.scheduledFor <= now);
   },
 });
 
@@ -391,6 +391,16 @@ export const savePracticeTestResult = mutation({
     if (!profile) throw new Error("Profile not found");
 
     const now = Date.now();
+
+    if (args.score < 0 || args.score > args.questionCount) {
+      throw new Error("Invalid score: must be between 0 and questionCount");
+    }
+    if (args.questionCount <= 0) {
+      throw new Error("Invalid question count: must be positive");
+    }
+    if (args.unitNumber < 1 || args.unitNumber > 8) {
+      throw new Error("Invalid unit number: must be between 1 and 8");
+    }
 
     const resultId = await ctx.db.insert("practice_test_results", {
       userId: profile._id,
