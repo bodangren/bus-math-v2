@@ -1,7 +1,7 @@
 {
   "track_id": "study_modes_progress_20260410",
   "type": "feature",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-04-10T12:00:00Z",
   "updated_at": "2026-04-11T00:00:00Z",
   "description": "Complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export."

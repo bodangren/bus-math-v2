@@ -166,8 +166,9 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-11 after completing all 6 phases: Phase 1 (Glossary + Convex schema), Phase 2 (FSRS engine), Phase 3 (Study data hooks and language modes), Phase 4 (Practice Hub Home), Phase 5 (Flashcard Study Mode), and Phase 6 (Verification and Documentation). All verification gates pass (lint 0 errors/2 pre-existing warnings, test 1666/1678 pass, build clean). Ready for archive.*
 
 - [x] **Track: Study Modes and Progress Dashboard**
-  *Link: [./tracks/study_modes_progress_20260410/](./tracks/study_modes_progress_20260410/)*
-  *Scope: complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export.*
+   *Link: [./archive/study_modes_progress_20260410/](./archive/study_modes_progress_20260410/)*
+   *Scope: complete the study hub with matching game, speed round, SRS review session, progress dashboard, and data export. All 6 phases complete: matching game, speed round, SRS review, progress dashboard, export and hub home update, and verification. Verification gates: npm run lint (0 errors, 2 pre-existing warnings), npm test (1693/1705 tests pass, 12 pre-existing failures), npm run build (passes cleanly).*
+   *Closeout: completed on 2026-04-11 after completing all 6 phases. All study components and routes implemented, session recording wired to Convex, and verification gates passed.*
 
 - [ ] **Track: Practice Tests**
   *Link: [./tracks/practice_tests_20260410/](./tracks/practice_tests_20260410/)*
