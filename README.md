@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 13, 2026 (Code Review Pass 42)
+Last updated: April 13, 2026 (Code Review Pass 44)
 
 ## Status Snapshot
 
@@ -95,8 +95,8 @@ The target product is:
 | Student runtime | Strong | Dashboard, lesson runtime, navigation, breadcrumbs, resume/review contract complete |
 | Teacher runtime | Strong | Dashboard, reporting IA, breadcrumbs, gradebook with IP/assessment visibility, competency heatmap with student drill-down complete |
 | Curriculum runtime coverage | Strong | Manifest and tests show 8 units + capstone published as authored runtime content |
-| Downloadable instructional assets | Weak | Referenced extensively in authored content, but not present as actual repo files |
-| Classroom launch readiness | Partial | Good internal app base, but still missing key product-completeness work |
+| Downloadable instructional assets | Partial | Workbooks (66), CSVs (56), and PDFs (3 real) shipped; some referenced filenames still missing |
+| Classroom launch readiness | Mostly ready | Core app complete; remaining gaps are asset completeness and final hardening |
 
 ## Major Features Already Implemented
 
@@ -225,8 +225,8 @@ That means:
 | Units 2-8 authored runtime representation | Strong |
 | Units 2-8 detailed markdown source parity | Partial |
 | XLSX lesson workbooks | 66 files shipped (all 8 units, Lessons 4-7, student + teacher + 2 capstone); some referenced filenames still missing |
-| CSV lesson datasets | Not shipped as real files yet |
-| PDF guides/rubrics/checklists | 3 placeholder PDFs shipped (Artifact Packaging track); real content pending |
+| CSV lesson datasets | 56 files shipped (all 8 units, 7 files each: 1 class + 6 group) |
+| PDF guides/rubrics/checklists | 3 real PDFs shipped (business plan guide, pitch rubric, model tour checklist) |
 | Capstone support packet | 2 workbook files + 3 placeholder PDFs + guidelines/rubrics routes shipped |
 
 ## Student Experience: Real Status
@@ -248,8 +248,7 @@ That means:
 
 ### What is not fully done yet
 
-- CSV lesson datasets not shipped as real files
-- PDF guides/rubrics/checklists are placeholder files (real content pending)
+- some referenced workbook/dataset filenames still missing from the repo
 - ~~capstone guidelines and rubrics routes pending~~ — complete
 
 ### Current student-product interpretation
@@ -300,7 +299,7 @@ The teacher side is beyond "dashboard mockup" status. It is a meaningful reporti
 
 - ~~`/capstone/guidelines` is linked from the capstone page but no such route exists in the app router~~ — complete (Artifact Packaging track)
 - ~~`/capstone/rubrics` is linked from the capstone page but no such route exists in the app router~~ — complete (Artifact Packaging track)
-- ~~referenced capstone workbook/rubric/guide/checklist files are not present as actual repo assets~~ — placeholder PDFs shipped; real content pending
+- ~~referenced capstone workbook/rubric/guide/checklist files are not present as actual repo assets~~ — 2 capstone workbooks + 3 real PDFs + guidelines/rubrics routes shipped
 
 ### Practical conclusion
 
@@ -347,10 +346,10 @@ These are the major remaining blockers.
 ### Asset-packaging blockers
 
 - ~~missing `.xlsx` workbooks~~ — 66 workbooks shipped (all 8 units + 2 capstone)
-- missing `.csv` datasets
-- missing `.pdf` guides — placeholder files shipped (Artifact Packaging track)
-- missing `.pdf` rubrics — placeholder files shipped (Artifact Packaging track)
-- ~~missing capstone support packet files~~ — 2 capstone workbooks + 3 placeholder PDFs + guidelines/rubrics routes shipped
+- missing `.csv` datasets — 56 files shipped (all 8 units)
+- missing `.pdf` guides — real business plan guide shipped (11KB, 9 pages)
+- missing `.pdf` rubrics — real pitch rubric (11KB) and model tour checklist (9KB) shipped
+- ~~missing capstone support packet files~~ — 2 capstone workbooks + 3 real PDFs + guidelines/rubrics routes shipped
 
 ### Release-readiness blockers
 
@@ -481,15 +480,15 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
 
 ### Required artifact completion work
 
-- build and check in real `.xlsx` workbook files for every Excel lesson that promises one
-- build and check in real `.csv` datasets for each class and group project lesson
-- build and check in real `.pdf` rubrics, checklists, and how-to guides
-- complete capstone supporting files:
-  - investor-ready workbook template
-  - business plan guide
-  - pitch rubric
-  - model tour checklist
-- add app routes or downloadable surfaces for capstone guidelines and rubrics
+- ~~build and check in real `.xlsx` workbook files for every Excel lesson that promises one~~ — 66 workbooks shipped
+- ~~build and check in real `.csv` datasets for each class and group project lesson~~ — 56 CSV files shipped
+- ~~build and check in real `.pdf` rubrics, checklists, and how-to guides~~ — 3 real PDFs shipped
+- ~~complete capstone supporting files~~ — all shipped:
+  - ~~investor-ready workbook template~~
+  - ~~business plan guide~~
+  - ~~pitch rubric~~
+  - ~~model tour checklist~~
+- ~~add app routes or downloadable surfaces for capstone guidelines and rubrics~~ — complete
 - decide whether Units 2-8 should gain the same detailed markdown source-doc parity that Unit 1 already has
 
 ## Active Milestone 10 Tracks
@@ -537,7 +536,7 @@ This repo is already a serious education product codebase with:
 - real progress tracking
 - real practice evidence and review infrastructure
 
-But the runtime and study tooling are **complete through Milestone 10**. The remaining work is primarily artifact packaging (CSVs, PDFs, capstone routes) rather than feature development.
+But the runtime and study tooling are **complete through Milestone 10**. Artifact packaging (workbooks, CSVs, PDFs) is also largely complete. The remaining work is minor filename coverage gaps and Units 2-8 source-doc parity.
 
 If the question is:
 
@@ -547,7 +546,7 @@ The honest answer is:
 
 - **We are far along on runtime curriculum and platform work**
 - **We are far along on student study tools and teacher reporting**
-- **We are not yet far enough on the actual downloadable classroom asset package (CSVs, PDFs, capstone routes)**
+- **Downloadable assets are largely complete** — workbooks (66), CSVs (56), and PDFs (3) all shipped; remaining gaps are minor filename coverage and Units 2-8 source-doc parity
 
 ## Development Notes
 

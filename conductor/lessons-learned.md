@@ -38,7 +38,6 @@
 - When creating shared helpers that use Node.js core modules (fs, path), split into server and client versions. Client-side helpers must avoid Node.js core module usage. Use a separate file (e.g., `workbooks.client.ts`) with static data or pure functions for client consumption.
 - Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
 - Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
-<<<<<<< HEAD
 - When building a multi-phase feature like practice tests, use refs for tracking values that need to be in sync with state updates but avoid stale-closure issues (like score and per-lesson breakdown when transitioning to a closing phase).
 - Convex `.withIndex` returns a new query base — chaining two `withIndex` calls drops the first filter; use `.filter()` for secondary predicates or pick one index per call path.
 - Derived statuses (e.g., `stale`) must be represented as computed/effective fields only; never include them in the validator accepted by a persistence mutation.

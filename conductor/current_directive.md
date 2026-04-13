@@ -119,30 +119,57 @@ Autonomous code review covering the Component Approval Workflow track Phases 4-6
 
 **Phase status**: Component Approval Workflow track FULLY COMPLETE. All 6 phases shipped, track archived. No active tracks. All Milestones 1-10 complete. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 43)
+## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 44)
 
 Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
 
-### Completed Tracks
+### Completed Since Pass 42
 
-- **Real PDF Content** — Generated real content for all 3 capstone PDFs: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). Archived track.
 - **CSV Dataset Creation** — All 56 CSV files created and verified. API route with auth guard. Track archived.
+- **Real PDF Content** — Generated real content for all 3 capstone PDFs: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). Archived track.
+- **Chatbot Rate Limiting Upgrade** — Replaced in-memory Map with Convex-backed chatbot_rate_limits table. 5 requests per 60-second window. Archived track.
+- **Component Approval Security Hardening** — Added server-side hash verification to submitComponentReview. Archived track.
 
 ### Recommended Next Priorities
 
-1. ~~Real PDF content~~ — Completed (Pass 43)
-2. **CSV dataset creation** — Completed (Pass 43)
-3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
-4. **Harness crypto import cleanup** — Extract a client-safe version hash module so dev harness pages don't import Node.js crypto (dev-only, low priority).
+1. **Harness crypto import cleanup** — Extract a client-safe version hash module so dev harness pages don't import Node.js crypto (dev-only, low priority).
+2. **Example harness correctness** — Example harness page imports practice-specific code; deprecate or rewrite when example review support is needed.
+3. **Units 2-8 source-doc parity** — Decide whether Units 2-8 should gain detailed markdown source-doc parity with Unit 1.
+4. **Flaky test remediation** — problem-generator "produces varied results without a seed" has ~11% collision rate.
 
-### Pass 43 Summary
+### Pass 44 Summary
 
-Generated real PDF content for all 3 capstone documents:
-- `capstone_business_plan_guide.pdf`: 11,413 bytes, 9 pages — TOC, 7 sections covering BP framework from executive summary to financial model tour
-- `capstone_pitch_rubric.pdf`: 10,804 bytes — 5 evaluation categories (40-point scaled), score bands, evidence columns, final summary
-- `capstone_model_tour_checklist.pdf`: 8,621 bytes — 5 verification sections covering statement/operations/financing/formatting/pre-pitch checks
+Autonomous code review covering 11 commits since Pass 42: CSV dataset creation (56 files), real PDF content generation (3 capstone PDFs), chatbot rate limiting upgrade (Convex-backed), and component approval security hardening (server-side hash verification).
 
-Archived CSV Datasets track and Real PDF Content track. Verification gates: lint 0 errors, test 1774/1775 (1 pre-existing flaky), build clean.
+**Fixed during review: 3 issues**
+- **Merge conflict marker in lessons-learned.md** (High): `<<<<<<< HEAD` marker left in file after merge f78e731. The conflict was never resolved. Fixed: removed the stale marker.
+- **README.md stale asset status** (Medium): Multiple sections claimed CSVs "not shipped as real files" and PDFs were "placeholder files" — both were completed in Pass 43. Fixed: updated 8 sections to reflect current state (56 CSVs, 3 real PDFs, 66 workbooks all shipped).
+- **Stale tech-debt entries** (Low): Two entries (chatbot in-memory Map, cleanup cron) were marked Open but already resolved by completed tracks. Fixed: marked both Closed.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1775/1775 tests pass (303 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **CSV Dataset API** (`app/api/datasets/[filename]/route.ts`): Auth guard via getRequestSessionClaims, filename validation regex rejecting path traversal, directory containment check, Content-Disposition header. Clean.
+- **Chatbot Rate Limiting** (`convex/rateLimits.ts`): Convex-backed atomic check-and-increment with 60-second window, 5 requests max. getRateLimitStatus query, checkAndIncrementRateLimit mutation, cleanupStaleRateLimits admin-only mutation. API route uses fetchInternalMutation and fails open on Convex errors (design decision). Schema has proper by_user index.
+- **Component Approval Security** (`convex/component_approvals.ts`): submitComponentReview now recomputes hash server-side via computeComponentVersionHash and throws on mismatch. Auth guard rejects student/teacher roles. getReviewQueue handles combined filters with proper code paths.
+- **Dev Review Queue and Harnesses** (4 page files): Review queue with filter controls, review dialog with status/summary/improvement notes/issue categories. Three harness pages for activity/example/practice types. All use 'use client' and import version-hashes.ts (Node.js crypto — pre-existing tech debt, dev-only).
+
+**Pre-existing issues confirmed (not fixed):**
+- Harness pages import Node.js crypto in client bundles (Low — dev-only, build passes)
+- Example harness uses practice-specific imports (Low — no examples exist yet)
+- problem-generator flaky test (Low — pre-existing)
+- cleanupStaleRateLimits mutation is dead code (Low — auto-reset on new window)
+
+**Updated during review:**
+- conductor/lessons-learned.md: Removed merge conflict marker
+- README.md: Updated pass number, asset status across 8 sections, honest conclusion
+- conductor/tech-debt.md: Closed 2 stale entries (chatbot in-memory Map, cleanup cron)
+- current_directive.md: Added Pass 44 summary, updated priorities
+
+**Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
