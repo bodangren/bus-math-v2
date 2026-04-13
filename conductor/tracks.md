@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Dev Review Auth Guard**
+  *Link: [./archive/dev_review_auth_guard_20260414/](./archive/dev_review_auth_guard_20260414/)*
+  *Scope: Add middleware auth guard to dev component review page — currently only gated by client-side NODE_ENV check which can be bypassed in misconfigured deployments.*
+  *Closeout: completed on 2026-04-14. Created middleware.ts with admin role check; unauthenticated users redirected to login, non-admin users get 403. Added test coverage for cookie extraction and JWT validation. All verification gates pass (lint 0 errors, test 1785/1785, build clean). Tech-debt item closed.*
+
 - [x] **Track: ApprovalStatusValidator Split**
   *Link: [./archive/approval_status_validator_split_20260414/](./archive/approval_status_validator_split_20260414/)*
   *Scope: Split approvalStatusValidator into storage and submission validators — stale is a derived status computed at query time, not a valid submission input.*
