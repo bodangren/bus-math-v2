@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Units 2-8 Source-Doc Parity Decision**
+  *Link: [./tracks/units_2_8_source_doc_parity_20260414/](./tracks/units_2_8_source_doc_parity_20260414/)*
+  *Scope: Decide whether Units 2-8 should gain detailed markdown source-doc parity with Unit 1. Analyze effort, value, and priorities; produce decision document.*
+  *Closeout: completed on 2026-04-14. Decision: NO-GO (close the item). Runtime curriculum is in TypeScript blueprints, not markdown files. Lesson matrices + generated blueprints serve curriculum authors adequately. Creating 77 markdown files would add maintenance burden without user benefit. Project in stabilization. All verification gates passed (lint 0 errors, test 1775/1775, build clean).*
+
 - [x] **Track: Real PDF Content**
   *Link: [./archive/pdf_content_20260413/](./archive/pdf_content_20260413/)*
   *Scope: Replace placeholder PDFs with real capstone content — business plan guide, pitch rubric, and model tour checklist.*

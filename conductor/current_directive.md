@@ -134,7 +134,7 @@ Milestones 1-10 are **complete**. All active tracks are **complete**. Project in
 
 1. **Harness crypto import cleanup** — Extract a client-safe version hash module so dev harness pages don't import Node.js crypto (dev-only, low priority). **Resolved 2026-04-14**.
 2. **Example harness correctness** — Example harness page imports practice-specific code; deprecate or rewrite when example review support is needed. **Resolved 2026-04-14**.
-3. **Units 2-8 source-doc parity** — Decide whether Units 2-8 should gain detailed markdown source-doc parity with Unit 1.
+3. **Units 2-8 source-doc parity** — Decide whether Units 2-8 should gain detailed markdown source-doc parity with Unit 1. **Resolved (no action) 2026-04-14**.
 4. **Flaky test remediation** — problem-generator "produces varied results without a seed" has ~11% collision rate. **Resolved 2026-04-14**.
 
 ## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 45)
@@ -189,6 +189,46 @@ Autonomous code review covering 11 commits since Pass 42: CSV dataset creation (
 - current_directive.md: Added Pass 44 summary, updated priorities
 
 **Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
+
+## Code Review Summary (2026-04-14 — Units 2-8 Source-Doc Parity Decision, Pass 46)
+
+Autonomous decision track for Units 2-8 source-doc parity.
+
+**Scope:** 1 track — units_2_8_source_doc_parity_20260414.
+
+**Decision: NO-GO — Close the item**
+
+**Analysis:**
+- Unit 1 has 11 individual lesson markdown files in `docs/curriculum/units/unit_01/` with detailed phase-by-phase guidance
+- Units 2-8 have only lesson matrices (`unit_0X_lesson_matrix.md`) — no individual lesson files
+- **Key finding:** The detailed markdown files are NOT the runtime source of truth. Runtime curriculum lives in `lib/curriculum/generated/*.ts` TypeScript blueprints
+- Lesson matrices + TypeScript blueprints already serve curriculum authors adequately for Units 2-8
+
+**What "parity" would require:** 77 new markdown files (7 units × ~11 lessons) maintained in parallel with existing TypeScript blueprints
+
+**Why NO-GO:**
+1. Runtime doesn't use markdown files — created documentation burden without user benefit
+2. Project in stabilization — focus should be maintenance, not expansion
+3. Lesson matrices provide adequate planning-level detail
+4. Would create synchronization burden (two sources of truth)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1775/1775 tests pass (303 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- `docs/curriculum/units/unit_01/` — Unit 1 individual lesson files format and content
+- `docs/curriculum/unit_0X_lesson_matrix.md` — Units 2-8 lesson matrix format
+- `lib/curriculum/generated/*.ts` — Runtime curriculum data sources
+- `lib/curriculum/published-manifest.ts` — How generated blueprints feed the runtime
+
+**Updated during review:**
+- conductor/tracks.md: Added new track entry
+- conductor/tracks/units_2_8_source_doc_parity_20260414/: Created track with spec, plan, metadata, and DECISION.md
+- conductor/current_directive.md: Marked item 3 as "Resolved (no action) 2026-04-14"
+
+**Phase status**: Units 2-8 Source-Doc Parity Decision COMPLETE. Item resolved (no action). No active tracks. Project in stabilization.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
