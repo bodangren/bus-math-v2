@@ -123,9 +123,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Add a dev-only manual approval workflow for example, activity, and practice components with Convex-backed approval state, structured review comments, stale approval detection, review harnesses, and LLM-assisted rework queries.*
   *Closeout: completed on 2026-04-13. All 6 phases complete: schema/validators, review mutations/queries, dev review queue, component harnesses, stale detection/LLM audit, verification. 26 new tests for Phase 5. All 1775 tests pass, lint 0 errors/2 warnings, build clean.*
 
-- [ ] **Track: Component Approval Security Hardening**
-  *Link: [./tracks/component_approval_security_hardening_20260413/](./tracks/component_approval_security_hardening_20260413/)*
-  *Scope: Fix two HIGH severity issues in component_approvals.ts: (1) getReviewQueue silently drops componentType when approvalStatus is also passed due to chained withIndex calls; (2) submitComponentReview accepts client-supplied hash without server recomputation.*
+- [x] **Track: Component Approval Security Hardening**
+  *Link: [./archive/component_approval_security_hardening_20260413/](./archive/component_approval_security_hardening_20260413/)*
+  *Scope: Fix two HIGH severity issues in component_approvals.ts: (1) getReviewQueue silently drops componentType when approvalStatus is also passed — already fixed in code, tech-debt entry was stale; (2) submitComponentReview accepts client-supplied hash without server recomputation.*
+  *Closeout: completed on 2026-04-13. Added server-side hash verification to submitComponentReview using computeComponentVersionHash. Throws "Component version hash mismatch" when client hash doesn't match server hash. Issue 1 already fixed in code. All verification gates pass (lint 0 errors, test 1775/1775, build clean).*
 
 - [x] **Track: Supabase Residue Cleanup**
   *Link: [./archive/supabase_residue_cleanup_20260411/](./archive/supabase_residue_cleanup_20260411/)*
