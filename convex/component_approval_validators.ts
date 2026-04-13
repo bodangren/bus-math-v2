@@ -14,6 +14,13 @@ export const approvalStatusValidator = v.union(
   v.literal('stale'),
 );
 
+export const submissionStatusValidator = v.union(
+  v.literal('unreviewed'),
+  v.literal('approved'),
+  v.literal('changes_requested'),
+  v.literal('rejected'),
+);
+
 export const issueCategoryValidator = v.union(
   v.literal('math_correctness'),
   v.literal('pedagogy'),
@@ -42,7 +49,7 @@ export const componentReviewValidator = v.object({
   componentType: componentTypeValidator,
   componentId: v.string(),
   componentVersionHash: v.string(),
-  status: approvalStatusValidator,
+  status: submissionStatusValidator,
   reviewerId: v.id('profiles'),
   reviewSummary: v.optional(v.string()),
   improvementNotes: v.optional(v.string()),

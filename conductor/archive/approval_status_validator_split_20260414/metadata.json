@@ -1,7 +1,7 @@
 {
   "track_id": "approval_status_validator_split_20260414",
   "type": "bugfix",
-  "status": "in_progress",
+  "status": "completed",
   "created_at": "2026-04-14T00:00:00Z",
   "updated_at": "2026-04-14T00:00:00Z",
   "description": "Split approvalStatusValidator into storage and submission validators — stale is derived, not submittable"

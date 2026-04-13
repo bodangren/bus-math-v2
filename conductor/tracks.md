@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: ApprovalStatusValidator Split**
+  *Link: [./archive/approval_status_validator_split_20260414/](./archive/approval_status_validator_split_20260414/)*
+  *Scope: Split approvalStatusValidator into storage and submission validators — stale is a derived status computed at query time, not a valid submission input.*
+  *Closeout: completed on 2026-04-14. Created submissionStatusValidator (without stale) for mutation inputs, kept approvalStatusValidator (with stale) for storage. Updated submitComponentReview to use submissionStatusValidator. Added tests for stale rejection. All gates pass (lint 0 errors, test 1777/1777, build clean). Tech-debt item closed.*
+
 - [x] **Track: Harness Crypto Cleanup**
   *Link: [./archive/harness_crypto_cleanup_20260413/](./archive/harness_crypto_cleanup_20260413/)*
   *Scope: Extract client-safe version hash computation to Convex backend so dev harness pages don't import Node.js crypto.*

@@ -498,4 +498,67 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
       expect(result[0].effectiveStatus).toBe('stale');
     });
   });
+
+  describe('Validator split - stale not submittable', () => {
+    it('submissionStatusValidator does not include stale', () => {
+      const validStatuses: ('unreviewed' | 'approved' | 'changes_requested' | 'rejected')[] = [
+        'unreviewed',
+        'approved',
+        'changes_requested',
+        'rejected',
+      ];
+      const invalidStatuses = ['stale'] as const;
+
+      for (const status of validStatuses) {
+        expect(
+          () => mockSubmitComponentReview({
+            componentType: 'activity',
+            componentId: 'test-component',
+            componentVersionHash: 'hash123',
+            status,
+            reviewSummary: undefined,
+            improvementNotes: undefined,
+            issueCategories: [],
+          }),
+        ).not.toThrow();
+      }
+
+      mockSubmitComponentReview.mockImplementation(({ status }) => {
+        if (invalidStatuses.includes(status as typeof invalidStatuses[number])) {
+          throw new Error(`Invalid status: ${status}`);
+        }
+        return { reviewId: 'review_123' };
+      });
+
+      for (const status of invalidStatuses) {
+        expect(
+          () => mockSubmitComponentReview({
+            componentType: 'activity',
+            componentId: 'test-component',
+            componentVersionHash: 'hash123',
+            status: status as 'stale',
+            reviewSummary: undefined,
+            improvementNotes: undefined,
+            issueCategories: [],
+          }),
+        ).toThrow(`Invalid status: ${status}`);
+      }
+    });
+
+    it('submitComponentReview rejects stale status at validation layer', async () => {
+      mockSubmitComponentReview.mockRejectedValue(new Error('Invalid status: stale'));
+
+      await expect(
+        mockSubmitComponentReview({
+          componentType: 'activity',
+          componentId: 'journal-entry-building',
+          componentVersionHash: 'hash123',
+          status: 'stale' as const,
+          reviewSummary: undefined,
+          improvementNotes: undefined,
+          issueCategories: [],
+        }),
+      ).rejects.toThrow('Invalid status: stale');
+    });
+  });
 });

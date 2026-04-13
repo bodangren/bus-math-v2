@@ -21,7 +21,7 @@
 | 2026-04-11 | code_review_pass37 | problem-generator "produces varied results without a seed" test is flaky — 9 possible cash values means ~11% collision rate | Low | Closed | Fixed: Increased cash range from max 5000 to 99000, increasing possible values from 9 to 198, reducing collision rate to ~0.5%. |
 | 2026-04-13 | code_review_pass43 | Capstone rubrics page is a stub — no inline content | Low | Closed | Replaced placeholder PDFs with real content: pitch rubric (10KB, 5 categories), model tour checklist (9KB, 5 sections). Rubrics page still says "download from overview" — consider inline content. |
 
-| 2026-04-13 | component_approval_20260413 | `stale` is a derived status but allowed as submit input in approvalStatusValidator | Medium | Open | Split into storage vs submission validators. |
+| 2026-04-13 | component_approval_20260413 | `stale` is a derived status but allowed as submit input in approvalStatusValidator | Medium | Closed | Fixed: Split into approvalStatusValidator (with stale, for storage) and submissionStatusValidator (without stale, for mutations). |
 | 2026-04-13 | component_approval_20260413 | Example version hash is a constant placeholder — stale detection never fires for examples | Medium | Open | Defer example support or hash source/content. |
 | 2026-04-13 | component_approval_20260413 | Activity/practice hashes use Function.prototype.toString — minifier-sensitive, dev/prod drift | Medium | Open | Hash source files at build time via generated manifest. |
 | 2026-04-13 | component_approval_20260413 | /dev/component-review gated only by NODE_ENV, no role check | Medium | Open | Add middleware+role gate; notFound() also runs before hooks — move check to server parent. |

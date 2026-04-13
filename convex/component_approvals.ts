@@ -5,7 +5,7 @@ import {
 import { v } from "convex/values";
 import {
   componentTypeValidator,
-  approvalStatusValidator,
+  submissionStatusValidator,
   issueCategoryValidator,
 } from "./component_approval_validators";
 import { computeComponentVersionHash } from "@/lib/component-approval/version-hashes";
@@ -107,7 +107,7 @@ export const submitComponentReview = mutation({
     componentType: componentTypeValidator,
     componentId: v.string(),
     componentVersionHash: v.string(),
-    status: approvalStatusValidator,
+    status: submissionStatusValidator,
     reviewSummary: v.optional(v.string()),
     improvementNotes: v.optional(v.string()),
     issueCategories: v.array(issueCategoryValidator),
