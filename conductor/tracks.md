@@ -325,6 +325,11 @@ Strictly serial. Complete and archive each track before starting the next.
 
 ## Archive Ledger
 
+- [x] **Track: Version Hash Build-Time Manifest**
+  *Link: [./archive/version_hash_manifest_20260414/](./archive/version_hash_manifest_20260414/)*
+  *Scope: Replace Function.prototype.toString() version hashing with build-time manifest approach to fix minifier sensitivity and dev/prod drift.*
+  *Closeout: completed on 2026-04-14. Build-time manifest generates SHA-256 hashes from source files for 51 activities + 19 practice families. version-hashes.ts now reads from manifest instead of using Function.toString(). Integrated into npm run build. All verification gates pass (lint 0 errors, test 1777/1777, build clean). Tech-debt item closed.*
+
 - [x] **Track: Example Harness Correctness**
   *Link: [./archive/example_harness_correctness_20260414/](./archive/example_harness_correctness_20260414/)*
   *Scope: Fix Example harness page that incorrectly imports and uses practice family system for a different component type.*
