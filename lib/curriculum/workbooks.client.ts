@@ -25,3 +25,18 @@ export function hasTeacherWorkbook(unitNumber: number, lessonNumber: number): bo
 export function lessonHasWorkbooks(unitNumber: number, lessonNumber: number): boolean {
   return hasStudentWorkbook(unitNumber, lessonNumber) || hasTeacherWorkbook(unitNumber, lessonNumber);
 }
+
+export function hasCapstoneStudentWorkbook(): boolean {
+  return workbookManifest.byCapstone.student;
+}
+
+export function hasCapstoneTeacherWorkbook(): boolean {
+  return workbookManifest.byCapstone.teacher;
+}
+
+export function getCapstoneWorkbookPath(type: 'student' | 'teacher'): string {
+  if (type === 'teacher') {
+    return '/workbooks/capstone_investor_ready_workbook_teacher.xlsx';
+  }
+  return '/workbooks/capstone_investor_ready_workbook.xlsx';
+}

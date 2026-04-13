@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { getConvexUrl } from "@/lib/convex/config";
+import { CapstoneWorkbookDownloads } from '@/components/capstone/CapstoneWorkbookDownloads';
 
 export const dynamic = 'force-dynamic';
 
@@ -129,6 +130,7 @@ export default async function CapstonePage() {
               Download Model Tour Checklist
             </Link>
           </div>
+          <CapstoneWorkbookDownloads />
           <p className="text-sm text-white/70 font-body">
             Need specifics? Review the <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/guidelines">Capstone Guidelines</Link> and <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/rubrics">Rubrics</Link> before Demo Day.
           </p>

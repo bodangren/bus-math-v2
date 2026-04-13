@@ -19,6 +19,18 @@ vi.mock("@/convex/_generated/api", () => ({
   },
 }));
 
+const mockAuthContext = {
+  signIn: vi.fn(),
+  profile: null,
+  user: null,
+  loading: false,
+  signOut: vi.fn(),
+};
+
+vi.mock('@/components/auth/AuthProvider', () => ({
+  useAuth: () => mockAuthContext,
+}));
+
 const mockCapstoneData = {
   instructionalUnits: [
     {

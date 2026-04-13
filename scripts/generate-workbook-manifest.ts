@@ -9,22 +9,34 @@ interface WorkbookManifest {
   generatedAt: string;
   files: string[];
   byUnitAndLesson: Record<string, { student: boolean; teacher: boolean }>;
+  byCapstone: { student: boolean; teacher: boolean };
 }
 
 function scanWorkbooks(): WorkbookManifest {
   const files = fs.readdirSync(PUBLIC_WORKBOOKS_DIR).filter((f) => f.endsWith('.xlsx'));
   
   const byUnitAndLesson: Record<string, { student: boolean; teacher: boolean }> = {};
+  const byCapstone = { student: false, teacher: false };
   
   for (const file of files) {
-    const match = file.match(/^unit_(\d+)_lesson_(\d+)_(student|teacher)\.xlsx$/);
-    if (match) {
-      const [, unitNum, lessonNum, type] = match;
+    const unitLessonMatch = file.match(/^unit_(\d+)_lesson_(\d+)_(student|teacher)\.xlsx$/);
+    if (unitLessonMatch) {
+      const [, unitNum, lessonNum, type] = unitLessonMatch;
       const key = `${parseInt(unitNum, 10)}-${parseInt(lessonNum, 10)}`;
       if (!byUnitAndLesson[key]) {
         byUnitAndLesson[key] = { student: false, teacher: false };
       }
       byUnitAndLesson[key][type as 'student' | 'teacher'] = true;
+      continue;
+    }
+    
+    const capstoneMatch = file.match(/^capstone_.+\.xlsx$/);
+    if (capstoneMatch) {
+      if (file.endsWith('_teacher.xlsx')) {
+        byCapstone.teacher = true;
+      } else {
+        byCapstone.student = true;
+      }
     }
   }
   
@@ -33,6 +45,7 @@ function scanWorkbooks(): WorkbookManifest {
     generatedAt: new Date().toISOString(),
     files: files.sort(),
     byUnitAndLesson,
+    byCapstone,
   };
 }
 

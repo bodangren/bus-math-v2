@@ -350,6 +350,11 @@ Strictly serial. Complete and archive each track before starting the next.
 
 ## Archive Ledger
 
+- [x] **Track: Capstone Workbook Lookup Gap Fix**
+  *Link: [./archive/capstone_workbook_lookup_gap_20260414/](./archive/capstone_workbook_lookup_gap_20260414/)*
+  *Scope: Fix capstone workbook lookup gap — capstone workbook files don't match unit_lesson pattern so they're excluded from byUnitAndLesson lookup.*
+  *Closeout: completed on 2026-04-14. Extended manifest with byCapstone lookup, added hasCapstoneStudentWorkbook/hasCapstoneTeacherWorkbook functions, created /api/workbooks/capstone/[type] route with auth and role checks, added CapstoneWorkbookDownloads client component to capstone page. All 1823 tests pass, lint 0 errors, build clean. Tech-debt item closed.*
+
 - [x] **Track: Workbook Client Dynamic Lookup**
   *Link: [./archive/workbooks_client_dynamic_lookup_20260414/](./archive/workbooks_client_dynamic_lookup_20260414/)*
   *Scope: Replace hardcoded Set in workbooks.client.ts with dynamic lookup from build-time manifest to prevent stale data when new workbooks are added.*

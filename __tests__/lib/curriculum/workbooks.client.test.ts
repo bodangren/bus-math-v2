@@ -4,6 +4,9 @@ import {
   hasStudentWorkbook,
   hasTeacherWorkbook,
   getWorkbookPath,
+  hasCapstoneStudentWorkbook,
+  hasCapstoneTeacherWorkbook,
+  getCapstoneWorkbookPath,
 } from '@/lib/curriculum/workbooks.client';
 
 describe('workbooks.client', () => {
@@ -72,6 +75,28 @@ describe('workbooks.client', () => {
     it('pads unit and lesson numbers correctly', () => {
       expect(getWorkbookPath(1, 4, 'student')).toBe('/workbooks/unit_01_lesson_04_student.xlsx');
       expect(getWorkbookPath(10, 12, 'teacher')).toBe('/workbooks/unit_10_lesson_12_teacher.xlsx');
+    });
+  });
+
+  describe('hasCapstoneStudentWorkbook', () => {
+    it('returns true when capstone student workbook exists', () => {
+      expect(hasCapstoneStudentWorkbook()).toBe(true);
+    });
+  });
+
+  describe('hasCapstoneTeacherWorkbook', () => {
+    it('returns true when capstone teacher workbook exists', () => {
+      expect(hasCapstoneTeacherWorkbook()).toBe(true);
+    });
+  });
+
+  describe('getCapstoneWorkbookPath', () => {
+    it('returns correct path for student capstone workbook', () => {
+      expect(getCapstoneWorkbookPath('student')).toBe('/workbooks/capstone_investor_ready_workbook.xlsx');
+    });
+
+    it('returns correct path for teacher capstone workbook', () => {
+      expect(getCapstoneWorkbookPath('teacher')).toBe('/workbooks/capstone_investor_ready_workbook_teacher.xlsx');
     });
   });
 });

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-04-13T23:13:15.350Z",
+  "generatedAt": "2026-04-13T23:53:57.895Z",
   "files": [
     "capstone_investor_ready_workbook.xlsx",
     "capstone_investor_ready_workbook_teacher.xlsx",
@@ -198,5 +198,9 @@
       "student": true,
       "teacher": true
     }
+  },
+  "byCapstone": {
+    "student": true,
+    "teacher": true
   }
 }
