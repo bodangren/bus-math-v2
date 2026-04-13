@@ -1,0 +1,14 @@
+Account,Account Type,Balance
+Cash,Asset,5100
+Accounts Receivable,Asset,1800
+Office Supplies,Asset,220
+Prepaid Rent,Asset,600
+Office Equipment,Asset,3600
+Accumulated Depreciation,Asset,-300
+Accounts Payable,Liability,380
+Accrued Wages,Liability,750
+Deferred Revenue,Liability,1500
+Bank Loan,Liability,2600
+Sarah's Capital,Equity,3730
+Retained Earnings,Equity,1140
+Current Net Income,Equity,920

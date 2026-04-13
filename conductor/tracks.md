@@ -103,7 +103,10 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
-> No active tracks. All Milestones 1–10 complete. Project in stabilization.
+- [~] **Track: CSV Dataset Creation**
+  *Link: [./tracks/csv_datasets_20260413/](./tracks/csv_datasets_20260413/)*
+  *Scope: Create real CSV datasets referenced by the curriculum for Lessons 7 and 8 across all 8 units (56 total files: 1 class + 6 group per unit). Includes dataset API route with auth guard.*
+  *Status: Phase 1 in progress — Unit 1 datasets and API route*
 
 - [x] **Track: Component Approval Workflow**
   *Link: [./archive/component_approval_20260413/](./archive/component_approval_20260413/)*

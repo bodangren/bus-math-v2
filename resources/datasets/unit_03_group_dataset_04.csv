@@ -1,0 +1,14 @@
+Account,Account Type,Balance
+Cash,Asset,4824
+Accounts Receivable,Asset,4172
+Office Supplies,Asset,2727
+Prepaid Rent,Asset,3115
+Office Equipment,Asset,4885
+Accumulated Depreciation,Asset,-256
+Accounts Payable,Liability,3435
+Accrued Wages,Liability,2273
+Deferred Revenue,Liability,2360
+Bank Loan,Liability,1470
+Owner's Capital,Equity,5957
+Retained Earnings,Equity,2978
+Net Income,Equity,994
