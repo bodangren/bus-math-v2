@@ -113,6 +113,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Create real CSV datasets referenced by the curriculum for Lessons 7 and 8 across all 8 units (56 total files: 1 class + 6 group per unit). Includes dataset API route with auth guard.*
   *Closeout: completed on 2026-04-13. All 56 CSV files created, API route with auth guard, filename validation, path traversal protection. Phase 1 complete (Unit 1 datasets + API route). Phase 2 complete (Units 2-8 datasets). All verification gates passed (lint 0 errors, test 1775 pass, build clean). Track archived.*
 
+- [ ] **Track: Chatbot Rate Limiting Upgrade**
+  *Link: [./tracks/chatbot_rate_limiting_20260413/](./tracks/chatbot_rate_limiting_20260413/)*
+  *Scope: Replace in-memory Map rate limiter with Convex-backed storage for cross-replica support. Create chatbot_rate_limits table, atomic check-and-increment mutation, update API route, add cleanup mechanism.*
+  *Status: Phase 1 in progress.*
+
 - [x] **Track: Component Approval Workflow**
   *Link: [./archive/component_approval_20260413/](./archive/component_approval_20260413/)*
   *Scope: Add a dev-only manual approval workflow for example, activity, and practice components with Convex-backed approval state, structured review comments, stale approval detection, review harnesses, and LLM-assisted rework queries.*

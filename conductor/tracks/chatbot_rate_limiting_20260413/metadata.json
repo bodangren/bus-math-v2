@@ -1,0 +1,8 @@
+{
+  "track_id": "chatbot_rate_limiting_20260413",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-04-13T00:00:00Z",
+  "updated_at": "2026-04-13T00:00:00Z",
+  "description": "Replace in-memory Map rate limiter with Convex-backed storage for cross-replica support"
+}
