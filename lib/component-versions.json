@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-04-13T21:27:09.144Z",
+  "generatedAt": "2026-04-13T22:12:13.880Z",
   "activities": {
     "comprehension-quiz": "31581231f5f4117f192161d6d482e744cc6b7a32e4a8fb6df582c430ff48dc67",
     "tiered-assessment": "f2e7bf6c59ee0219f7986b5df8a83f709910e29d7f09c7c3775b129d5169f655",
@@ -14,7 +14,7 @@
     "lemonade-stand": "25e9462dda694ad640619e35ed54dd6a789edaa7ef7f6d8a8ad398723db43588",
     "startup-journey": "1eb968d3a7a2b5acdfc2fee2358bbca4764c6edc74b4d8ceae85a7958bcd4999",
     "budget-balancer": "9b6f67e628a0011f17352996e33193220fa3e1d5ba4b8c7f4af1180e466088ff",
-    "cash-flow-challenge": "36b42cc70f283c9902df3547da5f9ea7870c4c4cdbea1ed28d256e5e3987bd5e",
+    "cash-flow-challenge": "01b4a231c922ebec2a0be69fc7ddb2b116643a7699e181f0fd3786ad2ac621e8",
     "inventory-manager": "dc63e00a0816a1e41937ffeb3fecfd2b1a349fff3d2ecb63a6ede4b4f4404688",
     "pitch-presentation-builder": "3ba4f80ecabee15cfd6d26e3e7cca6b28c9f7191f67b1e6f9de891443c816615",
     "pitch": "3ba4f80ecabee15cfd6d26e3e7cca6b28c9f7191f67b1e6f9de891443c816615",

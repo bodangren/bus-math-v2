@@ -103,10 +103,10 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [ ] **Track: Simulation Activity Type Standardization**
-  *Link: [./tracks/simulation_activity_types_20260414/](./tracks/simulation_activity_types_20260414/)*
-  *Scope: Fix 7 simulations using ad-hoc inline activity prop types to use the canonical Activity type pattern (Omit<Activity, 'componentKey' | 'props'> & { componentKey: 'xxx'; props: XxxActivityProps }). Affects: StartupJourney, BudgetBalancer, CashFlowChallenge, DynamicMethodSelector, MethodComparisonSimulator, AssetRegisterSimulator, DepreciationMethodComparisonSimulator.*
-  *Status: Phase 1 in progress (StartupJourney, BudgetBalancer)*
+- [x] **Track: Simulation Activity Type Standardization**
+  *Link: [./archive/simulation_activity_types_20260414/](./archive/simulation_activity_types_20260414/)*
+  *Scope: Investigate and fix simulation Activity type patterns. Found: StartupJourney, BudgetBalancer already correct. CashFlowChallenge fixed to use canonical pattern. Remaining simulations (DynamicMethodSelector, MethodComparisonSimulator, etc.) are self-contained with hardcoded internal data — don't use Activity props, so inline types don't cause issues.*
+  *Closeout: completed on 2026-04-14. CashFlowChallenge updated to use proper Activity type wrapper. tech-debt item closed. All 1802 tests pass, lint 0 errors, build clean.*
 
 - [x] **Track: Exercise Test Quality Improvement**
   *Link: [./archive/exercise_test_quality_20260414/](./archive/exercise_test_quality_20260414/)*
