@@ -75,12 +75,13 @@
 
 ## Phase 5: Stale Approval and Rework Loop Integration
 
-- [ ] Write tests for approval invalidation after component content changes
-- [ ] Implement stale approval detection in queue/query paths
-- [ ] Add a clear re-review path from stale or changes-requested components back to manual approval
-- [ ] Add LLM-audit-ready query output for unresolved notes grouped by issue category and component type
-- [ ] Ensure LLM/audit query paths cannot mark reviews resolved or approved
-- [ ] Run relevant query/mutation tests and `npm run lint`
+- [x] Write tests for approval invalidation after component content changes
+- [x] Implement stale approval detection in queue/query paths
+- [x] Add a clear re-review path from stale or changes-requested components back to manual approval
+- [x] Add LLM-audit-ready query output for unresolved notes grouped by issue category and component type
+- [x] Ensure LLM/audit query paths cannot mark reviews resolved or approved
+- [x] Run relevant query/mutation tests and `npm run lint`
+- **Verification**: lint 0 errors/2 warnings (pre-existing), test 1775/1775 pass, build clean
 
 ## Phase 6: Verification and Documentation
 
