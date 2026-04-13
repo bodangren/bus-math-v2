@@ -103,10 +103,15 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: CSV Dataset Creation**
-  *Link: [./tracks/csv_datasets_20260413/](./tracks/csv_datasets_20260413/)*
+- [x] **Track: Real PDF Content**
+  *Link: [./archive/pdf_content_20260413/](./archive/pdf_content_20260413/)*
+  *Scope: Replace placeholder PDFs with real capstone content — business plan guide, pitch rubric, and model tour checklist.*
+  *Closeout: completed on 2026-04-13. Generated real PDF content for all 3 capstone documents: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). All verification gates passed (lint 0 errors, test 1774/1775 pass, build clean). Track archived.*
+
+- [x] **Track: CSV Dataset Creation**
+  *Link: [./archive/csv_datasets_20260413/](./archive/csv_datasets_20260413/)*
   *Scope: Create real CSV datasets referenced by the curriculum for Lessons 7 and 8 across all 8 units (56 total files: 1 class + 6 group per unit). Includes dataset API route with auth guard.*
-  *Status: Phase 1 in progress — Unit 1 datasets and API route*
+  *Closeout: completed on 2026-04-13. All 56 CSV files created, API route with auth guard, filename validation, path traversal protection. Phase 1 complete (Unit 1 datasets + API route). Phase 2 complete (Units 2-8 datasets). All verification gates passed (lint 0 errors, test 1775 pass, build clean). Track archived.*
 
 - [x] **Track: Component Approval Workflow**
   *Link: [./archive/component_approval_20260413/](./archive/component_approval_20260413/)*
