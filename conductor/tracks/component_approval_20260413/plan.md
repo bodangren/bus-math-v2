@@ -43,11 +43,11 @@
   - [x] Add filters for type, status, placement, recently changed, and needs re-review
   - [x] Show identity, placement, current hash, effective status, reviewer, timestamp, notes, and categories
   - [ ] Link each row to the appropriate review harness
-- [ ] Add review action controls shared by all component types
-  - [ ] Approve
-  - [ ] Request changes with required notes
-  - [ ] Reject with required notes
-  - [ ] Optional approved-note support
+- [x] Add review action controls shared by all component types
+  - [x] Approve
+  - [x] Request changes with required notes
+  - [x] Reject with required notes
+  - [x] Optional approved-note support
 - [x] Run targeted UI tests and `npm run lint`
 
 ## Phase 4: Component Review Harnesses
