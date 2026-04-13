@@ -32,7 +32,7 @@
 - [x] Implement review queue queries and unresolved review-note queries
 - [x] Run relevant Convex/function tests and `npm run lint`
 
-## [~] Phase 3: Dev Review Queue Surface
+## [x] Phase 3: Dev Review Queue Surface
 
 - [x] Write UI/access tests for the dev-only review queue route
   - [x] Developer/admin can load the queue
@@ -49,6 +49,7 @@
   - [x] Reject with required notes
   - [x] Optional approved-note support
 - [x] Run targeted UI tests and `npm run lint`
+- **Verification**: lint 0 errors/2 warnings (pre-existing), test 1749/1749 pass, build clean
 
 ## Phase 4: Component Review Harnesses
 
