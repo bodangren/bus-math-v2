@@ -459,4 +459,13 @@ export default defineSchema({
     .index("by_reviewer", ["reviewerId"])
     .index("by_status", ["status"])
     .index("by_component_and_created", ["componentType", "componentId", "createdAt"]),
+
+  chatbot_rate_limits: defineTable({
+    userId: v.id("profiles"),
+    requestCount: v.number(),
+    windowStart: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"]),
 });

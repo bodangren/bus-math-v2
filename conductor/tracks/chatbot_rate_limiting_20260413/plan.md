@@ -4,15 +4,15 @@
 
 ### Tasks
 
-- [ ] **1.1** Add `chatbot_rate_limits` table to `convex/schema.ts`
+- [x] **1.1** Add `chatbot_rate_limits` table to `convex/schema.ts`
   - Fields: `userId` (id), `requestCount` (number), `windowStart` (number), `createdAt` (number)
   - Index: `by_user` on `userId`
 
-- [ ] **1.2** Add rate limit validators to `convex/schema.ts`
+- [x] **1.2** Add rate limit validators to `convex/schema.ts`
   - `rateLimitEntryValidator`: validates individual entries
   - `chatbotRateLimitsTable`: defines the table
 
-- [ ] **1.3** Add test for schema changes
+- [x] **1.3** Add test for schema changes
   - Verify table exists with correct fields
 
 ---
@@ -21,11 +21,11 @@
 
 ### Tasks
 
-- [ ] **2.1** Create `convex/rateLimits.ts` with rate limit query/mutation
+- [x] **2.1** Create `convex/rateLimits.ts` with rate limit query/mutation
   - `getRateLimitStatus(userId)`: returns current rate limit state
   - `checkAndIncrementRateLimit(userId)`: atomic check + increment
 
-- [ ] **2.2** Add tests for rate limit functions
+- [x] **2.2** Add tests for rate limit functions
   - Test new user gets 5 remaining
   - Test decrementing on requests
   - Test window reset after 60 seconds
@@ -36,7 +36,7 @@
 
 ### Tasks
 
-- [ ] **3.1** Update `app/api/student/lesson-chatbot/route.ts`
+- [x] **3.1** Update `app/api/student/lesson-chatbot/route.ts`
   - Import and use `checkAndIncrementRateLimit` mutation
   - Remove in-memory Map rate limiter
 
@@ -63,10 +63,10 @@
 
 ### Tasks
 
-- [ ] **5.1** Remove in-memory Map implementation
+- [x] **5.1** Remove in-memory Map implementation
   - Delete any standalone rate limiter module if exists
 
-- [ ] **5.2** Run lint, tests, and build
+- [x] **5.2** Run lint, tests, and build
   - Fix any issues
 
 - [ ] **5.3** Update tech-debt.md

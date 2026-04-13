@@ -3,9 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { resolveOpenRouterProviderFromEnv } from '@/lib/ai/providers';
 import { assembleLessonChatbotContext } from '@/lib/ai/lesson-context';
 import { buildPublishedCurriculumManifest } from '@/lib/curriculum/published-manifest';
-
-const RATE_LIMIT_WINDOW_MS = 10000;
-const lastRequestByUser = new Map<string, number>();
+import { fetchInternalMutation, internal } from '@/lib/convex/server';
 
 interface ChatbotRequest {
   lessonId: string;
@@ -53,15 +51,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const now = Date.now();
-  const lastRequest = lastRequestByUser.get(session.sub);
-  if (lastRequest && now - lastRequest < RATE_LIMIT_WINDOW_MS) {
-    return NextResponse.json(
-      { error: 'Too many requests. Please wait a moment before trying again.' },
-      { status: 429 },
+  try {
+    const rateLimitResult = await fetchInternalMutation(
+      internal.rateLimits.checkAndIncrementRateLimit,
+      {}
     );
+
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait a moment before trying again.' },
+        { status: 429 }
+      );
+    }
+  } catch (error) {
+    console.error('[lesson-chatbot] Rate limit check failed:', error);
   }
-  lastRequestByUser.set(session.sub, now);
 
   let body: ChatbotRequest;
   try {
