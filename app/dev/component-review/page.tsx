@@ -1,16 +1,66 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import { useState } from 'react';
+import Link from 'next/link';
+import { useState, type ReactNode } from 'react';
+import { X } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  getAllReviewableComponents,
-  computeComponentVersionHash,
-} from '@/lib/component-approval/version-hashes';
-import { useQuery } from 'convex/react';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { getAllReviewableComponentIds } from '@/lib/component-approval/component-ids';
+import { computeComponentVersionHash } from '@/lib/component-approval/version-hashes';
+import { useQuery, useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+
+function DialogShell({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 p-4 pt-[12vh]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="w-full max-w-2xl rounded-lg border border-border bg-background shadow-xl"
+      >
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close dialog"
+            className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <div className="space-y-4 px-4 py-4">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+const ISSUE_CATEGORIES = [
+  'math_correctness',
+  'pedagogy',
+  'wording',
+  'ui_bug',
+  'accessibility',
+  'algorithmic_variation',
+  'missing_feedback',
+  'too_easy',
+  'too_hard',
+  'completion_behavior',
+  'evidence_quality',
+] as const;
 
 export default function ComponentReviewQueuePage() {
   if (process.env.NODE_ENV !== 'development') {
@@ -21,11 +71,43 @@ export default function ComponentReviewQueuePage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'unreviewed' | 'approved' | 'changes_requested' | 'rejected' | 'stale'>('all');
   const [includeStale, setIncludeStale] = useState(true);
 
-  const allComponents = getAllReviewableComponents();
+  const [reviewingComponent, setReviewingComponent] = useState<{
+    componentType: 'example' | 'activity' | 'practice';
+    componentId: string;
+  } | null>(null);
+  const [reviewStatus, setReviewStatus] = useState<'approved' | 'changes_requested' | 'rejected'>('approved');
+  const [reviewSummary, setReviewSummary] = useState('');
+  const [improvementNotes, setImprovementNotes] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
+
+  const allComponents = getAllReviewableComponentIds();
   const approvals = useQuery(api.componentApprovals.getReviewQueue, {
     includeStale,
     componentType: filterType === 'all' ? undefined : filterType,
   });
+  const submitReview = useMutation(api.componentApprovals.submitComponentReview);
+
+  const handleSubmitReview = async () => {
+    if (!reviewingComponent) return;
+    const componentVersionHash = computeComponentVersionHash(
+      reviewingComponent.componentType,
+      reviewingComponent.componentId
+    );
+    await submitReview({
+      componentType: reviewingComponent.componentType,
+      componentId: reviewingComponent.componentId,
+      componentVersionHash,
+      status: reviewStatus,
+      reviewSummary: reviewSummary || undefined,
+      improvementNotes: improvementNotes || undefined,
+      issueCategories: Array.from(selectedCategories),
+    });
+    setReviewingComponent(null);
+    setReviewStatus('approved');
+    setReviewSummary('');
+    setImprovementNotes('');
+    setSelectedCategories(new Set());
+  };
 
   const approvalMap = new Map(
     approvals?.map((a) => [`${a.componentType}:${a.componentId}`, a]) || []
@@ -34,10 +116,12 @@ export default function ComponentReviewQueuePage() {
   const enrichedComponents = allComponents.map((component) => {
     const key = `${component.componentType}:${component.componentId}`;
     const approval = approvalMap.get(key);
-    const currentHash = computeComponentVersionHash(component.componentType, component.componentId);
     const effectiveStatus = approval
-      ? approval.effectiveStatus || approval.approvalStatus
+      ? (approval as Record<string, unknown>).effectiveStatus as string || approval.approvalStatus
       : 'unreviewed';
+    const currentHash = approval
+      ? (approval as Record<string, unknown>).currentVersionHash as string || ''
+      : '';
     return {
       ...component,
       effectiveStatus,
@@ -141,13 +225,121 @@ export default function ComponentReviewQueuePage() {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">View Harness</Button>
-                  <Button size="sm">Review</Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/dev/component-review/harness/${component.componentType}/${component.componentId}`}>
+                      View Harness
+                    </Link>
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setReviewingComponent({
+                        componentType: component.componentType,
+                        componentId: component.componentId,
+                      });
+                      setReviewStatus('approved');
+                      setReviewSummary('');
+                      setImprovementNotes('');
+                      setSelectedCategories(new Set());
+                    }}
+                  >
+                    Review
+                  </Button>
                 </div>
               </CardHeader>
             </Card>
           ))}
         </section>
+
+        {reviewingComponent && (
+          <DialogShell
+            title={`Review ${reviewingComponent.componentType}: ${reviewingComponent.componentId}`}
+            onClose={() => setReviewingComponent(null)}
+          >
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <div className="flex flex-wrap gap-2">
+                  {(['approved', 'changes_requested', 'rejected'] as const).map((status) => (
+                    <Button
+                      key={status}
+                      variant={reviewStatus === status ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setReviewStatus(status)}
+                    >
+                      {status.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="review-summary">Review Summary (optional)</Label>
+                <textarea
+                  id="review-summary"
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  value={reviewSummary}
+                  onChange={(e) => setReviewSummary(e.target.value)}
+                  placeholder="Brief summary of the review..."
+                />
+              </div>
+
+              {(reviewStatus === 'changes_requested' || reviewStatus === 'rejected') && (
+                <div className="space-y-2">
+                  <Label htmlFor="improvement-notes">Improvement Notes (required)</Label>
+                  <textarea
+                    id="improvement-notes"
+                    className="flex min-h-[120px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    value={improvementNotes}
+                    onChange={(e) => setImprovementNotes(e.target.value)}
+                    placeholder="Detailed notes on what needs to be improved..."
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label>Issue Categories</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {ISSUE_CATEGORIES.map((category) => (
+                    <div key={category} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`category-${category}`}
+                        checked={selectedCategories.has(category)}
+                        onCheckedChange={(checked) => {
+                          const newCategories = new Set(selectedCategories);
+                          if (checked) {
+                            newCategories.add(category);
+                          } else {
+                            newCategories.delete(category);
+                          }
+                          setSelectedCategories(newCategories);
+                        }}
+                      />
+                      <Label htmlFor={`category-${category}`} className="text-sm">
+                        {category.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                <Button
+                  onClick={handleSubmitReview}
+                  disabled={
+                    (reviewStatus === 'changes_requested' || reviewStatus === 'rejected') &&
+                    !improvementNotes.trim()
+                  }
+                >
+                  Submit Review
+                </Button>
+                <Button variant="outline" onClick={() => setReviewingComponent(null)}>
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogShell>
+        )}
       </div>
     </main>
   );

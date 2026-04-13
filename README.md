@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 12, 2026 (Code Review Pass 40)
+Last updated: April 13, 2026 (Code Review Pass 42)
 
 ## Status Snapshot
 
@@ -32,6 +32,7 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 - Conductor Milestones 1-10 are marked complete.
 - Milestone 11 (if opened) is not yet defined.
+- The Component Approval Workflow track (not part of a numbered milestone) is complete — all 6 phases shipped, track archived.
 - Across the completed Milestone 10, all 3 serial tracks finished:
   1. ~~Study Hub Foundation and Flashcards~~ — complete
   2. ~~Study Modes and Progress Dashboard~~ — complete
@@ -81,10 +82,10 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 0 (all tracks complete) |
+| Active Conductor tracks | 0 (Component Approval Workflow complete and archived) |
 | Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
-| Archived track directories | 114 |
-| Test files under `__tests__` and `tests` | 302 |
+| Archived track directories | 115 |
+| Test files under `__tests__` and `tests` | 303 |
 
 ### My real assessment
 

@@ -31,31 +31,22 @@
 - Practice submission parts have optional `misconceptionTags`; always use `?? []` when aggregating to avoid undefined iteration errors.
 - API routes should return generic error messages in 500 responses; Convex internal queries that accept org ID must actually filter by that org.
 - Every practice.v1 component must have a submitted boolean state (preferably useRef) guarding the envelope callback and disabling the submit button.
-- "Show Example"/"Show Schedule" buttons must not set submitted=true or correct=false; only setShowWorkedExample(true) is needed.
 - Division-by-zero in UI Progress bars is easy to miss — defensive guards (`denom > 0 ? ... : 0`) prevent NaN/Infinity from propagating to the DOM.
-- Misconception tag assignments must semantically match the student's task — classification/reasoning errors should not be tagged as debit-credit-reversal or computation-error.
 - Code review audits should verify that "fixed" items are actually fixed in the live runtime rows/queries, not just in source files, commit messages, or regenerated manifests.
-- Grader misconception-tag lookups must use the same ID space as the student answer; searching practiceAccounts by category id when the answer is a category will never match and produces dead code.
 - `const [, setCompleted] = useState(false)` discards the boolean, making it impossible to guard against double-submit; always read the state value.
-- When grading journal entries, "correct account, wrong amount on the correct side" is a computation error, not a debit/credit reversal; compare the debit/credit side placement to distinguish.
-- "Back to Lesson" / completion-dismissal buttons must call reset() or fully restore playable state — partial state clearing (e.g., only setIsComplete(false)) leaves the game in an unplayable limbo where the ref guard silently blocks all actions.
-- Simulation reset functions must clear all active intervals/timeouts (salesIntervalRef, etc.) before resetting state; stale intervals continue modifying freshly-reset state.
-- Optional chaining on callbacks (onSubmit?.()) should be consistent across all components in the same layer — mixing onSubmit(envelope) and onSubmit?.(envelope) is a latent crash risk if the null guard is ever refactored.
-- When applying submittedRef guards to exercise components, check ALL exercise components in the same directory — the pattern gap is usually systematic, not isolated.
-- Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
-- Audit tracks should inventory ALL lessons/phases in the affected class, not just the named page — isolated UI/data bugs usually indicate a wider authored or renderer pattern.
-- "Continue Lesson" / "Try Again" buttons that only set isComplete=false must NOT re-arm submittedRef — partial reset without clearing negotiation state allows re-submission of the same envelope.
-- Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.
-- `setTimeout` in `addNotification` must store the timeout ID and clear it in a `useEffect` cleanup; copy the ref to a local variable in the effect body to satisfy the `react-hooks/exhaustive-deps` lint rule.
 - When building cross-component utility helpers (like cellBgClass for coloring gradebook/heatmap cells), make sure all consuming components import from the correct source file, and verify exports match imports with a full build.
 - When creating shared helpers that use Node.js core modules (fs, path), split into server and client versions. Client-side helpers must avoid Node.js core module usage. Use a separate file (e.g., `workbooks.client.ts`) with static data or pure functions for client consumption.
-- When mocking 'fs' in Vitest for Node.js ESM code that uses import * as fs from 'fs', use importOriginal and spread the actual fs module, then override the functions you need to mock.
-- When using 'fs' in Next.js route handlers, use import * as fs from 'fs' instead of import fs from 'fs' for better compatibility with Vitest mocking.
 - Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
-- When building study features, start with static glossary data and Convex schema foundation before building UI surfaces.
 - Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
+<<<<<<< HEAD
 - When building a multi-phase feature like practice tests, use refs for tracking values that need to be in sync with state updates but avoid stale-closure issues (like score and per-lesson breakdown when transitioning to a closing phase).
 - Convex `.withIndex` returns a new query base — chaining two `withIndex` calls drops the first filter; use `.filter()` for secondary predicates or pick one index per call path.
 - Derived statuses (e.g., `stale`) must be represented as computed/effective fields only; never include them in the validator accepted by a persistence mutation.
 - Content version hashes must be computed server-side and verified against client-supplied hashes before persisting approvals, and ideally derived from source files via a build-time manifest rather than `Function.prototype.toString()` to avoid dev/prod bundler drift.
 - Dev-only pages must combine a `NODE_ENV` check with a middleware role gate; env flags alone leak in misconfigured preview builds. Do gatekeeping before React hook calls, not inside the component body.
+- Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
+- Simulation reset functions must clear all active intervals/timeouts before resetting state; stale intervals continue modifying freshly-reset state.
+- Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.
+- Optional chaining on callbacks (`onSubmit?.()`) should be consistent across all components in the same layer — mixing `onSubmit(envelope)` and `onSubmit?.(envelope)` is a latent crash risk.
+- When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
+- CSV balance verification (Assets = Liabilities + Equity) must be done with parseFloat since awk treats `-300` as string concatenation; use explicit numeric parsing in node or add 0 to coerce.

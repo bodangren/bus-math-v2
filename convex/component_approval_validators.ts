@@ -34,7 +34,7 @@ export const componentApprovalValidator = v.object({
   approvalStatus: approvalStatusValidator,
   approvalVersionHash: v.string(),
   approvalReviewedAt: v.optional(v.number()),
-  approvalReviewedBy: v.optional(v.id('users')),
+  approvalReviewedBy: v.optional(v.id('profiles')),
   latestReviewId: v.optional(v.id('componentReviews')),
 });
 
@@ -43,11 +43,11 @@ export const componentReviewValidator = v.object({
   componentId: v.string(),
   componentVersionHash: v.string(),
   status: approvalStatusValidator,
-  reviewerId: v.id('users'),
+  reviewerId: v.id('profiles'),
   reviewSummary: v.optional(v.string()),
   improvementNotes: v.optional(v.string()),
   issueCategories: v.array(issueCategoryValidator),
   createdAt: v.number(),
   resolvedAt: v.optional(v.number()),
-  resolvedBy: v.optional(v.id('users')),
+  resolvedBy: v.optional(v.id('profiles')),
 });
