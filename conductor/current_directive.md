@@ -119,24 +119,6 @@ Autonomous code review covering the Component Approval Workflow track Phases 4-6
 
 **Phase status**: Component Approval Workflow track FULLY COMPLETE. All 6 phases shipped, track archived. No active tracks. All Milestones 1-10 complete. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 44)
-
-Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
-
-### Completed Since Pass 42
-
-- **CSV Dataset Creation** — All 56 CSV files created and verified. API route with auth guard. Track archived.
-- **Real PDF Content** — Generated real content for all 3 capstone PDFs: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). Archived track.
-- **Chatbot Rate Limiting Upgrade** — Replaced in-memory Map with Convex-backed chatbot_rate_limits table. 5 requests per 60-second window. Archived track.
-- **Component Approval Security Hardening** — Added server-side hash verification to submitComponentReview. Archived track.
-
-### Recommended Next Priorities
-
-1. **Harness crypto import cleanup** — Extract a client-safe version hash module so dev harness pages don't import Node.js crypto (dev-only, low priority). **Resolved 2026-04-14**.
-2. **Example harness correctness** — Example harness page imports practice-specific code; deprecate or rewrite when example review support is needed. **Resolved 2026-04-14**.
-3. **Units 2-8 source-doc parity** — Decide whether Units 2-8 should gain detailed markdown source-doc parity with Unit 1. **Resolved (no action) 2026-04-14**.
-4. **Flaky test remediation** — problem-generator "produces varied results without a seed" has ~11% collision rate. **Resolved 2026-04-14**.
-
 ## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 45)
 
 Autonomous code review covering the Problem Generator Flaky Test Fix track.
@@ -155,6 +137,69 @@ Autonomous code review covering the Problem Generator Flaky Test Fix track.
 - **Problem Generator Flaky Test Fix (all commits)**: Increased cash range from max 5000 to 99000 with same step 500, yielding 198 possible values. Test passes 5/5 runs confirming no flakiness. All existing tests remain green. Tech-debt item closed.
 
 **Phase status**: Problem Generator Flaky Test Fix FULLY COMPLETE. Track archived. Project in stabilization. All Milestones 1-10 complete.
+
+## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 47)
+
+Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harness Crypto Cleanup, Example Harness Correctness, Problem Generator Flaky Test Fix, and Units 2-8 Source-Doc Parity Decision.
+
+**Scope:** 5 commits since Pass 44 — harness crypto extraction to Convex query, example harness "Not Yet Implemented" state, problem-generator flaky test collision rate fix, Units 2-8 parity NO-GO decision, and associated documentation updates.
+
+**Fixed during review: 3 issues**
+- **README.md stale asset status** (Medium): Multiple sections still claimed CSVs/PDFs "pending" and PDFs were "placeholder files" — all shipped in Pass 43-44. Fixed: updated 4 sections to reflect current state (56 CSVs, 3 real PDFs, 66 workbooks all shipped). Pass number updated to 47.
+- **tracks.md stale links** (Low): Problem Generator Flaky Test Fix entry linked to `./tracks/` instead of `./archive/`. Units 2-8 Source-Doc Parity entry also linked to `./tracks/` despite being completed. Fixed both links.
+- **Track hygiene: completed track not archived** (Low): `units_2_8_source_doc_parity_20260414` was marked completed in tracks.md but still in `conductor/tracks/` instead of `conductor/archive/`. Fixed: moved to archive.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1775/1775 tests pass (303 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Harness Crypto Cleanup**: `getComponentVersionHash` Convex query in `convex/component_approvals.ts` computes hash server-side. All three harness pages (activity, practice, example) now use `useQuery` instead of importing `version-hashes.ts` directly. Clean extraction — no client-side crypto imports remain.
+- **Example Harness Correctness**: Removed incorrect `getPracticeFamily` import and all practice-family-specific UI (mode switching, seed control, problem generation, grading). Page now shows "Not Yet Implemented" state with clear explanation. Review checklist preserved. Approved button now gates only on checklist completion (not on problem/grade state that no longer exists).
+- **Problem Generator Flaky Test Fix**: Widened cash range from `max: 5000` to `max: 99000` (same step 500), increasing possible values from 9 to 198. Collision rate reduced from ~11% to ~0.5%. Single-line change in test template. All tests pass.
+- **Units 2-8 Source-Doc Parity Decision**: NO-GO documented with clear rationale — runtime curriculum lives in TypeScript blueprints, not markdown. Creating 77 markdown files would add maintenance burden without user benefit. Decision document in `DECISION.md` is thorough.
+
+**Pre-existing issues confirmed (not fixed):**
+- `stale` is a derived status but allowed as submit input in approvalStatusValidator (Medium)
+- Activity/practice hashes use Function.prototype.toString — minifier-sensitive, dev/prod drift (Medium)
+- Dev review page has no real auth guard beyond NODE_ENV check (Medium)
+- No unit tests for approval mutations/queries (Medium)
+- Exercise tests are shallow — test names claim behavior but only check rendering (Low)
+
+**Updated during review:**
+- README.md: Updated pass number, asset status across 4 sections, Units 2-8 parity decision status
+- conductor/tracks.md: Fixed archive links for 2 tracks
+- conductor/archive/units_2_8_source_doc_parity_20260414/: Moved from tracks/ (track hygiene fix)
+- conductor/tech-debt.md: Consolidated 3 overlapping dev-page auth/hash entries into existing canonical entries
+- current_directive.md: Added Pass 47 summary, updated priorities
+
+**Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
+
+## Current High-Level Priorities (2026-04-14 — Full Codebase Audit, Pass 47)
+
+Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
+
+### Completed Since Pass 42
+
+- **CSV Dataset Creation** — All 56 CSV files created and verified. API route with auth guard. Track archived.
+- **Real PDF Content** — Generated real content for all 3 capstone PDFs: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). Archived track.
+- **Chatbot Rate Limiting Upgrade** — Replaced in-memory Map with Convex-backed chatbot_rate_limits table. 5 requests per 60-second window. Archived track.
+- **Component Approval Security Hardening** — Added server-side hash verification to submitComponentReview. Archived track.
+- **Harness Crypto Cleanup** — Moved version hash computation to Convex query; harness pages no longer import Node.js crypto. Archived track.
+- **Example Harness Correctness** — Removed incorrect practice family imports; shows "Not Yet Implemented". Archived track.
+- **Problem Generator Flaky Test Fix** — Widened cash range to reduce collision rate from ~11% to ~0.5%. Archived track.
+- **Units 2-8 Source-Doc Parity** — Decided NO-GO; runtime curriculum lives in TypeScript blueprints. Archived track.
+
+### Recommended Next Priorities
+
+All previously tracked priorities are resolved. The project is in stabilization with no active tracks. Remaining open tech debt:
+
+1. **ApprovalStatusValidator split** — `stale` is a derived status but allowed as submit input. Split into storage vs submission validators. (Medium)
+2. **Version hash minifier sensitivity** — Activity/practice hashes use Function.prototype.toString which is sensitive to minification. Hash source files at build time via generated manifest. (Medium)
+3. **Dev review page auth guard** — NODE_ENV check works but no role-based auth. Add middleware+role gate. (Medium)
+4. **Approval mutation/query tests** — No unit tests for auth branches, stale-hash logic. (Medium)
+5. **Exercise test quality** — Test names claim behavior verification but only check rendering. (Low)
 
 ### Pass 44 Summary
 

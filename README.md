@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 13, 2026 (Code Review Pass 44)
+Last updated: April 14, 2026 (Code Review Pass 47)
 
 ## Status Snapshot
 
@@ -22,8 +22,8 @@ However, this repository is **not yet a fully classroom-complete education app**
 - ~~complete gradebook visibility for independent practice and assessment evidence~~ — complete
 - ~~teacher-facing competency heatmaps~~ — complete
 - ~~education app readiness hardening~~ — complete
-- downloadable workbook, dataset, rubric, checklist, and guide files for the full course
-- ~~complete capstone supporting pages and asset packets (workbooks shipped, routes pending)~~ — routes shipped, placeholder PDFs shipped
+- ~~downloadable workbook, dataset, rubric, checklist, and guide files for the full course~~ — largely complete (66 workbooks, 56 CSVs, 3 real PDFs)
+- ~~complete capstone supporting pages and asset packets~~ — routes shipped, 2 capstone workbooks + 3 real PDFs shipped
 - ~~student study tools (flashcards, matching, speed round, practice tests)~~ — complete
 
 ## Executive Summary
@@ -43,8 +43,8 @@ However, this repository is **not yet a fully classroom-complete education app**
 - **Runtime textbook/app core**: strong and already usable for meaningful testing
 - **Student and teacher classroom workflow**: complete — navigation, reporting, gradebook, competency heatmaps, and study tools all shipped
 - **Curriculum runtime publication**: substantially complete
-- **Curriculum artifact packaging**: partially complete (workbooks done, CSVs/PDFs pending)
-- **Launch readiness as a full classroom course app**: close but missing downloadable artifact packet
+- **Curriculum artifact packaging**: largely complete (66 workbooks, 56 CSVs, 3 real PDFs shipped; minor filename coverage gaps remain)
+- **Launch readiness as a full classroom course app**: substantially complete — artifact packet largely shipped (66 workbooks, 56 CSVs, 3 real PDFs)
 
 ## Project Target
 
@@ -227,7 +227,7 @@ That means:
 | XLSX lesson workbooks | 66 files shipped (all 8 units, Lessons 4-7, student + teacher + 2 capstone); some referenced filenames still missing |
 | CSV lesson datasets | 56 files shipped (all 8 units, 7 files each: 1 class + 6 group) |
 | PDF guides/rubrics/checklists | 3 real PDFs shipped (business plan guide, pitch rubric, model tour checklist) |
-| Capstone support packet | 2 workbook files + 3 placeholder PDFs + guidelines/rubrics routes shipped |
+| Capstone support packet | 2 workbook files + 3 real PDFs + guidelines/rubrics routes shipped |
 
 ## Student Experience: Real Status
 
@@ -346,9 +346,9 @@ These are the major remaining blockers.
 ### Asset-packaging blockers
 
 - ~~missing `.xlsx` workbooks~~ — 66 workbooks shipped (all 8 units + 2 capstone)
-- missing `.csv` datasets — 56 files shipped (all 8 units)
-- missing `.pdf` guides — real business plan guide shipped (11KB, 9 pages)
-- missing `.pdf` rubrics — real pitch rubric (11KB) and model tour checklist (9KB) shipped
+- ~~missing `.csv` datasets~~ — 56 files shipped (all 8 units)
+- ~~missing `.pdf` guides~~ — real business plan guide shipped (11KB, 9 pages)
+- ~~missing `.pdf` rubrics~~ — real pitch rubric (11KB) and model tour checklist (9KB) shipped
 - ~~missing capstone support packet files~~ — 2 capstone workbooks + 3 real PDFs + guidelines/rubrics routes shipped
 
 ### Release-readiness blockers
@@ -489,7 +489,7 @@ Even after Milestone 8 completes, this repo will still need artifact-packaging w
   - ~~pitch rubric~~
   - ~~model tour checklist~~
 - ~~add app routes or downloadable surfaces for capstone guidelines and rubrics~~ — complete
-- decide whether Units 2-8 should gain the same detailed markdown source-doc parity that Unit 1 already has
+- ~~decide whether Units 2-8 should gain the same detailed markdown source-doc parity that Unit 1 already has~~ — decided NO-GO on 2026-04-14 (runtime curriculum lives in TypeScript blueprints, not markdown)
 
 ## Active Milestone 10 Tracks
 

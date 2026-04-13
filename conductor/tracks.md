@@ -103,8 +103,13 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Harness Crypto Cleanup**
+  *Link: [./archive/harness_crypto_cleanup_20260413/](./archive/harness_crypto_cleanup_20260413/)*
+  *Scope: Extract client-safe version hash computation to Convex backend so dev harness pages don't import Node.js crypto.*
+  *Closeout: completed on 2026-04-13. Added getComponentVersionHash Convex query; updated all three harness pages (activity, practice, example) to use useQuery instead of importing crypto-dependent version-hashes.ts. Tech-debt item closed. All verification gates pass (lint 0 errors, test 1775/1775, build clean).*
+
 - [x] **Track: Units 2-8 Source-Doc Parity Decision**
-  *Link: [./tracks/units_2_8_source_doc_parity_20260414/](./tracks/units_2_8_source_doc_parity_20260414/)*
+  *Link: [./archive/units_2_8_source_doc_parity_20260414/](./archive/units_2_8_source_doc_parity_20260414/)*
   *Scope: Decide whether Units 2-8 should gain detailed markdown source-doc parity with Unit 1. Analyze effort, value, and priorities; produce decision document.*
   *Closeout: completed on 2026-04-14. Decision: NO-GO (close the item). Runtime curriculum is in TypeScript blueprints, not markdown files. Lesson matrices + generated blueprints serve curriculum authors adequately. Creating 77 markdown files would add maintenance burden without user benefit. Project in stabilization. All verification gates passed (lint 0 errors, test 1775/1775, build clean).*
 
@@ -139,7 +144,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-13. Added getComponentVersionHash Convex query; updated all three harness pages (activity, practice, example) to use useQuery instead of importing crypto-dependent version-hashes.ts. Tech-debt item closed. All verification gates pass (lint 0 errors, test 1775/1775, build clean).*
 
 - [x] **Track: Problem Generator Flaky Test Fix**
-  *Link: [./tracks/problem_generator_flaky_test_fix_20260414/](./tracks/problem_generator_flaky_test_fix_20260414/)*
+  *Link: [./archive/problem_generator_flaky_test_fix_20260414/](./archive/problem_generator_flaky_test_fix_20260414/)*
   *Scope: Fix flaky problem-generator test that has ~11% collision rate due to only 9 possible cash values. Increase range to 198 possible values to reduce collision rate to ~0.5%.*
   *Closeout: completed on 2026-04-14. Increased cash range from max 5000 to 99000 (198 possible values vs 9), reducing collision rate from ~11% to ~0.5%. Test passes 5/5 runs, all 1775 tests pass, lint 0 errors, build clean. Tech-debt item closed. Track archived.*
 
