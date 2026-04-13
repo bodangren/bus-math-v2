@@ -32,23 +32,23 @@
 - [x] Implement review queue queries and unresolved review-note queries
 - [x] Run relevant Convex/function tests and `npm run lint`
 
-## Phase 3: Dev Review Queue Surface
+## [~] Phase 3: Dev Review Queue Surface
 
-- [ ] Write UI/access tests for the dev-only review queue route
-  - [ ] Developer/admin can load the queue
-  - [ ] Student/teacher access is denied or redirected
-  - [ ] Queue filters render and apply correctly
-  - [ ] Stale and changes-requested states are visible
-- [ ] Build the dev-only review queue route
-  - [ ] Add filters for type, status, placement, recently changed, and needs re-review
-  - [ ] Show identity, placement, current hash, effective status, reviewer, timestamp, notes, and categories
+- [x] Write UI/access tests for the dev-only review queue route
+  - [x] Developer/admin can load the queue
+  - [x] Student/teacher access is denied or redirected
+  - [x] Queue filters render and apply correctly
+  - [x] Stale and changes-requested states are visible
+- [x] Build the dev-only review queue route
+  - [x] Add filters for type, status, placement, recently changed, and needs re-review
+  - [x] Show identity, placement, current hash, effective status, reviewer, timestamp, notes, and categories
   - [ ] Link each row to the appropriate review harness
 - [ ] Add review action controls shared by all component types
   - [ ] Approve
   - [ ] Request changes with required notes
   - [ ] Reject with required notes
   - [ ] Optional approved-note support
-- [ ] Run targeted UI tests and `npm run lint`
+- [x] Run targeted UI tests and `npm run lint`
 
 ## Phase 4: Component Review Harnesses
 
