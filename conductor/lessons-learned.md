@@ -44,8 +44,6 @@
 - Content version hashes must be computed server-side and verified against client-supplied hashes before persisting approvals, and ideally derived from source files via a build-time manifest rather than `Function.prototype.toString()` to avoid dev/prod bundler drift.
 - Dev-only pages must combine a `NODE_ENV` check with a middleware role gate; env flags alone leak in misconfigured preview builds. Do gatekeeping before React hook calls, not inside the component body.
 - Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
-- Simulation reset functions must clear all active intervals/timeouts before resetting state; stale intervals continue modifying freshly-reset state.
-- Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.
+- Simulation/reset functions must clear ALL state: active intervals/timeouts AND all submission state (submittedRef, setSubmitted), or stale callbacks will fire against freshly-reset state causing permanent blocking.
 - Optional chaining on callbacks (`onSubmit?.()`) should be consistent across all components in the same layer — mixing `onSubmit(envelope)` and `onSubmit?.(envelope)` is a latent crash risk.
 - When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
-- CSV balance verification (Assets = Liabilities + Equity) must be done with parseFloat since awk treats `-300` as string concatenation; use explicit numeric parsing in node or add 0 to coerce.
