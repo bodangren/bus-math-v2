@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Exercise Test Quality Improvement**
+  *Link: [./archive/exercise_test_quality_20260414/](./archive/exercise_test_quality_20260414/)*
+  *Scope: Improve shallow exercise/simulation tests that only check rendering to verify actual component behavior (submission flow, feedback, error states). Target 5+ components.*
+  *Closeout: completed on 2026-04-14. Improved 5 exercise tests with behavior verification: ProfitCalculator (4 tests), BudgetWorksheet (4 tests), ErrorCheckingSystem (5 tests), MarkupMarginMastery (5 tests), MonthEndClosePractice (4 tests). Tests now verify actual callback behavior, envelope structure, and state transitions. All 1802 tests pass, lint 0 errors, build clean. Tech-debt item closed.*
+
 - [x] **Track: Component Approval Stabilization**
   *Link: [./archive/component_approval_stabilization_20260414/](./archive/component_approval_stabilization_20260414/)*
   *Scope: Address 7 remaining tech-debt items: manifest script hardening (fail on missing files, wire into dev), test contradictions (remove example stale detection tests), hash-mismatch rejection test, example harness UI polish, unreviewed components hash fix, and auth branch unit tests.*

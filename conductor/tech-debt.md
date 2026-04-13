@@ -7,7 +7,7 @@
 | 2026-03-16 | cloudflare_production_hardening | Cloudflare launch depends on manual Wrangler secret setup — no CI-backed Worker deployment | Medium | Open | Automate once credential ownership is defined. |
 | 2026-04-04 | code_review_legacy_cleanup | Simulations 4-8 use ad-hoc inline activity prop types instead of canonical Zod schemas | Medium | Open | First 3 simulations wrap the Activity type; last 5 should follow. |
 | 2026-04-06 | code_review_tracks6-8 | auth/server.ts requireActiveRequestSessionClaims fails open on Convex backend failure | Medium | Open | Design decision documented. Consider 503 or credential-state caching. |
-| 2026-04-08 | code_review_pass11 | Exercise tests are shallow — test names claim behavior verification but only check rendering | Low | Open | Applies to all exercise and simulation components. |
+| 2026-04-08 | code_review_pass11 | Exercise tests are shallow — test names claim behavior verification but only check rendering | Low | Closed | Fixed: Improved 5 exercise tests (ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem, MarkupMarginMastery, MonthEndClosePractice) to verify actual callback behavior with proper interaction testing. |
 | 2026-04-10 | code_review_pass25 | workbooks.client.ts lessonHasWorkbooks uses hardcoded Set — becomes stale when new workbooks are added | Medium | Open | Now updated through Unit 8. Replace with dynamic check or update Set in each rollout track. |
 | 2026-04-10 | code_review_pass26 | activities table lacks lessonId — gradebook IP/assessment columns depend on activity_completions for lesson mapping | Medium | Open | Activities have no direct lesson association. Consider adding lessonId to activities schema. |
 

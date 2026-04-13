@@ -1,0 +1,8 @@
+{
+  "track_id": "exercise_test_quality_20260414",
+  "type": "quality",
+  "status": "completed",
+  "created_at": "2026-04-14T00:00:00Z",
+  "updated_at": "2026-04-14T00:00:00Z",
+  "description": "Improve shallow exercise tests to verify actual component behavior instead of just rendering"
+}
