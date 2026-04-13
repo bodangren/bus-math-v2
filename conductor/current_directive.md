@@ -80,6 +80,41 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
+## Code Review Summary (2026-04-13 — Full Codebase Audit, Pass 41)
+
+Autonomous code review covering the Component Approval Workflow track Phases 1-3 (since Pass 40).
+
+**Scope:** 7 commits since Pass 40 — Component Approval Workflow track creation, Phase 1 (schema + validators), Phase 2 (mutations + queries), Phase 3 partial (dev review queue page). 813 new lines across 11 files.
+
+**Fixed during review: 4 issues**
+- **getUserProfile imported but never exported** (Critical): `convex/component_approvals.ts` imported `getUserProfile` from `./auth`, but the function does not exist in `convex/auth.ts`. The Convex deployment would crash at module resolution time. Tests masked this because they mock Convex modules. Fixed: replaced with correct `ctx.auth.getUserIdentity()` + profile lookup pattern matching codebase convention.
+- **v.id('users') in validators but schema uses 'profiles'** (High): `component_approval_validators.ts` referenced `v.id('users')` for `approvalReviewedBy`, `reviewerId`, and `resolvedBy`. The schema defines the actual tables with `v.id("profiles")`. The "users" table doesn't exist. Fixed: changed all 3 occurrences to `v.id('profiles')`.
+- **Dev page imports Node.js crypto in client bundle** (High): `app/dev/component-review/page.tsx` (a `'use client'` component) imported `computeComponentVersionHash` from `version-hashes.ts`, which uses `import crypto from 'crypto'`. This Node.js-only module would fail when bundled for the browser. Fixed: extracted `component-ids.ts` (no crypto dependency) for client-side component enumeration; dev page now uses server-computed hashes from the Convex query response.
+- **getReviewQueue chained two withIndex calls** (Medium): Both `by_component` and `by_status` indexes were applied sequentially on the same query object. In Convex, the second `withIndex` replaces the first, so combined filtering silently used only the status index. Fixed: restructured into separate code paths for combined/individual/no filters.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1749/1749 tests pass (302 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Component Approval Schema (Phase 1)**: `componentApprovals` and `componentReviews` tables properly defined with validators, indexes for component lookup, status filtering, reviewer filtering, and creation ordering. Schema test updated to expect 30 tables. Clean separation of validators into `component_approval_validators.ts`.
+- **Review Mutations and Queries (Phase 2)**: `submitComponentReview` mutation properly validates auth (dev/admin only), requires notes for changes_requested/rejected, inserts both review history and approval summary. `getReviewQueue` supports type/status/stale filtering. `getUnresolvedReviews` supports LLM audit queries. `getComponentReviews` returns full history ordered by creation.
+- **Dev Review Queue Page (Phase 3 partial)**: Properly guarded with NODE_ENV check. Filters for type and status. Shows component identity, hash, effective status. Review action controls (approve/reject/request-changes) not yet implemented (Phase 3 plan items remain open).
+
+**Pre-existing issues confirmed (not fixed):**
+- Chatbot rate limit uses in-memory Map (no cross-replica support)
+- problem-generator flaky test (pre-existing)
+- Capstone rubrics page is a stub (no inline content)
+- exercises tests are shallow — test names claim behavior but only check rendering
+
+**New items recorded in tech-debt.md:**
+- Dev page auth guard is only NODE_ENV (Medium — open)
+- Example version hash is always static (Low — open)
+- Unreviewed components show empty currentHash in dev queue (Low — open)
+
+**Phase status**: Component Approval Workflow track in-progress, Phase 3 partial. Phases 4-6 remain. All verification gates pass.
+
 ## Code Review Summary (2026-04-12 — Full Codebase Audit, Pass 40)
 
 Autonomous code review covering the Supabase residue cleanup track (since Pass 39).
@@ -104,28 +139,20 @@ Autonomous code review covering the Supabase residue cleanup track (since Pass 3
 
 **Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: real PDF content, CSV datasets, chatbot rate limiting.
 
-## Current High-Level Priorities (2026-04-12 — Full Codebase Audit, Pass 40)
+## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 41)
 
-Milestones 1-10 are **complete**. All tracks archived. The project is in a stabilization state with no active Milestone 11 defined.
+Milestones 1-10 are **complete**. The Component Approval Workflow track (not part of a numbered milestone) is **in-progress**.
 
-1. **Workbook Infrastructure and Unit 1 Pilot** — COMPLETE. Archived.
-2. **Units 2-4 Workbook Rollout** — COMPLETE. Archived.
-3. **Units 5-8 Workbook Rollout and Capstone Assets** — COMPLETE. Archived.
-4. **Student One-Shot Lesson Chatbot** — COMPLETE. Archived.
-5. **AI Feedback for Spreadsheet Submissions** — COMPLETE. Archived.
-6. **Study Hub Foundation and Flashcards** — COMPLETE. Archived.
-7. **Study Modes and Progress Dashboard** — COMPLETE. Archived.
-8. **Practice Tests** — COMPLETE. Archived.
-9. **Artifact Packaging** — COMPLETE. Archived.
+### Active Track
+
+- **Component Approval Workflow** — Phase 3 partial (dev review queue UI). Phases 3-6 remain: review action controls, component review harnesses, stale approval loop, and verification.
 
 ### Recommended Next Priorities
 
-If continuing development, the highest-value next steps are:
-
-1. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
-2. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
-3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
-4. **Remove remaining dead Supabase code** — `lib/convex/server.ts` has unused `resolveConvexProfileIdFromSupabaseUser` function and `lib/supabase/server.ts` shim still exists.
+1. **Component Approval Workflow** — Complete Phase 3 (review action controls), then Phases 4-6 (review harnesses, stale detection, verification).
+2. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
+3. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
+4. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 

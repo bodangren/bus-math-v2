@@ -5,10 +5,7 @@ import { useState } from 'react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  getAllReviewableComponents,
-  computeComponentVersionHash,
-} from '@/lib/component-approval/version-hashes';
+import { getAllReviewableComponentIds } from '@/lib/component-approval/component-ids';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
@@ -21,7 +18,7 @@ export default function ComponentReviewQueuePage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'unreviewed' | 'approved' | 'changes_requested' | 'rejected' | 'stale'>('all');
   const [includeStale, setIncludeStale] = useState(true);
 
-  const allComponents = getAllReviewableComponents();
+  const allComponents = getAllReviewableComponentIds();
   const approvals = useQuery(api.componentApprovals.getReviewQueue, {
     includeStale,
     componentType: filterType === 'all' ? undefined : filterType,
@@ -34,10 +31,12 @@ export default function ComponentReviewQueuePage() {
   const enrichedComponents = allComponents.map((component) => {
     const key = `${component.componentType}:${component.componentId}`;
     const approval = approvalMap.get(key);
-    const currentHash = computeComponentVersionHash(component.componentType, component.componentId);
     const effectiveStatus = approval
-      ? approval.effectiveStatus || approval.approvalStatus
+      ? (approval as Record<string, unknown>).effectiveStatus as string || approval.approvalStatus
       : 'unreviewed';
+    const currentHash = approval
+      ? (approval as Record<string, unknown>).currentVersionHash as string || ''
+      : '';
     return {
       ...component,
       effectiveStatus,

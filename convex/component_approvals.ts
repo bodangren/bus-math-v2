@@ -8,7 +8,6 @@ import {
   approvalStatusValidator,
   issueCategoryValidator,
 } from "./component_approval_validators";
-import { getUserProfile } from "./auth";
 import { computeComponentVersionHash } from "@/lib/component-approval/version-hashes";
 
 export const getComponentApproval = query({
@@ -34,21 +33,28 @@ export const getReviewQueue = query({
     includeStale: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    let query = ctx.db.query("componentApprovals");
+    let approvals;
 
-    if (args.componentType) {
-      query = query.withIndex("by_component", (q) =>
-        q.eq("componentType", args.componentType)
-      );
+    if (args.componentType && args.approvalStatus) {
+      // Both filters: use by_status index, then filter in memory
+      approvals = await ctx.db
+        .query("componentApprovals")
+        .withIndex("by_status", (q) => q.eq("approvalStatus", args.approvalStatus!))
+        .filter((q) => q.eq(q.field("componentType"), args.componentType!))
+        .collect();
+    } else if (args.componentType) {
+      approvals = await ctx.db
+        .query("componentApprovals")
+        .withIndex("by_component", (q) => q.eq("componentType", args.componentType!))
+        .collect();
+    } else if (args.approvalStatus) {
+      approvals = await ctx.db
+        .query("componentApprovals")
+        .withIndex("by_status", (q) => q.eq("approvalStatus", args.approvalStatus!))
+        .collect();
+    } else {
+      approvals = await ctx.db.query("componentApprovals").collect();
     }
-
-    if (args.approvalStatus) {
-      query = query.withIndex("by_status", (q) =>
-        q.eq("approvalStatus", args.approvalStatus)
-      );
-    }
-
-    const approvals = await query.collect();
 
     if (args.includeStale) {
       return approvals.map((approval) => {
@@ -97,9 +103,16 @@ export const submitComponentReview = mutation({
     issueCategories: v.array(issueCategoryValidator),
   },
   handler: async (ctx, args) => {
-    const profile = await getUserProfile(ctx);
-    if (!profile) {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
       throw new Error("Not authenticated");
+    }
+    const profile = await ctx.db
+      .query("profiles")
+      .withIndex("by_username", (q) => q.eq("username", identity.email!))
+      .unique();
+    if (!profile) {
+      throw new Error("Profile not found");
     }
     if (profile.role === "student" || profile.role === "teacher") {
       throw new Error("Not authorized");
