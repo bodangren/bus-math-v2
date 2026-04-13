@@ -80,6 +80,41 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
+## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 49)
+
+Autonomous code review covering all changes since Pass 48: Component Approval Stabilization, Exercise Test Quality Improvement, Simulation Activity Type Standardization, and Workbook Client Dynamic Lookup.
+
+**Scope:** 7 commits since Pass 48 — closing 7 tech-debt items in component approval, improving 5 exercise tests to verify behavior, standardizing CashFlowChallenge activity types, and replacing hardcoded workbook Set with build-time manifest.
+
+**Fixed during review: 0 issues**
+
+**Track hygiene fixes: 3**
+- **component_approval_stabilization_20260414 metadata status** (Low): metadata.json had `"status": "new"` but track is completed. Fixed to `"completed"`.
+- **simulation_activity_types_20260414 metadata status** (Low): metadata.json had `"status": "new"` but track is completed. Fixed to `"completed"`.
+- **workbooks_client_dynamic_lookup_20260414 metadata status** (Low): metadata.json had `"status": "new"` but track is completed. Fixed to `"completed"`.
+
+**Documentation fixes: 2**
+- **Duplicate Harness Crypto Cleanup entry in tracks.md** (Low): Identical entry appeared at lines 136 and 171. Removed the duplicate.
+- **README.md stale asset section** (Medium): Section "C. Downloadable asset completeness" claimed assets were "still metadata or filename references, not shipped downloadable files" — all 66 workbooks, 56 CSVs, and 3 PDFs are shipped. Updated to reflect reality. Pass number and test file count also updated.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1812/1812 tests pass (305 test files, 0 failures)
+- `npm run build`: passes cleanly (manifest generation: 51 activities + 19 practices)
+
+**What was reviewed:**
+- **Component Approval Stabilization** (6 phases): manifest script now throws on missing files (was console.warn + continue), predev hook wired into package.json, 2 contradictory example+stale test mocks removed, hash-mismatch rejection test added, auth rejection tests for submitComponentReview/resolveReview added, example harness approve button replaced with disabled "Not Applicable", dev queue computes currentVersionHash client-side for unreviewed non-example components. All changes clean.
+- **Exercise Test Quality** (5 components): ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem, MarkupMarginMastery, MonthEndClosePractice tests upgraded from shallow render-checks to real behavior verification using userEvent — test envelope structure, double-submit prevention, feedback display, completed-state assertions. 16 new tests, 4 tests removed. Clean improvement.
+- **Simulation Activity Type Standardization**: CashFlowChallenge updated to use canonical `Activity` type wrapper with typed `CashFlowChallengeActivity` export instead of ad-hoc inline props. Only one simulation needed fixing; others (DynamicMethodSelector, MethodComparisonSimulator, etc.) are self-contained.
+- **Workbook Client Dynamic Lookup**: Hardcoded 66-entry Set replaced with build-time manifest (`scripts/generate-workbook-manifest.ts` → `lib/workbooks-manifest.json`). `workbooks.client.ts` now imports from manifest with `byUnitAndLesson` lookup. 10 new unit tests covering all exported functions.
+
+**Pre-existing issues confirmed (not fixed):**
+- generate-workbook-manifest not wired into build step (Low — manifest is checked in, regenerated manually)
+- generate-workbook-manifest does not fail on empty directory (Low)
+- Capstone workbooks not included in byUnitAndLesson lookup (Low — capstone files don't match unit_NN_lesson_NN pattern)
+
+**Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
+
 ## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 48)
 
 Autonomous code review covering all changes since Pass 47: ApprovalStatusValidator Split, Version Hash Build-Time Manifest, Dev Review Auth Guard, and Example Version Hash Placeholder Fix.
@@ -227,24 +262,24 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
 
-### Completed Since Pass 47
+### Completed Since Pass 48
 
-- **ApprovalStatusValidator Split** — Split into storage (with `stale`) and submission (without `stale`) validators. Track archived.
-- **Version Hash Build-Time Manifest** — Replaced `Function.prototype.toString()` hashing with build-time manifest (51 activities + 19 practices). Track archived.
-- **Dev Review Auth Guard** — Middleware admin role check for `/dev/component-review`. Track archived.
-- **Example Version Hash Placeholder Fix** — Documented that examples are embedded content, not hashable components. submitComponentReview rejects examples. Track archived.
+- **Component Approval Stabilization** — Closed 7 tech-debt items: manifest hardening (throw on missing), predev hook, test contradiction fixes, hash-mismatch test, auth tests, example harness UI, unreviewed component hash display.
+- **Exercise Test Quality Improvement** — Upgraded 5 exercise tests from shallow rendering to behavior verification.
+- **Simulation Activity Type Standardization** — CashFlowChallenge fixed to use canonical Activity type wrapper.
+- **Workbook Client Dynamic Lookup** — Replaced hardcoded Set with build-time manifest (66 files).
 
 ### Recommended Next Priorities
 
 All previously tracked priorities are resolved. The project is in stabilization with no active tracks. Remaining open tech debt:
 
-1. **Generate manifest in dev workflow** — dev script does not regenerate component-versions.json; stale hashes possible after source edits. (Low)
-2. **Manifest build-time validation** — warn-and-continue on missing files could cause runtime throws; add post-scan count assertion. (Low)
-3. **Approval test contradictions** — Two tests mock example+stale combos that server never produces. Rewrite or remove. (Low)
-4. **Hash-mismatch rejection test** — No test for submitComponentReview throwing on mismatched hashes. (Low)
-5. **Exercise test quality** — Test names claim behavior verification but only check rendering. (Low)
+1. **Generate workbook manifest in build step** — workbook manifest is checked in but not regenerated during build; adding a workbook without regenerating will cause stale lookup. (Low)
+2. **Workbook manifest empty-directory guard** — generate-workbook-manifest does not fail on empty directory. (Low)
+3. **Capstone workbook lookup gap** — capstone workbook files (`capstone_*.xlsx`) don't match unit_lesson pattern, so they're excluded from byUnitAndLesson lookup. (Low)
+4. **Auth/server.ts fail-open behavior** — requireActiveRequestSessionClaims fails open on Convex backend failure. Design decision documented. (Medium)
+5. **Cloudflare CI deployment** — Manual Wrangler secret setup, no CI-backed Worker deployment. (Medium)
 
-### Pass 47 Summary
+### Pass 48 Summary
 
 Autonomous code review covering 11 commits since Pass 42: CSV dataset creation (56 files), real PDF content generation (3 capstone PDFs), chatbot rate limiting upgrade (Convex-backed), and component approval security hardening (server-side hash verification).
 

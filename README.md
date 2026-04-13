@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 14, 2026 (Code Review Pass 48)
+Last updated: April 14, 2026 (Code Review Pass 49)
 
 ## Status Snapshot
 
@@ -85,7 +85,7 @@ The target product is:
 | Active Conductor tracks | 0 (Component Approval Workflow complete and archived) |
 | Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
 | Archived track directories | 126 |
-| Test files under `__tests__` and `tests` | 304 |
+| Test files under `__tests__` and `tests` | 305 |
 
 ### My real assessment
 
@@ -213,8 +213,10 @@ Repo audit result:
 
 That means:
 
-- lesson contracts often mention the right instructional assets
-- but those assets are still metadata or filename references, not shipped downloadable files
+- lesson contracts reference the correct instructional assets
+- 66 workbook files are shipped under `public/workbooks/` (all 8 units, Lessons 4-7, student + teacher, plus 2 capstone workbooks) — workbook lookup now uses a build-time manifest instead of a hardcoded Set
+- 56 CSV dataset files are shipped under `public/datasets/` (all 8 units)
+- 3 real PDF files are shipped under `public/pdfs/` (business plan guide, pitch rubric, model tour checklist)
 
 ### D. What this means in practical terms
 

@@ -168,11 +168,6 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Fix two HIGH severity issues in component_approvals.ts: (1) getReviewQueue silently drops componentType when approvalStatus is also passed — already fixed in code, tech-debt entry was stale; (2) submitComponentReview accepts client-supplied hash without server recomputation.*
   *Closeout: completed on 2026-04-13. Added server-side hash verification to submitComponentReview using computeComponentVersionHash. Throws "Component version hash mismatch" when client hash doesn't match server hash. Issue 1 already fixed in code. All verification gates pass (lint 0 errors, test 1775/1775, build clean).*
 
-- [x] **Track: Harness Crypto Cleanup**
-  *Link: [./archive/harness_crypto_cleanup_20260413/](./archive/harness_crypto_cleanup_20260413/)*
-  *Scope: Extract client-safe version hash computation to Convex backend so dev harness pages don't import Node.js crypto.*
-  *Closeout: completed on 2026-04-13. Added getComponentVersionHash Convex query; updated all three harness pages (activity, practice, example) to use useQuery instead of importing crypto-dependent version-hashes.ts. Tech-debt item closed. All verification gates pass (lint 0 errors, test 1775/1775, build clean).*
-
 - [x] **Track: Problem Generator Flaky Test Fix**
   *Link: [./archive/problem_generator_flaky_test_fix_20260414/](./archive/problem_generator_flaky_test_fix_20260414/)*
   *Scope: Fix flaky problem-generator test that has ~11% collision rate due to only 9 possible cash values. Increase range to 198 possible values to reduce collision rate to ~0.5%.*

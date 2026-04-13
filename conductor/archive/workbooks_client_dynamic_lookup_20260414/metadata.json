@@ -1,7 +1,7 @@
 {
   "track_id": "workbooks_client_dynamic_lookup_20260414",
   "type": "tech-debt",
-  "status": "new",
+  "status": "completed",
   "created_at": "2026-04-14T00:00:00Z",
   "updated_at": "2026-04-14T00:00:00Z",
   "description": "Replace hardcoded Set in workbooks.client.ts with dynamic lookup to prevent stale data when new workbooks are added"

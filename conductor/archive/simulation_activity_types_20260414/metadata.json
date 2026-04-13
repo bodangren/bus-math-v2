@@ -1,7 +1,7 @@
 {
   "track_id": "simulation_activity_types_20260414",
   "type": "refactor",
-  "status": "new",
+  "status": "completed",
   "created_at": "2026-04-14T00:00:00Z",
   "updated_at": "2026-04-14T00:00:00Z",
   "description": "Fix simulations 4-8+ to use canonical Activity type pattern instead of ad-hoc inline types"
