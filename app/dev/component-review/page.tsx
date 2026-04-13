@@ -1,6 +1,7 @@
 'use client';
 
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -224,7 +225,11 @@ export default function ComponentReviewQueuePage() {
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">View Harness</Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href={`/dev/component-review/harness/${component.componentType}/${component.componentId}`}>
+                      View Harness
+                    </Link>
+                  </Button>
                   <Button
                     size="sm"
                     onClick={() => {
