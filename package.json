@@ -1,11 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "predev": "tsx scripts/generate-component-manifest.ts",
+    "predev": "tsx scripts/generate-component-manifest.ts && tsx scripts/generate-workbook-manifest.ts",
     "dev": "vinext dev",
     "dev:stack": "node scripts/dev-stack.mjs",
-    "build": "tsx scripts/generate-component-manifest.ts && vinext build",
+    "build": "tsx scripts/generate-component-manifest.ts && tsx scripts/generate-workbook-manifest.ts && vinext build",
     "generate:manifest": "tsx scripts/generate-component-manifest.ts",
+    "generate:workbook-manifest": "tsx scripts/generate-workbook-manifest.ts",
     "start": "vinext start",
     "lint": "vinext lint",
     "test": "vitest run",

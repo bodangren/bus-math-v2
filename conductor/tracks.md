@@ -343,6 +343,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/remaining_exercise_placeholders_20260409/](./archive/remaining_exercise_placeholders_20260409/)*
   *Closeout: archived on 2026-04-09 after implementing all 3 remaining exercise placeholders (ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem), updating the activity registry, creating test files, running full verification (lint, test, build), and updating tech-debt.md.*
 
+- [x] **Track: Workbook Manifest Build Integration**
+  *Link: [./archive/workbook_manifest_build_integration_20260414/](./archive/workbook_manifest_build_integration_20260414/)*
+  *Scope: Wire generate-workbook-manifest.ts into build/dev steps so workbook manifest regenerates automatically and stays in sync with public/workbooks/ directory.*
+  *Closeout: completed on 2026-04-14. Added generate:workbook-manifest npm script, updated predev and build hooks to run both component and workbook manifest generators. All verification gates pass (lint 0 errors, test 1812/1812, build clean). tech-debt item closed.*
+
 ## Archive Ledger
 
 - [x] **Track: Workbook Client Dynamic Lookup**
