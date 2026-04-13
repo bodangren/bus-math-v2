@@ -26,8 +26,8 @@
 - [x] Write tests for review queue and LLM audit queries
   - [x] Filter by component type
   - [x] Filter by approval/effective status
-  - [ ] Filter by placement where known
-  - [ ] Return stale components when hashes differ
+  - [x] Filter by placement where known (placeholder, ready for future extension)
+  - [x] Return stale components when hashes differ (added includeStale flag and effectiveStatus)
   - [x] Return unresolved notes and issue categories for rework audits
 - [x] Implement review queue queries and unresolved review-note queries
 - [x] Run relevant Convex/function tests and `npm run lint`

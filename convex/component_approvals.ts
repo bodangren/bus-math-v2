@@ -9,6 +9,7 @@ import {
   issueCategoryValidator,
 } from "./component_approval_validators";
 import { getUserProfile } from "./auth";
+import { computeComponentVersionHash } from "@/lib/component-approval/version-hashes";
 
 export const getComponentApproval = query({
   args: {
@@ -30,6 +31,7 @@ export const getReviewQueue = query({
   args: {
     componentType: v.optional(componentTypeValidator),
     approvalStatus: v.optional(approvalStatusValidator),
+    includeStale: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     let query = ctx.db.query("componentApprovals");
@@ -47,6 +49,22 @@ export const getReviewQueue = query({
     }
 
     const approvals = await query.collect();
+
+    if (args.includeStale) {
+      return approvals.map((approval) => {
+        const currentHash = computeComponentVersionHash(approval.componentType, approval.componentId);
+        const effectiveStatus =
+          approval.approvalStatus !== "unreviewed" && approval.approvalVersionHash !== currentHash
+            ? "stale"
+            : approval.approvalStatus;
+        return {
+          ...approval,
+          effectiveStatus,
+          currentVersionHash: currentHash,
+        };
+      });
+    }
+
     return approvals;
   },
 });
