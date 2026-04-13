@@ -5,6 +5,11 @@ import {
   spreadsheetDataValidator,
   validationResultValidator,
 } from "./spreadsheet_validators";
+import {
+  componentTypeValidator,
+  approvalStatusValidator,
+  issueCategoryValidator,
+} from "./component_approval_validators";
 
 const fsrsStateValidator = v.record(v.string(), v.any());
 
@@ -421,4 +426,37 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_and_unit", ["userId", "unitNumber"])
     .index("by_user_and_completed", ["userId", "completedAt"]),
+
+  componentApprovals: defineTable({
+    componentType: componentTypeValidator,
+    componentId: v.string(),
+    approvalStatus: approvalStatusValidator,
+    approvalVersionHash: v.string(),
+    approvalReviewedAt: v.optional(v.number()),
+    approvalReviewedBy: v.optional(v.id("profiles")),
+    latestReviewId: v.optional(v.id("componentReviews")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_component", ["componentType", "componentId"])
+    .index("by_status", ["approvalStatus"])
+    .index("by_reviewer", ["approvalReviewedBy"]),
+
+  componentReviews: defineTable({
+    componentType: componentTypeValidator,
+    componentId: v.string(),
+    componentVersionHash: v.string(),
+    status: approvalStatusValidator,
+    reviewerId: v.id("profiles"),
+    reviewSummary: v.optional(v.string()),
+    improvementNotes: v.optional(v.string()),
+    issueCategories: v.array(issueCategoryValidator),
+    createdAt: v.number(),
+    resolvedAt: v.optional(v.number()),
+    resolvedBy: v.optional(v.id("profiles")),
+  })
+    .index("by_component", ["componentType", "componentId"])
+    .index("by_reviewer", ["reviewerId"])
+    .index("by_status", ["status"])
+    .index("by_component_and_created", ["componentType", "componentId", "createdAt"]),
 });

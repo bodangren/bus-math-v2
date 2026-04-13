@@ -1,18 +1,18 @@
 # Implementation Plan: Component Approval Workflow
 
-## Phase 1: Approval Contract and Schema
+## [x] Phase 1: Approval Contract and Schema
 
-- [ ] Audit reviewable component identity across examples, activities, and practice components
-  - [ ] Identify canonical component ids and placement metadata
-  - [ ] Document any components that lack stable ids as track tech debt
-  - [ ] Define the deterministic version hash inputs for each component type
-- [ ] Write tests for approval status/category validators and stale hash behavior
-- [ ] Implement Convex schema support for approval summaries and review history
-  - [ ] Add approval summary persistence on component records or a dedicated `componentApprovals` table
-  - [ ] Add `componentReviews` history records
-  - [ ] Add indexes for component lookup, status filtering, type filtering, and stale/needs-review queues
-- [ ] Implement shared approval types and validators
-- [ ] Run targeted schema/type tests and `npm run lint`
+- [x] Audit reviewable component identity across examples, activities, and practice components
+  - [x] Identify canonical component ids and placement metadata
+  - [x] Document any components that lack stable ids as track tech debt
+  - [x] Define the deterministic version hash inputs for each component type
+- [x] Write tests for approval status/category validators and stale hash behavior
+- [x] Implement Convex schema support for approval summaries and review history
+  - [x] Add approval summary persistence on component records or a dedicated `componentApprovals` table
+  - [x] Add `componentReviews` history records
+  - [x] Add indexes for component lookup, status filtering, type filtering, and stale/needs-review queues
+- [x] Implement shared approval types and validators
+- [x] Run targeted schema/type tests and `npm run lint`
 
 ## Phase 2: Review Mutations and Audit Queries
 
