@@ -51,26 +51,27 @@
 - [x] Run targeted UI tests and `npm run lint`
 - **Verification**: lint 0 errors/2 warnings (pre-existing), test 1749/1749 pass, build clean
 
-## Phase 4: Component Review Harnesses
+## [x] Phase 4: Component Review Harnesses
 
-- [ ] Write tests for the example review harness
-  - [ ] Renders all three modes
-  - [ ] Allows manual mode switching
-  - [ ] Exercises multiple practice variants
-  - [ ] Prevents approval until required checks are completed
-- [ ] Implement the example review harness
-- [ ] Write tests for the practice review harness
-  - [ ] Runs attempts
-  - [ ] Tests answer validation and feedback
-  - [ ] Shows evidence payloads where applicable
-  - [ ] Exercises randomized variants where applicable
-- [ ] Implement the practice review harness
-- [ ] Write tests for the activity review harness
-  - [ ] Renders instructions and interaction flow
-  - [ ] Exercises completion behavior
-  - [ ] Shows evidence/completion payloads where applicable
-- [ ] Implement the activity review harness
-- [ ] Run targeted harness tests and `npm run lint`
+- [x] Write tests for the example review harness
+  - [x] Renders all three modes
+  - [x] Allows manual mode switching
+  - [x] Exercises multiple practice variants
+  - [x] Prevents approval until required checks are completed
+- [x] Implement the example review harness
+- [x] Write tests for the practice review harness
+  - [x] Runs attempts
+  - [x] Tests answer validation and feedback
+  - [x] Shows evidence payloads where applicable
+  - [x] Exercises randomized variants where applicable
+- [x] Implement the practice review harness
+- [x] Write tests for the activity review harness
+  - [x] Renders instructions and interaction flow
+  - [x] Exercises completion behavior
+  - [x] Shows evidence/completion payloads where applicable
+- [x] Implement the activity review harness
+- [x] Run targeted harness tests and `npm run lint`
+- **Verification**: lint 0 errors/2 warnings (pre-existing), test 1749/1749 pass, build clean
 
 ## Phase 5: Stale Approval and Rework Loop Integration
 
