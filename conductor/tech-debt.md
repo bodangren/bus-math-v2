@@ -29,3 +29,10 @@
 
 | 2026-04-13 | code_review_pass41 | Unreviewed components show empty currentHash in dev queue | Low | Open | currentVersionHash only returned when approval exists. Need to compute for all components in queue query. |
 | 2026-04-13 | code_review_pass42 | Dev harness pages import Node.js crypto in client bundles | Low | Closed | Fixed: Added getComponentVersionHash Convex query; harness pages now call query instead of importing crypto-dependent version-hashes.ts. |
+| 2026-04-14 | code_review_pass48 | componentReviews schema uses approvalStatusValidator (includes stale) instead of submissionStatusValidator | Medium | Closed | Fixed: schema now uses submissionStatusValidator. Defense-in-depth — mutation layer already rejects stale. |
+| 2026-04-14 | code_review_pass48 | approvalStatusValidator not imported in component_approvals.ts but used by getReviewQueue | High | Closed | Fixed: added missing import. Would cause ReferenceError when getReviewQueue called with approvalStatus filter. |
+| 2026-04-14 | code_review_pass48 | generate-component-manifest not wired into dev script | Low | Open | Dev script runs vinext dev without regenerating manifest; stale hashes possible after source edits. |
+| 2026-04-14 | code_review_pass48 | generate-component-manifest warns on missing files instead of failing build | Low | Open | Silent omission could cause runtime throws in version-hashes.ts if a source file is renamed/deleted. |
+| 2026-04-14 | code_review_pass48 | Approval test mocks contradict server logic for example stale detection | Low | Open | Two tests set componentType:'example' with effectiveStatus:'stale' but server exempts examples from stale detection. Tests pass on mocks only. |
+| 2026-04-14 | code_review_pass48 | No test for hash-mismatch rejection in submitComponentReview | Low | Open | Server throws on mismatch but no test covers this path. |
+| 2026-04-14 | code_review_pass48 | Example harness approve button is local-only, misleading UI | Low | Open | Shows green "Approved" badge without persisting. Acceptable for "Not Yet Implemented" state. |

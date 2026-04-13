@@ -80,6 +80,53 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
+## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 48)
+
+Autonomous code review covering all changes since Pass 47: ApprovalStatusValidator Split, Version Hash Build-Time Manifest, Dev Review Auth Guard, and Example Version Hash Placeholder Fix.
+
+**Scope:** 9 commits since Pass 47 — validator split into storage vs submission, build-time manifest replacing Function.toString() hashing, middleware admin role guard for /dev routes, and example hash rejection/documentation.
+
+**Fixed during review: 2 issues**
+- **Missing approvalStatusValidator import in component_approvals.ts** (High): `getReviewQueue` referenced `approvalStatusValidator` on line 45 but the variable was not imported from `component_approval_validators`. Would cause `ReferenceError` at runtime when `getReviewQueue` is called with an `approvalStatus` filter argument. Fixed: added `approvalStatusValidator` to the import statement.
+- **componentReviews schema uses wrong validator** (Medium): `convex/schema.ts` line 449 used `approvalStatusValidator` (which includes `stale`) for the `componentReviews.status` column. Should use `submissionStatusValidator` (without `stale`) since `stale` is a derived/computed status, never a valid persisted review status. Fixed: schema now uses `submissionStatusValidator`. The mutation layer already rejected `stale`, so this was a defense-in-depth gap.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1785/1785 tests pass (304 test files, 0 failures)
+- `npm run build`: passes cleanly (manifest generation: 51 activities + 19 practices)
+
+**What was reviewed:**
+- **ApprovalStatusValidator Split**: Clean split into `approvalStatusValidator` (with `stale`, for storage/queries) and `submissionStatusValidator` (without `stale`, for mutations). `submitComponentReview` correctly uses `submissionStatusValidator`. `getReviewQueue` correctly uses `approvalStatusValidator` for filtering (including stale). Tests cover both validators. Two tests use mock data that contradicts server logic (example + stale) but pass because they test mock implementations, not real server code.
+- **Version Hash Build-Time Manifest**: `scripts/generate-component-manifest.ts` reads 51 activity and 19 practice family source files, SHA-256 hashes each, writes `lib/component-versions.json`. Integrated as pre-build step (`tsx scripts/generate-component-manifest.ts && vinext build`). `version-hashes.ts` now reads from manifest JSON — zero Node.js crypto in client code. Full coverage of all components. One gap: dev script does not regenerate manifest (stale hashes possible).
+- **Dev Review Auth Guard**: `middleware.ts` protects `/dev/component-review/:path*` with JWT verification + admin role check. Unauthenticated users redirected to login, non-admin users get 403 JSON. Double-gated by regex and Next.js config matcher. Tests cover cookie extraction and JWT validation. Old NODE_ENV check in page.tsx retained as defense-in-depth. No middleware integration test (only unit-level cookie/JWT tests).
+- **Example Version Hash Placeholder Fix**: `submitComponentReview` throws descriptive error for `componentType === 'example'`. `getComponentVersionHash` returns `null` for examples. `computeExampleVersionHash` throws. Harness page shows "N/A" fallback and "Not Yet Implemented" banner. Clean handling throughout the pipeline.
+
+**Pre-existing issues confirmed (not fixed):**
+- Exercise tests are shallow — test names claim behavior but only check rendering (Low)
+- generate-component-manifest not wired into dev script (Low)
+- generate-component-manifest warns instead of failing on missing files (Low)
+- Approval test mocks contradict server example-stale logic (Low)
+- No test for hash-mismatch rejection in submitComponentReview (Low)
+- Example harness approve button is local-only (Low)
+
+**New items recorded in tech-debt.md:**
+- Schema validator mismatch (Medium — fixed)
+- Missing import (High — fixed)
+- Dev manifest generation gap (Low — open)
+- Silent file omission in manifest (Low — open)
+- Test mock contradictions (Low — open)
+- Missing hash-mismatch test (Low — open)
+- Misleading harness approve button (Low — open)
+
+**Updated during review:**
+- convex/component_approvals.ts: Added missing approvalStatusValidator import
+- convex/schema.ts: Changed componentReviews.status to submissionStatusValidator, added import
+- conductor/tech-debt.md: 2 fixes closed, 7 new items (2 closed, 5 open)
+- current_directive.md: Added Pass 48 summary, updated priorities
+- README.md: Updated pass number
+
+**Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
+
 ## Code Review Summary (2026-04-13 — Full Codebase Audit, Pass 42)
 
 Autonomous code review covering the Component Approval Workflow track Phases 4-6 completion (since Pass 41).
@@ -176,32 +223,28 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 **Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-14 — Full Codebase Audit, Pass 47)
+## Current High-Level Priorities (2026-04-14 — Full Codebase Audit, Pass 48)
 
 Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
 
-### Completed Since Pass 42
+### Completed Since Pass 47
 
-- **CSV Dataset Creation** — All 56 CSV files created and verified. API route with auth guard. Track archived.
-- **Real PDF Content** — Generated real content for all 3 capstone PDFs: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). Archived track.
-- **Chatbot Rate Limiting Upgrade** — Replaced in-memory Map with Convex-backed chatbot_rate_limits table. 5 requests per 60-second window. Archived track.
-- **Component Approval Security Hardening** — Added server-side hash verification to submitComponentReview. Archived track.
-- **Harness Crypto Cleanup** — Moved version hash computation to Convex query; harness pages no longer import Node.js crypto. Archived track.
-- **Example Harness Correctness** — Removed incorrect practice family imports; shows "Not Yet Implemented". Archived track.
-- **Problem Generator Flaky Test Fix** — Widened cash range to reduce collision rate from ~11% to ~0.5%. Archived track.
-- **Units 2-8 Source-Doc Parity** — Decided NO-GO; runtime curriculum lives in TypeScript blueprints. Archived track.
+- **ApprovalStatusValidator Split** — Split into storage (with `stale`) and submission (without `stale`) validators. Track archived.
+- **Version Hash Build-Time Manifest** — Replaced `Function.prototype.toString()` hashing with build-time manifest (51 activities + 19 practices). Track archived.
+- **Dev Review Auth Guard** — Middleware admin role check for `/dev/component-review`. Track archived.
+- **Example Version Hash Placeholder Fix** — Documented that examples are embedded content, not hashable components. submitComponentReview rejects examples. Track archived.
 
 ### Recommended Next Priorities
 
 All previously tracked priorities are resolved. The project is in stabilization with no active tracks. Remaining open tech debt:
 
-1. **ApprovalStatusValidator split** — `stale` is a derived status but allowed as submit input. Split into storage vs submission validators. (Medium)
-2. **Version hash minifier sensitivity** — Activity/practice hashes use Function.prototype.toString which is sensitive to minification. Hash source files at build time via generated manifest. (Medium)
-3. **Dev review page auth guard** — NODE_ENV check works but no role-based auth. Add middleware+role gate. (Medium)
-4. **Approval mutation/query tests** — No unit tests for auth branches, stale-hash logic. (Medium)
+1. **Generate manifest in dev workflow** — dev script does not regenerate component-versions.json; stale hashes possible after source edits. (Low)
+2. **Manifest build-time validation** — warn-and-continue on missing files could cause runtime throws; add post-scan count assertion. (Low)
+3. **Approval test contradictions** — Two tests mock example+stale combos that server never produces. Rewrite or remove. (Low)
+4. **Hash-mismatch rejection test** — No test for submitComponentReview throwing on mismatched hashes. (Low)
 5. **Exercise test quality** — Test names claim behavior verification but only check rendering. (Low)
 
-### Pass 44 Summary
+### Pass 47 Summary
 
 Autonomous code review covering 11 commits since Pass 42: CSV dataset creation (56 files), real PDF content generation (3 capstone PDFs), chatbot rate limiting upgrade (Convex-backed), and component approval security hardening (server-side hash verification).
 

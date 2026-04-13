@@ -5,6 +5,7 @@ import {
 import { v } from "convex/values";
 import {
   componentTypeValidator,
+  approvalStatusValidator,
   submissionStatusValidator,
   issueCategoryValidator,
 } from "./component_approval_validators";

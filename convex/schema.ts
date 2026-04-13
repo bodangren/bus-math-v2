@@ -8,6 +8,7 @@ import {
 import {
   componentTypeValidator,
   approvalStatusValidator,
+  submissionStatusValidator,
   issueCategoryValidator,
 } from "./component_approval_validators";
 
@@ -446,7 +447,7 @@ export default defineSchema({
     componentType: componentTypeValidator,
     componentId: v.string(),
     componentVersionHash: v.string(),
-    status: approvalStatusValidator,
+    status: submissionStatusValidator,
     reviewerId: v.id("profiles"),
     reviewSummary: v.optional(v.string()),
     improvementNotes: v.optional(v.string()),
