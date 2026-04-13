@@ -1,0 +1,8 @@
+{
+  "track_id": "example_version_hash_placeholder_20260414",
+  "type": "tech-debt",
+  "status": "in_progress",
+  "created_at": "2026-04-14T00:00:00.000Z",
+  "updated_at": "2026-04-14T00:00:00.000Z",
+  "description": "Fix example version hash constant placeholder - examples use hashString('example:${componentId}:placeholder') instead of real content hashes, preventing stale detection from firing for examples."
+}

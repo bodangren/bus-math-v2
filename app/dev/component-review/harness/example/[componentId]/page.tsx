@@ -24,7 +24,7 @@ export default function ExampleHarnessPage({ params }: Props) {
     componentType: 'example',
     componentId,
   });
-  const versionHash = versionHashData ?? 'loading...';
+  const versionHash = versionHashData ?? 'N/A (examples not supported)';
 
   const [checksCompleted, setChecksCompleted] = useState<Record<string, boolean>>({});
   const [approved, setApproved] = useState(false);

@@ -345,6 +345,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Fix flaky problem-generator test that has ~11% collision rate due to only 9 possible cash values. Increase range to 198 possible values to reduce collision rate to ~0.5%.*
   *Closeout: completed on 2026-04-14. Increased cash range from max 5000 to 99000, increasing possible values from 9 to 198, reducing collision rate from ~11% to ~0.5%. Test passes 5/5 runs, all 1775 tests pass, lint 0 errors, build clean. Tech-debt item closed.*
 
+- [x] **Track: Example Version Hash Placeholder Fix**
+  *Link: [./archive/example_version_hash_placeholder_20260414/](./archive/example_version_hash_placeholder_20260414/)*
+  *Scope: Fix example version hash constant placeholder — examples use hashString('example:${componentId}:placeholder') instead of real content hashes, preventing stale detection from firing for examples.*
+  *Closeout: completed on 2026-04-14. Analysis revealed examples are embedded lesson content (callout sections), not standalone React components. No source files to hash. `computeExampleVersionHash` now throws descriptive error; Convex queries return null for examples; submitComponentReview rejects example submissions. All verification gates pass (lint 0 errors, test 1785/1785, build clean). Tech-debt item closed.*
+
 - [x] **Track: Practice Contract Completion -- Remaining Components and Evidence Wiring**
   *Link: [./archive/practice_contract_completion_20260404/](./archive/practice_contract_completion_20260404/)*
   *Closeout: archived on 2026-04-07 after completing practice.v1 contract compliance for remaining components, misconception tagging integration, teacher error summary wiring, and full verification.*

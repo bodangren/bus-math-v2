@@ -32,6 +32,9 @@ export const getComponentVersionHash = query({
     componentId: v.string(),
   },
   handler: async (_ctx, args) => {
+    if (args.componentType === 'example') {
+      return null;
+    }
     return computeComponentVersionHash(args.componentType, args.componentId);
   },
 });
@@ -68,6 +71,13 @@ export const getReviewQueue = query({
 
     if (args.includeStale) {
       return approvals.map((approval) => {
+        if (approval.componentType === 'example') {
+          return {
+            ...approval,
+            effectiveStatus: approval.approvalStatus,
+            currentVersionHash: null,
+          };
+        }
         const currentHash = computeComponentVersionHash(approval.componentType, approval.componentId);
         const effectiveStatus =
           approval.approvalStatus !== "unreviewed" && approval.approvalVersionHash !== currentHash
@@ -126,6 +136,12 @@ export const submitComponentReview = mutation({
     }
     if (profile.role === "student" || profile.role === "teacher") {
       throw new Error("Not authorized");
+    }
+
+    if (args.componentType === 'example') {
+      throw new Error(
+        "Example components are not supported for review. Examples are embedded lesson content, not standalone React components, and do not have source files to hash for version tracking."
+      );
     }
 
     if (

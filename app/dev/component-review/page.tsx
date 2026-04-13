@@ -89,6 +89,9 @@ export default function ComponentReviewQueuePage() {
 
   const handleSubmitReview = async () => {
     if (!reviewingComponent) return;
+    if (reviewingComponent.componentType === 'example') {
+      throw new Error('Example components are not supported for review');
+    }
     const componentVersionHash = computeComponentVersionHash(
       reviewingComponent.componentType,
       reviewingComponent.componentId

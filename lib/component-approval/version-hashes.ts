@@ -1,9 +1,4 @@
-import crypto from 'crypto';
 import componentVersions from '@/lib/component-versions.json';
-
-function hashString(input: string): string {
-  return crypto.createHash('sha256').update(input).digest('hex');
-}
 
 function getActivityHashFromManifest(componentId: string): string {
   const hash = (componentVersions.activities as Record<string, string>)[componentId];
@@ -42,8 +37,13 @@ export function computePracticeVersionHash(componentId: string): string {
   return getPracticeHashFromManifest(componentId);
 }
 
-export function computeExampleVersionHash(_componentId: string): string {
-  return hashString(`example:${_componentId}:placeholder`);
+export function computeExampleVersionHash(componentId: string): string {
+  throw new Error(
+    `Example version hashing is not supported for component "${componentId}". ` +
+    `Examples are embedded lesson content, not standalone React components. ` +
+    `The component approval system's file-hashing approach requires discrete source files, which examples do not have. ` +
+    `Example content (callout sections with variant: 'example') is stored as markdown within lesson seed files and does not have independent source files to hash.`
+  );
 }
 
 export function computeComponentVersionHash(
