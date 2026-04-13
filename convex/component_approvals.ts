@@ -125,6 +125,11 @@ export const submitComponentReview = mutation({
       throw new Error("Improvement notes are required for changes_requested or rejected status");
     }
 
+    const serverHash = computeComponentVersionHash(args.componentType, args.componentId);
+    if (serverHash !== args.componentVersionHash) {
+      throw new Error("Component version hash mismatch");
+    }
+
     const now = Date.now();
 
     const reviewId = await ctx.db.insert("componentReviews", {
