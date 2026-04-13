@@ -1,0 +1,8 @@
+{
+  "track_id": "problem_generator_flaky_test_fix_20260414",
+  "type": "bug",
+  "status": "completed",
+  "created_at": "2026-04-14T00:00:00Z",
+  "updated_at": "2026-04-14T00:00:00Z",
+  "description": "Fix flaky problem-generator test that has ~11% collision rate due to only 9 possible cash values"
+}

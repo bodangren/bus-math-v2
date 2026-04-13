@@ -5,7 +5,7 @@ import { parseProblemTemplate } from '@/lib/curriculum/problem-template';
 
 const template = parseProblemTemplate({
   parameters: {
-    cash: { min: 1000, max: 5000, step: 500 },
+    cash: { min: 1000, max: 99000, step: 500 },
     liabilities: { min: 500, max: 2500, step: 500 },
   },
   answerFormula: 'cash - liabilities',
