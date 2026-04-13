@@ -55,3 +55,7 @@
 - When building study features, start with static glossary data and Convex schema foundation before building UI surfaces.
 - Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
 - When building a multi-phase feature like practice tests, use refs for tracking values that need to be in sync with state updates but avoid stale-closure issues (like score and per-lesson breakdown when transitioning to a closing phase).
+- Convex `.withIndex` returns a new query base — chaining two `withIndex` calls drops the first filter; use `.filter()` for secondary predicates or pick one index per call path.
+- Derived statuses (e.g., `stale`) must be represented as computed/effective fields only; never include them in the validator accepted by a persistence mutation.
+- Content version hashes must be computed server-side and verified against client-supplied hashes before persisting approvals, and ideally derived from source files via a build-time manifest rather than `Function.prototype.toString()` to avoid dev/prod bundler drift.
+- Dev-only pages must combine a `NODE_ENV` check with a middleware role gate; env flags alone leak in misconfigured preview builds. Do gatekeeping before React hook calls, not inside the component body.
