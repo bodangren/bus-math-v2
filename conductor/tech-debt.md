@@ -47,3 +47,4 @@
 | 2026-04-13 | code_review_pass41 | Dev review page has no real auth guard beyond NODE_ENV check | Medium | Open | NODE_ENV check in 'use client' component is statically replaced at build time (works), but no role-based auth. Consider adding session role check. |
 | 2026-04-13 | code_review_pass41 | computeExampleVersionHash returns same hash forever — examples can never go stale | Low | Open | "example:${componentId}:placeholder" is static. Needs real content hash when example review harness is built (Phase 4). |
 | 2026-04-13 | code_review_pass41 | Unreviewed components show empty currentHash in dev queue | Low | Open | currentVersionHash only returned when approval exists. Need to compute for all components in queue query. |
+| 2026-04-13 | code_review_pass42 | Dev harness pages import Node.js crypto in client bundles | Low | Open | Dev-only: version-hashes.ts uses crypto; build passes but browser runtime would fail. Extract client-safe hash module. |

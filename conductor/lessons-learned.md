@@ -38,3 +38,8 @@
 - When creating shared helpers that use Node.js core modules (fs, path), split into server and client versions. Client-side helpers must avoid Node.js core module usage. Use a separate file (e.g., `workbooks.client.ts`) with static data or pure functions for client consumption.
 - Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
 - Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
+- Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
+- Simulation reset functions must clear all active intervals/timeouts before resetting state; stale intervals continue modifying freshly-reset state.
+- Reset functions must clear ALL submission state (submittedRef, setSubmitted) or the component enters a permanently blocked state after the first submit+reset cycle.
+- Optional chaining on callbacks (`onSubmit?.()`) should be consistent across all components in the same layer — mixing `onSubmit(envelope)` and `onSubmit?.(envelope)` is a latent crash risk.
+- When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.

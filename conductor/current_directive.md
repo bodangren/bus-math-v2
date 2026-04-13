@@ -82,62 +82,42 @@ The following remain out of scope unless a later explicit track opens them:
 
 ## Code Review Summary (2026-04-13 — Full Codebase Audit, Pass 42)
 
-Autonomous code review covering the Component Approval Workflow track Phases 1-3 (since Pass 40).
+Autonomous code review covering the Component Approval Workflow track Phases 4-6 completion (since Pass 41).
 
-**Scope:** 7 commits since Pass 40 — Component Approval Workflow track creation, Phase 1 (schema + validators), Phase 2 (mutations + queries), Phase 3 partial (dev review queue page). 813 new lines across 11 files.
+**Scope:** 9 commits since Pass 41 — Component Approval Phases 3-6 (review action controls, harness linking, component review harnesses for example/practice/activity types, stale approval detection and LLM audit queries, track completion and archival). 1885 new lines across 15 files.
 
-**Fixed during review: 4 issues**
-- **getUserProfile imported but never exported** (Critical): `convex/component_approvals.ts` imported `getUserProfile` from `./auth`, but the function does not exist in `convex/auth.ts`. The Convex deployment would crash at module resolution time. Tests masked this because they mock Convex modules. Fixed: replaced with correct `ctx.auth.getUserIdentity()` + profile lookup pattern matching codebase convention.
-- **v.id('users') in validators but schema uses 'profiles'** (High): `component_approval_validators.ts` referenced `v.id('users')` for `approvalReviewedBy`, `reviewerId`, and `resolvedBy`. The schema defines the actual tables with `v.id("profiles")`. The "users" table doesn't exist. Fixed: changed all 3 occurrences to `v.id('profiles')`.
-- **Dev page imports Node.js crypto in client bundle** (High): `app/dev/component-review/page.tsx` (a `'use client'` component) imported `computeComponentVersionHash` from `version-hashes.ts`, which uses `import crypto from 'crypto'`. This Node.js-only module would fail when bundled for the browser. Fixed: extracted `component-ids.ts` (no crypto dependency) for client-side component enumeration; dev page now uses server-computed hashes from the Convex query response.
-- **getReviewQueue chained two withIndex calls** (Medium): Both `by_component` and `by_status` indexes were applied sequentially on the same query object. In Convex, the second `withIndex` replaces the first, so combined filtering silently used only the status index. Fixed: restructured into separate code paths for combined/individual/no filters.
+**Fixed during review: 1 issue**
+- **Track hygiene: duplicate active and archived directories** (Medium): The `component_approval_20260413` directory existed in both `conductor/tracks/` and `conductor/archive/`. The track was archived but the active copy was not removed, causing the conductor-track-hygiene test to fail. Fixed: removed the active copy from `tracks/`.
 
 **Verification gates:**
 - `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
-- `npm test`: 1749/1749 tests pass (302 test files, 0 failures)
+- `npm test`: 1775/1775 tests pass (303 test files, 0 failures)
 - `npm run build`: passes cleanly
 
 **What was reviewed:**
-- **Component Approval Schema (Phase 1)**: `componentApprovals` and `componentReviews` tables properly defined with validators, indexes for component lookup, status filtering, reviewer filtering, and creation ordering. Schema test updated to expect 30 tables. Clean separation of validators into `component_approval_validators.ts`.
-- **Review Mutations and Queries (Phase 2)**: `submitComponentReview` mutation properly validates auth (dev/admin only), requires notes for changes_requested/rejected, inserts both review history and approval summary. `getReviewQueue` supports type/status/stale filtering. `getUnresolvedReviews` supports LLM audit queries. `getComponentReviews` returns full history ordered by creation.
-- **Dev Review Queue Page (Phase 3 partial)**: Properly guarded with NODE_ENV check. Filters for type and status. Shows component identity, hash, effective status. Review action controls (approve/reject/request-changes) not yet implemented (Phase 3 plan items remain open).
+- **Phase 3 (Dev Review Queue with Action Controls)**: Review dialog with status selection (approved/changes_requested/rejected), summary, improvement notes, and issue category checkboxes (11 categories). Properly disables submit when changes_requested/rejected and no improvement notes. Clean state management with dialog open/close.
+- **Phase 4 (Component Review Harnesses)**: Three new harness pages for example, practice, and activity component types. Activity harness loads default props, renders the real component with submit/reset controls, shows submission envelope. Example harness generates problems with seed control, mode switching, correct/wrong submit, and grading result display. Practice harness generates problems, shows practice.v1 envelope, includes variant testing with multiple seeds. All harnesses have review checklist gating.
+- **Phase 5 (Stale Approval Detection and LLM Audit)**: `getAuditSummary` query aggregates unresolved reviews by component type and issue category with notes and component IDs. `resolveReview` mutation allows resolving reviews with auth guard (dev/admin only). 26 new tests covering stale detection, LLM audit queries, summary aggregation, and resolve mutations.
+- **Phase 6 (Verification and Track Closure)**: Track properly archived with metadata, spec, plan, and index files. tracks.md updated with closeout summary.
 
 **Pre-existing issues confirmed (not fixed):**
 - Chatbot rate limit uses in-memory Map (no cross-replica support)
 - problem-generator flaky test (pre-existing)
 - Capstone rubrics page is a stub (no inline content)
 - exercises tests are shallow — test names claim behavior but only check rendering
+- Harness pages import `crypto` via version-hashes.ts in client components (dev-only, build passes but browser runtime would fail)
 
 **New items recorded in tech-debt.md:**
-- Dev page auth guard is only NODE_ENV (Medium — open)
-- Example version hash is always static (Low — open)
-- Unreviewed components show empty currentHash in dev queue (Low — open)
+- Harness pages use Node.js crypto in client bundles (Low — open, dev-only)
 
-**Phase status**: Component Approval Workflow track in-progress, Phase 3 partial. Phases 4-6 remain. All verification gates pass.
+**Updated during review:**
+- Removed duplicate `component_approval_20260413` from `tracks/` (archived copy is the source of truth)
+- Updated README.md to reflect Component Approval track completion
+- Restored 5 lessons-learned entries inadvertently deleted during Phase 6 archival
+- tech-debt.md updated with new item
+- current_directive.md updated with Pass 42 summary and next priorities
 
-## Code Review Summary (2026-04-12 — Full Codebase Audit, Pass 40)
-
-Autonomous code review covering the Supabase residue cleanup track (since Pass 39).
-
-**Scope:** 2 commits since Pass 39 — removal of unused `resolveConvexProfileIdFromSupabaseUser`, `SupabaseUserLike`, and `extractUsername` from `lib/convex/server.ts`, and deletion of dead `lib/supabase/server.ts` shim (132 lines). Track properly archived in `conductor/archive/supabase_residue_cleanup_20260411/`.
-
-**Fixed during review: 0 issues**
-
-**Verification gates:**
-- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
-- `npm test`: 1749/1749 tests pass (302 test files, 0 failures)
-- `npm run build`: passes cleanly
-
-**What was reviewed:**
-- **Supabase residue cleanup**: Clean removal of dead code. `lib/convex/server.ts` now only exports `api`, `internal`, and Convex client utilities. No Supabase references remain in any source files (`.ts`, `.tsx`, `.js`, `.jsx`). Track metadata and plan properly archived. tech-debt.md updated to close the 2 Pass 39 cleanup items.
-
-**Pre-existing issues confirmed (not fixed):**
-- Chatbot rate limit uses in-memory Map (no cross-replica support)
-- problem-generator flaky test (pre-existing)
-- Capstone rubrics page is a stub (no inline content)
-- exercises tests are shallow — test names claim behavior but only check rendering
-
-**Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: real PDF content, CSV datasets, chatbot rate limiting.
+**Phase status**: Component Approval Workflow track FULLY COMPLETE. All 6 phases shipped, track archived. No active tracks. All Milestones 1-10 complete. Project in stabilization.
 
 ## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 42)
 
@@ -152,6 +132,7 @@ Milestones 1-10 are **complete**. All active tracks are **complete**. Project in
 1. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
 2. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
 3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
+4. **Harness crypto import cleanup** — Extract a client-safe version hash module so dev harness pages don't import Node.js crypto (dev-only, low priority).
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
