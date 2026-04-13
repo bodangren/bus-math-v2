@@ -92,8 +92,7 @@ function scanActivities(): Record<string, string> {
   for (const [key, filePath] of Object.entries(ACTIVITY_KEY_TO_FILE)) {
     const fullPath = path.join(ACTIVITIES_DIR, filePath);
     if (!fs.existsSync(fullPath)) {
-      console.warn(`Activity file not found: ${fullPath}`);
-      continue;
+      throw new Error(`Activity file not found: ${fullPath}`);
     }
     const content = fs.readFileSync(fullPath, 'utf-8');
     hashes[key] = hashString(content);
@@ -108,8 +107,7 @@ function scanFamilies(): Record<string, string> {
   for (const [key, file] of Object.entries(PRACTICE_KEY_TO_FILE)) {
     const fullPath = path.join(FAMILIES_DIR, file);
     if (!fs.existsSync(fullPath)) {
-      console.warn(`Family file not found: ${fullPath}`);
-      continue;
+      throw new Error(`Family file not found: ${fullPath}`);
     }
     const content = fs.readFileSync(fullPath, 'utf-8');
     hashes[key] = hashString(content);

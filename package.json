@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "predev": "tsx scripts/generate-component-manifest.ts",
     "dev": "vinext dev",
     "dev:stack": "node scripts/dev-stack.mjs",
     "build": "tsx scripts/generate-component-manifest.ts && vinext build",

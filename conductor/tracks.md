@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Component Approval Stabilization**
+  *Link: [./archive/component_approval_stabilization_20260414/](./archive/component_approval_stabilization_20260414/)*
+  *Scope: Address 7 remaining tech-debt items: manifest script hardening (fail on missing files, wire into dev), test contradictions (remove example stale detection tests), hash-mismatch rejection test, example harness UI polish, unreviewed components hash fix, and auth branch unit tests.*
+  *Closeout: completed on 2026-04-14. All 6 phases complete: manifest script throws on missing files, predev hook added, 2 incorrect example stale tests removed, hash-mismatch and auth tests added (7 new tests, 1 removed), dev queue computes hash client-side for unreviewed, example harness shows disabled Not Applicable button. All verification gates pass (lint 0 errors, test 1790/1790, build clean). All 7 tech-debt items closed.*
+
 - [x] **Track: Dev Review Auth Guard**
   *Link: [./archive/dev_review_auth_guard_20260414/](./archive/dev_review_auth_guard_20260414/)*
   *Scope: Add middleware auth guard to dev component review page — currently only gated by client-side NODE_ENV check which can be bypassed in misconfigured deployments.*

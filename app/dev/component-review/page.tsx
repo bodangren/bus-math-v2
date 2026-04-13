@@ -122,9 +122,14 @@ export default function ComponentReviewQueuePage() {
     const effectiveStatus = approval
       ? (approval as Record<string, unknown>).effectiveStatus as string || approval.approvalStatus
       : 'unreviewed';
-    const currentHash = approval
-      ? (approval as Record<string, unknown>).currentVersionHash as string || ''
-      : '';
+    let currentHash: string;
+    if (approval) {
+      currentHash = (approval as Record<string, unknown>).currentVersionHash as string || '';
+    } else if (includeStale && component.componentType !== 'example') {
+      currentHash = computeComponentVersionHash(component.componentType, component.componentId);
+    } else {
+      currentHash = '';
+    }
     return {
       ...component,
       effectiveStatus,

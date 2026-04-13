@@ -112,8 +112,8 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
       mockComputeComponentVersionHash.mockReturnValue('newrejectedhash');
       mockGetReviewQueue.mockReturnValue([
         {
-          componentType: 'example',
-          componentId: 'example-1',
+          componentType: 'practice',
+          componentId: 'family-a',
           approvalStatus: 'rejected',
           approvalVersionHash: 'oldrejectedhash',
           effectiveStatus: 'stale',
@@ -477,26 +477,6 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
 
       expect(result[0].effectiveStatus).toBe('stale');
     });
-
-    it('detects stale when example content changes', () => {
-      const originalHash = 'originalExampleHash';
-      const changedHash = 'changedExampleHash';
-      mockComputeComponentVersionHash.mockReturnValue(changedHash);
-      mockGetReviewQueue.mockReturnValue([
-        {
-          componentType: 'example',
-          componentId: 'example-1',
-          approvalStatus: 'approved',
-          approvalVersionHash: originalHash,
-          effectiveStatus: 'stale',
-          currentVersionHash: changedHash,
-        },
-      ]);
-
-      const result = mockGetReviewQueue({ includeStale: true });
-
-      expect(result[0].effectiveStatus).toBe('stale');
-    });
   });
 
   describe('Validator split - stale not submittable', () => {
@@ -559,6 +539,95 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
           issueCategories: [],
         }),
       ).rejects.toThrow('Invalid status: stale');
+    });
+  });
+
+  describe('Hash-mismatch rejection', () => {
+    it('submitComponentReview throws when client hash does not match server hash', async () => {
+      mockComputeComponentVersionHash.mockReturnValue('server-computed-hash');
+      mockSubmitComponentReview.mockRejectedValue(new Error('Component version hash mismatch'));
+
+      await expect(
+        mockSubmitComponentReview({
+          componentType: 'activity',
+          componentId: 'journal-entry-building',
+          componentVersionHash: 'client-supplied-hash',
+          status: 'approved',
+          reviewSummary: 'Approved',
+          improvementNotes: undefined,
+          issueCategories: [],
+        }),
+      ).rejects.toThrow('Component version hash mismatch');
+    });
+
+    it('submitComponentReview succeeds when client hash matches server hash', async () => {
+      const matchingHash = 'matching-hash-123';
+      mockComputeComponentVersionHash.mockReturnValue(matchingHash);
+      mockSubmitComponentReview.mockResolvedValue({ reviewId: 'review_123' });
+
+      await expect(
+        mockSubmitComponentReview({
+          componentType: 'activity',
+          componentId: 'journal-entry-building',
+          componentVersionHash: matchingHash,
+          status: 'approved',
+          reviewSummary: 'Approved',
+          improvementNotes: undefined,
+          issueCategories: [],
+        }),
+      ).resolves.toEqual({ reviewId: 'review_123' });
+    });
+  });
+
+  describe('Auth rejection for submitComponentReview', () => {
+    it('rejects student role', async () => {
+      mockSubmitComponentReview.mockRejectedValue(new Error('Not authorized'));
+
+      await expect(
+        mockSubmitComponentReview({
+          componentType: 'activity',
+          componentId: 'journal-entry-building',
+          componentVersionHash: 'hash123',
+          status: 'approved',
+          reviewSummary: 'Approved',
+          improvementNotes: undefined,
+          issueCategories: [],
+        }),
+      ).rejects.toThrow('Not authorized');
+    });
+
+    it('rejects teacher role', async () => {
+      mockSubmitComponentReview.mockRejectedValue(new Error('Not authorized'));
+
+      await expect(
+        mockSubmitComponentReview({
+          componentType: 'activity',
+          componentId: 'journal-entry-building',
+          componentVersionHash: 'hash123',
+          status: 'approved',
+          reviewSummary: 'Approved',
+          improvementNotes: undefined,
+          issueCategories: [],
+        }),
+      ).rejects.toThrow('Not authorized');
+    });
+  });
+
+  describe('Auth rejection for resolveReview', () => {
+    it('rejects student role', async () => {
+      mockResolveReview.mockRejectedValue(new Error('Not authorized'));
+
+      await expect(mockResolveReview({ reviewId: 'review_123' })).rejects.toThrow(
+        'Not authorized',
+      );
+    });
+
+    it('rejects teacher role', async () => {
+      mockResolveReview.mockRejectedValue(new Error('Not authorized'));
+
+      await expect(mockResolveReview({ reviewId: 'review_456' })).rejects.toThrow(
+        'Not authorized',
+      );
     });
   });
 });

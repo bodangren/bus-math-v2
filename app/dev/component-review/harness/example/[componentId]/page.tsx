@@ -3,7 +3,7 @@
 import { notFound } from 'next/navigation';
 import { use, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Lightbulb, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useQuery } from 'convex/react';
@@ -27,7 +27,6 @@ export default function ExampleHarnessPage({ params }: Props) {
   const versionHash = versionHashData ?? 'N/A (examples not supported)';
 
   const [checksCompleted, setChecksCompleted] = useState<Record<string, boolean>>({});
-  const [approved, setApproved] = useState(false);
 
   const requiredChecks = [
     { id: 'prompt_clear', label: 'Prompt is clear and unambiguous' },
@@ -35,8 +34,6 @@ export default function ExampleHarnessPage({ params }: Props) {
     { id: 'feedback_accurate', label: 'Feedback is accurate for correct and incorrect answers' },
     { id: 'no_dead_ui', label: 'No dead buttons, disabled states, or unhandled edge cases' },
   ];
-
-  const allChecksComplete = requiredChecks.every((check) => checksCompleted[check.id]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 py-8 text-slate-900">
@@ -101,20 +98,14 @@ export default function ExampleHarnessPage({ params }: Props) {
           </div>
           <div className="flex items-center gap-2 pt-2">
             <Button
-              onClick={() => setApproved(true)}
-              disabled={!allChecksComplete}
+              disabled
+              title="Approval not applicable — example components are embedded lesson content"
             >
-              Mark Approved
+              Not Applicable
             </Button>
-            {approved && (
-              <Badge className="bg-emerald-100 text-emerald-800">
-                <CheckCircle className="size-4 mr-1" />
-                Approved
-              </Badge>
-            )}
-            {!allChecksComplete && (
-              <span className="text-sm text-slate-500">Complete all checks to approve</span>
-            )}
+            <span className="text-sm text-slate-500">
+              Approval not applicable — example components are embedded lesson content
+            </span>
           </div>
         </section>
       </div>
