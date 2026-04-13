@@ -42,7 +42,7 @@
 - [x] Build the dev-only review queue route
   - [x] Add filters for type, status, placement, recently changed, and needs re-review
   - [x] Show identity, placement, current hash, effective status, reviewer, timestamp, notes, and categories
-  - [ ] Link each row to the appropriate review harness
+  - [x] Link each row to the appropriate review harness
 - [x] Add review action controls shared by all component types
   - [x] Approve
   - [x] Request changes with required notes
