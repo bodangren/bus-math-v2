@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Workbook Client Dynamic Lookup**
+  *Link: [./tracks/workbooks_client_dynamic_lookup_20260414/](./tracks/workbooks_client_dynamic_lookup_20260414/)*
+  *Scope: Replace hardcoded Set in workbooks.client.ts with dynamic lookup from build-time manifest to prevent stale data when new workbooks are added.*
+  *Closeout: completed on 2026-04-14. Created build-time manifest generator (scripts/generate-workbook-manifest.ts) that scans public/workbooks/ and generates lib/workbooks-manifest.json with 66 files. workbooks.client.ts now imports from manifest instead of hardcoded Set. Added 10 unit tests for the new implementation. All verification gates pass (lint 0 errors, test 1812/1812, build clean). tech-debt item closed.*
+
 - [x] **Track: Simulation Activity Type Standardization**
   *Link: [./archive/simulation_activity_types_20260414/](./archive/simulation_activity_types_20260414/)*
   *Scope: Investigate and fix simulation Activity type patterns. Found: StartupJourney, BudgetBalancer already correct. CashFlowChallenge fixed to use canonical pattern. Remaining simulations (DynamicMethodSelector, MethodComparisonSimulator, etc.) are self-contained with hardcoded internal data — don't use Activity props, so inline types don't cause issues.*
@@ -344,6 +349,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: archived on 2026-04-09 after implementing all 3 remaining exercise placeholders (ProfitCalculator, BudgetWorksheet, ErrorCheckingSystem), updating the activity registry, creating test files, running full verification (lint, test, build), and updating tech-debt.md.*
 
 ## Archive Ledger
+
+- [x] **Track: Workbook Client Dynamic Lookup**
+  *Link: [./archive/workbooks_client_dynamic_lookup_20260414/](./archive/workbooks_client_dynamic_lookup_20260414/)*
+  *Scope: Replace hardcoded Set in workbooks.client.ts with dynamic lookup from build-time manifest to prevent stale data when new workbooks are added.*
+  *Closeout: completed on 2026-04-14. Created build-time manifest generator (scripts/generate-workbook-manifest.ts) that scans public/workbooks/ and generates lib/workbooks-manifest.json with 66 files. workbooks.client.ts now imports from manifest instead of hardcoded Set. Added 10 unit tests for the new implementation. All verification gates pass (lint 0 errors, test 1812/1812, build clean). tech-debt item closed.*
 
 - [x] **Track: Version Hash Build-Time Manifest**
   *Link: [./archive/version_hash_manifest_20260414/](./archive/version_hash_manifest_20260414/)*

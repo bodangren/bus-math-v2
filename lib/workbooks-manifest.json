@@ -1,0 +1,202 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-13T22:47:43.780Z",
+  "files": [
+    "capstone_investor_ready_workbook.xlsx",
+    "capstone_investor_ready_workbook_teacher.xlsx",
+    "unit_01_lesson_04_student.xlsx",
+    "unit_01_lesson_04_teacher.xlsx",
+    "unit_01_lesson_05_student.xlsx",
+    "unit_01_lesson_05_teacher.xlsx",
+    "unit_01_lesson_06_student.xlsx",
+    "unit_01_lesson_06_teacher.xlsx",
+    "unit_01_lesson_07_student.xlsx",
+    "unit_01_lesson_07_teacher.xlsx",
+    "unit_02_lesson_04_student.xlsx",
+    "unit_02_lesson_04_teacher.xlsx",
+    "unit_02_lesson_05_student.xlsx",
+    "unit_02_lesson_05_teacher.xlsx",
+    "unit_02_lesson_06_student.xlsx",
+    "unit_02_lesson_06_teacher.xlsx",
+    "unit_02_lesson_07_student.xlsx",
+    "unit_02_lesson_07_teacher.xlsx",
+    "unit_03_lesson_04_student.xlsx",
+    "unit_03_lesson_04_teacher.xlsx",
+    "unit_03_lesson_05_student.xlsx",
+    "unit_03_lesson_05_teacher.xlsx",
+    "unit_03_lesson_06_student.xlsx",
+    "unit_03_lesson_06_teacher.xlsx",
+    "unit_03_lesson_07_student.xlsx",
+    "unit_03_lesson_07_teacher.xlsx",
+    "unit_04_lesson_04_student.xlsx",
+    "unit_04_lesson_04_teacher.xlsx",
+    "unit_04_lesson_05_student.xlsx",
+    "unit_04_lesson_05_teacher.xlsx",
+    "unit_04_lesson_06_student.xlsx",
+    "unit_04_lesson_06_teacher.xlsx",
+    "unit_04_lesson_07_student.xlsx",
+    "unit_04_lesson_07_teacher.xlsx",
+    "unit_05_lesson_04_student.xlsx",
+    "unit_05_lesson_04_teacher.xlsx",
+    "unit_05_lesson_05_student.xlsx",
+    "unit_05_lesson_05_teacher.xlsx",
+    "unit_05_lesson_06_student.xlsx",
+    "unit_05_lesson_06_teacher.xlsx",
+    "unit_05_lesson_07_student.xlsx",
+    "unit_05_lesson_07_teacher.xlsx",
+    "unit_06_lesson_04_student.xlsx",
+    "unit_06_lesson_04_teacher.xlsx",
+    "unit_06_lesson_05_student.xlsx",
+    "unit_06_lesson_05_teacher.xlsx",
+    "unit_06_lesson_06_student.xlsx",
+    "unit_06_lesson_06_teacher.xlsx",
+    "unit_06_lesson_07_student.xlsx",
+    "unit_06_lesson_07_teacher.xlsx",
+    "unit_07_lesson_04_student.xlsx",
+    "unit_07_lesson_04_teacher.xlsx",
+    "unit_07_lesson_05_student.xlsx",
+    "unit_07_lesson_05_teacher.xlsx",
+    "unit_07_lesson_06_student.xlsx",
+    "unit_07_lesson_06_teacher.xlsx",
+    "unit_07_lesson_07_student.xlsx",
+    "unit_07_lesson_07_teacher.xlsx",
+    "unit_08_lesson_04_student.xlsx",
+    "unit_08_lesson_04_teacher.xlsx",
+    "unit_08_lesson_05_student.xlsx",
+    "unit_08_lesson_05_teacher.xlsx",
+    "unit_08_lesson_06_student.xlsx",
+    "unit_08_lesson_06_teacher.xlsx",
+    "unit_08_lesson_07_student.xlsx",
+    "unit_08_lesson_07_teacher.xlsx"
+  ],
+  "byUnitAndLesson": {
+    "1-4": {
+      "student": true,
+      "teacher": true
+    },
+    "1-5": {
+      "student": true,
+      "teacher": true
+    },
+    "1-6": {
+      "student": true,
+      "teacher": true
+    },
+    "1-7": {
+      "student": true,
+      "teacher": true
+    },
+    "2-4": {
+      "student": true,
+      "teacher": true
+    },
+    "2-5": {
+      "student": true,
+      "teacher": true
+    },
+    "2-6": {
+      "student": true,
+      "teacher": true
+    },
+    "2-7": {
+      "student": true,
+      "teacher": true
+    },
+    "3-4": {
+      "student": true,
+      "teacher": true
+    },
+    "3-5": {
+      "student": true,
+      "teacher": true
+    },
+    "3-6": {
+      "student": true,
+      "teacher": true
+    },
+    "3-7": {
+      "student": true,
+      "teacher": true
+    },
+    "4-4": {
+      "student": true,
+      "teacher": true
+    },
+    "4-5": {
+      "student": true,
+      "teacher": true
+    },
+    "4-6": {
+      "student": true,
+      "teacher": true
+    },
+    "4-7": {
+      "student": true,
+      "teacher": true
+    },
+    "5-4": {
+      "student": true,
+      "teacher": true
+    },
+    "5-5": {
+      "student": true,
+      "teacher": true
+    },
+    "5-6": {
+      "student": true,
+      "teacher": true
+    },
+    "5-7": {
+      "student": true,
+      "teacher": true
+    },
+    "6-4": {
+      "student": true,
+      "teacher": true
+    },
+    "6-5": {
+      "student": true,
+      "teacher": true
+    },
+    "6-6": {
+      "student": true,
+      "teacher": true
+    },
+    "6-7": {
+      "student": true,
+      "teacher": true
+    },
+    "7-4": {
+      "student": true,
+      "teacher": true
+    },
+    "7-5": {
+      "student": true,
+      "teacher": true
+    },
+    "7-6": {
+      "student": true,
+      "teacher": true
+    },
+    "7-7": {
+      "student": true,
+      "teacher": true
+    },
+    "8-4": {
+      "student": true,
+      "teacher": true
+    },
+    "8-5": {
+      "student": true,
+      "teacher": true
+    },
+    "8-6": {
+      "student": true,
+      "teacher": true
+    },
+    "8-7": {
+      "student": true,
+      "teacher": true
+    }
+  }
+}
