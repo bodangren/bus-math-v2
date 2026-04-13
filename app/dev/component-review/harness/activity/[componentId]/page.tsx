@@ -7,7 +7,8 @@ import { ArrowLeft, Box, CheckCircle, RotateCcw, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getActivityComponent } from '@/lib/activities/registry';
-import { computeActivityVersionHash } from '@/lib/component-approval/version-hashes';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import type { ComponentType } from 'react';
 
 interface Props {
@@ -34,13 +35,11 @@ export default function ActivityHarnessPage({ params }: Props) {
   }
 
   const ActivityComponent = useMemo(() => getActivityComponent(componentId), [componentId]);
-  const versionHash = useMemo(() => {
-    try {
-      return computeActivityVersionHash(componentId);
-    } catch {
-      return 'unknown';
-    }
-  }, [componentId]);
+  const versionHashData = useQuery(api.component_approvals.getComponentVersionHash, {
+    componentType: 'activity',
+    componentId,
+  });
+  const versionHash = versionHashData ?? 'loading...';
 
   const [renderKey, setRenderKey] = useState(0);
   const [activityProps, setActivityProps] = useState<Record<string, unknown>>({});

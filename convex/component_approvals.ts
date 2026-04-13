@@ -26,6 +26,16 @@ export const getComponentApproval = query({
   },
 });
 
+export const getComponentVersionHash = query({
+  args: {
+    componentType: componentTypeValidator,
+    componentId: v.string(),
+  },
+  handler: async (_ctx, args) => {
+    return computeComponentVersionHash(args.componentType, args.componentId);
+  },
+});
+
 export const getReviewQueue = query({
   args: {
     componentType: v.optional(componentTypeValidator),

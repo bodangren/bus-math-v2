@@ -7,7 +7,8 @@ import { ArrowLeft, Lightbulb, CheckCircle, RotateCcw, Shuffle, Eye } from 'luci
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getPracticeFamily } from '@/lib/practice/engine/family-registry';
-import { computePracticeVersionHash } from '@/lib/component-approval/version-hashes';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import type { ProblemFamily, GradeResult } from '@/lib/practice/engine/types';
 
 const MODES = ['worked_example', 'guided_practice', 'independent_practice'] as const;
@@ -29,13 +30,11 @@ export default function ExampleHarnessPage({ params }: Props) {
   }
 
   const family = useMemo(() => getPracticeFamily(componentId), [componentId]);
-  const versionHash = useMemo(() => {
-    try {
-      return computePracticeVersionHash(componentId);
-    } catch {
-      return 'unknown';
-    }
-  }, [componentId]);
+  const versionHashData = useQuery(api.component_approvals.getComponentVersionHash, {
+    componentType: 'example',
+    componentId,
+  });
+  const versionHash = versionHashData ?? 'loading...';
 
   const [currentMode, setCurrentMode] = useState<(typeof MODES)[number]>('worked_example');
   const [seed, setSeed] = useState(2026);

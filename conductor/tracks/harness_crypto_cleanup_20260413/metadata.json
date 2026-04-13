@@ -1,0 +1,8 @@
+{
+  "track_id": "harness_crypto_cleanup_20260413",
+  "type": "feature",
+  "status": "completed",
+  "created_at": "2026-04-13T12:00:00Z",
+  "updated_at": "2026-04-13T23:55:00Z",
+  "description": "Extract client-safe version hash computation to Convex backend so dev harness pages don't import Node.js crypto"
+}

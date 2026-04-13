@@ -7,7 +7,8 @@ import { ArrowLeft, Puzzle, RotateCcw, Shuffle, Eye, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getPracticeFamily } from '@/lib/practice/engine/family-registry';
-import { computePracticeVersionHash } from '@/lib/component-approval/version-hashes';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 import type { ProblemFamily, GradeResult } from '@/lib/practice/engine/types';
 
 interface Props {
@@ -22,13 +23,11 @@ export default function PracticeHarnessPage({ params }: Props) {
   }
 
   const family = useMemo(() => getPracticeFamily(componentId), [componentId]);
-  const versionHash = useMemo(() => {
-    try {
-      return computePracticeVersionHash(componentId);
-    } catch {
-      return 'unknown';
-    }
-  }, [componentId]);
+  const versionHashData = useQuery(api.component_approvals.getComponentVersionHash, {
+    componentType: 'practice',
+    componentId,
+  });
+  const versionHash = versionHashData ?? 'loading...';
 
   const [seed, setSeed] = useState(12345);
   const [problem, setProblem] = useState<ReturnType<ProblemFamily<unknown, unknown, unknown>['generate']> | null>(null);
