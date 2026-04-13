@@ -80,7 +80,7 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
-## Code Review Summary (2026-04-13 — Full Codebase Audit, Pass 41)
+## Code Review Summary (2026-04-13 — Full Codebase Audit, Pass 42)
 
 Autonomous code review covering the Component Approval Workflow track Phases 1-3 (since Pass 40).
 
@@ -139,20 +139,19 @@ Autonomous code review covering the Supabase residue cleanup track (since Pass 3
 
 **Phase status**: All Milestones 1-10 complete. Project in stabilization. No active tracks. Next priorities: real PDF content, CSV datasets, chatbot rate limiting.
 
-## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 41)
+## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 42)
 
-Milestones 1-10 are **complete**. The Component Approval Workflow track (not part of a numbered milestone) is **in-progress**.
+Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
 
-### Active Track
+### Completed Tracks
 
-- **Component Approval Workflow** — Phase 3 partial (dev review queue UI). Phases 3-6 remain: review action controls, component review harnesses, stale approval loop, and verification.
+- **Component Approval Workflow** — All 6 phases complete. 26 new tests for Phase 5 stale detection and LLM audit queries. All 1775 tests pass, lint passes, build clean. Track archived.
 
 ### Recommended Next Priorities
 
-1. **Component Approval Workflow** — Complete Phase 3 (review action controls), then Phases 4-6 (review harnesses, stale detection, verification).
-2. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
-3. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
-4. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
+1. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
+2. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
+3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
