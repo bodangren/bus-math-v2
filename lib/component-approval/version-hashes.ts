@@ -1,9 +1,24 @@
 import crypto from 'crypto';
-import { activityRegistry } from '@/lib/activities/registry';
-import { practiceFamilyRegistry } from '@/lib/practice/engine/family-registry';
+import componentVersions from '@/lib/component-versions.json';
 
 function hashString(input: string): string {
   return crypto.createHash('sha256').update(input).digest('hex');
+}
+
+function getActivityHashFromManifest(componentId: string): string {
+  const hash = (componentVersions.activities as Record<string, string>)[componentId];
+  if (!hash) {
+    throw new Error(`Activity component not found in manifest: ${componentId}`);
+  }
+  return hash;
+}
+
+function getPracticeHashFromManifest(componentId: string): string {
+  const hash = (componentVersions.practices as Record<string, string>)[componentId];
+  if (!hash) {
+    throw new Error(`Practice family not found in manifest: ${componentId}`);
+  }
+  return hash;
 }
 
 export interface ComponentPlacement {
@@ -19,38 +34,16 @@ export interface ComponentInfo {
   currentVersionHash: string;
 }
 
-function stringifyFunction(fn: unknown): string {
-  if (typeof fn === 'function') {
-    return fn.toString();
-  }
-  return String(fn);
-}
-
 export function computeActivityVersionHash(componentId: string): string {
-  const component = activityRegistry[componentId as keyof typeof activityRegistry];
-  if (!component) {
-    throw new Error(`Activity component not found: ${componentId}`);
-  }
-  const input = stringifyFunction(component);
-  return hashString(`activity:${componentId}:${input}`);
+  return getActivityHashFromManifest(componentId);
 }
 
 export function computePracticeVersionHash(componentId: string): string {
-  const family = practiceFamilyRegistry[componentId as keyof typeof practiceFamilyRegistry];
-  if (!family) {
-    throw new Error(`Practice family not found: ${componentId}`);
-  }
-  const input = [
-    stringifyFunction(family.generate),
-    stringifyFunction(family.solve),
-    stringifyFunction(family.grade),
-    stringifyFunction(family.toEnvelope),
-  ].join('|');
-  return hashString(`practice:${componentId}:${input}`);
+  return getPracticeHashFromManifest(componentId);
 }
 
-export function computeExampleVersionHash(componentId: string): string {
-  return hashString(`example:${componentId}:placeholder`);
+export function computeExampleVersionHash(_componentId: string): string {
+  return hashString(`example:${_componentId}:placeholder`);
 }
 
 export function computeComponentVersionHash(
@@ -70,18 +63,20 @@ export function computeComponentVersionHash(
 }
 
 export function getAllActivityComponents(): ComponentInfo[] {
-  return Object.keys(activityRegistry).map((componentId) => ({
+  const activities = componentVersions.activities as Record<string, string>;
+  return Object.keys(activities).map((componentId) => ({
     componentType: 'activity' as const,
     componentId,
-    currentVersionHash: computeActivityVersionHash(componentId),
+    currentVersionHash: activities[componentId],
   }));
 }
 
 export function getAllPracticeComponents(): ComponentInfo[] {
-  return Object.keys(practiceFamilyRegistry).map((componentId) => ({
+  const practices = componentVersions.practices as Record<string, string>;
+  return Object.keys(practices).map((componentId) => ({
     componentType: 'practice' as const,
     componentId,
-    currentVersionHash: computePracticeVersionHash(componentId),
+    currentVersionHash: practices[componentId],
   }));
 }
 

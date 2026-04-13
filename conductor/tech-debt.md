@@ -23,7 +23,7 @@
 
 | 2026-04-13 | component_approval_20260413 | `stale` is a derived status but allowed as submit input in approvalStatusValidator | Medium | Closed | Fixed: Split into approvalStatusValidator (with stale, for storage) and submissionStatusValidator (without stale, for mutations). |
 | 2026-04-13 | component_approval_20260413 | Example version hash is a constant placeholder — stale detection never fires for examples | Medium | Open | Defer example support or hash source/content. |
-| 2026-04-13 | component_approval_20260413 | Activity/practice hashes use Function.prototype.toString — minifier-sensitive, dev/prod drift | Medium | Open | Hash source files at build time via generated manifest. |
+| 2026-04-13 | component_approval_20260413 | Activity/practice hashes use Function.prototype.toString — minifier-sensitive, dev/prod drift | Medium | Closed | Fixed: Build-time manifest generated from source files; version-hashes.ts reads from manifest instead of Function.toString(). |
 | 2026-04-13 | component_approval_20260413 | /dev/component-review gated only by NODE_ENV, no role check | Medium | Open | Add middleware+role gate; notFound() also runs before hooks — move check to server parent. |
 | 2026-04-13 | component_approval_20260413 | No unit tests for approval mutations/queries (auth branch, stale-hash logic) | Medium | Open | Add before Phase 3. |
 

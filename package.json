@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "vinext dev",
     "dev:stack": "node scripts/dev-stack.mjs",
-    "build": "vinext build",
+    "build": "tsx scripts/generate-component-manifest.ts && vinext build",
+    "generate:manifest": "tsx scripts/generate-component-manifest.ts",
     "start": "vinext start",
     "lint": "vinext lint",
     "test": "vitest run",
