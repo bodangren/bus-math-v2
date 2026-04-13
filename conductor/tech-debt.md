@@ -28,6 +28,6 @@
 | 2026-04-13 | component_approval_20260413 | No unit tests for approval mutations/queries (auth branch, stale-hash logic) | Medium | Open | Add before Phase 3. |
 
 | 2026-04-13 | code_review_pass41 | Dev review page has no real auth guard beyond NODE_ENV check | Medium | Open | NODE_ENV check in 'use client' component is statically replaced at build time (works), but no role-based auth. Consider adding session role check. |
-| 2026-04-13 | code_review_pass41 | computeExampleVersionHash returns same hash forever — examples can never go stale | Low | Open | "example:${componentId}:placeholder" is static. Needs real content hash when example review harness is built (Phase 4). |
+| 2026-04-13 | code_review_pass41 | computeExampleVersionHash returns same hash forever — examples can never go stale | Low | Open | Harness fixed: no longer incorrectly uses practice families. Real example hashing still deferred per example_harness_correctness_20260414. |
 | 2026-04-13 | code_review_pass41 | Unreviewed components show empty currentHash in dev queue | Low | Open | currentVersionHash only returned when approval exists. Need to compute for all components in queue query. |
 | 2026-04-13 | code_review_pass42 | Dev harness pages import Node.js crypto in client bundles | Low | Closed | Fixed: Added getComponentVersionHash Convex query; harness pages now call query instead of importing crypto-dependent version-hashes.ts. |

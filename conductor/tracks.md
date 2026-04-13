@@ -305,6 +305,11 @@ Strictly serial. Complete and archive each track before starting the next.
 
 ## Archive Ledger
 
+- [x] **Track: Example Harness Correctness**
+  *Link: [./archive/example_harness_correctness_20260414/](./archive/example_harness_correctness_20260414/)*
+  *Scope: Fix Example harness page that incorrectly imports and uses practice family system for a different component type.*
+  *Closeout: completed on 2026-04-14. Removed incorrect getPracticeFamily import and usage. Example harness now shows clear "Not Yet Implemented" state with explanation. Version hash display retained. Review checklist preserved for future use. All verification gates pass (lint 0 errors, test 1775/1775, build clean).*
+
 - [x] **Track: Practice Contract Completion -- Remaining Components and Evidence Wiring**
   *Link: [./archive/practice_contract_completion_20260404/](./archive/practice_contract_completion_20260404/)*
   *Closeout: archived on 2026-04-07 after completing practice.v1 contract compliance for remaining components, misconception tagging integration, teacher error summary wiring, and full verification.*
