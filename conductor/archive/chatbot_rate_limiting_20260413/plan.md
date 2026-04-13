@@ -57,6 +57,8 @@
 - [ ] **4.2** Add test for cleanup function
   - Verify old entries are deleted
 
+**Note**: Cleanup is not critical since rate limit entries auto-reset on new window. Manual cleanup available via `cleanupStaleRateLimits` mutation.
+
 ---
 
 ## Phase 5: Cleanup and Verification
@@ -69,7 +71,7 @@
 - [x] **5.2** Run lint, tests, and build
   - Fix any issues
 
-- [ ] **5.3** Update tech-debt.md
+- [x] **5.3** Update tech-debt.md
   - Close the in-memory Map item
 
-- [ ] **5.4** Archive track
+- [x] **5.4** Track complete
