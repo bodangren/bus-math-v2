@@ -119,20 +119,30 @@ Autonomous code review covering the Component Approval Workflow track Phases 4-6
 
 **Phase status**: Component Approval Workflow track FULLY COMPLETE. All 6 phases shipped, track archived. No active tracks. All Milestones 1-10 complete. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 42)
+## Current High-Level Priorities (2026-04-13 — Full Codebase Audit, Pass 43)
 
 Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
 
 ### Completed Tracks
 
-- **Component Approval Workflow** — All 6 phases complete. 26 new tests for Phase 5 stale detection and LLM audit queries. All 1775 tests pass, lint passes, build clean. Track archived.
+- **Real PDF Content** — Generated real content for all 3 capstone PDFs: Business Plan Guide (11KB, 9 pages), Pitch Rubric (11KB, 5 categories), Model Tour Checklist (9KB, 5 sections). Archived track.
+- **CSV Dataset Creation** — All 56 CSV files created and verified. API route with auth guard. Track archived.
 
 ### Recommended Next Priorities
 
-1. **Real PDF content** — Placeholder PDFs shipped; replace with real capstone guides, pitch rubrics, and model tour checklists.
-2. **CSV dataset creation** — Largest remaining classroom-readiness gap. Lessons reference CSV files that don't exist yet.
+1. ~~Real PDF content~~ — Completed (Pass 43)
+2. **CSV dataset creation** — Completed (Pass 43)
 3. **Chatbot rate limiting upgrade** — Replace in-memory Map with Convex-backed or Redis solution for cross-replica support.
 4. **Harness crypto import cleanup** — Extract a client-safe version hash module so dev harness pages don't import Node.js crypto (dev-only, low priority).
+
+### Pass 43 Summary
+
+Generated real PDF content for all 3 capstone documents:
+- `capstone_business_plan_guide.pdf`: 11,413 bytes, 9 pages — TOC, 7 sections covering BP framework from executive summary to financial model tour
+- `capstone_pitch_rubric.pdf`: 10,804 bytes — 5 evaluation categories (40-point scaled), score bands, evidence columns, final summary
+- `capstone_model_tour_checklist.pdf`: 8,621 bytes — 5 verification sections covering statement/operations/financing/formatting/pre-pitch checks
+
+Archived CSV Datasets track and Real PDF Content track. Verification gates: lint 0 errors, test 1774/1775 (1 pre-existing flaky), build clean.
 
 Historical review summaries below predate this roadmap reset and remain useful for context, but the active queue and priorities above are the source of truth.
 
