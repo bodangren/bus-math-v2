@@ -55,3 +55,4 @@
 - When building study features, start with static glossary data and Convex schema foundation before building UI surfaces.
 - Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
 - When building a multi-phase feature like practice tests, use refs for tracking values that need to be in sync with state updates but avoid stale-closure issues (like score and per-lesson breakdown when transitioning to a closing phase).
+- When testing Button with asChild wrapping next/link, mock both @radix-ui/react-slot and next/link. The Slot component must pass children through with their props intact, or use renderToStaticMarkup to verify href attributes directly.
