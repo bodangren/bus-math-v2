@@ -14,21 +14,21 @@
 - [x] Implement shared approval types and validators
 - [x] Run targeted schema/type tests and `npm run lint`
 
-## [~] Phase 2: Review Mutations and Audit Queries
+## [x] Phase 2: Review Mutations and Audit Queries
 
 - [x] Write tests for review mutations
-  - [ ] Approve stores reviewer, timestamp, version hash, and history
-  - [ ] Changes requested requires improvement notes
-  - [ ] Rejected requires improvement notes
-  - [ ] Invalid issue categories are rejected
-  - [ ] Student and teacher roles cannot write approval records
+  - [x] Approve stores reviewer, timestamp, version hash, and history
+  - [x] Changes requested requires improvement notes
+  - [x] Rejected requires improvement notes
+  - [x] Invalid issue categories are rejected
+  - [x] Student and teacher roles cannot write approval records
 - [x] Implement review mutations with developer/admin authorization
 - [x] Write tests for review queue and LLM audit queries
-  - [ ] Filter by component type
-  - [ ] Filter by approval/effective status
+  - [x] Filter by component type
+  - [x] Filter by approval/effective status
   - [ ] Filter by placement where known
   - [ ] Return stale components when hashes differ
-  - [ ] Return unresolved notes and issue categories for rework audits
+  - [x] Return unresolved notes and issue categories for rework audits
 - [x] Implement review queue queries and unresolved review-note queries
 - [x] Run relevant Convex/function tests and `npm run lint`
 
