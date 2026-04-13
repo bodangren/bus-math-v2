@@ -1,0 +1,19 @@
+Phase Complete: Capstone Workbook Lookup Gap Fix
+
+Files changed: 16 files, 418 insertions, 5 deletions
+
+Summary:
+- Extended workbook manifest to include byCapstone lookup
+- Added hasCapstoneStudentWorkbook/hasCapstoneTeacherWorkbook/getCapstoneWorkbookPath to workbooks.client.ts
+- Created /api/workbooks/capstone/[type] route with auth and role checks
+- Added CapstoneWorkbookDownloads client component to capstone page
+- Added unit tests for new functions and API route
+- Updated capstone page test to mock AuthProvider
+- Updated tech-debt.md and tracks.md
+
+Verification gates:
+- npm run lint: 0 errors, 2 warnings (pre-existing)
+- npm test: 1823/1823 tests pass
+- npm run build: passes
+
+Track archived to conductor/archive/capstone_workbook_lookup_gap_20260414/
