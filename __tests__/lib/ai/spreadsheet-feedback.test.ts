@@ -101,5 +101,44 @@ describe('spreadsheet-feedback', () => {
       expect(feedback.preliminaryScore).toBe(13);
       expect(feedback.rawAiResponse).toBe('Not valid JSON');
     });
+
+    it('should fall back to deterministic feedback when AI returns wrong types', async () => {
+      const mockProvider = vi.fn().mockResolvedValue(JSON.stringify({
+        preliminaryScore: '35',
+        strengths: [1, 2],
+        improvements: ['Fix B3'],
+        nextSteps: ['Review'],
+      }));
+
+      vi.spyOn(providers, 'resolveOpenRouterProviderFromEnv').mockReturnValue(mockProvider);
+
+      const feedback: AiFeedback = await generateAiFeedback({
+        spreadsheetData: mockSpreadsheetData,
+        validationResult: mockValidationResult,
+        targetCells: mockTargetCells,
+      });
+
+      expect(feedback.preliminaryScore).toBe(13);
+      expect(feedback.rawAiResponse).toContain('"preliminaryScore":"35"');
+    });
+
+    it('should fall back to deterministic feedback when AI returns score out of range', async () => {
+      const mockProvider = vi.fn().mockResolvedValue(JSON.stringify({
+        preliminaryScore: 100,
+        strengths: ['Good'],
+        improvements: ['Fix'],
+        nextSteps: ['Review'],
+      }));
+
+      vi.spyOn(providers, 'resolveOpenRouterProviderFromEnv').mockReturnValue(mockProvider);
+
+      const feedback: AiFeedback = await generateAiFeedback({
+        spreadsheetData: mockSpreadsheetData,
+        validationResult: mockValidationResult,
+        targetCells: mockTargetCells,
+      });
+
+      expect(feedback.preliminaryScore).toBe(40);
+    });
   });
 });

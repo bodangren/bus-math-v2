@@ -75,7 +75,7 @@ export function StudyHubHome() {
         return { ...t, term };
       })
       .filter((t): t is typeof t & { term: GlossaryTerm } => t.term !== undefined);
-  }, [termMastery]);
+  }, [termMastery, languageMode]);
 
   return (
     <main className="min-h-screen bg-muted/20 py-10">

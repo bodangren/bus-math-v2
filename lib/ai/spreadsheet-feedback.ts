@@ -1,6 +1,14 @@
 import type { SpreadsheetData } from '@/components/activities/spreadsheet';
 import type { ValidationResult, TargetCell } from '@/lib/activities/spreadsheet-validation';
 import { resolveOpenRouterProviderFromEnv } from '@/lib/ai/providers';
+import { z } from 'zod';
+
+const AiFeedbackResponseSchema = z.object({
+  preliminaryScore: z.number(),
+  strengths: z.array(z.string()),
+  improvements: z.array(z.string()),
+  nextSteps: z.array(z.string()),
+});
 
 export interface AiFeedback {
   preliminaryScore: number;
@@ -94,20 +102,29 @@ export async function generateAiFeedback(options: GenerateAiFeedbackOptions): Pr
   const rawResponse = await provider(prompt);
 
   try {
-    const parsed = JSON.parse(rawResponse) as {
-      preliminaryScore: number;
-      strengths: string[];
-      improvements: string[];
-      nextSteps: string[];
-    };
+    const parsed = JSON.parse(rawResponse);
+    const validated = AiFeedbackResponseSchema.safeParse(parsed);
 
-    const clampedScore = Math.max(0, Math.min(40, parsed.preliminaryScore));
+    if (!validated.success) {
+      const correctRatio = options.validationResult.correctCells / Math.max(1, options.validationResult.totalCells);
+      const preliminaryScore = Math.round(correctRatio * 40);
+
+      return {
+        preliminaryScore,
+        strengths: ['Completed the spreadsheet submission'],
+        improvements: ['Review your work for possible errors'],
+        nextSteps: ['Ask your teacher for feedback'],
+        rawAiResponse: rawResponse,
+      };
+    }
+
+    const clampedScore = Math.max(0, Math.min(40, validated.data.preliminaryScore));
 
     return {
       preliminaryScore: clampedScore,
-      strengths: parsed.strengths.slice(0, 3),
-      improvements: parsed.improvements.slice(0, 3),
-      nextSteps: parsed.nextSteps.slice(0, 3),
+      strengths: validated.data.strengths.slice(0, 3),
+      improvements: validated.data.improvements.slice(0, 3),
+      nextSteps: validated.data.nextSteps.slice(0, 3),
       rawAiResponse: rawResponse,
     };
   } catch {
