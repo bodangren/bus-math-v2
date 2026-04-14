@@ -350,6 +350,11 @@ Strictly serial. Complete and archive each track before starting the next.
 
 ## Archive Ledger
 
+- [x] **Track: Auth Server Fail-Open Behavior**
+  *Link: [./archive/auth_server_fail_open_20260414/](./archive/auth_server_fail_open_20260414/)*
+  *Scope: Address Medium severity issue where requireActiveRequestSessionClaims fails open when Convex backend fails. Current behavior allowed deactivated users to access during backend outages.*
+  *Closeout: completed on 2026-04-14. Changed fail-open to fail-closed (503) when Convex check throws. Added buildRequestServiceUnavailableResponse helper. Added 2 tests for Convex error scenarios. All verification gates pass (lint 0 errors, test 1825/1825, build clean). Tech-debt item closed.*
+
 - [x] **Track: Capstone Workbook Lookup Gap Fix**
   *Link: [./archive/capstone_workbook_lookup_gap_20260414/](./archive/capstone_workbook_lookup_gap_20260414/)*
   *Scope: Fix capstone workbook lookup gap — capstone workbook files don't match unit_lesson pattern so they're excluded from byUnitAndLesson lookup.*

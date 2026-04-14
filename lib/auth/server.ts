@@ -55,6 +55,10 @@ function buildRequestForbiddenResponse(message = 'Forbidden') {
   return NextResponse.json({ error: message }, { status: 403 });
 }
 
+function buildRequestServiceUnavailableResponse(message = 'Service temporarily unavailable') {
+  return NextResponse.json({ error: message }, { status: 503 });
+}
+
 /**
  * Requires an authenticated request session and returns a JSON 401 response when absent.
  */
@@ -187,9 +191,9 @@ export async function requireActiveRequestSessionClaims(
       return buildRequestUnauthorizedResponse('Session revoked');
     }
   } catch {
-    // If the Convex check fails (network error, etc.), fail open
-    // to avoid locking users out during transient backend issues.
-    // The JWT signature and expiry are still validated above.
+    return buildRequestServiceUnavailableResponse(
+      'Credential verification temporarily unavailable',
+    );
   }
 
   return claims;

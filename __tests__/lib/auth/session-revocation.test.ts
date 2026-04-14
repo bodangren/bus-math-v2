@@ -118,4 +118,34 @@ describe('requireActiveRequestSessionClaims', () => {
       { username: 'alice' },
     );
   });
+
+  it('returns 503 when Convex query throws', async () => {
+    mockFetchInternalQuery.mockRejectedValue(new Error('Convex network error'));
+
+    const token = await makeToken();
+    const request = buildRequestWithCookie(token);
+    const result = await requireActiveRequestSessionClaims(request);
+
+    expect(result).toBeInstanceOf(Response);
+    if (result instanceof Response) {
+      expect(result.status).toBe(503);
+      const body = await result.json();
+      expect(body.error).toBe('Credential verification temporarily unavailable');
+    }
+  });
+
+  it('returns 503 with custom message when Convex query throws', async () => {
+    mockFetchInternalQuery.mockRejectedValue(new Error('Timeout'));
+
+    const token = await makeToken();
+    const request = buildRequestWithCookie(token);
+    const result = await requireActiveRequestSessionClaims(request, 'Custom auth error');
+
+    expect(result).toBeInstanceOf(Response);
+    if (result instanceof Response) {
+      expect(result.status).toBe(503);
+      const body = await result.json();
+      expect(body.error).toBe('Credential verification temporarily unavailable');
+    }
+  });
 });
