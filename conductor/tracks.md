@@ -103,6 +103,11 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Submit Attempt Numbering Race Fix**
+  *Link: [./archive/submit_attempt_numbering_race_fix_20260414/](./archive/submit_attempt_numbering_race_fix_20260414/)*
+  *Scope: Fix race condition in submitSpreadsheet where concurrent submissions could receive the same attemptNumber. Use Convex transaction to atomically compute and increment attempt count.*
+  *Closeout: completed on 2026-04-14. Wrapped count+insert in ctx.transaction() to atomically compute and assign unique attemptNumbers. All 1825 tests pass, lint 0 errors, build clean. Tech-debt item closed.*
+
 - [x] **Track: Workbook Client Dynamic Lookup**
   *Link: [./tracks/workbooks_client_dynamic_lookup_20260414/](./tracks/workbooks_client_dynamic_lookup_20260414/)*
   *Scope: Replace hardcoded Set in workbooks.client.ts with dynamic lookup from build-time manifest to prevent stale data when new workbooks are added.*

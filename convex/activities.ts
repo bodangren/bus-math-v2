@@ -136,7 +136,47 @@ export const submitSpreadsheet = internalMutation({
   handler: async (ctx, args) => {
     const now = Date.now();
 
-    // Check existing response for attempt limit
+    const { attemptId, attemptNumber } = await ctx.transaction(async (tx) => {
+      const existingResponse = await tx.db
+        .query("student_spreadsheet_responses")
+        .withIndex("by_student_and_activity", (q) =>
+          q.eq("studentId", args.userId).eq("activityId", args.activityId)
+        )
+        .unique();
+
+      const maxAttempts = existingResponse?.maxAttempts ?? 3;
+
+      const existingAttempts = await tx.db
+        .query("spreadsheet_submission_attempts")
+        .withIndex("by_student_and_activity", (q) =>
+          q.eq("studentId", args.userId).eq("activityId", args.activityId)
+        )
+        .collect();
+
+      if (existingAttempts.length >= maxAttempts) {
+        throw new Error(
+          `Maximum attempts (${maxAttempts}) reached for this activity.`
+        );
+      }
+
+      const attemptNumber = existingAttempts.length + 1;
+
+      const attemptId = await tx.db.insert(
+        "spreadsheet_submission_attempts",
+        {
+          studentId: args.userId,
+          activityId: args.activityId,
+          attemptNumber,
+          spreadsheetData: args.spreadsheetData,
+          validationResult: args.validationResult,
+          submittedAt: now,
+          createdAt: now,
+        }
+      );
+
+      return { attemptId, attemptNumber };
+    });
+
     const existingResponse = await ctx.db
       .query("student_spreadsheet_responses")
       .withIndex("by_student_and_activity", (q) =>
@@ -144,34 +184,6 @@ export const submitSpreadsheet = internalMutation({
       )
       .unique();
 
-    const maxAttempts = existingResponse?.maxAttempts ?? 3;
-
-    // Get existing attempts to compute attempt number
-    const existingAttempts = await ctx.db
-      .query("spreadsheet_submission_attempts")
-      .withIndex("by_student_and_activity", (q) =>
-        q.eq("studentId", args.userId).eq("activityId", args.activityId)
-      )
-      .collect();
-
-    if (existingAttempts.length >= maxAttempts) {
-      throw new Error(`Maximum attempts (${maxAttempts}) reached for this activity.`);
-    }
-
-    const attemptNumber = existingAttempts.length + 1;
-
-    // Create the attempt record
-    const attemptId = await ctx.db.insert("spreadsheet_submission_attempts", {
-      studentId: args.userId,
-      activityId: args.activityId,
-      attemptNumber,
-      spreadsheetData: args.spreadsheetData,
-      validationResult: args.validationResult,
-      submittedAt: now,
-      createdAt: now,
-    });
-
-    // Update or create the student_spreadsheet_responses record
     if (existingResponse) {
       await ctx.db.patch(existingResponse._id, {
         spreadsheetData: args.spreadsheetData,

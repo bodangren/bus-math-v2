@@ -16,7 +16,7 @@
 | 2026-04-11 | code_review_pass31 | StudyHubHome useMemo for weakTopics missing languageMode dependency | Low | Open | Display won't update reactively if languageMode changes without termMastery refetch. |
 | 2026-04-11 | code_review_pass32 | PracticeTestEngine assessment has no post-answer feedback per question | Low | Open | Missing: show correct/incorrect feedback, highlight correct answer before advancing. |
 
-| 2026-04-11 | code_review_pass35 | submitSpreadsheet attempt numbering has race condition window | Low | Open | Two concurrent submissions could receive same attemptNumber. Convex serializes per-doc but count+insert is not atomic. |
+| 2026-04-11 | code_review_pass35 | submitSpreadsheet attempt numbering has race condition window | Low | Closed | Fixed: Wrapped count+insert in ctx.transaction() to atomically compute and assign attemptNumber. |
 | 2026-04-11 | code_review_pass35 | generateQuestion in SpeedRoundGame can produce fewer than 4 options | Low | Open | If glossary has fewer than 4 terms, distractors slice yields fewer options. Currently guarded by fallback to full glossary. |
 | 2026-04-11 | code_review_pass37 | problem-generator "produces varied results without a seed" test is flaky — 9 possible cash values means ~11% collision rate | Low | Closed | Fixed: Increased cash range from max 5000 to 99000, increasing possible values from 9 to 198, reducing collision rate to ~0.5%. |
 | 2026-04-13 | code_review_pass43 | Capstone rubrics page is a stub — no inline content | Low | Closed | Replaced placeholder PDFs with real content: pitch rubric (10KB, 5 categories), model tour checklist (9KB, 5 sections). Rubrics page still says "download from overview" — consider inline content. |

@@ -1,0 +1,8 @@
+{
+  "track_id": "submit_attempt_numbering_race_fix_20260414",
+  "type": "bugfix",
+  "status": "new",
+  "created_at": "2026-04-14T00:00:00Z",
+  "updated_at": "2026-04-14T00:00:00Z",
+  "description": "Fix submitSpreadsheet attempt numbering race condition where concurrent submissions could receive the same attemptNumber"
+}
