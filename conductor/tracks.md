@@ -353,6 +353,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Wire generate-workbook-manifest.ts into build/dev steps so workbook manifest regenerates automatically and stays in sync with public/workbooks/ directory.*
   *Closeout: completed on 2026-04-14. Added generate:workbook-manifest npm script, updated predev and build hooks to run both component and workbook manifest generators. All verification gates pass (lint 0 errors, test 1812/1812, build clean). tech-debt item closed.*
 
+- [x] **Track: Capstone Rubrics Inline Content**
+  *Link: [./archive/capstone_rubrics_inline_content_20260414/](./archive/capstone_rubrics_inline_content_20260414/)*
+  *Scope: Add inline content to Capstone rubrics page instead of just linking to PDF downloads. Display pitch rubric categories (5) with point allocations and model tour checklist sections (5).*
+  *Closeout: completed on 2026-04-14. Added inline pitch rubric (5 categories: Presentation Structure 8pts, Financial Clarity 10pts, Market Understanding 8pts, Q&A Handling 6pts, Delivery 8pts) and model tour checklist (5 sections: Financial Model Components, Assumption Documentation, Formatting Standards, Data Sources and References, Executive Summary Alignment). PDF download links preserved. Added 3 new tests. All verification gates pass (lint 0 errors, test 1828/1828, build clean). Tech-debt item closed.*
+
 ## Archive Ledger
 
 - [x] **Track: Auth Server Fail-Open Behavior**
