@@ -3,7 +3,8 @@
 # Configuration variables
 OPENCODE_WORK_MODEL="minimax-cn-coding-plan/MiniMax-M2.7"
 KIMI_WORK_MODEL="k2.5"
-REVIEW_MODEL="xiaomi/mimo-v2-pro"
+REVIEW_MODEL_A="xiaomi/mimo-v2-pro"
+REVIEW_MODEL_B="zai-coding-plan/glm-5.1"
 WORKING_DIR="/Users/daniel.bodanske/Desktop/bus-math-v2"
 OPENCODE_PATH="/Users/daniel.bodanske/.nvm/versions/node/v20.14.0/bin/opencode"
 KIMI_PATH="/Users/daniel.bodanske/.local/bin/kimi"
@@ -53,6 +54,8 @@ run_with_timeout() {
   done
 }
 
+USE_REVIEW_A=1
+
 while true 
 do
   # Run work sessions (alternate opencode and kimi)
@@ -79,11 +82,20 @@ do
     fi
   done
   
+  # Toggle review model
+  if [ $USE_REVIEW_A -eq 1 ]; then
+    CURRENT_REVIEW_MODEL="$REVIEW_MODEL_A"
+    USE_REVIEW_A=0
+  else
+    CURRENT_REVIEW_MODEL="$REVIEW_MODEL_B"
+    USE_REVIEW_A=1
+  fi
+
   # Run review session
   run_with_timeout "$OPENCODE_PATH \
     run \"$REVIEW_PROMPT\" \
     --dir \"$WORKING_DIR\" \
-    -m \"$REVIEW_MODEL\""
+    -m \"$CURRENT_REVIEW_MODEL\""
   
   sleep $REVIEW_SLEEP_TIME
 done
