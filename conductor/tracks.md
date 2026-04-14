@@ -373,7 +373,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-14. Analyzed activities schema and confirmed activities are reusable components keyed by componentKey, shared across lessons. The activity_completions table is the correct join linking activities to lessons. Adding lessonId to activities would be architecturally incorrect since same activity appears in multiple lessons. Closed tech-debt item with won't-fix rationale. All verification gates pass (lint 0 errors, test 1826/1826, build clean).*
 
 - [x] **Track: Practice Test Post-Answer Feedback**
-  *Link: [./tracks/practice_test_feedback_20260414/](./tracks/practice_test_feedback_20260414/)*
+  *Link: [./archive/practice_test_feedback_20260414/](./archive/practice_test_feedback_20260414/)*
   *Scope: Add post-answer feedback to PracticeTestEngine assessment — show correct/incorrect indicator, highlight correct answer, show explanation, require Continue button click to advance.*
   *Closeout: completed on 2026-04-14. Added hasSeenFeedback state to prevent immediate question advancement. After answering, displays Correct!/Incorrect indicator, highlights correct answer in green, dims wrong answers, shows explanation, and renders Continue button. Student must click Continue to advance. Removed redundant answeredCurrent state. Added 4 new tests (8 total practice test tests pass). All verification gates pass (lint 0 errors, test 1830/1830, build clean). Tech-debt item closed.*
 
