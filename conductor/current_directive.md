@@ -80,6 +80,33 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
+## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 51)
+
+Autonomous code review covering Cloudflare CI Deployment track (single phase).
+
+**Scope:** Cloudflare CI Deployment track — GitHub Actions workflow creation and stale Supabase CI cleanup.
+
+**Fixed during review: 0 issues**
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1826/1826 tests pass (305 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Cloudflare Deploy Workflow** (`.github/workflows/cloudflare-deploy.yml`): New CI workflow triggers on push to main, runs lint/test/build, deploys via `wrangler deploy --config wrangler.jsonc`. Uses `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets.
+- **Stale Supabase CI Cleanup**: Removed `deploy-migrations.yml`, `migration-parity.yml`, `check-migration-parity.mjs`, and `__tests__/config/check-migration-parity-script.test.ts`. Supabase was removed from project but CI workflows still referenced it.
+- **Documentation**: Updated `cloudflare-launch-checklist.md` with GitHub Actions CI guidance, required secrets, and manual deployment alternatives.
+
+**Updated during review:**
+- `.github/workflows/cloudflare-deploy.yml`: Created (new)
+- `wrangler.jsonc`: Updated with secrets documentation
+- `conductor/docs/architecture/cloudflare-launch-checklist.md`: Added CI section
+- `conductor/tech-debt.md`: Closed Cloudflare CI deployment item
+- `conductor/current_directive.md`: Fixed stale next-priorities (workbook manifest and capstone rubrics were already closed)
+
+**Phase status**: All Milestones 1-10 complete. All tech-debt items closed. Project in stabilization.
+
 ## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 50)
 
 Autonomous code review covering all changes since Pass 49: Submit Attempt Numbering Race Fix, Auth Server Fail-Closed Fix, Capstone Workbook Lookup, and Workbook Manifest Build Integration.

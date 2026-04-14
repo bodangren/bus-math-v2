@@ -54,6 +54,45 @@ The Cloudflare Worker entry expects the built Vinext server handler in `dist/ser
    - student login and lesson resume flow
    - teacher dashboard and student-detail monitoring flow
 
+## GitHub Actions CI Deployment
+
+The `.github/workflows/cloudflare-deploy.yml` workflow automates deployment on push to `main`.
+
+### Required GitHub Actions Secrets
+
+Configure these in your GitHub repository Settings → Secrets and Variables → Actions:
+
+1. **`CLOUDFLARE_API_TOKEN`**: Cloudflare API token with the following permissions:
+   - `Account Settings:Edit` (to read account ID)
+   - `Workers:Edit` (to deploy workers)
+   - `Workers AI:Edit` (if using Workers AI features)
+   
+   Create at: https://dash.cloudflare.com/profile/api-tokens
+
+2. **`CLOUDFLARE_ACCOUNT_ID`**: Your Cloudflare account ID (found in the Cloudflare dashboard URL: `https://dash.cloudflare.com/<ACCOUNT_ID>/...`)
+
+### CI Workflow
+
+The workflow runs on every push to `main`:
+1. Checkout code
+2. Setup Node.js 20
+3. Install dependencies (`npm ci`)
+4. Run lint, tests, and build (verification gates)
+5. Deploy using `wrangler deploy --config wrangler.jsonc`
+
+### Manual Deployment
+
+If GitHub Actions is not configured, deploy manually:
+
+```bash
+# Set secrets interactively
+npx --yes wrangler secret put CONVEX_DEPLOY_KEY
+npx --yes wrangler secret put AUTH_JWT_SECRET
+
+# Deploy
+npx --yes wrangler deploy --config wrangler.jsonc
+```
+
 ## Operational Expectations
 
 - Seed demo or classroom users out of band for preview/production. Do not rely on runtime demo provisioning outside local/test environments.

@@ -358,6 +358,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Add inline content to Capstone rubrics page instead of just linking to PDF downloads. Display pitch rubric categories (5) with point allocations and model tour checklist sections (5).*
   *Closeout: completed on 2026-04-14. Added inline pitch rubric (5 categories: Presentation Structure 8pts, Financial Clarity 10pts, Market Understanding 8pts, Q&A Handling 6pts, Delivery 8pts) and model tour checklist (5 sections: Financial Model Components, Assumption Documentation, Formatting Standards, Data Sources and References, Executive Summary Alignment). PDF download links preserved. Added 3 new tests. All verification gates pass (lint 0 errors, test 1828/1828, build clean). Tech-debt item closed.*
 
+- [x] **Track: Cloudflare CI Deployment**
+  *Link: [./archive/cloudflare_ci_deployment_20260414/](./archive/cloudflare_ci_deployment_20260414/)*
+  *Scope: Create GitHub Actions CI workflow for Cloudflare Workers deployment, clean up stale Supabase CI workflows (deploy-migrations.yml, migration-parity.yml, check-migration-parity.mjs), and document required secrets for CI-backed deployment.*
+  *Closeout: completed on 2026-04-14. Created cloudflare-deploy.yml workflow (triggers on push to main, runs lint/test/build, deploys via wrangler). Cleaned up stale Supabase CI files (2 workflows + 1 script + 1 test file). Updated cloudflare-launch-checklist.md with CI secrets documentation. All verification gates pass (lint 0 errors, test 1826/1826, build clean). Tech-debt item (Cloudflare CI) addressed.*
+
 ## Archive Ledger
 
 - [x] **Track: Auth Server Fail-Open Behavior**

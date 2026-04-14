@@ -14,4 +14,8 @@
   // Required secrets via `wrangler secret put`:
   // - CONVEX_DEPLOY_KEY
   // - AUTH_JWT_SECRET
+  //
+  // Required GitHub Actions secrets:
+  // - CLOUDFLARE_API_TOKEN (Cloudflare API token with Workers AI and Workers edit permissions)
+  // - CLOUDFLARE_ACCOUNT_ID (found in Cloudflare dashboard URL or API response)
 }
