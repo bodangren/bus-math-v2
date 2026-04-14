@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 14, 2026 (Code Review Pass 53)
+Last updated: April 14, 2026 (Code Review Pass 54)
 
 ## Status Snapshot
 
@@ -84,7 +84,7 @@ The target product is:
 | Published lesson count in manifest tests | 89 lessons |
 | Active Conductor tracks | 0 (Project in stabilization) |
 | Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
-| Archived track directories | 128 |
+| Archived track directories | 140 |
 | Test files under `__tests__` and `tests` | 305 |
 
 ### My real assessment
@@ -299,7 +299,7 @@ The teacher side is a complete classroom reporting system with full dashboard, g
 
 ### What is not implemented
 
-- Capstone rubrics page is a stub — no inline content (Low priority)
+- ~~Capstone rubrics page is a stub — no inline content~~ — complete (inline pitch rubric + model tour checklist added 2026-04-14)
 
 ### Practical conclusion
 
