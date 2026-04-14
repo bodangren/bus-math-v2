@@ -34,7 +34,8 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [, setScore] = useState<number>(0);
   const [, setPerLessonBreakdown] = useState<Record<string, { correct: number; total: number }>>({});
-  const [answeredCurrent, setAnsweredCurrent] = useState(false);
+  const [hasSeenFeedback, setHasSeenFeedback] = useState(false);
+  const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
 
   // Refs to track running totals — avoids stale-state risk when transitioning to closing on last answer
   const scoreRef = useRef(0);
@@ -98,10 +99,10 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
 
   const handleAnswerQuestion = (selectedAnswer: string) => {
     const current = testQuestions[currentQuestionIndex];
-    if (!current || answeredCurrent) return;
-    setAnsweredCurrent(true);
+    if (!current || hasSeenFeedback) return;
     const { question, original } = current;
     const isCorrect = selectedAnswer === question.answer;
+    setLastAnswerCorrect(isCorrect);
     
     if (isCorrect) {
       scoreRef.current += 1;
@@ -121,9 +122,14 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
       }));
     }
 
+    setHasSeenFeedback(true);
+  };
+
+  const handleContinueQuestion = () => {
     if (currentQuestionIndex < testQuestions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
-      setAnsweredCurrent(false);
+      setHasSeenFeedback(false);
+      setLastAnswerCorrect(false);
     } else {
       setCurrentPhase('closing');
       
@@ -246,20 +252,37 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
               </div>
               <h3 className="text-lg font-semibold mb-4">{testQuestions[currentQuestionIndex].original.prompt}</h3>
               <div className="space-y-3 mb-6">
-                {testQuestions[currentQuestionIndex].question.options.map((option, index) => (
-                  <Button
-                    key={index}
-                    variant="secondary"
-                    className="w-full justify-start text-left"
-                    onClick={() => handleAnswerQuestion(option)}
-                    disabled={answeredCurrent}
-                  >
-                    {option}
-                  </Button>
-                ))}
+                {testQuestions[currentQuestionIndex].question.options.map((option, index) => {
+                  const isCorrectAnswer = option === testQuestions[currentQuestionIndex].question.answer;
+                  return (
+                    <Button
+                      key={index}
+                      variant="secondary"
+                      className={`w-full justify-start text-left ${
+                        hasSeenFeedback && isCorrectAnswer ? 'bg-green-100 border-green-500 border-2' : ''
+                      } ${
+                        hasSeenFeedback && !isCorrectAnswer ? 'opacity-50' : ''
+                      }`}
+                      onClick={() => handleAnswerQuestion(option)}
+                      disabled={hasSeenFeedback}
+                    >
+                      {option}
+                    </Button>
+                  );
+                })}
               </div>
-              {answeredCurrent && (
-                <div className="text-sm text-gray-600">{testQuestions[currentQuestionIndex].original.explanation}</div>
+              {hasSeenFeedback && (
+                <div className="mb-4">
+                  <div className={`text-lg font-semibold mb-2 ${lastAnswerCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                    {lastAnswerCorrect ? 'Correct!' : 'Incorrect'}
+                  </div>
+                  <div className="text-sm text-gray-600 mb-4">
+                    {testQuestions[currentQuestionIndex].original.explanation}
+                  </div>
+                  <Button onClick={handleContinueQuestion}>
+                    Continue
+                  </Button>
+                </div>
               )}
             </div>
           )}

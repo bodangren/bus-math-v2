@@ -14,7 +14,7 @@
 | 2026-04-11 | code_review_pass28 | generateAiFeedback parsed response fields not validated — AI could return wrong types for strengths/improvements/nextSteps | Low | Open | JSON.parse result is cast but not validated. Add zod validation or type guards. |
 
 | 2026-04-11 | code_review_pass31 | StudyHubHome useMemo for weakTopics missing languageMode dependency | Low | Open | Display won't update reactively if languageMode changes without termMastery refetch. |
-| 2026-04-11 | code_review_pass32 | PracticeTestEngine assessment has no post-answer feedback per question | Low | Open | Missing: show correct/incorrect feedback, highlight correct answer before advancing. |
+| 2026-04-11 | code_review_pass32 | PracticeTestEngine assessment has no post-answer feedback per question | Low | Closed | Fixed: Added hasSeenFeedback state. After answering, displays Correct!/Incorrect indicator, highlights correct answer in green, dims wrong answers, shows explanation, and renders Continue button. Student must click Continue to advance. 4 new tests added (8 total practice test tests pass). |
 
 | 2026-04-11 | code_review_pass35 | submitSpreadsheet attempt numbering has race condition window | Low | Closed | Fixed: Wrapped count+insert in ctx.transaction() to atomically compute and assign attemptNumber. |
 | 2026-04-11 | code_review_pass35 | generateQuestion in SpeedRoundGame can produce fewer than 4 options | Low | Open | If glossary has fewer than 4 terms, distractors slice yields fewer options. Currently guarded by fallback to full glossary. |
