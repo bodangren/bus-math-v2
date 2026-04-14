@@ -47,3 +47,4 @@
 - Simulation/reset functions must clear ALL state: active intervals/timeouts AND all submission state (submittedRef, setSubmitted), or stale callbacks will fire against freshly-reset state causing permanent blocking.
 - Optional chaining on callbacks (`onSubmit?.()`) should be consistent across all components in the same layer — mixing `onSubmit(envelope)` and `onSubmit?.(envelope)` is a latent crash risk.
 - When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
+- AI provider responses (JSON.parse results) must be validated with Zod schema before use — never trust cast types from external APIs; safeParse with fallback is the correct pattern.
