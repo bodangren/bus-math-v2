@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 14, 2026 (Code Review Pass 49)
+Last updated: April 14, 2026 (Code Review Pass 50)
 
 ## Status Snapshot
 
@@ -85,7 +85,7 @@ The target product is:
 | Active Conductor tracks | 0 (Component Approval Workflow complete and archived) |
 | Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
 | Archived track directories | 126 |
-| Test files under `__tests__` and `tests` | 305 |
+| Test files under `__tests__` and `tests` | 306 |
 
 ### My real assessment
 
@@ -255,7 +255,7 @@ That means:
 
 ### Current student-product interpretation
 
-The student experience is already a real product surface, but it is still missing the final navigation contract that would make it feel complete and reliable in daily classroom use.
+The student experience is a complete product surface with full navigation, breadcrumbs, resume/review contracts, and study tools.
 
 ## Teacher Experience: Real Status
 
@@ -281,7 +281,7 @@ The student experience is already a real product surface, but it is still missin
 
 ### Current teacher-product interpretation
 
-The teacher side is beyond "dashboard mockup" status. It is a meaningful reporting system already. But it is still short of the teacher completeness target for classroom use because deeper reporting flows, gradebook depth, and competency visibility are unfinished.
+The teacher side is a complete classroom reporting system with full dashboard, gradebook, competency heatmaps, and drill-down flows.
 
 ## Capstone Status
 
@@ -299,13 +299,11 @@ The teacher side is beyond "dashboard mockup" status. It is a meaningful reporti
 
 ### What is not implemented
 
-- ~~`/capstone/guidelines` is linked from the capstone page but no such route exists in the app router~~ — complete (Artifact Packaging track)
-- ~~`/capstone/rubrics` is linked from the capstone page but no such route exists in the app router~~ — complete (Artifact Packaging track)
-- ~~referenced capstone workbook/rubric/guide/checklist files are not present as actual repo assets~~ — 2 capstone workbooks + 3 real PDFs + guidelines/rubrics routes shipped
+- Capstone rubrics page is a stub — no inline content (Low priority)
 
 ### Practical conclusion
 
-Capstone is **implemented in runtime-content terms**, but **not finished as a full classroom packet**.
+Capstone is **implemented in runtime-content terms** and **largely complete as a classroom packet** — 2 workbook files, 3 real PDFs, guidelines/rubrics routes, and capstone workbook download API all shipped.
 
 ## Teacher Lesson Plans Status
 

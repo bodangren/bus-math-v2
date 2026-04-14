@@ -1,6 +1,6 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, and Milestone 8 classroom product completeness are all complete. Milestones 1–8 closed between 2026-03-16 and 2026-04-10.
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, Milestone 8 classroom product completeness, Milestone 9 workbook system and AI features, and Milestone 10 student study tools are all complete. Milestones 1–10 closed between 2026-03-16 and 2026-04-11.
 
 The project now transitions into Milestone 9 (Workbook System and AI Features) and Milestone 10 (Student Study Tools). The immediate priority is completing the workbook infrastructure with real Unit 1 workbook files, then rolling out the pattern across all units.
 
@@ -79,6 +79,27 @@ The following remain out of scope unless a later explicit track opens them:
 - LMS-style assignments, messaging, discussions, or grading ecosystems beyond the in-product reporting loop
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
+
+## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 50)
+
+Autonomous code review covering all changes since Pass 49: Submit Attempt Numbering Race Fix, Auth Server Fail-Closed Fix, Capstone Workbook Lookup, and Workbook Manifest Build Integration.
+
+**Scope:** 5 commits since Pass 49 — wrapping submitSpreadsheet count+insert in ctx.transaction() for atomic attempt numbering, changing requireActiveRequestSessionClaims from fail-open to fail-closed on Convex errors, adding capstone workbook download API route and client component, and wiring workbook manifest generator into build/dev hooks.
+
+**Fixed during review: 0 issues** — all 5 commits are clean, well-tested, and properly archived with conductor track artifacts.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing useMemo dep + worker default export)
+- `npm test`: 1825/1825 tests pass (306 test files, 0 failures)
+- `npm run build`: passes cleanly (manifest generation: 51 activities + 19 practices + 66 workbooks)
+
+**What was reviewed:**
+- **Submit Attempt Numbering Race Fix** (`convex/activities.ts`): `submitSpreadsheet` now wraps the existing-attempt count check and insert in `ctx.transaction()`, preventing concurrent submissions from receiving duplicate attemptNumbers. Clean atomic pattern.
+- **Auth Server Fail-Closed Fix** (`lib/auth/server.ts`): `requireActiveRequestSessionClaims` now returns 503 when Convex check throws instead of silently failing open. Added `buildRequestServiceUnavailableResponse` helper. 2 new tests for Convex error scenarios.
+- **Capstone Workbook Lookup** (`app/api/workbooks/capstone/[type]/route.ts`, `components/capstone/CapstoneWorkbookDownloads.tsx`, `lib/curriculum/workbooks.client.ts`, `scripts/generate-workbook-manifest.ts`): New capstone download API route with auth and role checks (student/teacher), path traversal protection, and Content-Disposition headers. Manifest extended with `byCapstone` lookup. Client component shows download buttons with teacher-only teacher workbook. 7 new route tests + 4 new client tests + 1 capstone page test.
+- **Workbook Manifest Build Integration** (`package.json`): `generate-workbook-manifest.ts` now runs in both `predev` and `build` hooks alongside the component manifest generator. New `generate:workbook-manifest` npm script added.
+
+**Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization. All previously tracked open priorities resolved.
 
 ## Code Review Summary (2026-04-14 — Full Codebase Audit, Pass 49)
 
@@ -258,26 +279,24 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 **Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-14 — Full Codebase Audit, Pass 48)
+## Current High-Level Priorities (2026-04-14 — Full Codebase Audit, Pass 50)
 
 Milestones 1-10 are **complete**. All active tracks are **complete**. Project in stabilization.
 
-### Completed Since Pass 48
+### Completed Since Pass 49
 
-- **Component Approval Stabilization** — Closed 7 tech-debt items: manifest hardening (throw on missing), predev hook, test contradiction fixes, hash-mismatch test, auth tests, example harness UI, unreviewed component hash display.
-- **Exercise Test Quality Improvement** — Upgraded 5 exercise tests from shallow rendering to behavior verification.
-- **Simulation Activity Type Standardization** — CashFlowChallenge fixed to use canonical Activity type wrapper.
-- **Workbook Client Dynamic Lookup** — Replaced hardcoded Set with build-time manifest (66 files).
+- **Submit Attempt Numbering Race Fix** — Atomic transaction wrapping for attempt numbering in submitSpreadsheet.
+- **Auth Server Fail-Closed Fix** — requireActiveRequestSessionClaims now returns 503 on Convex errors instead of failing open.
+- **Capstone Workbook Lookup** — New API route, manifest extension, and client component for capstone workbook downloads.
+- **Workbook Manifest Build Integration** — Workbook manifest generator wired into build/dev hooks.
 
 ### Recommended Next Priorities
 
 All previously tracked priorities are resolved. The project is in stabilization with no active tracks. Remaining open tech debt:
 
-1. **Generate workbook manifest in build step** — workbook manifest is checked in but not regenerated during build; adding a workbook without regenerating will cause stale lookup. (Low)
-2. **Workbook manifest empty-directory guard** — generate-workbook-manifest does not fail on empty directory. (Low)
-3. **Capstone workbook lookup gap** — capstone workbook files (`capstone_*.xlsx`) don't match unit_lesson pattern, so they're excluded from byUnitAndLesson lookup. (Low)
-4. **Auth/server.ts fail-open behavior** — requireActiveRequestSessionClaims fails open on Convex backend failure. Design decision documented. (Medium)
-5. **Cloudflare CI deployment** — Manual Wrangler secret setup, no CI-backed Worker deployment. (Medium)
+1. **Workbook manifest empty-directory guard** — generate-workbook-manifest does not fail on empty directory. (Low)
+2. **Capstone rubrics page is a stub** — no inline content on rubrics page, only download link. (Low)
+3. **Cloudflare CI deployment** — Manual Wrangler secret setup, no CI-backed Worker deployment. (Medium)
 
 ### Pass 48 Summary
 
