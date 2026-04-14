@@ -367,6 +367,11 @@ Strictly serial. Complete and archive each track before starting the next.
   *Link: [./archive/code_review_pass52_20260414/](./archive/code_review_pass52_20260414/)*
   *Closeout: completed on 2026-04-14. Verified Cloudflare CI workflow, confirmed stale Supabase CI files removed, updated README.md (pass number, test count, active tracks). All verification gates pass (lint 0 errors, test 1826/1826, build clean). Project in stabilization.*
 
+- [x] **Track: activities_lessonId Tech Debt Resolution**
+  *Link: [./tracks/activities_lessonId_20260414/](./tracks/activities_lessonId_20260414/)*
+  *Scope: Resolve activities table lessonId tech debt item — close as won't-fix since activities are shared across lessons via componentKey. activity_completions is the correct join table.*
+  *Closeout: completed on 2026-04-14. Analyzed activities schema and confirmed activities are reusable components keyed by componentKey, shared across lessons. The activity_completions table is the correct join linking activities to lessons. Adding lessonId to activities would be architecturally incorrect since same activity appears in multiple lessons. Closed tech-debt item with won't-fix rationale. All verification gates pass (lint 0 errors, test 1826/1826, build clean).*
+
 ## Archive Ledger
 
 - [x] **Track: Auth Server Fail-Open Behavior**

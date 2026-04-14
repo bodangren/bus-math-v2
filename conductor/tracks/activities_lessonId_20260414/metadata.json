@@ -1,0 +1,8 @@
+{
+  "track_id": "activities_lessonId_20260414",
+  "type": "tech-debt-resolution",
+  "status": "completed",
+  "created_at": "2026-04-14T00:00:00Z",
+  "updated_at": "2026-04-14T00:00:00Z",
+  "description": "Resolve activities table lessonId tech debt item - close as won't-fix since activities are shared across lessons"
+}
