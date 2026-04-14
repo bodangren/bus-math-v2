@@ -5,6 +5,7 @@ const mockGetRequestSessionClaims = vi.fn();
 const mockResolveOpenRouterProviderFromEnv = vi.fn();
 const mockAssembleLessonChatbotContext = vi.fn();
 const mockBuildPublishedCurriculumManifest = vi.fn();
+const mockFetchInternalMutation = vi.fn();
 
 vi.mock('@/lib/auth/server', () => ({
   getRequestSessionClaims: mockGetRequestSessionClaims,
@@ -22,6 +23,11 @@ vi.mock('@/lib/curriculum/published-manifest', () => ({
   buildPublishedCurriculumManifest: mockBuildPublishedCurriculumManifest,
 }));
 
+vi.mock('@/lib/convex/server', () => ({
+  fetchInternalMutation: (...args: unknown[]) => mockFetchInternalMutation(...args),
+  internal: { rateLimits: { checkAndIncrementRateLimit: 'checkAndIncrementRateLimit' } },
+}));
+
 // We'll import the route after mocks are set up
 let POST: (request: NextRequest) => Promise<Response>;
 
@@ -36,7 +42,7 @@ function buildRequest(body: Record<string, unknown>) {
 describe('POST /api/student/lesson-chatbot', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
-    // Reset module import
+    mockFetchInternalMutation.mockResolvedValue({ allowed: true });
     vi.resetModules();
     const routeModule = await import('@/app/api/student/lesson-chatbot/route');
     POST = routeModule.POST;

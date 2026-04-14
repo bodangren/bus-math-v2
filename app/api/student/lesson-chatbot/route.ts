@@ -65,6 +65,10 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('[lesson-chatbot] Rate limit check failed:', error);
+    return NextResponse.json(
+      { error: 'Service temporarily unavailable. Please try again later.' },
+      { status: 503 }
+    );
   }
 
   let body: ChatbotRequest;

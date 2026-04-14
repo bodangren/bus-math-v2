@@ -118,7 +118,7 @@ export async function generateAiFeedback(options: GenerateAiFeedbackOptions): Pr
       };
     }
 
-    const clampedScore = Math.max(0, Math.min(40, validated.data.preliminaryScore));
+    const clampedScore = Math.round(Math.max(0, Math.min(40, validated.data.preliminaryScore)));
 
     return {
       preliminaryScore: clampedScore,

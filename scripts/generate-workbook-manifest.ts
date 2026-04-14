@@ -13,6 +13,9 @@ interface WorkbookManifest {
 }
 
 function scanWorkbooks(): WorkbookManifest {
+  if (!fs.existsSync(PUBLIC_WORKBOOKS_DIR)) {
+    throw new Error(`Workbook directory not found: ${PUBLIC_WORKBOOKS_DIR}`);
+  }
   const files = fs.readdirSync(PUBLIC_WORKBOOKS_DIR).filter((f) => f.endsWith('.xlsx'));
   
   const byUnitAndLesson: Record<string, { student: boolean; teacher: boolean }> = {};

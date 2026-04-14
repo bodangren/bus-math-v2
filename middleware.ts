@@ -25,7 +25,7 @@ function getCookieValueFromHeader(cookieHeader: string | null, key: string): str
   return null;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (!DEV_COMPONENT_REVIEW_PATTERN.test(pathname)) {
@@ -43,7 +43,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const claims = verifySessionToken(token, getAuthJwtSecret());
+  const claims = await verifySessionToken(token, getAuthJwtSecret());
 
   if (!claims) {
     const loginUrl = new URL('/auth/login', request.url);

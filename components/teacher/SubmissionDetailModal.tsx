@@ -383,11 +383,11 @@ function PracticeEvidenceCard({
         misconceptionTags.add(tag.trim());
       }
     }
-  }
 
-  if ((score === null || maxScore === null) && typeof (part as Record<string, unknown>).score === 'number' && typeof (part as Record<string, unknown>).maxScore === 'number') {
-    score = (part as Record<string, unknown>).score as number;
-    maxScore = (part as Record<string, unknown>).maxScore as number;
+    if ((score === null || maxScore === null) && typeof (part as Record<string, unknown>).score === 'number' && typeof (part as Record<string, unknown>).maxScore === 'number') {
+      score = (part as Record<string, unknown>).score as number;
+      maxScore = (part as Record<string, unknown>).maxScore as number;
+    }
   }
 
   return (
@@ -691,7 +691,7 @@ export function SubmissionDetailModal({
   const filteredSnapshot = useMemo(() => {
     if (!filteredDetail || activeTab === 'all') return snapshot;
     return buildSnapshot(filteredDetail);
-  }, [filteredDetail, activeTab]);
+  }, [filteredDetail, activeTab, snapshot]);
 
   if (loading) {
     return (
