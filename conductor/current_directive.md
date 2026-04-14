@@ -294,8 +294,8 @@ Milestones 1-10 are **complete**. All active tracks are **complete**. Project in
 
 All previously tracked priorities are resolved. The project is in stabilization with no active tracks. Remaining open tech debt:
 
-1. **Workbook manifest empty-directory guard** — generate-workbook-manifest does not fail on empty directory. (Low)
-2. **Capstone rubrics page is a stub** — no inline content on rubrics page, only download link. (Low)
+1. ~~**Workbook manifest empty-directory guard**~~ — Closed 2026-04-14 (workbook_manifest_build_integration track).
+2. ~~**Capstone rubrics page is a stub**~~ — Closed 2026-04-14 (capstone_rubrics_inline_content_20260414 track).
 3. **Cloudflare CI deployment** — Manual Wrangler secret setup, no CI-backed Worker deployment. (Medium)
 
 ### Pass 48 Summary
