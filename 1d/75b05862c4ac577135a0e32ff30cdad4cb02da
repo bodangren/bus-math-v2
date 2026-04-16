@@ -1,0 +1,1 @@
+Phase 1 complete: 17 exercise components wrapped onSubmit?.() in try/catch. Added ProfitCalculator regression test. Verification: lint 0 errors, 2215/2215 tests pass, build clean.
