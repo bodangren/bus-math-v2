@@ -2,7 +2,7 @@
   "trackId": "practice_timing_telemetry_20260416",
   "title": "Practice Timing Telemetry",
   "milestone": 11,
-  "status": "planned",
+  "status": "in_progress",
   "createdAt": "2026-04-16",
   "dependsOn": [],
   "blocks": ["srs_daily_practice_core_20260416"],

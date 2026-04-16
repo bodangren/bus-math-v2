@@ -130,7 +130,7 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [ ] **Track: Practice Timing Telemetry**
+- [~] **Track: Practice Timing Telemetry**
   *Link: [./tracks/practice_timing_telemetry_20260416/](./tracks/practice_timing_telemetry_20260416/)*
   *Scope: Port TimingAccumulator, timing baselines, SRS rating adapter, and usePracticeTiming hook from ra-integrated-math-3. Add timing field to practice.v1 envelope.*
 
