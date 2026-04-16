@@ -5,6 +5,7 @@ import {
   type MutationCtx,
 } from "./_generated/server";
 import { v } from "convex/values";
+import type { Id } from "./_generated/dataModel";
 import {
   componentTypeValidator,
   approvalStatusValidator,
@@ -169,6 +170,114 @@ export const getComponentReviews = query({
   handler: getComponentReviewsHandler,
 });
 
+export async function submitComponentReviewHandler(
+  ctx: MutationCtx,
+  args: {
+    componentType: "activity" | "example" | "practice";
+    componentId: string;
+    componentVersionHash: string;
+    status: "approved" | "rejected" | "unreviewed" | "changes_requested";
+    reviewSummary?: string;
+    improvementNotes?: string;
+    issueCategories: (
+      | "math_correctness"
+      | "pedagogy"
+      | "wording"
+      | "ui_bug"
+      | "accessibility"
+      | "algorithmic_variation"
+      | "missing_feedback"
+      | "too_easy"
+      | "too_hard"
+      | "completion_behavior"
+      | "evidence_quality"
+    )[];
+  }
+) {
+  await requireAdmin(ctx);
+
+  if (args.componentType === "example") {
+    throw new Error(
+      "Example components are not supported for review. Examples are embedded lesson content, not standalone React components, and do not have source files to hash for version tracking."
+    );
+  }
+
+  if (
+    (args.status === "changes_requested" || args.status === "rejected") &&
+    !args.improvementNotes
+  ) {
+    throw new Error(
+      "Improvement notes are required for changes_requested or rejected status"
+    );
+  }
+
+  const serverHash = await computeComponentVersionHash(
+    args.componentType,
+    args.componentId
+  );
+  if (serverHash !== args.componentVersionHash) {
+    throw new Error("Component version hash mismatch");
+  }
+
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) {
+    throw new Error("Not authenticated");
+  }
+  const profile = await ctx.db
+    .query("profiles")
+    .withIndex("by_username", (q) => q.eq("username", identity.email!))
+    .unique();
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  const now = Date.now();
+
+  const reviewId = await ctx.db.insert("componentReviews", {
+    componentType: args.componentType,
+    componentId: args.componentId,
+    componentVersionHash: args.componentVersionHash,
+    status: args.status,
+    reviewerId: profile._id,
+    reviewSummary: args.reviewSummary,
+    improvementNotes: args.improvementNotes,
+    issueCategories: args.issueCategories,
+    createdAt: now,
+  });
+
+  const existingApproval = await ctx.db
+    .query("componentApprovals")
+    .withIndex("by_component", (q) =>
+      q.eq("componentType", args.componentType).eq("componentId", args.componentId)
+    )
+    .first();
+
+  if (existingApproval) {
+    await ctx.db.patch(existingApproval._id, {
+      approvalStatus: args.status,
+      approvalVersionHash: args.componentVersionHash,
+      approvalReviewedAt: now,
+      approvalReviewedBy: profile._id,
+      latestReviewId: reviewId,
+      updatedAt: now,
+    });
+  } else {
+    await ctx.db.insert("componentApprovals", {
+      componentType: args.componentType,
+      componentId: args.componentId,
+      approvalStatus: args.status,
+      approvalVersionHash: args.componentVersionHash,
+      approvalReviewedAt: now,
+      approvalReviewedBy: profile._id,
+      latestReviewId: reviewId,
+      createdAt: now,
+      updatedAt: now,
+    });
+  }
+
+  return { reviewId };
+}
+
 export const submitComponentReview = mutation({
   args: {
     componentType: componentTypeValidator,
@@ -179,91 +288,7 @@ export const submitComponentReview = mutation({
     improvementNotes: v.optional(v.string()),
     issueCategories: v.array(issueCategoryValidator),
   },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-    const profile = await ctx.db
-      .query("profiles")
-      .withIndex("by_username", (q) => q.eq("username", identity.email!))
-      .unique();
-    if (!profile) {
-      throw new Error("Profile not found");
-    }
-    if (profile.role === "student" || profile.role === "teacher") {
-      throw new Error("Not authorized");
-    }
-
-    if (args.componentType === "example") {
-      throw new Error(
-        "Example components are not supported for review. Examples are embedded lesson content, not standalone React components, and do not have source files to hash for version tracking."
-      );
-    }
-
-    if (
-      (args.status === "changes_requested" || args.status === "rejected") &&
-      !args.improvementNotes
-    ) {
-      throw new Error(
-        "Improvement notes are required for changes_requested or rejected status"
-      );
-    }
-
-    const serverHash = await computeComponentVersionHash(
-      args.componentType,
-      args.componentId
-    );
-    if (serverHash !== args.componentVersionHash) {
-      throw new Error("Component version hash mismatch");
-    }
-
-    const now = Date.now();
-
-    const reviewId = await ctx.db.insert("componentReviews", {
-      componentType: args.componentType,
-      componentId: args.componentId,
-      componentVersionHash: args.componentVersionHash,
-      status: args.status,
-      reviewerId: profile._id,
-      reviewSummary: args.reviewSummary,
-      improvementNotes: args.improvementNotes,
-      issueCategories: args.issueCategories,
-      createdAt: now,
-    });
-
-    const existingApproval = await ctx.db
-      .query("componentApprovals")
-      .withIndex("by_component", (q) =>
-        q.eq("componentType", args.componentType).eq("componentId", args.componentId)
-      )
-      .first();
-
-    if (existingApproval) {
-      await ctx.db.patch(existingApproval._id, {
-        approvalStatus: args.status,
-        approvalVersionHash: args.componentVersionHash,
-        approvalReviewedAt: now,
-        approvalReviewedBy: profile._id,
-        latestReviewId: reviewId,
-        updatedAt: now,
-      });
-    } else {
-      await ctx.db.insert("componentApprovals", {
-        componentType: args.componentType,
-        componentId: args.componentId,
-        approvalStatus: args.status,
-        approvalVersionHash: args.componentVersionHash,
-        approvalReviewedAt: now,
-        approvalReviewedBy: profile._id,
-        latestReviewId: reviewId,
-        createdAt: now,
-        updatedAt: now,
-      });
-    }
-
-    return { reviewId };
-  },
+  handler: submitComponentReviewHandler,
 });
 
 export async function getUnresolvedReviewsHandler(
@@ -341,36 +366,40 @@ export const getAuditSummary = query({
   handler: getAuditSummaryHandler,
 });
 
+export async function resolveReviewHandler(
+  ctx: MutationCtx,
+  args: { reviewId: Id<"componentReviews"> }
+) {
+  await requireAdmin(ctx);
+
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) {
+    throw new Error("Not authenticated");
+  }
+  const profile = await ctx.db
+    .query("profiles")
+    .withIndex("by_username", (q) => q.eq("username", identity.email!))
+    .unique();
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  const review = await ctx.db.get(args.reviewId);
+  if (!review) {
+    throw new Error("Review not found");
+  }
+
+  await ctx.db.patch(args.reviewId, {
+    resolvedAt: Date.now(),
+    resolvedBy: profile._id,
+  });
+
+  return { success: true };
+}
+
 export const resolveReview = mutation({
   args: {
     reviewId: v.id("componentReviews"),
   },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-    const profile = await ctx.db
-      .query("profiles")
-      .withIndex("by_username", (q) => q.eq("username", identity.email!))
-      .unique();
-    if (!profile) {
-      throw new Error("Profile not found");
-    }
-    if (profile.role === "student" || profile.role === "teacher") {
-      throw new Error("Not authorized");
-    }
-
-    const review = await ctx.db.get(args.reviewId);
-    if (!review) {
-      throw new Error("Review not found");
-    }
-
-    await ctx.db.patch(args.reviewId, {
-      resolvedAt: Date.now(),
-      resolvedBy: profile._id,
-    });
-
-    return { success: true };
-  },
+  handler: resolveReviewHandler,
 });

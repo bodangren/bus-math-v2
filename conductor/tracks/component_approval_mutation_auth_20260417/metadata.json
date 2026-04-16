@@ -1,0 +1,11 @@
+{
+  "track_id": "component_approval_mutation_auth_20260417",
+  "type": "bug",
+  "status": "active",
+  "created_at": "2026-04-17T00:00:00Z",
+  "updated_at": "2026-04-17T05:55:00Z",
+  "description": "Harden component approval mutations by extracting handlers and requiring admin role, then add auth rejection tests.",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "deviation_notes": ""
+}

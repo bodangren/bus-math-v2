@@ -130,6 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Component Approval Mutation Auth**
+  *Link: [./tracks/component_approval_mutation_auth_20260417/](./tracks/component_approval_mutation_auth_20260417/)*
+  *Scope: Extract submitComponentReview and resolveReview mutation handlers, replace inline auth with requireAdmin(), and add auth rejection tests.*
+
 - [x] **Track: Code Review Pass 90 — Stabilization Verification**
   *Link: [./archive/code_review_pass90_20260417/](./archive/code_review_pass90_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 89 — run lint, tests, build, verify no regressions.*
