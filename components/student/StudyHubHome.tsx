@@ -68,14 +68,14 @@ export function StudyHubHome() {
   const weakTopics = useMemo(() => {
     if (!termMastery) return [];
     return termMastery
-      .filter((t) => t.mastery < 0.5)
+      .filter((t) => t.masteryScore < 0.5)
       .slice(0, 5)
       .map((t) => {
         const term = getGlossaryTermBySlug(t.termSlug);
         return { ...t, term };
       })
       .filter((t): t is typeof t & { term: GlossaryTerm } => t.term !== undefined);
-  }, [termMastery, languageMode]);
+  }, [termMastery]);
 
   return (
     <main className="min-h-screen bg-muted/20 py-10">
@@ -265,11 +265,11 @@ export function StudyHubHome() {
                   {weakTopics.length === 0 ? (
                     <p className="text-sm text-muted-foreground">No weak topics right now—great job!</p>
                   ) : (
-                    weakTopics.map(({ term, mastery }) => (
+                    weakTopics.map(({ term, masteryScore }) => (
                       <WeakTopicItem
                         key={term.slug}
                         term={term}
-                        mastery={mastery}
+                        mastery={masteryScore}
                         languageMode={languageMode}
                       />
                     ))

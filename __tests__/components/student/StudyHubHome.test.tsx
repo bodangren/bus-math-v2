@@ -63,11 +63,22 @@ describe("StudyHubHome", () => {
     expect(screen.getByText("Recent Study Sessions")).toBeInTheDocument();
   });
 
-  it("shows weak topics", () => {
+  it("shows weak topics with masteryScore below 0.5", () => {
     (useStudyHooks.useTermMastery as Mock).mockReturnValue([
-      { termSlug: "term-1", mastery: 0.2, proficiencyBand: "learning" },
+      { termSlug: "term-1", masteryScore: 0.2, proficiencyBand: "learning" },
     ]);
     render(<StudyHubHome />);
     expect(screen.getByText("Weak Topics")).toBeInTheDocument();
+    expect(screen.getByText("Test Term")).toBeInTheDocument();
+  });
+
+  it("does not show topics with masteryScore at or above 0.5 as weak", () => {
+    (useStudyHooks.useTermMastery as Mock).mockReturnValue([
+      { termSlug: "term-1", masteryScore: 0.6, proficiencyBand: "familiar" },
+    ]);
+    render(<StudyHubHome />);
+    expect(screen.getByText("Weak Topics")).toBeInTheDocument();
+    expect(screen.queryByText("Test Term")).not.toBeInTheDocument();
+    expect(screen.getByText("No weak topics right now—great job!")).toBeInTheDocument();
   });
 });

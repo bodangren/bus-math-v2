@@ -130,8 +130,13 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Code Review Pass 68 — Stabilization and Lint Cleanup**
+  *Link: [./archive/code_review_pass68_20260416/](./archive/code_review_pass68_20260416/)*
+  *Scope: Fix remaining lint warnings, repair StudyHubHome weak-topics filtering bug, fix stale tracks.md archive links, run verification gates.*
+  *Closeout: completed on 2026-04-16. Fixed StudyHubHome weak-topics bug (`masteryScore` vs `mastery`), removed unnecessary `useMemo` dependency, fixed worker anonymous default export, repaired 8 stale tracks.md archive links. All verification gates pass (lint 0 errors/0 warnings, test 2211/2211, build clean). k2p5 verified.*
+
 - [x] **Track: SRS Schema Validation Hardening**
-  *Link: [./tracks/srs_schema_validation_20260416/](./tracks/srs_schema_validation_20260416/)*
+  *Link: [./archive/srs_schema_validation_20260416/](./archive/srs_schema_validation_20260416/)*
   *Scope: Replace v.any() and v.string() in SRS Convex schema/mutations with strict validators for ts-fsrs Card shape and SrsRating enum.*
   *Closeout: completed on 2026-04-16. Created convex/srs-validators.ts with srsCardValidator (10-field v.object) and srsRatingValidator (4-value v.union). Updated schema.ts and srs.ts mutation args. Added 9 validator structural tests. All verification gates pass (lint 0 errors/2 warnings, test 2210/2210, build clean). Closed 2 open tech-debt items. k2p5 verified.*
 
@@ -186,7 +191,7 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-14. Wrapped count+insert in ctx.transaction() to atomically compute and assign unique attemptNumbers. All 1825 tests pass, lint 0 errors, build clean. Tech-debt item closed.*
 
 - [x] **Track: Workbook Client Dynamic Lookup**
-  *Link: [./tracks/workbooks_client_dynamic_lookup_20260414/](./tracks/workbooks_client_dynamic_lookup_20260414/)*
+  *Link: [./archive/workbooks_client_dynamic_lookup_20260414/](./archive/workbooks_client_dynamic_lookup_20260414/)*
   *Scope: Replace hardcoded Set in workbooks.client.ts with dynamic lookup from build-time manifest to prevent stale data when new workbooks are added.*
   *Closeout: completed on 2026-04-14. Created build-time manifest generator (scripts/generate-workbook-manifest.ts) that scans public/workbooks/ and generates lib/workbooks-manifest.json with 66 files. workbooks.client.ts now imports from manifest instead of hardcoded Set. Added 10 unit tests for the new implementation. All verification gates pass (lint 0 errors, test 1812/1812, build clean). tech-debt item closed.*
 
@@ -281,22 +286,22 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-11. Expanded question banks for Units 2-8 to 3 questions each, covering key lessons and learning objectives. All tests pass, lint passes, build passes. Updated tech-debt.md to close the practice test question bank item.*
 
 - [x] **Track: Artifact Packaging**
-  *Link: [./tracks/artifact_packaging_20260411/](./tracks/artifact_packaging_20260411/)*
+  *Link: [./archive/artifact_packaging_20260411/](./archive/artifact_packaging_20260411/)*
   *Scope: Ship CSV datasets, PDF guides/rubrics/checklists, and capstone guidelines/routes to close the largest remaining classroom-readiness gap.*
   *Closeout: completed on 2026-04-11. Added PDF download API with role-based access, capstone guidelines and rubrics pages, and placeholder PDF files in public/pdfs/. Updated capstone page with download links. All verification gates pass (lint, build).*
 
 - [x] **Track: Full Lesson Phase Integrity Audit**
-  *Link: [./tracks/full_phase_integrity_audit_20260409/](./tracks/full_phase_integrity_audit_20260409/)*
+  *Link: [./archive/full_phase_integrity_audit_20260409/](./archive/full_phase_integrity_audit_20260409/)*
   *Scope: audit every published lesson phase for interaction fidelity, layout integration, copy rendering, dataset invariants, and authored-runtime seed drift. All 6 phases complete: checklist/guardrails, Units 1-8 + Capstone sweeps, and final verification. All verification gates pass (lint 0 errors/1 warning, test 1577/1577 with 2 pre-existing Supabase suite failures, build passes cleanly).*
   *Closeout: completed on 2026-04-09 after completing all 6 phases of the audit. Phase 1 defined the audit checklist and added guardrails (activity-completeness test). Phases 2-5 audited Units 1-8 + Capstone, confirming interaction fidelity, layout integrity, copy rendering, and dataset invariants. Phase 6 ran final verification gates (lint, test, build) and confirmed all pass. Ready to archive.*
 
 - [x] **Track: Student Navigation and Dashboard Return Paths**
-  *Link: [./tracks/student_navigation_dashboard_paths_20260409/](./tracks/student_navigation_dashboard_paths_20260409/)*
+  *Link: [./archive/student_navigation_dashboard_paths_20260409/](./archive/student_navigation_dashboard_paths_20260409/)*
   *Scope: add real student unit/dashboard wayfinding, role-aware dashboard links in shared chrome, and valid breadcrumb/return paths so students and teachers are never stranded in authenticated flows.*
   *Closeout: completed on 2026-04-09. All 4 phases complete: navigation contract audit, shared chrome/dashboard destinations, student lesson/unit wayfinding, and verification. Added breadcrumbs to lesson renderer, updated navigation helpers, added regression tests. All verification gates pass (lint 0 errors/1 warning, test 1586/1588 pass with 2 pre-existing Supabase suite failures, build passes).*
 
 - [x] **Track: Student Completion and Resume Loop**
-  *Link: [./tracks/student_completion_resume_loop_20260409/](./tracks/student_completion_resume_loop_20260409/)*
+  *Link: [./archive/student_completion_resume_loop_20260409/](./archive/student_completion_resume_loop_20260409/)*
   *Scope: make completed-lesson, resume, review, and next-lesson behavior coherent across the student dashboard and lesson runtime.*
   *Closeout: completed on 2026-04-09. All 4 phases complete: continue-state contract audit (Phase 1), dashboard action consistency (Phase 2), lesson completion experience verification (Phase 3), and final verification (Phase 4). Dashboard now shows 'Review Lesson' for completed lessons and individual action buttons. Lesson renderer correctly handles completed state with recommended lesson links. All verification gates pass (lint 0 errors/1 warning, test 1592/1592 pass with 2 pre-existing Supabase suite failures, build passes).*
 
@@ -445,12 +450,12 @@ Strictly serial. Complete and archive each track before starting the next.
   *Closeout: completed on 2026-04-14. Verified Cloudflare CI workflow, confirmed stale Supabase CI files removed, updated README.md (pass number, test count, active tracks). All verification gates pass (lint 0 errors, test 1826/1826, build clean). Project in stabilization.*
 
 - [x] **Track: activities_lessonId Tech Debt Resolution**
-  *Link: [./tracks/activities_lessonId_20260414/](./tracks/activities_lessonId_20260414/)*
+  *Link: [./archive/activities_lessonId_20260414/](./archive/activities_lessonId_20260414/)*
   *Scope: Resolve activities table lessonId tech debt item — close as won't-fix since activities are shared across lessons via componentKey. activity_completions is the correct join table.*
   *Closeout: completed on 2026-04-14. Analyzed activities schema and confirmed activities are reusable components keyed by componentKey, shared across lessons. The activity_completions table is the correct join linking activities to lessons. Adding lessonId to activities would be architecturally incorrect since same activity appears in multiple lessons. Closed tech-debt item with won't-fix rationale. All verification gates pass (lint 0 errors, test 1826/1826, build clean).*
 
 - [x] **Track: Code Review Pass 53**
-  *Link: [./tracks/code_review_pass53_20260414/](./tracks/code_review_pass53_20260414/)*
+  *Link: [./archive/code_review_pass53_20260414/](./archive/code_review_pass53_20260414/)*
   *Scope: Autonomous stabilization verification pass following workspace hygiene commit. Run lint/test/build gates to confirm project stability.*
   *Closeout: completed on 2026-04-14. All 1830 tests pass, lint 0 errors, build clean. Project in full stabilization. No active tracks. MiniMax-M2.7 verified.*
 

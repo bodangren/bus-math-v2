@@ -1,5 +1,32 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 68)
+
+Autonomous stabilization pass fixing remaining lint warnings, a weak-topics filtering bug, and stale tracks.md archive links.
+
+**Scope:** Final pre-existing lint warnings, StudyHubHome weak topics correctness, tracks.md link hygiene.
+
+**Fixed during review: 3 issues**
+- **StudyHubHome weak topics filtering used non-existent `mastery` field** (High): `t.mastery < 0.5` always evaluated to `false` because the actual Convex field is `masteryScore`, causing the weak topics list to always appear empty. Fixed: changed to `t.masteryScore < 0.5` and updated map destructuring to use `masteryScore`.
+- **StudyHubHome useMemo unnecessary dependency** (Low): `languageMode` was in the `useMemo` dependency array but never used inside the callback. Fixed: removed `languageMode` from deps.
+- **worker/index.ts anonymous default export** (Low): ESLint `import/no-anonymous-default-export` warning. Fixed: assigned handler object to `const worker` before `export default worker`.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Updated during review:**
+- `components/student/StudyHubHome.tsx`: Fixed weak topic filtering to use `masteryScore`, removed unnecessary `useMemo` dependency
+- `__tests__/components/student/StudyHubHome.test.tsx`: Updated mocks to use `masteryScore`, added regression tests for weak topic filtering
+- `worker/index.ts`: Named default export
+- `conductor/tracks.md`: Fixed 8 stale `./tracks/` links to `./archive/` for already-archived tracks
+- `conductor/current_directive.md`: Added Pass 68 summary
+
+**Phase status**: All 11 milestones complete. No active tracks. Project in full stabilization. Zero lint warnings. k2p5 verified.
+
+---
+
 All 11 milestones (2026-03-16 through 2026-04-16) are complete. Project in full stabilization. All DailyPracticeSession Interactive Answer Input phases complete (2026-04-16).
 
 ## Phase Focus
