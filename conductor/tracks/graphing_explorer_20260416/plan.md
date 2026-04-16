@@ -2,26 +2,26 @@
 
 ## Phase 1: Port Graphing Library
 
-### Task 1.1: Create lib/activities/graphing/ Directory [ ]
+### Task 1.1: Create lib/activities/graphing/ Directory [x]
 - Create `lib/activities/graphing/` directory
 
-### Task 1.2: Port Canvas Utilities [ ]
+### Task 1.2: Port Canvas Utilities [x]
 - Read `../ra-integrated-math-3/lib/activities/graphing/canvas-utils.ts` (131 lines)
 - Create `lib/activities/graphing/canvas-utils.ts`
 - Copy entire file. Imports `parseQuadratic` and `parseLinear` — those come next in Task 1.3 and 1.4
 - No changes needed
 
-### Task 1.3: Port Linear Parser [ ]
+### Task 1.3: Port Linear Parser [x]
 - Read `../ra-integrated-math-3/lib/activities/graphing/linear-parser.ts` (31 lines)
 - Create `lib/activities/graphing/linear-parser.ts`
 - Copy entire file — no dependencies, no changes needed
 
-### Task 1.4: Port Quadratic Parser [ ]
+### Task 1.4: Port Quadratic Parser [x]
 - Read `../ra-integrated-math-3/lib/activities/graphing/quadratic-parser.ts` (31 lines)
 - Create `lib/activities/graphing/quadratic-parser.ts`
 - Copy entire file — no dependencies, no changes needed
 
-### Task 1.5: Port Library Tests [ ]
+### Task 1.5: Port Library Tests [x]
 - Read and port:
   - `../ra-integrated-math-3/__tests__/lib/activities/graphing/canvas-utils.test.ts`
   - `../ra-integrated-math-3/__tests__/lib/activities/graphing/linear-parser.test.ts`

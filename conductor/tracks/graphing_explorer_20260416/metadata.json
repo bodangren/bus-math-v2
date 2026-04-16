@@ -2,7 +2,7 @@
   "trackId": "graphing_explorer_20260416",
   "title": "Graphing Explorer",
   "milestone": 11,
-  "status": "planned",
+  "status": "in_progress",
   "createdAt": "2026-04-16",
   "dependsOn": ["phase_skip_ui_20260416"],
   "blocks": [],
