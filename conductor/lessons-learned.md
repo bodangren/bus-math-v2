@@ -35,3 +35,4 @@
 - Activity component `onSubmit?.()` callbacks must be wrapped in try/catch. When the parent handler throws, unhandled exceptions leave the component permanently locked unless `submittedRef` and completion state are reset in the catch block.
 - Extract Convex query/mutation handlers as named exports when unit testing auth or business logic. The `query()`/`mutation()` wrappers hide the handler from direct invocation in tests.
 - Convex public queries for dev/admin surfaces should still include auth guards. Exported queries are callable by any authenticated Convex client, even if the Next.js route is middleware-protected.
+- When an async callback is passed to a hook that sets state before calling the callback, use a ref for the hook's return values so the callback can access them without circular dependency. Example: useCategorizationExercise sets completed=true before onComplete fires; if onComplete's catch needs to call reset(), store reset in a ref.

@@ -1,5 +1,35 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-17 — Deep Audit, Pass 89)
+
+Autonomous deep code review covering all changes since Pass 87 (last substantive review). Reviewed Activity Component Error Handling track (all 4 phases) and Component Approval Query Auth track.
+
+**Scope:** Full codebase audit of recent tracks — error handling pattern consistency across 30+ activity components, component_approvals.ts auth, drag-drop hook interaction patterns, double-submit guard correctness.
+
+**Fixed during review: 3 issues**
+
+- **CashFlowTimeline and PercentageCalculationSorting catch blocks don't reset hook state** (Medium): Both components use `useCategorizationExercise` hook which sets `completed = true` before calling `onComplete`. When `onSubmit` threw inside `onComplete`, the catch block only logged the error — the hook's `completed` flag stayed `true`, showing "Timeline locked in" despite failed submission with no retry path. Fixed: Added `resetRef` pattern — `useRef` holds the hook's `reset` function, called in catch block to restore the exercise to its initial state.
+- **SpreadsheetActivityAdapter double-submit guard uses state instead of ref** (Low): Guard used `useState` (async batch) instead of `useRef` (sync). The `submitted` variable was also unused after refactor. Fixed: Removed `useState`, kept `useRef`-only guard with reset in catch block.
+- **CashFlowTimeline/PercentageCalculationSorting and InventoryFlowDiagram error handling pattern inconsistency** (Low, informational): InventoryFlowDiagram correctly used `setCompleted(false)` in catch (it manages its own state). The two categorization-hook-based components didn't. Now all three drag-drop components consistently prevent lockup on submission failure.
+
+**Confirmed clean (no issues):**
+- Activity Component Error Handling track (Phases 1-4): 30 components consistently wrapped with try/catch + state reset. Pattern is correct across exercise, simulation, quiz, drag-drop, and spreadsheet categories.
+- Component Approval Query Auth track: All 6 public queries have `requireAdmin()` guard before data access. 22 auth rejection tests cover unauthenticated, student, teacher, and admin roles.
+- Passes 81-88 were stabilization verification — zero code changes except the two tracks above.
+
+**Deferred (documented, not fixed):**
+- `component_approvals.ts` mutations (`submitComponentReview`, `resolveReview`) use inline auth rejecting student/teacher but not requiring admin — more permissive than queries (Medium)
+- No auth tests for `submitComponentReview` and `resolveReview` mutations — handlers are inline, need extraction first (Medium)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2241/2241 tests pass (337 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Phase status**: All 11 milestones complete. 175 tracks archived. No active tracks. Project in full stabilization. Zero open tech-debt items (2 deferred items documented).
+
+---
+
 ## Code Review Summary (2026-04-17 — Deep Audit, Pass 87)
 
 Autonomous deep code review covering all changes since Pass 80 (last substantive review). Reviewed Passes 81-86 (stabilization verification with zero code changes) plus full codebase security and correctness audit.
@@ -413,7 +443,7 @@ Milestone 11 tracks (strictly serial):
 
 ## Post-Milestone State
 
-All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 175 tracks archived. 2211 tests passing across 335 test files. Zero lint errors/warnings. Build clean.
+All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 175 tracks archived. 2241 tests passing across 337 test files. Zero lint errors/warnings. Build clean.
 
 ## In-Bounds Work
 

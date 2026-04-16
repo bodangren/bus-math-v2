@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { ArrowDownRight, ArrowUpRight, Calendar, PiggyBank, RotateCcw, TrendingDown } from 'lucide-react';
 
@@ -100,16 +100,19 @@ export function CashFlowTimeline({ activity, onSubmit }: CashFlowTimelineProps) 
         });
       } catch (err) {
         console.error('CashFlowTimeline submission failed:', err);
+        resetRef.current();
       }
     },
     [activity.componentKey, activity.id, activity.props.startingCash, items, onSubmit, practiceMode, showHints, sortedPeriods]
   );
 
+  const resetRef = useRef<() => void>(() => {});
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(items, zoneIds, {
     shuffleItems: activity.props.shuffleItems,
     resetKey: activity.id,
     onComplete: handleCompletion
   });
+  resetRef.current = reset;
 
   const timelineStats = useMemo(() => {
     let runningBalance = activity.props.startingCash ?? 0;

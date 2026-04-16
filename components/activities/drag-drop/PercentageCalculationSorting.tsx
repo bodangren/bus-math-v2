@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import { Calculator, Percent, RotateCcw } from 'lucide-react';
 
@@ -99,16 +99,19 @@ export function PercentageCalculationSorting({ activity, onSubmit }: PercentageC
         });
       } catch (err) {
         console.error('PercentageCalculationSorting submission failed:', err);
+        resetRef.current();
       }
     },
     [activity.componentKey, activity.id, calculationTypes, onSubmit, practiceMode, scenarios, showHints]
   );
 
+  const resetRef = useRef<() => void>(() => {});
   const { availableItems, placements, attempts, score, completed, handleDragEnd, reset } = useCategorizationExercise(scenarios, zoneIds, {
     shuffleItems: activity.props.shuffleItems,
     resetKey: activity.id,
     onComplete: handleCompletion
   });
+  resetRef.current = reset;
 
   return (
     <Card className="w-full">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { SpreadsheetActivity } from './SpreadsheetActivity';
 import type { Activity } from '@/lib/db/schema/validators';
 import type { SpreadsheetActivityProps } from '@/types/activities';
@@ -38,11 +38,11 @@ export function SpreadsheetActivityAdapter({
   onComplete,
 }: SpreadsheetActivityAdapterProps) {
   const props = activity.props as SpreadsheetActivityProps;
-  const [submitted, setSubmitted] = useState(false);
+  const submittedRef = useRef(false);
 
   const handleSubmit = useCallback(
     (data: { spreadsheetData: SpreadsheetData }) => {
-      if (submitted) return;
+      if (submittedRef.current) return;
 
       const cellCount = data.spreadsheetData.flat().length;
       const filledCells = data.spreadsheetData.flat().filter(
@@ -88,14 +88,15 @@ export function SpreadsheetActivityAdapter({
       });
 
       try {
+        submittedRef.current = true;
         onSubmit?.(envelope);
-        setSubmitted(true);
         onComplete?.();
       } catch (err) {
         console.error('SpreadsheetActivityAdapter submission failed:', err);
+        submittedRef.current = false;
       }
     },
-    [activity.id, onSubmit, onComplete, props.title, props.template, submitted],
+    [activity.id, onSubmit, onComplete, props.title, props.template],
   );
 
   return <SpreadsheetActivity {...props} onSubmit={handleSubmit} />;
