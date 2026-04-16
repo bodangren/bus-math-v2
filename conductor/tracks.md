@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Graphing Explorer Rendering Fix**
+  *Link: [./archive/graphing_explorer_rendering_fix_20260416/](./archive/graphing_explorer_rendering_fix_20260416/)*
+  *Scope: Fix Graphing Explorer coordinate space mismatch (data-space to canvas-space) and replace duplicate inline equation parsing with canonical parseLinear/parseQuadratic parsers.*
+  *Closeout: completed on 2026-04-16. generateFunctionPath now uses transformDataToCanvas to emit canvas-space coordinates; removed scale(1, -1) hack from GraphingCanvas. Replaced inline regex in GraphingExplorer with parseLinear/parseQuadratic; zero coefficients now handled correctly. All verification gates pass (lint 0 errors/2 warnings, test 2201/2201, build clean). Tech-debt items closed. k2p5 verified.*
+
 - [x] **Track: DailyPracticeSession Interactive Answer Input**
   *Link: [./archive/daily_practice_answer_input_20260416/](./archive/daily_practice_answer_input_20260416/)*
   *Scope: Convert DailyPracticeSession from auto-solve MVP to interactive practice by building family-specific answer input components (accounting-equation, normal-balance, classification) with a registry pattern and fallback for unimplemented families.*

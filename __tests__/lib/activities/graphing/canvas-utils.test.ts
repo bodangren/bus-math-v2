@@ -1,4 +1,4 @@
-import { evaluateFunction } from '@/lib/activities/graphing/canvas-utils';
+import { evaluateFunction, generateFunctionPath, transformDataToCanvas } from '@/lib/activities/graphing/canvas-utils';
 
 describe('evaluateFunction', () => {
   describe('quadratic functions', () => {
@@ -82,6 +82,41 @@ describe('evaluateFunction', () => {
 
     it('returns 0 for invalid expressions', () => {
       expect(evaluateFunction('not a function', 5)).toBe(0);
+    });
+  });
+
+  describe('generateFunctionPath', () => {
+    it('returns canvas-space coordinates for a linear function', () => {
+      const domain: [number, number] = [-10, 10];
+      const range: [number, number] = [-10, 10];
+      const width = 200;
+      const height = 200;
+      const path = generateFunctionPath('x', domain, range, width, height);
+      const firstPoint = path.split(' ')[0];
+      const { canvasX, canvasY } = transformDataToCanvas(-10, -10, domain, range, width, height);
+      expect(firstPoint).toBe(`${canvasX},${canvasY}`);
+    });
+
+    it('returns canvas-space coordinates for a quadratic function', () => {
+      const domain: [number, number] = [-10, 10];
+      const range: [number, number] = [-10, 10];
+      const width = 400;
+      const height = 400;
+      const path = generateFunctionPath('x^2', domain, range, width, height);
+      const firstPoint = path.split(' ')[0];
+      const { canvasX, canvasY } = transformDataToCanvas(-10, 100, domain, range, width, height);
+      expect(firstPoint).toBe(`${canvasX},${canvasY}`);
+    });
+
+    it('uses provided domain and range correctly', () => {
+      const domain: [number, number] = [0, 100];
+      const range: [number, number] = [0, 50];
+      const width = 500;
+      const height = 250;
+      const path = generateFunctionPath('2x + 1', domain, range, width, height);
+      const firstPoint = path.split(' ')[0];
+      const { canvasX, canvasY } = transformDataToCanvas(0, 1, domain, range, width, height);
+      expect(firstPoint).toBe(`${canvasX},${canvasY}`);
     });
   });
 });

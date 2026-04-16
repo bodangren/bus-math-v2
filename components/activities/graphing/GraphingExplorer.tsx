@@ -5,6 +5,8 @@ import { GraphingCanvas, Point, FunctionPlot } from './GraphingCanvas';
 import { InteractiveTableOfValues } from './InteractiveTableOfValues';
 import { HintPanel, HintData } from './HintPanel';
 import { InterceptIdentification, InterceptData } from './InterceptIdentification';
+import { parseLinear } from '@/lib/activities/graphing/linear-parser';
+import { parseQuadratic } from '@/lib/activities/graphing/quadratic-parser';
 import type { PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 
 export interface GraphingExplorerProps {
@@ -140,46 +142,37 @@ export function GraphingExplorer({
   }, [comparisonAnswer, comparisonAnswerSelected]);
 
   const hasRealIntercepts = useCallback((): boolean => {
-    const match = equation.match(/y\s*=\s*([+-]?\d*\.?\d*)\*?x\^2(?:\s*([+-]\s*\d*\.?\d*)\*?x)?\s*([+-]\s*\d*\.?\d*)/);
-    if (!match) return true;
+    const coeffs = parseQuadratic(equation.replace(/^y\s*=\s*/, '').trim());
+    if (!coeffs || coeffs.a === 0) return true;
 
-    const a = parseFloat(match[1].replace(/\s/g, '')) || 1;
-    const b = match[2] ? parseFloat(match[2].replace(/\s/g, '')) : 0;
-    const c = parseFloat(match[3].replace(/\s/g, '')) || 0;
-
-    const discriminant = b * b - 4 * a * c;
+    const discriminant = coeffs.b * coeffs.b - 4 * coeffs.a * coeffs.c;
     return discriminant >= 0;
   }, [equation]);
 
   const hasRealIntersections = useCallback((): boolean => {
     if (!linearEquation) return true;
 
-    const quadraticMatch = equation.match(/y\s*=\s*([+-]?\d*\.?\d*)\*?x\^2(?:\s*([+-]\s*\d*\.?\d*)\*?x)?\s*([+-]\s*\d*\.?\d*)/);
-    const linearMatch = linearEquation.match(/y\s*=\s*([+-]?\d*\.?\d*)\*?x(?:\s*([+-]\s*\d*\.?\d*))?/);
-
-    if (!quadraticMatch) return true;
-
-    const a = parseFloat(quadraticMatch[1].replace(/\s/g, '')) || 1;
-    const b = quadraticMatch[2] ? parseFloat(quadraticMatch[2].replace(/\s/g, '')) : 0;
-    const c = parseFloat(quadraticMatch[3].replace(/\s/g, '')) || 0;
+    const quadCoeffs = parseQuadratic(equation.replace(/^y\s*=\s*/, '').trim());
+    if (!quadCoeffs || quadCoeffs.a === 0) return true;
 
     let m = 0;
     let k = 0;
 
-    if (linearMatch) {
-      m = parseFloat(linearMatch[1].replace(/\s/g, '')) || 1;
-      k = linearMatch[2] ? parseFloat(linearMatch[2].replace(/\s/g, '')) : 0;
+    const linearCoeffs = parseLinear(linearEquation);
+    if (linearCoeffs) {
+      m = linearCoeffs.m;
+      k = linearCoeffs.b;
     } else {
-      const constantMatch = linearEquation.match(/y\s*=\s*(-?\d+\.?\d*)/);
-      if (constantMatch) {
-        m = 0;
-        k = parseFloat(constantMatch[1]);
+      const linearNoPrefix = parseLinear(linearEquation.replace(/^y\s*=\s*/, '').trim());
+      if (linearNoPrefix) {
+        m = linearNoPrefix.m;
+        k = linearNoPrefix.b;
       } else {
         return true;
       }
     }
 
-    const discriminant = (b - m) ** 2 - 4 * a * (c - k);
+    const discriminant = (quadCoeffs.b - m) ** 2 - 4 * quadCoeffs.a * (quadCoeffs.c - k);
     return discriminant >= 0;
   }, [equation, linearEquation]);
 

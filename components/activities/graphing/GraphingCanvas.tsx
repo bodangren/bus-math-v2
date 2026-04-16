@@ -213,9 +213,7 @@ export function GraphingCanvas({
     const { width: w, height: h } = canvasSize;
 
     return functions.map((func, index) => {
-      const pathData = generateFunctionPath(func.expression, domain, w);
-      const { canvasY: yMinCanvas } = transformDataToCanvas(0, range[0], domain, range, w, h);
-      const { canvasY: yMaxCanvas } = transformDataToCanvas(0, range[1], domain, range, w, h);
+      const pathData = generateFunctionPath(func.expression, domain, range, w, h);
 
       return (
         <path
@@ -225,7 +223,6 @@ export function GraphingCanvas({
           stroke={func.color}
           strokeWidth={2}
           className="function-curve"
-          transform={`scale(1, -1) translate(0, -${yMaxCanvas + yMinCanvas})`}
         />
       );
     });

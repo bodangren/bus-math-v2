@@ -112,7 +112,9 @@ export function evaluateFunction(
 export function generateFunctionPath(
   expression: string,
   domain: [number, number],
+  range: [number, number],
   width: number,
+  height: number,
 ): string {
   const [xMin, xMax] = domain;
   const step = (xMax - xMin) / width;
@@ -123,7 +125,8 @@ export function generateFunctionPath(
     const y = evaluateFunction(expression, x);
 
     if (isFinite(y) && Math.abs(y) < 1000) {
-      points.push(`${x},${y}`);
+      const { canvasX, canvasY } = transformDataToCanvas(x, y, domain, range, width, height);
+      points.push(`${canvasX},${canvasY}`);
     }
   }
 
