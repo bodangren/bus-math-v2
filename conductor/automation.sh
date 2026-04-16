@@ -2,14 +2,13 @@
 
 # Configuration variables
 OPENCODE_WORK_MODEL="minimax-cn-coding-plan/MiniMax-M2.7"
-KIMI_WORK_MODEL="kimi-for-coding"
+KIMI_WORK_MODEL="kimi-for-coding/k2p5"
 REVIEW_MODEL_A="xiaomi/mimo-v2-pro"
 REVIEW_MODEL_B="zai-coding-plan/glm-5.1"
 WORKING_DIR="/Users/daniel.bodanske/Desktop/bus-math-v2"
 OPENCODE_PATH="/Users/daniel.bodanske/.nvm/versions/node/v20.14.0/bin/opencode"
-KIMI_PATH="/Users/daniel.bodanske/.local/bin/kimi"
 PROMPT_FILE="$WORKING_DIR/conductor/autonomous-prompt.md"
-WORK_SLEEP_TIME=3600
+WORK_SLEEP_TIME=600
 REVIEW_SLEEP_TIME=120
 WORK_SESSIONS=6
 SESSION_TIMEOUT=3600  # 60 minutes in seconds
@@ -58,7 +57,7 @@ USE_REVIEW_A=1
 
 while true 
 do
-  # Run work sessions (alternate opencode and kimi)
+  # Run work sessions through opencode, alternating work models.
   for i in $(seq 1 $WORK_SESSIONS); do
     if (( i % 2 == 1 )); then
       # Odd sessions: opencode with MiniMax-M2.7
@@ -68,13 +67,12 @@ do
         -m \"$OPENCODE_WORK_MODEL\" \
         -f \"$PROMPT_FILE\""
     else
-      # Even sessions: kimi with k2.5
-      KIMI_PROMPT_TEXT="$(cat "$PROMPT_FILE")"$'\n\n'"$WORK_PROMPT"
-      run_with_timeout "$KIMI_PATH \
-        --print \
-        -w \"$WORKING_DIR\" \
+      # Even sessions: opencode with Kimi K2.5
+      run_with_timeout "$OPENCODE_PATH \
+        run \"$WORK_PROMPT\" \
+        --dir \"$WORKING_DIR\" \
         -m \"$KIMI_WORK_MODEL\" \
-        -p ${(q)KIMI_PROMPT_TEXT}"
+        -f \"$PROMPT_FILE\""
     fi
     
     if [ $i -lt $WORK_SESSIONS ]; then
