@@ -127,4 +127,36 @@ describe('JournalEntryBuilding', () => {
       )
     })
   }, 15_000)
+
+  it('resets completed state when onSubmit throws', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn(() => {
+      throw new Error('Submission failed')
+    })
+    render(<JournalEntryBuilding activity={buildActivity()} onSubmit={onSubmit} />)
+
+    const selectors = screen.getAllByLabelText(/Select account for row/i)
+    await user.selectOptions(selectors[0], 'Cash')
+    await user.selectOptions(selectors[1], 'Service Revenue')
+
+    const amountInputs = screen.getAllByPlaceholderText('0.00')
+    const debitInput = amountInputs[0]
+    const creditInput = amountInputs[3]
+
+    await user.clear(debitInput)
+    await user.type(debitInput, '500')
+    await user.clear(creditInput)
+    await user.type(creditInput, '500')
+
+    await screen.findAllByText('$500.00')
+
+    await user.click(screen.getByRole('button', { name: /check entry/i }))
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(1)
+    })
+
+    // The "Next Scenario" button should NOT appear because completed was reset
+    expect(screen.queryByRole('button', { name: /next scenario/i })).not.toBeInTheDocument()
+  })
 })

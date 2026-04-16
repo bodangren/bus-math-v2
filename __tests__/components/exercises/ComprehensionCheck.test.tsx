@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -214,5 +214,23 @@ describe('ComprehensionCheck', () => {
       'independent_practice',
       'assessment',
     ])
+  })
+
+  it('resets submitted state when onSubmit throws', async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn(() => {
+      throw new Error('Submission failed')
+    })
+    render(<ComprehensionCheck activity={buildActivity()} onSubmit={onSubmit} />)
+
+    await user.click(screen.getByRole('button', { name: /Net Income/i }))
+    await user.click(screen.getByRole('button', { name: /True/i }))
+    await user.click(screen.getByRole('button', { name: /Submit answers/i }))
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(1)
+    })
+    // Submit button should be re-enabled because submitted was reset
+    expect(screen.getByRole('button', { name: /Submit answers/i })).toBeInTheDocument()
   })
 })

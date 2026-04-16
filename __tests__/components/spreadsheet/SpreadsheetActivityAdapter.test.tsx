@@ -175,4 +175,30 @@ describe('SpreadsheetActivityAdapter', () => {
     const envelope = handleSubmit.mock.calls[0][0];
     expect(envelope.activityId).toBe('spreadsheet');
   });
+
+  it('does not mark as submitted when onSubmit throws', async () => {
+    const user = userEvent.setup();
+    const handleSubmit = vi.fn(() => {
+      throw new Error('Submission failed');
+    });
+    const handleComplete = vi.fn();
+
+    render(
+      <SpreadsheetActivityAdapter
+        activity={buildActivity()}
+        onSubmit={handleSubmit}
+        onComplete={handleComplete}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
+
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+    expect(handleComplete).not.toHaveBeenCalled();
+
+    // A second click should still attempt submission because the first failure
+    // did not set submitted to true
+    await user.click(screen.getByRole('button', { name: 'Submit Spreadsheet' }));
+    expect(handleSubmit).toHaveBeenCalledTimes(2);
+  });
 });

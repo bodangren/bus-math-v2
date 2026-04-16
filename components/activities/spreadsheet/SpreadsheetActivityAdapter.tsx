@@ -87,9 +87,13 @@ export function SpreadsheetActivityAdapter({
         },
       });
 
-      onSubmit?.(envelope);
-      setSubmitted(true);
-      onComplete?.();
+      try {
+        onSubmit?.(envelope);
+        setSubmitted(true);
+        onComplete?.();
+      } catch (err) {
+        console.error('SpreadsheetActivityAdapter submission failed:', err);
+      }
     },
     [activity.id, onSubmit, onComplete, props.title, props.template, submitted],
   );

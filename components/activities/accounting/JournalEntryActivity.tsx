@@ -449,15 +449,23 @@ export function JournalEntryActivity({ activity, className = '', onSubmit }: Jou
     }))
 
     if (isCorrect) {
-      onSubmit?.(
-        buildJournalEntrySubmission({
-          activity,
-          scenario: currentScenario,
-          journalEntries,
-          attempts: attemptNumber,
-          mode: practiceMode
-        })
-      )
+      try {
+        onSubmit?.(
+          buildJournalEntrySubmission({
+            activity,
+            scenario: currentScenario,
+            journalEntries,
+            attempts: attemptNumber,
+            mode: practiceMode
+          })
+        )
+      } catch (err) {
+        console.error('JournalEntryActivity submission failed:', err)
+        setExerciseState((prev) => ({
+          ...prev,
+          completed: false
+        }))
+      }
     }
   }, [activity, exerciseState, onSubmit, practiceMode, totals.totalCredits, totals.totalDebits])
 

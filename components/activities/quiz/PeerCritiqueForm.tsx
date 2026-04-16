@@ -149,54 +149,58 @@ export function PeerCritiqueForm({ activity, className = '', onSubmit }: PeerCri
       overallComments,
     }
 
-    onSubmit?.(
-      buildPracticeSubmissionEnvelope({
-        activityId: activity.id,
-        mode: PEER_CRITIQUE_DEFAULT_MODE,
-        status: 'submitted',
-        attemptNumber: 1,
-        submittedAt: new Date(),
-        answers,
-        parts: [
-          ...categories.map((category) => {
-            const rawAnswer = {
-              rating: ratings[category.id],
-              comment: comments[category.id],
-            }
+    try {
+      onSubmit?.(
+        buildPracticeSubmissionEnvelope({
+          activityId: activity.id,
+          mode: PEER_CRITIQUE_DEFAULT_MODE,
+          status: 'submitted',
+          attemptNumber: 1,
+          submittedAt: new Date(),
+          answers,
+          parts: [
+            ...categories.map((category) => {
+              const rawAnswer = {
+                rating: ratings[category.id],
+                comment: comments[category.id],
+              }
 
-            return {
-              partId: category.id,
-              rawAnswer,
-              normalizedAnswer: normalizePracticeValue(rawAnswer),
-            }
-          }),
-          {
-            partId: 'overallComments',
-            rawAnswer: overallComments,
-            normalizedAnswer: normalizePracticeValue(overallComments),
+              return {
+                partId: category.id,
+                rawAnswer,
+                normalizedAnswer: normalizePracticeValue(rawAnswer),
+              }
+            }),
+            {
+              partId: 'overallComments',
+              rawAnswer: overallComments,
+              normalizedAnswer: normalizePracticeValue(overallComments),
+            },
+            {
+              partId: 'reviewerName',
+              rawAnswer: reviewerName.trim(),
+              normalizedAnswer: normalizePracticeValue(reviewerName.trim()),
+            },
+          ],
+          artifact: {
+            kind: 'peer_critique',
+            projectTitle,
+            peerName,
+            unitNumber,
+            reviewerName: reviewerName.trim() || null,
+            ratings,
+            comments,
+            overallComments,
           },
-          {
-            partId: 'reviewerName',
-            rawAnswer: reviewerName.trim(),
-            normalizedAnswer: normalizePracticeValue(reviewerName.trim()),
+          analytics: {
+            categoryCount: categories.length,
           },
-        ],
-        artifact: {
-          kind: 'peer_critique',
-          projectTitle,
-          peerName,
-          unitNumber,
-          reviewerName: reviewerName.trim() || null,
-          ratings,
-          comments,
-          overallComments,
-        },
-        analytics: {
-          categoryCount: categories.length,
-        },
-      }),
-    )
-    setSubmitted(true)
+        }),
+      )
+      setSubmitted(true)
+    } catch (err) {
+      console.error('PeerCritiqueForm submission failed:', err)
+    }
   }
 
   return (

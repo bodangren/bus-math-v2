@@ -91,37 +91,42 @@ export function InventoryFlowDiagram({ activity, onSubmit }: InventoryFlowDiagra
 
       if (!completed && targetOrder.length > 0 && correct === targetOrder.length) {
         setCompleted(true);
-        onSubmit?.({
-          ...buildSequentialPracticeSubmission({
-            activityId: activity.id,
-            mode: practiceMode,
-            attemptNumber: upcomingAttempts,
-            completedAt: new Date(),
-            family: activity.componentKey,
-            artifactKind: 'inventory_flow',
-            arrangement: nextArrangement,
-            expectedOrder: targetOrder,
-            describeItem: (item) => ({
-              label: item.label,
-              description: item.notes,
-              details: {
-                purchaseDate: item.purchaseDate,
-                quantity: item.quantity,
-                unitCost: item.unitCost,
+        try {
+          onSubmit?.({
+            ...buildSequentialPracticeSubmission({
+              activityId: activity.id,
+              mode: practiceMode,
+              attemptNumber: upcomingAttempts,
+              completedAt: new Date(),
+              family: activity.componentKey,
+              artifactKind: 'inventory_flow',
+              arrangement: nextArrangement,
+              expectedOrder: targetOrder,
+              describeItem: (item) => ({
+                label: item.label,
+                description: item.notes,
+                details: {
+                  purchaseDate: item.purchaseDate,
+                  quantity: item.quantity,
+                  unitCost: item.unitCost,
+                },
+              }),
+              analytics: {
+                score: nextScore,
+                attempts: upcomingAttempts,
+                scenarioId: activeScenario.id,
+                methodId: activeMode.id,
+                totalQuantity: nextArrangement.reduce((sum, lot) => sum + lot.quantity, 0),
+                averageCost:
+                  nextArrangement.reduce((sum, lot) => sum + lot.quantity * lot.unitCost, 0) /
+                  Math.max(1, nextArrangement.reduce((sum, lot) => sum + lot.quantity, 0)),
               },
             }),
-            analytics: {
-              score: nextScore,
-              attempts: upcomingAttempts,
-              scenarioId: activeScenario.id,
-              methodId: activeMode.id,
-              totalQuantity: nextArrangement.reduce((sum, lot) => sum + lot.quantity, 0),
-              averageCost:
-                nextArrangement.reduce((sum, lot) => sum + lot.quantity * lot.unitCost, 0) /
-                Math.max(1, nextArrangement.reduce((sum, lot) => sum + lot.quantity, 0)),
-            },
-          }),
-        });
+          });
+        } catch (err) {
+          console.error('InventoryFlowDiagram submission failed:', err);
+          setCompleted(false);
+        }
       }
     },
     [activity.componentKey, activity.id, activeMode, activeScenario.id, completed, onSubmit]

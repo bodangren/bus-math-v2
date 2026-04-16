@@ -87,7 +87,6 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
     });
 
     setSentenceStates(updatedStates);
-    setSubmitted(true);
 
     const correct = updatedStates.filter((state) => state.isCorrect).length;
 
@@ -102,24 +101,30 @@ export function FillInTheBlank({ activity, onSubmit }: FillInTheBlankProps) {
       };
     });
 
-    onSubmit?.(
-      buildPracticeSubmissionEnvelope({
-        activityId: activity.id,
-        mode: practiceMode,
-        status: 'submitted',
-        attemptNumber: 1,
-        submittedAt: new Date(),
-        answers,
-        parts,
-        analytics: {
-          correctCount: correct,
-          totalSentences: sentences.length,
-          wordListVisible: showWordList,
-          randomizedWordOrder: randomizeWordOrder,
-          hintsVisible: hintsEnabled,
-        },
-      }),
-    );
+    try {
+      setSubmitted(true);
+      onSubmit?.(
+        buildPracticeSubmissionEnvelope({
+          activityId: activity.id,
+          mode: practiceMode,
+          status: 'submitted',
+          attemptNumber: 1,
+          submittedAt: new Date(),
+          answers,
+          parts,
+          analytics: {
+            correctCount: correct,
+            totalSentences: sentences.length,
+            wordListVisible: showWordList,
+            randomizedWordOrder: randomizeWordOrder,
+            hintsVisible: hintsEnabled,
+          },
+        }),
+      );
+    } catch (err) {
+      console.error('FillInTheBlank submission failed:', err);
+      setSubmitted(false);
+    }
   };
 
   const reset = () => {

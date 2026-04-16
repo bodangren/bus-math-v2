@@ -164,8 +164,6 @@ export function TieredAssessment({ activity, onSubmit }: TieredAssessmentProps) 
   };
 
   const handleSubmit = () => {
-    setSubmitted(true);
-
     const questionParts = buildPracticeSubmissionParts(selectedAnswers).map((part) => {
       const evaluation = questionEvaluations.find((entry) => entry.question.id === part.partId);
       return {
@@ -189,23 +187,29 @@ export function TieredAssessment({ activity, onSubmit }: TieredAssessmentProps) 
       };
     });
 
-    onSubmit?.(
-      buildPracticeSubmissionEnvelope({
-        activityId: activity.id,
-        mode: TIERED_ASSESSMENT_DEFAULT_MODE,
-        status: 'submitted',
-        attemptNumber: 1,
-        submittedAt: new Date(),
-        answers: selectedAnswers,
-        parts: [...questionParts, ...applicationParts],
-        analytics: {
-          questionScore,
-          applicationScore,
-          totalQuestions,
-          percentage,
-        },
-      }),
-    );
+    try {
+      setSubmitted(true);
+      onSubmit?.(
+        buildPracticeSubmissionEnvelope({
+          activityId: activity.id,
+          mode: TIERED_ASSESSMENT_DEFAULT_MODE,
+          status: 'submitted',
+          attemptNumber: 1,
+          submittedAt: new Date(),
+          answers: selectedAnswers,
+          parts: [...questionParts, ...applicationParts],
+          analytics: {
+            questionScore,
+            applicationScore,
+            totalQuestions,
+            percentage,
+          },
+        }),
+      );
+    } catch (err) {
+      console.error('TieredAssessment submission failed:', err);
+      setSubmitted(false);
+    }
   };
 
   const resetAssessment = () => {

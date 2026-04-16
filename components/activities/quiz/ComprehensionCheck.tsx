@@ -109,8 +109,6 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
   };
 
   const handleSubmit = () => {
-    setSubmitted(true);
-
     const parts = buildPracticeSubmissionParts(selectedAnswers).map((part) => {
       const evaluation = questionEvaluations.find((entry) => entry.question.id === part.partId);
       return {
@@ -121,22 +119,28 @@ export function ComprehensionCheck({ activity, onSubmit }: ComprehensionCheckPro
       };
     });
 
-    onSubmit?.(
-      buildPracticeSubmissionEnvelope({
-        activityId: activity.id,
-        mode: COMPREHENSION_CHECK_DEFAULT_MODE,
-        status: 'submitted',
-        attemptNumber: 1,
-        submittedAt: new Date(),
-        answers: selectedAnswers,
-        parts,
-        analytics: {
-          totalQuestions,
-          score,
-          percentage,
-        },
-      }),
-    );
+    try {
+      setSubmitted(true);
+      onSubmit?.(
+        buildPracticeSubmissionEnvelope({
+          activityId: activity.id,
+          mode: COMPREHENSION_CHECK_DEFAULT_MODE,
+          status: 'submitted',
+          attemptNumber: 1,
+          submittedAt: new Date(),
+          answers: selectedAnswers,
+          parts,
+          analytics: {
+            totalQuestions,
+            score,
+            percentage,
+          },
+        }),
+      );
+    } catch (err) {
+      console.error('ComprehensionCheck submission failed:', err);
+      setSubmitted(false);
+    }
   };
 
   const resetQuiz = () => {

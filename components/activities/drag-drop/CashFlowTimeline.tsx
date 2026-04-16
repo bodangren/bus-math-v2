@@ -64,39 +64,43 @@ export function CashFlowTimeline({ activity, onSubmit }: CashFlowTimelineProps) 
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, CashFlowItem[]> }) => {
-      onSubmit?.({
-        ...buildCategorizationPracticeSubmission({
-          activityId: activity.id,
-          mode: practiceMode,
-          attemptNumber: attempts,
-          completedAt: new Date(),
-          family: activity.componentKey,
-          artifactKind: 'cash_flow_timeline',
-          items,
-          placements,
-          zones: sortedPeriods.map((period) => ({
-            id: period.id,
-            label: period.label,
-            description: period.description,
-          })),
-          describeItem: (item) => ({
-            label: item.label,
-            description: item.description,
-            details: {
-              amount: item.amount,
-              direction: item.direction,
-              category: item.category ?? null,
-              hint: item.hint ?? null,
+      try {
+        onSubmit?.({
+          ...buildCategorizationPracticeSubmission({
+            activityId: activity.id,
+            mode: practiceMode,
+            attemptNumber: attempts,
+            completedAt: new Date(),
+            family: activity.componentKey,
+            artifactKind: 'cash_flow_timeline',
+            items,
+            placements,
+            zones: sortedPeriods.map((period) => ({
+              id: period.id,
+              label: period.label,
+              description: period.description,
+            })),
+            describeItem: (item) => ({
+              label: item.label,
+              description: item.description,
+              details: {
+                amount: item.amount,
+                direction: item.direction,
+                category: item.category ?? null,
+                hint: item.hint ?? null,
+              },
+            }),
+            analytics: {
+              score,
+              attempts,
+              showHintsEnabled: showHints,
+              startingCash: activity.props.startingCash ?? 0,
             },
           }),
-          analytics: {
-            score,
-            attempts,
-            showHintsEnabled: showHints,
-            startingCash: activity.props.startingCash ?? 0,
-          },
-        }),
-      });
+        });
+      } catch (err) {
+        console.error('CashFlowTimeline submission failed:', err);
+      }
     },
     [activity.componentKey, activity.id, activity.props.startingCash, items, onSubmit, practiceMode, showHints, sortedPeriods]
   );

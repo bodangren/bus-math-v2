@@ -74,4 +74,18 @@ describe('CashFlowTimeline', () => {
       );
     });
   });
+
+  it('does not crash when onSubmit throws', async () => {
+    const onSubmit = vi.fn(() => {
+      throw new Error('Submission failed');
+    });
+    render(<CashFlowTimeline activity={buildActivity()} onSubmit={onSubmit} />);
+
+    dropItem('loan', 'week-1');
+    dropItem('rent', 'week-2');
+
+    await waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
+  });
 });

@@ -52,17 +52,22 @@ export function ClassificationActivity({ activity, onSubmit }: ClassificationAct
 
   const handleComplete = (payload: { score: number; attempts: number; placements: Record<string, CategorizationListItem[]> }) => {
     setIsComplete(true);
-    
+
     // Convert placements to the format expected by onSubmit
     const simplifiedPlacements: Record<string, string[]> = {};
     for (const [zoneId, zoneItems] of Object.entries(payload.placements)) {
       simplifiedPlacements[zoneId] = zoneItems.map((item) => item.id);
     }
-    
-    onSubmit?.({
-      score: payload.score,
-      placements: simplifiedPlacements,
-    });
+
+    try {
+      onSubmit?.({
+        score: payload.score,
+        placements: simplifiedPlacements,
+      });
+    } catch (err) {
+      console.error('ClassificationActivity submission failed:', err);
+      setIsComplete(false);
+    }
   };
 
   if (items.length === 0) {

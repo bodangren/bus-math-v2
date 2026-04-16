@@ -79,32 +79,36 @@ export function ReflectionJournal({ activity, className = '', onSubmit }: Reflec
   const handleSave = () => {
     const parts = buildPracticeSubmissionParts(responses)
 
-    onSubmit?.(
-      buildPracticeSubmissionEnvelope({
-        activityId: activity.id,
-        mode: REFLECTION_JOURNAL_DEFAULT_MODE,
-        status: 'submitted',
-        attemptNumber: 1,
-        submittedAt: new Date(),
-        answers: responses,
-        parts,
-        artifact: {
-          kind: 'reflection_journal',
-          unitTitle,
-          prompts: prompts.map((prompt) => ({
-            id: prompt.id,
-            category: prompt.category,
-            prompt: prompt.prompt,
-            response: responses[prompt.id] ?? '',
-          })),
-        },
-        analytics: {
-          completedCount,
-          totalCount,
-        },
-      }),
-    )
-    setIsSaved(true)
+    try {
+      onSubmit?.(
+        buildPracticeSubmissionEnvelope({
+          activityId: activity.id,
+          mode: REFLECTION_JOURNAL_DEFAULT_MODE,
+          status: 'submitted',
+          attemptNumber: 1,
+          submittedAt: new Date(),
+          answers: responses,
+          parts,
+          artifact: {
+            kind: 'reflection_journal',
+            unitTitle,
+            prompts: prompts.map((prompt) => ({
+              id: prompt.id,
+              category: prompt.category,
+              prompt: prompt.prompt,
+              response: responses[prompt.id] ?? '',
+            })),
+          },
+          analytics: {
+            completedCount,
+            totalCount,
+          },
+        }),
+      )
+      setIsSaved(true)
+    } catch (err) {
+      console.error('ReflectionJournal submission failed:', err)
+    }
   }
 
   const getCategoryColor = (category: ReflectionPrompt['category']) => {

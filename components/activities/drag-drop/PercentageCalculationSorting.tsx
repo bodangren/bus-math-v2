@@ -64,38 +64,42 @@ export function PercentageCalculationSorting({ activity, onSubmit }: PercentageC
 
   const handleCompletion = useCallback(
     ({ score, attempts, placements }: { score: number; attempts: number; placements: Record<string, ScenarioItem[]> }) => {
-      onSubmit?.({
-        ...buildCategorizationPracticeSubmission({
-          activityId: activity.id,
-          mode: practiceMode,
-          attemptNumber: attempts,
-          completedAt: new Date(),
-          family: activity.componentKey,
-          artifactKind: 'categorization_board',
-          items: scenarios,
-          placements,
-          zones: calculationTypes.map((calculation) => ({
-            id: calculation.id,
-            label: calculation.title,
-            description: calculation.description,
-          })),
-          describeItem: (item) => ({
-            label: item.prompt,
-            description: item.description,
-            details: {
-              calculationTypeId: item.calculationTypeId,
-              dataPoints: item.dataPoints,
-              businessContext: item.businessContext ?? null,
-              difficulty: item.difficulty,
+      try {
+        onSubmit?.({
+          ...buildCategorizationPracticeSubmission({
+            activityId: activity.id,
+            mode: practiceMode,
+            attemptNumber: attempts,
+            completedAt: new Date(),
+            family: activity.componentKey,
+            artifactKind: 'categorization_board',
+            items: scenarios,
+            placements,
+            zones: calculationTypes.map((calculation) => ({
+              id: calculation.id,
+              label: calculation.title,
+              description: calculation.description,
+            })),
+            describeItem: (item) => ({
+              label: item.prompt,
+              description: item.description,
+              details: {
+                calculationTypeId: item.calculationTypeId,
+                dataPoints: item.dataPoints,
+                businessContext: item.businessContext ?? null,
+                difficulty: item.difficulty,
+              },
+            }),
+            analytics: {
+              score,
+              attempts,
+              showHintsEnabled: showHints,
             },
           }),
-          analytics: {
-            score,
-            attempts,
-            showHintsEnabled: showHints,
-          },
-        }),
-      });
+        });
+      } catch (err) {
+        console.error('PercentageCalculationSorting submission failed:', err);
+      }
     },
     [activity.componentKey, activity.id, calculationTypes, onSubmit, practiceMode, scenarios, showHints]
   );
