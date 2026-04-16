@@ -36,7 +36,7 @@ export const getComponentVersionHash = query({
     if (args.componentType === 'example') {
       return null;
     }
-    return computeComponentVersionHash(args.componentType, args.componentId);
+    return await computeComponentVersionHash(args.componentType, args.componentId);
   },
 });
 
@@ -71,7 +71,7 @@ export const getReviewQueue = query({
     }
 
     if (args.includeStale) {
-      return approvals.map((approval) => {
+      return await Promise.all(approvals.map(async (approval) => {
         if (approval.componentType === 'example') {
           return {
             ...approval,
@@ -79,7 +79,7 @@ export const getReviewQueue = query({
             currentVersionHash: null,
           };
         }
-        const currentHash = computeComponentVersionHash(approval.componentType, approval.componentId);
+        const currentHash = await computeComponentVersionHash(approval.componentType, approval.componentId);
         const effectiveStatus =
           approval.approvalStatus !== "unreviewed" && approval.approvalVersionHash !== currentHash
             ? "stale"
@@ -89,7 +89,7 @@ export const getReviewQueue = query({
           effectiveStatus,
           currentVersionHash: currentHash,
         };
-      });
+      }));
     }
 
     return approvals;
@@ -152,7 +152,7 @@ export const submitComponentReview = mutation({
       throw new Error("Improvement notes are required for changes_requested or rejected status");
     }
 
-    const serverHash = computeComponentVersionHash(args.componentType, args.componentId);
+    const serverHash = await computeComponentVersionHash(args.componentType, args.componentId);
     if (serverHash !== args.componentVersionHash) {
       throw new Error("Component version hash mismatch");
     }

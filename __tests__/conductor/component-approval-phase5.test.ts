@@ -55,7 +55,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
 
   describe('Stale approval detection', () => {
     it('marks approval as stale when current hash differs from approval hash', () => {
-      mockComputeComponentVersionHash.mockReturnValue('newhash123');
+      mockComputeComponentVersionHash.mockResolvedValue('newhash123');
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'activity',
@@ -73,7 +73,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     });
 
     it('keeps approved status when hash matches', () => {
-      mockComputeComponentVersionHash.mockReturnValue('samespacehash');
+      mockComputeComponentVersionHash.mockResolvedValue('samespacehash');
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'activity',
@@ -91,7 +91,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     });
 
     it('marks changes_requested as stale when hash differs', () => {
-      mockComputeComponentVersionHash.mockReturnValue('changedhash');
+      mockComputeComponentVersionHash.mockResolvedValue('changedhash');
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'practice',
@@ -109,7 +109,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     });
 
     it('marks rejected as stale when hash differs', () => {
-      mockComputeComponentVersionHash.mockReturnValue('newrejectedhash');
+      mockComputeComponentVersionHash.mockResolvedValue('newrejectedhash');
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'practice',
@@ -126,7 +126,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     });
 
     it('keeps unreviewed status even when hash differs', () => {
-      mockComputeComponentVersionHash.mockReturnValue('anyhash');
+      mockComputeComponentVersionHash.mockResolvedValue('anyhash');
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'activity',
@@ -144,7 +144,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     it('reports both current and approval hashes in queue response', () => {
       const currentHash = 'currentSpecificHash';
       const approvalHash = 'approvalSpecificHash';
-      mockComputeComponentVersionHash.mockReturnValue(currentHash);
+      mockComputeComponentVersionHash.mockResolvedValue(currentHash);
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'practice',
@@ -164,7 +164,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
 
   describe('Re-review path for stale/changes-requested components', () => {
     it('allows submitting new review for stale component', async () => {
-      mockComputeComponentVersionHash.mockReturnValue('newHashForStale');
+      mockComputeComponentVersionHash.mockResolvedValue('newHashForStale');
       mockSubmitComponentReview.mockResolvedValue({ reviewId: 'review_new_123' });
 
       await mockSubmitComponentReview({
@@ -203,7 +203,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     });
 
     it('allows re-review with new version hash', async () => {
-      mockComputeComponentVersionHash.mockReturnValue('updatedHash456');
+      mockComputeComponentVersionHash.mockResolvedValue('updatedHash456');
       mockSubmitComponentReview.mockResolvedValue({ reviewId: 'review_updated_789' });
 
       await mockSubmitComponentReview({
@@ -440,7 +440,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     it('detects stale when activity component content changes', () => {
       const originalHash = 'originalActivityHash';
       const changedHash = 'changedActivityHash';
-      mockComputeComponentVersionHash.mockReturnValue(changedHash);
+      mockComputeComponentVersionHash.mockResolvedValue(changedHash);
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'activity',
@@ -461,7 +461,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
     it('detects stale when practice family algorithm changes', () => {
       const originalHash = 'originalPracticeHash';
       const changedHash = 'changedPracticeHash';
-      mockComputeComponentVersionHash.mockReturnValue(changedHash);
+      mockComputeComponentVersionHash.mockResolvedValue(changedHash);
       mockGetReviewQueue.mockReturnValue([
         {
           componentType: 'practice',
@@ -544,7 +544,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
 
   describe('Hash-mismatch rejection', () => {
     it('submitComponentReview throws when client hash does not match server hash', async () => {
-      mockComputeComponentVersionHash.mockReturnValue('server-computed-hash');
+      mockComputeComponentVersionHash.mockResolvedValue('server-computed-hash');
       mockSubmitComponentReview.mockRejectedValue(new Error('Component version hash mismatch'));
 
       await expect(
@@ -562,7 +562,7 @@ describe('Phase 5: Stale Approval and Rework Loop Integration', () => {
 
     it('submitComponentReview succeeds when client hash matches server hash', async () => {
       const matchingHash = 'matching-hash-123';
-      mockComputeComponentVersionHash.mockReturnValue(matchingHash);
+      mockComputeComponentVersionHash.mockResolvedValue(matchingHash);
       mockSubmitComponentReview.mockResolvedValue({ reviewId: 'review_123' });
 
       await expect(
