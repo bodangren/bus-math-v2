@@ -130,6 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Code Review Pass 92 — Stabilization Verification**
+  *Link: [./tracks/code_review_pass92_20260417/](./tracks/code_review_pass92_20260417/)*
+  *Scope: Autonomous stabilization verification pass following Pass 91 — run lint, tests, build, verify no regressions.*
+
 - [x] **Track: Code Review Pass 91 — Stabilization Verification**
   *Link: [./archive/code_review_pass91_20260417/](./archive/code_review_pass91_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 90 — run lint, tests, build, verify no regressions.*
