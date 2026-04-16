@@ -12,7 +12,7 @@ import { usePhaseCompletion } from '@/hooks/usePhaseCompletion';
 import { Button } from '@/components/ui/button';
 import type { DashboardLessonActionLink } from '@/lib/student/dashboard-presentation';
 import { formatCurriculumSegmentLabel } from '@/lib/curriculum/segment-labels';
-import { getLessonPhaseGuidance, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
+import { getLessonPhaseGuidance, isSkippablePhaseType, type PhaseGuidance } from '@/lib/curriculum/phase-guidance';
 import { studentDashboardPath, studentLessonPath } from '@/lib/student/navigation';
 import { cn } from '@/lib/utils';
 import { lessonHasWorkbooks } from '@/lib/curriculum/workbooks.client';
@@ -21,7 +21,7 @@ import { LessonChatbot } from '@/components/student/LessonChatbot';
 import { useAuth } from '@/components/auth/AuthProvider';
 import type { ContentBlock, LessonMetadata, PhaseMetadata } from '@/types/curriculum';
 
-interface Phase {
+export interface Phase {
   id: string;
   phaseNumber: number;
   title: string;
@@ -87,6 +87,7 @@ export function LessonRenderer({
     block => block.type === 'activity' && block.required
   );
   const isReadPhase = !hasRequiredActivity;
+  const isSkippable = isSkippablePhaseType(currentPhase?.metadata?.phaseType);
 
   // Get current phase completion status (safe with optional chaining when phase is absent)
   const currentPhaseProgress = progressData?.phases.find(p => p.phaseId === currentPhase?.id);
@@ -151,11 +152,12 @@ export function LessonRenderer({
 
   // Check if next phase is unlocked (either already unlocked OR current phase is completed/read-only)
   const nextPhaseStatus = stepperPhases.find(p => p.phaseNumber === currentPhaseNumber + 1)?.status;
-  const isNextPhaseUnlocked = 
-    isCurrentPhaseCompleted || 
-    isReadPhase || 
-    nextPhaseStatus === 'available' || 
-    nextPhaseStatus === 'current' || 
+  const isNextPhaseUnlocked =
+    isCurrentPhaseCompleted ||
+    isReadPhase ||
+    isSkippable ||
+    nextPhaseStatus === 'available' ||
+    nextPhaseStatus === 'current' ||
     nextPhaseStatus === 'completed';
 
   const handlePrevious = () => {
@@ -338,7 +340,7 @@ export function LessonRenderer({
               (!canGoNext || !isNextPhaseUnlocked) && 'opacity-50 cursor-not-allowed'
             )}
           >
-            Next Phase
+            {isSkippable && !isCurrentPhaseCompleted ? 'Skip Phase' : 'Next Phase'}
             <ChevronRight className="h-4 w-4 ml-2" />
           </Button>
         </div>

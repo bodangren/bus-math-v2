@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getLessonPhaseGuidance,
   getPhaseGuidance,
+  isSkippablePhaseType,
 } from '@/lib/curriculum/phase-guidance';
 
 describe('curriculum/phase-guidance', () => {
@@ -45,5 +46,26 @@ describe('curriculum/phase-guidance', () => {
 
   it('returns null when the phase number is not defined for the lesson type', () => {
     expect(getPhaseGuidance('project', 6)).toBeNull();
+  });
+
+  describe('isSkippablePhaseType', () => {
+    it('returns true for explore phase type', () => {
+      expect(isSkippablePhaseType('explore')).toBe(true);
+    });
+
+    it('returns true for discourse phase type', () => {
+      expect(isSkippablePhaseType('discourse')).toBe(true);
+    });
+
+    it('returns false for non-skippable phase types', () => {
+      expect(isSkippablePhaseType('guided_practice')).toBe(false);
+      expect(isSkippablePhaseType('independent_practice')).toBe(false);
+      expect(isSkippablePhaseType('assessment')).toBe(false);
+      expect(isSkippablePhaseType('intro')).toBe(false);
+    });
+
+    it('returns false for undefined phase type', () => {
+      expect(isSkippablePhaseType(undefined)).toBe(false);
+    });
   });
 });

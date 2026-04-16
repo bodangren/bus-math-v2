@@ -1,12 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { LessonRenderer } from '@/components/student/LessonRenderer';
+import { LessonRenderer, type Phase } from '@/components/student/LessonRenderer';
+
+const mockRefetch = vi.fn();
+let mockPhaseProgressData: { phases: Array<{ phaseId: string; status: string }> } = { phases: [] };
 
 vi.mock('@/hooks/usePhaseProgress', () => ({
   usePhaseProgress: () => ({
-    data: { phases: [] },
+    data: mockPhaseProgressData,
     isLoading: false,
-    refetch: vi.fn(),
+    refetch: mockRefetch,
   }),
 }));
 
@@ -98,6 +101,137 @@ describe('LessonRenderer', () => {
 
       const dashboardLink = screen.getByText('Dashboard').closest('a');
       expect(dashboardLink).toHaveAttribute('href', '/student/dashboard');
+    });
+  });
+
+  describe('phase skip behavior', () => {
+    it('enables Next Phase button for skippable explore phase when not completed', () => {
+      mockPhaseProgressData = {
+        phases: [
+          { phaseId: 'phase-explore', status: 'available' },
+          { phaseId: 'phase-2', status: 'locked' },
+        ],
+      };
+
+      const explorePhases = [
+        {
+          id: 'phase-explore',
+          phaseNumber: 1,
+          title: 'Explore Phase',
+          contentBlocks: [{ type: 'markdown', id: 'block-1', content: 'Explore this concept' }],
+          estimatedMinutes: 10,
+          metadata: { phaseType: 'explore' },
+        },
+        {
+          id: 'phase-2',
+          phaseNumber: 2,
+          title: 'Phase 2: Practice',
+          contentBlocks: [
+            { type: 'activity', id: 'block-2', activityId: 'test-activity', required: true },
+          ],
+          estimatedMinutes: 20,
+          metadata: { phaseType: 'practice' },
+        },
+      ];
+
+      render(
+        <LessonRenderer
+          lesson={mockLesson}
+          phases={explorePhases as Phase[]}
+          currentPhaseNumber={1}
+          lessonSlug={mockLesson.slug}
+        />
+      );
+
+      const nextButton = screen.getByRole('button', { name: /skip phase/i });
+      expect(nextButton).toBeInTheDocument();
+      expect(nextButton).not.toBeDisabled();
+    });
+
+    it('keeps Next Phase button disabled for non-skippable incomplete phase', () => {
+      mockPhaseProgressData = {
+        phases: [
+          { phaseId: 'phase-1', status: 'available' },
+          { phaseId: 'phase-2', status: 'locked' },
+        ],
+      };
+
+      const nonSkippablePhases = [
+        {
+          id: 'phase-1',
+          phaseNumber: 1,
+          title: 'Phase 1: Activity',
+          contentBlocks: [
+            { type: 'activity', id: 'block-1', activityId: 'test-activity', required: true },
+          ],
+          estimatedMinutes: 10,
+          metadata: { phaseType: 'intro' },
+        },
+        {
+          id: 'phase-2',
+          phaseNumber: 2,
+          title: 'Phase 2: Practice',
+          contentBlocks: [
+            { type: 'activity', id: 'block-2', activityId: 'test-activity', required: true },
+          ],
+          estimatedMinutes: 20,
+          metadata: { phaseType: 'practice' },
+        },
+      ];
+
+      render(
+        <LessonRenderer
+          lesson={mockLesson}
+          phases={nonSkippablePhases as Phase[]}
+          currentPhaseNumber={1}
+          lessonSlug={mockLesson.slug}
+        />
+      );
+
+      const nextButton = screen.getByRole('button', { name: /next phase/i });
+      expect(nextButton).toBeInTheDocument();
+      expect(nextButton).toBeDisabled();
+    });
+
+    it('shows Skip Phase button text for skippable incomplete discourse phase', () => {
+      mockPhaseProgressData = {
+        phases: [
+          { phaseId: 'phase-discourse', status: 'available' },
+          { phaseId: 'phase-2', status: 'locked' },
+        ],
+      };
+
+      const discoursePhases = [
+        {
+          id: 'phase-discourse',
+          phaseNumber: 1,
+          title: 'Discourse Phase',
+          contentBlocks: [{ type: 'markdown', id: 'block-1', content: 'Discuss this concept' }],
+          estimatedMinutes: 10,
+          metadata: { phaseType: 'discourse' },
+        },
+        {
+          id: 'phase-2',
+          phaseNumber: 2,
+          title: 'Phase 2: Practice',
+          contentBlocks: [
+            { type: 'activity', id: 'block-2', activityId: 'test-activity', required: true },
+          ],
+          estimatedMinutes: 20,
+          metadata: { phaseType: 'practice' },
+        },
+      ];
+
+      render(
+        <LessonRenderer
+          lesson={mockLesson}
+          phases={discoursePhases as Phase[]}
+          currentPhaseNumber={1}
+          lessonSlug={mockLesson.slug}
+        />
+      );
+
+      expect(screen.getByRole('button', { name: /skip phase/i })).toBeInTheDocument();
     });
   });
 

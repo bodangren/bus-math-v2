@@ -1,5 +1,12 @@
 import { getLessonTypeFromOrderIndex, type LessonType } from '@/lib/curriculum/types';
 
+export const SKIPPABLE_PHASE_TYPES = ['explore', 'discourse'] as const;
+export type SkippablePhaseType = typeof SKIPPABLE_PHASE_TYPES[number];
+
+export function isSkippablePhaseType(phaseType: string | undefined): boolean {
+  return SKIPPABLE_PHASE_TYPES.includes(phaseType as SkippablePhaseType);
+}
+
 export interface PhaseGuidance {
   lessonType: LessonType;
   phaseNumber: number;
