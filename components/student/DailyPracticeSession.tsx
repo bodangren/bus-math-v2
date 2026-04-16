@@ -9,6 +9,7 @@ import { api } from '@/lib/convex/server';
 import { practiceFamilyRegistry } from '@/lib/practice/engine/family-registry';
 import { buildPracticeSubmissionEnvelope } from '@/lib/practice/contract';
 import { processPracticeSubmission } from '@/lib/srs/review-processor';
+import { dailyPracticeInputRegistry } from '@/lib/srs/answer-inputs/registry';
 import type { SrsCardState } from '@/lib/srs/contract';
 import type { PracticeSubmissionEnvelope } from '@/lib/practice/contract';
 
@@ -131,6 +132,7 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
   const problemDef = (family as any).generate(seed, undefined);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const problemResponse = (family as any).solve(problemDef);
+  const AnswerInputComponent = dailyPracticeInputRegistry[familyKey];
 
   return (
     <div className="max-w-4xl mx-auto py-8">
@@ -153,13 +155,21 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ProblemRenderer
-            familyKey={familyKey}
-            family={family}
-            definition={problemDef}
-            response={problemResponse}
-            onSubmit={handleSubmit}
-          />
+          {AnswerInputComponent ? (
+            <AnswerInputComponent
+              family={family}
+              definition={problemDef}
+              onSubmit={handleSubmit}
+            />
+          ) : (
+            <ProblemRenderer
+              familyKey={familyKey}
+              family={family}
+              definition={problemDef}
+              response={problemResponse}
+              onSubmit={handleSubmit}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

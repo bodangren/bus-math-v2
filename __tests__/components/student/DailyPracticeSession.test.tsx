@@ -30,6 +30,13 @@ vi.mock('@/lib/practice/engine/family-registry', () => ({
         parts: [{ partId: 'p1', isCorrect: true }],
       })),
     },
+    'registered-family': {
+      generate: vi.fn(() => ({ value: 99 })),
+      solve: vi.fn(() => ({ answer: 99 })),
+      grade: vi.fn(() => ({
+        parts: [{ partId: 'p1', isCorrect: true }],
+      })),
+    },
   },
 }));
 
@@ -39,6 +46,14 @@ vi.mock('@/lib/practice/contract', () => ({
 
 vi.mock('@/lib/srs/review-processor', () => ({
   processPracticeSubmission: mockProcessPracticeSubmission,
+}));
+
+const MockInputComponent = vi.fn(() => <div data-testid="mock-answer-input">Mock Answer Input</div>);
+
+vi.mock('@/lib/srs/answer-inputs/registry', () => ({
+  dailyPracticeInputRegistry: {
+    'registered-family': MockInputComponent,
+  },
 }));
 
 const { DailyPracticeSession } = await import('../../../components/student/DailyPracticeSession');
@@ -217,5 +232,52 @@ describe('DailyPracticeSession', () => {
     render(<DailyPracticeSession studentId="student_1" />);
 
     expect(mockUseQuery).toHaveBeenCalledWith('api.srs.getDueCards', { studentId: 'student_1' });
+  });
+
+  it('renders the registered answer input component when family has one', () => {
+    mockUseQuery.mockReturnValue([
+      {
+        _id: 'card_1',
+        studentId: 'student_1',
+        problemFamilyId: 'registered-family',
+        card: {},
+        due: Date.now(),
+        lastReview: Date.now(),
+        reviewCount: 0,
+        createdAt: Date.now(),
+      },
+    ]);
+
+    render(<DailyPracticeSession studentId="student_1" />);
+
+    expect(screen.getByTestId('mock-answer-input')).toBeInTheDocument();
+    expect(MockInputComponent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        family: expect.any(Object),
+        definition: expect.objectContaining({ value: 99 }),
+        onSubmit: expect.any(Function),
+      }),
+      undefined,
+    );
+  });
+
+  it('falls back to auto-solve renderer when family has no registered input', () => {
+    mockUseQuery.mockReturnValue([
+      {
+        _id: 'card_1',
+        studentId: 'student_1',
+        problemFamilyId: 'test-family',
+        card: {},
+        due: Date.now(),
+        lastReview: Date.now(),
+        reviewCount: 0,
+        createdAt: Date.now(),
+      },
+    ]);
+
+    render(<DailyPracticeSession studentId="student_1" />);
+
+    expect(screen.queryByTestId('mock-answer-input')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /submit answer/i })).toBeInTheDocument();
   });
 });

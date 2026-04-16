@@ -16,7 +16,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 8 | Classroom Product Completeness | Complete (2026-04-10) |
 | 9 | Workbook System and AI Features | Complete (2026-04-11) |
 | 10 | Student Study Tools | Complete (2026-04-11) |
-| 11 | Cross-Project Feature Adoption | Active |
+| 11 | Cross-Project Feature Adoption | Complete (2026-04-16) |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
@@ -129,6 +129,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 ## Planned Queue
 
 Strictly serial. Complete and archive each track before starting the next.
+
+- [~] **Track: DailyPracticeSession Interactive Answer Input**
+  *Link: [./tracks/daily_practice_answer_input_20260416/](./tracks/daily_practice_answer_input_20260416/)*
+  *Scope: Convert DailyPracticeSession from auto-solve MVP to interactive practice by building family-specific answer input components (accounting-equation, normal-balance, classification) with a registry pattern and fallback for unimplemented families.*
 
 - [x] **Track: Convex Codegen SRS Fix**
   *Link: [./tracks/convex_codegen_srs_fix_20260416/](./tracks/convex_codegen_srs_fix_20260416/)*
