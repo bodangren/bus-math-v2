@@ -1,0 +1,12 @@
+Phase 7 — Student Daily Practice Page
+
+Tasks:
+- Fix page.tsx studentId prop passing from session claims
+- Fix ts-fsRS TypeScript errors in lib/srs/scheduler.ts and lib/study/srs.ts
+- Fix convex/study.ts type narrowing and Card casting
+- Add DailyPracticeSession component tests (7 tests)
+- Add student practice page tests (3 tests)
+- Update track plan to mark Phase 7 complete
+
+Verification: lint 0 errors, all tests pass, build clean
+Model: k2p5
