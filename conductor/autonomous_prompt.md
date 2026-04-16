@@ -10,6 +10,8 @@ AUTONOMOUS CONDUCTOR — UNATTENDED RUN
    - In-progress phase exists? Finish it.
    - Nothing in progress? Create ONE new track from current_directive.md (or top tech-debt item if no directive).
 
+2.1 Review the work in the previous phase and check-fix before moving onto the new phase in step 3. 
+
 3. Implement ONE phase with TDD:
    Red-Green-Refactor cycle. Run tests, correct build errors.
    After each task: merge changes and push.
