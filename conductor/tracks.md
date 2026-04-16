@@ -130,9 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Practice Timing Telemetry**
-  *Link: [./tracks/practice_timing_telemetry_20260416/](./tracks/practice_timing_telemetry_20260416/)*
+- [x] **Track: Practice Timing Telemetry**
+  *Link: [./archive/practice_timing_telemetry_20260416/](./archive/practice_timing_telemetry_20260416/)*
   *Scope: Port TimingAccumulator, timing baselines, SRS rating adapter, and usePracticeTiming hook from ra-integrated-math-3. Add timing field to practice.v1 envelope.*
+  *Closeout: completed on 2026-04-16. All 5 pure TypeScript modules ported (timing.ts, timing-baseline.ts, srs-rating.ts) plus usePracticeTiming hook. Added timing types to practice.v1 contract. 102 new tests (46 timing, 16 timing-baseline, 19 srs-rating, 11 usePracticeTiming hook, 10 contract-timing). All verification gates pass (lint 0 errors, test 1934/1934, build clean). Tech-debt item closed. MiniMax-M2.7 verified.*
 
 - [ ] **Track: Phase Skip UI**
   *Link: [./tracks/phase_skip_ui_20260416/](./tracks/phase_skip_ui_20260416/)*

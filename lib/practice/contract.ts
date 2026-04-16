@@ -2,6 +2,29 @@ import { z } from 'zod';
 
 export const PRACTICE_CONTRACT_VERSION = 'practice.v1' as const;
 
+export const practiceTimingConfidenceSchema = z.enum(['high', 'medium', 'low']);
+export type PracticeTimingConfidence = z.infer<typeof practiceTimingConfidenceSchema>;
+
+export const practiceTimingSummarySchema = z
+  .object({
+    startedAt: z.string().min(1),
+    submittedAt: z.string().min(1),
+    wallClockMs: z.number().nonnegative(),
+    activeMs: z.number().nonnegative(),
+    idleMs: z.number().nonnegative(),
+    pauseCount: z.number().int().nonnegative(),
+    focusLossCount: z.number().int().nonnegative(),
+    visibilityHiddenCount: z.number().int().nonnegative(),
+    longestIdleMs: z.number().nonnegative().optional(),
+    confidence: practiceTimingConfidenceSchema,
+    confidenceReasons: z.array(z.string()).optional(),
+  })
+  .refine((data) => data.activeMs <= data.wallClockMs, {
+    message: 'activeMs must not exceed wallClockMs',
+  });
+
+export type PracticeTimingSummary = z.infer<typeof practiceTimingSummarySchema>;
+
 export const PRACTICE_MODE_VALUES = [
   'worked_example',
   'guided_practice',
@@ -75,6 +98,7 @@ export const practiceSubmissionEnvelopeSchema = z.object({
   analytics: jsonRecordSchema.optional(),
   studentFeedback: z.string().optional(),
   teacherSummary: z.string().optional(),
+  timing: practiceTimingSummarySchema.optional(),
 });
 
 export type PracticeSubmissionEnvelope = z.infer<typeof practiceSubmissionEnvelopeSchema>;
@@ -108,6 +132,7 @@ const practiceSubmissionInputSchema = z.object({
   metadata: jsonRecordSchema.optional(),
   studentFeedback: z.string().optional(),
   teacherSummary: z.string().optional(),
+  timing: practiceTimingSummarySchema.optional(),
 });
 
 export type PracticeSubmissionInput = z.infer<typeof practiceSubmissionInputSchema>;
@@ -135,6 +160,7 @@ export function buildPracticeSubmissionEnvelope(input: {
   analytics?: Record<string, unknown>;
   studentFeedback?: string;
   teacherSummary?: string;
+  timing?: PracticeTimingSummary;
 }): PracticeSubmissionEnvelope {
   return practiceSubmissionEnvelopeSchema.parse({
     contractVersion: PRACTICE_CONTRACT_VERSION,
@@ -150,6 +176,7 @@ export function buildPracticeSubmissionEnvelope(input: {
     analytics: input.analytics,
     studentFeedback: input.studentFeedback,
     teacherSummary: input.teacherSummary,
+    timing: input.timing,
   });
 }
 
@@ -188,5 +215,6 @@ export function normalizePracticeSubmissionInput(
     analytics,
     studentFeedback: parsed.studentFeedback,
     teacherSummary: parsed.teacherSummary,
+    timing: parsed.timing,
   });
 }
