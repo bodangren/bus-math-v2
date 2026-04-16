@@ -1,0 +1,11 @@
+{
+  "track_id": "srs_tech_debt_resolution_20260416",
+  "type": "chore",
+  "status": "completed",
+  "created_at": "2026-04-16T00:00:00Z",
+  "updated_at": "2026-04-16T00:00:00Z",
+  "description": "Address 2 open SRS tech-debt items: TOCTOU race in write mutations and client-computed card state trust",
+  "estimated_tasks": 3,
+  "actual_tasks": 3,
+  "deviation_notes": "All 3 tasks completed: TOCTOU race documented in upsertSrsCard and recordSrsReview, client-computed state trust documented, tech-debt.md and lessons-learned.md updated."
+}
