@@ -4,7 +4,7 @@ import { DailyPracticeSession } from '@/components/student/DailyPracticeSession'
 export const dynamic = 'force-dynamic';
 
 export default async function DailyPracticePage() {
-  await requireStudentSessionClaims('/student/practice');
+  const claims = await requireStudentSessionClaims('/student/practice');
 
-  return <DailyPracticeSession />;
+  return <DailyPracticeSession studentId={claims.sub} />;
 }

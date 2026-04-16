@@ -187,13 +187,13 @@
 
 ## Phase 7: Student Daily Practice Page
 
-### Task 7.1: Create Daily Practice Page Route [ ]
+### Task 7.1: Create Daily Practice Page Route [x]
 - Create `app/student/practice/page.tsx`
 - Auth guard: require student role
 - Fetch due cards via `getDueCards` query
 - Show queue summary (X problems due today)
 
-### Task 7.2: Create Daily Practice Session Component [ ]
+### Task 7.2: Create Daily Practice Session Component [x]
 - Create `components/student/DailyPracticeSession.tsx`
 - Renders a practice problem from the queue
 - Uses the existing practice family infrastructure to generate and render problems
@@ -201,7 +201,7 @@
 - Advances to next problem in queue
 - Shows completion state when queue is empty
 
-### Task 7.3: Write Page and Component Tests [ ]
+### Task 7.3: Write Page and Component Tests [x]
 - Create `__tests__/components/student/DailyPracticeSession.test.tsx`
 - Test that due cards are displayed
 - Test that submission records a review

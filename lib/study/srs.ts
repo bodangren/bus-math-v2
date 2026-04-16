@@ -1,4 +1,5 @@
 import { createEmptyCard, Card, Rating, FSRS } from 'ts-fsrs';
+import type { Grade } from 'ts-fsrs';
 
 export interface ScheduledTerm {
   termSlug: string;
@@ -12,7 +13,7 @@ export interface ReviewResult {
   scheduledFor: number;
 }
 
-const fsrs = new FSRS();
+const fsrs = new FSRS({});
 
 export function scheduleNewTerm(termSlug: string): ScheduledTerm {
   const card = createEmptyCard();
@@ -39,7 +40,7 @@ export function processReview(
     good: Rating.Good,
     easy: Rating.Easy,
   };
-  const review = schedulingCards[ratingMap[rating]];
+  const review = schedulingCards[ratingMap[rating] as Grade];
   
   const ratingDeltas = {
     again: -0.2,

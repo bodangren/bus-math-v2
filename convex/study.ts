@@ -2,6 +2,7 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { scheduleNewTerm, processReview as processFsrsReview, proficiencyBand, updateMastery } from "@/lib/study/srs";
 import { getGlossaryTermsByUnit } from "@/lib/study/glossary";
+import type { Card } from "ts-fsrs";
 
 export const getStudyPreferences = query({
   args: {},
@@ -186,7 +187,7 @@ export const processReview = mutation({
       fsrsResult = processFsrsReview(
         {
           termSlug: args.termSlug,
-          fsrsState: dueReview.fsrsState,
+          fsrsState: dueReview.fsrsState as Card,
           scheduledFor: dueReview.scheduledFor,
         },
         args.rating
@@ -354,10 +355,11 @@ export const getPracticeTestResults = query({
       .withIndex("by_user", (q) => q.eq("userId", profile._id));
 
     if (args.unitNumber !== undefined) {
+      const unitNumber = args.unitNumber;
       resultsQuery = ctx.db
         .query("practice_test_results")
         .withIndex("by_user_and_unit", (q) =>
-          q.eq("userId", profile._id).eq("unitNumber", args.unitNumber)
+          q.eq("userId", profile._id).eq("unitNumber", unitNumber)
         );
     }
 

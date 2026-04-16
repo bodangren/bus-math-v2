@@ -1,7 +1,8 @@
 import { createEmptyCard, FSRS, Rating, Card } from 'ts-fsrs';
+import type { Grade } from 'ts-fsrs';
 import type { SrsCardState, SrsRating } from './contract';
 
-const fsrs = new FSRS();
+const fsrs = new FSRS({});
 
 export function createNewCard(problemFamilyId: string, studentId: string): SrsCardState {
   const card = createEmptyCard(new Date());
@@ -30,7 +31,7 @@ export function reviewCard(cardState: SrsCardState, rating: SrsRating): SrsCardS
   };
 
   const selectedRating = ratingMap[rating];
-  const result = schedulingCards[selectedRating];
+  const result = schedulingCards[selectedRating as Grade];
 
   const nowMs = Date.now();
   return {
