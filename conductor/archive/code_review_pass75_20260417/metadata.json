@@ -1,0 +1,11 @@
+{
+  "track_id": "code_review_pass75_20260417",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-04-17T00:00:00Z",
+  "updated_at": "2026-04-17T00:00:00Z",
+  "description": "Code Review Pass 75 — Autonomous stabilization verification pass following Pass 74. Run full verification gates and fix any issues found.",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}
