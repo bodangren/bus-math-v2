@@ -78,19 +78,27 @@ export function TeacherSRSDashboardClient({
   };
 
   const handleResetCard = async (problemFamilyId: string) => {
-    await fetchInternalMutation(srs.srs.resetStudentCard, {
-      studentId: resetStudentId as Id<"profiles">,
-      problemFamilyId,
-    });
-    await loadClassData(selectedClassId);
+    try {
+      await fetchInternalMutation(srs.srs.resetStudentCard, {
+        studentId: resetStudentId as Id<"profiles">,
+        problemFamilyId,
+      });
+      await loadClassData(selectedClassId);
+    } catch (err) {
+      console.error("Failed to reset card:", err);
+    }
   };
 
   const handleBumpPriority = async (problemFamilyId: string) => {
-    await fetchInternalMutation(srs.srs.bumpFamilyPriority, {
-      classId: selectedClassId as Id<"classes">,
-      problemFamilyId,
-    });
-    await loadClassData(selectedClassId);
+    try {
+      await fetchInternalMutation(srs.srs.bumpFamilyPriority, {
+        classId: selectedClassId as Id<"classes">,
+        problemFamilyId,
+      });
+      await loadClassData(selectedClassId);
+    } catch (err) {
+      console.error("Failed to bump priority:", err);
+    }
   };
 
   const openResetModal = (studentId: string, studentName: string) => {

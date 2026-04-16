@@ -1,5 +1,37 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-17 — Deep Code Review, Pass 80)
+
+Autonomous deep code review covering all changes since Pass 74 (last substantive review). Reviewed Passes 75-79 (stabilization verification + deferred quality cleanup).
+
+**Scope:** Full codebase security and correctness audit — Convex backend auth, frontend error handling, React anti-patterns, TypeScript type safety.
+
+**Fixed during review: 2 issues**
+
+- **DailyPracticeSession handleSubmit unguarded recordReview** (High): `await recordReview(...)` had no try/catch. If the Convex mutation failed (network error, server error), `submittedRef.current` was `true` and `isSubmitting` was `true` — the UI was permanently locked with no recovery path. Fixed: wrapped in try/catch/finally; on catch, reset `submittedRef` to allow retry; `setIsSubmitting(false)` in finally.
+- **TeacherSRSDashboardClient handleResetCard/handleBumpPriority unguarded mutations** (Medium): Both `handleResetCard` and `handleBumpPriority` called `fetchInternalMutation` with no try/catch. Failures propagated as unhandled promise rejections with no user feedback. Fixed: wrapped both in try/catch with console.error logging.
+
+**Confirmed clean (no issues):**
+- Passes 75-79 were pure stabilization verification — no code changes except Pass 76 deferred quality cleanup (console.log removal, auth rationale comments, v.any() documentation). All clean.
+- Seed mutations properly guarded with `requireAdmin()` (Pass 74 fix verified)
+- SRS student identity verification confirmed on all read/write functions
+- Middleware async/await fix from Pass 57 confirmed correct
+
+**Deferred (documented, not fixed):**
+- `component_approvals.ts` public queries lack auth (dev harness surface, middleware protects routes)
+- `TeacherSRSDashboardClient` module-level `as any` on internal API (low practical risk)
+- `console.error` calls in production code that should be gated (5 instances, low)
+- Excessive `as Record<string, unknown>` casts in `SubmissionDetailModal` (type under-specification)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Phase status**: All 11 milestones complete. 167 tracks archived. No active tracks. Project in full stabilization. Zero open tech-debt items. k2p5 verified.
+
+---
+
 ## Code Review Summary (2026-04-17 — Full Codebase Audit, Pass 79)
 
 Autonomous stabilization verification pass following Pass 78.
@@ -229,11 +261,11 @@ All 11 milestones (2026-03-16 through 2026-04-16) are complete. Project in full 
 
 ## Phase Focus
 
-Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). All DailyPracticeSession Interactive Answer Input phases complete (2026-04-16). 166 tracks archived.
+Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). Pass 80 deep review complete — fixed 2 issues (DailyPracticeSession unguarded mutation, TeacherSRSDashboardClient unguarded mutations). 167 tracks archived.
 
 **Next high-level priorities:**
 1. **Ongoing stabilization**: Continue periodic code review passes as needed
-2. **Deferred code quality**: Non-blocking items from Pass 74 audit (public query auth documentation, v.any() tightening, console.log cleanup)
+2. **Deferred code quality**: Non-blocking items from Pass 80 audit (component_approvals.ts public query auth, TeacherSRSDashboardClient `as any` internal API, console.error gating)
 3. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
 
 ## Required Execution Order

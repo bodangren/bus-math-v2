@@ -107,24 +107,28 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
 
     const result = processPracticeSubmission(envelope, currentCard, timing, undefined, studentId);
 
-    await recordReview({
-      studentId: studentId as Parameters<typeof recordReview>[0]['studentId'],
-      problemFamilyId: result.card.problemFamilyId,
-      rating: result.rating,
-      scheduledAt: result.reviewLog.scheduledAt,
-      reviewedAt: result.reviewLog.reviewedAt,
-      elapsedDays: result.reviewLog.elapsedDays,
-      scheduledDays: result.reviewLog.scheduledDays,
-      reviewDurationMs: result.reviewLog.reviewDurationMs,
-      timingConfidence: result.reviewLog.timingConfidence,
-      card: result.card.card,
-      due: result.card.due,
-      lastReview: result.card.lastReview,
-      reviewCount: result.card.reviewCount,
-    });
-
-    setIsSubmitting(false);
-    setShowNext(true);
+    try {
+      await recordReview({
+        studentId: studentId as Parameters<typeof recordReview>[0]['studentId'],
+        problemFamilyId: result.card.problemFamilyId,
+        rating: result.rating,
+        scheduledAt: result.reviewLog.scheduledAt,
+        reviewedAt: result.reviewLog.reviewedAt,
+        elapsedDays: result.reviewLog.elapsedDays,
+        scheduledDays: result.reviewLog.scheduledDays,
+        reviewDurationMs: result.reviewLog.reviewDurationMs,
+        timingConfidence: result.reviewLog.timingConfidence,
+        card: result.card.card,
+        due: result.card.due,
+        lastReview: result.card.lastReview,
+        reviewCount: result.card.reviewCount,
+      });
+      setShowNext(true);
+    } catch {
+      submittedRef.current = false;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleAdvance = () => {
