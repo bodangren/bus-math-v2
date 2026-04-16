@@ -547,12 +547,12 @@ All milestones (1–11) are **complete** (2026-03-16 through 2026-04-16). Projec
 
 ### Recommended Next Priorities
 
-1. **Convex codegen regeneration** — Run `npx convex dev` to regenerate `api.d.ts` with the `srs` module. Tests mock it but runtime calls need the generated API.
+1. ~~Convex codegen regeneration~~ — Resolved 2026-04-16. Fixed `@/` path aliases in `convex/` directory and regenerated `api.d.ts` with the `srs` module via `npx convex codegen`.
 2. **DailyPracticeSession interactive answer input** (Low priority) — Current MVP auto-solves and grades. Needs per-family interactive answer components for a real practice experience.
 
 ### Open Items
 
-- Convex generated API stale — missing srs module (Medium)
+- ~~Convex generated API stale — missing srs module~~ (Medium — Closed 2026-04-16)
 - DailyPracticeSession MVP answer input (Low)
 
 ### Pass 48 Summary
