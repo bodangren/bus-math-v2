@@ -2,10 +2,12 @@
   "trackId": "phase_skip_ui_20260416",
   "title": "Phase Skip UI",
   "milestone": 11,
-  "status": "in_progress",
+  "status": "completed",
   "createdAt": "2026-04-16",
+  "completedAt": "2026-04-16",
   "dependsOn": [],
   "blocks": [],
   "estimatedEffort": "very_low",
+  "actualTasks": 4,
   "sourceProject": "ra-integrated-math-3"
 }

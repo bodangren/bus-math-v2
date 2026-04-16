@@ -2,14 +2,14 @@
 
 ## Phase 1: Helper and Types
 
-### Task 1.1: Define Skippable Phase Types [ ]
+### Task 1.1: Define Skippable Phase Types [x] (332c864)
 - Open `lib/curriculum/phase-guidance.ts`
 - Add a `SKIPPABLE_PHASE_TYPES` constant: `['explore', 'discourse'] as const`
 - Export `type SkippablePhaseType = typeof SKIPPABLE_PHASE_TYPES[number]`
 - Export `function isSkippablePhaseType(phaseType: string | undefined): boolean`
 - Implementation: return `SKIPPABLE_PHASE_TYPES.includes(phaseType as SkippablePhaseType)`
 
-### Task 1.2: Add phaseType to Phase Metadata [ ]
+### Task 1.2: Add phaseType to Phase Metadata [x] (332c864)
 - Open `types/curriculum.ts` and find the `PhaseMetadata` type
 - Verify `phaseType` is already in the metadata or add it as an optional string field
 - Check how `Phase` interface in `LessonRenderer.tsx` uses `metadata?: PhaseMetadata`
@@ -17,7 +17,7 @@
 
 ## Phase 2: LessonRenderer Updates
 
-### Task 2.1: Compute isSkippable in LessonRenderer [ ]
+### Task 2.1: Compute isSkippable in LessonRenderer [x] (332c864)
 - Open `components/student/LessonRenderer.tsx`
 - After the `isReadPhase` computation (line ~89), add:
   ```
@@ -25,7 +25,7 @@
   ```
 - Import `isSkippablePhaseType` from `@/lib/curriculum/phase-guidance`
 
-### Task 2.2: Unlock Next Phase for Skippable Phases [ ]
+### Task 2.2: Unlock Next Phase for Skippable Phases [x] (332c864)
 - Find the `isNextPhaseUnlocked` logic (lines ~152-159)
 - Add `isSkippable` to the OR condition:
   ```
@@ -38,7 +38,7 @@
     nextPhaseStatus === 'completed';
   ```
 
-### Task 2.3: Show Skip Indicator on Next Phase Button [ ]
+### Task 2.3: Show Skip Indicator on Next Phase Button [x] (332c864)
 - Find the Next Phase button (lines ~333-343)
 - When `isSkippable && !isCurrentPhaseCompleted`, show a small "Skip" badge or modify the button text
 - Example: `<Button ...>{isSkippable && !isCurrentPhaseCompleted ? 'Skip Phase' : 'Next Phase'}<ChevronRight .../></Button>`
@@ -46,7 +46,7 @@
 
 ## Phase 3: Tests
 
-### Task 3.1: Test isSkippablePhaseType Helper [ ]
+### Task 3.1: Test isSkippablePhaseType Helper [x] (332c864)
 - Create or extend `__tests__/lib/curriculum/phase-guidance.test.ts`
 - Test that `isSkippablePhaseType('explore')` returns `true`
 - Test that `isSkippablePhaseType('discourse')` returns `true`
@@ -54,7 +54,7 @@
 - Test that `isSkippablePhaseType(undefined)` returns `false`
 - Test that `isSkippablePhaseType('independent_practice')` returns `false`
 
-### Task 3.2: Test LessonRenderer Skip Behavior [ ]
+### Task 3.2: Test LessonRenderer Skip Behavior [x] (332c864)
 - Create or extend `__tests__/components/student/LessonRenderer.test.tsx`
 - Test that when phase has `metadata.phaseType: 'explore'`, the Next Phase button is enabled even when phase is not completed
 - Test that when phase has no phaseType (default), Next Phase button remains gated by completion
@@ -62,7 +62,7 @@
 
 ## Phase 4: Verification
 
-### Task 4.1: Run Full Verification Gates [ ]
+### Task 4.1: Run Full Verification Gates [x] (332c864)
 - `npm run lint` — 0 errors
 - `npm test` — all tests pass
 - `npm run build` — clean

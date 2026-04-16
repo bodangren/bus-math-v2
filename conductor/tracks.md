@@ -135,9 +135,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Port TimingAccumulator, timing baselines, SRS rating adapter, and usePracticeTiming hook from ra-integrated-math-3. Add timing field to practice.v1 envelope.*
   *Closeout: completed on 2026-04-16. All 5 pure TypeScript modules ported (timing.ts, timing-baseline.ts, srs-rating.ts) plus usePracticeTiming hook. Added timing types to practice.v1 contract. 102 new tests (46 timing, 16 timing-baseline, 19 srs-rating, 11 usePracticeTiming hook, 10 contract-timing). All verification gates pass (lint 0 errors, test 1934/1934, build clean). Tech-debt item closed. MiniMax-M2.7 verified.*
 
-- [~] **Track: Phase Skip UI**
-  *Link: [./tracks/phase_skip_ui_20260416/](./tracks/phase_skip_ui_20260416/)*
+- [x] **Track: Phase Skip UI**
+  *Link: [./archive/phase_skip_ui_20260416/](./archive/phase_skip_ui_20260416/)*
   *Scope: Add skip button for explore and discourse phase types in LessonRenderer. Unlock next phase without completion for skippable phases.*
+  *Closeout: completed on 2026-04-16. Added isSkippablePhaseType helper, updated LessonRenderer to unlock next phase and show "Skip Phase" text for explore/discourse phases. 7 new tests (4 helper, 3 renderer). All verification gates pass (lint 0 errors, 1839/1839 tests pass, build clean). k2p5 verified.*
 
 - [ ] **Track: Component Approval Prop-Based Hashes**
   *Link: [./tracks/component_approval_prop_hashes_20260416/](./tracks/component_approval_prop_hashes_20260416/)*
