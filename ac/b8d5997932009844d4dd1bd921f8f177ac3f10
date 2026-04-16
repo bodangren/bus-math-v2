@@ -1,0 +1,3 @@
+Track: code_review_pass68_20260416
+Phase: Phase 1 — Stabilization and Bug Fixes
+Summary: Fixed StudyHubHome weak-topics filtering bug (masteryScore), removed unnecessary useMemo dependency, fixed worker anonymous default export, repaired 8 stale tracks.md archive links. All verification gates pass: lint 0/0, tests 2211/2211, build clean.
