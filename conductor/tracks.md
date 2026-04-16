@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Code Review Pass 90 — Stabilization Verification**
+  *Link: [./archive/code_review_pass90_20260417/](./archive/code_review_pass90_20260417/)*
+  *Scope: Autonomous stabilization verification pass following Pass 89 — run lint, tests, build, verify no regressions.*
+  *Closeout: completed on 2026-04-17. All verification gates pass (lint 0 errors/0 warnings, test 2241/2241, build clean). MiniMax-M2.7 verified.*
+
 - [x] **Track: Component Approval Query Auth**
   *Link: [./archive/component_approval_query_auth_20260417/](./archive/component_approval_query_auth_20260417/)*
   *Scope: Add authentication guards to all public queries in convex/component_approvals.ts so only admin/developer roles can read approval state, review queues, and audit summaries.*
