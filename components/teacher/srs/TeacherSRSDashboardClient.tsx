@@ -75,7 +75,6 @@ export function TeacherSRSDashboardClient({
 
   const handleClassChange = (newClassId: string) => {
     setSelectedClassId(newClassId);
-    loadClassData(newClassId);
   };
 
   const handleResetCard = async (problemFamilyId: string) => {

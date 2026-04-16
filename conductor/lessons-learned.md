@@ -29,3 +29,5 @@
 - Client components loading server data must `useEffect` on mount, not just on user interaction.
 - SVG `path` `d` attributes require canvas-space coordinates. Data-space function values must pass through `transformDataToCanvas`.
 - Avoid duplicating parsing logic when canonical parsers exist. `parseFloat(...) || 1` silently coerces coefficient `0` to `1`.
+- Seed/admin mutations must always include role checks — exported Convex mutations are callable by any authenticated user.
+- When both a `useEffect` and an event handler watch the same state, avoid calling the same data-loading function from both; the effect alone is sufficient.

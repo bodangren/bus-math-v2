@@ -448,24 +448,47 @@ async function repairPublishedActivityPropsHandler(ctx: MutationCtx) {
   };
 }
 
+async function requireAdmin(ctx: MutationCtx): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthenticated");
+  const profile = await ctx.db
+    .query("profiles")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .withIndex("by_username", (q: any) => q.eq("username", identity.email!))
+    .unique();
+  if (!profile || profile.role !== "admin") {
+    throw new Error("Unauthorized: admin role required");
+  }
+}
+
 export const seedPublishedCurriculum = mutation({
   args: {},
-  handler: seedPublishedCurriculumHandler,
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return seedPublishedCurriculumHandler(ctx);
+  },
 });
 
 export const seedUnit1Lesson1 = mutation({
   args: {},
-  handler: seedPublishedCurriculumHandler,
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return seedPublishedCurriculumHandler(ctx);
+  },
 });
 
 export const repairPublishedActivityProps = mutation({
   args: {},
-  handler: repairPublishedActivityPropsHandler,
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return repairPublishedActivityPropsHandler(ctx);
+  },
 });
 
 export const seedDemoAccounts = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     const now = Date.now();
     const DEV_ITERATIONS = 10_000;
 

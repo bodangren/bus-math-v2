@@ -1,5 +1,38 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-17 — Full Codebase Audit, Pass 74)
+
+Autonomous deep code review covering all changes since Pass 68 (StudyHubHome fix, SRS tech debt resolution, lint cleanup, archive links) and Passes 69-73 (stabilization verification).
+
+**Scope:** Comprehensive audit of Passes 68-73 plus full codebase security scan.
+
+**Fixed during review: 2 issues**
+
+- **Seed mutations have zero authentication** (Critical): `seedPublishedCurriculum`, `seedUnit1Lesson1`, `repairPublishedActivityProps`, and `seedDemoAccounts` in `convex/seed.ts` were exported mutations with no auth checks. Any authenticated user (including students) could call these to wipe/replace curriculum data, create demo accounts, or modify activity props. Fixed: added `requireAdmin()` guard to all 4 seed mutations that verifies the caller has admin role.
+- **TeacherSRSDashboardClient double-fetch on class change** (High): `handleClassChange` called `loadClassData(newClassId)` directly AND the `useEffect` watching `selectedClassId` also called `loadClassData`, resulting in 2x API roundtrips (6 duplicate queries) every time the class dropdown changed. Fixed: removed the direct `loadClassData` call from `handleClassChange`; the `useEffect` now handles all data loading.
+
+**Confirmed clean (no issues):**
+- `StudyHubHome.tsx` masteryScore field usage is correct
+- `DailyPracticeSession.tsx` answer hiding before submission is correct
+- SRS `verifyStudentIdentity` present on all read queries and write mutations
+- Middleware `async/await` on `verifySessionToken` correct
+- Lesson chatbot rate limiting fail-closed behavior correct
+
+**Deferred (documented, not fixed):**
+- Public lesson queries (`getLessonBySlugOrId`, `getLessonWithContent`) lack Convex-level auth — intentional: auth enforced at Next.js route level, lesson content is educational material
+- `v.any()` on `rawAnswer` in practice submission — low risk, pragmatic for evolving practice.v1 contract
+- `v.any()` proliferation in schema (14+ fields) — pragmatic for evolving JSON shapes, tracked in tech-debt.md
+- `identity.email!` non-null assertions in auth checks — would need Convex auth provider guarantee
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Phase status**: All 11 milestones complete. 164 tracks archived. No active tracks. Project in full stabilization. Zero open tech-debt items.
+
+---
+
 ## Code Review Summary (2026-04-17 — Full Codebase Audit, Pass 73)
 
 Autonomous stabilization verification pass following Pass 72.
@@ -111,7 +144,7 @@ Project in full stabilization. All 11 milestones complete (2026-03-16 through 20
 
 **Next high-level priorities:**
 1. **Ongoing stabilization**: Continue periodic code review passes as needed
-2. **Tech debt resolution**: 2 open Medium items (SRS TOCTOU race, SRS client-computed state trust) — both low risk for classroom use
+2. **Deferred code quality**: Non-blocking items from Pass 74 audit (public query auth documentation, v.any() tightening, console.log cleanup)
 3. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
 
 ## Required Execution Order
