@@ -1,6 +1,36 @@
 # Current Strategic Directive
 
-## Code Review Summary (2026-04-17 — Stabilization Verification, Pass 86)
+## Code Review Summary (2026-04-17 — Deep Audit, Pass 87)
+
+Autonomous deep code review covering all changes since Pass 80 (last substantive review). Reviewed Passes 81-86 (stabilization verification with zero code changes) plus full codebase security and correctness audit.
+
+**Scope:** Comprehensive codebase audit — Convex backend auth, frontend error handling, React anti-patterns, TypeScript type safety, code quality.
+
+**Fixed during review: 2 issues**
+
+- **BaseReviewSession silently swallows mutation errors** (High): `handleRating` in `components/student/BaseReviewSession.tsx` had `try/finally` with no `catch`. When `processReview` or `recordSession` threw (network error, Convex error), the student saw no feedback — the card just stayed. Fixed: added `catch` block with error state and user-visible error message "Something went wrong. Please try again."
+- **usePhaseCompletion logs user IDs in production** (Medium): `hooks/usePhaseCompletion.ts` logged user IDs in 3 `console.log` calls during queue processing. Fixed: removed user ID exposure from log messages.
+
+**Confirmed clean (no issues):**
+- Passes 81-86 were pure stabilization verification — zero code changes, only conductor archive docs and README updates
+- All previously fixed issues (seed mutation auth, SRS identity verification, middleware async/await, DailyPracticeSession error handling) remain correct
+- Verification gates stable: lint 0/0, test 2211/2211, build clean
+
+**Deferred (documented, not fixed):**
+- `component_approvals.ts` public queries lack auth — dev harness surface (Pass 80 deferred)
+- `TeacherSRSDashboardClient` module-level `as any` on internal API (Pass 80 deferred)
+- ~30 activity components' `onSubmit?.()` calls lack try/catch — systematic pattern (new finding)
+- 18 `as any` casts in production code — concentrated in Convex API bridging and practice family access (known pattern)
+- `SubmissionDetailModal.tsx` has 11 `as Record<string, unknown>` casts (known pattern)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Phase status**: All 11 milestones complete. 175 tracks archived. No active tracks. Project in full stabilization. Zero open tech-debt items.
+
+---
 
 Autonomous stabilization verification pass following Pass 85.
 
@@ -367,12 +397,7 @@ Project in full stabilization. All 11 milestones complete (2026-03-16 through 20
 
 **Next high-level priorities:**
 1. **Ongoing stabilization**: Continue periodic code review passes as needed
-2. **Deferred code quality**: Non-blocking items from Pass 80 audit (component_approvals.ts public query auth, TeacherSRSDashboardClient `as any` internal API, console.error gating)
-3. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
-
-**Next high-level priorities:**
-1. **Ongoing stabilization**: Continue periodic code review passes as needed
-2. **Deferred code quality**: Non-blocking items from Pass 80 audit (component_approvals.ts public query auth, TeacherSRSDashboardClient `as any` internal API, console.error gating)
+2. **Deferred code quality**: Non-blocking items from Pass 80/87 audit (component_approvals.ts public query auth, TeacherSRSDashboardClient `as any` internal API, activity component error handling, console.error gating)
 3. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
 
 ## Required Execution Order
@@ -388,7 +413,7 @@ Milestone 11 tracks (strictly serial):
 
 ## Post-Milestone State
 
-All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 166 tracks archived. 2211 tests passing across 335 test files. Zero lint errors/warnings. Build clean.
+All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 175 tracks archived. 2211 tests passing across 335 test files. Zero lint errors/warnings. Build clean.
 
 ## In-Bounds Work
 

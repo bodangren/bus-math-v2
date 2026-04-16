@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Code Review Pass 87 — Deep Audit**
+  *Link: [./archive/code_review_pass87_20260417/](./archive/code_review_pass87_20260417/)*
+  *Scope: Deep code review since Pass 80 (last substantive review). Full codebase security and correctness audit — Convex backend auth, frontend error handling, React anti-patterns, TypeScript type safety.*
+  *Closeout: completed on 2026-04-17. Fixed 2 issues (High: BaseReviewSession silent error swallowing, Medium: usePhaseCompletion user ID logging). All verification gates pass (lint 0/0, test 2211/2211, build clean).*
+
 - [x] **Track: Code Review Pass 86 — Stabilization Verification**
   *Link: [./archive/code_review_pass86_20260417/](./archive/code_review_pass86_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 85 — run lint, tests, build, verify no regressions.*

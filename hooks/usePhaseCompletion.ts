@@ -147,7 +147,6 @@ export function usePhaseCompletion({
       
       const lastUserId = getCurrentUserId();
       if (lastUserId && lastUserId !== userId) {
-        console.log(`User changed from ${lastUserId} to ${userId}, clearing queue`);
         clearCompletionQueue();
       }
 
@@ -155,8 +154,6 @@ export function usePhaseCompletion({
 
       const queue = getCompletionQueue(userId);
       if (queue.length === 0) return;
-
-      console.log(`Processing ${queue.length} queued completion(s) for user ${userId}`);
 
       for (const completion of queue) {
         if (completion.userId !== userId) {
@@ -178,7 +175,6 @@ export function usePhaseCompletion({
             idempotencyKey: completion.idempotencyKey,
           });
           
-          console.log(`Successfully processed queued completion ${completion.idempotencyKey}`);
           dequeueCompletion(completion.idempotencyKey);
         } catch (err) {
           console.error(`Failed to process queued completion ${completion.idempotencyKey}:`, err);

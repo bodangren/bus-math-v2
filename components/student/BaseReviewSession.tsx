@@ -34,6 +34,7 @@ export function BaseReviewSession({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionComplete, setSessionComplete] = useState(false);
+  const [reviewError, setReviewError] = useState<string | null>(null);
   const isSubmittingRef = useRef(false);
 
   const currentTermSlug = dueTerms?.[currentIndex]?.termSlug;
@@ -59,6 +60,7 @@ export function BaseReviewSession({
   const handleRating = async (rating: "again" | "hard" | "good" | "easy") => {
     if (!currentTermSlug || isSubmittingRef.current) return;
     isSubmittingRef.current = true;
+    setReviewError(null);
 
     try {
       await processReview({
@@ -76,6 +78,9 @@ export function BaseReviewSession({
           termCount: dueTerms?.length ?? 0,
         });
       }
+    } catch (err) {
+      console.error("Failed to process review:", err);
+      setReviewError("Something went wrong. Please try again.");
     } finally {
       isSubmittingRef.current = false;
     }
@@ -158,19 +163,24 @@ export function BaseReviewSession({
           </Card>
 
           {isFlipped && (
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="destructive" onClick={() => handleRating("again")}>
-                Again
-              </Button>
-              <Button variant="secondary" onClick={() => handleRating("hard")}>
-                Hard
-              </Button>
-              <Button variant="default" onClick={() => handleRating("good")}>
-                Good
-              </Button>
-              <Button variant="outline" onClick={() => handleRating("easy")}>
-                Easy
-              </Button>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="destructive" onClick={() => handleRating("again")}>
+                  Again
+                </Button>
+                <Button variant="secondary" onClick={() => handleRating("hard")}>
+                  Hard
+                </Button>
+                <Button variant="default" onClick={() => handleRating("good")}>
+                  Good
+                </Button>
+                <Button variant="outline" onClick={() => handleRating("easy")}>
+                  Easy
+                </Button>
+              </div>
+              {reviewError && (
+                <p className="text-center text-sm text-destructive">{reviewError}</p>
+              )}
             </div>
           )}
         </div>
