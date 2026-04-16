@@ -14,15 +14,14 @@ Autonomous code review of the last 3 passes (66–68): Graphing Explorer Renderi
 - **Lint/StudyHubHome/Archive Links (Pass 68)**: `StudyHubHome` weak topic filtering fixed (`mastery` → `masteryScore`), unnecessary `useMemo` dep removed, worker named default export, 8 stale tracks.md archive links repaired. Regression tests added. Clean.
 
 **Pre-existing open items confirmed:**
-- SRS write mutations have TOCTOU race (Medium — low practical risk)
-- SRS mutations trust client-computed card state (Medium — architectural, low priority)
+- None. All tracked tech-debt items are now closed.
 
 **Verification gates:**
 - `npm run lint`: 0 errors, 0 warnings
 - `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
 - `npm run build`: passes cleanly
 
-**Phase status**: All 11 milestones complete. 158 tracks archived. No active tracks. Project in full stabilization. 2 open tech-debt items (both Medium, low risk). k2p5 verified.
+**Phase status**: All 11 milestones complete. 160 tracks archived. No active tracks. Project in full stabilization. Zero open tech-debt items. k2p5 verified.
 
 ---
 
