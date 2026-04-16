@@ -51,7 +51,21 @@ describe('shuffleAnswers', () => {
   it('returns options in a different order than original', () => {
     const question = UNIT1_CONFIG.questions[0];
     const originalOrder = [question.correctAnswer, ...question.distractors];
+
+    // Mock Math.random to force a swap on the first iteration, guaranteeing a different order
+    const originalMathRandom = Math.random;
+    let callCount = 0;
+    Math.random = () => {
+      callCount++;
+      // First call: i=3, j must be < 3 to guarantee a change; return 0.25 -> j=1
+      if (callCount === 1) return 0.25;
+      return 0;
+    };
+
     const result = shuffleAnswers(question);
+    Math.random = originalMathRandom;
+
     expect(result.options).not.toEqual(originalOrder);
+    expect(result.options.sort()).toEqual(originalOrder.sort());
   });
 });

@@ -31,23 +31,20 @@
 - Every practice.v1 component must have a submitted boolean state (preferably useRef) guarding the envelope callback and disabling the submit button.
 - Division-by-zero in UI Progress bars is easy to miss — defensive guards (`denom > 0 ? ... : 0`) prevent NaN/Infinity from propagating to the DOM.
 - Code review audits should verify that "fixed" items are actually fixed in the live runtime rows/queries, not just in source files, commit messages, or regenerated manifests.
-- `const [, setCompleted] = useState(false)` discards the boolean, making it impossible to guard against double-submit; always read the state value.
-- When building cross-component utility helpers (like cellBgClass for coloring gradebook/heatmap cells), make sure all consuming components import from the correct source file, and verify exports match imports with a full build.
-- When creating shared helpers that use Node.js core modules (fs, path), split into server and client versions. Client-side helpers must avoid Node.js core module usage. Use a separate file (e.g., `workbooks.client.ts`) with static data or pure functions for client consumption.
-- Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
-- Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
-- When building a multi-phase feature like practice tests, use refs for tracking values that need to be in sync with state updates but avoid stale-closure issues (like score and per-lesson breakdown when transitioning to a closing phase).
-- Convex `.withIndex` returns a new query base — chaining two `withIndex` calls drops the first filter; use `.filter()` for secondary predicates or pick one index per call path.
-- Derived statuses (e.g., `stale`) must be represented as computed/effective fields only; never include them in the validator accepted by a persistence mutation.
-- Content version hashes must be computed server-side and verified against client-supplied hashes before persisting approvals. Use runtime prop-based hashing from component props and gradingConfig, not build-time manifests that go stale on file changes. Derive componentKind from phaseType via resolveComponentKind on both write and read paths. crypto.subtle (Web Crypto API) works in both browser and Node.js contexts.
-- Dev-only pages must combine a `NODE_ENV` check with a middleware role gate; env flags alone leak in misconfigured preview builds. Do gatekeeping before React hook calls, not inside the component body.
-- Nullish coalescing (`??`) does not catch `0`; use `||` when guarding division by zero where the divisor might be `0`, not just `null`/`undefined`.
-- Simulation/reset functions must clear ALL state: active intervals/timeouts AND all submission state (submittedRef, setSubmitted), or stale callbacks will fire against freshly-reset state causing permanent blocking.
-- Optional chaining on callbacks (`onSubmit?.()`) should be consistent across all components in the same layer — mixing `onSubmit(envelope)` and `onSubmit?.(envelope)` is a latent crash risk.
-- When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
-- AI provider responses (JSON.parse results) must be validated with Zod schema before use — never trust cast types from external APIs; safeParse with fallback is the correct pattern.
-- Async functions in middleware or server guards must always be `await`ed; without `await`, Promises are always truthy and nested fields are always undefined, silently breaking auth and role checks.
-- ts-fsrs `createEmptyCard()` requires a `Date` argument at runtime despite TypeScript declarations suggesting it takes no arguments; always pass `new Date()` to avoid `Invalid Date` errors.
-- Convex `v.optional()` is the correct pattern for optional fields in schema validators — not `v.number().optional()` which doesn't exist on the VFloat64 type.
-- Convex mutations accepting a `studentId` (or any user-scoped ID) must verify the ID matches the authenticated user's profile — checking `getUserIdentity()` alone only proves authentication, not authorization to act as that student.
-- Never hardcode fallback identity values like `'student-unknown'` in card/document creation; the ID propagates to stored records and breaks all downstream queries. Pass the real ID through the call chain.
+ - When building cross-component utility helpers (like cellBgClass for coloring gradebook/heatmap cells), make sure all consuming components import from the correct source file, and verify exports match imports with a full build.
+ - When creating shared helpers that use Node.js core modules (fs, path), split into server and client versions. Client-side helpers must avoid Node.js core module usage. Use a separate file (e.g., `workbooks.client.ts`) with static data or pure functions for client consumption.
+ - Split AI provider code into shared lib/ai/ directory for reuse across student and teacher features.
+ - Don't name pure functions with a "use" prefix — React will treat them as custom hooks, which can't be called conditionally.
+ - When building a multi-phase feature like practice tests, use refs for tracking values that need to be in sync with state updates but avoid stale-closure issues (like score and per-lesson breakdown when transitioning to a closing phase).
+ - Convex `.withIndex` returns a new query base — chaining two `withIndex` calls drops the first filter; use `.filter()` for secondary predicates or pick one index per call path.
+ - Derived statuses (e.g., `stale`) must be represented as computed/effective fields only; never include them in the validator accepted by a persistence mutation.
+ - Content version hashes must be computed server-side and verified against client-supplied hashes before persisting approvals. Use runtime prop-based hashing from component props and gradingConfig, not build-time manifests that go stale on file changes. Derive componentKind from phaseType via resolveComponentKind on both write and read paths. crypto.subtle (Web Crypto API) works in both browser and Node.js contexts.
+ - Dev-only pages must combine a `NODE_ENV` check with a middleware role gate; env flags alone leak in misconfigured preview builds. Do gatekeeping before React hook calls, not inside the component body.
+ - Simulation/reset functions must clear ALL state: active intervals/timeouts AND all submission state (submittedRef, setSubmitted), or stale callbacks will fire against freshly-reset state causing permanent blocking.
+ - Optional chaining on callbacks (`onSubmit?.()`) should be consistent across all components in the same layer — mixing `onSubmit(envelope)` and `onSubmit?.(envelope)` is a latent crash risk.
+ - When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
+ - AI provider responses (JSON.parse results) must be validated with Zod schema before use — never trust cast types from external APIs; safeParse with fallback is the correct pattern.
+ - Async functions in middleware or server guards must always be `await`ed; without `await`, Promises are always truthy and nested fields are always undefined, silently breaking auth and role checks.
+ - Convex mutations accepting a `studentId` (or any user-scoped ID) must verify the ID matches the authenticated user's profile — checking `getUserIdentity()` alone only proves authentication, not authorization to act as that student.
+ - Never hardcode fallback identity values like `'student-unknown'` in card/document creation; the ID propagates to stored records and breaks all downstream queries. Pass the real ID through the call chain.
+ - Tests that assert random shuffle behavior must mock the random source; otherwise they flake when the shuffle happens to return the identity permutation.

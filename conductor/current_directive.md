@@ -530,21 +530,21 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 ## Current High-Level Priorities (2026-04-16 — Full Codebase Audit, Pass 61)
 
-Milestones 1-10 are **complete**. Milestone 11 (Cross-Project Feature Adoption) is **active** — 5 of 6 tracks complete. Teacher SRS Dashboard Phase 1 is done.
+Milestones 1-10 are **complete**. Milestone 11 (Cross-Project Feature Adoption) is **active** — 6 of 6 tracks complete. Teacher SRS Dashboard is fully complete.
 
 ### Completed Since Pass 60
 
 - Built SRS Daily Practice Core: contract types, scheduler, review processor, queue builder, family map, Convex schema, student daily practice page (72 lib tests + 7 component tests)
-- Built Teacher SRS Dashboard Phase 1: class health, weak families, struggling students queries, intervention mutations (reset card, bump priority), teacher analytics module (12 tests)
+- Built Teacher SRS Dashboard: class health, weak families, struggling students queries, intervention mutations (reset card, bump priority), dashboard UI, navigation integration, component/page tests, verification (12 analytics tests + 16 component/page tests)
 - Fixed: review-processor hardcoded 'student-unknown' studentId (High)
 - Fixed: DailyPracticeSession revealed correct answer before submission (High)
 - Fixed: upsertSrsCard/recordSrsReview didn't verify studentId matches authenticated user (Medium)
+- Fixed: flaky `shuffleAnswers` test in question-banks.test.ts by mocking Math.random for deterministic behavior
 
 ### Recommended Next Priorities
 
-1. **Teacher SRS Dashboard Phases 2-5** (Milestone 11, Track 6) — Dashboard UI, navigation integration, component tests, final verification. Phase 1 (Convex analytics queries + interventions) is complete. Plan exists in `conductor/tracks/teacher_srs_dashboard_20260416/plan.md`.
-2. **Convex codegen regeneration** — Run `npx convex dev` to regenerate `api.d.ts` with the `srs` module. Tests mock it but runtime calls need the generated API.
-3. **DailyPracticeSession interactive answer input** (Low priority) — Current MVP auto-solves and grades. Needs per-family interactive answer components for a real practice experience.
+1. **Convex codegen regeneration** — Run `npx convex dev` to regenerate `api.d.ts` with the `srs` module. Tests mock it but runtime calls need the generated API.
+2. **DailyPracticeSession interactive answer input** (Low priority) — Current MVP auto-solves and grades. Needs per-family interactive answer components for a real practice experience.
 
 ### Open Items
 

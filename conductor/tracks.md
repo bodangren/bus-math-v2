@@ -155,9 +155,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Build FSRS-backed daily practice system. SRS contract types, scheduler, review processor, queue builder, Convex schema, student daily practice page.*
   *Closeout: completed on 2026-04-16. All 8 phases complete: contract types (srs.contract.v1, 5 Zod schemas), scheduler (createNewCard, reviewCard, getCardsDue, serializeCard, deserializeCard), review processor (processPracticeSubmission bridging envelope→rating→card), queue builder (buildDailyQueue, getQueueSummary), family map (A-U mapping), Convex schema (srs_cards, srs_review_log tables with indexes), Convex mutations/queries (upsertSrsCard, recordSrsReview, getDueCards, getStudentSrsSummary, getSrsCard), student daily practice page. 59 lib tests pass. Verification gates pass (lint 0 errors, test 2116/2116, build clean). MiniMax-M2.7 verified.*
 
-- [ ] **Track: Teacher SRS Dashboard**
-  *Link: [./tracks/teacher_srs_dashboard_20260416/](./tracks/teacher_srs_dashboard_20260416/)*
+- [x] **Track: Teacher SRS Dashboard**
+  *Link: [./archive/teacher_srs_dashboard_20260416/](./archive/teacher_srs_dashboard_20260416/)*
   *Scope: Teacher SRS analytics dashboard with class health, weak families, struggling students, and intervention tools.*
+  *Closeout: completed on 2026-04-16. All 5 phases complete: Phase 1 (Convex analytics queries and interventions), Phase 2 (Dashboard UI components: ClassHealthCard, WeakFamiliesPanel, StrugglingStudentsPanel, modals), Phase 3 (Navigation integration with teacher dashboard link and breadcrumbs), Phase 4 (Component tests and page tests), Phase 5 (Verification). All gates pass: lint 0 errors/2 warnings, test 2167/2167, build clean. k2p5 verified.*
 
 - [x] **Track: Submit Attempt Numbering Race Fix**
   *Link: [./archive/submit_attempt_numbering_race_fix_20260414/](./archive/submit_attempt_numbering_race_fix_20260414/)*
