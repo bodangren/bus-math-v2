@@ -497,4 +497,16 @@ export default defineSchema({
     .index("by_student", ["studentId"])
     .index("by_student_family", ["studentId", "problemFamilyId"])
     .index("by_student_date", ["studentId", "reviewedAt"]),
+
+  srs_interventions: defineTable({
+    teacherId: v.id("profiles"),
+    studentId: v.optional(v.id("profiles")),
+    classId: v.id("classes"),
+    problemFamilyId: v.string(),
+    interventionType: v.union(v.literal("reset_card"), v.literal("bump_priority")),
+    createdAt: v.number(),
+  })
+    .index("by_teacher", ["teacherId"])
+    .index("by_student", ["studentId"])
+    .index("by_class", ["classId"]),
 });

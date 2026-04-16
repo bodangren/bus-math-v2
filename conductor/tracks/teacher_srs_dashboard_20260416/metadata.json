@@ -2,7 +2,7 @@
   "trackId": "teacher_srs_dashboard_20260416",
   "title": "Teacher SRS Dashboard",
   "milestone": 11,
-  "status": "planned",
+  "status": "in_progress",
   "createdAt": "2026-04-16",
   "dependsOn": ["srs_daily_practice_core_20260416"],
   "blocks": [],

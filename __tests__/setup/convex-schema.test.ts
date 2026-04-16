@@ -8,7 +8,7 @@ describe('Convex Schema Translation', () => {
     
     // Verify table count after SRS tables addition
     const tableNames = Object.keys(schema.tables);
-    expect(tableNames.length).toBe(33);
+    expect(tableNames.length).toBe(34);
     
     // Check study tables
     expect(tableNames).toContain('study_preferences');
@@ -27,6 +27,7 @@ describe('Convex Schema Translation', () => {
     // Check SRS tables
     expect(tableNames).toContain('srs_cards');
     expect(tableNames).toContain('srs_review_log');
+    expect(tableNames).toContain('srs_interventions');
     
     // Check some specific core tables
     expect(tableNames).toContain('organizations');

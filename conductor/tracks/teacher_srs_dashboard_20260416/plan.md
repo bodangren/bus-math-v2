@@ -2,7 +2,7 @@
 
 ## Phase 1: Convex Analytics Queries
 
-### Task 1.1: Create SRS Analytics Queries [ ]
+### Task 1.1: Create SRS Analytics Queries [x]
 - Create `convex/srs/teacher-queries.ts` (or add to existing `convex/srs/queries.ts`)
 - Implement `getClassSrsHealth(classId: string)`:
   - Query all `srs_cards` for students in the class
@@ -19,7 +19,7 @@
   - Sort by overdue count descending
   - Return top 10 students with issues
 
-### Task 1.2: Create Intervention Mutations [ ]
+### Task 1.2: Create Intervention Mutations [x]
 - Create `convex/srs/teacher-mutations.ts` (or add to existing mutations file)
 - Implement `resetStudentCard(teacherId, studentId, problemFamilyId)`:
   - Verify caller is a teacher
@@ -32,7 +32,7 @@
   - Set `due` to `Date.now()` for all cards (makes them due immediately)
   - Log the intervention
 
-### Task 1.3: Write Convex Query/Mutation Tests [ ]
+### Task 1.3: Write Convex Query/Mutation Tests [x]
 - Create `__tests__/convex/srs/teacher-queries.test.ts`
 - Mock Convex context with test data
 - Test `getClassSrsHealth` with various card states
