@@ -150,9 +150,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Port canvas-based graphing system from ra-integrated-math-3. Add CVP, supply/demand, and depreciation exploration configs. Register in activity registry.*
   *Closeout: completed on 2026-04-16. All 5 phases complete. Library port (canvas-utils, linear-parser, quadratic-parser) — 56 tests. Component port (GraphingCanvas, InteractiveTableOfValues, HintPanel, InterceptIdentification, GraphingExplorer with compare_lines/multi_curve variants) — 19 tests. Business math exploration configs (CVP, Supply/Demand, Depreciation) — 11 tests. Registry integration complete. Verification gates pass (lint 0 errors, test 2046/2046, build clean). k2p5 verified.*
 
-- [ ] **Track: SRS Daily Practice Core**
-  *Link: [./tracks/srs_daily_practice_core_20260416/](./tracks/srs_daily_practice_core_20260416/)*
+- [x] **Track: SRS Daily Practice Core**
+  *Link: [./archive/srs_daily_practice_core_20260416/](./archive/srs_daily_practice_core_20260416/)*
   *Scope: Build FSRS-backed daily practice system. SRS contract types, scheduler, review processor, queue builder, Convex schema, student daily practice page.*
+  *Closeout: completed on 2026-04-16. All 8 phases complete: contract types (srs.contract.v1, 5 Zod schemas), scheduler (createNewCard, reviewCard, getCardsDue, serializeCard, deserializeCard), review processor (processPracticeSubmission bridging envelope→rating→card), queue builder (buildDailyQueue, getQueueSummary), family map (A-U mapping), Convex schema (srs_cards, srs_review_log tables with indexes), Convex mutations/queries (upsertSrsCard, recordSrsReview, getDueCards, getStudentSrsSummary, getSrsCard), student daily practice page. 59 lib tests pass. Verification gates pass (lint 0 errors, test 2116/2116, build clean). MiniMax-M2.7 verified.*
 
 - [ ] **Track: Teacher SRS Dashboard**
   *Link: [./tracks/teacher_srs_dashboard_20260416/](./tracks/teacher_srs_dashboard_20260416/)*

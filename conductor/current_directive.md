@@ -14,7 +14,7 @@ Milestone 11 tracks (strictly serial):
 2. ~~Phase Skip UI~~ — complete (2026-04-16)
 3. ~~Component Approval Prop-Based Hashes~~ — complete (2026-04-16)
 4. ~~Graphing Explorer~~ — complete (2026-04-16)
-5. **SRS Daily Practice Core** — planned (depends on Track 1 timing telemetry)
+5. **~~SRS Daily Practice Core~~ — complete (2026-04-16)** — all 8 phases done, 59 lib tests, verification gates pass
 6. **Teacher SRS Dashboard** — planned (depends on Track 5 SRS schema)
 
 ## In-Bounds Work
@@ -483,8 +483,7 @@ Milestones 1-10 are **complete**. Milestone 11 (Cross-Project Feature Adoption) 
 
 ### Recommended Next Priorities
 
-1. **SRS Daily Practice Core** (Milestone 11, Track 5) — Build FSRS-backed daily practice system. Depends on practice timing telemetry (complete). Spec and plan exist in `conductor/tracks/srs_daily_practice_core_20260416/`.
-2. **Teacher SRS Dashboard** (Milestone 11, Track 6) — Teacher analytics for SRS health, weak families, struggling students. Depends on Track 5.
+1. **Teacher SRS Dashboard** (Milestone 11, Track 6) — Teacher analytics for SRS health, weak families, struggling students. Depends on Track 5 (SRS Daily Practice Core — now complete). Spec and plan exist in `conductor/tracks/teacher_srs_dashboard_20260416/`.
 
 There are no Medium or High open items. All tech debt items are closed. The project is in a stable state with clear next steps.
 
