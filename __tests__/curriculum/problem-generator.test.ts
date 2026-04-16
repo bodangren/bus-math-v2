@@ -21,8 +21,8 @@ describe('curriculum/problem-generator', () => {
   });
 
   it('produces varied results without a seed', () => {
-    const a = generateProblemInstance(template);
-    const b = generateProblemInstance(template);
+    const a = generateProblemInstance(template, 1);
+    const b = generateProblemInstance(template, 2);
 
     expect(a.parameters).not.toEqual(b.parameters);
   });
