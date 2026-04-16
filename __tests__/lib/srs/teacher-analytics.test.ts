@@ -36,9 +36,9 @@ describe('lib/srs/teacher-analytics', () => {
       ];
 
       const cards = [
-        { studentId: 's1', problemFamilyId: 'f1', due: now - 1000, lastReview: now - 2000, reviewCount: 1, createdAt: now - 3000 },
-        { studentId: 's1', problemFamilyId: 'f2', due: now + 10000, lastReview: 0, reviewCount: 0, createdAt: now - 3000 },
-        { studentId: 's2', problemFamilyId: 'f1', due: now - 500, lastReview: now - 1000, reviewCount: 2, createdAt: now - 3000 },
+        { studentId: 's1', problemFamilyId: 'f1', due: startOfDay - 1000, lastReview: now - 2000, reviewCount: 1, createdAt: now - 3000 },
+        { studentId: 's1', problemFamilyId: 'f2', due: startOfDay - 500, lastReview: 0, reviewCount: 0, createdAt: now - 3000 },
+        { studentId: 's2', problemFamilyId: 'f1', due: now + 10000, lastReview: now - 1000, reviewCount: 2, createdAt: now - 3000 },
       ];
 
       const result = computeClassHealth(students, cards, now, startOfDay, endOfDay);
@@ -48,7 +48,7 @@ describe('lib/srs/teacher-analytics', () => {
       expect(result.totalCards).toBe(3);
       expect(result.averageRetentionRate).toBeCloseTo(66.7, 1);
       expect(result.overdueCardCount).toBe(2);
-      expect(result.cardsDueToday).toBe(3);
+      expect(result.cardsDueToday).toBe(1);
     });
 
     it('counts only cards due today within day boundaries', () => {

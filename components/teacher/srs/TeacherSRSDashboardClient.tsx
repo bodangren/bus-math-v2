@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { ClassHealthCard, type ClassHealthSummary } from "./ClassHealthCard";
@@ -38,7 +38,7 @@ export function TeacherSRSDashboardClient({
   const [classHealth, setClassHealth] = useState<ClassHealthSummary | null>(null);
   const [weakFamilies, setWeakFamilies] = useState<FamilyPerformance[] | null>(null);
   const [strugglingStudents, setStrugglingStudents] = useState<StudentStruggleMetrics[] | null>(null);
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(classes.length > 0);
 
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [resetStudentId, setResetStudentId] = useState<string>("");
@@ -66,6 +66,12 @@ export function TeacherSRSDashboardClient({
       setIsLoadingData(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedClassId) {
+      loadClassData(selectedClassId);
+    }
+  }, [selectedClassId, loadClassData]);
 
   const handleClassChange = (newClassId: string) => {
     setSelectedClassId(newClassId);

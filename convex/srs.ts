@@ -141,6 +141,8 @@ export const getDueCards = query({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
 
+    await verifyStudentIdentity(ctx, identity, args.studentId);
+
     const cutoff = args.now ?? Date.now();
     const cards: Doc<'srs_cards'>[] = [];
 
@@ -161,6 +163,8 @@ export const getStudentSrsSummary = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
+
+    await verifyStudentIdentity(ctx, identity, args.studentId);
 
     const now = Date.now();
     let totalCards = 0;
@@ -188,6 +192,8 @@ export const getSrsCard = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
+
+    await verifyStudentIdentity(ctx, identity, args.studentId);
 
     return await ctx.db
       .query('srs_cards')
@@ -256,8 +262,9 @@ export const getClassSrsHealth = query({
     }
 
     const now = args.now ?? Date.now();
-    const startOfDay = new Date(now).setHours(0, 0, 0, 0);
-    const endOfDay = new Date(now).setHours(23, 59, 59, 999);
+    const d = new Date(now);
+    const startOfDay = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0, 0);
+    const endOfDay = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 23, 59, 59, 999);
 
     const health = computeClassHealth(students, cards, now, startOfDay, endOfDay);
 
@@ -400,11 +407,13 @@ export const resetStudentCard = mutation({
 
     // Need to check synchronously since find with async doesn't work well
     let isAuthorizedStudent = false;
+    let classId: Id<'classes'> | null = null;
     for (const enrollment of enrollments) {
       if (enrollment.status !== 'active') continue;
       const cls = await ctx.db.get(enrollment.classId);
       if (cls && cls.teacherId === teacher._id) {
         isAuthorizedStudent = true;
+        classId = enrollment.classId;
         break;
       }
     }
@@ -437,17 +446,6 @@ export const resetStudentCard = mutation({
         reviewCount: newCardState.reviewCount,
         createdAt: Date.now(),
       });
-    }
-
-    // Find class for logging
-    let classId: Id<'classes'> | null = null;
-    for (const enrollment of enrollments) {
-      if (enrollment.status !== 'active') continue;
-      const cls = await ctx.db.get(enrollment.classId);
-      if (cls && cls.teacherId === teacher._id) {
-        classId = enrollment.classId;
-        break;
-      }
     }
 
     if (!classId) throw new Error('No valid class found for intervention');

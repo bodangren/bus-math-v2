@@ -50,7 +50,7 @@ describe('lib/srs/review-processor', () => {
         { partId: 'p1', isCorrect: true },
         { partId: 'p2', isCorrect: true },
       ]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('high'));
+      const result = processPracticeSubmission(envelope, null, makeTiming('high'), undefined, 'student-1');
       expect(['Good', 'Easy']).toContain(result.rating);
     });
 
@@ -59,7 +59,7 @@ describe('lib/srs/review-processor', () => {
         { partId: 'p1', isCorrect: false },
         { partId: 'p2', isCorrect: true },
       ]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('high'));
+      const result = processPracticeSubmission(envelope, null, makeTiming('high'), undefined, 'student-1');
       expect(result.rating).toBe('Again');
     });
 
@@ -68,7 +68,7 @@ describe('lib/srs/review-processor', () => {
         { partId: 'p1', isCorrect: true, hintsUsed: 1 },
         { partId: 'p2', isCorrect: true },
       ]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('high'));
+      const result = processPracticeSubmission(envelope, null, makeTiming('high'), undefined, 'student-1');
       expect(result.rating).toBe('Hard');
     });
 
@@ -80,10 +80,11 @@ describe('lib/srs/review-processor', () => {
       expect(result.card.reviewCount).toBe(1);
     });
 
-    it('null cardState without studentId falls back to unknown', () => {
+    it('null cardState without studentId throws error', () => {
       const envelope = makeEnvelope([{ partId: 'p1', isCorrect: true }]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('high'));
-      expect(result.card.studentId).toBe('unknown');
+      expect(() => processPracticeSubmission(envelope, null, makeTiming('high'))).toThrow(
+        'studentId is required when no existing card state is provided'
+      );
     });
 
     it('existing cardState updates card', () => {
@@ -105,7 +106,7 @@ it('timing data with fast speed band can upgrade Good to Easy', () => {
         minSamplesMet: true,
         lastComputedAt: new Date().toISOString(),
       };
-      const result = processPracticeSubmission(envelope, null, timing, baseline);
+      const result = processPracticeSubmission(envelope, null, timing, baseline, 'student-1');
       expect(result.rating).toBe('Easy');
     });
 
@@ -120,13 +121,13 @@ it('timing data with fast speed band can upgrade Good to Easy', () => {
         minSamplesMet: true,
         lastComputedAt: new Date().toISOString(),
       };
-      const result = processPracticeSubmission(envelope, null, timing, baseline);
+      const result = processPracticeSubmission(envelope, null, timing, baseline, 'student-1');
       expect(result.rating).toBe('Hard');
     });
 
     it('low confidence timing is ignored', () => {
       const envelope = makeEnvelope([{ partId: 'p1', isCorrect: true }]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('low'));
+      const result = processPracticeSubmission(envelope, null, makeTiming('low'), undefined, 'student-1');
       expect(result.rating).toBe('Good');
     });
 
@@ -134,13 +135,13 @@ it('timing data with fast speed band can upgrade Good to Easy', () => {
       const envelope = makeEnvelope([
         { partId: 'p1', isCorrect: true, misconceptionTags: ['misconception-1'] },
       ]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('high'));
+      const result = processPracticeSubmission(envelope, null, makeTiming('high'), undefined, 'student-1');
       expect(result.rating).toBe('Again');
     });
 
     it('reviewLog has correct fields', () => {
       const envelope = makeEnvelope([{ partId: 'p1', isCorrect: true }]);
-      const result = processPracticeSubmission(envelope, null, makeTiming('high'));
+      const result = processPracticeSubmission(envelope, null, makeTiming('high'), undefined, 'student-1');
       expect(result.reviewLog.problemFamilyId).toBe('transaction-effects');
       expect(result.reviewLog.rating).toBe(result.rating);
       expect(result.reviewLog.scheduledAt).toBeGreaterThan(0);

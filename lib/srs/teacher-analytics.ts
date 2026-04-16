@@ -81,7 +81,7 @@ export function computeClassHealth(
     if (card.reviewCount > 0) {
       reviewedCards++;
     }
-    if (card.due <= now) {
+    if (card.due < startOfDay) {
       overdueCardCount++;
     }
     if (card.due >= startOfDay && card.due <= endOfDay) {

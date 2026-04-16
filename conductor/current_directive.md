@@ -63,6 +63,50 @@ The following remain out of scope unless a later explicit track opens them:
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
 
+## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 64)
+
+Autonomous deep code review of SRS system, Teacher SRS Dashboard, and Graphing Explorer. Found and fixed multiple security and correctness issues.
+
+**Scope:** Comprehensive audit of all recently-built features (Passes 61-63): SRS Daily Practice Core, Teacher SRS Dashboard, Graphing Explorer, DailyPracticeSession Answer Input.
+
+**Fixed during review: 5 issues**
+
+- **SRS read queries lack studentId authorization** (Critical): `getDueCards`, `getStudentSrsSummary`, and `getSrsCard` in `convex/srs.ts` authenticated the user but never verified the supplied `studentId` belonged to them. Any authenticated student could read any other student's SRS data. Fixed: added `verifyStudentIdentity()` to all three read queries.
+- **Teacher SRS Dashboard never loads data on mount** (High): `TeacherSRSDashboardClient.tsx` had no `useEffect` to trigger initial data fetch; dashboard rendered empty until user manually changed class. Fixed: added `useEffect` and initialized `isLoadingData` correctly.
+- **`overdueCardCount` double-counts cards due today** (Medium): `computeClassHealth` in `teacher-analytics.ts` counted cards with `due <= now` as overdue AND `due within today` as dueToday, causing double-counting. Fixed: changed overdue to `due < startOfDay`.
+- **Duplicate enrollment loop in `resetStudentCard`** (Medium): Iterated enrollments twice (once for authorization, once for classId). Fixed: capture classId during first loop.
+- **UTC date math in teacher SRS queries** (Medium): `getClassSrsHealth` used `new Date().setHours()` which is timezone-dependent; Convex runs in UTC. Fixed: switched to `Date.UTC()`.
+- **`review-processor` falls back to `'unknown'` studentId** (Medium): `processPracticeSubmission` silently used `'unknown'` when no studentId provided and no existing card. Fixed: now throws error requiring studentId.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing)
+- `npm test`: 2191/2191 tests pass (333 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**New open tech-debt items recorded:**
+- SRS write mutations have TOCTOU race (Medium — open, low practical risk)
+- SRS card field uses `v.any()` (Medium — open)
+- SRS rating not validated as enum (Medium — open)
+- SRS mutations trust client-computed state (Medium — open, architectural)
+- Graphing Explorer coordinate space mismatch (High — open)
+- Graphing Explorer duplicate inline parsing (High — open)
+
+**Updated during review:**
+- `convex/srs.ts`: Added `verifyStudentIdentity` to 3 read queries, fixed UTC date math, deduplicated enrollment loop
+- `components/teacher/srs/TeacherSRSDashboardClient.tsx`: Added `useEffect` for initial load, fixed `isLoadingData` init
+- `lib/srs/teacher-analytics.ts`: Fixed `overdueCardCount` double-counting
+- `lib/srs/review-processor.ts`: Removed `'unknown'` fallback, now throws
+- `__tests__/lib/srs/teacher-analytics.test.ts`: Updated test for new overdue semantics
+- `__tests__/lib/srs/review-processor.test.ts`: Updated test for new error-throw behavior
+- `conductor/tech-debt.md`: 6 new open items
+- `conductor/lessons-learned.md`: 3 new entries (IDOR on reads, metric double-counting, useEffect on mount)
+- `conductor/current_directive.md`: Added Pass 64 summary
+- `README.md`: Updated pass number, track status, test count
+
+**Phase status**: All 11 milestones complete. No active tracks. Project in full stabilization. 6 open tech-debt items (2 High, 4 Medium). k2p5 verified.
+
+---
+
 ## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 63)
 
 Autonomous stabilization verification pass following completion of DailyPracticeSession Interactive Answer Input Phases 2-5.
@@ -596,14 +640,20 @@ All milestones (1–11) are **complete** (2026-03-16 through 2026-04-16). Projec
 - Fixed flaky problem-generator test with explicit seeds
 - Built DailyPracticeSession answer input Phase 1: registry pattern, AccountingEquationInput component, 97 new tests
 - Completed DailyPracticeSession answer input Phases 2-5: NormalBalanceInput, ClassificationInput, fallback UX and session polish, verification and closure (100+ new tests total)
+- Pass 64: Fixed SRS read-query IDOR, teacher dashboard mount load, overdue double-counting, UTC date math, review-processor fallback
 
 ### Recommended Next Priorities
 
-No active priorities — project in full stabilization.
+1. **Graphing Explorer rendering fix** (High): `generateFunctionPath` outputs data-space coordinates but SVG expects canvas-space; curves are misrendered. Coordinate transform needed.
+2. **Graphing Explorer duplicate parsing** (High): Inline regex in `GraphingExplorer.tsx` diverges from canonical `parseLinear`/`parseQuadratic`; `parseFloat || 1` swallows coefficient 0.
+3. **SRS card schema validation** (Medium): Replace `v.any()` with proper Convex validator for ts-fsrs Card structure.
 
 ### Open Items
 
-None.
+- SRS write mutations TOCTOU race (Medium — low practical risk, single-student ops)
+- SRS rating enum validation (Medium — client sends correct values)
+- SRS client-trusted state (Medium — architectural, low priority)
+- `averageRetentionRate` naming misleading (Low — cosmetic)
 
 ### Pass 48 Summary
 

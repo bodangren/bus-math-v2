@@ -45,6 +45,6 @@
  - When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
  - AI provider responses (JSON.parse results) must be validated with Zod schema before use — never trust cast types from external APIs; safeParse with fallback is the correct pattern.
  - Async functions in middleware or server guards must always be `await`ed; without `await`, Promises are always truthy and nested fields are always undefined, silently breaking auth and role checks.
- - Convex mutations accepting a `studentId` (or any user-scoped ID) must verify the ID matches the authenticated user's profile — checking `getUserIdentity()` alone only proves authentication, not authorization to act as that student.
- - Never hardcode fallback identity values like `'student-unknown'` in card/document creation; the ID propagates to stored records and breaks all downstream queries. Pass the real ID through the call chain.
- - Tests that assert random shuffle behavior must mock the random source; otherwise they flake when the shuffle happens to return the identity permutation.
+  - Convex mutations AND read queries accepting a user-scoped ID must verify the ID matches the authenticated user's profile — checking `getUserIdentity()` alone only proves authentication, not authorization to act as that user. Never hardcode fallback identity values like `'student-unknown'`.
+  - Tests that assert random shuffle behavior must mock the random source; otherwise they flake when the shuffle happens to return the identity permutation.
+  - "Overdue" vs "due today" metrics must be mutually exclusive; use `due < startOfDay` for overdue to avoid double-counting with `startOfDay <= due <= endOfDay`. Client components loading server data must `useEffect` on mount, not just on user interaction.

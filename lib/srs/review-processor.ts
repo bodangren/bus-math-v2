@@ -27,7 +27,10 @@ export function processPracticeSubmission(
     timingFeatures,
   });
 
-  const effectiveStudentId = studentId ?? cardState?.studentId ?? 'unknown';
+  if (!studentId && !cardState?.studentId) {
+    throw new Error('studentId is required when no existing card state is provided');
+  }
+  const effectiveStudentId = studentId ?? cardState!.studentId;
   const effectiveCard = cardState ?? createNewCard(envelope.activityId, effectiveStudentId);
   const reviewedCard = reviewCard(effectiveCard, ratingResult.rating);
 
