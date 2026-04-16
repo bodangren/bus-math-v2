@@ -130,6 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Code Review Pass 69 — Stabilization Verification**
+  *Link: [./tracks/code_review_pass69_20260416/](./tracks/code_review_pass69_20260416/)*
+  *Scope: Autonomous stabilization verification pass — run lint, tests, build, fix any issues, update documentation.*
+
 - [x] **Track: SRS Tech Debt Resolution**
   *Link: [./archive/srs_tech_debt_resolution_20260416/](./archive/srs_tech_debt_resolution_20260416/)*
   *Scope: Address 2 open SRS tech-debt items — TOCTOU race documentation and client-computed state trust assessment.*
