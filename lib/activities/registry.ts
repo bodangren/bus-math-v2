@@ -53,6 +53,7 @@ import { CrossSheetLinkSimulator } from '@/components/activities/exercises/Cross
 import { ProfitCalculator } from '@/components/activities/exercises/ProfitCalculator';
 import { BudgetWorksheet } from '@/components/activities/exercises/BudgetWorksheet';
 import { ErrorCheckingSystem } from '@/components/activities/exercises/ErrorCheckingSystem';
+import { GraphingExplorer } from '@/components/activities/graphing/GraphingExplorer';
 
 import { resolveActivityComponentKey } from '@/lib/activities/component-keys';
 import type { ActivityComponentKey } from '@/types/activities';
@@ -88,6 +89,7 @@ export const activityRegistry: Record<ActivityComponentKey, ComponentType<any>> 
   'capital-negotiation': CapitalNegotiation,
   'business-stress-test': BusinessStressTest,
   'pay-structure-lab': PayStructureDecisionLab,
+  'graphing-explorer': GraphingExplorer,
 
   // Classification
   'classification': ClassificationActivity,

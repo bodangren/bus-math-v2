@@ -85,6 +85,29 @@ const coreActivityPropsSchemas = {
     cleaningSteps: z.array(z.string()).min(1),
     showHints: z.boolean().default(false),
   }),
+  'graphing-explorer': z.object({
+    activityId: z.string(),
+    mode: z.enum(['teaching', 'guided', 'practice', 'explore']),
+    onSubmit: z.function().optional(),
+    variant: z.enum(['plot_from_equation', 'compare_functions', 'find_intercepts', 'graph_system', 'compare_lines', 'multi_curve']).optional(),
+    equation: z.string(),
+    domain: z.tuple([z.number(), z.number()]).optional(),
+    range: z.tuple([z.number(), z.number()]).optional(),
+    points: z.array(z.tuple([z.number(), z.number()])).optional(),
+    comparisonEquation: z.string().optional(),
+    comparisonQuestion: z.string().optional(),
+    comparisonAnswer: z.enum(['first', 'second']).optional(),
+    linearEquation: z.string().optional(),
+    exploreQuestion: z.string().optional(),
+    explorationPrompts: z.array(z.string()).optional(),
+    sliderDefaults: z.object({
+      a: z.number().optional(),
+      b: z.number().optional(),
+      c: z.number().optional(),
+    }).optional(),
+    secondEquation: z.string().optional(),
+    secondEquationLabel: z.string().optional(),
+  }),
 } as const;
 
 export const activityPropsSchemas = {
@@ -127,6 +150,7 @@ export type PayStructureDecisionLabActivityProps = z.infer<typeof activityPropsS
 export type SpreadsheetActivityProps = z.infer<typeof activityPropsSchemas.spreadsheet>;
 export type SpreadsheetEvaluatorActivityProps = z.infer<typeof activityPropsSchemas['spreadsheet-evaluator']>;
 export type ScenarioSwitchShowtellActivityProps = z.infer<typeof activityPropsSchemas['scenario-switch-showtell']>;
+export type GraphingExplorerActivityProps = z.infer<typeof activityPropsSchemas['graphing-explorer']>;
 
 export const gradingConfigSchema = z.object({
   autoGrade: z.boolean().default(false),

@@ -75,22 +75,23 @@
 
 ## Phase 3: Business Math Exploration Configs
 
-### Task 3.1: Create Exploration Config Data [ ]
+### Task 3.1: Create Exploration Config Data [x]
 - Create `lib/activities/graphing/exploration-configs.ts`
 - Define three config objects as specified in the spec (CVP, Supply/Demand, Depreciation)
 - Each config has: `id`, `title`, `exploreQuestion`, `explorationPrompts`, `equations`, `sliders`, `domain`, `range`
 - Export all three configs as named exports
 - Export a `getExplorationConfig(id: string)` lookup function
 
-### Task 3.2: Write Exploration Config Tests [ ]
+### Task 3.2: Write Exploration Config Tests [x]
 - Create `__tests__/lib/activities/graphing/exploration-configs.test.ts`
 - Test that all three configs have required fields
 - Test that slider defaults are within min/max range
 - Test that equation strings are valid for the linear parser
 - Test `getExplorationConfig` returns correct config by id
 - Test that `getExplorationConfig` returns undefined for unknown id
+- All 11 tests pass
 
-### Task 3.3: Add compare_lines and multi_curve Variants to GraphingExplorer [ ]
+### Task 3.3: Add compare_lines and multi_curve Variants to GraphingExplorer [x]
 - Open `components/activities/graphing/GraphingExplorer.tsx`
 - In the variant switch/render logic, add:
   - `compare_lines`: Renders two lines (e.g., total cost vs total revenue) with sliders controlling coefficients
@@ -98,7 +99,7 @@
 - Both variants should render in `explore` mode with parameter sliders
 - No submission required — the `onSubmit` callback is optional
 
-### Task 3.4: Write Variant Tests [ ]
+### Task 3.4: Write Variant Tests [x]
 - Create or extend `__tests__/components/activities/graphing/GraphingExplorer.test.tsx`
 - Test that `compare_lines` variant renders two function lines
 - Test that `multi_curve` variant renders multiple function lines
