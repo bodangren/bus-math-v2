@@ -44,30 +44,30 @@
 
 ## Phase 2: Dashboard UI
 
-### Task 2.1: Create Teacher SRS Dashboard Page [ ]
+### Task 2.1: Create Teacher SRS Dashboard Page [x]
 - Create `app/teacher/srs/page.tsx`
 - Auth guard: require teacher role
 - Fetch class health data on mount
 - Render three panels: Class Health, Weak Families, Struggling Students
 
-### Task 2.2: Create Class Health Card Component [ ]
+### Task 2.2: Create Class Health Card Component [x]
 - Create `components/teacher/srs/ClassHealthCard.tsx`
 - Display: total students, average retention (%), overdue cards count, cards due today
 - Use existing BM2 card/chart styling patterns
 
-### Task 2.3: Create Weak Families Panel [ ]
+### Task 2.3: Create Weak Families Panel [x]
 - Create `components/teacher/srs/WeakFamiliesPanel.tsx`
 - Table/list showing: family name, `Again` rate, average rating, review count
 - Color-coded: red for high `Again` rate, green for low
 - Click on a family to expand and see individual student breakdowns
 
-### Task 2.4: Create Struggling Students Panel [ ]
+### Task 2.4: Create Struggling Students Panel [x]
 - Create `components/teacher/srs/StrugglingStudentsPanel.tsx`
 - Table showing: student name, overdue cards, average rating, last active date
 - Action buttons per student: "Reset Card" (opens family picker modal)
 - Sort by overdue count descending
 
-### Task 2.5: Create Intervention Modals [ ]
+### Task 2.5: Create Intervention Modals [x]
 - Create `components/teacher/srs/ResetCardModal.tsx`
   - Teacher selects a student and a problem family
   - Confirm button calls `resetStudentCard` mutation
@@ -79,18 +79,18 @@
 
 ## Phase 3: Navigation Integration
 
-### Task 3.1: Add SRS Dashboard Link to Teacher Dashboard [ ]
+### Task 3.1: Add SRS Dashboard Link to Teacher Dashboard [x]
 - Find the teacher dashboard page (likely `app/teacher/dashboard/page.tsx` or similar)
 - Add a new card/link: "SRS Practice Analytics" linking to `/teacher/srs`
 - Place it alongside existing gradebook and reporting links
 
-### Task 3.2: Add Breadcrumbs [ ]
+### Task 3.2: Add Breadcrumbs [x]
 - Teacher SRS dashboard should have breadcrumbs: Dashboard → SRS Practice Analytics
 - Follow existing breadcrumb patterns from `LessonRenderer.tsx`
 
 ## Phase 4: Tests
 
-### Task 4.1: Write Component Tests [ ]
+### Task 4.1: Write Component Tests [x]
 - Create `__tests__/components/teacher/srs/ClassHealthCard.test.tsx`
   - Test rendering with healthy data
   - Test rendering with empty data
@@ -109,8 +109,8 @@
 
 ## Phase 5: Verification
 
-### Task 5.1: Run Full Verification Gates [ ]
-- `npm run lint` — 0 errors
-- `npm test` — all tests pass
+### Task 5.1: Run Full Verification Gates [x]
+- `npm run lint` — 0 errors (2 pre-existing warnings)
+- `npm test` — all tests pass (2164/2164)
 - `npm run build` — clean
 - Commit: `feat(teacher): add SRS practice analytics dashboard with intervention tools`

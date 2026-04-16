@@ -137,6 +137,11 @@ export function TeacherDashboardContent({
                 View Competency Heatmap
               </Link>
             </Button>
+            <Button asChild variant="outline">
+              <Link href="/teacher/srs">
+                SRS Practice Analytics
+              </Link>
+            </Button>
             <TeacherBulkImportDialog />
             <TeacherCreateStudentDialog />
             <TeacherCsvExportButton students={students} />

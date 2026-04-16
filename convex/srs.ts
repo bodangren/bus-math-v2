@@ -1,4 +1,4 @@
-import { mutation, query } from './_generated/server';
+import { internalQuery, mutation, query } from './_generated/server';
 import { v } from 'convex/values';
 import type { Doc, Id } from './_generated/dataModel';
 import {
@@ -522,5 +522,31 @@ export const bumpFamilyPriority = mutation({
     });
 
     return { success: true, affectedCount };
+  },
+});
+
+export const getTeacherClasses = internalQuery({
+  args: {
+    userId: v.id("profiles"),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db.get(args.userId);
+    if (!profile || (profile.role !== "teacher" && profile.role !== "admin")) {
+      return [];
+    }
+
+    const classes = await ctx.db
+      .query("classes")
+      .withIndex("by_teacher", (q) => q.eq("teacherId", args.userId))
+      .collect();
+
+    return classes
+      .filter((c) => !c.archived)
+      .map((cls) => ({
+        id: cls._id,
+        name: cls.name,
+        description: cls.description ?? null,
+        academicYear: cls.academicYear ?? null,
+      }));
   },
 });
