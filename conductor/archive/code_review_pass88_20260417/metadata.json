@@ -1,0 +1,10 @@
+{
+  "track_id": "code_review_pass88_20260417",
+  "title": "Code Review Pass 88 — Stabilization Verification",
+  "status": "in_progress",
+  "created": "2026-04-17",
+  "phase": "1",
+  "totalPhases": "1",
+  "scope": "Autonomous stabilization verification pass following Pass 87 — run lint, tests, build, verify no regressions.",
+  "model": "MiniMax-M2.7"
+}
