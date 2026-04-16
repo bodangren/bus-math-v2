@@ -1,5 +1,31 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 69)
+
+Autonomous code review of the last 3 passes (66–68): Graphing Explorer Rendering Fix, SRS Schema Validation Hardening, and Lint/StudyHubHome/Archive Links cleanup.
+
+**Scope:** Comprehensive audit of all changes since Pass 65 — canvas-space coordinate fix, strict SRS validators, weak-topics bug fix, lint cleanup, and archive link repairs.
+
+**Fixed during review: 0 issues**
+
+**What was reviewed:**
+- **Graphing Explorer Rendering Fix (Pass 66)**: `generateFunctionPath` now uses `transformDataToCanvas` to emit canvas-space coordinates; removed `scale(1, -1)` hack. Inline regex replaced with `parseLinear`/`parseQuadratic`. Zero coefficients handled correctly. 133 new test lines. Clean.
+- **SRS Schema Validation Hardening (Pass 67)**: `convex/srs-validators.ts` created with `srsCardValidator` (10-field v.object) and `srsRatingValidator` (4-value v.union). Schema and mutation args updated. 9 structural validator tests. Clean.
+- **Lint/StudyHubHome/Archive Links (Pass 68)**: `StudyHubHome` weak topic filtering fixed (`mastery` → `masteryScore`), unnecessary `useMemo` dep removed, worker named default export, 8 stale tracks.md archive links repaired. Regression tests added. Clean.
+
+**Pre-existing open items confirmed:**
+- SRS write mutations have TOCTOU race (Medium — low practical risk)
+- SRS mutations trust client-computed card state (Medium — architectural, low priority)
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Phase status**: All 11 milestones complete. 158 tracks archived. No active tracks. Project in full stabilization. 2 open tech-debt items (both Medium, low risk). k2p5 verified.
+
+---
+
 ## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 68)
 
 Autonomous stabilization pass fixing remaining lint warnings, a weak-topics filtering bug, and stale tracks.md archive links.
@@ -31,7 +57,12 @@ All 11 milestones (2026-03-16 through 2026-04-16) are complete. Project in full 
 
 ## Phase Focus
 
-Milestone 11 — Cross-Project Feature Adoption. Port proven features from `ra-integrated-math-3`. All 6 tracks complete: Practice Timing Telemetry, Phase Skip UI, Component Approval Prop-Based Hashes, Graphing Explorer, SRS Daily Practice Core, Teacher SRS Dashboard. Milestone 11 closed 2026-04-16.
+Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). All DailyPracticeSession Interactive Answer Input phases complete (2026-04-16). 158 tracks archived.
+
+**Next high-level priorities:**
+1. **Ongoing stabilization**: Continue periodic code review passes as needed
+2. **Tech debt resolution**: 2 open Medium items (SRS TOCTOU race, SRS client-computed state trust) — both low risk for classroom use
+3. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
 
 ## Required Execution Order
 
@@ -46,7 +77,7 @@ Milestone 11 tracks (strictly serial):
 
 ## Post-Milestone State
 
-All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization.
+All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 158 tracks archived. 2211 tests passing across 335 test files. Zero lint errors/warnings. Build clean.
 
 ## In-Bounds Work
 
