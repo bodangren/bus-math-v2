@@ -1,0 +1,46 @@
+{
+  "id": "code_review_pass78_20260417",
+  "created": "2026-04-17",
+  "model": "MiniMax-M2.7",
+  "status": "in_progress",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Run Verification Gates",
+      "status": "pending",
+      "tasks": [
+        "Run npm run lint",
+        "Run npm test",
+        "Run npm run build",
+        "Fix any issues found"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Documentation Sync",
+      "status": "pending",
+      "tasks": [
+        "Update current_directive.md with Pass 78 summary",
+        "Update README.md pass number",
+        "Verify tech-debt.md and lessons-learned.md line counts"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Finalize",
+      "status": "pending",
+      "tasks": [
+        "Update track status in tracks.md",
+        "Archive track to conductor/archive/",
+        "Commit with model name"
+      ]
+    }
+  ],
+  "actual_tasks": 0,
+  "deviation_notes": "",
+  "verification": {
+    "lint": "pending",
+    "test": "pending",
+    "build": "pending"
+  }
+}
