@@ -9,7 +9,7 @@ import {
   submissionStatusValidator,
   issueCategoryValidator,
 } from "./component_approval_validators";
-import { computeComponentVersionHash } from "@/lib/component-approval/version-hashes";
+import { computeComponentVersionHash } from "../lib/component-approval/version-hashes";
 
 export const getComponentApproval = query({
   args: {

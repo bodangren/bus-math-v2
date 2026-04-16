@@ -1,7 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { scheduleNewTerm, processReview as processFsrsReview, proficiencyBand, updateMastery } from "@/lib/study/srs";
-import { getGlossaryTermsByUnit } from "@/lib/study/glossary";
+import { scheduleNewTerm, processReview as processFsrsReview, proficiencyBand, updateMastery } from "../lib/study/srs";
+import { getGlossaryTermsByUnit } from "../lib/study/glossary";
 import type { Card } from "ts-fsrs";
 
 export const getStudyPreferences = query({

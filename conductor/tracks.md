@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Convex Codegen SRS Fix**
+  *Link: [./tracks/convex_codegen_srs_fix_20260416/](./tracks/convex_codegen_srs_fix_20260416/)*
+  *Scope: Fix `@/` path aliases in convex/ directory that block codegen bundling, then regenerate api.d.ts to include the srs module and resolve stale generated types.*
+  *Closeout: completed on 2026-04-16. Fixed `@/` imports in convex/study.ts and convex/component_approvals.ts to use relative paths. Regenerated api.d.ts with `npx convex codegen`; srs module now present. All verification gates pass (lint 0 errors/2 warnings, test 2167/2167, build clean). Tech-debt item closed. k2p5 verified.*
+
 - [x] **Track: Practice Timing Telemetry**
   *Link: [./archive/practice_timing_telemetry_20260416/](./archive/practice_timing_telemetry_20260416/)*
   *Scope: Port TimingAccumulator, timing baselines, SRS rating adapter, and usePracticeTiming hook from ra-integrated-math-3. Add timing field to practice.v1 envelope.*
