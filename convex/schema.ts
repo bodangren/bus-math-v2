@@ -469,4 +469,32 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_user", ["userId"]),
+
+  srs_cards: defineTable({
+    studentId: v.id("profiles"),
+    problemFamilyId: v.string(),
+    card: v.any(),
+    due: v.number(),
+    lastReview: v.number(),
+    reviewCount: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_student", ["studentId"])
+    .index("by_student_due", ["studentId", "due"])
+    .index("by_student_family", ["studentId", "problemFamilyId"]),
+
+  srs_review_log: defineTable({
+    studentId: v.id("profiles"),
+    problemFamilyId: v.string(),
+    rating: v.string(),
+    scheduledAt: v.number(),
+    reviewedAt: v.number(),
+    elapsedDays: v.number(),
+    scheduledDays: v.number(),
+    reviewDurationMs: v.optional(v.number()),
+    timingConfidence: v.optional(v.string()),
+  })
+    .index("by_student", ["studentId"])
+    .index("by_student_family", ["studentId", "problemFamilyId"])
+    .index("by_student_date", ["studentId", "reviewedAt"]),
 });

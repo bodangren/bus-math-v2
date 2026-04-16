@@ -47,3 +47,5 @@
 - When mocking 'fs' in Vitest for Node.js ESM code, use `importOriginal` and spread the actual fs module, then override the functions you need to mock.
 - AI provider responses (JSON.parse results) must be validated with Zod schema before use — never trust cast types from external APIs; safeParse with fallback is the correct pattern.
 - Async functions in middleware or server guards must always be `await`ed; without `await`, Promises are always truthy and nested fields are always undefined, silently breaking auth and role checks.
+- ts-fsrs `createEmptyCard()` requires a `Date` argument at runtime despite TypeScript declarations suggesting it takes no arguments; always pass `new Date()` to avoid `Invalid Date` errors.
+- Convex `v.optional()` is the correct pattern for optional fields in schema validators — not `v.number().optional()` which doesn't exist on the VFloat64 type.
