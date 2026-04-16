@@ -145,9 +145,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Replace build-time file-hash manifest with runtime prop-based content hashes. Fix example version hashing. Delete manifest generator.*
   *Closeout: completed on 2026-04-16. Created lib/activities/content-hash.ts with computeComponentContentHash (crypto.subtle SHA-256), deepSortKeys, and resolveComponentKind helper. Rewrote version-hashes.ts to use runtime prop-based hashing instead of build-time manifest. Functions are now async and accept props/gradingConfig parameters. Updated getReviewQueue and submitComponentReview to use async hash computation. Deleted lib/component-versions.json and scripts/generate-component-manifest.ts. Removed generate:component-manifest from package.json predev/build hooks. 19 new tests for content-hash, 33 updated tests for async hash functions. All 1960 tests pass, lint 0 errors (2 pre-existing warnings), build clean. Updated tech-debt.md and lessons-learned.md. MiniMax-M2.7 verified.*
 
-- [ ] **Track: Graphing Explorer**
-  *Link: [./tracks/graphing_explorer_20260416/](./tracks/graphing_explorer_20260416/)*
+- [x] **Track: Graphing Explorer**
+  *Link: [./archive/graphing_explorer_20260416/](./archive/graphing_explorer_20260416/)*
   *Scope: Port canvas-based graphing system from ra-integrated-math-3. Add CVP, supply/demand, and depreciation exploration configs. Register in activity registry.*
+  *Closeout: completed on 2026-04-16. All 5 phases complete. Library port (canvas-utils, linear-parser, quadratic-parser) — 56 tests. Component port (GraphingCanvas, InteractiveTableOfValues, HintPanel, InterceptIdentification, GraphingExplorer with compare_lines/multi_curve variants) — 19 tests. Business math exploration configs (CVP, Supply/Demand, Depreciation) — 11 tests. Registry integration complete. Verification gates pass (lint 0 errors, test 2046/2046, build clean). k2p5 verified.*
 
 - [ ] **Track: SRS Daily Practice Core**
   *Link: [./tracks/srs_daily_practice_core_20260416/](./tracks/srs_daily_practice_core_20260416/)*
