@@ -1,6 +1,6 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, Milestones 8–10 are all complete. Milestones 1–10 closed between 2026-03-16 and 2026-04-11. Milestone 11 (Cross-Project Feature Adoption) is active — 5 of 6 tracks complete.
+All 11 milestones (2026-03-16 through 2026-04-16) are complete. Project in full stabilization. DailyPracticeSession Interactive Answer Input track (Phase 1 of 5 complete) is the active work.
 
 ## Phase Focus
 
@@ -62,6 +62,37 @@ The following remain out of scope unless a later explicit track opens them:
 - LMS-style assignments, messaging, discussions, or grading ecosystems beyond the in-product reporting loop
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
+
+## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 62)
+
+Autonomous code review covering all work since Pass 61: Convex Codegen SRS Fix track, Milestone 11 archival, flaky test fix, and DailyPracticeSession Interactive Answer Input Phase 1.
+
+**Scope:** 4 commits since Pass 61 — fixed `@/` path aliases in `convex/` directory and regenerated `api.d.ts` with srs module, archived completed Convex codegen track, fixed flaky problem-generator test with explicit seeds, and implemented answer-input registry with AccountingEquationInput component.
+
+**Fixed during review: 0 issues**
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing: StudyHubHome useMemo dep, worker default export)
+- `npm test`: 2175/2175 tests pass (331 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+- **Convex Codegen SRS Fix**: Clean 2-file fix replacing `@/` imports in `convex/study.ts` (4 imports) and `convex/component_approvals.ts` (1 import) with relative paths. `api.d.ts` regenerated with srs module. Track properly archived.
+- **Flaky Test Fix**: `problem-generator.test.ts` now passes explicit seeds (1, 2) to `generateProblemInstance` instead of relying on unseeded randomness. Deterministic.
+- **DailyPracticeSession Phase 1**: Registry pattern (`lib/srs/answer-inputs/registry.ts`) mapping family keys to answer-input components. `AccountingEquationInput` renders visible facts, numeric input for hidden term, calls `family.grade()` and `toEnvelope()`, shows correct/incorrect feedback. `DailyPracticeSession` checks registry before falling back to auto-solve renderer. 97 new tests across 3 test files. Clean.
+
+**Pre-existing issues confirmed (not fixed):**
+- `AccountingEquationInput` uses `as any` casts for `family.grade()` and `family.toEnvelope()` — methods exist on `ProblemFamily` interface but generic type parameter resolution requires the cast when using `ProblemFamily<unknown, unknown, unknown>` (acceptable, low)
+- `DailyPracticeSession` still has `as any` casts for `practiceFamilyRegistry` lookup and `family.generate`/`family.solve` — same type parameter issue (acceptable, low)
+- Pre-existing TypeScript errors across 149 locations in test files and stale Convex API references (not introduced by recent work)
+
+**Updated during review:**
+- conductor/current_directive.md: Updated phase focus, added Pass 62 summary
+- README.md: Updated Milestone 11 status, pass number, test count, archived track count, active track status
+
+**Phase status**: All 11 milestones complete. Active track: DailyPracticeSession Interactive Answer Input (Phase 1 of 5 complete). All verification gates pass.
+
+---
 
 ## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 61)
 
@@ -536,24 +567,22 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 All milestones (1–11) are **complete** (2026-03-16 through 2026-04-16). Project in full stabilization.
 
-### Completed Since Pass 60
+### Completed Since Pass 61
 
-- Built SRS Daily Practice Core: contract types, scheduler, review processor, queue builder, family map, Convex schema, student daily practice page (72 lib tests + 7 component tests)
-- Built Teacher SRS Dashboard: class health, weak families, struggling students queries, intervention mutations (reset card, bump priority), dashboard UI, navigation integration, component/page tests, verification (12 analytics tests + 16 component/page tests)
-- Fixed: review-processor hardcoded 'student-unknown' studentId (High)
-- Fixed: DailyPracticeSession revealed correct answer before submission (High)
-- Fixed: upsertSrsCard/recordSrsReview didn't verify studentId matches authenticated user (Medium)
-- Fixed: flaky `shuffleAnswers` test in question-banks.test.ts by mocking Math.random for deterministic behavior
+- Fixed Convex codegen: replaced `@/` path aliases in convex/ directory with relative paths, regenerated api.d.ts with srs module
+- Archived Convex codegen fix track
+- Fixed flaky problem-generator test with explicit seeds
+- Built DailyPracticeSession answer input Phase 1: registry pattern, AccountingEquationInput component, 97 new tests
 
 ### Recommended Next Priorities
 
-1. ~~Convex codegen regeneration~~ — Resolved 2026-04-16. Fixed `@/` path aliases in `convex/` directory and regenerated `api.d.ts` with the `srs` module via `npx convex codegen`.
-2. **DailyPracticeSession interactive answer input** (Low priority) — Current MVP auto-solves and grades. Needs per-family interactive answer components for a real practice experience.
+1. **DailyPracticeSession Phase 2: normal-balance selection input** (active track) — Build debit/credit selection for normal-balance practice family
+2. **DailyPracticeSession Phase 3: classification categorization input** — Build category dropdown for classification practice family
+3. **DailyPracticeSession Phase 4: Fallback UX and session polish** — Next-problem button, loading states, focus management
 
 ### Open Items
 
-- ~~Convex generated API stale — missing srs module~~ (Medium — Closed 2026-04-16)
-- DailyPracticeSession MVP answer input (Low)
+- DailyPracticeSession answer input — Phases 2-5 pending (normal-balance, classification, UX polish, verification)
 
 ### Pass 48 Summary
 
