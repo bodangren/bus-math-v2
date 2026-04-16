@@ -130,6 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Code Review Pass 76 — Deferred Quality Cleanup**
+  *Link: [./tracks/code_review_pass76_20260417/](./tracks/code_review_pass76_20260417/)*
+  *Scope: Address deferred quality items from Pass 74 — console.log cleanup, public query auth documentation, v.any() assessment, and documentation sync.*
+
 - [x] **Track: Code Review Pass 75 — Stabilization Verification**
   *Link: [./archive/code_review_pass75_20260417/](./archive/code_review_pass75_20260417/)*
   *Scope: Autonomous stabilization verification pass — run lint, tests, build, fix any issues, update documentation.*

@@ -1,0 +1,11 @@
+{
+  "track_id": "code_review_pass76_20260417",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-04-17T00:00:00Z",
+  "updated_at": "2026-04-17T00:00:00Z",
+  "description": "Code Review Pass 76 — Deferred quality cleanup and stabilization verification. Address console.log cleanup, v.any() documentation, public query auth notes, and documentation sync.",
+  "estimated_tasks": 3,
+  "actual_tasks": null,
+  "deviation_notes": ""
+}

@@ -128,13 +128,5 @@ export async function POST(request: NextRequest) {
   const prompt = buildPrompt(context, sanitizedQuestion);
   const aiResponse = await provider(prompt);
 
-  console.log('[lesson-chatbot]', {
-    userId: session.sub,
-    lessonId,
-    phaseNumber,
-    questionLength: sanitizedQuestion.length,
-    responseLength: aiResponse.length,
-  });
-
   return NextResponse.json({ response: aiResponse });
 }
