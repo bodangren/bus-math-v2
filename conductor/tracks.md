@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: SRS Tech Debt Resolution**
+  *Link: [./archive/srs_tech_debt_resolution_20260416/](./archive/srs_tech_debt_resolution_20260416/)*
+  *Scope: Address 2 open SRS tech-debt items — TOCTOU race documentation and client-computed state trust assessment.*
+  *Closeout: completed on 2026-04-16. Added defensive documentation to convex/srs.ts for TOCTOU race window and client-computed state trust. Updated tech-debt.md to close both items with documentation notes. Added lessons-learned.md entry about Convex transaction limitations. All verification gates pass (lint 0 errors, test 2211/2211, build clean). MiniMax-M2.7 verified.*
+
 - [x] **Track: Code Review Pass 68 — Stabilization and Lint Cleanup**
   *Link: [./archive/code_review_pass68_20260416/](./archive/code_review_pass68_20260416/)*
   *Scope: Fix remaining lint warnings, repair StudyHubHome weak-topics filtering bug, fix stale tracks.md archive links, run verification gates.*

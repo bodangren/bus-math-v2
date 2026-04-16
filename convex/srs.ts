@@ -36,6 +36,14 @@ export const upsertSrsCard = mutation({
     reviewCount: v.number(),
   },
   handler: async (ctx, args) => {
+    // NOTE: This mutation has a TOCTOU (Time-of-Check-Time-of-Use) race window.
+    // Convex does not support transactions that atomically check existence and insert/update.
+    // Between the `existing` check and the patch/insert, concurrent requests could:
+    //   1. Both find no existing card → both insert → duplicate cards for same student+family
+    //   2. Both find existing card → both patch → second write wins (harmless)
+    // Low practical risk: duplicate inserts are unlikely given student practice flow,
+    // and the duplicate would have identical content. Mitigation: unique index on
+    // by_student_family would catch this at the DB level if Convex supported it.
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
 
@@ -88,6 +96,19 @@ export const recordSrsReview = mutation({
     reviewCount: v.number(),
   },
   handler: async (ctx, args) => {
+    // NOTE: This mutation trusts client-computed card state (FSRS scheduling).
+    // The client computes the new card state via family.grade() and family.toEnvelope(),
+    // then submits it to this mutation. The server validates the shape via srsCardValidator
+    // but does NOT re-compute the FSRS algorithm server-side.
+    //
+    // TOCTOU race: The review log insert and card patch/insert are not atomic.
+    // Concurrent reviews could result in lost updates if timing is unlucky.
+    // Low practical risk: students typically practice once per session.
+    //
+    // Architectural note: Moving FSRS computation server-side would eliminate this trust
+    // issue but requires significant refactoring. ts-fsrs is a pure TypeScript library
+    // and could run in Convex, but the practice family grading engine runs client-side
+    // for immediate feedback. Acceptable tradeoff for classroom use.
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
 

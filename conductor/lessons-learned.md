@@ -2,6 +2,7 @@
 > Keep this file at or below **50 lines**. It is curated working memory, not a log.
 ### Architecture and Planning
 - Convex must remain the only runtime source of truth, and published lesson version helpers must be shared rather than recomputed.
+- Convex does not support transactions that atomically span check-then-act patterns across multiple DB operations. Use defensive comments to document TOCTOU race windows; low practical risk when client flows are sequential.
 ### Recurring Gotchas
 - Public prerendered pages must tolerate empty Convex results so a clean production build does not depend on seeded local data.
 - JWT-protected proxy rules must explicitly allow unauthenticated auth bootstrap endpoints or the login page will redirect its own API calls back to itself.
