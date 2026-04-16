@@ -1,0 +1,1 @@
+Phase 1 checkpoint: Ported canvas-utils.ts, linear-parser.ts, quadratic-parser.ts and their tests (56 tests). Verification: lint 0 errors, 2016/2016 tests pass, build clean.
