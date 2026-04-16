@@ -412,8 +412,14 @@ export function CashFlowChallenge({ activity, onSubmit }: CashFlowChallengeProps
         },
       })
 
-      onSubmit?.(envelope)
-      addNotification('Results submitted successfully!', 'success')
+      try {
+        onSubmit?.(envelope)
+        addNotification('Results submitted successfully!', 'success')
+      } catch (err) {
+        console.error('CashFlowChallenge submission failed:', err)
+        submittedRef.current = false
+        setSubmitted(false)
+      }
     }
   }, [gameState, actionsLog, onSubmit, activity, addNotification])
 

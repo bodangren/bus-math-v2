@@ -55,15 +55,21 @@ export function MethodComparisonSimulator({ activity, onSubmit, onComplete }: Me
     if (isNaN(slNum) || isNaN(ddbNum) || (correctUOP !== null && isNaN(uopNum))) return
     submittedRef.current = true
     setSubmitted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'method-comparison-simulator',
-        mode: 'independent_practice',
-        answers: { sl: slNum, ddb: ddbNum, uop: uopNum, slCorrect, ddbCorrect, uopCorrect },
-        parts: [createSimulationPart('sl-year1', slNum, { isCorrect: slCorrect }), createSimulationPart('ddb-year1', ddbNum, { isCorrect: ddbCorrect })],
-        artifact: { assetName: asset.name, cost: asset.cost, salvageValue: asset.salvageValue, usefulLife: asset.usefulLife, correctSL, correctDDB, correctUOP },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'method-comparison-simulator',
+          mode: 'independent_practice',
+          answers: { sl: slNum, ddb: ddbNum, uop: uopNum, slCorrect, ddbCorrect, uopCorrect },
+          parts: [createSimulationPart('sl-year1', slNum, { isCorrect: slCorrect }), createSimulationPart('ddb-year1', ddbNum, { isCorrect: ddbCorrect })],
+          artifact: { assetName: asset.name, cost: asset.cost, salvageValue: asset.salvageValue, usefulLife: asset.usefulLife, correctSL, correctDDB, correctUOP },
+        }),
+      )
+    } catch (err) {
+      console.error('MethodComparisonSimulator submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+    }
   }, [slNum, ddbNum, uopNum, slCorrect, ddbCorrect, uopCorrect, onSubmit, activity.id, asset, correctSL, correctDDB, correctUOP])
 
   return (

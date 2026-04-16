@@ -90,16 +90,22 @@ export function DynamicMethodSelector({ activity, onSubmit, onComplete }: Dynami
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'dynamic-method-selector',
-        mode: 'independent_practice',
-        answers: { selectedScenario, selectedMethod, cogs: lookup?.cogs, endingInventory: lookup?.endingInventory },
-        parts: [createSimulationPart('scenario', selectedScenario), createSimulationPart('method', selectedMethod), createSimulationPart('cogs', lookup?.cogs ?? 0)],
-        artifact: { compositeKey, cogs: lookup?.cogs, endingInventory: lookup?.endingInventory },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'dynamic-method-selector',
+          mode: 'independent_practice',
+          answers: { selectedScenario, selectedMethod, cogs: lookup?.cogs, endingInventory: lookup?.endingInventory },
+          parts: [createSimulationPart('scenario', selectedScenario), createSimulationPart('method', selectedMethod), createSimulationPart('cogs', lookup?.cogs ?? 0)],
+          artifact: { compositeKey, cogs: lookup?.cogs, endingInventory: lookup?.endingInventory },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('DynamicMethodSelector submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [selectedScenario, selectedMethod, lookup, onSubmit, onComplete, activity.id, compositeKey])
 
   return (

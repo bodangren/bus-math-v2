@@ -65,15 +65,21 @@ export function DepreciationMethodComparisonSimulator({ activity, onSubmit, onCo
     if (isNaN(slNum) || isNaN(ddbNum)) return
     submittedRef.current = true
     setSubmitted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'depreciation-method-comparison',
-        mode: 'independent_practice',
-        answers: { slYear1: slNum, ddbYear1: ddbNum, slCorrect, ddbCorrect },
-        parts: [createSimulationPart('sl-year1', slNum, { isCorrect: slCorrect }), createSimulationPart('ddb-year1', ddbNum, { isCorrect: ddbCorrect })],
-        artifact: { assetName: asset.name, cost: asset.cost, salvageValue: asset.salvageValue, usefulLife: asset.usefulLife, schedule },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'depreciation-method-comparison',
+          mode: 'independent_practice',
+          answers: { slYear1: slNum, ddbYear1: ddbNum, slCorrect, ddbCorrect },
+          parts: [createSimulationPart('sl-year1', slNum, { isCorrect: slCorrect }), createSimulationPart('ddb-year1', ddbNum, { isCorrect: ddbCorrect })],
+          artifact: { assetName: asset.name, cost: asset.cost, salvageValue: asset.salvageValue, usefulLife: asset.usefulLife, schedule },
+        }),
+      )
+    } catch (err) {
+      console.error('DepreciationMethodComparisonSimulator submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+    }
   }, [slNum, ddbNum, slCorrect, ddbCorrect, onSubmit, activity.id, asset, schedule])
 
   return (

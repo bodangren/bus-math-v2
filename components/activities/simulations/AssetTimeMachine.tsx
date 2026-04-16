@@ -132,8 +132,14 @@ export function AssetTimeMachine({ activity, onComplete, onSubmit }: AssetTimeMa
         },
       })
 
-      onSubmit?.(envelope)
-      onComplete?.(result)
+      try {
+        onSubmit?.(envelope)
+        onComplete?.(result)
+      } catch (err) {
+        console.error('AssetTimeMachine submission failed:', err)
+        submittedRef.current = false
+        setIsComplete(false)
+      }
     } else {
       setCurrentYear(nextYear)
     }

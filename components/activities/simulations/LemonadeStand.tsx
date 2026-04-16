@@ -492,9 +492,15 @@ export function LemonadeStand({ activity, initialState, onStateChange, onSubmit 
       },
     })
 
-    setSubmitted(true)
-    onSubmit?.(envelope)
-    addNotification('Results submitted as practice evidence!', 'success')
+    try {
+      setSubmitted(true)
+      onSubmit?.(envelope)
+      addNotification('Results submitted as practice evidence!', 'success')
+    } catch (err) {
+      console.error('LemonadeStand submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+    }
   }, [gameState, activity, onSubmit, addNotification])
 
   const profit = gameState.revenue - gameState.expenses

@@ -26,20 +26,20 @@
 
 ## Phase 2: Simulation Components
 
-- [ ] Task: Add try/catch error handling to simulation components
-  - [ ] AssetRegisterSimulator.tsx
-  - [ ] AssetTimeMachine.tsx
-  - [ ] BudgetBalancer.tsx
-  - [ ] BusinessStressTest.tsx
-  - [ ] CafeSupplyChaos.tsx
-  - [ ] CapitalNegotiation.tsx
-  - [ ] CashFlowChallenge.tsx
-  - [ ] DepreciationMethodComparisonSimulator.tsx
-  - [ ] DynamicMethodSelector.tsx
-  - [ ] LemonadeStand.tsx
-  - [ ] MethodComparisonSimulator.tsx
-  - [ ] NotebookOrganizer.tsx
-  - [ ] ScenarioSwitchShowTell.tsx
+- [x] Task: Add try/catch error handling to simulation components
+  - [x] AssetRegisterSimulator.tsx
+  - [x] AssetTimeMachine.tsx
+  - [x] BudgetBalancer.tsx
+  - [x] BusinessStressTest.tsx
+  - [x] CafeSupplyChaos.tsx
+  - [x] CapitalNegotiation.tsx
+  - [x] CashFlowChallenge.tsx
+  - [x] DepreciationMethodComparisonSimulator.tsx
+  - [x] DynamicMethodSelector.tsx
+  - [x] LemonadeStand.tsx
+  - [x] MethodComparisonSimulator.tsx
+  - [x] NotebookOrganizer.tsx
+  - [x] ScenarioSwitchShowTell.tsx
 - [ ] Task: Write regression tests for representative simulation component error handling
 - [ ] Task: Run lint, tests, and build verification
 

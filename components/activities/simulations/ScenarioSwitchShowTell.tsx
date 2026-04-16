@@ -51,16 +51,22 @@ export function ScenarioSwitchShowTell({ activity, onSubmit, onComplete }: Scena
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'scenario-switch-showtell',
-        mode: 'independent_practice',
-        answers: { viewedScenarios: scenarios.map(s => s.id), comparisons: comparisonNotes },
-        parts: comparisonNotes.map((note, i) => createSimulationPart(`comparison-${i}`, note.insight)),
-        artifact: { scenarioLabels: scenarios.map(s => s.label), comparisonCount: comparisonNotes.length },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'scenario-switch-showtell',
+          mode: 'independent_practice',
+          answers: { viewedScenarios: scenarios.map(s => s.id), comparisons: comparisonNotes },
+          parts: comparisonNotes.map((note, i) => createSimulationPart(`comparison-${i}`, note.insight)),
+          artifact: { scenarioLabels: scenarios.map(s => s.label), comparisonCount: comparisonNotes.length },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('ScenarioSwitchShowTell submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [comparisonNotes, scenarios, onSubmit, onComplete, activity.id])
 
   return (

@@ -108,8 +108,14 @@ export function CapitalNegotiation({ activity, onComplete, onSubmit }: CapitalNe
       },
     })
 
-    onSubmit?.(envelope)
-    onComplete?.({ selection })
+    try {
+      onSubmit?.(envelope)
+      onComplete?.({ selection })
+    } catch (err) {
+      console.error('CapitalNegotiation submission failed:', err)
+      submittedRef.current = false
+      setIsComplete(false)
+    }
   }
 
   const reset = () => {

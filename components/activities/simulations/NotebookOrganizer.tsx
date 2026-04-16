@@ -178,8 +178,15 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
 
       setIsComplete(true)
       setSubmitted(true)
-      onSubmit?.(submission)
-      onComplete?.({ totals, items: placedItems })
+      try {
+        onSubmit?.(submission)
+        onComplete?.({ totals, items: placedItems })
+      } catch (err) {
+        console.error('NotebookOrganizer submission failed:', err)
+        submittedRef.current = false
+        setIsComplete(false)
+        setSubmitted(false)
+      }
     }
   }, [activity, allItemsPlaced, correctPlacements, equationBalanced, initialMessage, isComplete, items, onComplete, onSubmit, placedItems, successMessage, totals])
 
@@ -243,10 +250,17 @@ export function NotebookOrganizer({ activity, onComplete, onSubmit }: NotebookOr
       initialMessage,
     })
 
-    setSubmitted(true)
-    setIsComplete(true)
-    onSubmit?.(submission)
-    onComplete?.({ totals, items: placedItems })
+    try {
+      setSubmitted(true)
+      setIsComplete(true)
+      onSubmit?.(submission)
+      onComplete?.({ totals, items: placedItems })
+    } catch (err) {
+      console.error('NotebookOrganizer submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setIsComplete(false)
+    }
   }
 
   const renderFolder = (id: 'asset' | 'liability' | 'equity', title: string, colorClass: string, icon: LucideIcon) => {

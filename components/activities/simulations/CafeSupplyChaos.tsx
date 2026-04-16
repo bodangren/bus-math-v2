@@ -171,8 +171,14 @@ export function CafeSupplyChaos({ activity, onComplete, onSubmit }: CafeSupplyCh
         },
       })
 
-      onSubmit?.(envelope)
-      onComplete?.({ method: method!, sales: allSales })
+      try {
+        onSubmit?.(envelope)
+        onComplete?.({ method: method!, sales: allSales })
+      } catch (err) {
+        console.error('CafeSupplyChaos submission failed:', err)
+        submittedRef.current = false
+        setIsComplete(false)
+      }
     } else {
       setCurrentDay(nextDay)
     }

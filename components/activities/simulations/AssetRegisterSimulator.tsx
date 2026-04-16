@@ -66,15 +66,21 @@ export function AssetRegisterSimulator({ activity, onSubmit, onComplete }: Asset
     if (isNaN(annualExpenseNum) || isNaN(year3BVNum)) return
     submittedRef.current = true
     setSubmitted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'asset-register-simulator',
-        mode: 'independent_practice',
-        answers: { annualExpense: annualExpenseNum, year3BV: year3BVNum, annualExpenseCorrect, year3BVCorrect },
-        parts: [createSimulationPart('annual-expense', annualExpenseNum, { isCorrect: annualExpenseCorrect }), createSimulationPart('year3-bv', year3BVNum, { isCorrect: year3BVCorrect })],
-        artifact: { assetName: asset.name, cost: asset.cost, method: asset.method, schedule: correctSchedule },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'asset-register-simulator',
+          mode: 'independent_practice',
+          answers: { annualExpense: annualExpenseNum, year3BV: year3BVNum, annualExpenseCorrect, year3BVCorrect },
+          parts: [createSimulationPart('annual-expense', annualExpenseNum, { isCorrect: annualExpenseCorrect }), createSimulationPart('year3-bv', year3BVNum, { isCorrect: year3BVCorrect })],
+          artifact: { assetName: asset.name, cost: asset.cost, method: asset.method, schedule: correctSchedule },
+        }),
+      )
+    } catch (err) {
+      console.error('AssetRegisterSimulator submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+    }
   }, [annualExpenseNum, year3BVNum, annualExpenseCorrect, year3BVCorrect, onSubmit, activity.id, asset, correctSchedule])
 
   return (

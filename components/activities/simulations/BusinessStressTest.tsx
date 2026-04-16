@@ -113,8 +113,15 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         },
       })
 
-      onSubmit?.(envelope)
-      onComplete?.({ finalCash, roundsSurvived })
+      try {
+        onSubmit?.(envelope)
+        onComplete?.({ finalCash, roundsSurvived })
+      } catch (err) {
+        console.error('BusinessStressTest submission failed:', err)
+        submittedRef.current = false
+        setSubmitted(false)
+        setIsComplete(false)
+      }
       return
     }
 
@@ -185,8 +192,15 @@ export function BusinessStressTest({ activity, onComplete, onSubmit }: BusinessS
         },
       })
 
-      onSubmit?.(envelope)
-      onComplete?.({ finalCash: 0, roundsSurvived: round })
+      try {
+        onSubmit?.(envelope)
+        onComplete?.({ finalCash: 0, roundsSurvived: round })
+      } catch (err) {
+        console.error('BusinessStressTest submission failed:', err)
+        submittedRef.current = false
+        setSubmitted(false)
+        setIsGameOver(false)
+      }
     }
   }, [cash, isGameOver, round, activity, activityArtifactTitle, disasters.length, onSubmit, onComplete])
 

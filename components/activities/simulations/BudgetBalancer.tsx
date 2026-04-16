@@ -330,8 +330,14 @@ export function BudgetBalancer({ activity, initialState, onStateChange, onSubmit
       },
     })
 
-    setSubmitted(true)
-    onSubmit?.(envelope)
+    try {
+      setSubmitted(true)
+      onSubmit?.(envelope)
+    } catch (err) {
+      console.error('BudgetBalancer submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+    }
   }
 
   const getHealthColor = (health: number) => {
