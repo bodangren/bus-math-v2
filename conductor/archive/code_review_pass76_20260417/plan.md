@@ -9,9 +9,9 @@
 
 ## Phase 2: Auth Documentation and v.any() Assessment
 
-- [ ] Add inline documentation for public lesson query auth rationale in convex/lessons.ts
-- [ ] Assess v.any() on rawAnswer in practice submission — tighten if trivial, otherwise document rationale
-- [ ] Run tests and build to confirm no regressions
+- [x] Add inline documentation for public lesson query auth rationale in convex/lessons.ts
+- [x] Assess v.any() on rawAnswer in practice submission — tighten if trivial, otherwise document rationale
+- [x] Run tests and build to confirm no regressions
 
 ## Phase 3: Documentation Sync and Closure
 

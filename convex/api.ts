@@ -11,6 +11,10 @@ export const getProfile = internalQuery({
   },
 });
 
+// NOTE: This query is intentionally public (no auth).
+// Lesson content is published educational material — no access control needed.
+// Route-level auth (Next.js middleware) guards access to lesson pages for authenticated users.
+// Deferring Convex-level auth avoids unnecessary identity resolution overhead for read-only curriculum data.
 export const getLessonBySlugOrId = query({
   args: { identifier: v.string() },
   handler: async (ctx, args) => {
@@ -187,6 +191,10 @@ export const completePhaseMutation = internalMutation({
   },
 });
 
+// NOTE: This query is intentionally public (no auth).
+// Lesson content is published educational material — no access control needed.
+// Route-level auth (Next.js middleware) guards access to lesson pages for authenticated users.
+// See getLessonBySlugOrId for full auth rationale documentation.
 export const getLessonWithContent = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {

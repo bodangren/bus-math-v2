@@ -14,6 +14,13 @@ export const practiceSubmissionStatusValidator = v.union(
   v.literal('returned'),
 );
 
+// NOTE: rawAnswer uses v.any() because practice families emit heterogeneous answer shapes
+// (strings for classification, numbers for calculations, objects for journal entries, etc.).
+// The normalizedAnswer field (optional string) provides the canonical form for grading.
+// This is intentional and pragmatic: tightening to a union of all shapes would be fragile
+// as new practice families are added. Risk is low — rawAnswer is client-supplied and
+// used only for display; grading relies on normalizedAnswer which is derived consistently.
+// See: tech-debt.md (2026-04-17, Deferred, Medium).
 export const practiceSubmissionPartValidator = v.object({
   partId: v.string(),
   rawAnswer: v.any(),

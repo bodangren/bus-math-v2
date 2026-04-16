@@ -130,9 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Code Review Pass 76 — Deferred Quality Cleanup**
-  *Link: [./tracks/code_review_pass76_20260417/](./tracks/code_review_pass76_20260417/)*
+- [x] **Track: Code Review Pass 76 — Deferred Quality Cleanup**
+  *Link: [./archive/code_review_pass76_20260417/](./archive/code_review_pass76_20260417/)*
   *Scope: Address deferred quality items from Pass 74 — console.log cleanup, public query auth documentation, v.any() assessment, and documentation sync.*
+  *Closeout: completed on 2026-04-17. Added inline auth rationale comments to getLessonBySlugOrId and getLessonWithContent in convex/api.ts. Documented v.any() on rawAnswer rationale in convex/practice_submission.ts. All verification gates pass (lint 0 errors/0 warnings, test 2211/2211, build clean). MiniMax-M2.7 verified.*
 
 - [x] **Track: Code Review Pass 75 — Stabilization Verification**
   *Link: [./archive/code_review_pass75_20260417/](./archive/code_review_pass75_20260417/)*

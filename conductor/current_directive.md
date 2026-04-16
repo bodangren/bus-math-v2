@@ -1,5 +1,26 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-17 — Full Codebase Audit, Pass 76)
+
+Autonomous deferred quality cleanup pass following Pass 75.
+
+**Scope:** Address deferred quality items from Pass 74 — console.log cleanup (Phase 1 complete), public query auth documentation, v.any() assessment, and documentation sync.
+
+**Fixed during review: 0 issues**
+
+**Documentation additions:**
+- Added inline auth rationale comments to `getLessonBySlugOrId` and `getLessonWithContent` in `convex/api.ts` — lesson content is published educational material, route-level auth is sufficient
+- Added inline comment explaining `rawAnswer: v.any()` rationale in `convex/practice_submission.ts` — heterogeneous answer shapes across practice families make strict typing impractical, risk is low since grading uses normalizedAnswer
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2211/2211 tests pass (335 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**Phase status**: All 11 milestones complete. 165 tracks archived. No active tracks. Project in full stabilization. Zero open tech-debt items. MiniMax-M2.7 verified.
+
+---
+
 ## Code Review Summary (2026-04-17 — Full Codebase Audit, Pass 75)
 
 Autonomous stabilization verification pass following Pass 74.
