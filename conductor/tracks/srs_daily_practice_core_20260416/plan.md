@@ -28,7 +28,7 @@
 
 ## Phase 2: SRS Scheduler
 
-### Task 2.1: Create Scheduler Module [ ]
+### Task 2.1: Create Scheduler Module [x]
 - Create `lib/srs/scheduler.ts`
 - Import `ts-fsrs`: `createEmptyCard`, `FSRS`, `Rating`, `Card`
 - Implement:
@@ -38,7 +38,7 @@
   - `serializeCard(card: Card): unknown` — serializes ts-fsrs Card to JSON-safe object
   - `deserializeCard(data: unknown): Card` — deserializes back to ts-fsrs Card
 
-### Task 2.2: Write Scheduler Tests [ ]
+### Task 2.2: Write Scheduler Tests [x]
 - Create `__tests__/lib/srs/scheduler.test.ts`
 - Test `createNewCard`:
   - Returns card with `due` set to approximately now
@@ -57,7 +57,7 @@
 
 ## Phase 3: Review Processor
 
-### Task 3.1: Create Review Processor [ ]
+### Task 3.1: Create Review Processor [x]
 - Create `lib/srs/review-processor.ts`
 - Import `mapPracticeToSrsRating` from `@/lib/practice/srs-rating` (ported in Track 1)
 - Import scheduler functions from `./scheduler`
@@ -71,7 +71,7 @@
     4. Build `SrsReviewLog` from the review data
     5. Return `{ card, reviewLog, rating }`
 
-### Task 3.2: Write Review Processor Tests [ ]
+### Task 3.2: Write Review Processor Tests [x]
 - Create `__tests__/lib/srs/review-processor.test.ts`
 - Test with all-correct submission → `Good` or `Easy` rating
 - Test with incorrect submission → `Again` rating
@@ -83,7 +83,7 @@
 
 ## Phase 4: Queue Builder
 
-### Task 4.1: Create Queue Builder [ ]
+### Task 4.1: Create Queue Builder [x]
 - Create `lib/srs/queue.ts`
 - Implement:
   - `buildDailyQueue(cards: SrsCardState[], options?: { sessionSize?: number, now?: number }): DailyQueue`
@@ -94,7 +94,7 @@
     4. Return `DailyQueue` with the selected cards
   - `getQueueSummary(cards: SrsCardState[], now?: number): { totalDue: number, totalCards: number, averageOverdue: number }`
 
-### Task 4.2: Write Queue Builder Tests [ ]
+### Task 4.2: Write Queue Builder Tests [x]
 - Create `__tests__/lib/srs/queue.test.ts`
 - Test with no due cards → empty queue
 - Test with all cards due → returns up to sessionSize
@@ -106,15 +106,15 @@
 
 ## Phase 5: Practice Family Mapping
 
-### Task 5.1: Create Family-to-ProblemFamilyId Map [ ]
+### Task 5.1: Create Family-to-ProblemFamilyId Map [x]
 - Create `lib/srs/family-map.ts`
 - List all practice families A–U from `lib/practice/engine/family-registry.ts`
 - Map each family key to a `problemFamilyId` string (use the family key directly)
-- Export `getProblemFamilyId(familyKey: string): string`
+- Export `getProblemFamilyId(gamilyKey: string): string`
 - Export `getFamilyForProblemFamilyId(problemFamilyId: string): string | null`
 - Export `getAllProblemFamilyIds(): string[]`
 
-### Task 5.2: Write Family Map Tests [ ]
+### Task 5.2: Write Family Map Tests [x]
 - Create `__tests__/lib/srs/family-map.test.ts`
 - Test that all registered practice families have a mapping
 - Test roundtrip: `getFamilyForProblemFamilyId(getProblemFamilyId(key)) === key`
@@ -123,12 +123,12 @@
 
 ## Phase 6: Convex Schema and Functions
 
-### Task 6.1: Add Convex Tables [ ]
+### Task 6.1: Add Convex Tables [x]
 - Open the Convex schema file (likely `convex/schema.ts` or equivalent)
 - Add `srs_cards` table:
   ```
   defineTable({
-    studentId: v.string(),
+    studentId: v.id("profiles"),
     problemFamilyId: v.string(),
     card: v.any(), // serialized ts-fsrs Card
     due: v.number(),
@@ -142,7 +142,7 @@
 - Add `srs_review_log` table:
   ```
   defineTable({
-    studentId: v.string(),
+    studentId: v.id("profiles"),
     problemFamilyId: v.string(),
     rating: v.string(),
     scheduledAt: v.number(),
@@ -156,7 +156,7 @@
     .index("by_student_date", ["studentId", "reviewedAt"])
   ```
 
-### Task 6.2: Create Convex Mutations [ ]
+### Task 6.2: Create Convex Mutations [x]
 - Create `convex/srs/mutations.ts` (or add to existing file)
 - `upsertSrsCard(studentId, problemFamilyId, card, due, lastReview, reviewCount)`:
   - Check if card exists for `(studentId, problemFamilyId)`
@@ -166,7 +166,7 @@
   - Insert review log entry
   - Update the corresponding srs_card via `upsertSrsCard`
 
-### Task 6.3: Create Convex Queries [ ]
+### Task 6.3: Create Convex Queries [x]
 - Create `convex/srs/queries.ts` (or add to existing file)
 - `getDueCards(studentId, now)`:
   - Query `srs_cards` where `studentId` matches and `due <= now`
