@@ -16,6 +16,7 @@ This file is the source of truth for active execution order. Archived tracks liv
 | 8 | Classroom Product Completeness | Complete (2026-04-10) |
 | 9 | Workbook System and AI Features | Complete (2026-04-11) |
 | 10 | Student Study Tools | Complete (2026-04-11) |
+| 11 | Cross-Project Feature Adoption | Active |
 
 ### Milestone 7 — Practice Contract and Evidence Loop
 
@@ -99,9 +100,59 @@ Study Hub Foundation + Flashcards [1] → Study Modes + Progress [2] → Practic
 
 ---
 
+### Milestone 11 — Cross-Project Feature Adoption
+
+Port proven features, patterns, and infrastructure from `ra-integrated-math-3` into `bus-math-v2`. Adds practice timing telemetry, phase skip UX, prop-based component approval, interactive graphing, FSRS-backed daily practice, and a teacher SRS dashboard.
+
+**Execution graph** (strictly serial):
+```
+Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgrade [3] → Graphing Explorer [4] → SRS Daily Practice Core [5] → Teacher SRS Dashboard [6]
+          │                            │                        │                            │                        │
+   port timing.ts,               ~20 lines in             prop-based hashes,          port canvas + SVG,      FSRS-backed queue,     class health,
+   timing-baseline.ts,           LessonRenderer            delete manifest,            3 biz-math configs      Convex schema,         weak families,
+   srs-rating.ts,                                           fix example hashing                                 daily practice page    interventions
+   usePracticeTiming hook
+```
+
+**Rationale for serial ordering (2026-04-16 roadmap):**
+- Practice Timing Telemetry comes first because SRS Daily Practice (Track 5) depends on `srs-rating.ts` and the `timing` field on the envelope.
+- Phase Skip UI is a small standalone track that should go early for quick momentum.
+- Component Approval Upgrade is independent but medium-effort; clearing it before Graphing Explorer keeps the queue moving.
+- Graphing Explorer depends on Phase Skip UI being done (explore phases use the skip mechanism).
+- SRS Daily Practice depends on Timing Telemetry and is the largest track; it must be done before the dashboard.
+- Teacher SRS Dashboard depends entirely on the SRS schema and data from Track 5.
+
+**Exit gate**: practice submissions carry timing telemetry with confidence levels; non-graded phases are skippable; component approval detects prop-level staleness; graphing explorer is available with CVP, supply/demand, and depreciation exploration configs; daily FSRS-backed practice queue draws from families A–U; teachers see SRS health metrics and can intervene.
+
+---
+
 ## Planned Queue
 
 Strictly serial. Complete and archive each track before starting the next.
+
+- [ ] **Track: Practice Timing Telemetry**
+  *Link: [./tracks/practice_timing_telemetry_20260416/](./tracks/practice_timing_telemetry_20260416/)*
+  *Scope: Port TimingAccumulator, timing baselines, SRS rating adapter, and usePracticeTiming hook from ra-integrated-math-3. Add timing field to practice.v1 envelope.*
+
+- [ ] **Track: Phase Skip UI**
+  *Link: [./tracks/phase_skip_ui_20260416/](./tracks/phase_skip_ui_20260416/)*
+  *Scope: Add skip button for explore and discourse phase types in LessonRenderer. Unlock next phase without completion for skippable phases.*
+
+- [ ] **Track: Component Approval Prop-Based Hashes**
+  *Link: [./tracks/component_approval_prop_hashes_20260416/](./tracks/component_approval_prop_hashes_20260416/)*
+  *Scope: Replace build-time file-hash manifest with runtime prop-based content hashes. Fix example version hashing. Delete manifest generator.*
+
+- [ ] **Track: Graphing Explorer**
+  *Link: [./tracks/graphing_explorer_20260416/](./tracks/graphing_explorer_20260416/)*
+  *Scope: Port canvas-based graphing system from ra-integrated-math-3. Add CVP, supply/demand, and depreciation exploration configs. Register in activity registry.*
+
+- [ ] **Track: SRS Daily Practice Core**
+  *Link: [./tracks/srs_daily_practice_core_20260416/](./tracks/srs_daily_practice_core_20260416/)*
+  *Scope: Build FSRS-backed daily practice system. SRS contract types, scheduler, review processor, queue builder, Convex schema, student daily practice page.*
+
+- [ ] **Track: Teacher SRS Dashboard**
+  *Link: [./tracks/teacher_srs_dashboard_20260416/](./tracks/teacher_srs_dashboard_20260416/)*
+  *Scope: Teacher SRS analytics dashboard with class health, weak families, struggling students, and intervention tools.*
 
 - [x] **Track: Submit Attempt Numbering Race Fix**
   *Link: [./archive/submit_attempt_numbering_race_fix_20260414/](./archive/submit_attempt_numbering_race_fix_20260414/)*

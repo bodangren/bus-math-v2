@@ -1,0 +1,11 @@
+{
+  "trackId": "component_approval_prop_hashes_20260416",
+  "title": "Component Approval Prop-Based Hashes",
+  "milestone": 11,
+  "status": "planned",
+  "createdAt": "2026-04-16",
+  "dependsOn": [],
+  "blocks": [],
+  "estimatedEffort": "medium",
+  "sourceProject": "ra-integrated-math-3"
+}
