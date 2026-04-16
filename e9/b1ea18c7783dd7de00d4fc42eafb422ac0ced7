@@ -1,0 +1,6 @@
+Track: component_approval_query_auth_20260417
+Phase: Phase 1 — Add auth guards to component_approvals.ts public queries
+Tasks: 11/11 complete
+Tests: 22 new auth rejection tests
+Verification: lint 0/0, test 2241/2241, build clean
+Model: k2p5
