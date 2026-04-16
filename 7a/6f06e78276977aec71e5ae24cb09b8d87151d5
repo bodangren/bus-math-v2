@@ -1,0 +1,1 @@
+Track: srs_daily_practice_core_20260416\nPhase: 1 — SRS Contract Types\nModel: k2p5\nSummary: Created lib/srs/contract.ts with canonical srs.contract.v1 types and Zod schemas. Added 17 tests covering validation, enum rejection, and field constraints. All verification gates pass (lint 0 errors, 2064 tests pass, build clean).
