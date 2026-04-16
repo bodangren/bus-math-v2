@@ -130,9 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: DailyPracticeSession Interactive Answer Input**
-  *Link: [./tracks/daily_practice_answer_input_20260416/](./tracks/daily_practice_answer_input_20260416/)*
+- [x] **Track: DailyPracticeSession Interactive Answer Input**
+  *Link: [./archive/daily_practice_answer_input_20260416/](./archive/daily_practice_answer_input_20260416/)*
   *Scope: Convert DailyPracticeSession from auto-solve MVP to interactive practice by building family-specific answer input components (accounting-equation, normal-balance, classification) with a registry pattern and fallback for unimplemented families.*
+  *Closeout: completed on 2026-04-16. All 5 phases complete: Phase 1 (registry + AccountingEquationInput), Phase 2 (NormalBalanceInput), Phase 3 (ClassificationInput), Phase 4 (Next Problem button, loading states, focus management), Phase 5 (verification and closure). 100+ new tests. All verification gates pass (lint 0 errors/2 warnings, test 2191/2191, build clean). Tech-debt item closed. MiniMax-M2.7 verified.*
 
 - [x] **Track: Convex Codegen SRS Fix**
   *Link: [./archive/convex_codegen_srs_fix_20260416/](./archive/convex_codegen_srs_fix_20260416/)*
