@@ -56,16 +56,20 @@
 
 **Verification:** lint 0 errors/2 pre-existing warnings, 2189/2189 tests pass, build clean. MiniMax-M2.7 verified.
 
-## Phase 4: Fallback UX and session polish
+## [x] Phase 4: Fallback UX and session polish
 
 **Goal:** Improve the experience for registered families and ensure smooth queue advancement.
 
+**Completed:** 2026-04-16
+
 ### Tasks
-1. Add a "Next Problem" button after showing results (instead of auto-advancing immediately).
-2. Add basic loading/disabled states during SRS mutation.
-3. Ensure focus management moves to the next card when advancing.
-4. Update DailyPracticeSession tests for the new flow.
-5. Run lint, tests, build. Commit phase checkpoint.
+1. [x] Add a "Next Problem" button after showing results (instead of auto-advancing immediately).
+2. [x] Add basic loading/disabled states during SRS mutation.
+3. [x] Ensure focus management moves to the next card when advancing.
+4. [x] Update DailyPracticeSession tests for the new flow.
+5. [x] Run lint, tests, build. Commit phase checkpoint.
+
+**Verification:** lint 0 errors/2 pre-existing warnings, 2191/2191 tests pass, build clean. k2p5 verified.
 
 ## Phase 5: Verification and track closure
 

@@ -137,7 +137,7 @@ describe('DailyPracticeSession', () => {
     expect(screen.queryByText(/your answer/i)).not.toBeInTheDocument();
   });
 
-  it('records a review and advances to the next problem on submit', async () => {
+  it('records a review and shows next problem button after submit', async () => {
     mockUseQuery.mockReturnValue([
       {
         _id: 'card_1',
@@ -178,10 +178,14 @@ describe('DailyPracticeSession', () => {
       }),
     );
 
+    expect(screen.getByTestId('next-problem-button')).toBeInTheDocument();
+    expect(screen.getByText(/problem 1 of 2/i)).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('next-problem-button'));
     expect(screen.getByText(/problem 2 of 2/i)).toBeInTheDocument();
   });
 
-  it('shows completion state after finishing the queue', async () => {
+  it('shows completion state after clicking next problem on the last card', async () => {
     mockUseQuery.mockReturnValue([
       {
         _id: 'card_1',
@@ -204,7 +208,91 @@ describe('DailyPracticeSession', () => {
       expect(mockRecordReview).toHaveBeenCalledTimes(1);
     });
 
+    await userEvent.click(screen.getByTestId('next-problem-button'));
     expect(screen.getByText(/no problems due/i)).toBeInTheDocument();
+  });
+
+  it('shows loading overlay while recording review', async () => {
+    let resolveReview: (() => void) | undefined;
+    mockRecordReview.mockImplementationOnce(() => new Promise<void>((resolve) => {
+      resolveReview = resolve;
+    }));
+
+    mockUseQuery.mockReturnValue([
+      {
+        _id: 'card_1',
+        studentId: 'student_1',
+        problemFamilyId: 'test-family',
+        card: {},
+        due: Date.now(),
+        lastReview: Date.now(),
+        reviewCount: 0,
+        createdAt: Date.now(),
+      },
+    ]);
+
+    render(<DailyPracticeSession studentId="student_1" />);
+
+    const submitButton = screen.getByRole('button', { name: /submit answer/i });
+    await userEvent.click(submitButton);
+
+    expect(screen.getByText(/saving result/i)).toBeInTheDocument();
+
+    resolveReview!();
+
+    await waitFor(() => {
+      expect(screen.queryByText(/saving result/i)).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('next-problem-button')).toBeInTheDocument();
+  });
+
+  it('moves focus to the card when advancing to the next problem', async () => {
+    mockUseQuery.mockReturnValue([
+      {
+        _id: 'card_1',
+        studentId: 'student_1',
+        problemFamilyId: 'test-family',
+        card: {},
+        due: Date.now(),
+        lastReview: Date.now(),
+        reviewCount: 0,
+        createdAt: Date.now(),
+      },
+      {
+        _id: 'card_2',
+        studentId: 'student_1',
+        problemFamilyId: 'registered-family',
+        card: {},
+        due: Date.now(),
+        lastReview: Date.now(),
+        reviewCount: 0,
+        createdAt: Date.now(),
+      },
+    ]);
+
+    render(<DailyPracticeSession studentId="student_1" />);
+
+    const submitButton = screen.getByRole('button', { name: /submit answer/i });
+    await userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(mockRecordReview).toHaveBeenCalledTimes(1);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('next-problem-button')).toBeInTheDocument();
+    });
+
+    const nextButton = screen.getByTestId('next-problem-button');
+    await userEvent.click(nextButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/problem 2 of 2/i)).toBeInTheDocument();
+    });
+
+    const card = screen.getByTestId('practice-card');
+    expect(card).toHaveFocus();
   });
 
   it('shows unknown family error for unregistered problem family', () => {

@@ -21,7 +21,10 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [sessionCards, setSessionCards] = useState<SrsCardState[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showNext, setShowNext] = useState(false);
   const submittedRef = useRef(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const dueCards = useQuery(api.srs.getDueCards, { studentId });
   const recordReview = useMutation(api.srs.recordSrsReview);
@@ -87,6 +90,7 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
   const handleSubmit = async (envelope: PracticeSubmissionEnvelope) => {
     if (submittedRef.current) return;
     submittedRef.current = true;
+    setIsSubmitting(true);
 
     const timing = envelope.timing ? {
       startedAt: envelope.timing.startedAt,
@@ -119,12 +123,21 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
       reviewCount: result.card.reviewCount,
     });
 
+    setIsSubmitting(false);
+    setShowNext(true);
+  };
+
+  const handleAdvance = () => {
+    setShowNext(false);
+    submittedRef.current = false;
     if (currentIndex < sessionCards.length - 1) {
-      submittedRef.current = false;
       setCurrentIndex(currentIndex + 1);
     } else {
       setCompleted(true);
     }
+    setTimeout(() => {
+      cardRef.current?.focus();
+    }, 0);
   };
 
   const seed = currentCard.reviewCount + 1;
@@ -148,13 +161,18 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
         </Badge>
       </div>
 
-      <Card className="mb-4">
+      <Card ref={cardRef} tabIndex={-1} data-testid="practice-card" className="mb-4 outline-none">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             {familyKey.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative">
+          {isSubmitting && (
+            <div className="absolute inset-0 bg-background/70 flex items-center justify-center z-10 rounded">
+              <div className="text-muted-foreground font-medium">Saving result...</div>
+            </div>
+          )}
           {AnswerInputComponent ? (
             <AnswerInputComponent
               family={family}
@@ -169,6 +187,13 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
               response={problemResponse}
               onSubmit={handleSubmit}
             />
+          )}
+          {showNext && (
+            <div className="mt-6 pt-4 border-t">
+              <Button onClick={handleAdvance} className="w-full" data-testid="next-problem-button">
+                Next Problem
+              </Button>
+            </div>
           )}
         </CardContent>
       </Card>
