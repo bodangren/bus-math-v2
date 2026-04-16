@@ -165,15 +165,22 @@ export function DDBComparisonMastery({ activity, onSubmit, onComplete }: DDBComp
     setSubmitted(true)
     if (isCorrect) { setConsecutiveCorrect(p => p + 1); setStreak(p => p + 1) } else { setConsecutiveCorrect(0) }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'ddb-comparison-mastery',
-        mode: 'independent_practice',
-        answers: { selectedAnswer: userAnswer, isCorrect, ddbExpense: problem.correctDDBExpense, bookValue: problem.correctBookValue },
-        parts: [createSimulationPart('ddb-expense', problem.correctDDBExpense, { isCorrect }), createSimulationPart('book-value', problem.correctBookValue, { isCorrect })],
-        artifact: { assetName: problem.assetName, cost: problem.cost, salvageValue: problem.salvageValue, usefulLife: problem.usefulLife, year: problem.yearToCalculate, method: 'ddb' },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'ddb-comparison-mastery',
+          mode: 'independent_practice',
+          answers: { selectedAnswer: userAnswer, isCorrect, ddbExpense: problem.correctDDBExpense, bookValue: problem.correctBookValue },
+          parts: [createSimulationPart('ddb-expense', problem.correctDDBExpense, { isCorrect }), createSimulationPart('book-value', problem.correctBookValue, { isCorrect })],
+          artifact: { assetName: problem.assetName, cost: problem.cost, salvageValue: problem.salvageValue, usefulLife: problem.usefulLife, year: problem.yearToCalculate, method: 'ddb' },
+        }),
+      )
+    } catch (err) {
+      console.error('DDBComparisonMastery submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, problem, onSubmit, activity.id])
 
   const handleNewProblem = useCallback(() => {

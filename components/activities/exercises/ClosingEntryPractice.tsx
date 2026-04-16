@@ -164,24 +164,31 @@ export function ClosingEntryPractice({ activity, onSubmit, onComplete }: Closing
       setConsecutiveCorrect(0)
     }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'closing-entry-practice',
-        mode: 'independent_practice',
-        answers: {
-          selectedAnswer: userAnswer,
-          isCorrect,
-          scenarioKind: problem.kind,
-        },
-        parts: [
-          createSimulationPart('closing-entry', problem.correctAnswer, { isCorrect }),
-        ],
-        artifact: {
-          scenarioText: problem.scenarioText,
-          scenarioKind: problem.kind,
-        },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'closing-entry-practice',
+          mode: 'independent_practice',
+          answers: {
+            selectedAnswer: userAnswer,
+            isCorrect,
+            scenarioKind: problem.kind,
+          },
+          parts: [
+            createSimulationPart('closing-entry', problem.correctAnswer, { isCorrect }),
+          ],
+          artifact: {
+            scenarioText: problem.scenarioText,
+            scenarioKind: problem.kind,
+          },
+        }),
+      )
+    } catch (err) {
+      console.error('ClosingEntryPractice submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem])
 
   const handleNewProblem = useCallback(() => {

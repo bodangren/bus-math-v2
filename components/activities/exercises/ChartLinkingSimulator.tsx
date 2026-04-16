@@ -79,28 +79,34 @@ export function ChartLinkingSimulator({ activity, onSubmit, onComplete }: ChartL
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'chart-linking-simulator',
-        mode: 'independent_practice',
-        answers: {
-          initialState,
-          finalState: financialState,
-          insights,
-        },
-        parts: [
-          createSimulationPart('initial-statements', JSON.stringify(calculateStatements(initialState))),
-          createSimulationPart('final-statements', JSON.stringify(statements)),
-          ...insights.map((insight, i) => createSimulationPart(`insight-${i}`, insight)),
-        ],
-        artifact: {
-          initialState,
-          finalState: financialState,
-          insightCount: insights.length,
-        },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'chart-linking-simulator',
+          mode: 'independent_practice',
+          answers: {
+            initialState,
+            finalState: financialState,
+            insights,
+          },
+          parts: [
+            createSimulationPart('initial-statements', JSON.stringify(calculateStatements(initialState))),
+            createSimulationPart('final-statements', JSON.stringify(statements)),
+            ...insights.map((insight, i) => createSimulationPart(`insight-${i}`, insight)),
+          ],
+          artifact: {
+            initialState,
+            finalState: financialState,
+            insightCount: insights.length,
+          },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('ChartLinkingSimulator submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [financialState, insights, onSubmit, onComplete, activity.id, statements])
 
   return (

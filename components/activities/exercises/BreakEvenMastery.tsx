@@ -161,28 +161,35 @@ export function BreakEvenMastery({ activity, onSubmit, onComplete }: BreakEvenMa
       setConsecutiveCorrect(0)
     }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'break-even-mastery',
-        mode: 'independent_practice',
-        answers: {
-          selectedAnswer: userAnswer,
-          isCorrect,
-          breakEvenUnits: problem.correctBreakEvenUnits,
-          breakEvenDollars: problem.correctBreakEvenDollars,
-        },
-        parts: [
-          createSimulationPart('break-even-units', problem.correctBreakEvenUnits, { isCorrect }),
-          createSimulationPart('break-even-dollars', problem.correctBreakEvenDollars, { isCorrect }),
-        ],
-        artifact: {
-          productName: problem.productName,
-          fixedCosts: problem.fixedCosts,
-          variableCostPerUnit: problem.variableCostPerUnit,
-          sellingPricePerUnit: problem.sellingPricePerUnit,
-        },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'break-even-mastery',
+          mode: 'independent_practice',
+          answers: {
+            selectedAnswer: userAnswer,
+            isCorrect,
+            breakEvenUnits: problem.correctBreakEvenUnits,
+            breakEvenDollars: problem.correctBreakEvenDollars,
+          },
+          parts: [
+            createSimulationPart('break-even-units', problem.correctBreakEvenUnits, { isCorrect }),
+            createSimulationPart('break-even-dollars', problem.correctBreakEvenDollars, { isCorrect }),
+          ],
+          artifact: {
+            productName: problem.productName,
+            fixedCosts: problem.fixedCosts,
+            variableCostPerUnit: problem.variableCostPerUnit,
+            sellingPricePerUnit: problem.sellingPricePerUnit,
+          },
+        }),
+      )
+    } catch (err) {
+      console.error('BreakEvenMastery submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem])
 
   const handleNewProblem = useCallback(() => {

@@ -138,28 +138,34 @@ export function InventoryAlgorithmShowtell({ activity, onSubmit, onComplete }: I
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'inventory-algorithm-showtell',
-        mode: 'independent_practice',
-        answers: {
-          viewedMethods: methods.map(m => m.id),
-          insights,
-        },
-        parts: [
-          createSimulationPart('fifo-result', JSON.stringify(fifoMethod.calculateCostOfGoodsSold(sampleLots, salesQuantity))),
-          createSimulationPart('lifo-result', JSON.stringify(lifoMethod.calculateCostOfGoodsSold(sampleLots, salesQuantity))),
-          createSimulationPart('weighted-average-result', JSON.stringify(weightedAverageMethod.calculateCostOfGoodsSold(sampleLots, salesQuantity))),
-          ...insights.map((insight, i) => createSimulationPart(`insight-${i}`, insight)),
-        ],
-        artifact: {
-          sampleLots,
-          salesQuantity,
-          insightCount: insights.length,
-        },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'inventory-algorithm-showtell',
+          mode: 'independent_practice',
+          answers: {
+            viewedMethods: methods.map(m => m.id),
+            insights,
+          },
+          parts: [
+            createSimulationPart('fifo-result', JSON.stringify(fifoMethod.calculateCostOfGoodsSold(sampleLots, salesQuantity))),
+            createSimulationPart('lifo-result', JSON.stringify(lifoMethod.calculateCostOfGoodsSold(sampleLots, salesQuantity))),
+            createSimulationPart('weighted-average-result', JSON.stringify(weightedAverageMethod.calculateCostOfGoodsSold(sampleLots, salesQuantity))),
+            ...insights.map((insight, i) => createSimulationPart(`insight-${i}`, insight)),
+          ],
+          artifact: {
+            sampleLots,
+            salesQuantity,
+            insightCount: insights.length,
+          },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('InventoryAlgorithmShowtell submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [insights, onSubmit, onComplete, activity.id])
 
   return (

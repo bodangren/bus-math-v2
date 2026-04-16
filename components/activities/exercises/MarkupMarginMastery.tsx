@@ -159,27 +159,34 @@ export function MarkupMarginMastery({ activity, onSubmit, onComplete }: MarkupMa
       setConsecutiveCorrect(0)
     }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'markup-margin-mastery',
-        mode: 'independent_practice',
-        answers: {
-          selectedAnswer: userAnswer,
-          isCorrect,
-          markup: problem.correctMarkup,
-          margin: problem.correctMargin,
-        },
-        parts: [
-          createSimulationPart('markup-percentage', problem.correctMarkup, { isCorrect }),
-          createSimulationPart('margin-percentage', problem.correctMargin, { isCorrect }),
-        ],
-        artifact: {
-          productName: problem.productName,
-          costPrice: problem.costPrice,
-          sellingPrice: problem.sellingPrice,
-        },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'markup-margin-mastery',
+          mode: 'independent_practice',
+          answers: {
+            selectedAnswer: userAnswer,
+            isCorrect,
+            markup: problem.correctMarkup,
+            margin: problem.correctMargin,
+          },
+          parts: [
+            createSimulationPart('markup-percentage', problem.correctMarkup, { isCorrect }),
+            createSimulationPart('margin-percentage', problem.correctMargin, { isCorrect }),
+          ],
+          artifact: {
+            productName: problem.productName,
+            costPrice: problem.costPrice,
+            sellingPrice: problem.sellingPrice,
+          },
+        }),
+      )
+    } catch (err) {
+      console.error('MarkupMarginMastery submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem])
 
   const handleNewProblem = useCallback(() => {

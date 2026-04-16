@@ -52,31 +52,37 @@ export function BudgetWorksheet({ activity, onSubmit, onComplete }: BudgetWorksh
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'budget-worksheet',
-        mode: 'independent_practice',
-        answers: {
-          totalBudget,
-          categoryBudgets: numCategoryBudgets,
-          totalAllocated,
-          remaining,
-          isOverBudget,
-        },
-        parts: [
-          createSimulationPart('total-budget', totalBudget),
-          createSimulationPart('total-allocated', totalAllocated),
-          createSimulationPart('remaining', remaining),
-          ...Object.entries(numCategoryBudgets).map(([cat, val]) =>
-            createSimulationPart(`budget-${cat.toLowerCase().replace(/\s+/g, '-')}`, val)
-          ),
-        ],
-        artifact: {
-          categories,
-        },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'budget-worksheet',
+          mode: 'independent_practice',
+          answers: {
+            totalBudget,
+            categoryBudgets: numCategoryBudgets,
+            totalAllocated,
+            remaining,
+            isOverBudget,
+          },
+          parts: [
+            createSimulationPart('total-budget', totalBudget),
+            createSimulationPart('total-allocated', totalAllocated),
+            createSimulationPart('remaining', remaining),
+            ...Object.entries(numCategoryBudgets).map(([cat, val]) =>
+              createSimulationPart(`budget-${cat.toLowerCase().replace(/\s+/g, '-')}`, val)
+            ),
+          ],
+          artifact: {
+            categories,
+          },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('BudgetWorksheet submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [totalBudget, numCategoryBudgets, totalAllocated, remaining, isOverBudget, categories, onSubmit, onComplete, activity.id])
 
   return (

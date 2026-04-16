@@ -106,34 +106,40 @@ export function CrossSheetLinkSimulator({ activity, onSubmit, onComplete }: Cros
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'cross-sheet-link-simulator',
-        mode: 'independent_practice',
-        answers: {
-          initialSheet1,
-          initialSheet2,
-          finalSheet1: sheet1,
-          finalSheet2: sheet2,
-          insights,
-        },
-        parts: [
-          createSimulationPart('initial-sheet1', JSON.stringify(initialSheet1)),
-          createSimulationPart('initial-sheet2', JSON.stringify(initialSheet2)),
-          createSimulationPart('final-sheet1', JSON.stringify(sheet1)),
-          createSimulationPart('final-sheet2', JSON.stringify(sheet2)),
-          ...insights.map((insight, i) => createSimulationPart(`insight-${i}`, insight)),
-        ],
-        artifact: {
-          initialSheet1,
-          initialSheet2,
-          finalSheet1: sheet1,
-          finalSheet2: sheet2,
-          insightCount: insights.length,
-        },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'cross-sheet-link-simulator',
+          mode: 'independent_practice',
+          answers: {
+            initialSheet1,
+            initialSheet2,
+            finalSheet1: sheet1,
+            finalSheet2: sheet2,
+            insights,
+          },
+          parts: [
+            createSimulationPart('initial-sheet1', JSON.stringify(initialSheet1)),
+            createSimulationPart('initial-sheet2', JSON.stringify(initialSheet2)),
+            createSimulationPart('final-sheet1', JSON.stringify(sheet1)),
+            createSimulationPart('final-sheet2', JSON.stringify(sheet2)),
+            ...insights.map((insight, i) => createSimulationPart(`insight-${i}`, insight)),
+          ],
+          artifact: {
+            initialSheet1,
+            initialSheet2,
+            finalSheet1: sheet1,
+            finalSheet2: sheet2,
+            insightCount: insights.length,
+          },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('CrossSheetLinkSimulator submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [sheet1, sheet2, insights, onSubmit, onComplete, activity.id])
 
   const renderSheet = (sheet: SheetState, sheetName: string, onCellChange?: (key: string, value: string) => void) => {

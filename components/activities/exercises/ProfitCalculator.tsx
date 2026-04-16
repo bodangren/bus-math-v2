@@ -45,31 +45,37 @@ export function ProfitCalculator({ activity, onSubmit, onComplete }: ProfitCalcu
     if (submittedRef.current) return
     submittedRef.current = true
     setCompleted(true)
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'profit-calculator',
-        mode: 'independent_practice',
-        answers: {
-          revenue: numRevenue,
-          expenses: numExpenses,
-          profit,
-          profitMargin,
-          isProfitable,
-        },
-        parts: [
-          createSimulationPart('revenue', numRevenue),
-          createSimulationPart('expenses', numExpenses),
-          createSimulationPart('profit', profit),
-          createSimulationPart('profit-margin', profitMargin),
-        ],
-        artifact: {
-          currency,
-          initialRevenue,
-          initialExpenses,
-        },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'profit-calculator',
+          mode: 'independent_practice',
+          answers: {
+            revenue: numRevenue,
+            expenses: numExpenses,
+            profit,
+            profitMargin,
+            isProfitable,
+          },
+          parts: [
+            createSimulationPart('revenue', numRevenue),
+            createSimulationPart('expenses', numExpenses),
+            createSimulationPart('profit', profit),
+            createSimulationPart('profit-margin', profitMargin),
+          ],
+          artifact: {
+            currency,
+            initialRevenue,
+            initialExpenses,
+          },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('ProfitCalculator submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [numRevenue, numExpenses, profit, profitMargin, isProfitable, currency, initialRevenue, initialExpenses, onSubmit, onComplete, activity.id])
 
   return (

@@ -130,6 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Activity Component Error Handling**
+  *Link: [./tracks/activity_component_error_handling_20260417/](./tracks/activity_component_error_handling_20260417/)*
+  *Scope: Systematically add try/catch error handling around onSubmit callbacks in ~30 activity components to prevent UI lockups when parent handlers throw.*
+
 - [x] **Track: Code Review Pass 88 — Stabilization Verification**
   *Link: [./archive/code_review_pass88_20260417/](./archive/code_review_pass88_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 87 — run lint, tests, build, verify no regressions.*

@@ -91,27 +91,33 @@ export function ErrorCheckingSystem({ activity, onSubmit, onComplete }: ErrorChe
     )
     const allRowsChecked = sampleData.every(row => checkedRows.has(row.id))
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'error-checking-system',
-        mode: 'independent_practice',
-        answers: {
-          checkedRows: Array.from(checkedRows),
-          markedIssues: Array.from(markedIssues),
-          allIssuesFound,
-          allRowsChecked,
-        },
-        parts: [
-          createSimulationPart('checked-rows', checkedRows.size),
-          createSimulationPart('marked-issues', markedIssues.size),
-          createSimulationPart('total-issues', sampleData.reduce((sum, row) => sum + row.issues.length, 0)),
-        ],
-        artifact: {
-          sampleData,
-        },
-      }),
-    )
-    onComplete?.()
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'error-checking-system',
+          mode: 'independent_practice',
+          answers: {
+            checkedRows: Array.from(checkedRows),
+            markedIssues: Array.from(markedIssues),
+            allIssuesFound,
+            allRowsChecked,
+          },
+          parts: [
+            createSimulationPart('checked-rows', checkedRows.size),
+            createSimulationPart('marked-issues', markedIssues.size),
+            createSimulationPart('total-issues', sampleData.reduce((sum, row) => sum + row.issues.length, 0)),
+          ],
+          artifact: {
+            sampleData,
+          },
+        }),
+      )
+      onComplete?.()
+    } catch (err) {
+      console.error('ErrorCheckingSystem submission failed:', err)
+      submittedRef.current = false
+      setCompleted(false)
+    }
   }, [checkedRows, markedIssues, onSubmit, onComplete, activity.id])
 
   return (

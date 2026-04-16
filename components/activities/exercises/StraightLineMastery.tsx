@@ -174,32 +174,39 @@ export function StraightLineMastery({ activity, onSubmit, onComplete }: Straight
       setConsecutiveCorrect(0)
     }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'straight-line-mastery',
-        mode: 'independent_practice',
-        answers: {
-          selectedAnswer: userAnswer,
-          isCorrect,
-          annualExpense: problem.correctAnnualExpense,
-          accumulated: problem.correctAccumulated,
-          bookValue: problem.correctBookValue,
-        },
-        parts: [
-          createSimulationPart('annual-expense', problem.correctAnnualExpense, { isCorrect }),
-          createSimulationPart('accumulated-depreciation', problem.correctAccumulated, { isCorrect }),
-          createSimulationPart('book-value', problem.correctBookValue, { isCorrect }),
-        ],
-        artifact: {
-          assetName: problem.assetName,
-          cost: problem.cost,
-          salvageValue: problem.salvageValue,
-          usefulLife: problem.usefulLife,
-          yearToCalculate: problem.yearToCalculate,
-          method: 'straight-line',
-        },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'straight-line-mastery',
+          mode: 'independent_practice',
+          answers: {
+            selectedAnswer: userAnswer,
+            isCorrect,
+            annualExpense: problem.correctAnnualExpense,
+            accumulated: problem.correctAccumulated,
+            bookValue: problem.correctBookValue,
+          },
+          parts: [
+            createSimulationPart('annual-expense', problem.correctAnnualExpense, { isCorrect }),
+            createSimulationPart('accumulated-depreciation', problem.correctAccumulated, { isCorrect }),
+            createSimulationPart('book-value', problem.correctBookValue, { isCorrect }),
+          ],
+          artifact: {
+            assetName: problem.assetName,
+            cost: problem.cost,
+            salvageValue: problem.salvageValue,
+            usefulLife: problem.usefulLife,
+            yearToCalculate: problem.yearToCalculate,
+            method: 'straight-line',
+          },
+        }),
+      )
+    } catch (err) {
+      console.error('StraightLineMastery submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem])
 
   const handleNewProblem = useCallback(() => {

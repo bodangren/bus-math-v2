@@ -100,15 +100,22 @@ export function CapitalizationExpenseMastery({ activity, onSubmit, onComplete }:
     setSubmitted(true)
     if (isCorrect) { setConsecutiveCorrect(p => p + 1); setStreak(p => p + 1) } else { setConsecutiveCorrect(0) }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'capitalization-expense-mastery',
-        mode: 'independent_practice',
-        answers: { selectedAnswer: userAnswer, isCorrect, correctClassification: scenario.isCapital ? 'capitalize' : 'expense' },
-        parts: [createSimulationPart('classification', scenario.isCapital ? 'capitalize' : 'expense', { isCorrect })],
-        artifact: { description: scenario.description, cost: scenario.cost, isCapital: scenario.isCapital, reason: scenario.reason },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'capitalization-expense-mastery',
+          mode: 'independent_practice',
+          answers: { selectedAnswer: userAnswer, isCorrect, correctClassification: scenario.isCapital ? 'capitalize' : 'expense' },
+          parts: [createSimulationPart('classification', scenario.isCapital ? 'capitalize' : 'expense', { isCorrect })],
+          artifact: { description: scenario.description, cost: scenario.cost, isCapital: scenario.isCapital, reason: scenario.reason },
+        }),
+      )
+    } catch (err) {
+      console.error('CapitalizationExpenseMastery submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, scenario, onSubmit, activity.id])
 
   const handleNewScenario = useCallback(() => {

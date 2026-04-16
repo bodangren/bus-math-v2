@@ -164,24 +164,31 @@ export function IncomeStatementPractice({ activity, onSubmit, onComplete }: Inco
       setConsecutiveCorrect(0)
     }
 
-    onSubmit?.(
-      buildSimulationSubmissionEnvelope({
-        activityId: activity.id ?? 'income-statement-practice',
-        mode: 'independent_practice',
-        answers: {
-          selectedAnswer: userAnswer,
-          isCorrect,
-          scenarioKind: problem.kind,
-        },
-        parts: [
-          createSimulationPart('income-statement', problem.correctAnswer, { isCorrect }),
-        ],
-        artifact: {
-          scenarioText: problem.scenarioText,
-          scenarioKind: problem.kind,
-        },
-      }),
-    )
+    try {
+      onSubmit?.(
+        buildSimulationSubmissionEnvelope({
+          activityId: activity.id ?? 'income-statement-practice',
+          mode: 'independent_practice',
+          answers: {
+            selectedAnswer: userAnswer,
+            isCorrect,
+            scenarioKind: problem.kind,
+          },
+          parts: [
+            createSimulationPart('income-statement', problem.correctAnswer, { isCorrect }),
+          ],
+          artifact: {
+            scenarioText: problem.scenarioText,
+            scenarioKind: problem.kind,
+          },
+        }),
+      )
+    } catch (err) {
+      console.error('IncomeStatementPractice submission failed:', err)
+      submittedRef.current = false
+      setSubmitted(false)
+      setCorrect(null)
+    }
   }, [userAnswer, shuffledOptions, onSubmit, activity.id, problem])
 
   const handleNewProblem = useCallback(() => {
