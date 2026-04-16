@@ -140,9 +140,10 @@ Strictly serial. Complete and archive each track before starting the next.
   *Scope: Add skip button for explore and discourse phase types in LessonRenderer. Unlock next phase without completion for skippable phases.*
   *Closeout: completed on 2026-04-16. Added isSkippablePhaseType helper, updated LessonRenderer to unlock next phase and show "Skip Phase" text for explore/discourse phases. 7 new tests (4 helper, 3 renderer). All verification gates pass (lint 0 errors, 1839/1839 tests pass, build clean). k2p5 verified.*
 
-- [ ] **Track: Component Approval Prop-Based Hashes**
-  *Link: [./tracks/component_approval_prop_hashes_20260416/](./tracks/component_approval_prop_hashes_20260416/)*
+- [x] **Track: Component Approval Prop-Based Hashes**
+  *Link: [./archive/component_approval_prop_hashes_20260416/](./archive/component_approval_prop_hashes_20260416/)*
   *Scope: Replace build-time file-hash manifest with runtime prop-based content hashes. Fix example version hashing. Delete manifest generator.*
+  *Closeout: completed on 2026-04-16. Created lib/activities/content-hash.ts with computeComponentContentHash (crypto.subtle SHA-256), deepSortKeys, and resolveComponentKind helper. Rewrote version-hashes.ts to use runtime prop-based hashing instead of build-time manifest. Functions are now async and accept props/gradingConfig parameters. Updated getReviewQueue and submitComponentReview to use async hash computation. Deleted lib/component-versions.json and scripts/generate-component-manifest.ts. Removed generate:component-manifest from package.json predev/build hooks. 19 new tests for content-hash, 33 updated tests for async hash functions. All 1960 tests pass, lint 0 errors (2 pre-existing warnings), build clean. Updated tech-debt.md and lessons-learned.md. MiniMax-M2.7 verified.*
 
 - [ ] **Track: Graphing Explorer**
   *Link: [./tracks/graphing_explorer_20260416/](./tracks/graphing_explorer_20260416/)*
