@@ -32,7 +32,7 @@
 
 ## Phase 2: Port Graphing Components
 
-### Task 2.1: Port GraphingCanvas [ ]
+### Task 2.1: Port GraphingCanvas [x]
 - Read `../ra-integrated-math-3/components/activities/graphing/GraphingCanvas.tsx` (300 lines)
 - Create `components/activities/graphing/GraphingCanvas.tsx`
 - Copy entire file
@@ -40,23 +40,23 @@
 - This is an SVG-based canvas — no canvas HTML element, no special dependencies
 - Ensure `'use client'` directive is present (it is in the source)
 
-### Task 2.2: Port InteractiveTableOfValues [ ]
+### Task 2.2: Port InteractiveTableOfValues [x]
 - Read `../ra-integrated-math-3/components/activities/graphing/InteractiveTableOfValues.tsx`
 - Create `components/activities/graphing/InteractiveTableOfValues.tsx`
 - Copy entire file
 - Verify imports resolve
 
-### Task 2.3: Port HintPanel [ ]
+### Task 2.3: Port HintPanel [x]
 - Read `../ra-integrated-math-3/components/activities/graphing/HintPanel.tsx`
 - Create `components/activities/graphing/HintPanel.tsx`
 - Copy entire file
 
-### Task 2.4: Port InterceptIdentification [ ]
+### Task 2.4: Port InterceptIdentification [x]
 - Read `../ra-integrated-math-3/components/activities/graphing/InterceptIdentification.tsx`
 - Create `components/activities/graphing/InterceptIdentification.tsx`
 - Copy entire file
 
-### Task 2.5: Port GraphingExplorer [ ]
+### Task 2.5: Port GraphingExplorer [x]
 - Read `../ra-integrated-math-3/components/activities/graphing/GraphingExplorer.tsx` (611 lines)
 - Create `components/activities/graphing/GraphingExplorer.tsx`
 - Copy entire file
@@ -66,11 +66,12 @@
 - **Adaptation needed**: The sister project's `GraphingExplorer` has algebra-specific variants (`plot_from_equation`, `compare_functions`, `find_intercepts`, `graph_system`). For BM2, we need to add a `compare_lines` variant for CVP/Supply-Demand and a `multi_curve` variant for depreciation comparison
 - Add the new variants to the component's internal logic following the existing pattern
 
-### Task 2.6: Port Component Tests [ ]
+### Task 2.6: Port Component Tests [x]
 - Read and port all test files from `../ra-integrated-math-3/__tests__/components/activities/graphing/`
 - Create matching files in `__tests__/components/activities/graphing/`
 - Adapt imports to use BM2 paths
 - Run: `npx vitest run __tests__/components/activities/graphing/`
+- All 19 tests pass
 
 ## Phase 3: Business Math Exploration Configs
 
