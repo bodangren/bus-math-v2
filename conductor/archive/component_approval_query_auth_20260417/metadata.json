@@ -1,0 +1,11 @@
+{
+  "track_id": "component_approval_query_auth_20260417",
+  "type": "bug",
+  "status": "completed",
+  "created_at": "2026-04-17T12:00:00Z",
+  "updated_at": "2026-04-17T12:00:00Z",
+  "description": "Add authentication guards to component_approvals.ts public queries",
+  "estimated_tasks": 11,
+  "actual_tasks": 11,
+  "deviation_notes": ""
+}

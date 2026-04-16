@@ -130,7 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-(No active tracks — project in full stabilization)
+- [x] **Track: Component Approval Query Auth**
+  *Link: [./archive/component_approval_query_auth_20260417/](./archive/component_approval_query_auth_20260417/)*
+  *Scope: Add authentication guards to all public queries in convex/component_approvals.ts so only admin/developer roles can read approval state, review queues, and audit summaries.*
+  *Closeout: completed on 2026-04-17. Added requireAdmin() guard to all 6 public queries. Extracted handlers for testability. 22 auth rejection tests added. All verification gates pass (lint 0/0, test 2241/2241, build clean).*
 
 - [x] **Track: Activity Component Error Handling**
   *Link: [./archive/activity_component_error_handling_20260417/](./archive/activity_component_error_handling_20260417/)*
