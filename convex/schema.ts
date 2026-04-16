@@ -11,6 +11,7 @@ import {
   submissionStatusValidator,
   issueCategoryValidator,
 } from "./component_approval_validators";
+import { srsCardValidator, srsRatingValidator } from "./srs-validators";
 
 const fsrsStateValidator = v.record(v.string(), v.any());
 
@@ -473,7 +474,7 @@ export default defineSchema({
   srs_cards: defineTable({
     studentId: v.id("profiles"),
     problemFamilyId: v.string(),
-    card: v.any(),
+    card: srsCardValidator,
     due: v.number(),
     lastReview: v.number(),
     reviewCount: v.number(),
@@ -486,7 +487,7 @@ export default defineSchema({
   srs_review_log: defineTable({
     studentId: v.id("profiles"),
     problemFamilyId: v.string(),
-    rating: v.string(),
+    rating: srsRatingValidator,
     scheduledAt: v.number(),
     reviewedAt: v.number(),
     elapsedDays: v.number(),

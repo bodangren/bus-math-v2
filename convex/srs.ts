@@ -8,6 +8,7 @@ import {
   formatFamilyDisplayName,
 } from '../lib/srs/teacher-analytics';
 import { createNewCard } from '../lib/srs/scheduler';
+import { srsCardValidator, srsRatingValidator } from './srs-validators';
 
 async function verifyStudentIdentity(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,7 +30,7 @@ export const upsertSrsCard = mutation({
   args: {
     studentId: v.id('profiles'),
     problemFamilyId: v.string(),
-    card: v.any(),
+    card: srsCardValidator,
     due: v.number(),
     lastReview: v.number(),
     reviewCount: v.number(),
@@ -74,14 +75,14 @@ export const recordSrsReview = mutation({
   args: {
     studentId: v.id('profiles'),
     problemFamilyId: v.string(),
-    rating: v.string(),
+    rating: srsRatingValidator,
     scheduledAt: v.number(),
     reviewedAt: v.number(),
     elapsedDays: v.number(),
     scheduledDays: v.number(),
     reviewDurationMs: v.optional(v.number()),
     timingConfidence: v.optional(v.string()),
-    card: v.any(),
+    card: srsCardValidator,
     due: v.number(),
     lastReview: v.number(),
     reviewCount: v.number(),
@@ -431,7 +432,7 @@ export const resetStudentCard = mutation({
 
     if (existing) {
       await ctx.db.patch(existing._id, {
-        card: newCardState.card,
+        card: newCardState.card as typeof srsCardValidator['type'],
         due: newCardState.due,
         lastReview: newCardState.lastReview,
         reviewCount: newCardState.reviewCount,
@@ -440,7 +441,7 @@ export const resetStudentCard = mutation({
       await ctx.db.insert('srs_cards', {
         studentId: args.studentId,
         problemFamilyId: args.problemFamilyId,
-        card: newCardState.card,
+        card: newCardState.card as typeof srsCardValidator['type'],
         due: newCardState.due,
         lastReview: newCardState.lastReview,
         reviewCount: newCardState.reviewCount,

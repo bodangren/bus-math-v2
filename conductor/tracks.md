@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: SRS Schema Validation Hardening**
+  *Link: [./tracks/srs_schema_validation_20260416/](./tracks/srs_schema_validation_20260416/)*
+  *Scope: Replace v.any() and v.string() in SRS Convex schema/mutations with strict validators for ts-fsrs Card shape and SrsRating enum.*
+  *Closeout: completed on 2026-04-16. Created convex/srs-validators.ts with srsCardValidator (10-field v.object) and srsRatingValidator (4-value v.union). Updated schema.ts and srs.ts mutation args. Added 9 validator structural tests. All verification gates pass (lint 0 errors/2 warnings, test 2210/2210, build clean). Closed 2 open tech-debt items. k2p5 verified.*
+
 - [x] **Track: Graphing Explorer Rendering Fix**
   *Link: [./archive/graphing_explorer_rendering_fix_20260416/](./archive/graphing_explorer_rendering_fix_20260416/)*
   *Scope: Fix Graphing Explorer coordinate space mismatch (data-space to canvas-space) and replace duplicate inline equation parsing with canonical parseLinear/parseQuadratic parsers.*
