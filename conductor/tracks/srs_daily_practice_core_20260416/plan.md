@@ -2,10 +2,10 @@
 
 ## Phase 1: SRS Contract Types
 
-### Task 1.1: Create lib/srs/ Directory [ ]
+### Task 1.1: Create lib/srs/ Directory [x]
 - Create `lib/srs/` directory
 
-### Task 1.2: Create SRS Contract [ ]
+### Task 1.2: Create SRS Contract [x]
 - Create `lib/srs/contract.ts`
 - Define the following types with Zod schemas:
   ```
@@ -19,7 +19,7 @@
 - Version as `srs.contract.v1`
 - Export all types and schemas
 
-### Task 1.3: Write Contract Tests [ ]
+### Task 1.3: Write Contract Tests [x]
 - Create `__tests__/lib/srs/contract.test.ts`
 - Test that all schemas validate correct data
 - Test that invalid data is rejected

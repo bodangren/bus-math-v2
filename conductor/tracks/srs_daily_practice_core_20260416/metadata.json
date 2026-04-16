@@ -2,7 +2,7 @@
   "trackId": "srs_daily_practice_core_20260416",
   "title": "SRS Daily Practice Core",
   "milestone": 11,
-  "status": "planned",
+  "status": "in_progress",
   "createdAt": "2026-04-16",
   "dependsOn": ["practice_timing_telemetry_20260416"],
   "blocks": ["teacher_srs_dashboard_20260416"],
