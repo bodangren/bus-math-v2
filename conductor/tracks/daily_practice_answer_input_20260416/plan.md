@@ -22,18 +22,22 @@
 
 **Verification:** lint 0 errors/2 pre-existing warnings, 2175/2175 tests pass, build clean. k2p5 verified.
 
-## Phase 2: normal-balance selection input
+## [x] Phase 2: normal-balance selection input
 
 **Goal:** Implement debit/credit selection for normal-balance practice.
 
+**Completed:** 2026-04-16
+
 ### Tasks
-1. Build `NormalBalanceInput` component:
+1. [x] Build `NormalBalanceInput` component:
    - List each account with Debit/Credit buttons or radio group.
    - Track student selections in component state.
    - Grade on submit and show per-account results.
-2. Register `NormalBalanceInput` in the registry.
-3. Write tests for `NormalBalanceInput`.
-4. Run lint, tests, build. Commit phase checkpoint.
+2. [x] Register `NormalBalanceInput` in the registry.
+3. [x] Write tests for `NormalBalanceInput`.
+4. [x] Run lint, tests, build. Commit phase checkpoint.
+
+**Verification:** lint 0 errors/2 pre-existing warnings, 2180/2180 tests pass, build clean. k2p5 verified.
 
 ## Phase 3: classification categorization input
 
