@@ -108,12 +108,12 @@
 
 ## Phase 4: Registry Integration
 
-### Task 4.1: Add ActivityComponentKey [ ]
+### Task 4.1: Add ActivityComponentKey [x]
 - Open `types/activities.ts`
 - Find the `ActivityComponentKey` type
 - Add `'graphing-explorer'` to the union type
 
-### Task 4.2: Register in Activity Registry [ ]
+### Task 4.2: Register in Activity Registry [x]
 - Open `lib/activities/registry.ts`
 - Import `GraphingExplorer` from `@/components/activities/graphing/GraphingExplorer`
 - Add `'graphing-explorer': GraphingExplorer` to the `activityRegistry` object
