@@ -40,8 +40,8 @@
   - [x] MethodComparisonSimulator.tsx
   - [x] NotebookOrganizer.tsx
   - [x] ScenarioSwitchShowTell.tsx
-- [ ] Task: Write regression tests for representative simulation component error handling
-- [ ] Task: Run lint, tests, and build verification
+- [x] Task: Write regression tests for representative simulation component error handling
+- [x] Task: Run lint, tests, and build verification
 
 ## Phase 3: Quiz, Drag-Drop, and Accounting Components
 
@@ -66,8 +66,8 @@
 
 ## Phase 4: Final Verification and Documentation
 
-- [ ] Task: Run full test suite
-- [ ] Task: Run build verification
-- [ ] Task: Update lessons-learned.md with pattern guidance
-- [ ] Task: Update tech-debt.md to close related item
-- [ ] Task: Commit and push phase checkpoint
+- [x] Task: Run full test suite
+- [x] Task: Run build verification
+- [x] Task: Update lessons-learned.md with pattern guidance
+- [x] Task: Update tech-debt.md to close related item
+- [x] Task: Commit and push phase checkpoint

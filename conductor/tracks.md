@@ -130,9 +130,12 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Activity Component Error Handling**
-  *Link: [./tracks/activity_component_error_handling_20260417/](./tracks/activity_component_error_handling_20260417/)*
+(No active tracks — project in full stabilization)
+
+- [x] **Track: Activity Component Error Handling**
+  *Link: [./archive/activity_component_error_handling_20260417/](./archive/activity_component_error_handling_20260417/)*
   *Scope: Systematically add try/catch error handling around onSubmit callbacks in ~30 activity components to prevent UI lockups when parent handlers throw.*
+  *Closeout: completed on 2026-04-17. All 4 phases complete. 30 components wrapped with try/catch + state reset. 8 regression tests added. All verification gates pass (lint 0/0, test 2219/2219, build clean). MiniMax-M2.7 verified.*
 
 - [x] **Track: Code Review Pass 88 — Stabilization Verification**
   *Link: [./archive/code_review_pass88_20260417/](./archive/code_review_pass88_20260417/)*
