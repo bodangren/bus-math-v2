@@ -39,18 +39,22 @@
 
 **Verification:** lint 0 errors/2 pre-existing warnings, 2180/2180 tests pass, build clean. k2p5 verified.
 
-## Phase 3: classification categorization input
+## [x] Phase 3: classification categorization input
 
 **Goal:** Implement category selection for classification practice.
 
+**Completed:** 2026-04-16
+
 ### Tasks
-1. Build `ClassificationInput` component:
+1. [x] Build `ClassificationInput` component:
    - Show each account with a dropdown/select for category.
    - Use categories from the definition.
    - Grade on submit and show per-item results.
-2. Register `ClassificationInput` in the registry.
-3. Write tests for `ClassificationInput`.
-4. Run lint, tests, build. Commit phase checkpoint.
+2. [x] Register `ClassificationInput` in the registry.
+3. [x] Write tests for `ClassificationInput`.
+4. [x] Run lint, tests, build. Commit phase checkpoint.
+
+**Verification:** lint 0 errors/2 pre-existing warnings, 2189/2189 tests pass, build clean. MiniMax-M2.7 verified.
 
 ## Phase 4: Fallback UX and session polish
 
