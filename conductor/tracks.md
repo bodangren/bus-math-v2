@@ -461,6 +461,11 @@ Strictly serial. Complete and archive each track before starting the next.
 
 ## Archive Ledger
 
+- [x] **Track: Code Review Pass 65**
+  *Link: [./archive/code_review_pass65_20260416/](./archive/code_review_pass65_20260416/)*
+  *Scope: Autonomous stabilization verification pass following Pass 64. Run full verification gates (lint/test/build), update documentation, archive track.*
+  *Closeout: completed on 2026-04-16. All 2191 tests pass, lint 0 errors/2 warnings, build clean. Project in full stabilization. No active tracks. MiniMax-M2.7 verified.*
+
 - [x] **Track: Code Review Pass 63**
   *Link: [./archive/code_review_pass63_20260416/](./archive/code_review_pass63_20260416/)*
   *Scope: Autonomous stabilization verification pass after completion of DailyPracticeSession Interactive Answer Input. Fix stale priorities in current_directive.md and run full verification gates.*
