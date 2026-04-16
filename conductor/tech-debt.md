@@ -48,3 +48,5 @@
 | 2026-04-15 | code_review_pass57 | SubmissionDetailModal fallback score reads `part` outside for-loop — only checks last element | Low | Closed | Fixed: Moved score fallback check inside the loop so all parts are checked. |
 | 2026-04-15 | code_review_pass57 | generate-workbook-manifest.ts crashes with unhelpful error when public/workbooks/ doesn't exist | Low | Closed | Fixed: Added directory existence check with descriptive error message before readdirSync. |
 | 2026-04-15 | code_review_pass57 | AI feedback score not rounded to integer — floats like 35.7 display as "35.7 / 40" | Low | Closed | Fixed: Added Math.round() to clampedScore computation in spreadsheet-feedback.ts. |
+
+| 2026-04-16 | code_review_pass60 | graphing-explorer missing from version-hashes.ts activityIds — component approval won't track it | Medium | Closed | Fixed: Added 'graphing-explorer' to activityIds array in getAllActivityComponents(). |

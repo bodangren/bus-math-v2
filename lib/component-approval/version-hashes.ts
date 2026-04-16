@@ -85,6 +85,7 @@ export async function getAllActivityComponents(
     'income-statement-practice', 'cash-flow-practice', 'balance-sheet-practice',
     'chart-linking-simulator', 'cross-sheet-link-simulator', 'adjustment-practice',
     'closing-entry-practice', 'month-end-close-practice',
+    'graphing-explorer',
   ];
 
   const components: ComponentInfo[] = [];

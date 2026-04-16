@@ -2,7 +2,7 @@
 
 Real project status report and roadmap for the Convex-backed business math textbook app.
 
-Last updated: April 15, 2026 (Code Review Pass 57)
+Last updated: April 16, 2026 (Code Review Pass 60)
 
 ## Status Snapshot
 
@@ -31,7 +31,13 @@ However, this repository is **not yet a fully classroom-complete education app**
 ### Current overall status
 
 - Conductor Milestones 1-10 are marked complete.
-- Milestone 11 (if opened) is not yet defined.
+- Milestone 11 (Cross-Project Feature Adoption) is active — 4 of 6 tracks complete.
+  1. ~~Practice Timing Telemetry~~ — complete
+  2. ~~Phase Skip UI~~ — complete
+  3. ~~Component Approval Prop-Based Hashes~~ — complete
+  4. ~~Graphing Explorer~~ — complete
+  5. SRS Daily Practice Core — planned
+  6. Teacher SRS Dashboard — planned
 - The Component Approval Workflow track (not part of a numbered milestone) is complete — all 6 phases shipped, track archived.
 - Across the completed Milestone 10, all 3 serial tracks finished:
   1. ~~Study Hub Foundation and Flashcards~~ — complete
@@ -75,6 +81,7 @@ The target product is:
 | 8. Classroom Product Completeness | Complete on April 10, 2026 |
 | 9. Workbook System and AI Features | Complete on April 11, 2026 |
 | 10. Student Study Tools | Complete on April 11, 2026 |
+| 11. Cross-Project Feature Adoption | Active (4 of 6 tracks complete) |
 
 ### Repo-level indicators
 
@@ -82,10 +89,10 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 0 (Project in stabilization) |
-| Active Milestone 10 track status | 3 complete (Milestone 10 closed) |
-| Archived track directories | 140 |
-| Test files under `__tests__` and `tests` | 305 |
+| Active Conductor tracks | 2 (Milestone 11: SRS Daily Practice Core, Teacher SRS Dashboard) |
+| Active Milestone 11 track status | 4 of 6 complete |
+| Archived track directories | 148 |
+| Test files under `__tests__` and `tests` | 316 |
 
 ### My real assessment
 

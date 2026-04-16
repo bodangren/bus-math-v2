@@ -1,36 +1,21 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, Milestone 8 classroom product completeness, Milestone 9 workbook system and AI features, and Milestone 10 student study tools are all complete. Milestones 1–10 closed between 2026-03-16 and 2026-04-11. The project is in stabilization with no active tracks.
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, Milestones 8–10 are all complete. Milestones 1–10 closed between 2026-03-16 and 2026-04-11. Milestone 11 (Cross-Project Feature Adoption) is active — 4 of 6 tracks complete.
 
 ## Phase Focus
 
-No active milestone. Project is in stabilization. All milestones 1-10 are complete. Future work should be defined as Milestone 11 if feature development resumes.
+Milestone 11 — Cross-Project Feature Adoption. Port proven features from `ra-integrated-math-3`. Four tracks complete: Practice Timing Telemetry, Phase Skip UI, Component Approval Prop-Based Hashes, Graphing Explorer. Two tracks remain.
 
 ## Required Execution Order
 
-Milestone 8 tracks (all complete):
+Milestone 11 tracks (strictly serial):
 
-1. ~~Full Lesson Phase Integrity Audit~~
-2. ~~Student Navigation and Dashboard Return Paths~~
-3. ~~Student Completion and Resume Loop~~
-4. ~~Teacher Reporting Information Architecture~~
-5. ~~Teacher Gradebook Completion~~
-6. ~~Teacher Competency Heatmaps and Mastery Views~~
-7. ~~Education App Readiness Hardening~~
-
-Milestone 9 tracks (active):
-
-1. ~~Workbook Infrastructure and Unit 1 Pilot~~ — complete
-2. ~~Units 2-4 Workbook Rollout~~ — complete
-3. ~~Units 5-8 Workbook Rollout and Capstone Assets~~ — complete
-4. ~~Student One-Shot Lesson Chatbot~~ — complete
-5. **AI Feedback for Spreadsheet Submissions**
-
-Milestone 10 tracks (planned):
-
-6. **Study Hub Foundation and Flashcards**
-7. **Study Modes and Progress Dashboard**
-8. **Practice Tests**
+1. ~~Practice Timing Telemetry~~ — complete (2026-04-16)
+2. ~~Phase Skip UI~~ — complete (2026-04-16)
+3. ~~Component Approval Prop-Based Hashes~~ — complete (2026-04-16)
+4. ~~Graphing Explorer~~ — complete (2026-04-16)
+5. **SRS Daily Practice Core** — planned (depends on Track 1 timing telemetry)
+6. **Teacher SRS Dashboard** — planned (depends on Track 5 SRS schema)
 
 ## In-Bounds Work
 
@@ -73,6 +58,36 @@ The following remain out of scope unless a later explicit track opens them:
 - LMS-style assignments, messaging, discussions, or grading ecosystems beyond the in-product reporting loop
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
+
+## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 60)
+
+Autonomous code review covering all work since Pass 59: Practice Timing Telemetry, Phase Skip UI, Component Approval Prop-Based Hashes, and Graphing Explorer tracks (Milestone 11, Tracks 1–4).
+
+**Scope:** 18 commits since Pass 59 — porting timing telemetry modules, adding phase skip UI, replacing build-time manifest with runtime prop-based hashing, and porting graphing explorer from ra-integrated-math-3.
+
+**Fixed during review: 1 issue**
+- **graphing-explorer missing from version-hashes.ts activity list** (Medium): `graphing-explorer` was added to the activity registry but not to the hardcoded `activityIds` list in `getAllActivityComponents()` in `lib/component-approval/version-hashes.ts`. The component approval system would not track or review graphing-explorer components. Fixed: added `graphing-explorer` to the activityIds array.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing: StudyHubHome useMemo dep, worker default export)
+- `npm test`: 2047/2047 tests pass (316 test files, 0 failures)
+- `npm run build`: passes cleanly (52 activity components + 19 practices + 66 workbooks)
+
+**What was reviewed:**
+- **Practice Timing Telemetry**: 5 pure TypeScript modules ported (timing.ts, timing-baseline.ts, srs-rating.ts) plus usePracticeTiming hook and timing types added to practice.v1 contract. 102 new tests. Clean port from ra-integrated-math-3.
+- **Phase Skip UI**: Small, focused change (~18 lines) adding `isSkippablePhaseType` helper and updating LessonRenderer to unlock next phase and show "Skip Phase" for explore/discourse phases. 7 new tests. Clean.
+- **Component Approval Prop-Based Hashes**: Replaced build-time `lib/component-versions.json` manifest with runtime prop-based hashing using `crypto.subtle` (Web Crypto API). New `content-hash.ts` with `computeComponentContentHash`, `deepSortKeys`, and `resolveComponentKind`. Version-hashes.ts functions are now async. Deleted manifest generator script and JSON file. 19 new tests + 33 updated tests. Clean architectural improvement.
+- **Graphing Explorer**: 5-phase port from ra-integrated-math-3 — canvas-utils, linear-parser, quadratic-parser libraries (56 tests); GraphingCanvas, InteractiveTableOfValues, HintPanel, InterceptIdentification, GraphingExplorer components (19 tests); CVP, Supply/Demand, Depreciation exploration configs (11 tests); registry integration. Clean port with full test coverage.
+- **Middleware**: Confirmed `async`/`await` fix from Pass 57 is correct — `verifySessionToken` returns a Promise, `middleware` export is `async`, `claims` is properly `await`ed.
+
+**Updated during review:**
+- `lib/component-approval/version-hashes.ts`: Added `graphing-explorer` to activityIds list
+- `conductor/current_directive.md`: Updated phase focus, required execution order, added Pass 60 summary
+- `README.md`: Updated pass number, milestones table, test count, archived track count, Milestone 11 status
+
+**Phase status**: Milestone 11 active — 4 of 6 tracks complete. 2 active tracks planned (SRS Daily Practice Core, Teacher SRS Dashboard). All verification gates pass.
+
+---
 
 ## Code Review Summary (2026-04-15 — Full Codebase Audit, Pass 55)
 
@@ -454,24 +469,24 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 **Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-14 — Full Codebase Audit, Pass 54)
+## Current High-Level Priorities (2026-04-16 — Full Codebase Audit, Pass 60)
 
-Milestones 1-10 are **complete**. All active tracks are **complete**. Project in full stabilization. No active tracks.
+Milestones 1-10 are **complete**. Milestone 11 (Cross-Project Feature Adoption) is **active** — 4 of 6 tracks complete.
 
-### Completed Since Pass 56
+### Completed Since Pass 59
 
-- Fixed HIGH: middleware.ts missing async/await (dev component review auth was dead code)
-- Fixed MEDIUM: lesson-chatbot rate limit now fails closed on Convex error (was fail-open)
-- Fixed MEDIUM: cloudflare-deploy.yml now has concurrency control
-- Fixed LOW: SubmissionDetailModal fallback score, workbook manifest error handling, AI score rounding
-- Closed SpeedRoundGame tech debt item (confirmed already handled by glossary fallback)
-- Updated lessons-learned.md with async/await middleware gotcha
+- Ported practice timing telemetry: timing.ts, timing-baseline.ts, srs-rating.ts, usePracticeTiming hook, contract timing types (102 tests)
+- Added phase skip UI for explore/discourse phase types (7 tests)
+- Replaced build-time component approval manifest with runtime prop-based hashing using crypto.subtle (19 tests)
+- Ported graphing explorer from ra-integrated-math-3: canvas-utils, linear/quadratic parsers, GraphingCanvas, GraphingExplorer, exploration configs (86 tests)
+- Fixed: graphing-explorer missing from version-hashes.ts activity list
 
 ### Recommended Next Priorities
 
-All previously tracked priorities are resolved. The project is in stabilization with no active tracks. All tech debt items are closed. No open issues remain.
+1. **SRS Daily Practice Core** (Milestone 11, Track 5) — Build FSRS-backed daily practice system. Depends on practice timing telemetry (complete). Spec and plan exist in `conductor/tracks/srs_daily_practice_core_20260416/`.
+2. **Teacher SRS Dashboard** (Milestone 11, Track 6) — Teacher analytics for SRS health, weak families, struggling students. Depends on Track 5.
 
-There are no Medium or High open items. The project is in a stable, maintainable state. Future work should focus on Milestone 11 definition if there is appetite to continue feature development.
+There are no Medium or High open items. All tech debt items are closed. The project is in a stable state with clear next steps.
 
 ### Pass 48 Summary
 
