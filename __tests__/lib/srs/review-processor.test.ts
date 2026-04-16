@@ -72,11 +72,18 @@ describe('lib/srs/review-processor', () => {
       expect(result.rating).toBe('Hard');
     });
 
-    it('null cardState creates new card', () => {
+    it('null cardState creates new card with provided studentId', () => {
+      const envelope = makeEnvelope([{ partId: 'p1', isCorrect: true }]);
+      const result = processPracticeSubmission(envelope, null, makeTiming('high'), undefined, 'student-42');
+      expect(result.card.problemFamilyId).toBe('transaction-effects');
+      expect(result.card.studentId).toBe('student-42');
+      expect(result.card.reviewCount).toBe(1);
+    });
+
+    it('null cardState without studentId falls back to unknown', () => {
       const envelope = makeEnvelope([{ partId: 'p1', isCorrect: true }]);
       const result = processPracticeSubmission(envelope, null, makeTiming('high'));
-      expect(result.card.problemFamilyId).toBe('transaction-effects');
-      expect(result.card.reviewCount).toBe(1);
+      expect(result.card.studentId).toBe('unknown');
     });
 
     it('existing cardState updates card', () => {

@@ -50,3 +50,9 @@
 | 2026-04-15 | code_review_pass57 | AI feedback score not rounded to integer — floats like 35.7 display as "35.7 / 40" | Low | Closed | Fixed: Added Math.round() to clampedScore computation in spreadsheet-feedback.ts. |
 
 | 2026-04-16 | code_review_pass60 | graphing-explorer missing from version-hashes.ts activityIds — component approval won't track it | Medium | Closed | Fixed: Added 'graphing-explorer' to activityIds array in getAllActivityComponents(). |
+
+| 2026-04-16 | code_review_pass61 | review-processor creates new cards with hardcoded 'student-unknown' when cardState is null | High | Closed | Fixed: Added optional studentId parameter to processPracticeSubmission; DailyPracticeSession now passes studentId. |
+| 2026-04-16 | code_review_pass61 | DailyPracticeSession reveals correct answer before student submits | High | Closed | Fixed: ProblemRenderer now hides the answer until submission; shows result (correct/incorrect per part) after submit. |
+| 2026-04-16 | code_review_pass61 | upsertSrsCard and recordSrsReview don't verify studentId matches authenticated user | Medium | Closed | Fixed: Added verifyStudentIdentity helper that resolves profile by identity.email and confirms _id matches args.studentId. |
+| 2026-04-16 | code_review_pass61 | Convex generated API (api.d.ts) stale — missing srs module | Medium | Open | api.d.ts doesn't include srs functions because npx convex dev hasn't been run since convex/srs.ts was added. Tests mock the module so they pass. Needs codegen regeneration at next dev session. |
+| 2026-04-16 | code_review_pass61 | DailyPracticeSession ProblemRenderer is MVP — student doesn't actually input answers | Low | Open | Current implementation shows problem definition and auto-solves with the correct answer. Student clicks Submit to grade the auto-solved response. Needs proper interactive answer input for each practice family type. Tracked as future UI enhancement. |

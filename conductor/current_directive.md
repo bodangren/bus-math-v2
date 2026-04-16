@@ -1,10 +1,10 @@
 # Current Strategic Directive
 
-The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, Milestones 8–10 are all complete. Milestones 1–10 closed between 2026-03-16 and 2026-04-11. Milestone 11 (Cross-Project Feature Adoption) is active — 4 of 6 tracks complete.
+The full 8-unit curriculum, capstone, student study runtime, teacher monitoring baseline, Cloudflare deployment, Milestones 8–10 are all complete. Milestones 1–10 closed between 2026-03-16 and 2026-04-11. Milestone 11 (Cross-Project Feature Adoption) is active — 5 of 6 tracks complete.
 
 ## Phase Focus
 
-Milestone 11 — Cross-Project Feature Adoption. Port proven features from `ra-integrated-math-3`. Four tracks complete: Practice Timing Telemetry, Phase Skip UI, Component Approval Prop-Based Hashes, Graphing Explorer. Two tracks remain.
+Milestone 11 — Cross-Project Feature Adoption. Port proven features from `ra-integrated-math-3`. Five tracks complete: Practice Timing Telemetry, Phase Skip UI, Component Approval Prop-Based Hashes, Graphing Explorer, SRS Daily Practice Core. One track in progress (Phase 1 complete).
 
 ## Required Execution Order
 
@@ -14,8 +14,8 @@ Milestone 11 tracks (strictly serial):
 2. ~~Phase Skip UI~~ — complete (2026-04-16)
 3. ~~Component Approval Prop-Based Hashes~~ — complete (2026-04-16)
 4. ~~Graphing Explorer~~ — complete (2026-04-16)
-5. **~~SRS Daily Practice Core~~ — complete (2026-04-16)** — all 8 phases done, 59 lib tests, verification gates pass
-6. **Teacher SRS Dashboard** — planned (depends on Track 5 SRS schema)
+5. ~~SRS Daily Practice Core~~ — complete (2026-04-16) — all 8 phases done, 72 lib tests, verification gates pass
+6. **Teacher SRS Dashboard** — Phase 1 complete (Convex analytics queries and interventions), Phases 2-5 pending
 
 ## In-Bounds Work
 
@@ -58,6 +58,65 @@ The following remain out of scope unless a later explicit track opens them:
 - LMS-style assignments, messaging, discussions, or grading ecosystems beyond the in-product reporting loop
 - dependency upgrades or package additions without explicit approval
 - broad redesign work unrelated to navigation, reporting, or verified classroom workflow quality
+
+## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 61)
+
+Autonomous code review covering SRS Daily Practice Core (Track 5) and Teacher SRS Dashboard Phase 1 (Track 6, Phase 1). This is the first review since Pass 60.
+
+**Scope:** 6 commits since Pass 60 — SRS contract types, scheduler, review processor, queue builder, family map, Convex schema/mutations/queries, student daily practice page, teacher SRS analytics queries (class health, weak families, struggling students), and intervention mutations (reset card, bump priority).
+
+**Fixed during review: 4 issues**
+
+- **review-processor creates new cards with hardcoded 'student-unknown'** (High): `processPracticeSubmission` in `lib/srs/review-processor.ts:29` called `createNewCard(envelope.activityId, 'student-unknown')` when `cardState` was null. The resulting card would have `studentId: 'student-unknown'` and never match any student query. Fixed: added optional `studentId` parameter; `DailyPracticeSession` now passes the authenticated student's ID. Two new tests verify correct behavior.
+- **DailyPracticeSession reveals correct answer before student submits** (High): `ProblemRenderer` in `components/student/DailyPracticeSession.tsx` displayed `JSON.stringify(response, null, 2)` — the auto-solved answer — in a "Your Answer" section before the student clicked Submit. The student saw the solution immediately. Fixed: removed pre-submission answer display; answer now shown only after submission with per-part correct/incorrect indicators.
+- **upsertSrsCard and recordSrsReview don't verify studentId matches authenticated user** (Medium): Both Convex mutations checked authentication (`getUserIdentity`) but accepted any `studentId` argument without verifying it matched the authenticated user's profile. A student could submit SRS reviews for another student. Fixed: added `verifyStudentIdentity` helper that resolves the profile by `identity.email` and confirms `_id === args.studentId`.
+- **DailyPracticeSession cast studentId with `as any`** (Low): `currentCard.studentId` was cast `as any` to pass to `recordReview` mutation, bypassing type safety. Fixed: now uses typed cast from the authenticated `studentId` prop.
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 2 warnings (pre-existing: StudyHubHome useMemo dep, worker default export)
+- `npm test`: 2143/2143 tests pass (325 test files, 0 failures)
+- `npm run build`: passes cleanly
+
+**What was reviewed:**
+
+- **SRS Daily Practice Core (Track 5, all 8 phases)**:
+  - `lib/srs/contract.ts`: 5 Zod schemas (SrsRating, SrsCardState, SrsReviewLog, SrsSession, DailyQueue, SrsReviewResult). Versioned as `srs.contract.v1`. Clean.
+  - `lib/srs/scheduler.ts`: `createNewCard`, `reviewCard`, `getCardsDue`, `serializeCard`, `deserializeCard`. Wraps `ts-fsrs` correctly. 16 tests.
+  - `lib/srs/review-processor.ts`: Bridges `PracticeSubmissionEnvelope` → FSRS rating → card update. Now accepts optional `studentId`. 11 tests.
+  - `lib/srs/queue.ts`: `buildDailyQueue`, `getQueueSummary`. Clean, well-tested. 10 tests.
+  - `lib/srs/family-map.ts`: Maps practice family keys to `problemFamilyId` strings. Identity mapping (key = familyId). 6 tests.
+  - `convex/schema.ts`: Three new tables — `srs_cards` (3 indexes), `srs_review_log` (3 indexes), `srs_interventions` (3 indexes). Schema well-designed.
+  - `convex/srs.ts`: 10 functions — `upsertSrsCard`, `recordSrsReview`, `getDueCards`, `getStudentSrsSummary`, `getSrsCard` (student-facing); `getClassSrsHealth`, `getWeakFamilies`, `getStrugglingStudents`, `resetStudentCard`, `bumpFamilyPriority` (teacher-facing). Auth guards now verify identity.
+  - `app/student/practice/page.tsx`: Server component with `requireStudentSessionClaims`. Clean.
+  - `components/student/DailyPracticeSession.tsx`: Client component with queue rendering, submission, and completion states. Answer now hidden before submission. 7 tests.
+  - `lib/srs/teacher-analytics.ts`: Pure functions for `computeClassHealth`, `computeFamilyPerformance`, `computeStrugglingStudents`, `formatFamilyDisplayName`. 12 tests. Clean.
+
+- **Teacher SRS Dashboard Phase 1**:
+  - Teacher queries properly check auth → profile → teacher role → class ownership
+  - Intervention mutations verify student is enrolled in teacher's class
+  - `srs_interventions` table logs all teacher actions
+
+**Pre-existing issues confirmed (not fixed):**
+- Convex generated `api.d.ts` missing `srs` module — stale codegen (needs `npx convex dev`)
+- DailyPracticeSession ProblemRenderer is MVP — student doesn't input answers interactively
+- `srs_cards.card` uses `v.any()` — acceptable for ts-fsrs Card serialization
+
+**New items recorded in tech-debt.md:**
+- Convex generated API stale (Medium — open)
+- DailyPracticeSession MVP answer input (Low — open)
+
+**Updated during review:**
+- `lib/srs/review-processor.ts`: Added `studentId` parameter, fixed `'student-unknown'` fallback
+- `components/student/DailyPracticeSession.tsx`: Hidden answer pre-submission, fixed studentId cast, pass studentId to processor
+- `convex/srs.ts`: Added `verifyStudentIdentity` to `upsertSrsCard` and `recordSrsReview`
+- `__tests__/lib/srs/review-processor.test.ts`: Added 2 tests for studentId handling
+- `__tests__/components/student/DailyPracticeSession.test.tsx`: Added answer-hidden assertion
+- `conductor/tech-debt.md`: 3 fixed items, 2 new open items
+- `conductor/current_directive.md`: Updated phase focus, added Pass 61 summary
+
+**Phase status**: Milestone 11 active — 5 of 6 tracks complete. Teacher SRS Dashboard Phase 1 done, Phases 2-5 pending (dashboard UI, navigation integration, component tests, verification). All verification gates pass.
+
+---
 
 ## Code Review Summary (2026-04-16 — Full Codebase Audit, Pass 60)
 
@@ -469,23 +528,28 @@ Autonomous code review covering all changes since Pass 44 (Passes 45-46): Harnes
 
 **Phase status**: All Milestones 1-10 complete. No active tracks. Project in stabilization.
 
-## Current High-Level Priorities (2026-04-16 — Full Codebase Audit, Pass 60)
+## Current High-Level Priorities (2026-04-16 — Full Codebase Audit, Pass 61)
 
-Milestones 1-10 are **complete**. Milestone 11 (Cross-Project Feature Adoption) is **active** — 4 of 6 tracks complete.
+Milestones 1-10 are **complete**. Milestone 11 (Cross-Project Feature Adoption) is **active** — 5 of 6 tracks complete. Teacher SRS Dashboard Phase 1 is done.
 
-### Completed Since Pass 59
+### Completed Since Pass 60
 
-- Ported practice timing telemetry: timing.ts, timing-baseline.ts, srs-rating.ts, usePracticeTiming hook, contract timing types (102 tests)
-- Added phase skip UI for explore/discourse phase types (7 tests)
-- Replaced build-time component approval manifest with runtime prop-based hashing using crypto.subtle (19 tests)
-- Ported graphing explorer from ra-integrated-math-3: canvas-utils, linear/quadratic parsers, GraphingCanvas, GraphingExplorer, exploration configs (86 tests)
-- Fixed: graphing-explorer missing from version-hashes.ts activity list
+- Built SRS Daily Practice Core: contract types, scheduler, review processor, queue builder, family map, Convex schema, student daily practice page (72 lib tests + 7 component tests)
+- Built Teacher SRS Dashboard Phase 1: class health, weak families, struggling students queries, intervention mutations (reset card, bump priority), teacher analytics module (12 tests)
+- Fixed: review-processor hardcoded 'student-unknown' studentId (High)
+- Fixed: DailyPracticeSession revealed correct answer before submission (High)
+- Fixed: upsertSrsCard/recordSrsReview didn't verify studentId matches authenticated user (Medium)
 
 ### Recommended Next Priorities
 
-1. **Teacher SRS Dashboard** (Milestone 11, Track 6) — Teacher analytics for SRS health, weak families, struggling students. Depends on Track 5 (SRS Daily Practice Core — now complete). Spec and plan exist in `conductor/tracks/teacher_srs_dashboard_20260416/`.
+1. **Teacher SRS Dashboard Phases 2-5** (Milestone 11, Track 6) — Dashboard UI, navigation integration, component tests, final verification. Phase 1 (Convex analytics queries + interventions) is complete. Plan exists in `conductor/tracks/teacher_srs_dashboard_20260416/plan.md`.
+2. **Convex codegen regeneration** — Run `npx convex dev` to regenerate `api.d.ts` with the `srs` module. Tests mock it but runtime calls need the generated API.
+3. **DailyPracticeSession interactive answer input** (Low priority) — Current MVP auto-solves and grades. Needs per-family interactive answer components for a real practice experience.
 
-There are no Medium or High open items. All tech debt items are closed. The project is in a stable state with clear next steps.
+### Open Items
+
+- Convex generated API stale — missing srs module (Medium)
+- DailyPracticeSession MVP answer input (Low)
 
 ### Pass 48 Summary
 

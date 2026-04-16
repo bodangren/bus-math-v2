@@ -119,6 +119,7 @@ describe('DailyPracticeSession', () => {
     expect(screen.getByText(/problem 1 of 1/i)).toBeInTheDocument();
     expect(screen.getByText(/test family/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submit answer/i })).toBeInTheDocument();
+    expect(screen.queryByText(/your answer/i)).not.toBeInTheDocument();
   });
 
   it('records a review and advances to the next problem on submit', async () => {

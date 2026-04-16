@@ -10,6 +10,7 @@ export function processPracticeSubmission(
   cardState: SrsCardState | null,
   timing?: PracticeTimingSummary,
   baseline?: PracticeTimingBaseline,
+  studentId?: string,
 ): SrsReviewResult {
   const effectiveTiming = timing ?? envelope.timing;
   const timingFeatures = effectiveTiming
@@ -26,7 +27,8 @@ export function processPracticeSubmission(
     timingFeatures,
   });
 
-  const effectiveCard = cardState ?? createNewCard(envelope.activityId, 'student-unknown');
+  const effectiveStudentId = studentId ?? cardState?.studentId ?? 'unknown';
+  const effectiveCard = cardState ?? createNewCard(envelope.activityId, effectiveStudentId);
   const reviewedCard = reviewCard(effectiveCard, ratingResult.rating);
 
   const now = Date.now();

@@ -49,3 +49,5 @@
 - Async functions in middleware or server guards must always be `await`ed; without `await`, Promises are always truthy and nested fields are always undefined, silently breaking auth and role checks.
 - ts-fsrs `createEmptyCard()` requires a `Date` argument at runtime despite TypeScript declarations suggesting it takes no arguments; always pass `new Date()` to avoid `Invalid Date` errors.
 - Convex `v.optional()` is the correct pattern for optional fields in schema validators — not `v.number().optional()` which doesn't exist on the VFloat64 type.
+- Convex mutations accepting a `studentId` (or any user-scoped ID) must verify the ID matches the authenticated user's profile — checking `getUserIdentity()` alone only proves authentication, not authorization to act as that student.
+- Never hardcode fallback identity values like `'student-unknown'` in card/document creation; the ID propagates to stored records and breaks all downstream queries. Pass the real ID through the call chain.

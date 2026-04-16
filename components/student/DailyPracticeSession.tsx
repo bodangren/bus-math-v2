@@ -100,11 +100,10 @@ export function DailyPracticeSession({ studentId }: DailyPracticeSessionProps) {
       confidenceReasons: envelope.timing.confidenceReasons,
     } : undefined;
 
-    const result = processPracticeSubmission(envelope, currentCard, timing);
+    const result = processPracticeSubmission(envelope, currentCard, timing, undefined, studentId);
 
     await recordReview({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      studentId: currentCard.studentId as any,
+      studentId: studentId as Parameters<typeof recordReview>[0]['studentId'],
       problemFamilyId: result.card.problemFamilyId,
       rating: result.rating,
       scheduledAt: result.reviewLog.scheduledAt,
@@ -182,20 +181,24 @@ function ProblemRenderer({
   onSubmit: (envelope: PracticeSubmissionEnvelope) => void;
 }) {
   const submittedRef = useRef(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [gradeResult, setGradeResult] = useState<{ parts: Array<{ partId: string; rawAnswer?: unknown; isCorrect?: boolean }> } | null>(null);
 
   const handleGrade = () => {
     if (submittedRef.current) return;
     submittedRef.current = true;
+    setSubmitted(true);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const gradeResult = (family as any).grade(definition, response);
+    const result = (family as any).grade(definition, response);
+    setGradeResult(result);
     const envelope = buildPracticeSubmissionEnvelope({
       activityId: familyKey,
       mode: 'independent_practice',
       status: 'submitted',
       attemptNumber: 1,
       answers: {},
-      parts: gradeResult.parts.map((p: { partId: string; rawAnswer?: unknown; isCorrect?: boolean }) => ({
+      parts: result.parts.map((p: { partId: string; rawAnswer?: unknown; isCorrect?: boolean }) => ({
         partId: p.partId,
         rawAnswer: p.rawAnswer ?? null,
         isCorrect: p.isCorrect,
@@ -240,18 +243,27 @@ function ProblemRenderer({
         {renderDef(definition)}
       </div>
 
-      <div className="bg-muted/50 p-4 rounded-lg">
-        <h3 className="font-medium mb-2 text-sm text-muted-foreground">Your Answer</h3>
-        <pre className="text-sm whitespace-pre-wrap font-mono bg-background p-3 rounded border">
-          {JSON.stringify(response, null, 2)}
-        </pre>
-      </div>
-
-      <div className="flex gap-3">
-        <Button onClick={handleGrade} className="flex-1">
-          Submit Answer
-        </Button>
-      </div>
+      {submitted && gradeResult ? (
+        <div className="bg-muted/50 p-4 rounded-lg">
+          <h3 className="font-medium mb-2 text-sm text-muted-foreground">Result</h3>
+          <div className="space-y-1">
+            {gradeResult.parts.map((p, i) => (
+              <div key={i} className={`text-sm ${p.isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                {p.partId}: {p.isCorrect ? 'Correct' : 'Incorrect'}
+              </div>
+            ))}
+          </div>
+          <pre className="text-sm whitespace-pre-wrap font-mono bg-background p-3 rounded border mt-2">
+            {JSON.stringify(response, null, 2)}
+          </pre>
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          <Button onClick={handleGrade} className="flex-1">
+            Submit Answer
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

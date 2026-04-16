@@ -9,6 +9,22 @@ import {
 } from '../lib/srs/teacher-analytics';
 import { createNewCard } from '../lib/srs/scheduler';
 
+async function verifyStudentIdentity(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ctx: { db: { query: (table: 'profiles') => any } },
+  identity: { email?: string | null },
+  studentId: Id<'profiles'>
+): Promise<void> {
+  const profile = await ctx.db
+    .query('profiles')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .withIndex('by_username', (q: any) => q.eq('username', identity.email!))
+    .unique();
+  if (!profile || profile._id !== studentId) {
+    throw new Error('Unauthorized: studentId does not match authenticated user');
+  }
+}
+
 export const upsertSrsCard = mutation({
   args: {
     studentId: v.id('profiles'),
@@ -21,6 +37,8 @@ export const upsertSrsCard = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
+
+    await verifyStudentIdentity(ctx, identity, args.studentId);
 
     const existing = await ctx.db
       .query('srs_cards')
@@ -71,6 +89,8 @@ export const recordSrsReview = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error('Unauthenticated');
+
+    await verifyStudentIdentity(ctx, identity, args.studentId);
 
     await ctx.db.insert('srs_review_log', {
       studentId: args.studentId,
