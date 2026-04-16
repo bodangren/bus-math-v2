@@ -32,3 +32,4 @@
 - Seed/admin mutations must always include role checks — exported Convex mutations are callable by any authenticated user.
 - When both a `useEffect` and an event handler watch the same state, avoid calling the same data-loading function from both; the effect alone is sufficient.
 - Client-side Convex mutation calls must be wrapped in try/catch/finally when they gate UI state (e.g. submittedRef, isSubmitting). Without error handling, a failed mutation permanently locks the UI.
+- Activity component `onSubmit?.()` callbacks must be wrapped in try/catch. When the parent handler throws, unhandled exceptions leave the component permanently locked unless `submittedRef` and completion state are reset in the catch block.
