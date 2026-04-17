@@ -1,0 +1,15 @@
+{
+  "id": "code_review_pass97_20260417",
+  "name": "Code Review Pass 97 — Stabilization Verification",
+  "status": "active",
+  "created": "2026-04-17",
+  "model": "MiniMax-M2.7",
+  "phases": [
+    {
+      "id": 1,
+      "name": "Verification Gates",
+      "status": "pending"
+    }
+  ],
+  "scope": "Autonomous stabilization verification pass following Pass 96 — run lint, tests, build, verify no regressions."
+}
