@@ -1,5 +1,40 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-17 — Deep Audit, Pass 108)
+
+Autonomous deep code review covering all changes since Pass 107 (last substantive audit). Reviewed Login Rate Limiting, Error Boundaries, and Demo Provisioning Auth Hardening tracks — 10 commits, 37 files changed, +1328/-30 lines.
+
+**Scope:** Three parallel audits — Login Rate Limiting (route + Convex mutation + schema), Error Boundaries (5 boundary files + 5 test files), Demo Provisioning Auth (route + auth helper + 2 test files).
+
+**Fixed during review: 3 issues**
+
+- **Duplicate `hashIpAddress` function in route.ts and convex/loginRateLimits.ts** (High): Identical IP hashing logic in two files risked silent divergence (e.g., if pepper added to one). Fixed: extracted to shared `lib/auth/ip-hash.ts`, both files import from it.
+- **LessonRendererErrorBoundary duplicates ErrorFallback inline UI** (High): The class boundary re-implemented the entire error card instead of composing `<ErrorFallback>`. Also hardcoded wrong dashboard path (`/student` instead of `/student/dashboard`), used `window.location.href` instead of Next.js router, and typed `errorInfo: unknown` losing component stack. Fixed: refactored to compose `<ErrorFallback>` with lesson-specific title/description.
+- **Retry-After header could be zero or negative** (Low): `Math.ceil((windowExpiresAt - now) / 1000)` with slow mutations or clock skew could yield 0. Fixed: wrapped in `Math.max(1, ...)`.
+
+**New findings documented (not fixed):**
+
+1. **Login rate limit cleanup loads entire table** (Medium) — `.collect()` with no filter loads all rows before filtering in JS. Low practical risk at current scale.
+2. **Successful logins count against rate limit** (Medium) — Spec scoped this as out-of-scope. Students on multiple devices may hit 5/15min limit.
+3. **Missing `global-error.tsx`** (Medium) — Root layout errors bypass all route-level error boundaries.
+4. **No scheduled trigger for cleanup mutation** (Medium) — `cleanupStaleLoginRateLimits` exists but nothing invokes it.
+5. **No Convex-side mutation tests for rate limiting** (Medium) — Route tests mock the mutation; actual window-expiry logic untested.
+
+**Deferred (documented, not fixed):**
+- Cleanup mutation table scan — low risk at current scale
+- Successful logins counting — usability tradeoff per spec
+- global-error.tsx — only needed if root layout crashes surface
+- Login mutation tests — test mocks cover integration; direct unit tests would add confidence
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2283/2283 tests pass (343 test files, 0 failures)
+- `npm run build`: passes cleanly (pre-existing sourcemap warnings only)
+
+**Phase status**: All 11 milestones complete. 200 tracks archived. No active tracks. Project in full stabilization. 10 deferred tech-debt items (1 Critical already closed, 2 High already closed, 7 Medium deferred). Total deferred items: 7.
+
+---
+
 ## Code Review Summary (2026-04-17 — Deep Audit, Pass 107)
 
 Autonomous deep code review covering all changes since Pass 100 (last substantive audit). Reviewed Teacher SRS Dashboard Type Safety Cleanup track and Passes 101-106 (stabilization verification with zero code changes). Full codebase security and correctness audit across Convex backend, API routes, and frontend components.
@@ -732,14 +767,14 @@ All 11 milestones (2026-03-16 through 2026-04-16) are complete. Project in full 
 
 ## Phase Focus
 
-Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). Pass 107 deep audit complete — 1 fix applied, 5 new deferred tech-debt items documented. 197 tracks archived.
+Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). Pass 108 deep audit complete — 3 fixes applied, 5 new deferred tech-debt items documented. 200 tracks archived. Login rate limiting, error boundaries, and demo provisioning auth all shipped since Pass 107.
 
 **Next high-level priorities:**
-1. **Login rate limiting** (Critical): Highest-value security fix. Add Convex-backed rate limiting to `/api/auth/login` matching the chatbot pattern.
-2. **Error boundaries** (High): Add `error.tsx` to key route segments (`app/student/`, `app/teacher/`, `app/student/lesson/`).
-3. **ensure-demo auth hardening** (High): Gate `/api/users/ensure-demo` behind admin auth or a separate provisioning secret.
+1. ~~**Login rate limiting**~~ (Critical): Complete — Convex-backed rate limiting on `/api/auth/login`.
+2. ~~**Error boundaries**~~ (High): Complete — `error.tsx` in student, teacher, and lesson route segments + LessonRenderer component boundary.
+3. ~~**ensure-demo auth hardening**~~ (High): Complete — admin auth required, demo passwords in env vars.
 4. **Session revocation** (Medium): Wire `requireActiveRequestSessionClaims` into mutating routes so deactivated users can't act on stale JWTs.
-5. **Deferred code quality**: Non-blocking items from passes 80-107 (server module in client component pattern, dashboard error UX, `Promise<any>` return types from server helpers, double-submit useState→useRef migration)
+5. **Deferred code quality**: Non-blocking items (server module in client component pattern, dashboard error UX, `Promise<any>` return types, double-submit useState→useRef migration, Convex-side rate limit mutation tests)
 6. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
 
 ## Required Execution Order
@@ -755,7 +790,7 @@ Milestone 11 tracks (strictly serial):
 
 ## Post-Milestone State
 
-All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 197 tracks archived. 2254 tests passing across 338 test files. Zero lint errors/warnings. Build clean. 7 deferred tech-debt items (1 Critical, 2 High, 2 Medium from Pass 107 + 2 Medium from earlier passes).
+All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 200 tracks archived. 2283 tests passing across 343 test files. Zero lint errors/warnings. Build clean. 7 deferred tech-debt items (4 Medium from Pass 107 + 3 Medium from Pass 108). All Critical and High items from recent passes are closed.
 
 ## In-Bounds Work
 

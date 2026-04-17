@@ -1,14 +1,9 @@
 import { mutation } from './_generated/server';
 import { v } from 'convex/values';
-import { createHash } from 'crypto';
 
 const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const LOGIN_MAX_REQUESTS_PER_WINDOW = 5;
 const LOGIN_STALE_ENTRY_THRESHOLD_MS = 24 * 60 * 60 * 1000;
-
-export function hashIpAddress(ip: string): string {
-  return createHash('sha256').update(ip).digest('hex').slice(0, 32);
-}
 
 export const checkAndIncrementLoginRateLimit = mutation({
   args: { ipHash: v.string() },

@@ -1,13 +1,12 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { createHash } from 'crypto';
-
 import {
   PASSWORD_HASH_ITERATIONS,
   SESSION_COOKIE_NAME,
   SESSION_TTL_SECONDS,
   getAuthJwtSecret,
 } from '@/lib/auth/constants';
+import { hashIpAddress } from '@/lib/auth/ip-hash';
 import { signSessionToken, verifyPassword } from '@/lib/auth/session';
 import { fetchInternalMutation, fetchInternalQuery, internal } from '@/lib/convex/server';
 
@@ -26,10 +25,6 @@ function getClientIp(request: Request): string {
     return realIp;
   }
   return '127.0.0.1';
-}
-
-function hashIpAddress(ip: string): string {
-  return createHash('sha256').update(ip).digest('hex').slice(0, 32);
 }
 
 export async function POST(request: Request) {
@@ -57,7 +52,7 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.allowed) {
-      const retryAfter = Math.ceil((rateLimitResult.windowExpiresAt - Date.now()) / 1000);
+      const retryAfter = Math.max(1, Math.ceil((rateLimitResult.windowExpiresAt - Date.now()) / 1000));
       return NextResponse.json(
         { error: 'Too many login attempts. Please try again later.' },
         { status: 429, headers: { 'Retry-After': String(retryAfter) } },

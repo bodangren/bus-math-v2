@@ -96,11 +96,12 @@ describe('LessonRendererErrorBoundary', () => {
       </LessonRendererErrorBoundary>
     );
 
-    expect(screen.getByTestId('lesson-error-refresh-button')).toBeInTheDocument();
+    expect(screen.getByTestId('error-refresh-button')).toBeInTheDocument();
     expect(screen.getByText('Refresh page')).toBeInTheDocument();
   });
 
-  it('shows back to dashboard button in error fallback', () => {
+  it('logs error via componentDidCatch', () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const ErrorThrowingComponent = () => {
       throw new Error('Test error');
     };
@@ -111,22 +112,11 @@ describe('LessonRendererErrorBoundary', () => {
       </LessonRendererErrorBoundary>
     );
 
-    expect(screen.getByTestId('lesson-error-dashboard-button')).toBeInTheDocument();
-    expect(screen.getByText('Back to Dashboard')).toBeInTheDocument();
-  });
-
-  it('dashboard button has onClick handler', () => {
-    const ErrorThrowingComponent = () => {
-      throw new Error('Test error');
-    };
-
-    render(
-      <LessonRendererErrorBoundary>
-        <ErrorThrowingComponent />
-      </LessonRendererErrorBoundary>
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'LessonRenderer error:',
+      expect.any(Error),
+      expect.objectContaining({ componentStack: expect.any(String) }),
     );
-
-    const dashboardButton = screen.getByTestId('lesson-error-dashboard-button');
-    expect(dashboardButton).toBeInstanceOf(HTMLButtonElement);
+    consoleSpy.mockRestore();
   });
 });

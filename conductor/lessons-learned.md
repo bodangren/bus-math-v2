@@ -42,3 +42,6 @@
 - When wrapping a Server Component's child (like LessonRenderer) with a class-based error boundary, create a client wrapper (LessonRendererClient) that uses the boundary. Server Components cannot directly host React error boundaries — the boundary must live in a Client Component tree.
 - Dev-only endpoints should use layered defense: environment gating (NODE_ENV) plus route-level auth (admin role check). Either layer alone is insufficient for endpoints that create privileged accounts.
 - Move sensitive constants like demo passwords out of source code into environment variables, even when the endpoint is already auth-gated. This prevents accidental exposure in repositories and allows per-environment rotation.
+- Utility functions used by both Next.js API routes and Convex modules should live in a shared lib/ directory, not be duplicated. Import from the shared module in both places to avoid silent divergence.
+- Class-based React error boundaries wrapping Server Components should compose existing fallback UI components (like ErrorFallback) rather than duplicating inline error cards. This ensures accessibility, styling, and behavior fixes propagate everywhere.
+- `errorInfo` parameter in `componentDidCatch` should be typed as `React.ErrorInfo`, not `unknown`, to preserve access to `componentStack` for meaningful error logging.
