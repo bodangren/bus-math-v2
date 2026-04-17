@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Teacher SRS Dashboard Type Safety Cleanup**
+  *Link: [./archive/teacher_srs_type_safety_20260417/](./archive/teacher_srs_type_safety_20260417/)*
+  *Scope: Remove the `internal as any` workaround from teacher SRS dashboard files now that srs module is in generated Convex types. Add component tests and verify type safety.*
+  *Closeout: completed on 2026-04-17. Removed `as any` from TeacherSRSDashboardClient and app/teacher/srs/page.tsx. Public SRS functions now use `api.srs.*`; internal function uses `internal.srs.getTeacherClasses`. Added 5 component tests. All verification gates pass (lint 0/0, test 2254/2254, build clean). k2p5 verified.*
+
 - [x] **Track: Code Review Pass 99 — Stabilization Verification**
   *Link: [./archive/code_review_pass99_20260417/](./archive/code_review_pass99_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 98 — run lint, tests, build, verify no regressions.*

@@ -4,9 +4,6 @@ import { fetchInternalQuery, internal } from "@/lib/convex/server";
 import { TeacherSRSDashboardClient } from "@/components/teacher/srs/TeacherSRSDashboardClient";
 import type { Id } from "@/convex/_generated/dataModel";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const srsInternal = internal as any;
-
 export default async function TeacherSRSPage() {
   const claims = await requireTeacherSessionClaims("/teacher/srs");
 
@@ -18,7 +15,7 @@ export default async function TeacherSRSPage() {
     redirect("/auth/login");
   }
 
-  const classes = await fetchInternalQuery(srsInternal.srs.getTeacherClasses, {
+  const classes = await fetchInternalQuery(internal.srs.getTeacherClasses, {
     userId: claims.sub as Id<"profiles">,
   });
 

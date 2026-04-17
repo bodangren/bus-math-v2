@@ -8,11 +8,10 @@ import { WeakFamiliesPanel, type FamilyPerformance } from "./WeakFamiliesPanel";
 import { StrugglingStudentsPanel, type StudentStruggleMetrics } from "./StrugglingStudentsPanel";
 import { ResetCardModal } from "./ResetCardModal";
 import { BumpPriorityModal } from "./BumpPriorityModal";
-import { fetchInternalMutation, fetchInternalQuery, internal } from "@/lib/convex/server";
+import { fetchInternalMutation, fetchInternalQuery, api } from "@/lib/convex/server";
 import type { Id } from "@/convex/_generated/dataModel";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const srs = internal as any;
+
 
 interface TeacherClass {
   id: string;
@@ -50,9 +49,9 @@ export function TeacherSRSDashboardClient({
     setIsLoadingData(true);
     try {
       const [health, families, students] = await Promise.all([
-        fetchInternalQuery(srs.srs.getClassSrsHealth, { classId: classId as Id<"classes"> }),
-        fetchInternalQuery(srs.srs.getWeakFamilies, { classId: classId as Id<"classes"> }),
-        fetchInternalQuery(srs.srs.getStrugglingStudents, { classId: classId as Id<"classes"> }),
+        fetchInternalQuery(api.srs.getClassSrsHealth, { classId: classId as Id<"classes"> }),
+        fetchInternalQuery(api.srs.getWeakFamilies, { classId: classId as Id<"classes"> }),
+        fetchInternalQuery(api.srs.getStrugglingStudents, { classId: classId as Id<"classes"> }),
       ]);
       setClassHealth(health);
       setWeakFamilies(families);
@@ -79,7 +78,7 @@ export function TeacherSRSDashboardClient({
 
   const handleResetCard = async (problemFamilyId: string) => {
     try {
-      await fetchInternalMutation(srs.srs.resetStudentCard, {
+      await fetchInternalMutation(api.srs.resetStudentCard, {
         studentId: resetStudentId as Id<"profiles">,
         problemFamilyId,
       });
@@ -91,7 +90,7 @@ export function TeacherSRSDashboardClient({
 
   const handleBumpPriority = async (problemFamilyId: string) => {
     try {
-      await fetchInternalMutation(srs.srs.bumpFamilyPriority, {
+      await fetchInternalMutation(api.srs.bumpFamilyPriority, {
         classId: selectedClassId as Id<"classes">,
         problemFamilyId,
       });
