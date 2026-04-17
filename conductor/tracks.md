@@ -130,6 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [~] **Track: Error Boundaries**
+  *Link: [./tracks/error_boundaries_20260417/](./tracks/error_boundaries_20260417/)*
+  *Scope: Add Next.js error.tsx route boundaries to app/student/, app/teacher/, and app/student/lesson/ segments. Wrap LessonRenderer with a component-level ErrorBoundary to prevent full-page crashes from unhandled render errors.*
+
 - [x] **Track: Login Rate Limiting**
   *Link: [./archive/login_rate_limiting_20260417/](./archive/login_rate_limiting_20260417/)*
   *Scope: Add Convex-backed rate limiting to /api/auth/login to prevent brute-force attacks. IP-based limiting (5 attempts per 15 min) matching chatbot rate limiting pattern.*
