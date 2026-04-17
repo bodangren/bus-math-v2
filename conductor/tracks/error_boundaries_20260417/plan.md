@@ -60,5 +60,5 @@
 - [x] Task: Run `npm run lint` — fix any errors
 - [x] Task: Run `npm test` — ensure all tests pass
 - [x] Task: Run `npm run build` — ensure build succeeds
-- [ ] Task: Update `tech-debt.md` — close error boundaries item
-- [ ] Task: Update `lessons-learned.md` — add entry about error.tsx placement
+- [x] Task: Update `tech-debt.md` — close error boundaries item
+- [x] Task: Update `lessons-learned.md` — add entry about error.tsx placement
