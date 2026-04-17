@@ -1,0 +1,3 @@
+Track: teacher_srs_type_safety_20260417
+Phase: 1 (Type Safety Cleanup and Tests)
+Summary: Removed as any workaround from teacher SRS dashboard. Public SRS functions now use api.srs.*; internal getTeacherClasses uses internal.srs.getTeacherClasses. Added 5 component tests for TeacherSRSDashboardClient. All verification gates pass.
