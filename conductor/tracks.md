@@ -130,9 +130,14 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Error Boundaries**
-  *Link: [./tracks/error_boundaries_20260417/](./tracks/error_boundaries_20260417/)*
+- [~] **Track: Demo Provisioning Auth Hardening**
+  *Link: [./tracks/demo_provisioning_auth_20260417/](./tracks/demo_provisioning_auth_20260417/)*
+  *Scope: Harden /api/users/ensure-demo by requiring admin authentication and moving hardcoded demo passwords to environment variables.*
+
+- [x] **Track: Error Boundaries**
+  *Link: [./archive/error_boundaries_20260417/](./archive/error_boundaries_20260417/)*
   *Scope: Add Next.js error.tsx route boundaries to app/student/, app/teacher/, and app/student/lesson/ segments. Wrap LessonRenderer with a component-level ErrorBoundary to prevent full-page crashes from unhandled render errors.*
+  *Closeout: completed on 2026-04-17. All 5 phases complete: shared ErrorFallback component, app/student/error.tsx, app/teacher/error.tsx, app/student/lesson/error.tsx, and LessonRendererErrorBoundary. 5 boundary tests added. All verification gates pass (lint 0 errors/0 warnings, test 2254/2254, build clean). Tech-debt item closed. MiniMax-M2.7 verified.*
 
 - [x] **Track: Login Rate Limiting**
   *Link: [./archive/login_rate_limiting_20260417/](./archive/login_rate_limiting_20260417/)*

@@ -1,0 +1,11 @@
+{
+  "track_id": "demo_provisioning_auth_20260417",
+  "type": "security",
+  "status": "in_progress",
+  "created_at": "2026-04-17T00:00:00Z",
+  "updated_at": "2026-04-17T00:00:00Z",
+  "description": "Harden /api/users/ensure-demo by requiring admin authentication and moving hardcoded demo passwords to environment variables.",
+  "estimated_tasks": 6,
+  "actual_tasks": 0,
+  "deviation_notes": ""
+}
