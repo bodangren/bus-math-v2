@@ -1,0 +1,17 @@
+{
+  "id": "login_rate_limit_convex_tests_20260417",
+  "name": "Login Rate Limiting Convex Mutation Tests",
+  "status": "in_progress",
+  "created": "2026-04-17",
+  "type": "chore",
+  "phase": 1,
+  "totalPhases": 1,
+  "parent": null,
+  "summary": "Add direct Convex mutation tests for login rate limiting logic (window expiry, cleanup, IP hashing)",
+  "techDebtItems": ["login_rate_limit_convex_tests_20260417"],
+  "verificationGates": {
+    "lint": "0 errors, 0 warnings",
+    "tests": "2283+ tests pass",
+    "build": "passes"
+  }
+}

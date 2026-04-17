@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Login Rate Limiting Convex Mutation Tests**
+  *Link: [./archive/login_rate_limit_convex_tests_20260417/](./archive/login_rate_limit_convex_tests_20260417/)*
+  *Scope: Add direct Convex mutation tests for login rate limiting logic — window expiry, cleanup, IP hashing. Route tests mock the mutation; actual window-expiry logic was untested.*
+  *Closeout: completed on 2026-04-17. Refactored loginRateLimits.ts to export raw handlers (following component_approvals pattern). Added 13 tests: checkAndIncrementLoginRateLimit (first req, increment, 5th/6th req, window expiry, Retry-After min), cleanupStaleLoginRateLimits (auth rejection, stale deletion, no stale), hashIpAddress utility (deterministic, uniqueness, format). All verification gates pass (lint 0/0, test 2296/2296, build clean). Tech-debt item closed. MiniMax-M2.7 verified.*
+
 - [x] **Track: Demo Provisioning Auth Hardening**
   *Link: [./archive/demo_provisioning_auth_20260417/](./archive/demo_provisioning_auth_20260417/)*
   *Scope: Harden /api/users/ensure-demo by requiring admin authentication and moving hardcoded demo passwords to environment variables.*
