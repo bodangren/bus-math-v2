@@ -1,0 +1,11 @@
+{
+  "id": "code_review_pass101_20260417",
+  "name": "Code Review Pass 101 — Stabilization Verification",
+  "status": "completed",
+  "created": "2026-04-17",
+  "completed": "2026-04-17",
+  "phase": 1,
+  "totalPhases": 1,
+  "trackType": "verification",
+  "model": "MiniMax-M2.7"
+}
