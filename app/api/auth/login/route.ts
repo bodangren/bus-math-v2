@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { createHash } from 'crypto';
 
 import {
   PASSWORD_HASH_ITERATIONS,
@@ -8,11 +9,27 @@ import {
   getAuthJwtSecret,
 } from '@/lib/auth/constants';
 import { signSessionToken, verifyPassword } from '@/lib/auth/session';
-import { fetchInternalQuery, internal } from '@/lib/convex/server';
+import { fetchInternalMutation, fetchInternalQuery, internal } from '@/lib/convex/server';
 
 interface LoginBody {
   username?: string;
   password?: string;
+}
+
+function getClientIp(request: Request): string {
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+  const realIp = request.headers.get('x-real-ip');
+  if (realIp) {
+    return realIp;
+  }
+  return '127.0.0.1';
+}
+
+function hashIpAddress(ip: string): string {
+  return createHash('sha256').update(ip).digest('hex').slice(0, 32);
 }
 
 export async function POST(request: Request) {
@@ -28,6 +45,30 @@ export async function POST(request: Request) {
 
   if (!username || !password) {
     return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
+  }
+
+  const clientIp = getClientIp(request);
+  const ipHash = hashIpAddress(clientIp);
+
+  try {
+    const rateLimitResult = await fetchInternalMutation(
+      internal.loginRateLimits.checkAndIncrementLoginRateLimit,
+      { ipHash },
+    );
+
+    if (!rateLimitResult.allowed) {
+      const retryAfter = Math.ceil((rateLimitResult.windowExpiresAt - Date.now()) / 1000);
+      return NextResponse.json(
+        { error: 'Too many login attempts. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+      );
+    }
+  } catch (error) {
+    console.error('[login] Rate limit check failed:', error);
+    return NextResponse.json(
+      { error: 'Authentication service unavailable' },
+      { status: 503 },
+    );
   }
 
   try {

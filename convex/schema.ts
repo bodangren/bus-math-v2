@@ -471,6 +471,15 @@ export default defineSchema({
   })
     .index("by_user", ["userId"]),
 
+  login_rate_limits: defineTable({
+    ipHash: v.string(),
+    requestCount: v.number(),
+    windowStart: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_ip", ["ipHash"]),
+
   srs_cards: defineTable({
     studentId: v.id("profiles"),
     problemFamilyId: v.string(),

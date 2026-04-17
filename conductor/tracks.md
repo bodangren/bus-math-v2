@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Login Rate Limiting**
+  *Link: [./archive/login_rate_limiting_20260417/](./archive/login_rate_limiting_20260417/)*
+  *Scope: Add Convex-backed rate limiting to /api/auth/login to prevent brute-force attacks. IP-based limiting (5 attempts per 15 min) matching chatbot rate limiting pattern.*
+  *Closeout: completed on 2026-04-17. Added login_rate_limits table to schema, checkAndIncrementLoginRateLimit and cleanupStaleLoginRateLimits mutations, IP hashing utility, login route integration with 429 response and Retry-After header, fail-closed on service errors. Added 7 new tests (3 route tests, 3 mutation tests, 1 hash utility test). All verification gates pass (lint 0/0, test 2256/2256, build clean). Tech-debt item closed. MiniMax-M2.7 verified.*
+
 - [x] **Track: Code Review Pass 106 — Stabilization Verification**
   *Link: [./archive/code_review_pass106_20260417/](./archive/code_review_pass106_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 105 — run lint, tests, build, verify no regressions.*
