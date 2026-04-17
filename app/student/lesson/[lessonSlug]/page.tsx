@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { LessonRenderer } from '@/components/student/LessonRenderer';
+import { LessonRendererClient } from '@/components/lesson/LessonRendererClient';
 import { getServerSessionClaims } from '@/lib/auth/server';
 import { fetchInternalQuery, fetchQuery, api, internal } from '@/lib/convex/server';
 import { studentDashboardPath } from '@/lib/student/navigation';
@@ -274,7 +274,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   }
 
   return (
-    <LessonRenderer
+    <LessonRendererClient
       lesson={lesson}
       phases={lessonPhases}
       currentPhaseNumber={effectivePhaseNumber}

@@ -43,22 +43,22 @@
 
 ### Tasks
 
-- [ ] Task: Create `components/lesson/LessonRendererErrorBoundary.tsx`
-  - [ ] Class-based error boundary
-  - [ ] Inline fallback (not full-page takeover)
-  - [ ] Preserves surrounding layout
-- [ ] Task: Wrap `LessonRenderer` in the boundary
-  - [ ] Update the page or parent that renders LessonRenderer
-- [ ] Task: Add tests for LessonRenderer boundary
-  - [ ] Catches errors and shows fallback
-  - [ ] Preserves layout around fallback
+- [x] Task: Create `components/lesson/LessonRendererErrorBoundary.tsx`
+  - [x] Class-based error boundary
+  - [x] Inline fallback (not full-page takeover)
+  - [x] Preserves surrounding layout
+- [x] Task: Wrap `LessonRenderer` in the boundary
+  - [x] Update the page or parent that renders LessonRenderer
+- [x] Task: Add tests for LessonRenderer boundary
+  - [x] Catches errors and shows fallback
+  - [x] Preserves layout around fallback
 
 ## Phase 5: Verification and Documentation
 
 ### Tasks
 
-- [ ] Task: Run `npm run lint` — fix any errors
-- [ ] Task: Run `npm test` — ensure all tests pass
-- [ ] Task: Run `npm run build` — ensure build succeeds
+- [x] Task: Run `npm run lint` — fix any errors
+- [x] Task: Run `npm test` — ensure all tests pass
+- [x] Task: Run `npm run build` — ensure build succeeds
 - [ ] Task: Update `tech-debt.md` — close error boundaries item
 - [ ] Task: Update `lessons-learned.md` — add entry about error.tsx placement
