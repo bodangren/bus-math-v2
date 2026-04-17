@@ -1,5 +1,42 @@
 # Current Strategic Directive
 
+## Code Review Summary (2026-04-17 — Deep Audit, Pass 107)
+
+Autonomous deep code review covering all changes since Pass 100 (last substantive audit). Reviewed Teacher SRS Dashboard Type Safety Cleanup track and Passes 101-106 (stabilization verification with zero code changes). Full codebase security and correctness audit across Convex backend, API routes, and frontend components.
+
+**Scope:** Three parallel audits — Convex backend auth (17 files), API route security (25 route files + middleware), frontend error handling (components/student, components/teacher, components/activities).
+
+**Fixed during review: 1 issue**
+
+- **TeacherSRSDashboardClient handleResetCard/handleBumpPriority silently swallow errors** (Medium): Both handlers had try/catch with console.error but no rethrow. The calling modals (ResetCardModal, BumpPriorityModal) have proper try/catch with user-facing error display, but they never received errors because the handlers swallowed them. Teachers got no feedback when reset/bump mutations failed — modals closed as if successful. Fixed: added `throw err` after console.error so modals can display the error.
+
+**New findings documented (not fixed):**
+
+1. **Login endpoint has no rate limiting** (Critical) — `/api/auth/login` accepts unlimited attempts. The chatbot has Convex-backed rate limiting, but the most sensitive route does not. New feature work required.
+2. **No error.tsx route boundaries** (High) — Zero error.tsx files in the entire app/ directory. Any unhandled render error crashes the full page. Combined with no error boundary around LessonRenderer.
+3. **`/api/users/ensure-demo` creates admin without auth in non-production** (High) — Gated by NODE_ENV only. In staging/preview dev mode, anyone can create demo_admin with known password.
+4. **`requireActiveRequestSessionClaims` defined but never used** (Medium) — Deactivated users retain active sessions until JWT expires (up to 12h).
+5. **5 components use useState for double-submit guard** (Medium) — Should use useRef per established pattern. Theoretical double-submit window under React 18 batching.
+6. **Internal Convex functions missing auth** (Medium, defense-in-depth) — getSubmissionDetail, getLessonErrorSummary, updateAttemptWithTeacherOverride, changeOwnPassword don't verify caller identity internally. They're internalQuery/internalMutation (not directly callable by clients), but represent missing defense-in-depth.
+7. **Hardcoded demo passwords in seed.ts** (Medium) — Three demo accounts use "demo123". Admin-protected mutation, but passwords are in source control.
+8. **Error messages leak internal state to clients** (Low) — SRS functions distinguish "Profile not found" vs "Unauthorized", enabling username enumeration.
+
+**Deferred (documented, not fixed):**
+- Login rate limiting — new feature work, highest priority for next feature cycle
+- Error.tsx route boundaries — architectural improvement
+- ensure-demo auth — intentional dev convenience, gated by NODE_ENV
+- requireActiveRequestSessionClaims usage — behavioral change requiring session architecture work
+- Internal Convex function auth — defense-in-depth, calling actions already do auth verification
+
+**Verification gates:**
+- `npm run lint`: 0 errors, 0 warnings
+- `npm test`: 2254/2254 tests pass (338 test files, 0 failures)
+- `npm run build`: passes cleanly (pre-existing sourcemap warnings only)
+
+**Phase status**: All 11 milestones complete. 197 tracks archived. No active tracks. Project in full stabilization. 5 new deferred tech-debt items documented (1 Critical, 2 High, 2 Medium). Total deferred items: 7.
+
+---
+
 ## Code Review Summary (2026-04-17 — Stabilization Verification, Pass 106)
 
 Autonomous stabilization verification pass following Pass 105. Confirmed project stability with zero regressions.
@@ -695,12 +732,15 @@ All 11 milestones (2026-03-16 through 2026-04-16) are complete. Project in full 
 
 ## Phase Focus
 
-Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). Pass 100 deep audit complete — all gates pass. 191 tracks archived.
+Project in full stabilization. All 11 milestones complete (2026-03-16 through 2026-04-16). Pass 107 deep audit complete — 1 fix applied, 5 new deferred tech-debt items documented. 197 tracks archived.
 
 **Next high-level priorities:**
-1. **Ongoing stabilization**: Continue periodic code review passes as needed
-2. **Deferred code quality**: Non-blocking items from passes 80-100 (server module in client component pattern, dashboard error UX, `Promise<any>` return types from server helpers)
-3. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
+1. **Login rate limiting** (Critical): Highest-value security fix. Add Convex-backed rate limiting to `/api/auth/login` matching the chatbot pattern.
+2. **Error boundaries** (High): Add `error.tsx` to key route segments (`app/student/`, `app/teacher/`, `app/student/lesson/`).
+3. **ensure-demo auth hardening** (High): Gate `/api/users/ensure-demo` behind admin auth or a separate provisioning secret.
+4. **Session revocation** (Medium): Wire `requireActiveRequestSessionClaims` into mutating routes so deactivated users can't act on stale JWTs.
+5. **Deferred code quality**: Non-blocking items from passes 80-107 (server module in client component pattern, dashboard error UX, `Promise<any>` return types from server helpers, double-submit useState→useRef migration)
+6. **Documentation accuracy**: Keep README.md and current_directive.md in sync with project state
 
 ## Required Execution Order
 
@@ -715,7 +755,7 @@ Milestone 11 tracks (strictly serial):
 
 ## Post-Milestone State
 
-All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 191 tracks archived. 2254 tests passing across 338 test files. Zero lint errors/warnings. Build clean.
+All 11 milestones are now **complete** (2026-03-16 through 2026-04-16). Project in full stabilization. 197 tracks archived. 2254 tests passing across 338 test files. Zero lint errors/warnings. Build clean. 7 deferred tech-debt items (1 Critical, 2 High, 2 Medium from Pass 107 + 2 Medium from earlier passes).
 
 ## In-Bounds Work
 

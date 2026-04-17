@@ -85,6 +85,7 @@ export function TeacherSRSDashboardClient({
       await loadClassData(selectedClassId);
     } catch (err) {
       console.error("Failed to reset card:", err);
+      throw err;
     }
   };
 
@@ -97,6 +98,7 @@ export function TeacherSRSDashboardClient({
       await loadClassData(selectedClassId);
     } catch (err) {
       console.error("Failed to bump priority:", err);
+      throw err;
     }
   };
 
