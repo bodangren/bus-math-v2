@@ -21,12 +21,12 @@
 
 ### Tasks
 
-- [ ] Task: Create `app/teacher/error.tsx`
-  - [ ] Client component receiving `error` and `reset`
-  - [ ] Render shared ErrorFallback
-- [ ] Task: Add tests for `app/teacher/error.tsx`
-  - [ ] Renders fallback on error
-  - [ ] Calls reset when try-again clicked
+- [x] Task: Create `app/teacher/error.tsx`
+  - [x] Client component receiving `error` and `reset`
+  - [x] Render shared ErrorFallback
+- [x] Task: Add tests for `app/teacher/error.tsx`
+  - [x] Renders fallback on error
+  - [x] Calls reset when try-again clicked
 
 ## Phase 3: Lesson Route Boundary
 
