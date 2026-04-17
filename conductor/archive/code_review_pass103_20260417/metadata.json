@@ -1,0 +1,12 @@
+{
+  "id": "code_review_pass103_20260417",
+  "name": "Code Review Pass 103 — Stabilization Verification",
+  "status": "in_progress",
+  "created": "2026-04-17",
+  "completed": null,
+  "track_type": "verification",
+  "phase": 1,
+  "totalPhases": 1,
+  "model": "MiniMax-M2.7",
+  "description": "Autonomous stabilization verification pass following Pass 102 — run lint, tests, build, verify no regressions."
+}
