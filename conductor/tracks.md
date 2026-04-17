@@ -130,6 +130,11 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
+- [x] **Track: Code Review Pass 98 — Stabilization Verification**
+  *Link: [./archive/code_review_pass98_20260417/](./archive/code_review_pass98_20260417/)*
+  *Scope: Autonomous stabilization verification pass following Pass 97 — run lint, tests, build, verify no regressions.*
+  *Closeout: completed on 2026-04-17. All verification gates pass (lint 0 errors/0 warnings, test 2249/2249, build clean). k2p5 verified.*
+
 - [x] **Track: Code Review Pass 97 — Stabilization Verification**
   *Link: [./archive/code_review_pass97_20260417/](./archive/code_review_pass97_20260417/)*
   *Scope: Autonomous stabilization verification pass following Pass 96 — run lint, tests, build, verify no regressions.*
