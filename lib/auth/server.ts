@@ -94,6 +94,26 @@ export async function requireStudentRequestClaims(
   return claimsOrResponse;
 }
 
+/**
+ * Requires an admin request session for APIs that perform privileged operations.
+ */
+export async function requireAdminRequestClaims(
+  request: Request,
+  unauthorizedMessage = 'Unauthorized',
+  forbiddenMessage = 'Forbidden',
+): Promise<SessionClaims | Response> {
+  const claimsOrResponse = await requireRequestSessionClaims(request, unauthorizedMessage);
+  if (claimsOrResponse instanceof Response) {
+    return claimsOrResponse;
+  }
+
+  if (claimsOrResponse.role !== 'admin') {
+    return buildRequestForbiddenResponse(forbiddenMessage);
+  }
+
+  return claimsOrResponse;
+}
+
 function buildLoginRedirect(loginRedirectPath: string): string {
   return `/auth/login?redirect=${loginRedirectPath}`;
 }

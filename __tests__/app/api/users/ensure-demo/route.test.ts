@@ -1,8 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const mockRequireAdminRequestClaims = vi.fn();
 const mockFetchInternalMutation = vi.fn();
 const mockGeneratePasswordSalt = vi.fn();
 const mockHashPassword = vi.fn();
+
+vi.mock('@/lib/auth/server', () => ({
+  requireAdminRequestClaims: mockRequireAdminRequestClaims,
+}));
 
 vi.mock('@/lib/convex/server', () => ({
   fetchInternalMutation: mockFetchInternalMutation,
@@ -21,17 +26,31 @@ vi.mock('@/lib/auth/session', () => ({
 
 const { POST } = await import('../../../../../app/api/users/ensure-demo/route');
 
+function makeRequest() {
+  return new Request('http://localhost/api/users/ensure-demo', {
+    method: 'POST',
+    headers: { cookie: 'busmath_session=signed-token' },
+  });
+}
+
 describe('POST /api/users/ensure-demo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
+    mockRequireAdminRequestClaims.mockResolvedValue({
+      sub: 'admin-1',
+      username: 'admin',
+      role: 'admin',
+      iat: 1,
+      exp: 2,
+    });
   });
 
   it('returns 403 when demo provisioning is disabled in production', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     delete process.env.VERCEL_ENV;
 
-    const response = await POST();
+    const response = await POST(makeRequest());
     const json = await response.json();
 
     expect(response.status).toBe(403);
@@ -43,7 +62,7 @@ describe('POST /api/users/ensure-demo', () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('VERCEL_ENV', 'preview');
 
-    const response = await POST();
+    const response = await POST(makeRequest());
     const json = await response.json();
 
     expect(response.status).toBe(403);
@@ -51,7 +70,35 @@ describe('POST /api/users/ensure-demo', () => {
     expect(mockFetchInternalMutation).not.toHaveBeenCalled();
   });
 
-  it('ensures demo profiles and provisions credentials', async () => {
+  it('returns 401 when unauthenticated', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    mockRequireAdminRequestClaims.mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }),
+    );
+
+    const response = await POST(makeRequest());
+    const json = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(json).toEqual({ error: 'Unauthorized' });
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
+  });
+
+  it('returns 403 when caller is not admin', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    mockRequireAdminRequestClaims.mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403 }),
+    );
+
+    const response = await POST(makeRequest());
+    const json = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(json).toEqual({ error: 'Forbidden' });
+    expect(mockFetchInternalMutation).not.toHaveBeenCalled();
+  });
+
+  it('ensures demo profiles and provisions credentials with default passwords', async () => {
     vi.stubEnv('NODE_ENV', 'development');
 
     mockFetchInternalMutation
@@ -72,7 +119,7 @@ describe('POST /api/users/ensure-demo', () => {
     mockHashPassword.mockResolvedValueOnce('hash-student');
     mockHashPassword.mockResolvedValueOnce('hash-admin');
 
-    const response = await POST();
+    const response = await POST(makeRequest());
     const json = await response.json();
 
     expect(response.status).toBe(200);
@@ -140,6 +187,30 @@ describe('POST /api/users/ensure-demo', () => {
     );
   });
 
+  it('uses environment variable passwords when provided', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.stubEnv('DEMO_TEACHER_PASSWORD', 'teacher-secret');
+    vi.stubEnv('DEMO_STUDENT_PASSWORD', 'student-secret');
+    vi.stubEnv('DEMO_ADMIN_PASSWORD', 'admin-secret');
+
+    mockFetchInternalMutation
+      .mockResolvedValueOnce({ ok: true, created: false })
+      .mockResolvedValueOnce({ ok: true, updated: false })
+      .mockResolvedValueOnce({ ok: true, created: false })
+      .mockResolvedValueOnce({ ok: true, updated: false })
+      .mockResolvedValueOnce({ ok: true, created: false })
+      .mockResolvedValueOnce({ ok: true, updated: false });
+
+    mockGeneratePasswordSalt.mockReturnValue('salt');
+    mockHashPassword.mockResolvedValue('hash');
+
+    await POST(makeRequest());
+
+    expect(mockHashPassword).toHaveBeenNthCalledWith(1, 'teacher-secret', 'salt', 120000);
+    expect(mockHashPassword).toHaveBeenNthCalledWith(2, 'student-secret', 'salt', 120000);
+    expect(mockHashPassword).toHaveBeenNthCalledWith(3, 'admin-secret', 'salt', 120000);
+  });
+
   it('records profile ensure failures without attempting credential writes for that user', async () => {
     vi.stubEnv('NODE_ENV', 'development');
 
@@ -158,7 +229,7 @@ describe('POST /api/users/ensure-demo', () => {
     mockHashPassword.mockResolvedValueOnce('hash-student');
     mockHashPassword.mockResolvedValueOnce('hash-admin');
 
-    const response = await POST();
+    const response = await POST(makeRequest());
     const json = await response.json();
 
     expect(response.status).toBe(200);
@@ -180,7 +251,7 @@ describe('POST /api/users/ensure-demo', () => {
 
     mockFetchInternalMutation.mockRejectedValue(new Error('boom'));
 
-    const response = await POST();
+    const response = await POST(makeRequest());
     const json = await response.json();
 
     expect(response.status).toBe(500);

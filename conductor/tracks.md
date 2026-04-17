@@ -130,9 +130,10 @@ Practice Timing Telemetry [1] → Phase Skip UI [2] → Component Approval Upgra
 
 Strictly serial. Complete and archive each track before starting the next.
 
-- [~] **Track: Demo Provisioning Auth Hardening**
-  *Link: [./tracks/demo_provisioning_auth_20260417/](./tracks/demo_provisioning_auth_20260417/)*
+- [x] **Track: Demo Provisioning Auth Hardening**
+  *Link: [./archive/demo_provisioning_auth_20260417/](./archive/demo_provisioning_auth_20260417/)*
   *Scope: Harden /api/users/ensure-demo by requiring admin authentication and moving hardcoded demo passwords to environment variables.*
+  *Closeout: completed on 2026-04-17. Phase 1 complete. Added requireAdminRequestClaims helper to lib/auth/server.ts, hardened ensure-demo route with admin auth check, moved demo passwords to env vars (DEMO_TEACHER_PASSWORD, DEMO_STUDENT_PASSWORD, DEMO_ADMIN_PASSWORD) with dev fallback. Added 4 new tests (401, 403, success, env-var password). All verification gates pass (lint 0/0, test 2284/2284, build clean). Tech-debt item closed. k2p5 verified.*
 
 - [x] **Track: Error Boundaries**
   *Link: [./archive/error_boundaries_20260417/](./archive/error_boundaries_20260417/)*

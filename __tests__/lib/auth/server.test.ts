@@ -174,4 +174,54 @@ describe('lib/auth/server role guards', () => {
       role: 'student',
     });
   });
+
+  it('returns a 403 response for non-admin request claims on admin APIs', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'profile_1',
+      username: 'teacher_one',
+      role: 'teacher',
+      iat: 1,
+      exp: 2,
+    });
+
+    const { requireAdminRequestClaims } = await loadModule();
+
+    const result = await requireAdminRequestClaims(
+      new Request('http://localhost/api/users/ensure-demo', {
+        headers: {
+          cookie: 'busmath_session=signed-token',
+        },
+      }),
+    );
+
+    expect(result).toBeInstanceOf(Response);
+    const response = result as Response;
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toMatchObject({ error: 'Forbidden' });
+  });
+
+  it('returns claims for admin request sessions on admin APIs', async () => {
+    mockVerifySessionToken.mockResolvedValue({
+      sub: 'profile_4',
+      username: 'admin_one',
+      role: 'admin',
+      iat: 1,
+      exp: 2,
+    });
+
+    const { requireAdminRequestClaims } = await loadModule();
+
+    await expect(
+      requireAdminRequestClaims(
+        new Request('http://localhost/api/users/ensure-demo', {
+          headers: {
+            cookie: 'busmath_session=signed-token',
+          },
+        }),
+      ),
+    ).resolves.toMatchObject({
+      sub: 'profile_4',
+      role: 'admin',
+    });
+  });
 });
