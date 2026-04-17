@@ -4,18 +4,18 @@
 
 ### Tasks
 
-- [ ] Task: Create `components/error-fallback.tsx` reusable component
-  - [ ] Accept `error`, `reset` optional props
-  - [ ] Red-themed card with AlertTriangle icon
-  - [ ] "Try again" button calling `reset` if provided
-  - [ ] Dev-mode error details
-- [ ] Task: Create `app/student/error.tsx`
-  - [ ] Client component receiving `error` and `reset`
-  - [ ] Render shared ErrorFallback
-  - [ ] Log error to console
-- [ ] Task: Add tests for `app/student/error.tsx`
-  - [ ] Renders fallback on error
-  - [ ] Calls reset when try-again clicked
+- [x] Task: Create `components/error-fallback.tsx` reusable component
+  - [x] Accept `error`, `reset` optional props
+  - [x] Red-themed card with AlertTriangle icon
+  - [x] "Try again" button calling `reset` if provided
+  - [x] Dev-mode error details
+- [x] Task: Create `app/student/error.tsx`
+  - [x] Client component receiving `error` and `reset`
+  - [x] Render shared ErrorFallback
+  - [x] Log error to console
+- [x] Task: Add tests for `app/student/error.tsx`
+  - [x] Renders fallback on error
+  - [x] Calls reset when try-again clicked
 
 ## Phase 2: Teacher Route Boundary
 
