@@ -32,12 +32,12 @@
 
 ### Tasks
 
-- [ ] Task: Create `app/student/lesson/error.tsx`
-  - [ ] Client component receiving `error` and `reset`
-  - [ ] Render shared ErrorFallback with "Back to Dashboard" link
-- [ ] Task: Add tests for `app/student/lesson/error.tsx`
-  - [ ] Renders fallback on error
-  - [ ] Shows back-to-dashboard link
+- [x] Task: Create `app/student/lesson/error.tsx`
+  - [x] Client component receiving `error` and `reset`
+  - [x] Render shared ErrorFallback with "Back to Dashboard" link
+- [x] Task: Add tests for `app/student/lesson/error.tsx`
+  - [x] Renders fallback on error
+  - [x] Shows back-to-dashboard link
 
 ## Phase 4: LessonRenderer Component Boundary
 
