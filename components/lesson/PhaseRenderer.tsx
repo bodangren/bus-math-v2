@@ -101,7 +101,7 @@ function ContentBlockRenderer({
               alt={block.props.alt}
               width={800}
               height={600}
-              className="rounded-lg"
+              className="rounded-none"
               style={{ width: '100%', height: 'auto' }}
             />
           </div>
@@ -134,7 +134,7 @@ function ContentBlockRenderer({
       const _exhaustive: never = block;
       console.error('Unknown content block type:', _exhaustive);
       return (
-        <div className="p-4 border border-red-200 bg-red-50 rounded-lg text-red-700">
+        <div className="p-4 border border-red-200 bg-red-50 rounded-none text-red-700">
           Unknown content block type
         </div>
       );

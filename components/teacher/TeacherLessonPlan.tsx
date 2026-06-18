@@ -110,7 +110,7 @@ export function TeacherLessonPlan({
   return (
     <div className="space-y-8">
       {/* Header Navigation */}
-      <div className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 rounded-lg border shadow-sm">
+      <div className="flex items-center justify-between bg-white dark:bg-gray-900 p-4 rounded-none border ">
         <div className="flex items-center gap-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -129,7 +129,7 @@ export function TeacherLessonPlan({
                   id="lesson-selector"
                   value={lessonNumber}
                   onChange={(e) => onLessonChange(parseInt(e.target.value))}
-                  className="appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[280px]"
+                  className="appearance-none bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-none px-3 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[280px]"
                 >
                   {availableLessons.map((lessonOption) => (
                     <option key={lessonOption.number} value={lessonOption.number}>
@@ -188,7 +188,7 @@ export function TeacherLessonPlan({
           {learningObjectives.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold mb-3">Learning Objectives</h3>
-              <div className="bg-blue-50 dark:bg-blue-950/10 p-4 rounded-lg">
+              <div className="bg-blue-50 dark:bg-blue-950/10 p-4 rounded-none">
                 <p className="text-sm text-blue-800 dark:text-blue-200 mb-2 font-medium">
                   Students will be able to:
                 </p>
@@ -234,7 +234,7 @@ export function TeacherLessonPlan({
           {lesson.description && (
             <div>
               <h3 className="text-lg font-semibold mb-3">Lesson Rationale</h3>
-              <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg italic">
+              <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-4 rounded-none italic">
                 {lesson.description}
               </p>
             </div>
@@ -272,13 +272,13 @@ export function TeacherLessonPlan({
                  </Button>
               </div>
             </div>
-            <div className="bg-blue-50 dark:bg-blue-950/10 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="bg-blue-50 dark:bg-blue-950/10 p-4 rounded-none border border-blue-200 dark:border-blue-800">
               <h5 className="font-medium text-blue-800 dark:text-blue-200 mb-2">How-To Guide</h5>
               <p className="text-sm text-blue-700 dark:text-blue-300">
                 Step-by-step instructions for completing this workbook are available in the lesson phases below.
               </p>
             </div>
-            <div className="bg-amber-50 dark:bg-amber-950/10 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+            <div className="bg-amber-50 dark:bg-amber-950/10 p-4 rounded-none border border-amber-200 dark:border-amber-800">
               <h5 className="font-medium text-amber-800 dark:text-amber-200 mb-2">40-Point Grading Rubric</h5>
               <p className="text-sm text-amber-700 dark:text-amber-300">
                 This assignment is scored on a 40-point scale. Full rubric details are included in the lesson phases.
@@ -317,7 +317,7 @@ export function TeacherLessonPlan({
                       </p>
                     )}
                     {block.type === 'callout' && (
-                      <div className="bg-amber-50 dark:bg-amber-950/10 border border-amber-200 dark:border-amber-800 p-3 rounded-lg">
+                      <div className="bg-amber-50 dark:bg-amber-950/10 border border-amber-200 dark:border-amber-800 p-3 rounded-none">
                         <div className="flex items-center gap-2 mb-2">
                           <Settings className="h-4 w-4 text-amber-600" />
                           <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
@@ -490,7 +490,7 @@ function TeacherGuidance({ phaseNumber }: { phaseNumber: number }) {
   if (!phaseGuidance) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-none border">
       <div className="grid md:grid-cols-3 gap-4 text-sm">
         <div>
           <h5 className="font-medium text-primary mb-2">Teaching Tips</h5>

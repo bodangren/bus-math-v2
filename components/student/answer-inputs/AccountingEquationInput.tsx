@@ -46,7 +46,7 @@ export function AccountingEquationInput({ family, definition, onSubmit }: DailyP
 
   return (
     <div className="space-y-6">
-      <div className="bg-muted/50 p-4 rounded-lg">
+      <div className="bg-muted/50 p-4 rounded-none">
         <h3 className="font-medium mb-3 text-sm text-muted-foreground">Problem</h3>
         <div className="space-y-2">
           {visibleFacts.map((fact) => (
@@ -73,7 +73,7 @@ export function AccountingEquationInput({ family, definition, onSubmit }: DailyP
       </div>
 
       {gradeResult ? (
-        <div className="bg-muted/50 p-4 rounded-lg space-y-2">
+        <div className="bg-muted/50 p-4 rounded-none space-y-2">
           <div
             className={`text-sm font-medium ${
               gradeResult.isCorrect ? 'text-green-600' : 'text-red-600'

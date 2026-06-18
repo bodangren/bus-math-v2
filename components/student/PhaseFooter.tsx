@@ -79,7 +79,7 @@ export function PhaseFooter({ lesson, phase, phases, navigationOverrides }: Phas
   return (
     <div className="mx-auto mt-8 max-w-4xl space-y-6 px-4">
       <ResourceBasePathFixer />
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/50 bg-muted/20 px-4 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-none border border-border/50 bg-muted/20 px-4 py-4">
         <div className="flex items-center gap-2">
           {prevPhase ? (
             <Button variant="outline" asChild className="border-border/60 hover:bg-accent/50">
@@ -103,14 +103,14 @@ export function PhaseFooter({ lesson, phase, phases, navigationOverrides }: Phas
             <Link href={lessonHref}>{lessonOverviewLabel}</Link>
           </Button>
           {nextPhase ? (
-            <Button asChild className="gradient-financial text-primary-foreground shadow-md hover:shadow-lg">
+            <Button asChild className="gradient-financial text-primary-foreground  hover:">
               <Link href={defaultPhaseHrefBuilder(nextPhase)}>
                 Next: {nextPhase.title}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           ) : (
-            <Button asChild className="gradient-success text-white shadow-md hover:shadow-lg">
+            <Button asChild className="gradient-success text-white  hover:">
               <Link href={lessonHref}>
                 {completeLessonLabel}
                 <CheckCircle2 className="ml-2 h-4 w-4" />
@@ -134,9 +134,9 @@ export function PhaseFooter({ lesson, phase, phases, navigationOverrides }: Phas
               <Link
                 key={phaseEntry.id}
                 href={defaultPhaseHrefBuilder(phaseEntry)}
-                className={`flex items-center gap-3 rounded-lg border px-3 py-3 text-sm transition-all ${
+                className={`flex items-center gap-3 rounded-none border px-3 py-3 text-sm transition-all ${
                   isCurrent
-                    ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                    ? 'border-primary bg-primary text-primary-foreground '
                     : isCompleted
                       ? 'border-green-200/60 bg-green-50/60 text-green-700 dark:border-green-800/30 dark:bg-green-950/20'
                       : 'border-border/40 bg-muted/40 text-muted-foreground hover:bg-muted/60 hover:text-foreground'

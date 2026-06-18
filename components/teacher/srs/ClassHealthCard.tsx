@@ -63,14 +63,14 @@ export function ClassHealthCard({ health }: ClassHealthCardProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3">
+          <div className="flex items-center gap-2 rounded-none border border-red-200 bg-red-50 p-3">
             <AlertCircle className="size-4 text-red-600" aria-hidden="true" />
             <div>
               <p className="text-xl font-semibold text-red-700">{health.overdueCardCount}</p>
               <p className="text-xs text-red-600">Overdue Cards</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 p-3">
+          <div className="flex items-center gap-2 rounded-none border border-sky-200 bg-sky-50 p-3">
             <CalendarClock className="size-4 text-sky-600" aria-hidden="true" />
             <div>
               <p className="text-xl font-semibold text-sky-700">{health.cardsDueToday}</p>

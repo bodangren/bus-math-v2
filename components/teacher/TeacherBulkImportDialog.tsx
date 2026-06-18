@@ -209,7 +209,7 @@ export function TeacherBulkImportDialog() {
               aria-modal="true"
               aria-labelledby={titleId}
               aria-describedby={descriptionId}
-              className="w-full max-w-2xl rounded-lg border bg-background p-6 shadow-lg"
+              className="w-full max-w-2xl rounded-none border bg-background p-6 "
             >
               <div className="space-y-4">
                 <div className="space-y-1">
@@ -230,7 +230,7 @@ export function TeacherBulkImportDialog() {
                       <Label htmlFor="import-textarea">Student Names</Label>
                       <textarea
                         id="import-textarea"
-                        className="flex min-h-[200px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex min-h-[200px] w-full rounded-none border border-input bg-transparent px-3 py-2 text-sm  placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                         placeholder="Ada Lovelace&#10;Charles Babbage&#10;Grace Hopper"
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
@@ -255,7 +255,7 @@ export function TeacherBulkImportDialog() {
                     <p className="text-sm text-muted-foreground">
                       Usernames are normalized before account creation. Existing roster conflicts may still add a numeric suffix.
                     </p>
-                    <div className="max-h-[300px] overflow-y-auto border rounded-md">
+                    <div className="max-h-[300px] overflow-y-auto border rounded-none">
                       <table className="w-full text-sm">
                         <thead className="sticky top-0 bg-muted border-b">
                           <tr>
@@ -298,14 +298,14 @@ export function TeacherBulkImportDialog() {
 
                 {step === "submitting" && (
                   <div className="py-12 flex flex-col items-center justify-center space-y-4">
-                    <div className="size-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                    <div className="size-8 rounded-none border border-primary border-t-transparent animate-spin" />
                     <p className="text-sm text-muted-foreground animate-pulse">Processing batch...</p>
                   </div>
                 )}
 
                 {step === "success" && (
                   <div className="space-y-6">
-                    <div className="flex items-center gap-3 text-green-600 bg-green-50 p-4 rounded-md border border-green-100">
+                    <div className="flex items-center gap-3 text-green-600 bg-green-50 p-4 rounded-none border border-green-100">
                       <CheckCircle2 className="size-5" />
                       <p className="text-sm font-medium">All accounts created successfully.</p>
                     </div>

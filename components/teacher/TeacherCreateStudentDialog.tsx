@@ -172,7 +172,7 @@ export function TeacherCreateStudentDialog() {
               aria-modal="true"
               aria-labelledby={titleId}
               aria-describedby={descriptionId}
-              className="w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg"
+              className="w-full max-w-lg rounded-none border bg-background p-6 "
             >
               <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="space-y-1">

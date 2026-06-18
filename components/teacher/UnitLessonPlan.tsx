@@ -133,7 +133,7 @@ export function UnitLessonPlan({
         </p>
 
         {/* Unit Meta */}
-        <div className="flex flex-wrap gap-4 p-4 bg-slate-50 dark:bg-slate-950/20 rounded-lg">
+        <div className="flex flex-wrap gap-4 p-4 bg-slate-50 dark:bg-slate-950/20 rounded-none">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             <span><strong>Duration:</strong> {durationLabel}</span>

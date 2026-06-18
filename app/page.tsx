@@ -5,6 +5,7 @@ import { Hero } from "@/components/hero";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { getConvexUrl } from "@/lib/convex/config";
+import { Button } from "@/components/ui/button";
 
 interface LandingUnit {
   id: string;
@@ -71,30 +72,34 @@ export default async function Home() {
       <Hero stats={stats} />
 
       {/* ── What students walk away with ── */}
-      <section className="py-16 md:py-20 bg-background ledger-bg">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center mb-12">
-            <span className="section-label">Why this course</span>
-            <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mt-4">
+          <div className="flex flex-col md:flex-row items-baseline gap-4 mb-16 border-b border-border pb-8">
+            <span className="bg-foreground text-background px-3 py-1 font-mono text-[10px] uppercase tracking-widest font-bold">
+              Mission Statement
+            </span>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground tracking-tight">
               Not worksheets. Workbooks.
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             {outcomes.map((item) => (
-              <div key={item.number} className="relative">
+              <div key={item.number} className="relative group border border-transparent hover:border-border p-6 -m-6 transition-colors duration-200">
                 <span
-                  className="font-display font-bold leading-none select-none block mb-3"
-                  style={{ fontSize: "2.5rem", color: "oklch(var(--primary) / 0.10)" }}
+                  className="font-mono font-bold leading-none select-none block mb-6 transition-colors group-hover:text-foreground text-muted"
+                  style={{ fontSize: "2rem" }}
                   aria-hidden="true"
                 >
                   {item.number}
                 </span>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
-                  {item.headline}
-                </h3>
-                <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                  {item.detail}
-                </p>
+                <div className="space-y-4">
+                  <h3 className="font-display text-lg font-bold text-foreground tracking-tight">
+                    {item.headline}
+                  </h3>
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                    {item.detail}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -103,51 +108,46 @@ export default async function Home() {
 
       {/* ── Unit strip — compact teaser ── */}
       {landingUnits.length > 0 && (
-        <section className="py-16 md:py-20 bg-forest-dark relative overflow-hidden">
-          <div
-            className="absolute inset-0 accounting-grid-dark pointer-events-none"
-            aria-hidden="true"
-          />
+        <section className="py-20 md:py-28 bg-secondary/30 relative overflow-hidden border-y border-border">
           <div className="relative container mx-auto px-4 max-w-6xl">
-            <div className="flex items-baseline justify-between mb-10 flex-wrap gap-4">
+            <div className="flex items-baseline justify-between mb-12 flex-wrap gap-6 border-b border-border/50 pb-8">
               <div>
-                <span className="section-label section-label-light">The sequence</span>
-                <h2 className="font-display text-2xl md:text-3xl font-semibold text-white mt-4">
+                <span className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest mb-4">
+                  The Sequence
+                </span>
+                <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground tracking-tight">
                   8 units + capstone
                 </h2>
               </div>
               <Link
                 href="/curriculum"
-                className="inline-flex items-center gap-2 text-sm font-body font-medium transition-colors hover:text-white"
-                style={{ color: "oklch(0.68 0.17 157)" }}
+                className="group inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground transition-all hover:text-foreground"
               >
                 See full curriculum <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
             {/* Desktop: horizontal strip */}
-            <div className="hidden md:grid md:grid-cols-4 xl:grid-cols-8 gap-3">
+            <div className="hidden md:grid md:grid-cols-4 xl:grid-cols-8 gap-px bg-border border border-border">
               {landingUnits.slice(0, 8).map((unit, i) => (
                 <div
                   key={unit.id}
-                  className="rounded-lg p-4 relative overflow-hidden group transition-all duration-200 hover:-translate-y-1"
+                  className="bg-background p-5 relative overflow-hidden group transition-all duration-200 hover:bg-secondary"
                   style={{
-                    background: "oklch(1 0 0 / 0.05)",
-                    border: "1px solid oklch(1 0 0 / 0.08)",
                     animationDelay: `${i * 60}ms`,
                   }}
                 >
                   <span
-                    className="absolute -right-0.5 -top-2 font-display font-bold leading-none select-none pointer-events-none"
-                    style={{ fontSize: "3.5rem", color: "oklch(1 0 0 / 0.04)" }}
+                    className="absolute -right-1 -top-2 font-mono font-bold leading-none select-none pointer-events-none opacity-5 transition-opacity group-hover:opacity-10"
+                    style={{ fontSize: "3rem" }}
                     aria-hidden="true"
                   >
                     {unit.unit_number}
                   </span>
-                  <p className="font-mono-num text-[9px] text-white/60 tracking-widest uppercase mb-1.5">
+                  <p className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase mb-3 font-medium">
                     Unit {unit.unit_number}
                   </p>
-                  <h3 className="font-display text-sm font-semibold text-white leading-snug group-hover:text-[oklch(0.68_0.17_157)] transition-colors">
+                  <h3 className="font-display text-xs font-bold text-foreground leading-snug group-hover:text-primary transition-colors tracking-tight">
                     {unit.title}
                   </h3>
                 </div>
@@ -160,23 +160,19 @@ export default async function Home() {
                 {landingUnits.slice(0, 8).map((unit) => (
                   <div key={unit.id} className="p-1">
                     <div
-                      className="rounded-lg p-5 relative overflow-hidden"
-                      style={{
-                        background: "oklch(1 0 0 / 0.05)",
-                        border: "1px solid oklch(1 0 0 / 0.08)",
-                      }}
+                      className="bg-background border border-border p-6 relative overflow-hidden"
                     >
                       <span
-                        className="absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none"
-                        style={{ fontSize: "5rem", color: "oklch(1 0 0 / 0.04)" }}
+                        className="absolute -right-2 -top-4 font-mono font-bold leading-none select-none pointer-events-none opacity-5"
+                        style={{ fontSize: "4rem" }}
                         aria-hidden="true"
                       >
                         {unit.unit_number}
                       </span>
-                      <p className="font-mono-num text-[10px] text-white/60 tracking-widest uppercase mb-2">
+                      <p className="font-mono text-[11px] text-muted-foreground tracking-widest uppercase mb-3 font-bold">
                         Unit {unit.unit_number}
                       </p>
-                      <h3 className="font-display text-lg font-semibold text-white leading-snug">
+                      <h3 className="font-display text-lg font-bold text-foreground leading-snug tracking-tight">
                         {unit.title}
                       </h3>
                     </div>
@@ -189,33 +185,31 @@ export default async function Home() {
       )}
 
       {/* ── Final CTA ── */}
-      <section className="py-16 md:py-20 bg-muted/20 ledger-bg">
-        <div className="container mx-auto px-4 max-w-3xl text-center space-y-6">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Ready to start building?
-          </h2>
-          <p className="text-muted-foreground font-body text-lg">
+      <section className="py-20 md:py-32 bg-background relative">
+        <div className="container mx-auto px-4 max-w-3xl text-center space-y-10">
+          <div className="space-y-4">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+              Ready to start building?
+            </h2>
+          </div>
+          <p className="text-muted-foreground font-body text-lg leading-relaxed max-w-xl mx-auto">
             Log in to access your first unit, or try a simulation on the preface page.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Link
-              href="/auth/login"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-md gradient-financial text-white font-body font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              Student or teacher login
-            </Link>
-            <Link
-              href="/preface"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border border-border/60 text-foreground font-body hover:bg-muted/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              Try it first
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <Button asChild size="lg" className="h-12 px-8">
+              <Link href="/auth/login">
+                Student or teacher login
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-12 px-8">
+              <Link href="/preface">
+                Try it first
+              </Link>
+            </Button>
           </div>
-          <div className="flex items-center justify-center gap-4 pt-4 text-sm text-muted-foreground font-body">
+          <div className="flex items-center justify-center gap-6 pt-12 text-[10px] text-muted-foreground font-mono uppercase tracking-widest">
             <Link href="/curriculum" className="hover:text-foreground transition-colors">Curriculum</Link>
-            <span>&middot;</span>
             <Link href="/capstone" className="hover:text-foreground transition-colors">Capstone</Link>
-            <span>&middot;</span>
             <Link href="/acknowledgments" className="hover:text-foreground transition-colors">Acknowledgments</Link>
           </div>
         </div>

@@ -65,7 +65,7 @@ export function UnitOverview({ lesson, gradeLevel = "9-12", course = "Business O
         </p>
 
         {/* Unit Meta */}
-        <div className="flex flex-wrap gap-4 p-4 bg-slate-50 dark:bg-slate-950/20 rounded-lg">
+        <div className="flex flex-wrap gap-4 p-4 bg-slate-50 dark:bg-slate-950/20 rounded-none">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             <span><strong>Duration:</strong> {durationLabel}</span>
@@ -190,7 +190,7 @@ export function UnitOverview({ lesson, gradeLevel = "9-12", course = "Business O
             <CardContent>
               <div className="grid gap-4">
                 {keyAssessments.map((assessment, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-950/10 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-950/10 rounded-none">
                     <Badge variant="secondary">Assessment {index + 1}</Badge>
                     <span className="text-orange-700 dark:text-orange-300">{assessment}</span>
                   </div>

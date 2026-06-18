@@ -49,7 +49,7 @@ export function ClassificationInput({ family, definition, onSubmit }: DailyPract
 
   return (
     <div className="space-y-6">
-      <div className="bg-muted/50 p-4 rounded-lg">
+      <div className="bg-muted/50 p-4 rounded-none">
         <h3 className="font-medium mb-3 text-sm text-muted-foreground">Problem</h3>
         <p className="text-sm mb-4">{def.prompt?.stem ?? 'Classify each item into the correct category.'}</p>
         <div className="space-y-3">
@@ -61,7 +61,7 @@ export function ClassificationInput({ family, definition, onSubmit }: DailyPract
                 onChange={(e) => handleSelect(part.id, e.target.value)}
                 disabled={submittedRef.current}
                 data-testid={`${part.id}-select`}
-                className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                className="flex h-9 rounded-none border border-input bg-transparent px-3 py-1 text-sm "
               >
                 <option value="">Select category</option>
                 {def.categories.map((category) => (
@@ -76,7 +76,7 @@ export function ClassificationInput({ family, definition, onSubmit }: DailyPract
       </div>
 
       {gradeResult ? (
-        <div className="bg-muted/50 p-4 rounded-lg space-y-3">
+        <div className="bg-muted/50 p-4 rounded-none space-y-3">
           <div
             className={`text-sm font-medium ${
               gradeResult.isCorrect ? 'text-green-600' : 'text-red-600'

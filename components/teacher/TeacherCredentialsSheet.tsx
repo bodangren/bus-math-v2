@@ -115,7 +115,7 @@ export function TeacherCredentialsSheet({
 
       <main className="flex-1 overflow-y-auto bg-muted/20 p-8 print:p-0 print:bg-white print:overflow-visible">
         <div
-          className="mx-auto max-w-[8.5in] bg-white p-[0.5in] shadow-sm"
+          className="mx-auto max-w-[8.5in] bg-white p-[0.5in] "
           style={{ minHeight: "11in" }}
         >
           <div className="mb-8 border-b-2 border-primary pb-4">
@@ -127,7 +127,7 @@ export function TeacherCredentialsSheet({
             {students.map((student, index) => (
               <div 
                 key={index}
-                className="border-2 border-dashed border-muted-foreground/30 p-4 rounded-lg space-y-3 break-inside-avoid"
+                className="border border-dashed border-muted-foreground/30 p-4 rounded-none space-y-3 break-inside-avoid"
               >
                 <div className="flex justify-between items-start border-b pb-2">
                   <div className="font-bold text-lg">{student.displayName}</div>

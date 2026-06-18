@@ -40,7 +40,7 @@ export function VideoPlayer({ videoUrl, duration, transcript }: VideoPlayerProps
     <Card className="border-l-4 border-l-red-500 my-4">
       <CardContent className="space-y-4 pt-6">
         {/* Video Embed */}
-        <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
+        <div className="relative aspect-video bg-gray-100 rounded-none overflow-hidden">
           {!videoLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
               <Button
@@ -87,7 +87,7 @@ export function VideoPlayer({ videoUrl, duration, transcript }: VideoPlayerProps
               )}
             </Button>
             {transcriptOpen && (
-              <div className="mt-4 bg-gray-50 p-4 rounded-lg border max-h-64 overflow-y-auto">
+              <div className="mt-4 bg-gray-50 p-4 rounded-none border max-h-64 overflow-y-auto">
                 <div className="prose prose-sm max-w-none">
                   <pre className="whitespace-pre-wrap text-sm font-sans leading-relaxed">
                     {transcript}

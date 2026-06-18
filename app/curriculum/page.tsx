@@ -5,6 +5,7 @@ import { getConvexUrl } from "@/lib/convex/config";
 import { Carousel } from "@/components/ui/carousel";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import type { UnitCurriculum } from "./types";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = 'force-dynamic';
 
@@ -24,22 +25,18 @@ export default async function CurriculumPage() {
   const capstone = units.find((u) => u.unitNumber === 9);
 
   return (
-    <main className="flex-1">
+    <main className="flex-1 bg-background">
       {/* ── Hero ── */}
-      <section className="hero-gradient relative overflow-hidden py-20 md:py-28 border-b border-white/[0.08]">
-        <div
-          className="absolute inset-0 accounting-grid-dark pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="relative container mx-auto px-4 text-center max-w-3xl space-y-6">
-          <span className="section-label section-label-light">The Curriculum</span>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mt-4 leading-tight">
+      <section className="relative overflow-hidden py-20 md:py-28 border-b border-border">
+        <div className="relative container mx-auto px-4 max-w-4xl space-y-6">
+          <span className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
+            The Curriculum
+          </span>
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mt-4 leading-tight tracking-tight">
             8 units. 1 capstone.<br />
-            <span style={{ color: "oklch(0.68 0.17 157)" }}>
-              Real workbooks you can show off.
-            </span>
+            <span className="text-muted-foreground">Real workbooks you can show off.</span>
           </h1>
-          <p className="text-lg text-white/70 font-body max-w-xl mx-auto">
+          <p className="text-lg text-muted-foreground font-body max-w-xl">
             Every unit ends with a deliverable you built yourself — not a
             worksheet you filled in.
           </p>
@@ -48,19 +45,19 @@ export default async function CurriculumPage() {
 
       {/* ── Semester 1 — Build the Financial Spine ── */}
       {semester1.length > 0 && (
-        <section className="py-16 md:py-20 bg-background ledger-bg">
+        <section className="py-16 md:py-24 border-b border-border">
           <div className="container mx-auto px-4 max-w-6xl">
-            <div className="flex items-baseline gap-4 mb-10">
-              <span className="font-mono-num text-xs tracking-widest uppercase text-muted-foreground">
-                Semester 1
+            <div className="flex items-baseline gap-4 mb-12 border-b border-border/50 pb-6">
+              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-bold">
+                Part I
               </span>
-              <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground">
-                Build the financial spine
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                The Financial Spine
               </h2>
             </div>
 
             {/* Desktop: staggered row */}
-            <div className="hidden md:grid md:grid-cols-4 gap-5">
+            <div className="hidden md:grid md:grid-cols-4 gap-px bg-border border border-border">
               {semester1.map((unit, i) => (
                 <UnitTeaser key={unit.unitNumber} unit={unit} delay={i * 60} />
               ))}
@@ -82,25 +79,21 @@ export default async function CurriculumPage() {
 
       {/* ── Semester 2 — Run & Finance the Venture ── */}
       {semester2.length > 0 && (
-        <section className="py-16 md:py-20 bg-forest-dark relative overflow-hidden">
-          <div
-            className="absolute inset-0 accounting-grid-dark pointer-events-none"
-            aria-hidden="true"
-          />
+        <section className="py-16 md:py-24 border-b border-border">
           <div className="relative container mx-auto px-4 max-w-6xl">
-            <div className="flex items-baseline gap-4 mb-10">
-              <span className="font-mono-num text-xs tracking-widest uppercase text-white/70">
-                Semester 2
+            <div className="flex items-baseline gap-4 mb-12 border-b border-border/50 pb-6">
+              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground font-bold">
+                Part II
               </span>
-              <h2 className="font-display text-2xl md:text-3xl font-semibold text-white">
-                Run &amp; finance the venture
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground tracking-tight">
+                Run &amp; Finance
               </h2>
             </div>
 
             {/* Desktop: staggered row */}
-            <div className="hidden md:grid md:grid-cols-4 gap-5">
+            <div className="hidden md:grid md:grid-cols-4 gap-px bg-border border border-border">
               {semester2.map((unit, i) => (
-                <UnitTeaserDark key={unit.unitNumber} unit={unit} delay={i * 60} />
+                <UnitTeaser key={unit.unitNumber} unit={unit} delay={i * 60} />
               ))}
             </div>
 
@@ -109,7 +102,7 @@ export default async function CurriculumPage() {
               <Carousel itemsPerView={1} gap="gap-4" className="max-w-sm mx-auto">
                 {semester2.map((unit) => (
                   <div key={unit.unitNumber} className="p-1">
-                    <UnitTeaserDark unit={unit} delay={0} />
+                    <UnitTeaser unit={unit} delay={0} />
                   </div>
                 ))}
               </Carousel>
@@ -120,56 +113,49 @@ export default async function CurriculumPage() {
 
       {/* ── Capstone Spotlight ── */}
       {capstone && (
-        <section className="py-16 md:py-24 bg-muted/20 ledger-bg">
-          <div className="container mx-auto px-4 max-w-4xl text-center space-y-8">
-            <span className="section-label">The Finale</span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mt-4">
+        <section className="py-20 md:py-32 bg-secondary/20">
+          <div className="container mx-auto px-4 max-w-4xl text-center space-y-10">
+            <span className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
+              The Finale
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
               {capstone.title}
             </h2>
-            <p className="text-lg text-muted-foreground font-body max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground font-body max-w-2xl mx-auto leading-relaxed">
               {capstone.description}
             </p>
             <div className="flex justify-center">
-              <Link
-                href="/capstone"
-                className="inline-flex items-center gap-2 h-12 px-8 rounded-md gradient-financial text-white font-body font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-              >
-                See the capstone
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <Button asChild size="lg" className="h-12 px-10">
+                <Link href="/capstone">
+                  Enter the Capstone
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
       )}
 
       {/* ── Final CTA ── */}
-      <section className="py-16 md:py-20 bg-forest-dark relative overflow-hidden">
-        <div
-          className="absolute inset-0 accounting-grid-dark pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="relative container mx-auto px-4 max-w-3xl text-center space-y-6">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
+      <section className="py-20 md:py-32 border-t border-border">
+        <div className="relative container mx-auto px-4 max-w-3xl text-center space-y-8">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground tracking-tight">
             Ready to start building?
           </h2>
-          <p className="text-white/70 font-body text-lg">
+          <p className="text-muted-foreground font-body text-lg max-w-xl mx-auto">
             Log in to access lessons, datasets, and your personal workbook progress.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Link
-              href="/auth/login"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
-              style={{ color: "oklch(0.22 0.05 157)" }}
-            >
-              Student or teacher login
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
-              style={{ borderColor: "oklch(1 0 0 / 0.25)" }}
-            >
-              Back to home
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <Button asChild size="lg" className="h-12 px-8">
+              <Link href="/auth/login">
+                Student or teacher login
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-12 px-8">
+              <Link href="/">
+                Back to home
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -177,79 +163,35 @@ export default async function CurriculumPage() {
   );
 }
 
-/* ─────────────────────────────────────────────
- * Unit teaser card — light background variant
- * ─────────────────────────────────────────── */
 function UnitTeaser({ unit, delay }: { unit: UnitCurriculum; delay: number }) {
   const deliverable = unit.lessons[0]?.description ?? unit.description;
 
   return (
     <div
-      className="card-workbook h-full p-5 relative overflow-hidden group"
+      className="bg-background h-full p-6 relative overflow-hidden group transition-all duration-200 hover:bg-secondary"
       style={{ animationDelay: `${delay}ms` }}
     >
       {/* Watermark */}
       <span
-        className="absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none"
-        style={{ fontSize: "5rem", color: "oklch(var(--primary) / 0.05)" }}
+        className="absolute -right-2 -top-4 font-mono font-bold leading-none select-none pointer-events-none opacity-5 transition-opacity group-hover:opacity-10"
+        style={{ fontSize: "5rem" }}
         aria-hidden="true"
       >
         {unit.unitNumber}
       </span>
 
-      <p className="font-mono-num text-[10px] text-muted-foreground mb-2 tracking-widest uppercase">
+      <p className="font-mono text-[10px] text-muted-foreground/60 mb-3 tracking-widest uppercase font-medium">
         Unit {unit.unitNumber}
       </p>
-      <h3 className="font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors leading-snug mb-3">
+      <h3 className="font-display text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug mb-3 uppercase tracking-tight">
         {unit.title}
       </h3>
-      <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4 line-clamp-2">
+      <p className="text-xs text-muted-foreground font-body leading-relaxed mb-6 line-clamp-3">
         {deliverable}
       </p>
 
-      <div className="mt-auto flex items-center text-xs text-primary font-medium font-body gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        {unit.lessons.length} lessons <ChevronRight className="w-3 h-3" />
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
- * Unit teaser card — dark background variant
- * ─────────────────────────────────────────── */
-function UnitTeaserDark({ unit, delay }: { unit: UnitCurriculum; delay: number }) {
-  const deliverable = unit.lessons[0]?.description ?? unit.description;
-
-  return (
-    <div
-      className="h-full p-5 rounded-lg relative overflow-hidden group transition-all duration-200 hover:-translate-y-1"
-      style={{
-        background: "oklch(1 0 0 / 0.05)",
-        border: "1px solid oklch(1 0 0 / 0.08)",
-        animationDelay: `${delay}ms`,
-      }}
-    >
-      {/* Watermark */}
-      <span
-        className="absolute -right-1 -top-3 font-display font-bold leading-none select-none pointer-events-none"
-        style={{ fontSize: "5rem", color: "oklch(1 0 0 / 0.04)" }}
-        aria-hidden="true"
-      >
-        {unit.unitNumber}
-      </span>
-
-      <p className="font-mono-num text-[10px] text-white/70 mb-2 tracking-widest uppercase">
-        Unit {unit.unitNumber}
-      </p>
-      <h3 className="font-display text-lg font-semibold text-white group-hover:text-[oklch(0.68_0.17_157)] transition-colors leading-snug mb-3">
-        {unit.title}
-      </h3>
-      <p className="text-sm text-white/70 font-body leading-relaxed mb-4 line-clamp-2">
-        {deliverable}
-      </p>
-
-      <div className="mt-auto flex items-center text-xs font-medium font-body gap-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "oklch(0.68 0.17 157)" }}>
-        {unit.lessons.length} lessons <ChevronRight className="w-3 h-3" />
+      <div className="mt-auto flex items-center text-[10px] text-muted-foreground font-mono uppercase tracking-widest gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        {unit.lessons.length} LESSONS <ChevronRight className="w-3 h-3" />
       </div>
     </div>
   );

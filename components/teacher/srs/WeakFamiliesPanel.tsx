@@ -134,7 +134,7 @@ export function WeakFamiliesPanel({ families, onBumpPriority, isLoading }: WeakF
           const colorClass = getAgainRateColor(family.againRate);
 
           return (
-            <div key={family.problemFamilyId} className="rounded-lg border">
+            <div key={family.problemFamilyId} className="rounded-none border">
               <div
                 role="button"
                 tabIndex={0}
@@ -159,7 +159,7 @@ export function WeakFamiliesPanel({ families, onBumpPriority, isLoading }: WeakF
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className={cn("rounded-full px-2 py-1 text-xs font-medium border", colorClass)}>
+                  <div className={cn("rounded-none px-2 py-1 text-xs font-medium border", colorClass)}>
                     {(family.againRate * 100).toFixed(0)}% Again
                   </div>
                   <div className="text-sm text-muted-foreground">

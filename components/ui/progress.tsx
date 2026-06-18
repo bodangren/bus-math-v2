@@ -15,11 +15,11 @@ export function Progress({ value = 0, className, ...props }: ProgressProps) {
       aria-valuenow={Math.round(clampedValue)}
       aria-valuemin={0}
       aria-valuemax={100}
-      className={cn('h-2 w-full rounded-full bg-muted', className)}
+      className={cn('h-1 w-full rounded-none bg-secondary', className)}
       {...props}
     >
       <div
-        className="h-full rounded-full bg-primary transition-all"
+        className="h-full rounded-none bg-foreground transition-all"
         style={{ width: `${clampedValue}%` }}
       />
     </div>

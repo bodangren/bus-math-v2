@@ -212,7 +212,7 @@ export function StudentUnitOverview({ unit, lessons }: StudentUnitOverviewProps)
           {lessons.map((lesson) => (
             <div
               key={lesson.id}
-              className="flex flex-col gap-3 rounded-lg border border-border/40 p-4 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-3 rounded-none border border-border/40 p-4 md:flex-row md:items-center md:justify-between"
             >
               <div>
                 <p className="text-sm font-semibold text-muted-foreground">

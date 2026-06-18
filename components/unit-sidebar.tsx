@@ -61,92 +61,82 @@ export function UnitSidebar({
     : 0
 
   const formatDuration = (duration: number) => {
-    if (duration <= 0) return 'Flexible pacing'
-    return `${duration} min`
+    if (duration <= 0) return 'Flexible'
+    return `${duration}m`
   }
 
   return (
-    <aside className="w-full space-y-6">
-      <Card>
-        <CardHeader>
+    <aside className="w-full space-y-px bg-border border border-border">
+      <Card className="border-none">
+        <CardHeader className="p-4 border-none">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <CardTitle className="text-lg">Unit {unitNumber}</CardTitle>
-              <p className="text-sm text-muted-foreground">{unitTitle}</p>
+              <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground">Unit {unitNumber}</p>
+              <CardTitle className="text-base font-bold tracking-tight">{unitTitle}</CardTitle>
             </div>
-            <Badge variant="outline" className="text-xs">
-              {unitProgress}% Complete
-            </Badge>
+            <div className="text-[10px] font-mono border border-border px-1.5 py-0.5">
+              {unitProgress}%
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-4 pt-0 space-y-4">
           <div className="space-y-1">
-            <div className="flex justify-between text-sm">
-              <span>Overall Progress</span>
-              <span>{unitProgress}%</span>
-            </div>
-            <Progress value={unitProgress} />
+            <Progress value={unitProgress} className="h-1 rounded-none" />
           </div>
 
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <div className="flex justify-between text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
             <span>{sortedLessons.length} lessons</span>
-            <span>{formatDuration(totalDuration)} total</span>
+            <span>{formatDuration(totalDuration)}</span>
           </div>
         </CardContent>
       </Card>
 
-      <Separator />
+      <div className="bg-background p-4 border-y border-border">
+        <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+          <BookOpen className="h-3 w-3" />
+          Lessons
+        </h3>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Lessons
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {sortedLessons.map((lesson) => {
-            const lessonProgress = getLessonProgress(lesson.id)
-            const isActive = currentLessonId === lesson.id
-            return (
-              <div key={lesson.id} className="space-y-1">
-                <Link
-                  href={getLessonHref(lesson)}
-                  className={cn(
-                    'flex items-center justify-between rounded-lg border px-3 py-2 text-left transition-colors',
-                    isActive ? 'border-primary/50 bg-primary/5' : 'border-border/50 hover:bg-muted'
-                  )}
-                >
-                  <div>
-                    <p className="text-sm font-medium">
-                      {lesson.orderIndex}. {lesson.title}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{formatDuration(lesson.metadata?.duration ?? 0)}</p>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{lessonProgress}%</span>
-                    {lessonProgress === 100 ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : null}
-                  </div>
-                </Link>
-                <Progress value={lessonProgress} className="h-1" />
-              </div>
-            )
-          })}
-        </CardContent>
-      </Card>
+      <div className="bg-background">
+        {sortedLessons.map((lesson) => {
+          const lessonProgress = getLessonProgress(lesson.id)
+          const isActive = currentLessonId === lesson.id
+          return (
+            <div key={lesson.id} className="border-b border-border/50 last:border-none">
+              <Link
+                href={getLessonHref(lesson)}
+                className={cn(
+                  'flex items-center justify-between px-4 py-3 text-left transition-colors',
+                  isActive ? 'bg-secondary' : 'hover:bg-secondary/50'
+                )}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className={cn(
+                    "text-xs font-bold truncate uppercase tracking-tight",
+                    isActive ? "text-foreground" : "text-muted-foreground"
+                  )}>
+                    {lesson.orderIndex}. {lesson.title}
+                  </p>
+                  <p className="text-[10px] font-mono text-muted-foreground/60">{formatDuration(lesson.metadata?.duration ?? 0)}</p>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
+                  <span>{lessonProgress}%</span>
+                  {lessonProgress === 100 ? <CheckCircle2 className="h-3 w-3 text-foreground" /> : null}
+                </div>
+              </Link>
+            </div>
+          )
+        })}
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button asChild variant="outline" className="w-full justify-start">
-            <Link href={`/student/unit${unitNumber.toString().padStart(2, '0')}`}>
-              View Unit Overview
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="bg-background p-4 border-t border-border">
+        <Button asChild variant="outline" size="sm" className="w-full">
+          <Link href={`/student/unit${unitNumber.toString().padStart(2, '0')}`}>
+            View Overview
+          </Link>
+        </Button>
+      </div>
     </aside>
   )
 }

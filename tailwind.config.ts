@@ -59,6 +59,17 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      spacing: {
+        rule: "var(--rule, 1px)",
+      },
+      borderWidth: {
+        "1": "1px",
+      },
+      fontFamily: {
+        display: ["var(--font-display)"],
+        body: ["var(--font-body)"],
+        mono: ["var(--font-mono)"],
+      },
     },
   },
   plugins: [animatePlugin, typographyPlugin],

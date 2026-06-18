@@ -20,7 +20,7 @@ export function CompetencyHeatmapGrid({ rows, standards, onStudentClick, onStand
 
   if (rows.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
+      <div className="rounded-none border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
         No students found in this competency heatmap.
       </div>
     );
@@ -28,7 +28,7 @@ export function CompetencyHeatmapGrid({ rows, standards, onStudentClick, onStand
 
   if (standards.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
+      <div className="rounded-none border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
         No competency standards configured for this course.
       </div>
     );
@@ -41,7 +41,7 @@ export function CompetencyHeatmapGrid({ rows, standards, onStudentClick, onStand
   const displayRows = orderedIds.map(id => rowById.get(id)!);
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border">
+    <div className="overflow-x-auto rounded-none border border-border">
       <table
         className="min-w-full border-collapse text-sm"
         aria-label="Competency heatmap — student mastery by standard"

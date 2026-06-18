@@ -113,7 +113,7 @@ export function StrugglingStudentsPanel({
             return (
               <div
                 key={student.studentId}
-                className="flex items-center justify-between rounded-lg border p-3"
+                className="flex items-center justify-between rounded-none border p-3"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex flex-col">
@@ -122,7 +122,7 @@ export function StrugglingStudentsPanel({
                   </div>
                   <div
                     className={cn(
-                      "rounded-full px-2 py-1 text-xs font-medium border",
+                      "rounded-none px-2 py-1 text-xs font-medium border",
                       struggle.className
                     )}
                   >

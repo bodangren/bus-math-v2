@@ -189,7 +189,7 @@ function Toast({ message, description, variant, onDismiss }: ToastProps) {
         role="status"
         aria-live="polite"
         className={cn(
-          'flex items-start gap-3 rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm',
+          'flex items-start gap-3 rounded-none border px-4 py-3  backdrop-blur-sm',
           variantClass,
         )}
       >

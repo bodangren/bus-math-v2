@@ -118,7 +118,7 @@ function StepButton({ phase, isCurrent, onClick, compact = false }: StepButtonPr
       aria-current={isCurrent ? 'step' : undefined}
       title={tooltipText}
       className={cn(
-        'flex items-center justify-center rounded-full border-2 transition-all',
+        'flex items-center justify-center rounded-none border transition-all',
         'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
         compact ? 'h-10 w-10' : 'h-12 w-12',
         statusColors[effectiveStatus],

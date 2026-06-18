@@ -38,7 +38,7 @@ interface GradebookGridProps {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="rounded-md border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
+    <div className="rounded-none border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
       {message}
     </div>
   );
@@ -80,7 +80,7 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
 
   return (
     <>
-    <div className="overflow-x-auto rounded-md border border-border">
+    <div className="overflow-x-auto rounded-none border border-border">
       <table
         className="min-w-full border-collapse text-sm"
         aria-label="Gradebook — student progress by lesson"
@@ -209,12 +209,12 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                           {(independentPractice?.completed || assessment?.completed) && (
                             <div className="flex gap-1 text-xs">
                               {independentPractice?.completed && (
-                                <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white font-medium" title="Independent practice completed">
+                                <span className="px-1.5 py-0.5 rounded-none bg-blue-500 text-white font-medium" title="Independent practice completed">
                                   IP
                                 </span>
                               )}
                               {assessment?.completed && (
-                                <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-white font-medium" title="Assessment completed">
+                                <span className="px-1.5 py-0.5 rounded-none bg-purple-500 text-white font-medium" title="Assessment completed">
                                   A: {assessment.score ?? '—'}/{assessment.maxScore ?? '—'}
                                 </span>
                               )}
@@ -261,12 +261,12 @@ export function GradebookGrid({ rows, lessons, unitNumber }: GradebookGridProps)
                           {(independentPractice?.completed || assessment?.completed) && (
                             <div className="flex gap-1 text-xs">
                               {independentPractice?.completed && (
-                                <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-white font-medium" title="Independent practice completed">
+                                <span className="px-1.5 py-0.5 rounded-none bg-blue-500 text-white font-medium" title="Independent practice completed">
                                   IP
                                 </span>
                               )}
                               {assessment?.completed && (
-                                <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-white font-medium" title="Assessment completed">
+                                <span className="px-1.5 py-0.5 rounded-none bg-purple-500 text-white font-medium" title="Assessment completed">
                                   A: {assessment.score ?? '—'}/{assessment.maxScore ?? '—'}
                                 </span>
                               )}

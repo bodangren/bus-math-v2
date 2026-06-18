@@ -58,15 +58,15 @@ export interface StatementLayoutProps {
 
 function getRowStatusClasses(status?: StatementLayoutFeedback['status']) {
   if (status === 'correct') {
-    return 'border-emerald-500/40 bg-emerald-50/70';
+    return 'border-emerald-500/40 bg-emerald-500/5';
   }
 
   if (status === 'incorrect') {
-    return 'border-destructive/30 bg-destructive/10';
+    return 'border-destructive/30 bg-destructive/5';
   }
 
   if (status === 'partial') {
-    return 'border-amber-500/40 bg-amber-50/80';
+    return 'border-amber-500/40 bg-amber-500/5';
   }
 
   return 'border-border bg-background';
@@ -74,9 +74,9 @@ function getRowStatusClasses(status?: StatementLayoutFeedback['status']) {
 
 function SummaryChip({ label, value }: StatementLayoutSummaryItem) {
   return (
-    <div className="min-w-0 rounded-lg border border-border bg-muted/30 px-3 py-2">
-      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</div>
-      <div className="mt-0.5 truncate text-sm font-medium text-foreground">{value}</div>
+    <div className="min-w-0 rounded-none border border-border bg-secondary/30 px-3 py-2">
+      <div className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="mt-0.5 truncate text-xs font-mono font-bold text-foreground">{value}</div>
     </div>
   );
 }
@@ -238,22 +238,22 @@ export function StatementLayout({
             teacherView
               ? 'grid-cols-[minmax(0,1.6fr)_minmax(0,0.82fr)_minmax(0,0.82fr)_minmax(0,1.15fr)]'
               : 'grid-cols-[minmax(0,1.6fr)_minmax(0,0.82fr)_minmax(0,0.82fr)]',
-            isSubtotal && 'border-t-2 border-border bg-muted/35 font-semibold',
-            row.kind === 'prefilled' && 'bg-muted/10',
+            isSubtotal && 'border-t border-border bg-secondary/40 font-bold',
+            row.kind === 'prefilled' && 'bg-secondary/10',
             row.kind === 'editable' && 'bg-background',
             statusClass,
-            !teacherView && row.kind === 'editable' && 'hover:bg-accent/10 focus-within:bg-accent/10',
-            teacherView && rowFeedbackForRow && 'focus-within:bg-accent/10',
+            !teacherView && row.kind === 'editable' && 'hover:bg-secondary/50 focus-within:bg-secondary/50',
+            teacherView && rowFeedbackForRow && 'focus-within:bg-secondary/50',
             row.kind === 'editable' ? 'py-4' : 'py-3',
           )}
         >
           <div className={cn('space-y-1 py-0.5', isSubtotal ? 'pl-2' : 'pl-6')}>
             {isLabelEditableRow(row) && !readOnly ? (
-              <div className="rounded-xl border border-border/80 bg-background px-2 py-1 shadow-inner focus-within:ring-1 focus-within:ring-ring">
+              <div className="rounded-none border border-border bg-background px-2 py-1 focus-within:border-foreground">
                 <Input
                   type="text"
                   inputMode="text"
-                  className="h-11 border-0 bg-transparent px-0 text-left shadow-none focus-visible:ring-0 md:text-[15px]"
+                  className="h-10 border-0 bg-transparent px-0 text-left focus-visible:ring-0 font-mono text-xs uppercase"
                   aria-label={row.label}
                   aria-describedby={describedBy}
                   placeholder={row.placeholder ?? row.label}
@@ -269,27 +269,27 @@ export function StatementLayout({
                 />
               </div>
             ) : (
-              <div className={cn('text-sm font-medium md:text-[15px]', row.kind === 'prefilled' && 'text-muted-foreground')}>
+              <div className={cn('text-[11px] font-mono uppercase tracking-tight', isSubtotal ? 'font-bold text-foreground' : 'text-foreground/90', row.kind === 'prefilled' && 'text-muted-foreground')}>
                 {isLabelEditableRow(row) ? currentValues[row.id] ?? row.placeholder ?? '—' : row.label}
               </div>
             )}
             {row.note && (
-              <div id={noteId} className="text-xs text-muted-foreground">
+              <div id={noteId} className="text-[9px] font-mono text-muted-foreground/60 uppercase tracking-widest">
                 {row.note}
               </div>
             )}
           </div>
           <div className="flex justify-end py-0.5">
             {isSubtotal ? (
-              <span aria-hidden className="inline-flex min-h-11 min-w-32 items-center justify-end rounded-md px-2 py-1 text-right tabular-nums md:min-w-36">
+              <span aria-hidden className="inline-flex min-h-10 min-w-32 items-center justify-end px-2 py-1 text-right font-mono text-xs md:min-w-36">
                 &nbsp;
               </span>
             ) : isAmountEditableRow(row) && !readOnly ? (
-              <div className="w-32 rounded-xl border border-border/80 bg-background px-2 py-1 shadow-inner focus-within:ring-1 focus-within:ring-ring md:w-36">
+              <div className="w-32 rounded-none border border-border bg-background px-2 py-1 focus-within:border-foreground md:w-36">
                 <Input
                   type="text"
                   inputMode="decimal"
-                  className="h-11 border-0 bg-transparent px-0 text-right tabular-nums shadow-none focus-visible:ring-0"
+                  className="h-10 border-0 bg-transparent px-0 text-right font-mono text-xs focus-visible:ring-0"
                   aria-label={row.label}
                   aria-describedby={describedBy}
                   placeholder={row.placeholder ?? '0'}
@@ -307,7 +307,7 @@ export function StatementLayout({
             ) : (
               <span
                 className={cn(
-                  'inline-flex min-h-11 min-w-32 items-center justify-end rounded-md px-2 py-1 text-right tabular-nums text-foreground md:min-w-36',
+                  'inline-flex min-h-10 min-w-32 items-center justify-end px-2 py-1 text-right font-mono text-xs text-foreground md:min-w-36',
                   row.kind === 'prefilled' && 'text-muted-foreground',
                 )}
               >
@@ -319,38 +319,38 @@ export function StatementLayout({
             {isSubtotal ? (
               <span
                 className={cn(
-                  'inline-flex min-h-11 min-w-32 items-center justify-end rounded-md px-2 py-1 text-right tabular-nums text-foreground md:min-w-36',
+                  'inline-flex min-h-10 min-w-32 items-center justify-end px-2 py-1 text-right font-mono text-xs text-foreground md:min-w-36',
                   rowRule === 'single' && 'border-t border-border',
-                  rowRule === 'double' && 'border-t-2 border-border font-semibold',
+                  rowRule === 'double' && 'border-t border-foreground font-bold',
                 )}
               >
                 {formattedValue === '' ? '—' : formattedValue}
               </span>
             ) : (
-              <span aria-hidden className="inline-flex min-h-11 min-w-32 items-center justify-end rounded-md px-2 py-1 text-right tabular-nums md:min-w-36">
+              <span aria-hidden className="inline-flex min-h-10 min-w-32 items-center justify-end px-2 py-1 text-right font-mono text-xs md:min-w-36">
                 &nbsp;
               </span>
             )}
           </div>
           {teacherView && (
-            <div className="space-y-2 py-0.5 text-sm">
+            <div className="space-y-2 py-0.5">
               {rowFeedbackForRow ? (
                 <>
                   <div
                     id={feedbackId}
                     className={cn(
-                      'text-xs font-medium',
-                      rowFeedbackForRow.status === 'correct' && 'text-emerald-700',
+                      'text-[10px] font-mono uppercase tracking-widest',
+                      rowFeedbackForRow.status === 'correct' && 'text-emerald-500',
                       rowFeedbackForRow.status === 'incorrect' && 'text-destructive',
-                      rowFeedbackForRow.status === 'partial' && 'text-amber-700',
+                      rowFeedbackForRow.status === 'partial' && 'text-amber-500',
                     )}
                   >
                     {rowFeedbackForRow.message ?? rowFeedbackForRow.status}
                   </div>
                   {rowFeedbackForRow.misconceptionTags?.length ? (
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1">
                       {rowFeedbackForRow.misconceptionTags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-[11px]">
+                        <Badge key={tag} variant="secondary" className="text-[9px]">
                           {tag}
                         </Badge>
                       ))}
@@ -358,7 +358,7 @@ export function StatementLayout({
                   ) : null}
                 </>
               ) : (
-                <div className="text-xs text-muted-foreground">No review yet.</div>
+                <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">No review.</div>
               )}
             </div>
           )}
@@ -373,21 +373,21 @@ export function StatementLayout({
         data-row-kind={row.kind}
         data-row-rule={rowRule}
         className={cn(
-          'space-y-3 rounded-2xl border px-4 py-4 transition-colors duration-150',
-          isSubtotal && 'border-t-2 border-border bg-muted/35 font-semibold',
-          row.kind === 'prefilled' && 'bg-muted/10',
+          'space-y-3 rounded-none border px-4 py-4 transition-colors duration-150',
+          isSubtotal && 'border-t border-border bg-secondary/40 font-bold',
+          row.kind === 'prefilled' && 'bg-secondary/10',
           row.kind === 'editable' && 'bg-background',
           statusClass,
-          row.kind === 'editable' && 'hover:bg-accent/10 focus-within:bg-accent/10',
+          row.kind === 'editable' && 'hover:bg-secondary/50 focus-within:bg-secondary/50',
         )}
       >
         <div className="space-y-1">
           {isLabelEditableRow(row) && !readOnly ? (
-            <div className="rounded-xl border border-border/80 bg-background px-2 py-1 shadow-inner focus-within:ring-1 focus-within:ring-ring">
+            <div className="rounded-none border border-border bg-background px-2 py-1 focus-within:border-foreground">
               <Input
                 type="text"
                 inputMode="text"
-                className="h-11 border-0 bg-transparent px-0 text-left shadow-none focus-visible:ring-0"
+                className="h-10 border-0 bg-transparent px-0 text-left focus-visible:ring-0 font-mono text-xs uppercase"
                 aria-label={row.label}
                 aria-describedby={describedBy}
                 placeholder={row.placeholder ?? row.label}
@@ -403,23 +403,23 @@ export function StatementLayout({
               />
             </div>
           ) : (
-            <div className={cn('text-sm font-medium', row.kind === 'prefilled' && 'text-muted-foreground')}>
+            <div className={cn('text-xs font-mono uppercase tracking-tight', isSubtotal ? 'font-bold text-foreground' : 'text-foreground/90', row.kind === 'prefilled' && 'text-muted-foreground')}>
               {isLabelEditableRow(row) ? currentValues[row.id] ?? row.placeholder ?? '—' : row.label}
             </div>
           )}
           {row.note && (
-            <div id={noteId} className="text-xs text-muted-foreground">
+            <div id={noteId} className="text-[9px] font-mono text-muted-foreground/60 uppercase tracking-widest">
               {row.note}
             </div>
           )}
         </div>
         <div className="space-y-2">
           {isAmountEditableRow(row) && !readOnly ? (
-            <div className="rounded-xl border border-border/80 bg-background px-2 py-1 shadow-inner focus-within:ring-1 focus-within:ring-ring">
+            <div className="rounded-none border border-border bg-background px-2 py-1 focus-within:border-foreground">
               <Input
                 type="text"
                 inputMode="decimal"
-                className="h-11 border-0 bg-transparent px-0 text-right tabular-nums shadow-none focus-visible:ring-0"
+                className="h-10 border-0 bg-transparent px-0 text-right font-mono text-xs focus-visible:ring-0"
                 aria-label={row.label}
                 aria-describedby={describedBy}
                 placeholder={row.placeholder ?? '0'}
@@ -437,9 +437,9 @@ export function StatementLayout({
           ) : (
             <div
               className={cn(
-                'flex min-h-11 items-center justify-end rounded-md px-2 py-1 text-right tabular-nums',
+                'flex min-h-10 items-center justify-end px-2 py-1 text-right font-mono text-xs',
                 row.kind === 'prefilled' && 'text-muted-foreground',
-                row.kind === 'subtotal' && 'font-semibold text-foreground',
+                row.kind === 'subtotal' && 'font-bold text-foreground',
               )}
             >
               {formattedValue === '' ? '—' : formattedValue}
@@ -447,24 +447,24 @@ export function StatementLayout({
           )}
         </div>
         {teacherView && (
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2">
             {rowFeedbackForRow ? (
               <>
                 <div
                   id={feedbackId}
                   className={cn(
-                    'text-xs font-medium',
-                    rowFeedbackForRow.status === 'correct' && 'text-emerald-700',
+                    'text-[10px] font-mono uppercase tracking-widest',
+                    rowFeedbackForRow.status === 'correct' && 'text-emerald-500',
                     rowFeedbackForRow.status === 'incorrect' && 'text-destructive',
-                    rowFeedbackForRow.status === 'partial' && 'text-amber-700',
+                    rowFeedbackForRow.status === 'partial' && 'text-amber-500',
                   )}
                 >
                   {rowFeedbackForRow.message ?? rowFeedbackForRow.status}
                 </div>
                 {rowFeedbackForRow.misconceptionTags?.length ? (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {rowFeedbackForRow.misconceptionTags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="text-[11px]">
+                      <Badge key={tag} variant="secondary" className="text-[9px]">
                         {tag}
                       </Badge>
                     ))}
@@ -472,7 +472,7 @@ export function StatementLayout({
                 ) : null}
               </>
             ) : (
-              <div className="text-xs text-muted-foreground">No review yet.</div>
+              <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">No review.</div>
             )}
           </div>
         )}
@@ -481,15 +481,15 @@ export function StatementLayout({
   };
 
   return (
-    <Card data-layout="statement-sheet" className="w-full overflow-hidden border-border/70 bg-gradient-to-b from-background to-muted/15 shadow-sm">
-      <CardHeader className="space-y-4 border-b bg-muted/20 px-6 py-6 text-center">
-        <div className="space-y-1">
-          <CardTitle className="text-pretty text-3xl font-semibold uppercase tracking-[0.28em]">{title}</CardTitle>
-          {description && <CardDescription className="text-sm uppercase tracking-[0.18em]">{description}</CardDescription>}
+    <div data-layout="statement-sheet" className="w-full bg-background border border-border">
+      <div className="space-y-4 border-b border-border bg-secondary/10 px-6 py-10 text-center">
+        <div className="space-y-2">
+          <h2 className="text-balance text-2xl font-bold uppercase tracking-[0.3em] font-display">{title}</h2>
+          {description && <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">{description}</p>}
         </div>
-        {scenarioPanel && <div className="mx-auto w-full max-w-4xl rounded-2xl border border-border/70 bg-card p-4 text-left shadow-sm">{scenarioPanel}</div>}
+        {scenarioPanel && <div className="mx-auto w-full max-w-4xl border border-border bg-background p-6 text-left">{scenarioPanel}</div>}
         {scaffoldText && (
-          <div className="mx-auto w-full max-w-4xl rounded-2xl border border-dashed border-border/70 bg-background/90 px-4 py-3 text-left text-sm text-muted-foreground shadow-sm">
+          <div className="mx-auto w-full max-w-4xl border border-dashed border-border/50 bg-background/50 px-4 py-3 text-left text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
             {scaffoldText}
           </div>
         )}
@@ -500,44 +500,46 @@ export function StatementLayout({
             steps={teachingSteps}
           />
         )}
-      </CardHeader>
-      <CardContent className="space-y-8 px-6 py-6">
+      </div>
+      <div className="space-y-12 px-6 py-10">
         {resolvedReviewSummary.length > 0 && (
-          <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-px bg-border border border-border sm:grid-cols-2 xl:grid-cols-4">
             {resolvedReviewSummary.map((item) => (
-              <SummaryChip key={`${item.label}-${item.value}`} {...item} />
+              <div key={`${item.label}-${item.value}`} className="bg-background">
+                <SummaryChip {...item} />
+              </div>
             ))}
           </div>
         )}
 
         {sections.map((section) => (
-          <section key={section.id} className="space-y-4">
+          <section key={section.id} className="space-y-6">
             <div className="space-y-1 text-center">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.28em] text-muted-foreground">{section.label}</h3>
-              {section.description && <p className="text-sm text-muted-foreground">{section.description}</p>}
+              <h3 className="text-[10px] font-mono font-bold uppercase tracking-[0.4em] text-muted-foreground">{section.label}</h3>
+              {section.description && <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60">{section.description}</p>}
             </div>
             <div className="hidden md:block">
-              <div className="overflow-hidden rounded-3xl border border-border/70 bg-background/95 shadow-sm">
+              <div className="border border-border bg-background">
                 <div
                   className={cn(
-                    'grid border-b bg-muted/35 px-4 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground',
+                    'grid border-b border-border bg-secondary/20 px-4 py-3 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-muted-foreground',
                     teacherView
                       ? 'grid-cols-[minmax(0,1.6fr)_minmax(0,0.82fr)_minmax(0,0.82fr)_minmax(0,1.15fr)]'
                       : 'grid-cols-[minmax(0,1.6fr)_minmax(0,0.82fr)_minmax(0,0.82fr)]',
                   )}
                 >
                   <div>Line item</div>
-                  <div className="text-right">Inner amount</div>
-                  <div className="text-right">Section total</div>
+                  <div className="text-right">Inner</div>
+                  <div className="text-right">Total</div>
                   {teacherView && <div>Review</div>}
                 </div>
-                <div className="divide-y divide-border">
+                <div className="divide-y divide-border/50">
                   {section.rows.map((row, index) => renderRow(row, index, section.rows, rowFeedback[row.id], 'desktop'))}
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3 md:hidden">
+            <div className="space-y-4 md:hidden">
               {section.rows.map((row, index) => renderRow(row, index, section.rows, rowFeedback[row.id], 'mobile'))}
             </div>
           </section>
@@ -545,7 +547,7 @@ export function StatementLayout({
         <div className="sr-only" aria-live="polite">
           {announcement}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

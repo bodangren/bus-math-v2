@@ -12,7 +12,7 @@ export function StudentCompetencyDetailGrid({ detail }: StudentCompetencyDetailG
 
   if (competencies.length === 0) {
     return (
-      <div className="rounded-md border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
+      <div className="rounded-none border border-dashed border-muted-foreground/30 p-8 text-center text-muted-foreground">
         No competency data found for this student.
       </div>
     );
@@ -29,7 +29,7 @@ export function StudentCompetencyDetailGrid({ detail }: StudentCompetencyDetailG
         </p>
       </section>
 
-      <div className="overflow-x-auto rounded-md border border-border">
+      <div className="overflow-x-auto rounded-none border border-border">
         <table
           className="min-w-full border-collapse text-sm"
           aria-label="Student competency detail"

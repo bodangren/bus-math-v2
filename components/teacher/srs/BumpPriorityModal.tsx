@@ -124,7 +124,7 @@ export function BumpPriorityModal({
       />
       <div
         ref={dialogRef}
-        className="relative z-50 w-full max-w-md rounded-lg bg-background p-6 shadow-lg"
+        className="relative z-50 w-full max-w-md rounded-none bg-background p-6 "
       >
         <div className="flex items-center justify-between mb-4">
           <h2 id={titleId} className="text-lg font-semibold flex items-center gap-2">
@@ -158,7 +158,7 @@ export function BumpPriorityModal({
               value={selectedFamily}
               onChange={(e) => setSelectedFamily(e.target.value)}
               className={cn(
-                "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
+                "w-full rounded-none border border-input bg-background px-3 py-2 text-sm",
                 "focus:outline-none focus:ring-2 focus:ring-ring"
               )}
               disabled={isSubmitting}
@@ -173,7 +173,7 @@ export function BumpPriorityModal({
           </div>
 
           {selectedFamily && (
-            <div className="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-700">
+            <div className="rounded-none border border-sky-200 bg-sky-50 p-3 text-sm text-sky-700">
               <p>
                 This will affect <strong>{affectedStudentCount}</strong> student
                 {affectedStudentCount !== 1 ? "s" : ""} in your class.
@@ -182,7 +182,7 @@ export function BumpPriorityModal({
           )}
 
           {error && (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+            <div className="rounded-none border border-red-200 bg-red-50 p-3 text-sm text-red-700">
               <AlertTriangle className="size-4 inline mr-1" />
               {error}
             </div>

@@ -54,7 +54,7 @@ function DialogShell({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="w-full max-w-md rounded-lg border border-border bg-background shadow-xl"
+        className="w-full max-w-md rounded-none border border-border bg-background "
       >
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">{title}</h3>
@@ -62,7 +62,7 @@ function DialogShell({
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-none text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-4" />
           </button>
@@ -189,7 +189,7 @@ export function TeacherStudentActions({
           )}
 
           {resetError && (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <p className="rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {resetError}
             </p>
           )}
@@ -227,7 +227,7 @@ export function TeacherStudentActions({
           </div>
 
           {editError && (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <p className="rounded-none border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {editError}
             </p>
           )}

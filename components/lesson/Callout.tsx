@@ -49,7 +49,7 @@ export function Callout({ variant, content, className }: CalloutProps) {
   return (
     <div
       className={cn(
-        'rounded-lg border-l-4 p-4 my-4',
+        'rounded-none border-l-4 p-4 my-4',
         config.bgColor,
         config.borderColor,
         className

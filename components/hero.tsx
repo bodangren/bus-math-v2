@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, Calculator, CheckSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CurriculumStats {
   unitCount: number;
@@ -16,39 +17,32 @@ export function Hero({ stats }: HeroProps) {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative overflow-hidden hero-gradient"
+      className="relative overflow-hidden bg-background border-b border-border"
     >
-      {/* Spreadsheet grid overlay */}
-      <div
-        className="absolute inset-0 accounting-grid-dark pointer-events-none"
-        aria-hidden="true"
-      />
-
       <div className="relative container mx-auto px-4 py-20 md:py-28">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 items-center">
           {/* Left: copy */}
-          <div className="space-y-7 animate-fade-up">
-            <span className="section-label section-label-light">
+          <div className="space-y-8">
+            <div className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
               Grade 12 · Applied Math
-            </span>
+            </div>
 
             <h1
               id="hero-heading"
-              className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+              className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.05] tracking-tight"
             >
-              Math for Business{" "}
-              <span style={{ color: "oklch(0.68 0.17 157)" }}>Operations</span>
+              Math for <br />
+              <span className="text-muted-foreground">Business Operations</span>
             </h1>
 
-            <p className="text-lg text-white/65 font-body leading-relaxed max-w-lg">
-              Master accounting principles, spreadsheet modeling, and
-              entrepreneurship through hands-on Excel projects and real-world
-              business applications.
+            <p className="text-lg text-muted-foreground font-body leading-relaxed max-w-lg">
+              High-density, low-chroma financial modeling. 
+              Every unit produces a workbook you designed from scratch.
             </p>
 
             {/* Stats as styled cell-badges */}
             {stats && stats.unitCount > 0 && (
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-px bg-border border border-border">
                 {[
                   { label: "Units", value: stats.unitCount, Icon: BookOpen },
                   { label: "Lessons", value: stats.lessonCount, Icon: Calculator },
@@ -56,94 +50,50 @@ export function Hero({ stats }: HeroProps) {
                 ].map(({ label, value, Icon }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-2 rounded-md px-3 py-2 border"
-                    style={{
-                      background: "oklch(1 0 0 / 0.07)",
-                      borderColor: "oklch(1 0 0 / 0.12)",
-                    }}
+                    className="flex items-center gap-3 bg-background p-4 flex-1 min-w-[140px]"
                   >
                     <Icon
-                      className="h-4 w-4 shrink-0"
-                      style={{ color: "oklch(0.68 0.17 157)" }}
+                      className="h-4 w-4 shrink-0 text-muted-foreground"
                     />
-                    <span className="font-mono-num text-white font-semibold text-sm">
-                      {value}
-                    </span>
-                    <span className="text-white/45 text-xs font-body">{label}</span>
+                    <div className="flex flex-col">
+                      <span className="font-mono text-foreground font-bold text-base leading-none">
+                        {value}
+                      </span>
+                      <span className="text-muted-foreground text-[10px] uppercase tracking-wider font-medium">{label}</span>
+                    </div>
                   </div>
                 ))}
               </div>
             )}
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-3 pt-1">
-              <Link
-                href="/curriculum"
-                className="inline-flex items-center justify-center h-11 px-6 rounded-md bg-white font-body font-semibold shadow-md hover:bg-white/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
-                style={{ color: "oklch(0.22 0.05 157)" }}
-              >
-                Browse Units
-              </Link>
-              <Link
-                href="/preface"
-                className="inline-flex items-center justify-center h-11 px-6 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
-                style={{ borderColor: "oklch(1 0 0 / 0.30)" }}
-              >
-                Read Preface
-              </Link>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Button asChild size="lg" className="h-12 px-8">
+                <Link href="/curriculum">
+                  Browse Units
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="h-12 px-8">
+                <Link href="/preface">
+                  Read Preface
+                </Link>
+              </Button>
             </div>
           </div>
 
           {/* Right: textbook cover */}
           <div
-            className="flex justify-center xl:justify-end mt-8 xl:mt-0 animate-fade-up-3"
+            className="flex justify-center xl:justify-end mt-8 xl:mt-0"
           >
             <div className="relative w-full max-w-[320px] md:max-w-[380px]">
-              {/* Decorative column letters above the cover */}
-              <div
-                className="absolute -top-7 left-0 right-0 flex font-mono-num text-[10px] text-white/20 pointer-events-none"
-                aria-hidden="true"
-              >
-                {["A", "B", "C"].map((col) => (
-                  <div
-                    key={col}
-                    className="flex-1 text-center py-1 border border-white/[0.07]"
-                  >
-                    {col}
-                  </div>
-                ))}
-              </div>
-              {/* Decorative row numbers beside the cover */}
-              <div
-                className="absolute -left-7 top-0 bottom-0 flex flex-col font-mono-num text-[10px] text-white/20 pointer-events-none"
-                aria-hidden="true"
-              >
-                {["1", "2", "3", "4", "5"].map((row) => (
-                  <div
-                    key={row}
-                    className="flex-1 flex items-center justify-center px-1.5 border border-white/[0.07]"
-                  >
-                    {row}
-                  </div>
-                ))}
-              </div>
-
-              {/* Soft glow behind the cover */}
-              <div
-                className="absolute inset-0 rounded-lg pointer-events-none"
-                style={{
-                  boxShadow: "0 0 60px oklch(0.43 0.14 157 / 0.35)",
-                }}
-                aria-hidden="true"
-              />
-
+              <div className="absolute -inset-4 border border-border pointer-events-none" aria-hidden="true" />
+              
               <Image
                 src="/cover.png"
-                alt="Math for Business Operations textbook cover showing business charts and Excel spreadsheets"
+                alt="Math for Business Operations textbook cover"
                 width={400}
                 height={533}
-                className="relative w-full h-auto rounded-lg shadow-2xl"
-                style={{ border: "1px solid oklch(1 0 0 / 0.15)" }}
+                className="relative w-full h-auto border border-border grayscale hover:grayscale-0 transition-all duration-500"
                 priority
               />
             </div>

@@ -37,7 +37,7 @@ const PROSE_CLASSES = [
 
   // Blockquotes — left border with accent background
   'prose-blockquote:border-l-primary prose-blockquote:bg-primary/5',
-  'prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-blockquote:px-4',
+  'prose-blockquote:rounded-none prose-blockquote:py-1 prose-blockquote:px-4',
   'prose-blockquote:not-italic prose-blockquote:text-foreground/80',
 
   // Strong
@@ -54,7 +54,7 @@ const components: Components = {
     </a>
   ),
   table: ({ children }) => (
-    <div className="overflow-x-auto my-5 rounded-lg border border-border">
+    <div className="overflow-x-auto my-5 rounded-none border border-border">
       <table className="m-0 w-full text-sm">{children}</table>
     </div>
   ),

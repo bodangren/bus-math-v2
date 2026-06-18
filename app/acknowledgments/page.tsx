@@ -2,12 +2,13 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Heart, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function AcknowledgmentsPage() {
   const sections = [
     {
       icon: Heart,
-      iconColor: 'text-red-500',
+      iconColor: 'text-foreground',
       title: 'Special Thanks',
       content: [
         {
@@ -26,7 +27,7 @@ export default function AcknowledgmentsPage() {
     },
     {
       icon: Users,
-      iconColor: 'text-primary',
+      iconColor: 'text-foreground',
       title: 'Course Development',
       content: [
         {
@@ -44,54 +45,50 @@ export default function AcknowledgmentsPage() {
   return (
     <main className="flex-1 bg-background">
       {/* Hero */}
-      <section className="hero-gradient relative overflow-hidden py-20 md:py-28 border-b border-white/[0.08]">
-        <div
-          className="absolute inset-0 accounting-grid-dark pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="relative container mx-auto px-4 text-center max-w-3xl space-y-6">
-          <span className="section-label section-label-light">Acknowledgments</span>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mt-4 leading-tight">
+      <section className="relative overflow-hidden py-20 md:py-28 border-b border-border">
+        <div className="relative container mx-auto px-4 max-w-4xl space-y-6">
+          <span className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
+            Acknowledgments
+          </span>
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mt-4 leading-tight tracking-tight">
             The people who made this possible
           </h1>
-          <p className="text-lg text-white/70 font-body max-w-xl mx-auto">
+          <p className="text-lg text-muted-foreground font-body max-w-xl leading-relaxed">
             This course represents the collaboration and support of many individuals and organizations.
           </p>
         </div>
       </section>
 
       {/* Main Content */}
-      <section className="py-16 md:py-20 bg-background ledger-bg">
-        <div className="container mx-auto px-4 max-w-5xl space-y-10">
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 max-w-4xl space-y-12">
           {sections.map((section) => {
             const Icon = section.icon;
             return (
-              <Card key={section.title} className="card-workbook">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Icon className={`h-5 w-5 ${section.iconColor}`} /> {section.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <div key={section.title} className="bg-background border border-border">
+                <div className="px-6 py-4 border-b border-border bg-secondary/30">
+                  <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-foreground">
+                    <Icon className="h-3.5 w-3.5" /> {section.title}
+                  </h2>
+                </div>
+                <div className="p-6 space-y-8">
                   {section.content.map((item) => (
-                    <div key={item.heading}>
-                      <h3 className="font-semibold mb-2 text-foreground">{item.heading}</h3>
-                      <p className="text-sm text-muted-foreground font-body leading-relaxed">
+                    <div key={item.heading} className="space-y-2">
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-tight">{item.heading}</h3>
+                      <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-2xl">
                         {item.text}
                       </p>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             );
           })}
 
           {/* Platform Section */}
-          <Card className="card-workbook">
-            <CardHeader>
-              <CardTitle>About the Platform</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <div className="bg-secondary/10 border border-border p-8">
+            <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-muted-foreground mb-4">About the Platform</h2>
+            <div className="space-y-4 max-w-2xl">
               <p className="text-sm text-muted-foreground font-body leading-relaxed">
                 This digital textbook platform was developed to provide an engaging, interactive
                 learning experience for business mathematics and accounting. The platform features
@@ -103,47 +100,36 @@ export default function AcknowledgmentsPage() {
                 Vinext, Convex, and React, with enhanced accessibility features and improved
                 performance.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 md:py-20 bg-forest-dark relative overflow-hidden">
-        <div
-          className="absolute inset-0 accounting-grid-dark pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="relative container mx-auto px-4 max-w-3xl text-center space-y-6">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-white">
+      <section className="py-20 md:py-32 border-t border-border">
+        <div className="relative container mx-auto px-4 max-w-3xl text-center space-y-10">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground tracking-tight">
             Ready to start building?
           </h2>
-          <p className="text-white/70 font-body text-lg">
+          <p className="text-muted-foreground font-body text-lg max-w-xl mx-auto">
             Log in to access lessons, datasets, and your personal workbook progress.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Link
-              href="/auth/login"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-white font-body font-semibold shadow-lg hover:bg-white/90 hover:shadow-xl transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2"
-              style={{ color: "oklch(0.22 0.05 157)" }}
-            >
-              Student or teacher login
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center h-12 px-8 rounded-md bg-transparent border text-white font-body hover:bg-white/10 hover:border-white/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2"
-              style={{ borderColor: "oklch(1 0 0 / 0.25)" }}
-            >
-              Back to home
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <Button asChild size="lg" className="h-12 px-8">
+              <Link href="/auth/login">
+                Student or teacher login
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-12 px-8">
+              <Link href="/">
+                Back to home
+              </Link>
+            </Button>
           </div>
-          <div className="flex items-center justify-center gap-4 pt-4 text-sm text-white/60 font-body">
-            <Link href="/preface" className="hover:text-white/90 transition-colors">Preface</Link>
-            <span>&middot;</span>
-            <Link href="/curriculum" className="hover:text-white/90 transition-colors">Curriculum</Link>
-            <span>&middot;</span>
-            <Link href="/capstone" className="hover:text-white/90 transition-colors">Capstone</Link>
+          <div className="flex items-center justify-center gap-6 pt-12 text-[10px] text-muted-foreground font-mono uppercase tracking-widest">
+            <Link href="/preface" className="hover:text-foreground transition-colors">Preface</Link>
+            <Link href="/curriculum" className="hover:text-foreground transition-colors">Curriculum</Link>
+            <Link href="/capstone" className="hover:text-foreground transition-colors">Capstone</Link>
           </div>
         </div>
       </section>

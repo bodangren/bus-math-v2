@@ -259,7 +259,7 @@ export default function PracticeTestEngine({ unitConfig, onComplete }: PracticeT
                       key={index}
                       variant="secondary"
                       className={`w-full justify-start text-left ${
-                        hasSeenFeedback && isCorrectAnswer ? 'bg-green-100 border-green-500 border-2' : ''
+                        hasSeenFeedback && isCorrectAnswer ? 'bg-green-100 border-green-500 border' : ''
                       } ${
                         hasSeenFeedback && !isCorrectAnswer ? 'opacity-50' : ''
                       }`}

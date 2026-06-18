@@ -27,7 +27,7 @@ export function UserMenu() {
   };
 
   if (loading) {
-     return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />;
+     return <div className="h-8 w-8 rounded-none bg-muted animate-pulse" />;
   }
 
   if (!user) {
@@ -62,7 +62,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button variant="ghost" className="relative h-8 w-8 rounded-none">
           <Avatar className="h-8 w-8">
             <AvatarImage src={avatarUrl || ""} alt={displayName} />
             <AvatarFallback>{initials}</AvatarFallback>

@@ -216,24 +216,24 @@ export function TeacherDashboardContent({
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+                <div className="rounded-none border border-red-200 bg-red-50 p-4">
                   <p className="text-sm font-medium text-red-700">At Risk</p>
                   <p className="mt-1 text-2xl font-semibold text-red-900">{metrics.atRisk}</p>
                   <p className="text-sm text-red-700">Below 50% progress</p>
                 </div>
-                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                <div className="rounded-none border border-amber-200 bg-amber-50 p-4">
                   <p className="text-sm font-medium text-amber-700">Inactive</p>
                   <p className="mt-1 text-2xl font-semibold text-amber-900">{metrics.inactive}</p>
                   <p className="text-sm text-amber-700">No recent activity in 7 days</p>
                 </div>
-                <div className="rounded-xl border border-sky-200 bg-sky-50 p-4">
+                <div className="rounded-none border border-sky-200 bg-sky-50 p-4">
                   <p className="text-sm font-medium text-sky-700">Recently Active</p>
                   <p className="mt-1 text-2xl font-semibold text-sky-900">
                     {metrics.activeThisWeek}
                   </p>
                   <p className="text-sm text-sky-700">Students active this week</p>
                 </div>
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+                <div className="rounded-none border border-emerald-200 bg-emerald-50 p-4">
                   <p className="text-sm font-medium text-emerald-700">Completed</p>
                   <p className="mt-1 text-2xl font-semibold text-emerald-900">
                     {metrics.courseCompletions}
@@ -243,7 +243,7 @@ export function TeacherDashboardContent({
               </div>
 
               {filteredStudents.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-muted-foreground/30 p-6 text-sm text-muted-foreground">
+                <div className="rounded-none border border-dashed border-muted-foreground/30 p-6 text-sm text-muted-foreground">
                   No students match the <span className="font-medium">{activeFilterLabel}</span>{" "}
                   filter right now.
                 </div>
@@ -252,7 +252,7 @@ export function TeacherDashboardContent({
                   {filteredStudents.map((student) => (
                     <article
                       key={student.id}
-                      className="rounded-xl border bg-background p-4 shadow-sm"
+                      className="rounded-none border bg-background p-4 "
                     >
                       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                         <div className="space-y-1">

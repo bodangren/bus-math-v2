@@ -3,6 +3,8 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 import { getConvexUrl } from "@/lib/convex/config";
 import { CapstoneWorkbookDownloads } from '@/components/capstone/CapstoneWorkbookDownloads';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,10 +31,10 @@ function getConvexClient() {
 /** Group units into narrative arcs by phase range. */
 function buildNarrativeArcs(units: CapstoneUnit[]) {
   const phases: { range: [number, number]; label: string }[] = [
-    { range: [1, 2], label: 'Units 1-2' },
-    { range: [3, 4], label: 'Units 3-4' },
-    { range: [5, 6], label: 'Units 5-6' },
-    { range: [7, 8], label: 'Units 7-8' },
+    { range: [1, 2], label: 'Phase I' },
+    { range: [3, 4], label: 'Phase II' },
+    { range: [5, 6], label: 'Phase III' },
+    { range: [7, 8], label: 'Phase IV' },
   ];
 
   return phases
@@ -58,10 +60,10 @@ function buildNarrativeArcs(units: CapstoneUnit[]) {
 
 function SectionHeader({ label, title, description }: { label: string; title: string; description: string }) {
   return (
-    <div className="text-center space-y-3">
-      <span className="section-label">{label}</span>
-      <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground">{title}</h2>
-      <p className="text-muted-foreground max-w-3xl mx-auto text-sm md:text-base font-body">
+    <div className="text-center space-y-4">
+      <span className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest">{label}</span>
+      <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground tracking-tight">{title}</h2>
+      <p className="text-muted-foreground max-w-3xl mx-auto text-sm md:text-base font-body leading-relaxed">
         {description}
       </p>
     </div>
@@ -95,92 +97,92 @@ export default async function CapstonePage() {
 
   return (
     <main className="flex-1 bg-background">
-      <header className="hero-gradient relative overflow-hidden border-b border-white/[0.08]">
-        <div
-          className="absolute inset-0 accounting-grid-dark pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="relative container mx-auto max-w-6xl px-4 py-14 text-center space-y-4">
-          <span className="section-label section-label-light">Capstone Overview</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mt-4">
-            {data.capstone?.title ?? 'Investor-Ready Capstone Project'}
+      <header className="relative overflow-hidden border-b border-border bg-secondary/20">
+        <div className="relative container mx-auto max-w-6xl px-4 py-20 text-center space-y-6">
+          <span className="inline-block px-2 py-0.5 border border-border text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
+            The Finale
+          </span>
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground mt-4 leading-tight tracking-tight">
+            {data.capstone?.title ?? 'Investor-Ready Capstone'}
           </h1>
-          <p className="text-lg md:text-xl text-white/75 font-body max-w-4xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground font-body max-w-4xl mx-auto leading-relaxed">
             {data.capstone?.deliverable
-              ? `${data.capstone.deliverable} — every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.`
-              : '13 weeks of authentic business modeling where every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.'}
+              ? `${data.capstone.deliverable} — an integrated business environment fueled by eight units of rigorous modeling.`
+              : 'Authentic business modeling where every unit artifact fuels a final, linked Excel workbook, business plan, and investor pitch.'}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-            <Link
-              href="/api/pdfs/capstone_business_plan_guide.pdf"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              Download Business Plan Guide
-            </Link>
-            <Link
-              href="/api/pdfs/capstone_pitch_rubric.pdf"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/90 transition-colors"
-            >
-              Download Pitch Rubric
-            </Link>
-            <Link
-              href="/api/pdfs/capstone_model_tour_checklist.pdf"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-muted text-muted-foreground rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors"
-            >
-              Download Model Tour Checklist
-            </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+            <Button asChild variant="outline" size="sm">
+              <Link href="/api/pdfs/capstone_business_plan_guide.pdf">
+                Business Plan Guide
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/api/pdfs/capstone_pitch_rubric.pdf">
+                Pitch Rubric
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/api/pdfs/capstone_model_tour_checklist.pdf">
+                Model Tour Checklist
+              </Link>
+            </Button>
           </div>
-          <CapstoneWorkbookDownloads />
-          <p className="text-sm text-white/70 font-body">
-            Need specifics? Review the <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/guidelines">Capstone Guidelines</Link> and <Link className="underline text-white/70 hover:text-white transition-colors" href="/capstone/rubrics">Rubrics</Link> before Demo Day.
+          <div className="pt-6">
+            <CapstoneWorkbookDownloads />
+          </div>
+          <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-[0.2em] pt-4">
+            Review the <Link className="text-foreground hover:underline" href="/capstone/guidelines">Guidelines</Link> and <Link className="text-foreground hover:underline" href="/capstone/rubrics">Rubrics</Link>
           </p>
         </div>
       </header>
 
-      {/* Curriculum Bridge — ledger-ruled background */}
-      <div className="py-12 bg-muted/20 ledger-bg">
-        <div className="container mx-auto max-w-6xl px-4 space-y-6 font-body">
+      {/* Curriculum Bridge */}
+      <div className="py-20 md:py-28 border-b border-border">
+        <div className="container mx-auto max-w-6xl px-4 space-y-16">
           <SectionHeader
             label="Curriculum Bridge"
-            title="How each unit feeds the capstone"
-            description="Unit deliverables become the subsystems of the integrated model. Students see the throughline from ledger discipline to investor storytelling."
+            title="Systems integration"
+            description="Unit deliverables become the subsystems of the integrated model. We trace the throughline from ledger discipline to investor storytelling."
           />
           {allUnits.length === 0 ? (
-            <div className="text-center text-muted-foreground font-body border rounded-xl p-12 bg-card">
-              Curriculum data isn&apos;t available yet. Please publish lessons to populate this page.
+            <div className="text-center text-muted-foreground font-mono text-[10px] border border-border p-16 bg-background uppercase tracking-widest">
+              Data not available.
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-px bg-border border border-border">
               {allUnits.map((unit) => {
                 const label = unit.unitNumber <= 8 ? `Unit ${unit.unitNumber}` : 'Capstone';
-                const watermark = unit.unitNumber <= 8 ? String(unit.unitNumber) : '\u2605';
+                const watermark = unit.unitNumber <= 8 ? String(unit.unitNumber) : '★';
                 return (
-                  <div key={unit.unitNumber} className="card-workbook p-5 relative overflow-hidden">
+                  <div key={unit.unitNumber} className="bg-background p-6 relative overflow-hidden group hover:bg-secondary transition-colors">
                     <span
-                      className="absolute -right-1 -top-2 font-display font-bold leading-none select-none pointer-events-none"
-                      style={{ fontSize: "4rem", color: "oklch(var(--primary) / 0.05)" }}
+                      className="absolute -right-1 -top-2 font-mono font-bold leading-none select-none pointer-events-none opacity-5 group-hover:opacity-10 transition-opacity"
+                      style={{ fontSize: "3rem" }}
                       aria-hidden="true"
                     >
                       {watermark}
                     </span>
-                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                      <span className="font-mono-num text-xs tracking-wider uppercase">{label}</span>
-                      <span className="section-label">{unit.title}</span>
+                    <div className="flex items-center justify-between gap-4 mb-4">
+                      <span className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground font-bold">{label}</span>
+                      <span className="text-[9px] font-mono text-muted-foreground/50 uppercase tracking-wider">{unit.title}</span>
                     </div>
-                    <h3 className="font-display text-lg font-semibold text-foreground mb-1">
+                    <h3 className="font-display text-lg font-bold text-foreground mb-3 uppercase tracking-tight">
                       {unit.deliverable ?? unit.title}
                     </h3>
-                    {unit.accountingFocus && (
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Accounting: {unit.accountingFocus}
-                      </p>
-                    )}
-                    {unit.excelFocus && (
-                      <p className="text-sm text-muted-foreground">
-                        <span className="font-semibold text-foreground">Excel:&nbsp;</span>
-                        {unit.excelFocus}
-                      </p>
-                    )}
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {unit.accountingFocus && (
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">Accounting</p>
+                          <p className="text-xs text-muted-foreground leading-relaxed">{unit.accountingFocus}</p>
+                        </div>
+                      )}
+                      {unit.excelFocus && (
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">Excel</p>
+                          <p className="text-xs text-muted-foreground leading-relaxed">{unit.excelFocus}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -191,19 +193,19 @@ export default async function CapstonePage() {
 
       {/* Driving Questions */}
       {drivingQuestions.length > 0 && (
-        <div className="py-12 bg-background">
-          <div className="container mx-auto max-w-6xl px-4 space-y-6 font-body">
+        <div className="py-20 md:py-28 border-b border-border bg-secondary/10">
+          <div className="container mx-auto max-w-6xl px-4 space-y-16">
             <SectionHeader
               label="Public Products"
-              title="Driving questions &amp; authentic audiences"
-              description="Keep the PBL energy alive by reminding students who they are building for every time a deliverable ships."
+              title="Driving questions"
+              description="REMINDING STUDENTS WHO THEY ARE BUILDING FOR EVERY TIME A DELIVERABLE SHIPS."
             />
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-px bg-border border border-border">
               {drivingQuestions.map((item) => (
-                <div key={item.label} className="card-workbook p-5">
-                  <p className="font-mono-num text-xs tracking-wider uppercase text-muted-foreground mb-1">{item.label}</p>
+                <div key={item.label} className="bg-background p-6 hover:bg-secondary transition-colors">
+                  <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground mb-2 font-bold">{item.label}</p>
                   {item.audience && (
-                    <p className="text-xs text-primary font-medium font-body mb-2">{item.audience}</p>
+                    <p className="text-[10px] font-mono text-foreground uppercase tracking-wider mb-4 border-l border-foreground pl-2">{item.audience}</p>
                   )}
                   <p className="text-sm text-foreground font-body italic leading-relaxed">&ldquo;{item.question}&rdquo;</p>
                 </div>
@@ -213,25 +215,24 @@ export default async function CapstonePage() {
         </div>
       )}
 
-      {/* Sarah Chen Narrative — subtle green tint */}
+      {/* Narrative Arcs */}
       {narrativeArcs.length > 0 && (
-        <div className="py-12 bg-muted/20 ledger-bg">
-          <div className="container mx-auto max-w-6xl px-4 space-y-6 font-body">
+        <div className="py-20 md:py-28 border-b border-border">
+          <div className="container mx-auto max-w-6xl px-4 space-y-16">
             <SectionHeader
               label="Narrative"
-              title="Sarah Chen&rsquo;s TechStart arc"
-              description="Use Sarah&rsquo;s story to keep the &ldquo;why&rdquo; front-and-center — students step into her decision-making to justify every spreadsheet."
+              title="The TechStart Arc"
+              description="Sarah Chen&rsquo;s story provides the functional context for every model."
             />
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid md:grid-cols-4 gap-px bg-border border border-border">
               {narrativeArcs.map((moment) => (
                 <div
                   key={moment.phase}
-                  className="rounded-lg p-5"
-                  style={{ background: "oklch(var(--primary) / 0.05)", border: "1px solid oklch(var(--primary) / 0.12)" }}
+                  className="bg-background p-6 space-y-4 hover:bg-secondary transition-colors"
                 >
-                  <p className="font-mono-num text-xs tracking-wider uppercase text-primary/70 mb-1">{moment.phase}</p>
-                  <h3 className="font-display text-base font-semibold text-foreground mb-2">{moment.headline}</h3>
-                  <p className="text-sm text-muted-foreground font-body leading-relaxed">{moment.detail}</p>
+                  <p className="font-mono text-[10px] tracking-widest uppercase text-muted-foreground font-bold">{moment.phase}</p>
+                  <h3 className="font-display text-sm font-bold text-foreground uppercase tracking-tight">{moment.headline}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed font-body">{moment.detail}</p>
                 </div>
               ))}
             </div>
@@ -239,20 +240,26 @@ export default async function CapstonePage() {
         </div>
       )}
 
-      {/* Quality standards — dark accent */}
-      <div className="py-12 bg-background">
-        <div className="container mx-auto max-w-6xl px-4 font-body">
-          <div className="card-statement rounded-lg overflow-hidden max-w-2xl mx-auto">
-            <div className="excel-header px-6 py-3">
-              <h3 className="font-display text-base font-semibold text-primary">Quality standards for submission</h3>
-              <p className="text-xs text-muted-foreground">Simple guardrails that keep every workbook investor-ready.</p>
+      {/* Quality standards */}
+      <div className="py-20 md:py-32">
+        <div className="container mx-auto max-w-4xl px-4">
+          <div className="border border-border bg-background">
+            <div className="px-8 py-6 border-b border-border bg-secondary/30">
+              <h3 className="text-xs font-mono font-bold text-foreground uppercase tracking-[0.2em]">Quality Standards for Submission</h3>
             </div>
-            <div className="px-6 py-4">
-              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1.5">
-                <li>Linked formulas only — no hard-coded totals or plug values.</li>
-                <li>Document data sources and annotate complex logic with concise comments.</li>
-                <li>Use validation checks &amp; KPI indicators so issues surface before Demo Day.</li>
-                <li>Keep formatting professional: consistent currency, alignment, and label conventions.</li>
+            <div className="p-8">
+              <ul className="space-y-4">
+                {[
+                  "Linked formulas only — no hard-coded totals or plug values.",
+                  "Document data sources and annotate complex logic with concise comments.",
+                  "Use validation checks & KPI indicators so issues surface before Demo Day.",
+                  "Keep formatting professional: consistent currency, alignment, and label conventions."
+                ].map((std, i) => (
+                  <li key={i} className="flex gap-4 items-start">
+                    <span className="font-mono text-[10px] text-muted-foreground pt-1">0{i+1}</span>
+                    <p className="text-sm text-muted-foreground font-body leading-relaxed">{std}</p>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

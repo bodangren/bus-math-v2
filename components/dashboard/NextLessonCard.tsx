@@ -34,7 +34,7 @@ export function NextLessonCard({
       <CardContent className="space-y-4">
         {lesson ? (
           <>
-            <div className="rounded-xl border border-border/60 bg-background/80 p-4">
+            <div className="rounded-none border border-border/60 bg-background/80 p-4">
               <p className="text-sm text-muted-foreground">
                 {formatCurriculumSegmentLabel(lesson.unitNumber)}
               </p>
@@ -51,7 +51,7 @@ export function NextLessonCard({
             </Button>
           </>
         ) : (
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+          <div className="rounded-none border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
             {emptyMessage}
           </div>
         )}

@@ -277,13 +277,13 @@ function ProblemRenderer({
 
   return (
     <div className="space-y-6">
-      <div className="bg-muted/50 p-4 rounded-lg">
+      <div className="bg-muted/50 p-4 rounded-none">
         <h3 className="font-medium mb-2 text-sm text-muted-foreground">Problem</h3>
         {renderDef(definition)}
       </div>
 
       {submitted && gradeResult ? (
-        <div className="bg-muted/50 p-4 rounded-lg">
+        <div className="bg-muted/50 p-4 rounded-none">
           <h3 className="font-medium mb-2 text-sm text-muted-foreground">Result</h3>
           <div className="space-y-1">
             {gradeResult.parts.map((p, i) => (

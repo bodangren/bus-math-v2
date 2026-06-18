@@ -12,9 +12,9 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Math for Business Operations: Applied Accounting with Excel",
+  title: "The Atomic Ledger: Math for Business Operations",
   description:
-    "A comprehensive Grade 12 textbook integrating accounting principles, spreadsheet modeling, and entrepreneurship.",
+    "A high-density financial modeling environment for Grade 12 applied math.",
   authors: [{ name: "Daniel Bodanske" }],
 };
 
@@ -24,16 +24,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="dark">
       <body
-        className={`antialiased min-h-screen flex flex-col font-sans`}
+        className={`antialiased min-h-screen flex flex-col font-sans bg-background text-foreground`}
       >
         <ConvexClientProvider>
           <AuthProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
-              enableSystem
+              defaultTheme="dark"
+              enableSystem={false}
+              forcedTheme="dark"
               disableTransitionOnChange
             >
               <HeaderSimple />

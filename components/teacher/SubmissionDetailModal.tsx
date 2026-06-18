@@ -76,7 +76,7 @@ function PhaseStatusIcon({ status }: { status: PhaseStatus }) {
     return <CheckCircle2 className="size-4 shrink-0 text-green-600" aria-hidden="true" />;
   }
   if (status === 'in_progress') {
-    return <span className="inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-amber-500/40 text-amber-600" aria-hidden="true">•</span>;
+    return <span className="inline-flex size-4 shrink-0 items-center justify-center rounded-none border border-amber-500/40 text-amber-600" aria-hidden="true">•</span>;
   }
   return <Circle className="size-4 shrink-0 text-muted-foreground/50" aria-hidden="true" />;
 }
@@ -221,7 +221,7 @@ function SummaryChip({
   value: string;
 }) {
   return (
-    <div className="min-w-0 rounded-lg border border-border bg-muted/30 px-3 py-2">
+    <div className="min-w-0 rounded-none border border-border bg-muted/30 px-3 py-2">
       <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</div>
       <div className="mt-0.5 truncate text-sm font-medium text-foreground">{value}</div>
     </div>
@@ -305,7 +305,7 @@ function PartRow({
   }
 
   return (
-    <div className="rounded-lg border border-border bg-background px-3 py-3">
+    <div className="rounded-none border border-border bg-background px-3 py-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -343,7 +343,7 @@ function PartRow({
       ) : null}
 
       {part.rawAnswer && typeof part.rawAnswer === 'object' ? (
-        <div className="mt-3 rounded-md bg-muted/20 p-2">
+        <div className="mt-3 rounded-none bg-muted/20 p-2">
           <EvidenceValue value={part.rawAnswer} />
         </div>
       ) : null}
@@ -404,12 +404,12 @@ function PracticeEvidenceCard({
           </div>
           <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
             {evidence.submittedAt ? (
-              <span className="rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+              <span className="rounded-none bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                 Completed {formatTimestamp(evidence.submittedAt)}
               </span>
             ) : null}
             {evidence.attemptNumber ? (
-              <span className="rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+              <span className="rounded-none bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                 Attempt {evidence.attemptNumber}
               </span>
             ) : null}
@@ -420,7 +420,7 @@ function PracticeEvidenceCard({
       <CardContent className="space-y-4 px-4 py-4">
         {isSpreadsheet ? (
           <div className="space-y-3">
-            <div className="overflow-x-auto rounded-md border border-border">
+            <div className="overflow-x-auto rounded-none border border-border">
               <SpreadsheetWrapper
                 readOnly
                 className="text-xs"
@@ -509,7 +509,7 @@ function PracticeEvidenceCard({
         ) : (
           <div className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
             <div className="space-y-3">
-              <div className="rounded-lg border border-border bg-muted/20 p-3">
+              <div className="rounded-none border border-border bg-muted/20 p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="text-sm font-medium text-foreground">Part-by-Part Answers</div>
                   <div className="flex flex-wrap gap-2">
@@ -564,7 +564,7 @@ function PracticeEvidenceCard({
                 </div>
 
                 {showRaw && answers && Object.keys(answers).length > 0 && (
-                  <div className="mt-3 rounded-md bg-muted/20 p-3">
+                  <div className="mt-3 rounded-none bg-muted/20 p-3">
                     <div className="text-xs font-medium text-foreground mb-2">Raw answers</div>
                     <dl className="grid gap-2 text-sm">
                       {Object.entries(answers).map(([key, answer]) => (
@@ -703,7 +703,7 @@ export function SubmissionDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-lg border border-border bg-background shadow-lg" role="dialog" aria-modal="true">
+      <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-none border border-border bg-background " role="dialog" aria-modal="true">
         <div className="flex flex-col h-full">
           <div className="flex items-start justify-between border-b border-border p-4">
             <div>
@@ -717,7 +717,7 @@ export function SubmissionDetailModal({
               type="button"
               onClick={onClose}
               aria-label="Close submission detail"
-              className="mt-0.5 shrink-0 rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-0.5 shrink-0 rounded-none text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <X className="size-4" />
             </button>
@@ -725,7 +725,7 @@ export function SubmissionDetailModal({
 
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             {error ? (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+              <div className="rounded-none border border-red-200 bg-red-50 p-4">
                 <p className="text-sm text-red-800">{error}</p>
               </div>
             ) : null}
@@ -804,7 +804,7 @@ export function SubmissionDetailModal({
                   <CardContent className="px-4 pb-4">
                     <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
                       <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-lg border border-border bg-background p-3">
+                        <div className="rounded-none border border-border bg-background p-3">
                           <div className="text-xs uppercase tracking-wide text-muted-foreground">Completion</div>
                           <div className="mt-2 flex items-center gap-2">
                             <PhaseStatusIcon status={filteredSnapshot?.completedPhases === filteredSnapshot?.totalPhases ? 'completed' : 'in_progress'} />
@@ -813,7 +813,7 @@ export function SubmissionDetailModal({
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg border border-border bg-background p-3">
+                        <div className="rounded-none border border-border bg-background p-3">
                           <div className="text-xs uppercase tracking-wide text-muted-foreground">Score</div>
                           <div className="mt-2 text-lg font-semibold text-foreground">
                             {filteredSnapshot?.overallScore !== null && filteredSnapshot?.overallMaxScore !== null
@@ -826,7 +826,7 @@ export function SubmissionDetailModal({
                         </div>
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-lg border border-border bg-background p-3">
+                        <div className="rounded-none border border-border bg-background p-3">
                           <div className="text-xs uppercase tracking-wide text-muted-foreground">Scaffold usage</div>
                           <div className="mt-2 flex flex-wrap gap-2 text-xs text-foreground">
                             <Badge variant="secondary" className="text-xs">
@@ -840,7 +840,7 @@ export function SubmissionDetailModal({
                             </Badge>
                           </div>
                         </div>
-                        <div className="rounded-lg border border-border bg-background p-3">
+                        <div className="rounded-none border border-border bg-background p-3">
                           <div className="text-xs uppercase tracking-wide text-muted-foreground">Misconceptions</div>
                           <div className="mt-2 flex flex-wrap gap-1">
                             {filteredSnapshot?.misconceptionTags.map((tag) => (
