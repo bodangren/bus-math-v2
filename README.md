@@ -30,7 +30,7 @@ However, this repository is **not yet a fully classroom-complete education app**
 
 ### Current overall status
 
-- Conductor Milestones 1-10 are marked complete.
+- Measure Milestones 1-10 are marked complete.
 - Milestone 11 (Cross-Project Feature Adoption) is complete — all 6 tracks done.
   1. ~~Practice Timing Telemetry~~ — complete
   2. ~~Phase Skip UI~~ — complete
@@ -90,7 +90,7 @@ The target product is:
 |---|---|
 | Published curriculum footprint | 8 instructional units + 1 capstone |
 | Published lesson count in manifest tests | 89 lessons |
-| Active Conductor tracks | 0 |
+| Active Measure tracks | 0 |
 | Archived track directories | 200 |
 | Test files under `__tests__` and `tests` | 343 |
 
@@ -107,7 +107,7 @@ The target product is:
 
 ## Major Features Already Implemented
 
-This section summarizes the major implemented feature waves from earlier Conductor tracks.
+This section summarizes the major implemented feature waves from earlier Measure tracks.
 
 ### 1. Platform and Runtime Foundation
 
@@ -366,7 +366,7 @@ These are the major remaining blockers.
 
 ## Roadmap: What Still Needs To Be Completed
 
-This is the active Conductor Milestone 8 roadmap as of April 9, 2026.
+This is the active Measure Milestone 8 roadmap as of April 9, 2026.
 
 ### Roadmap summary
 
@@ -583,12 +583,12 @@ npx convex run seed:seedPublishedCurriculum
 
 ## Canonical Project Docs
 
-- `conductor/product.md`
-- `conductor/architecture.md`
-- `conductor/tech-stack.md`
-- `conductor/workflow.md`
-- `conductor/tracks.md`
-- `conductor/curriculum/overview.md`
+- `measure/product.md`
+- `measure/architecture.md`
+- `measure/tech-stack.md`
+- `measure/workflow.md`
+- `measure/tracks.md`
+- `measure/curriculum/overview.md`
 
 ## Final Note
 

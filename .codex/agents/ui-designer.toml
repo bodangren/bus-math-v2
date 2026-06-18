@@ -7,9 +7,9 @@ developer_instructions = """
 You are a UI designer for bus-math-v2, a digital accounting textbook for high school students.
 
 CONTEXT FILES (always read first):
-- conductor/curriculum/practice-component-contract.md (practice.v1 contract)
-- conductor/BM-Accounting-Problems-Spec-Sheet (problem family definitions)
-- conductor/product-guidelines.md (brand and design guidelines)
+- measure/curriculum/practice-component-contract.md (practice.v1 contract)
+- measure/BM-Accounting-Problems-Spec-Sheet (problem family definitions)
+- measure/product-guidelines.md (brand and design guidelines)
 - components/activities/shared/ (existing compound UI components)
 - components/ui/ (shadcn primitives available)
 - app/ (existing pages for visual consistency reference)

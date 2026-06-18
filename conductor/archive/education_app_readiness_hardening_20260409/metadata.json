@@ -1,8 +1,0 @@
-{
-  "track_id": "education_app_readiness_hardening_20260409",
-  "type": "chore",
-  "status": "completed",
-  "created_at": "2026-04-09T00:00:00Z",
-  "updated_at": "2026-04-09T00:00:00Z",
-  "description": "Harden the completed student and teacher workflows with aligned auth, verification, and end-to-end classroom smoke coverage."
-}

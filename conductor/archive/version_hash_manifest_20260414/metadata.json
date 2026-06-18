@@ -1,8 +1,0 @@
-{
-  "track_id": "version_hash_manifest_20260414",
-  "type": "tech_debt",
-  "status": "new",
-  "created_at": "2026-04-14T00:00:00Z",
-  "updated_at": "2026-04-14T00:00:00Z",
-  "description": "Replace Function.prototype.toString() version hashing with build-time manifest approach to fix minifier sensitivity and dev/prod drift"
-}
